@@ -1,0 +1,135 @@
+- type: Tag
+  id: MedicalMech
+
+- type: Tag
+  id: Odysseus
+
+- type: entity
+  id: MedicalMechEquipment
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - MedicalMech
+
+- type: entity
+  id: MechEquipmentSleeper
+  parent: [ BaseMechEquipment, MedicalMechEquipment ]
+  name: cabin medbay module
+  description: A cabin medbay module that holds one patient and can dose reagents from chassis reserves.
+  components:
+  - type: Sprite
+    state: mecha_sleeper
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: MechGrabber
+    maxContents: 1
+    grabDelay: 3
+    grabEnergyDelta: -20
+  - type: MechMedicalSleeper
+    healPerSecond:
+      types:
+        Blunt: -2
+        Slash: -2
+        Piercing: -2
+        Heat: -2
+        Cold: -2
+        Poison: -1
+        Asphyxiation: -2
+    injectAmount: 7.5
+  - type: SolutionContainerManager
+    solutions:
+      sleeper:
+        maxVol: 100
+        reagents:
+        - ReagentId: Epinephrine
+          Quantity: 30
+        - ReagentId: Charcoal
+          Quantity: 30
+        - ReagentId: Bicaridine
+          Quantity: 20
+        - ReagentId: Dermaline
+          Quantity: 20
+  - type: RefillableSolution
+    solution: sleeper
+  - type: ExaminableSolution
+    solution: sleeper
+  - type: UIFragment
+    ui: !type:MechMedicalSleeperUi
+  - type: ContainerContainer
+    containers:
+      item-container: !type:Container
+
+- type: entity
+  id: MechEquipmentRescueJaw
+  parent: [ BaseMechEquipment, MedicalMechEquipment ]
+  name: rescue jaws
+  description: Hydraulic jaws for forcing doors and clearing obstacles during rescue.
+  components:
+  - type: Sprite
+    state: mecha_clamp
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-big
+      right:
+      - state: inhand-right-big
+  - type: MultiHandedItem
+  - type: Prying
+    enabled: true
+    pryPowered: true
+    useSound: /Audio/Items/jaws_pry.ogg
+
+- type: entity
+  id: MechEquipmentSyringeGun
+  parent: [ BaseMechEquipment, MedicalMechEquipment ]
+  name: mech syringe gun
+  description: A mounted pneumatic syringe launcher for rapid reagent delivery.
+  components:
+  - type: Sprite
+    state: mecha_syringegun
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Gun
+    fireRate: 1
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/syringe_gun.ogg
+  - type: ContainerAmmoProvider
+    container: storagebase
+  - type: Storage
+    maxItemSize: Small
+    whitelist:
+      tags:
+      - SyringeGunAmmo
+    grid:
+    - 0,0,3,1
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+  - type: SolutionContainerManager
+    solutions:
+      chemReserve:
+        maxVol: 75
+        canReact: false
+        reagents:
+        - ReagentId: Epinephrine
+          Quantity: 25
+        - ReagentId: Charcoal
+          Quantity: 25
+  - type: RefillableSolution
+    solution: chemReserve
+  - type: ExaminableSolution
+    solution: chemReserve
+  - type: Appearance

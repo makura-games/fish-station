@@ -74,3 +74,15 @@ List of people who have contributed to the project:
 
 >All code and assets from MakuraGames Studio are covered by the [CLA](https://github.com/makura-games/sunrise-station/blob/master/CLA.txt) license.
 </details>
+
+<details>
+<summary><a href="#"><img src="https://img.shields.io/badge/licence-Fish_MIT%2FCC--BY--SA-blue?style=for-the-badge" alt="Fish MIT / CC-BY-SA"></a></summary>
+
+>Original Fish Station content under `_Fish` trees is licensed separately so the author and recipients can freely use it:
+>
+> - code / prototypes / locales / docs — [MIT](LICENSE-FISH-MIT.TXT)
+> - original assets — [CC-BY-SA-3.0](LICENSE-FISH-ASSETS.TXT)
+> - overview — [LICENSE-FISH.TXT](LICENSE-FISH.TXT), docs — [Resources/Docs/_Fish/LICENSE.md](Resources/Docs/_Fish/LICENSE.md)
+>
+> Third-party assets keep the license stated in `meta.json` / `attributions.yml`.
+</details>

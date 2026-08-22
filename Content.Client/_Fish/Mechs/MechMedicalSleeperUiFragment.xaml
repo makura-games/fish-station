@@ -1,0 +1,18 @@
+<mechs:MechMedicalSleeperUiFragment
+    xmlns:mechs="clr-namespace:Content.Client._Fish.Mechs"
+    xmlns="https://spacestation14.io" Margin="1 0 2 0" HorizontalExpand="True" VerticalExpand="True">
+    <BoxContainer Orientation="Vertical"
+                  HorizontalExpand="True"
+                  VerticalExpand="True"
+                  SeparationOverride="4">
+        <Label Name="PatientLabel" Text="{Loc 'mech-sleeper-patient-empty'}" />
+        <Button Name="EjectButton" Text="{Loc 'mech-sleeper-eject'}" Disabled="True" />
+        <Label Text="{Loc 'mech-sleeper-reagents-header'}" StyleClasses="LabelHeading" />
+        <ItemList Name="ReagentList"
+                  VerticalExpand="True"
+                  MinHeight="120"
+                  HorizontalExpand="True"
+                  SelectMode="Button" />
+        <Label Name="InjectHintLabel" StyleClasses="LabelSubText" />
+    </BoxContainer>
+</mechs:MechMedicalSleeperUiFragment>

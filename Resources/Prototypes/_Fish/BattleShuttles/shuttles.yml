@@ -1,0 +1,174 @@
+# Конкретные модели боевых шаттлов. Временный визуал — stock mecha.rsi (CC-BY-SA), до собственных спрайтов Fish.
+
+- type: entity
+  id: BattleShuttleCivilian
+  parent: CivilianBattleShuttle
+  name: civilian battle shuttle
+  description: A standard unarmed civilian craft for EVA travel.
+  components:
+  - type: Sprite
+    layers:
+    - state: ripley
+      map: ["enum.MechVisualLayers.Base"]
+  - type: Mech
+    baseState: ripley
+    openState: ripley-open
+    brokenState: ripley-broken
+  - type: BattleShuttle
+    unlocked: true
+    hatchOpen: true
+    classTags:
+    - BattleShuttle
+    - BattleShuttleLight
+    - BattleShuttleCivilian
+
+- type: entity
+  id: BattleShuttleBlack
+  parent: LightBattleShuttle
+  name: black battle shuttle
+  description: A stealthy matte-black craft.
+  components:
+  - type: Sprite
+    layers:
+    - state: reticence
+      map: ["enum.MechVisualLayers.Base"]
+  - type: Mech
+    baseState: reticence
+    openState: reticence-open
+    brokenState: reticence-broken
+  - type: RadarBlip
+    color: "#333333"
+    scale: 0.9
+    shape: Triangle
+
+- type: entity
+  id: BattleShuttleSecurity
+  parent: [ MediumBattleShuttle, BaseSecurityContraband ]
+  name: security battle shuttle
+  description: An armored security craft with lock, taser and passenger seat.
+  components:
+  - type: Sprite
+    layers:
+    - state: gygax
+      map: ["enum.MechVisualLayers.Base"]
+  - type: Mech
+    baseState: gygax
+    openState: gygax-open
+    brokenState: gygax-broken
+    startingEquipment:
+    - BattleShuttleWeaponTaser
+    - BattleShuttleMiscTracker
+    - BattleShuttleSecCargoChair
+    - BattleShuttleLockKeyed
+  - type: BattleShuttle
+    unlocked: true
+    hatchOpen: true
+    classTags:
+    - BattleShuttle
+    - BattleShuttleMedium
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      400: Critical
+  - type: AccessReader
+    access: [["Security"]]
+  - type: RadarBlip
+    color: "#ff1500"
+    scale: 1.25
+    shape: Triangle
+
+- type: entity
+  id: BattleShuttleSecurityFilled
+  parent: BattleShuttleSecurity
+  suffix: Filled
+  name: security battle shuttle
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageMedium
+
+- type: entity
+  id: BattleShuttleIndustrial
+  parent: MediumBattleShuttle
+  name: industrial battle shuttle
+  description: A rugged mining craft with ore hopper and kinetic drill.
+  components:
+  - type: Sprite
+    layers:
+    - state: clarke
+      map: ["enum.MechVisualLayers.Base"]
+  - type: Mech
+    baseState: clarke
+    openState: clarke-open
+    brokenState: clarke-broken
+    startingEquipment:
+    - BattleShuttleWeaponMiningBasic
+    - BattleShuttleCargoOre
+  - type: BattleShuttle
+    unlocked: true
+    hatchOpen: true
+    classTags:
+    - BattleShuttle
+    - BattleShuttleMedium
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      325: Critical
+  - type: AccessReader
+    access: [["Mining"]]
+
+- type: entity
+  id: BattleShuttleSyndicate
+  parent: [ HeavyBattleShuttle, BaseSyndicateContraband ]
+  name: syndicate battle shuttle
+  description: A syndicate combat craft with laser and lock.
+  components:
+  - type: Sprite
+    layers:
+    - state: darkgygax
+      map: ["enum.MechVisualLayers.Base"]
+  - type: Mech
+    baseState: darkgygax
+    openState: darkgygax-open
+    brokenState: darkgygax-broken
+    startingEquipment:
+    - BattleShuttleWeaponLaser
+    - BattleShuttleLockKeyed
+  - type: BattleShuttle
+    unlocked: false
+    hatchOpen: false
+    classTags:
+    - BattleShuttle
+    - BattleShuttleHeavy
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      350: Critical
+  - type: AccessReader
+    access: [["SyndicateAgent"]]
+  - type: RadarBlip
+    color: "#FF0000"
+    scale: 1.2
+    shape: Triangle
+
+- type: entity
+  id: BattleShuttleGold
+  parent: ExperimentalBattleShuttle
+  name: gold battle shuttle
+  description: A luxurious gold-plated experimental craft.
+  components:
+  - type: Sprite
+    layers:
+    - state: phazon
+      map: ["enum.MechVisualLayers.Base"]
+  - type: Mech
+    baseState: phazon
+    openState: phazon-open
+    brokenState: phazon-broken
+  - type: BattleShuttle
+    unlocked: true
+    hatchOpen: true
+    classTags:
+    - BattleShuttle
+    - BattleShuttleExperimental

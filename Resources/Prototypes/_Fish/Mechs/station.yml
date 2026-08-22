@@ -1,0 +1,91 @@
+- type: entity
+  id: MechWreckage
+  name: mech wreckage
+  description: The twisted remains of an exosuit. Crowbar salvage may yield parts.
+  components:
+  - type: Transform
+  - type: InteractionOutline
+  - type: Clickable
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        density: 1000
+        layer:
+        - MidImpassable
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha.rsi
+    state: ripley-broken
+  - type: MechWreckage
+  - type: ContainerContainer
+    containers:
+      wreckage-loot: !type:Container
+
+- type: entity
+  parent: BaseMachinePowered
+  id: MechBayPad
+  name: mech bay charger
+  description: A floor pad that recharges parked exosuit power cages.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: Structures/Power/cage_recharger.rsi
+    state: empty
+  - type: ApcPowerReceiver
+    powerLoad: 200
+  - type: MechBay
+    chargeRate: 60
+    range: 0.75
+  - type: Anchorable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: BaseComputer
+  id: ComputerMechTracking
+  name: mech tracking console
+  description: Tracks registered exosuit beacons across the station.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: robot
+    - map: ["computerLayerKeys"]
+      state: rd_key
+  - type: MechTrackingConsole
+  - type: UserInterface
+    interfaces:
+      enum.MechTrackingUiKey.Key:
+        type: MechTrackingBoundUserInterface
+  - type: ActivatableUI
+    key: enum.MechTrackingUiKey.Key
+  - type: Computer
+    board: MechTrackingComputerCircuitboard
+
+- type: entity
+  parent: BaseElectronics
+  id: MechTrackingComputerCircuitboard
+  name: mech tracking computer board
+  description: A computer printed circuit board for a mech tracking console.
+  components:
+  - type: Sprite
+    state: cpu_engineering
+  - type: ComputerBoard
+    prototype: ComputerMechTracking

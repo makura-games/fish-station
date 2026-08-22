@@ -1,4 +1,6 @@
 using System.Linq;
+using Content.Shared._Fish.Mechs;
+using Content.Shared._Sunrise.Paint;
 using Content.Shared.Access.Components;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
@@ -27,7 +29,6 @@ using Robust.Shared.Network;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using DrawDepth = Content.Shared.DrawDepth.DrawDepth;
-using Content.Shared._Sunrise.Paint;
 using Content.Shared.Humanoid;
 using Content.Shared.SubFloor;
 using Content.Shared.Nutrition.EntitySystems;
@@ -175,6 +176,11 @@ public abstract partial class SharedMechSystem : EntitySystem
         _actions.AddAction(pilot, ref component.MechUiActionEntity, component.MechUiAction, mech);
         _actions.AddAction(pilot, ref component.MechLightsActionEntity, component.MechLightsAction, mech);
         _actions.AddAction(pilot, ref component.MechEjectActionEntity, component.MechEjectAction, mech);
+
+        // Fish added start - выдача Fish mech actions (abilities/DNA/dual-hand)
+        var readyEv = new MechPilotReadyEvent(pilot);
+        RaiseLocalEvent(mech, ref readyEv);
+        // Fish added end
     }
 
     private void RemoveUser(EntityUid mech, EntityUid pilot)
@@ -219,6 +225,11 @@ public abstract partial class SharedMechSystem : EntitySystem
 
         component.Broken = true;
         UpdateAppearance(uid, component);
+
+        // Fish added start - обломки / salvage hook
+        var brokenEv = new MechBrokenEvent(uid);
+        RaiseLocalEvent(uid, ref brokenEv);
+        // Fish added end
     }
 
     /// <summary>

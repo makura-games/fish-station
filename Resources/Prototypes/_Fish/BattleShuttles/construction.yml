@@ -1,0 +1,148 @@
+- type: entity
+  id: BattleShuttleFrame
+  name: battle shuttle frame
+  description: An unfinished battle shuttle hull.
+  parent: BaseStructure
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha.rsi
+    layers:
+    - state: ripley-open
+      map: ["enum.ConstructionVisuals.Layer"]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ConstructionVisuals.Key:
+        enum.ConstructionVisuals.Layer:
+          1: { state: ripley-open }
+          2: { state: ripley-open }
+          3: { state: ripley-open }
+          4: { state: ripley-open }
+          5: { state: ripley-open }
+          6: { state: ripley-open }
+          7: { state: ripley-open }
+          8: { state: ripley-open }
+          9: { state: ripley-open }
+          10: { state: ripley-open }
+          11: { state: ripley-open }
+          12: { state: ripley-open }
+  - type: Construction
+    graph: BattleShuttle
+    node: frame
+  - type: Anchorable
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        density: 80
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Tag
+    tags:
+    - BattleShuttleFrame
+
+- type: constructionGraph
+  id: BattleShuttle
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: frame
+      steps:
+      - material: Steel
+        amount: 10
+        completed:
+        - !type:SnapToGrid
+          southRotation: true
+
+  - node: frame
+    entity: BattleShuttleFrame
+    edges:
+    - to: complete
+      steps:
+      - material: Cable
+        amount: 5
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 2
+      - tool: Screwing
+        doAfter: 2
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 3
+      - tag: BattleShuttleCircuitboard
+        name: construction-graph-tag-battle-shuttle-board
+        icon:
+          sprite: Objects/Misc/module.rsi
+          state: mainboard
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 4
+      - tool: Screwing
+        doAfter: 2
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 5
+      - tag: BattleShuttleCore
+        name: construction-graph-tag-battle-shuttle-core
+        icon:
+          sprite: Objects/Specific/Mech/mecha_equipment.rsi
+          state: tesla
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 6
+      - tool: Anchoring
+        doAfter: 2
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 7
+      - material: Steel
+        amount: 5
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 8
+      - tool: Anchoring
+        doAfter: 2
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 9
+      - tool: Welding
+        doAfter: 3
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 10
+      - tag: BattleShuttleArmor
+        name: construction-graph-tag-battle-shuttle-armor
+        icon:
+          sprite: Objects/Specific/Mech/mecha_equipment.rsi
+          state: repair_droid
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 11
+      - tool: Anchoring
+        doAfter: 2
+        completed:
+        - !type:VisualizerDataInt
+          key: "enum.ConstructionVisuals.Key"
+          data: 12
+      - tool: Welding
+        doAfter: 4
+
+  - node: complete
+    entity: BattleShuttleCivilian

@@ -15,6 +15,10 @@
     voice: Crysis2AICostume
   - type: Prying
     pryPowered: true
+  # Fish edit start - combat: maintenance protocols locked off by default
+  - type: MechMaintenance
+    maintAccess: false
+  # Fish edit end
 
 - type: entity
   id: IndustrialMech
@@ -65,6 +69,7 @@
 
 - type: entity
   id: BaseMech
+  parent: FishMechCore # Fish edit - internal damage, facing armor, dual-hand, DNA, maintenance
   save: false
   abstract: true
   components:
@@ -301,6 +306,9 @@
     - DoorBumpOpener
     - FootstepSound
     - Ripley
+  # Fish edit start - скорость в зависимости от давления
+  - type: MechPressureSpeed
+  # Fish edit end
 
 - type: entity
   id: MechRipleyBattery
@@ -446,6 +454,9 @@
     leftBareFootState: [ footprint-tracked-heavy ]
     rightBareFootState: [ footprint-tracked-heavy ]
   # Sunrise-End
+  # Fish edit start - thrusters Clarke
+  - type: MechThrusters
+  # Fish edit end
 
 - type: entity
   id: MechClarkeBattery
@@ -737,6 +748,9 @@
     thresholds:
       0: Alive
       325: Critical
+  # Fish edit start - перегрузка ног Gygax
+  - type: MechOverload
+  # Fish edit end
 
 - type: entity
   id: MechGygaxBattery
@@ -815,6 +829,9 @@
     thresholds:
       0: Alive
       500: Critical
+  # Fish edit start - режим обороны Durand
+  - type: MechDefenceMode
+  # Fish edit end
 
 - type: entity
   id: MechDurandBattery
@@ -894,6 +911,12 @@
     allowRevives: true
   - type: AccessReader
     access: [["CentralCommand"]]
+  # Fish edit start - thrusters / дым / стрейф / zoom Marauder
+  - type: MechThrusters
+  - type: MechSmoke
+  - type: MechStrafe
+  - type: MechZoom
+  # Fish edit end
 
 - type: entity
   id: MechMarauderBattery

@@ -1,0 +1,28 @@
+- type: entity
+  name: Civilian Battle Shuttle Spawner
+  id: SpawnBattleShuttleCivilian
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Objects/Specific/Mech/mecha.rsi
+      state: ripley
+  - type: ConditionalSpawner
+    prototypes:
+    - BattleShuttleCivilian
+
+- type: entity
+  name: Security Battle Shuttle Spawner
+  suffix: Filled
+  id: SpawnBattleShuttleSecurityFilled
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: Objects/Specific/Mech/mecha.rsi
+      state: gygax
+  - type: ConditionalSpawner
+    prototypes:
+    - BattleShuttleSecurityFilled

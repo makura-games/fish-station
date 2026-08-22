@@ -1,0 +1,92 @@
+# Medical mech (Odysseus) — Fish medical chassis, sprites from mecha.rsi
+
+- type: entity
+  id: MedicalMech
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Mech
+    equipmentWhitelist:
+      tags:
+      - MedicalMech
+  - type: Speech
+    speechSounds: Borg
+  - type: TTS
+    voice: Glados
+  - type: Prying
+    pryPowered: true
+
+- type: entity
+  id: MechOdysseus
+  parent: [ BaseMech, MedicalMech, BaseMedicalContraband ]
+  name: Odysseus
+  description: A medical exosuit designed for patient recovery and emergency response.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    noRot: true
+    sprite: Objects/Specific/Mech/mecha.rsi
+    scale: 1.05, 1.05
+    layers:
+    - map: [ "enum.MechVisualLayers.Base" ]
+      state: odysseus
+  - type: FootstepModifier
+    footstepSoundCollection:
+      path: /Audio/Mecha/sound_mecha_powerloader_step.ogg
+      params:
+        pitch: 1.1
+  - type: Mech
+    baseState: odysseus
+    openState: odysseus-open
+    brokenState: odysseus-broken
+    mechToPilotDamageMultiplier: 0.5
+    airtight: true
+    maxEquipmentAmount: 4
+    pilotWhitelist:
+      components:
+        - HumanoidProfile
+  - type: MeleeWeapon
+    hidden: true
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 10
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.2
+    baseSprintSpeed: 3.8
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 6
+    netsync: false
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - FootstepSound
+    - Odysseus
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Critical
+
+- type: entity
+  id: MechOdysseusBattery
+  parent: MechOdysseus
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageSmall
+
+- type: entity
+  id: MechOdysseusFilled
+  parent: MechOdysseusBattery
+  suffix: Filled
+  components:
+  - type: Mech
+    startingEquipment:
+    - MechEquipmentSleeper
+    - MechEquipmentRescueJaw
+    - MechEquipmentSyringeGun

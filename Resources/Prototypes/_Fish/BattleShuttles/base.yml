@@ -1,0 +1,195 @@
+# Базовый боевой шаттл и классы (Light / Medium / Heavy / Experimental / Civilian).
+# Конкретные модели наследуют класс и меняют только отличия.
+
+- type: entity
+  id: BaseBattleShuttle
+  parent: BaseMechPod
+  abstract: true
+  name: battle shuttle
+  description: A compact sealed combat craft for zero-gravity operations.
+  components:
+  - type: BattleShuttle
+    unlocked: true
+    hatchOpen: true
+    basePassengerCapacity: 0
+    baseFixtureDensity: 100
+    requireOpenHatchForInstall: true
+    classTags:
+    - BattleShuttle
+  - type: Mech
+    entryDelay: 2
+    maxEquipmentAmount: 6
+    airtight: true
+    mechToPilotDamageMultiplier: 0
+    equipmentWhitelist:
+      tags:
+      - BattleShuttleModule
+    pilotWhitelist:
+      components:
+      - HumanoidProfile
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.1,-1.1,1.1,1"
+        density: 100
+        mask:
+        - FlyingMobMask
+        layer:
+        - FlyingMobLayer
+  - type: AmbientSound
+    range: 6
+    volume: 0
+    sound:
+      path: /Audio/Effects/shuttle_thruster.ogg
+  - type: BattleShuttleEngineTrail
+  - type: Strap
+    enabled: false
+    buckleOffsets:
+    - 0, 0.8
+    size: 100
+  - type: Appearance
+  - type: ContainerFill
+    containers:
+      mech-battery-slot:
+      - PowerCageMedium
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: Objects/Specific/Mech/mecha.rsi
+    scale: 1.08, 1.08
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - FootstepSound
+    - BattleShuttle
+
+# region Classes
+- type: entity
+  id: LightBattleShuttle
+  parent: BaseBattleShuttle
+  abstract: true
+  name: light battle shuttle
+  components:
+  - type: BattleShuttle
+    baseFixtureDensity: 80
+    classTags:
+    - BattleShuttle
+    - BattleShuttleLight
+  - type: Mech
+    maxEquipmentAmount: 4
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1.2
+    baseSprintSpeed: 4.5
+    baseWeightlessModifier: 2.2
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      250: Critical
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.0,-1.0,1.0,0.95"
+        density: 80
+        mask:
+        - FlyingMobMask
+        layer:
+        - FlyingMobLayer
+
+- type: entity
+  id: MediumBattleShuttle
+  parent: BaseBattleShuttle
+  abstract: true
+  name: medium battle shuttle
+  components:
+  - type: BattleShuttle
+    baseFixtureDensity: 100
+    classTags:
+    - BattleShuttle
+    - BattleShuttleMedium
+  - type: Mech
+    maxEquipmentAmount: 6
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1
+    baseSprintSpeed: 4
+    baseWeightlessModifier: 2
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      350: Critical
+
+- type: entity
+  id: HeavyBattleShuttle
+  parent: BaseBattleShuttle
+  abstract: true
+  name: heavy battle shuttle
+  components:
+  - type: BattleShuttle
+    baseFixtureDensity: 140
+    classTags:
+    - BattleShuttle
+    - BattleShuttleHeavy
+  - type: Mech
+    maxEquipmentAmount: 8
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 0.85
+    baseSprintSpeed: 3.4
+    baseWeightlessModifier: 1.7
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      450: Critical
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.2,-1.2,1.2,1.1"
+        density: 140
+        mask:
+        - FlyingMobMask
+        layer:
+        - FlyingMobLayer
+
+- type: entity
+  id: ExperimentalBattleShuttle
+  parent: BaseBattleShuttle
+  abstract: true
+  name: experimental battle shuttle
+  components:
+  - type: BattleShuttle
+    baseFixtureDensity: 90
+    classTags:
+    - BattleShuttle
+    - BattleShuttleExperimental
+  - type: Mech
+    maxEquipmentAmount: 7
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1.1
+    baseSprintSpeed: 4.8
+    baseWeightlessModifier: 2.4
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      320: Critical
+
+- type: entity
+  id: CivilianBattleShuttle
+  parent: LightBattleShuttle
+  abstract: true
+  name: civilian battle shuttle
+  components:
+  - type: BattleShuttle
+    baseFixtureDensity: 80
+    classTags:
+    - BattleShuttle
+    - BattleShuttleLight
+    - BattleShuttleCivilian
+  - type: Mech
+    maxEquipmentAmount: 4
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Critical

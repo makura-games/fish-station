@@ -316,3 +316,8 @@ Resources/MapImages
 # Sunrise added start - не отслеживаем локально сгенерированные настройки шардов тестов
 .integration-filters/
 # Sunrise added end
+
+# Local SS13 research checkouts
+.tmp-ss13-research/
+.agents-temp-*.md
+

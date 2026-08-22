@@ -1,0 +1,24 @@
+# Базовые Fish-компоненты для всех мехов (поверх vanilla BaseMech).
+
+- type: entity
+  id: FishMechCore
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: MechInternalDamage
+  - type: MechFacingArmor
+  - type: MechDualEquipment
+  - type: MechDnaLock
+  - type: MechMaintenance
+    maintAccess: true
+  - type: MechCabinAtmos
+  - type: MechRadio
+  - type: MechTrackingBeacon
+  - type: MechWreckageSpawner
+  - type: IntrinsicRadioReceiver
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Common
+  - type: ActiveRadio
+    channels:
+    - Common

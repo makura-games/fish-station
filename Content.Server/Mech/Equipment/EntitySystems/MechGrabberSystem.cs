@@ -4,6 +4,7 @@ using Content.Server.Mech.Equipment.Components;
 using Content.Server.Mech.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Interaction;
+using Content.Shared._Fish.Mechs.Components;
 using Content.Shared.Mech;
 using Content.Shared.Mech.Components;
 using Content.Shared.Mech.Equipment.Components;
@@ -46,6 +47,11 @@ public sealed class MechGrabberSystem : EntitySystem
 
     private void OnGrabberMessage(EntityUid uid, MechGrabberComponent component, MechEquipmentUiMessageRelayEvent args)
     {
+        // Fish edit start - sleeper обрабатывает eject/inject сам
+        if (HasComp<MechMedicalSleeperComponent>(uid))
+            return;
+        // Fish edit end
+
         if (args.Message is not MechGrabberEjectMessage msg)
             return;
 
@@ -115,6 +121,11 @@ public sealed class MechGrabberSystem : EntitySystem
 
     private void OnUiStateReady(EntityUid uid, MechGrabberComponent component, MechEquipmentUiStateReadyEvent args)
     {
+        // Fish edit start - UI sleeper заменяет grabber fragment
+        if (HasComp<MechMedicalSleeperComponent>(uid))
+            return;
+        // Fish edit end
+
         var state = new MechGrabberUiState
         {
             Contents = GetNetEntityList(component.ItemContainer.ContainedEntities.ToList()),
@@ -132,12 +143,20 @@ public sealed class MechGrabberSystem : EntitySystem
         if (args.Target == args.User || component.DoAfter != null)
             return;
 
+        // Fish edit start - sleeper может загружать пациентов (MobState)
+        var allowMobs = HasComp<MechMedicalSleeperComponent>(uid);
         if (TryComp<PhysicsComponent>(target, out var physics) && physics.BodyType == BodyType.Static ||
             HasComp<WallMountComponent>(target) ||
-            HasComp<MobStateComponent>(target))
+            (!allowMobs && HasComp<MobStateComponent>(target)))
         {
             return;
         }
+        // Fish edit end
+
+        // Fish edit start - sleeper грузит только мобов
+        if (allowMobs && !HasComp<MobStateComponent>(target))
+            return;
+        // Fish edit end
 
         if (Transform(target).Anchored)
             return;

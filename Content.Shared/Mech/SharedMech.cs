@@ -69,3 +69,9 @@ public sealed partial class MechEjectPilotEvent : InstantActionEvent
 public sealed partial class MechToggleLightsEvent : InstantActionEvent
 {
 }
+
+/// <summary>
+/// Fish: пилот готов — выдача fork-action'ов (abilities/DNA/dual-hand).
+/// </summary>
+[ByRefEvent]
+public readonly record struct MechPilotReadyEvent(EntityUid Pilot);

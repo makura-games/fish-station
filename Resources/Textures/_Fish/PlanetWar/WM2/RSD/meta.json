@@ -1,5 +1,8 @@
 {
-    "size": {
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Fish Station contributors (kotainfelix et al.)",
+  "size": {
         "x": 32,
         "y": 32
     },

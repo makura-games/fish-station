@@ -35,6 +35,13 @@
                        HorizontalAlignment="Left"
                        Access="Public"
                        HorizontalExpand="True" />
+                <!-- Fish edit start - internal damage / modes status -->
+                <Label Name="FishStatusDisplay"
+                       HorizontalAlignment="Left"
+                       Access="Public"
+                       HorizontalExpand="True"
+                       Margin="0 4 0 0" />
+                <!-- Fish edit end -->
             </BoxContainer>
             <SpriteView Name="MechView"
                         Margin="10 0 0 0"

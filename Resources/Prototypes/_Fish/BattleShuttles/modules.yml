@@ -1,0 +1,537 @@
+# region Base equipment
+- type: entity
+  id: BaseBattleShuttleModule
+  parent: BaseMechEquipment
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+  - type: BattleShuttleModule
+
+- type: entity
+  id: BaseBattleShuttleWeapon
+  parent: [BaseMechWeaponRange, BaseBattleShuttleModule]
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleWeapon
+
+# region Weapons
+- type: entity
+  id: BattleShuttleWeaponTaser
+  name: shuttle taser
+  description: A single-shot disabler mount for battle shuttles.
+  parent: BaseBattleShuttleWeapon
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_taser
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: weapon
+    cost: 500
+    massModifier: 1.05
+  - type: Gun
+    fireRate: 1.75
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
+  - type: BatteryAmmoProvider
+    proto: BulletDisabler
+    fireCost: 40
+  - type: AmmoCounter
+
+- type: entity
+  id: BattleShuttleWeaponBurstTaser
+  name: shuttle burst taser
+  description: A burst-fire disabler mount for battle shuttles.
+  parent: BaseBattleShuttleWeapon
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_taser
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: weapon
+    cost: 750
+    massModifier: 1.08
+  - type: Gun
+    fireRate: 2
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
+  - type: BatteryAmmoProvider
+    proto: BulletDisablerSmgSpread
+    fireCost: 60
+  - type: AmmoCounter
+
+- type: entity
+  id: BattleShuttleWeaponLaser
+  name: shuttle laser
+  description: A lightweight laser mount for battle shuttles.
+  parent: BaseBattleShuttleWeapon
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_laser
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: weapon
+    cost: 1000
+    massModifier: 1.1
+  - type: Gun
+    fireRate: 2
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser.ogg
+  - type: BatteryAmmoProvider
+    proto: RedLaser
+    fireCost: 25
+  - type: AmmoCounter
+
+- type: entity
+  id: BattleShuttleWeaponSolaris
+  name: shuttle solaris laser
+  description: A heavy laser cannon mount for battle shuttles.
+  parent: BaseBattleShuttleWeapon
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_laser
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: weapon
+    cost: 2000
+    massModifier: 1.15
+    compatibleShuttleTags:
+    - BattleShuttleHeavy
+    - BattleShuttleExperimental
+  - type: Gun
+    fireRate: 1.5
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser.ogg
+  - type: BatteryAmmoProvider
+    proto: RedHeavyLaser
+    fireCost: 35
+  - type: AmmoCounter
+
+- type: entity
+  id: BattleShuttleWeaponMiningBasic
+  name: shuttle mining drill
+  description: A basic kinetic mining mount for industrial shuttles.
+  parent: BaseBattleShuttleWeapon
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_drill
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: weapon
+    cost: 600
+    massModifier: 1.05
+    compatibleShuttleTags:
+    - BattleShuttleMedium
+    - BattleShuttleHeavy
+  - type: Gun
+    fireRate: 1.5
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/kinetic_accel.ogg
+  - type: BatteryAmmoProvider
+    proto: BulletKinetic
+    fireCost: 30
+  - type: AmmoCounter
+
+- type: entity
+  id: BattleShuttleWeaponMiningIndustrial
+  name: shuttle industrial mining laser
+  description: An industrial mining laser mount for battle shuttles.
+  parent: BaseBattleShuttleWeapon
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_drill
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: weapon
+    cost: 1200
+    massModifier: 1.12
+    compatibleShuttleTags:
+    - BattleShuttleMedium
+    - BattleShuttleHeavy
+  - type: Gun
+    fireRate: 1.25
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/kinetic_accel.ogg
+  - type: BatteryAmmoProvider
+    proto: BulletKineticShuttle
+    fireCost: 45
+  - type: AmmoCounter
+
+# region Misc
+- type: entity
+  id: BattleShuttleMiscTracker
+  name: shuttle tracker
+  description: A passive tracking module for battle shuttles.
+  parent: BaseBattleShuttleModule
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_analyzer
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: misc
+    cost: 200
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleMisc
+  - type: RadarBlip
+    color: "#66CCFF"
+    scale: 0.8
+    shape: Circle
+    requireInSpace: false
+
+# region Cargo
+- type: entity
+  id: BattleShuttleCargoOre
+  name: shuttle ore hopper
+  description: Collects nearby ore while the shuttle moves.
+  parent: BaseBattleShuttleModule
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_clamp
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: cargo
+    cost: 800
+    massModifier: 1.1
+    compatibleShuttleTags:
+    - BattleShuttleMedium
+    - BattleShuttleHeavy
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleCargo
+  - type: BattleShuttleOreScoop
+    range: 1.5
+    scoopTag: Ore
+  - type: Storage
+    grid:
+    - 0,0,7,3
+    maxItemSize: Normal
+    whitelist:
+      tags:
+      - Ore
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+
+- type: entity
+  id: BattleShuttleCargoCrate
+  name: shuttle cargo rack
+  description: External cargo rack for a single crate-sized load.
+  parent: BaseBattleShuttleModule
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_clamp
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: cargo
+    cost: 400
+    massModifier: 1.05
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleCargo
+  - type: Storage
+    grid:
+    - 0,0,9,5
+    maxItemSize: Large
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+
+# region Sec cargo
+- type: entity
+  id: BattleShuttleSecCargoChair
+  name: shuttle passenger seat
+  description: Adds a passenger strap point to the shuttle exterior.
+  parent: BaseBattleShuttleModule
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_bin
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: secCargo
+    occupantMod: 1
+    cost: 300
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleSecCargo
+
+- type: entity
+  id: BattleShuttleSecCargoLootBox
+  name: shuttle loot locker
+  description: A small external locker for security shuttles.
+  parent: BaseBattleShuttleModule
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_clamp
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: secCargo
+    cost: 350
+    massModifier: 1.05
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleSecCargo
+  - type: Storage
+    grid:
+    - 0,0,5,3
+    maxItemSize: Normal
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+
+# region Lock
+- type: entity
+  id: BattleShuttleLockKeyed
+  name: shuttle lock
+  description: A keyed lock for battle shuttle hatches.
+  parent: BaseBattleShuttleModule
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_analyzer
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: lock
+    cost: 250
+  - type: BattleShuttleLock
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleLock
+
+- type: entity
+  id: BattleShuttleKey
+  name: shuttle key
+  description: A small key for battle shuttle locks. Blank keys can be imprinted on an uninstalled lock.
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_analyzer
+  - type: Item
+    size: Tiny
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleKey
+
+- type: entity
+  id: BattleShuttleLockBuster
+  name: shuttle lock buster
+  description: A brute-force tool for breaking shuttle locks when enabled.
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_analyzer
+  - type: Item
+    size: Small
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleLockBuster
+    enabled: false
+  - type: ItemToggle
+    soundActivate:
+      path: /Audio/Machines/machine_switch.ogg
+    soundDeactivate:
+      path: /Audio/Machines/machine_switch.ogg
+
+# region Locator
+- type: entity
+  id: BattleShuttleLocatorBasic
+  name: shuttle locator
+  description: Basic navigation beacon for battle shuttles.
+  parent: BaseBattleShuttleModule
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: mecha_analyzer
+  - type: Item
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+  - type: BattleShuttleModule
+    slot: locator
+    cost: 150
+  - type: Tag
+    tags:
+    - BattleShuttleModule
+    - BattleShuttleLocator
+  - type: NavMapBeacon
+    text: shuttle
+    color: "#FFD700"
+
+- type: entity
+  id: BattleShuttleLocatorAdvanced
+  name: advanced shuttle locator
+  description: Enhanced navigation beacon with extended range.
+  parent: BattleShuttleLocatorBasic
+  components:
+  - type: BattleShuttleModule
+    slot: locator
+    cost: 400
+  - type: NavMapBeacon
+    text: shuttle+
+    color: "#FF8800"
+
+# region Parts & misc items
+- type: entity
+  id: BattleShuttleCore
+  name: battle shuttle core
+  description: The fusion core of a battle shuttle.
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: tesla
+  - type: Item
+    size: Normal
+  - type: Tag
+    tags:
+    - BattleShuttleCore
+
+- type: entity
+  id: BattleShuttleArmorCivilian
+  name: civilian shuttle armor
+  description: Lightweight armor plating for civilian battle shuttles.
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: repair_droid
+  - type: Item
+    size: Normal
+  - type: Tag
+    tags:
+    - BattleShuttleArmor
+
+- type: entity
+  id: BattleShuttleFramePartPort
+  name: shuttle frame part (port)
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: repair_droid
+  - type: Item
+    size: Normal
+  - type: Tag
+    tags:
+    - BattleShuttleFrame
+
+- type: entity
+  id: BattleShuttleFramePartAS
+  name: shuttle frame part (AS)
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: repair_droid
+  - type: Item
+    size: Normal
+  - type: Tag
+    tags:
+    - BattleShuttleFrame
+
+- type: entity
+  id: BattleShuttleFramePartFP
+  name: shuttle frame part (FP)
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: repair_droid
+  - type: Item
+    size: Normal
+  - type: Tag
+    tags:
+    - BattleShuttleFrame
+
+- type: entity
+  id: BattleShuttleFramePartFS
+  name: shuttle frame part (FS)
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Mech/mecha_equipment.rsi
+    state: repair_droid
+  - type: Item
+    size: Normal
+  - type: Tag
+    tags:
+    - BattleShuttleFrame
+
+- type: entity
+  id: BattleShuttleCircuitboard
+  name: battle shuttle control board
+  description: Circuit board required to finish a battle shuttle assembly.
+  parent: BaseItem
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/module.rsi
+    state: mainboard
+  - type: Item
+    size: Small
+  - type: Tag
+    tags:
+    - BattleShuttleCircuitboard

@@ -15,3 +15,55 @@
 
 - type: Tag
   id: CentCommRapier
+
+- type: Tag
+  id: BattleShuttle
+
+- type: Tag
+  id: BattleShuttleLight
+
+- type: Tag
+  id: BattleShuttleMedium
+
+- type: Tag
+  id: BattleShuttleHeavy
+
+- type: Tag
+  id: BattleShuttleExperimental
+
+- type: Tag
+  id: BattleShuttleCivilian
+
+- type: Tag
+  id: BattleShuttleModule
+
+- type: Tag
+  id: BattleShuttleWeapon
+
+- type: Tag
+  id: BattleShuttleCargo
+
+- type: Tag
+  id: BattleShuttleSecCargo
+
+- type: Tag
+  id: BattleShuttleMisc
+
+- type: Tag
+  id: BattleShuttleLock
+
+- type: Tag
+  id: BattleShuttleLocator
+
+- type: Tag
+  id: BattleShuttleCore
+
+- type: Tag
+  id: BattleShuttleArmor
+
+- type: Tag
+  id: BattleShuttleFrame
+
+- type: Tag
+  id: BattleShuttleCircuitboard
+

@@ -90,6 +90,9 @@ public sealed partial class MechSystem : SharedMechSystem
         #region Equipment UI message relays
         SubscribeLocalEvent<MechComponent, MechGrabberEjectMessage>(ReceiveEquipmentUiMesssages);
         SubscribeLocalEvent<MechComponent, MechSoundboardPlayMessage>(ReceiveEquipmentUiMesssages);
+        // Fish edit start - UI sleeper: инъекция реагентов
+        SubscribeLocalEvent<MechComponent, Content.Shared._Fish.Mechs.MechMedicalSleeperInjectMessage>(ReceiveEquipmentUiMesssages);
+        // Fish edit end
         #endregion
     }
 
@@ -437,7 +440,15 @@ public sealed partial class MechSystem : SharedMechSystem
         }
 
         if (mech.Airtight)
+        {
+            // Fish edit start - внутренний баллон (MechCabinAtmos)
+            if (TryComp(component.Mech, out Content.Shared._Fish.Mechs.Components.MechCabinAtmosComponent? cabin) &&
+                !cabin.UseInternalTank)
+                return;
+
             args.Gas = mechAir.Air;
+            // Fish edit end
+        }
     }
 
     private void OnExhale(EntityUid uid, MechPilotComponent component, ExhaleLocationEvent args)
@@ -449,7 +460,15 @@ public sealed partial class MechSystem : SharedMechSystem
         }
 
         if (mech.Airtight)
+        {
+            // Fish edit start - внутренний баллон (MechCabinAtmos)
+            if (TryComp(component.Mech, out Content.Shared._Fish.Mechs.Components.MechCabinAtmosComponent? cabin) &&
+                !cabin.UseInternalTank)
+                return;
+
             args.Gas = mechAir.Air;
+            // Fish edit end
+        }
     }
 
     private void OnExpose(EntityUid uid, MechPilotComponent component, ref AtmosExposedGetAirEvent args)
@@ -462,6 +481,16 @@ public sealed partial class MechSystem : SharedMechSystem
 
         if (mech.Airtight && TryComp(component.Mech, out MechAirComponent? air))
         {
+            // Fish edit start - внутренний баллон
+            if (TryComp(component.Mech, out Content.Shared._Fish.Mechs.Components.MechCabinAtmosComponent? cabin) &&
+                !cabin.UseInternalTank)
+            {
+                args.Gas = _atmosphere.GetContainingMixture(component.Mech, excite: args.Excite);
+                args.Handled = true;
+                return;
+            }
+            // Fish edit end
+
             args.Handled = true;
             args.Gas = air.Air;
             return;

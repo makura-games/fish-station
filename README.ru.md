@@ -74,3 +74,15 @@
 
 >Весь код а так-же ассеты MakuraGames Studio, защищены лицензией [CLA](https://github.com/makura-games/sunrise-station/blob/master/CLA.txt).
 </details>
+
+<details>
+<summary><a href="#"><img src="https://img.shields.io/badge/licence-Fish_MIT%2FCC--BY--SA-blue?style=for-the-badge" alt="Fish MIT / CC-BY-SA"></a></summary>
+
+>Оригинальный контент Fish Station в деревьях `_Fish` лицензирован отдельно, чтобы автор и получатели могли свободно его использовать:
+>
+> - код / прототипы / локали / документация — [MIT](LICENSE-FISH-MIT.TXT)
+> - оригинальные ассеты — [CC-BY-SA-3.0](LICENSE-FISH-ASSETS.TXT)
+> - обзор — [LICENSE-FISH.TXT](LICENSE-FISH.TXT), документация — [Resources/Docs/_Fish/LICENSE.md](Resources/Docs/_Fish/LICENSE.md)
+>
+> Сторонние ассеты сохраняют лицензию из `meta.json` / `attributions.yml`.
+</details>

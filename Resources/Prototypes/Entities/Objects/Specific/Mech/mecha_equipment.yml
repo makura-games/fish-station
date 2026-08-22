@@ -46,7 +46,7 @@
   - type: Tag
     tags:
     - SmallMech
-# TODO: Make medical mech with equipment.
+# Fish edit - medical mech: see Prototypes/_Fish/Mechs (Odysseus + MedicalMechEquipment)
 
 - type: entity
   parent: BaseItem
@@ -59,6 +59,9 @@
     sprite: Objects/Specific/Mech/mecha_equipment.rsi
     size: Ginormous
   - type: MechEquipment
+  # Fish edit start - gate установки при maintenance (отдельный comp от MechEquipment)
+  - type: MechEquipmentInstallGate
+  # Fish edit end
   - type: GuideHelp
     guides:
     - Robotics

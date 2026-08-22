@@ -124,8 +124,7 @@ public sealed partial class MechComponent : Component
     /// Whether or not the mech is airtight.
     /// </summary>
     /// <remarks>
-    /// This needs to be redone
-    /// when mech internals are added
+    /// Fish: cabin air через MechAir (+ будущий MechCabinAtmos); флаг — gate для inhale/exhale.
     /// </remarks>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public bool Airtight;

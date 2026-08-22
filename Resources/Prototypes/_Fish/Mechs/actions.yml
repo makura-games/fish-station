@@ -1,0 +1,221 @@
+- type: entity
+  abstract: true
+  parent: BaseMechAction
+  id: BaseMechFishAction
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleOverload
+  name: Leg overload
+  description: Overload leg actuators for a speed boost at the cost of power and hull stress.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_overload_off
+    iconOn:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_overload_on
+  - type: InstantAction
+    event: !type:MechToggleOverloadEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleDefence
+  name: Defence mode
+  description: Anchor the exosuit and raise deflection at the cost of mobility.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_defense_mode_off
+    iconOn:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_defense_mode_on
+  - type: InstantAction
+    event: !type:MechToggleDefenceEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleThrusters
+  name: Thrusters
+  description: Toggle maneuvering thrusters for propulsion in zero-g.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_thrusters_off
+    iconOn:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_thrusters_on
+  - type: InstantAction
+    event: !type:MechToggleThrustersEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechLaunchSmoke
+  name: Smoke screen
+  description: Deploy a smoke screen from the exosuit.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_smoke
+  - type: InstantAction
+    event: !type:MechLaunchSmokeEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleStrafe
+  name: Strafe
+  description: Strafe without turning the chassis.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: strafe
+  - type: InstantAction
+    event: !type:MechToggleStrafeEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechSwapEquipmentHands
+  name: Swap equipment
+  description: Swap primary and secondary selected equipment.
+  components:
+  - type: Action
+    useDelay: 0.25
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_cycle_equip_on
+  - type: InstantAction
+    event: !type:MechSwapEquipmentHandsEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechSetDnaLock
+  name: Set DNA lock
+  description: Lock the exosuit to your DNA.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_internals_on
+  - type: InstantAction
+    event: !type:MechSetDnaLockEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechClearDnaLock
+  name: Clear DNA lock
+  description: Remove the DNA lock from the exosuit.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_internals_off
+  - type: InstantAction
+    event: !type:MechClearDnaLockEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleInternals
+  name: Internals
+  description: Toggle cabin internal air tank.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_internals_off
+    iconOn:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_internals_on
+  - type: InstantAction
+    event: !type:MechToggleInternalsEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleRadioMic
+  name: Radio microphone
+  description: Toggle the exosuit radio microphone.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_view_stats
+  - type: InstantAction
+    event: !type:MechToggleRadioMicEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleRadioSpeaker
+  name: Radio speaker
+  description: Toggle the exosuit radio speaker.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_view_stats
+  - type: InstantAction
+    event: !type:MechToggleRadioSpeakerEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechToggleZoom
+  name: Zoom
+  description: Magnify view and lock movement.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_zoom_off
+    iconOn:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_zoom_on
+  - type: InstantAction
+    event: !type:MechToggleZoomEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechTogglePhasing
+  name: Phase
+  description: Phase through obstacles at high energy cost.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_phasing_off
+    iconOn:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_phasing_on
+  - type: InstantAction
+    event: !type:MechTogglePhasingEvent
+
+- type: entity
+  parent: BaseMechFishAction
+  id: ActionMechCycleDamtype
+  name: Cycle damage type
+  description: Cycle melee damage type.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: Interface/Actions/actions_mecha.rsi
+      state: mech_damtype_brute
+  - type: InstantAction
+    event: !type:MechCycleDamtypeEvent

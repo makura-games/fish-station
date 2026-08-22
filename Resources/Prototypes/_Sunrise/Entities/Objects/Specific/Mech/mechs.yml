@@ -744,6 +744,10 @@
     - DoorBumpOpener
     - FootstepSound
     - Phazon
+  # Fish edit start - фазирование / цикл damtype Phazon
+  - type: MechPhasing
+  - type: MechDamtypeCycle
+  # Fish edit end
 
 - type: entity
   id: MechPhazonBattery

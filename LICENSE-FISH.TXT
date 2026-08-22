@@ -1,0 +1,59 @@
+================================================================================
+FISH STATION — лицензия оригинального контента `_Fish`
+================================================================================
+
+RU
+--
+Этот файл покрывает **оригинальный** контент Fish Station в деревьях `_Fish`
+(код, прототипы, локали, документация и ассеты, созданные для Fish), если в
+конкретном файле / `meta.json` / `attributions.yml` не указано иное.
+
+Цели лицензирования:
+1. Автор (kotainfelix и участники Fish) сохраняет право сам использовать,
+   изменять и распространять свой контент.
+2. Любой, кому этот контент передан (включая репозиторий / PR / сервер),
+   получает те же права на использование на условиях ниже.
+
+Код, YAML, FTL, C#, документация (`*.cs`, `*.yml`, `*.ftl`, `*.md` и т.п.)
+  → MIT License
+  → полный текст: LICENSE-FISH-MIT.TXT
+
+Оригинальные игровые ассеты (спрайты, звуки и пр., без чужого copyright)
+  → Creative Commons Attribution-ShareAlike 3.0 Unported (CC-BY-SA-3.0)
+  → https://creativecommons.org/licenses/by-sa/3.0/
+  → краткий текст и условия: LICENSE-FISH-ASSETS.TXT
+
+Сторонний контент (портированные спрайты/звуки и т.д.) остаётся на условиях
+исходной лицензии, указанной в `meta.json`, `attributions.yml` или рядом
+лежащем license-файле. Его нельзя считать «оригинальным Fish MIT/CC-BY-SA».
+
+Корневой LICENSE.TXT репозитория (Sunrise) и CLA Sunrise этим файлом
+не отменяются: они описывают проект в целом. Данный файл явно фиксирует
+условия именно для оригинального `_Fish`-контента.
+
+Copyright (c) 2026 kotainfelix and Fish Station contributors
+
+EN
+--
+This notice covers **original** Fish Station content under `_Fish` trees
+(code, prototypes, locales, docs, and assets created for Fish), unless a
+specific file / `meta.json` / `attributions.yml` says otherwise.
+
+Licensing goals:
+1. The author (kotainfelix and Fish contributors) may always use, modify,
+   and redistribute their own content.
+2. Anyone who receives this content (repo / PR / server) gets the same
+   usage rights under the terms below.
+
+Code, YAML, FTL, C#, documentation
+  → MIT License — see LICENSE-FISH-MIT.TXT
+
+Original game assets (sprites, audio, etc. without third-party copyright)
+  → CC-BY-SA-3.0 — https://creativecommons.org/licenses/by-sa/3.0/
+  → see LICENSE-FISH-ASSETS.TXT
+
+Third-party material keeps its original license as stated in metadata.
+The repository root LICENSE.TXT (Sunrise) / CLA is not revoked by this file;
+this file only clarifies original `_Fish` content terms.
+
+Copyright (c) 2026 kotainfelix and Fish Station contributors
