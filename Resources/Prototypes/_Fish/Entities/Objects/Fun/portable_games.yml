@@ -1,0 +1,74 @@
+- type: entity
+  parent: [BaseItem, BaseHandheldComputer]
+  id: PortableBlockGame
+  name: portable block game
+  description: A pocket console with a strangely familiar falling-blocks game. Takes a small power cell.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Fun/portable_games.rsi
+    state: portableconsole
+  - type: Item
+    size: Small
+  - type: BlockGameArcade
+  - type: ActivatableUI
+    key: enum.BlockGameUiKey.Key
+    inHandsOnly: true
+    requireActiveHand: false
+  - type: UserInterface
+    interfaces:
+      enum.BlockGameUiKey.Key:
+        type: BlockGameBoundUserInterface
+  - type: PowerCellDraw
+    drawRate: 2
+    useCharge: 0
+
+- type: entity
+  parent: [BaseItem, BaseHandheldComputer]
+  id: PortableMinesweeper
+  name: portable minesweeper
+  description: A pocket console with a minefield on the screen. Somehow more relaxing than the real thing.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Fun/portable_games.rsi
+    state: portableconsole
+  - type: Item
+    size: Small
+  - type: MinesweeperArcade
+  - type: ActivatableUI
+    key: enum.MinesweeperUiKey.Key
+    inHandsOnly: true
+    requireActiveHand: false
+  - type: UserInterface
+    interfaces:
+      enum.MinesweeperUiKey.Key:
+        type: MinesweeperBoundUserInterface
+  - type: PowerCellDraw
+    drawRate: 2
+    useCharge: 0
+
+- type: entity
+  parent: [BaseItem, BaseHandheldComputer]
+  id: PortableSpaceVillain
+  name: portable space villain arcade
+  description: A pocket console. The villain is smaller but no less evil.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Fun/portable_games.rsi
+    state: portableconsole
+  - type: Item
+    size: Small
+  - type: SpaceVillainArcade
+  - type: ApcPowerReceiver
+    needsPower: false
+    powerLoad: 0
+  - type: ActivatableUI
+    key: enum.SpaceVillainArcadeUiKey.Key
+    inHandsOnly: true
+    requireActiveHand: false
+  - type: UserInterface
+    interfaces:
+      enum.SpaceVillainArcadeUiKey.Key:
+        type: SpaceVillainArcadeBoundUserInterface
+  - type: PowerCellDraw
+    drawRate: 2
+    useCharge: 0

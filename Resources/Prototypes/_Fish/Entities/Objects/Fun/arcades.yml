@@ -1,0 +1,37 @@
+- type: entity
+  id: MinesweeperArcade
+  description: An arcade cabinet with a strangely familiar game.
+  name: NT Minesweeper game
+  parent: ArcadeBase
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/arcade.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: arcade
+    - map: ["computerLayerScreen"]
+      state: screen_blockgame
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: panel
+      visible: false
+  - type: MinesweeperArcade
+  - type: ActivatableUI
+    key: enum.MinesweeperUiKey.Key
+  - type: ActivatableUIRequiresPower
+  - type: StationAiWhitelist
+  - type: UserInterface
+    interfaces:
+      enum.MinesweeperUiKey.Key:
+        type: MinesweeperBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: MinesweeperArcadeComputerCircuitboard
+  - type: Vocalizer
+    minVocalizeInterval: 1m # Arcades are noisy
+    maxVocalizeInterval: 4m
+    hideChat: true
+  - type: DatasetVocalizer
+    dataset: BlockGameAds
+  - type: SpeakOnUIClosed
+    pack: BlockGameGoodbyes

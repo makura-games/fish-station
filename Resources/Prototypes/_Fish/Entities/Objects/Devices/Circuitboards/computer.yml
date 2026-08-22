@@ -1,0 +1,8 @@
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: MinesweeperArcadeComputerCircuitboard
+  name: minesweeper game arcade board
+  description: A computer printed circuit board for a minesweeper game arcade cabinet.
+  components:
+    - type: ComputerBoard
+      prototype: MinesweeperArcade

@@ -13,3 +13,4 @@
       children:
       - id: BlockGameArcade
       - id: SpaceVillainArcadeFilled
+      - id: MinesweeperArcade # Fish-edit
