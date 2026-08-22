@@ -1,0 +1,16 @@
+# Fish-edit: уведомление слушателям при докладе с маски СБ
+- type: chatNotification
+  id: SecurityCrimeReport
+  message: security-crime-report-chat-notification
+  color: "#FF6B6B"
+  sound: /Audio/Misc/notice2.ogg
+  nextDelay: 3
+  notifyBySource: true
+
+- type: chatNotification
+  id: SecurityCrimeReportUrgent
+  message: security-crime-report-chat-notification-urgent
+  color: "#FF2222"
+  sound: /Audio/Effects/alert.ogg
+  nextDelay: 3
+  notifyBySource: true

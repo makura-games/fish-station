@@ -1,0 +1,13 @@
+# Fish-edit: доклад статьи с маски СБ. Cooldown 30с только после успешной отправки.
+- type: entity
+  id: ActionSecurityCrimeReport
+  name: Report article
+  description: Pick a Space Law article and send it on the security channel.
+  components:
+  - type: Action
+    icon:
+      sprite: Clothing/Mask/gassecurity.rsi
+      state: icon
+    itemIconStyle: BigItem
+  - type: InstantAction
+    event: !type:OpenSecurityCrimeReportEvent
