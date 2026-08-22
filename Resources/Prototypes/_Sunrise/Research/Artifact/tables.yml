@@ -71,6 +71,41 @@
       weight: 0.05
     - id: XenoArtifactEffectCreationGasHelium
       weight: 0.6
+    # Fish-edit
+    - id: XenoArtifactEffectCreationGasZenthium
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasKrypium
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasPrallium
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasChaoson
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasGarodin
+      weight: 0.5
+    - id: XenoArtifactEffectCreationGasBaratrium
+      weight: 0.4
+    - id: XenoArtifactEffectCreationGasEthylium
+      weight: 0.4
+    - id: XenoArtifactEffectCreationGasZimmera
+      weight: 0.3
+    - id: XenoArtifactEffectCreationGasFramel
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasKlemennon
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasAxoNoblium
+      weight: 0.1
+    - id: XenoArtifactEffectCreationGasProtoUltimium
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasZimmerousFrezonite
+      weight: 0.2
+    - id: XenoArtifactEffectCreationGasPermafrost
+      weight: 0.05
+    - id: XenoArtifactEffectCreationGasRiminon
+      weight: 0.1
+    - id: XenoArtifactEffectCreationGasAntiUltimium
+      weight: 0.05
+    - id: XenoArtifactEffectCreationGasUltimium
+      weight: 0.02
       
 
 - type: entityTable

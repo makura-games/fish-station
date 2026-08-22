@@ -28,8 +28,8 @@ reagent-desc-framel = Восстанавливающий газ. Использ�
 reagent-name-klemennon = Клеменнон
 reagent-desc-klemennon = Клеменнон является предсшественником электровея. Он неспособен заряжать технику, но создаёт сильное статическое напряжение внутри живых организмов.
 
-reagent-name-protoultimium = Прото-Ультимиум
-reagent-desc-protoultimium = Газ создавался как реагент для последующего синтеза ультимиума - газа военного назначения. Сильно ядовит.
+reagent-name-proto-ultimium = Прото-Ультимиум
+reagent-desc-proto-ultimium = Газ создавался как реагент для последующего синтеза ультимиума - газа военного назначения. Сильно ядовит.
 
 reagent-name-zimmerousfrezonite = Фрезонит Циммеры
 reagent-desc-zimmerousfrezonite = Следующая ступень в развитии газов гипер-низких температур после фрезона.
@@ -59,7 +59,7 @@ gases-ethylium = Этилиум
 gases-zimmera = Циммера
 gases-framel = Фрамель
 gases-klemennon = Клеменнон
-gases-protoultimium = Прото-Ультимиум
+gases-proto-ultimium = Прото-Ультимиум
 gases-zimmerousfrezonite = Фрезонит Циммеры
 gases-anti-ultimium = Анти-Ультимиум
 gases-ultimium = Ультимиум

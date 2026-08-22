@@ -1,0 +1,152 @@
+- type: entity
+  id: XenoArtifactEffectCreationGasZenthium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Zenthium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasKrypium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Krypium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasPrallium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Prallium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasChaoson
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Chaoson: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasGarodin
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Garodin: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasBaratrium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Baratrium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasEthylium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Ethylium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasZimmera
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Zimmera: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasFramel
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Framel: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasKlemennon
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Klemennon: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasProtoUltimium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      ProtoUltimium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasZimmerousFrezonite
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      ZimmerousFrezonite: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasAntiUltimium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      AntiUltimium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasUltimium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Ultimium: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasPermafrost
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Permafrost: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasRiminon
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      Riminon: 300
+
+- type: entity
+  id: XenoArtifactEffectCreationGasAxoNoblium
+  parent: BaseXenoArtifactEffect
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: XAECreateGas
+    gases:
+      AxoNoblium: 300

@@ -19,7 +19,7 @@ public sealed partial class ChaosonSynthesisReaction : IGasReactionEffect
         var temperature = mixture.Temperature;
         var pressure = mixture.Pressure;
 
-        if (temperature > 50f || pressure > 1500f)
+        if (temperature > 50f || pressure < 1500f)
             return ReactionResult.NoReaction;
 
         var n2o = mixture.GetMoles(Gas.NitrousOxide);

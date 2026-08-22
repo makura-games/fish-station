@@ -32,7 +32,7 @@ public sealed partial class PermafrostCoolantReaction : IGasReactionEffect
         }
 
         // Охлаждение
-        var energyAbsorbed = permafrost * 100f * coolingPower;
+        var energyAbsorbed = permafrost * 500f * coolingPower;
 
         var oldHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);
         var newHeatCapacity = atmosphereSystem.GetHeatCapacity(mixture, true);

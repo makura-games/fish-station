@@ -1,0 +1,106 @@
+- type: entity
+  parent: GasTrinaryBase
+  id: GasRangeTemperatureFilter
+  name: gas range temperature filter
+  description: Filters gas based on a temperature range.
+  placement:
+    mode: SnapgridCenter
+  components:
+    - type: SubFloorHide
+      visibleLayers:
+        - enum.SubfloorLayers.FirstLayer
+    - type: Sprite
+      sprite: Structures/Piping/Atmospherics/gasfilter.rsi
+      layers:
+        - sprite: Structures/Piping/Atmospherics/pipe.rsi
+          state: pipeTrinaryConnectors
+          map: [ "enum.PipeVisualLayers.Pipe" ]
+        - state: gasFilter
+          map: [ "enum.SubfloorLayers.FirstLayer", "enabled" ]
+    - type: Appearance
+    - type: GenericVisualizer
+      visuals:
+        enum.FilterVisuals.Enabled:
+          enabled:
+            True: { state: gasFilterOn }
+            False: { state: gasFilter }
+    - type: PipeColorVisuals
+    - type: UserInterface
+      interfaces:
+        enum.GasRangeTemperatureFilterUiKey.Key:
+          type: GasRangeTemperatureFilterBoundUserInterface
+    - type: GasRangeTemperatureFilter
+      enabled: false
+      transferRate: 1000
+      maxTransferRate: 1000
+      inlet: inlet
+      bypass: outlet
+      filtered: filter
+      # LowTemperature: 2.7
+      # HighTemperature: 1000
+    - type: Flippable
+      mirrorEntity: GasRangeTemperatureFilterFlipped
+    - type: Construction
+      graph: GasTrinary
+      node: filter  # или создайте отдельный node, если хотите
+    - type: AmbientSound
+      enabled: false
+      volume: -9
+      range: 5
+      sound:
+        path: /Audio/Ambience/Objects/gas_hiss.ogg
+    - type: AtmosMonitoringConsoleDevice
+      navMapBlip: GasFlowRegulator
+    - type: GuideHelp
+      guides:
+      - MixingAndFiltering
+    # VentCraw опционально, если нужно
+    - type: VentCrawTube
+      containerId: VentCrawTube
+    - type: VentCrawJunction
+      degrees:
+        - 0
+        - -90
+        - 180
+    - type: ContainerContainer
+      containers:
+        VentCrawTube: !type:Container
+
+- type: entity
+  parent: GasRangeTemperatureFilter
+  id: GasRangeTemperatureFilterFlipped
+  suffix: Flipped
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Structures/Piping/Atmospherics/pipe.rsi
+      state: pipeTrinaryConnectors
+      map: [ "enum.PipeVisualLayers.Pipe" ]
+    - state: gasFilterF
+      map: [ "enum.SubfloorLayers.FirstLayer", "enabled" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.FilterVisuals.Enabled:
+        enabled:
+          True: { state: gasFilterFOn }
+          False: { state: gasFilterF }
+  - type: NodeContainer
+    nodes:
+      inlet:
+        !type:PipeNode
+        nodeGroupID: Pipe
+        pipeDirection: South
+      bypass:
+        !type:PipeNode
+        nodeGroupID: Pipe
+        pipeDirection: West
+      filtered:
+        !type:PipeNode
+        nodeGroupID: Pipe
+        pipeDirection: North
+  - type: Flippable
+    mirrorEntity: GasRangeTemperatureFilter
+  - type: Construction
+    node: filterflipped

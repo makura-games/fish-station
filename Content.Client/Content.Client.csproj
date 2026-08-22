@@ -23,6 +23,9 @@
     <ProjectReference Include="..\Sunrise\Content.Sunrise.Interfaces.Shared\Content.Sunrise.Interfaces.Shared.csproj" />
     <ProjectReference Include="..\Sunrise\Content.Sunrise.Interfaces.Client\Content.Sunrise.Interfaces.Client.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Xaml Include="_Fish\**\*.xaml" />
+  </ItemGroup>
   <ItemGroup Condition="Exists('..\SunrisePrivate\Content.Client')">
     <Compile Include="..\SunrisePrivate\Content.Client\**\*.cs" Link="%(RecursiveDir)%(Filename)%(Extension)" />
     <EmbeddedResource Include="..\SunrisePrivate\Content.Client\**\*.xaml" Link="%(RecursiveDir)%(Filename)%(Extension)" />

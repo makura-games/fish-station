@@ -1,0 +1,17 @@
+ent-XenoArtifactEffectCreationGasZenthium = Выделяет Зентиум
+ent-XenoArtifactEffectCreationGasKrypium = Выделяет Крипиум
+ent-XenoArtifactEffectCreationGasPrallium = Выделяет Праллий
+ent-XenoArtifactEffectCreationGasChaoson = Выделяет Хаосон
+ent-XenoArtifactEffectCreationGasGarodin = Выделяет Гародин
+ent-XenoArtifactEffectCreationGasBaratrium = Выделяет Баратрий
+ent-XenoArtifactEffectCreationGasEthylium = Выделяет Этилиум
+ent-XenoArtifactEffectCreationGasZimmera = Выделяет Циммеру
+ent-XenoArtifactEffectCreationGasFramel = Выделяет Фрамель
+ent-XenoArtifactEffectCreationGasKlemennon = Выделяет Клеменнон
+ent-XenoArtifactEffectCreationGasProtoUltimium = Выделяет Прото-Ультимиум
+ent-XenoArtifactEffectCreationGasZimmerousFrezonite = Выделяет Фрезонит Циммеры
+ent-XenoArtifactEffectCreationGasAntiUltimium = Выделяет Анти-Ультимиум
+ent-XenoArtifactEffectCreationGasUltimium = Выделяет Ультимиум
+ent-XenoArtifactEffectCreationGasPermafrost = Выделяет Пермафрост
+ent-XenoArtifactEffectCreationGasRiminon = Выделяет Райминон
+ent-XenoArtifactEffectCreationGasAxoNoblium = Выделяет Аксо-Ноблий

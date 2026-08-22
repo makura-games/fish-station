@@ -1,0 +1,15 @@
+comp-gas-range-temp-filter-ui-title = Диапазонный температурный фильтр
+comp-gas-range-temp-filter-ui-status = Состояние:
+comp-gas-range-temp-filter-ui-status-enabled = Включён
+comp-gas-range-temp-filter-ui-status-disabled = Выключен
+comp-gas-range-temp-filter-ui-transfer-rate = Скорость перекачки (л/с):
+comp-gas-range-temp-filter-ui-set-rate = Установить
+comp-gas-range-temp-filter-ui-temperature-range = Диапазон температур (K):
+comp-gas-range-temp-filter-ui-low = От:
+comp-gas-range-temp-filter-ui-high = До:
+comp-gas-range-temp-filter-ui-set-range = Применить
+comp-gas-range-temp-filter-ui-current-status = Текущее состояние:
+comp-gas-range-temp-filter-ui-status-text = { $enabled } | Диапазон: [{ $low } – { $high }] K
+comp-gas-range-temp-filter-ui-needs-anchor = Устройство должно быть закреплено.
+comp-gas-range-temp-filter-bypass = Основной выход
+comp-gas-range-temp-filter-filtered = Боковой выход (отфильтрованный)

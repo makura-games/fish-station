@@ -1,7 +1,7 @@
 - type: gas
   id: Zenthium
   name: gases-zenthium
-  specificHeat: 20
+  specificHeat: 10
   heatCapacityRatio: 1.4
   molarMass: 12
   color: 00FFFF
@@ -13,7 +13,7 @@
 - type: gas
   id: Krypium
   name: gases-krypium
-  specificHeat: 18
+  specificHeat: 8
   heatCapacityRatio: 1.3
   molarMass: 28
   color: 82005d
@@ -25,7 +25,7 @@
 - type: gas
   id: Prallium
   name: gases-prallium
-  specificHeat: 22
+  specificHeat: 12
   heatCapacityRatio: 1.4
   molarMass: 32
   color: a0ffff
@@ -37,7 +37,7 @@
 - type: gas
   id: Chaoson
   name: gases-chaoson
-  specificHeat: 24
+  specificHeat: 8
   heatCapacityRatio: 1.4
   molarMass: 18
   color: ff69b4
@@ -49,7 +49,7 @@
 - type: gas
   id: Garodin
   name: gases-garodin
-  specificHeat: 28
+  specificHeat: 10
   heatCapacityRatio: 1.35
   molarMass: 24
   color: f0bb29
@@ -62,7 +62,7 @@
   id: Baratrium
   name: gases-baratrium
   specificHeat: 32
-  heatCapacityRatio: 1.3
+  heatCapacityRatio: 1.2
   molarMass: 26
   color: 3300eb
   reagent: Baratrium
@@ -73,7 +73,7 @@
 - type: gas
   id: Ethylium
   name: gases-ethylium
-  specificHeat: 26
+  specificHeat: 16
   heatCapacityRatio: 1.4
   molarMass: 28
   color: ff1493
@@ -85,7 +85,7 @@
 - type: gas
   id: Zimmera
   name: gases-zimmera
-  specificHeat: 30
+  specificHeat: 15
   heatCapacityRatio: 1.35
   molarMass: 35
   color: 8a2be2
@@ -97,7 +97,7 @@
 - type: gas
   id: Framel
   name: gases-framel
-  specificHeat: 34
+  specificHeat: 12
   heatCapacityRatio: 1.4
   molarMass: 42
   color: 00ffaa
@@ -109,7 +109,7 @@
 - type: gas
   id: Klemennon
   name: gases-klemennon
-  specificHeat: 36
+  specificHeat: 12
   heatCapacityRatio: 1.3
   molarMass: 38
   color: 0062b8
@@ -121,7 +121,7 @@
 - type: gas
   id: ProtoUltimium
   name: gases-proto-ultimium
-  specificHeat: 48
+  specificHeat: 20
   heatCapacityRatio: 1.25
   molarMass: 52
   color: b85959
@@ -133,7 +133,7 @@
 - type: gas
   id: ZimmerousFrezonite
   name: gases-zimmerousfrezonite
-  specificHeat: 55
+  specificHeat: 30
   heatCapacityRatio: 1.2
   molarMass: 68
   color: 5ea1b4
@@ -150,26 +150,26 @@
   molarMass: 88
   color: 1a1a1a
   reagent: AntiUltimium
-  pricePerMole: 220.0
+  pricePerMole: 100.0
   gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
   gasOverlayState: bz
 
 - type: gas
   id: Ultimium
   name: gases-ultimium
-  specificHeat: 62
+  specificHeat: 60
   heatCapacityRatio: 1.18
   molarMass: 92
   color: 62ff43
   reagent: Ultimium
-  pricePerMole: 400.0
+  pricePerMole: 220.0
   gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
   gasOverlayState: bz
 
 - type: gas
   id: Permafrost
   name: gases-permafrost
-  specificHeat: 62
+  specificHeat: 400
   heatCapacityRatio: 1.18
   molarMass: 92
   color: 43ddff
@@ -181,19 +181,19 @@
 - type: gas
   id: Riminon
   name: gases-riminon
-  specificHeat: 69
+  specificHeat: 12
   heatCapacityRatio: 1.18
   molarMass: 420
   color: a5f2ff
   reagent: Riminon
-  pricePerMole: 69.0
+  pricePerMole: 6.9
   gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
   gasOverlayState: bz
 
 - type: gas
   id: AxoNoblium
   name: gases-axonoblium
-  specificHeat: 42
+  specificHeat: 10
   heatCapacityRatio: 1.35
   molarMass: 48
   color: ff4500

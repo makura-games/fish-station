@@ -19,7 +19,7 @@ public sealed partial class PermafrostDecompositionReaction : IGasReactionEffect
             return ReactionResult.NoReaction;
 
         // медленное разложение
-        var decompRate = (50f - temperature) * 0.1f;   
+        var decompRate = (50f - temperature) * 0.5f;   
 
         if (tritium > 0.04f)
         {

@@ -435,8 +435,8 @@
 
 - type: reagent
   id: ProtoUltimium
-  name: reagent-name-protoultimium
-  desc: reagent-desc-protoultimium
+  name: reagent-name-proto-ultimium
+  desc: reagent-desc-proto-ultimium
   physicalDesc: reagent-physical-desc-necrotic
   flavor: bitter
   color: "#b85959"
@@ -508,16 +508,16 @@
         ignoreResistances: true
         damage:
           types:
-            Slash: 0.5
-            Piercing: 0.5
-            Blunt: 0.5
-            Poison: 0.5
-            Radiation: 0.5
-            Cellular: 0.5
-            Shock: 0.5
-            Heat: 0.5
-            Asphyxiation: 0.5
-            Bloodloss: 0.5
+            Slash: 1.5
+            Piercing: 1.5
+            Blunt: 1.5
+            Poison: 1.5
+            Radiation: 1.5
+            Cellular: 1.5
+            Shock: 1.5
+            Heat: 1.5
+            Asphyxiation: 1.5
+            Bloodloss: 1.5
       - !type:PopupMessage
         conditions:
         - !type:ReagentCondition
@@ -644,7 +644,7 @@
 #   flavor: cold
 #   color: "#a5f2ff"
 #   metabolisms:
-#     Bloodstream:
+#     Gas:
 #       metabolismRate: 0.4
 #       effects:
 #       # - !type:GenericStatusEffect
