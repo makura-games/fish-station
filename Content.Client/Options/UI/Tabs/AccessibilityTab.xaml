@@ -6,6 +6,10 @@
             <BoxContainer Orientation="Vertical" Margin="8">
                 <!--><Label Text="{Loc 'ui-options-accessability-header-visuals'}"
                        StyleClasses="LabelKeyText"/> <-->
+                <!-- FIsh edit - CRT theme / effects for Fish UI -->
+                <CheckBox Name="FishCrtThemeEnabledCheckBox" Text="{Loc 'fish-ui-options-crt-theme'}" />
+                <CheckBox Name="FishCrtEffectsEnabledCheckBox" Text="{Loc 'fish-ui-options-crt-effects'}" />
+                <!-- FIsh edit end -->
                 <CheckBox Name="ReducedMotionCheckBox" Text="{Loc 'ui-options-reduced-motion'}" />
                 <CheckBox Name="EnableColorNameCheckBox" Text="{Loc 'ui-options-enable-color-name'}" />
                 <CheckBox Name="ColorblindFriendlyCheckBox" Text="{Loc 'ui-options-colorblind-friendly'}" />

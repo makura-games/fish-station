@@ -53,6 +53,10 @@ public sealed partial class OptionsTabControlRow : Control
 
     private ValueList<BaseOption> _options;
 
+    // FIsh edit - уведомление табов после reset/default/initialize
+    internal event Action? ValuesReset;
+    // FIsh edit end
+
     public OptionsTabControlRow()
     {
         RobustXamlLoader.Load(this);
@@ -185,6 +189,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.LoadValue();
         }
 
+        // FIsh edit
+        ValuesReset?.Invoke();
+        // FIsh edit end
         UpdateButtonState();
     }
 
@@ -251,6 +258,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.LoadValue();
         }
 
+        // FIsh edit
+        ValuesReset?.Invoke();
+        // FIsh edit end
         UpdateButtonState();
     }
 
@@ -261,6 +271,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.ResetToDefault();
         }
 
+        // FIsh edit
+        ValuesReset?.Invoke();
+        // FIsh edit end
         UpdateButtonState();
     }
 

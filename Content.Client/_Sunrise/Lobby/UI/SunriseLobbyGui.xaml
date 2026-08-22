@@ -404,6 +404,15 @@
                                         MinWidth="40"
                                         Name="CallVoteButton"
                                         StyleClasses="ButtonBig" />
+                                    <!-- ===== FISH EDIT START: ACHIEVEMENTS ===== -->
+                                    <Button
+                                        Access="Public"
+                                        HorizontalExpand="True"
+                                        MinWidth="40"
+                                        Name="AchievementsButton"
+                                        StyleClasses="ButtonBig"
+                                        Text="{Loc 'fish-achievements-button'}" />
+                                    <!-- ===== FISH EDIT END: ACHIEVEMENTS ===== -->
                                     <Button
                                         Access="Public"
                                         HorizontalExpand="True"

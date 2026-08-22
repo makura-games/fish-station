@@ -1,20 +1,22 @@
-#name: No submodule update checker
+name: No submodule update checker
 
-#on:
-#  pull_request:
-#    paths:
-#      - 'RobustToolbox'
+# Проверка отключена: workflow оставлен валидным no-op,
+# чтобы GitHub Actions не падал на пустом/закомментированном YAML.
 
-# Sunrise added start - отменяем устаревший запуск этой проверки для того же PR
-#concurrency:
-#  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
-#  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-# Sunrise added end
+on:
+  pull_request:
+    paths:
+      - 'RobustToolbox'
+      - '.github/workflows/no-submodule-update.yml'
 
-#jobs:
-#  this_aint_right:
-#    name: Submodule update in pr found
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Fail
-#        run: exit 1
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  checker-disabled:
+    name: Submodule update check (disabled)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip
+        run: echo "Submodule update checker is disabled; review RobustToolbox changes manually if present."

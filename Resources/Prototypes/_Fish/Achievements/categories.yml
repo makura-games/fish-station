@@ -1,0 +1,41 @@
+- type: achievementCategory
+  id: FishAchCombat
+  order: 10
+  name: fish-achievements-category-combat
+  icon: medal
+
+- type: achievementCategory
+  id: FishAchSurvival
+  order: 20
+  name: fish-achievements-category-survival
+  icon: heartbeat
+
+- type: achievementCategory
+  id: FishAchRoles
+  order: 30
+  name: fish-achievements-category-roles
+  icon: id_card
+
+- type: achievementCategory
+  id: FishAchStation
+  order: 40
+  name: fish-achievements-category-station
+  icon: map
+
+- type: achievementCategory
+  id: FishAchFunny
+  order: 50
+  name: fish-achievements-category-funny
+  icon: bullhorn
+
+- type: achievementCategory
+  id: FishAchSecret
+  order: 90
+  name: fish-achievements-category-secret
+  icon: warning
+
+- type: achievementCategory
+  id: FishAchMisc
+  order: 100
+  name: fish-achievements-category-misc
+  icon: cog

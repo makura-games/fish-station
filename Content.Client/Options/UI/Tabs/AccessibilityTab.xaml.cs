@@ -23,7 +23,21 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionCheckBox(CCVars.ChatAutoFillHighlights, AutoFillHighlightsCheckBox);
         Control.AddOptionColorSlider(CCVars.ChatHighlightsColor, HighlightsColorSlider);
 
-        Control.Initialize();
-    }
-}
+        // FIsh edit - CRT accessibility preferences
+        var crtTheme = Control.AddOptionCheckBox(FishCVars.FishCrtThemeEnabled, FishCrtThemeEnabledCheckBox);
+        Control.AddOptionCheckBox(FishCVars.FishCrtEffectsEnabled, FishCrtEffectsEnabledCheckBox);
+        crtTheme.ImmediateValueChanged += _ => UpdateCrtEffectsDisabled();
+        Control.ValuesReset += UpdateCrtEffectsDisabled;
+        // FIsh edit end
 
+        Control.Initialize();
+        UpdateCrtEffectsDisabled();
+    }
+
+    // FIsh edit
+    private void UpdateCrtEffectsDisabled()
+    {
+        FishCrtEffectsEnabledCheckBox.Disabled = !FishCrtThemeEnabledCheckBox.Pressed;
+    }
+    // FIsh edit end
+}

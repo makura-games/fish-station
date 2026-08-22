@@ -114,6 +114,9 @@ public sealed partial class SunriseLobbyGui
         SetupButtonIcon(AHelpButton, "/Textures/Interface/info.svg.192dpi.png", _loc.GetString("ui-lobby-ahelp-button"));
         SetupButtonIcon(MHelpButton, "/Textures/Interface/mentor.svg.192dpi.png", _loc.GetString("ui-lobby-mhelp-button"));
         SetupButtonIcon(CallVoteButton, "/Textures/Interface/gavel.svg.192dpi.png", _loc.GetString("ui-vote-menu-button"));
+        // ===== FISH EDIT START: ACHIEVEMENTS =====
+        SetupButtonIcon(AchievementsButton, "/Textures/Interface/VerbIcons/unlock-green.svg.192dpi.png", _loc.GetString("fish-achievements-button"));
+        // ===== FISH EDIT END: ACHIEVEMENTS =====
         SetupButtonIcon(OptionsButton, "/Textures/Interface/VerbIcons/settings.svg.192dpi.png", _loc.GetString("ui-lobby-options-button"));
         SetupButtonIcon(LeaveButton, "/Textures/Interface/VerbIcons/close.svg.192dpi.png", _loc.GetString("ui-lobby-leave-button"));
 

@@ -1,3 +1,4 @@
+using Content.Server._Fish.Achievements;
 using Content.Server._Sunrise.Auth;
 using Content.Server._Sunrise;
 using Content.Server._Sunrise.Contributors;
@@ -73,6 +74,9 @@ internal static class ServerContentIoC
         deps.Register<IAdminLogManager, AdminLogManager>();
         deps.Register<PlayTimeTrackingManager>();
         deps.Register<UserDbDataManager>();
+        // ===== FISH EDIT START: ACHIEVEMENTS =====
+        deps.Register<AchievementManager>();
+        // ===== FISH EDIT END: ACHIEVEMENTS =====
         deps.Register<ServerInfoManager>();
         deps.Register<PoissonDiskSampler>();
         deps.Register<DiscordWebhook>();

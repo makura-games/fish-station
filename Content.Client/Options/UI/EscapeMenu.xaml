@@ -9,6 +9,9 @@
         <ui:VoteCallMenuButton />
         <!-- Sunrise-Start -->
         <Button Access="Public" Name="RoadmapButton" Text="{Loc 'ui-roadmap'}" />
+        <!-- ===== FISH EDIT START: ACHIEVEMENTS ===== -->
+        <Button Access="Public" Name="AchievementsButton" Text="{Loc 'fish-achievements-button'}" />
+        <!-- ===== FISH EDIT END: ACHIEVEMENTS ===== -->
         <Button Access="Public" Name="DonateButton" Text="{Loc 'ui-escape-donate'}" />
         <Button Access="Public" Name="ReplaysButton" Text="{Loc 'ui-escape-replays'}" />
         <!-- Sunrise-End -->

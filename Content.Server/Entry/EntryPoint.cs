@@ -1,3 +1,4 @@
+using Content.Server._Fish.Achievements;
 using Content.Server._Sunrise;
 using Content.Server._Sunrise.Contributors;
 using Content.Server._Sunrise.Entry;
@@ -87,6 +88,9 @@ namespace Content.Server.Entry
         [Dependency] private readonly JobWhitelistManager _job = default!;
         [Dependency] private readonly MultiServerKickManager _multiServerKick = default!;
         [Dependency] private readonly PlayTimeTrackingManager _playTimeTracking = default!;
+        // ===== FISH EDIT START: ACHIEVEMENTS =====
+        [Dependency] private readonly AchievementManager _achievements = default!;
+        // ===== FISH EDIT END: ACHIEVEMENTS =====
         [Dependency] private readonly PlayerRateLimitManager _rateLimit = default!;
         [Dependency] private readonly RecipeManager _recipe = default!;
         [Dependency] private readonly RulesManager _rules = default!;
@@ -178,6 +182,9 @@ namespace Content.Server.Entry
             _voteManager.Initialize();
             _updateManager.Initialize();
             _playTimeTracking.Initialize();
+            // ===== FISH EDIT START: ACHIEVEMENTS =====
+            _achievements.Initialize();
+            // ===== FISH EDIT END: ACHIEVEMENTS =====
             _watchlistWebhookManager.Initialize();
             _job.Initialize();
             _rateLimit.Initialize();

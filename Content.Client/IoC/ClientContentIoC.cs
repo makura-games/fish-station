@@ -1,4 +1,5 @@
-﻿using Content.Client._Sunrise;
+﻿using Content.Client._Fish.UserInterface.Crt;
+using Content.Client._Sunrise;
 using Content.Client._Sunrise.Contributors;
 using Content.Client._Sunrise.InteractionsPanel.Models;
 using Content.Client._Sunrise.IoC;
@@ -81,6 +82,9 @@ namespace Content.Client.IoC
             SunriseClientContentIoC.Register();
             collection.Register<CustomInteractionService, CustomInteractionService>(true);
             // Sunrise-End
+
+            // FIsh edit - CRT appearance для Fish UI
+            collection.Register<IFishCrtAppearanceManager, FishCrtAppearanceManager>();
         }
     }
 }

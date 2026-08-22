@@ -1,3 +1,4 @@
+using Content.Client._Fish.Achievements;
 using Content.Client._Sunrise.Roadmap;
 using Content.Client._Sunrise.Tutorial;
 using Content.Client._Sunrise.Tutorial.TutorialWindow;
@@ -92,6 +93,14 @@ public sealed class EscapeUIController : UIController, IOnStateEntered<GameplayS
             CloseEscapeWindow();
             UIManager.GetUIController<RoadmapUIController>().ToggleRoadmap();
         };
+
+        // ===== FISH EDIT START: ACHIEVEMENTS =====
+        _escapeWindow.AchievementsButton.OnPressed += _ =>
+        {
+            CloseEscapeWindow();
+            UIManager.GetUIController<AchievementUIController>().ToggleWindow();
+        };
+        // ===== FISH EDIT END: ACHIEVEMENTS =====
 
         var tutorialUi = UIManager.GetUIController<TutorialUIController>();
         UpdateQuitTutorialButtonVisibility();

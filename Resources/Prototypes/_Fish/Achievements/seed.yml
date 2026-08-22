@@ -1,0 +1,58 @@
+# Seed-набор. allowGenericTrigger — единственные бинарные «без params».
+
+- type: achievement
+  id: FishAchFirstBreath
+  name: achievement-fish-first-breath-name
+  description: achievement-fish-first-breath-desc
+  category: FishAchSurvival
+  condition: first-late-join
+  allowGenericTrigger: true
+  oncePerRound: true
+  order: 1
+
+- type: achievement
+  id: FishAchStillStanding
+  name: achievement-fish-still-standing-name
+  description: achievement-fish-still-standing-desc
+  category: FishAchSurvival
+  condition: round-end-alive
+  allowGenericTrigger: true
+  oncePerRound: true
+  minRoundSeconds: 180
+  order: 2
+
+- type: achievement
+  id: FishAchBananaRequiem
+  name: achievement-fish-banana-requiem-name
+  description: achievement-fish-banana-requiem-desc
+  secretDescription: achievement-fish-banana-requiem-secret
+  category: FishAchFunny
+  condition: slip-death
+  allowGenericTrigger: true
+  ignoreSuicide: true
+  secret: true
+  order: 1
+
+- type: achievement
+  id: FishAchCentcommTourist
+  name: achievement-fish-centcomm-tourist-name
+  description: achievement-fish-centcomm-tourist-desc
+  category: FishAchStation
+  condition: shuttle-arrive
+  allowGenericTrigger: true
+  oncePerRound: true
+  minRoundSeconds: 120
+  order: 1
+
+- type: achievement
+  id: FishAchHabitualSurvivor
+  name: achievement-fish-habitual-survivor-name
+  description: achievement-fish-habitual-survivor-desc
+  category: FishAchSurvival
+  condition: counter
+  conditionParams:
+    key: rounds-survived
+  progressTarget: 10
+  oncePerRound: true
+  minRoundSeconds: 180
+  order: 10
