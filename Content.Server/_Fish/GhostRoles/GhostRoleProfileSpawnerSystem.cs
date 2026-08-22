@@ -8,7 +8,9 @@ using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Preferences;
+using Content.Shared.Roles;
 using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.GhostRoles;
 
@@ -25,6 +27,7 @@ public sealed class GhostRoleProfileSpawnerSystem : EntitySystem
     [Dependency] private readonly StationSystem _stations = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
+    [Dependency] private readonly IPrototypeManager _prototypes = default!;
 
     public override void Initialize()
     {
@@ -61,6 +64,13 @@ public sealed class GhostRoleProfileSpawnerSystem : EntitySystem
         else
         {
             mob = _stationSpawning.SpawnPlayerMob(coords, null, profile, station);
+        }
+
+        // FIsh: экипировка через startingGear (Sunrise), а не Loadout MapInit на мобе
+        if (ent.Comp.StartingGear is { } gearId &&
+            _prototypes.TryIndex(gearId, out StartingGearPrototype? gear))
+        {
+            _stationSpawning.EquipStartingGear(mob, gear, raiseEvent: true);
         }
 
         _transform.AttachToGridOrMap(mob);

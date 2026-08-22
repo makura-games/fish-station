@@ -22,6 +22,7 @@
     intensitySlope: 1
     maxIntensity: 2
     canCreateVacuum: false
+    maxTileBreak: 0
   - type: WhitelistTriggerCondition
     userBlacklist:
       components:
@@ -80,6 +81,12 @@
   parent: WeaponEarthGovLaserCarbine
   id: WeaponEarthGovLaserCarbineArmWM
   components:
+  - type: Biocode
+    factions:
+    - ArmFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - ArmFaction
   - type: Sprite
     sprite: Objects/Weapons/Guns/Battery/laser_cannon.rsi
     layers:
@@ -128,9 +135,12 @@
     - LandmineImplantArmWM
   - type: GhostRole
     name: pw-vehicles-rebels-markerdronarmturretmine-name
-    description: pw-weapons-rebels-dronarmturretmine-desc
+    description: pw-vehicles-rebels-markerdronarmturretmine-desc
     raffle:
       settings: WM
+  - type: PlanetWarBriefing
+    briefingText: pw-briefing-rebels-dronarmturretmine
+    briefingColor: "#e50000"
   - type: Sprite
     sprite: /Textures/_Fish/PlanetWar/WM2/33xSprait.rsi
     noRot: false
@@ -152,6 +162,7 @@
     totalIntensity: 8
     intensitySlope: 1
     maxIntensity: 8
+    maxTileBreak: 0
   - type: MovementSpeedModifier
     baseWalkSpeed : 15
     baseSprintSpeed : 9

@@ -276,6 +276,13 @@
   #  scale: 0.15
   #  shape: Circle
   #  requireInSpace: false
+  - type: Explosive
+    explosionType: Default
+    totalIntensity: 50
+    intensitySlope: 1
+    maxIntensity: 5
+    canCreateVacuum: false
+    maxTileBreak: 0
   - type: ProjectileGrenade
     fillPrototype: PelletClusterLessLethalWM
 
@@ -356,9 +363,15 @@
   parent: WeaponRifleLecterMk2 #WeaponSTG44
   id: WeaponSTG44WM
   components:
+  - type: Biocode
+    factions:
+    - CoreFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - CoreFaction
 #откат
   - type: Gun
-    fireRate: 6
+    fireRate: 10
     selectedMode: FullAuto
     availableModes:
       - SemiAuto
@@ -394,9 +407,20 @@
   parent: WeaponRifleFamas
   id: WeaponRifleFamasWM
   components:
+  - type: Biocode
+    factions:
+    - CoreFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - CoreFaction
 #откат
   - type: Gun
-    fireRate: 7
+    fireRate: 12
+    semiAutoFireRate: 14
+    selectedMode: SemiAuto
+    availableModes:
+      - SemiAuto
+      - FullAuto
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 1950
@@ -430,7 +454,7 @@
   name: Zauer
   components:
   - type: Gun
-    fireRate: 1.2
+    fireRate: 3
 
 
 - type: entity
@@ -438,6 +462,12 @@
   parent: WeaponShotgunSawn
   id: WeaponShotgunGA12WM
   components:
+  - type: Biocode
+    factions:
+    - CoreFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - CoreFaction
   - type: Gun
     fireRate: 1
   - type: Wieldable
@@ -456,8 +486,12 @@
   - type: Clothing
     sprite: _Starlight/Objects/Weapons/Guns/Shotguns/ga12.rsi
   - type: BallisticAmmoProvider
-    proto: ShellShotgunSlugWM
+    proto: ShellShotgunWM
     capacity: 4
+    mayTransfer: true
+    whitelist:
+      tags:
+      - ShellShotgun
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 450
@@ -468,9 +502,15 @@
   parent: WeaponSubMachineGunMP38
   id: WeaponSubMachineGunMP38WM
   components:
+  - type: Biocode
+    factions:
+    - ArmFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - ArmFaction
 #откат
   - type: Gun
-    fireRate: 7
+    fireRate: 12
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 1950
@@ -502,6 +542,12 @@
   parent: WeaponRifleBauer127WM
   id: WeaponSniperDragunovWM
   components:
+  - type: Biocode
+    factions:
+    - ArmFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - ArmFaction
 #откат
   - type: GunWieldBonus
     minAngle: -24
@@ -548,6 +594,12 @@
   parent: WeaponRifleBauer127
   id: WeaponRifleBauer127WM
   components:
+  - type: Biocode
+    factions:
+    - CoreFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - CoreFaction
 #откат
   - type: UseDelayOnShoot
   - type: UseDelay 
@@ -561,7 +613,7 @@
   - type: Gun
    # cameraRecoilScalarModified: 2.5
     projectileSpeed: 55 #50
-    fireRate: 0.65 #было 0.3
+    fireRate: 1 #было 0.3
     minAngle: 24
     maxAngle: 45
     soundGunshot:
@@ -596,13 +648,19 @@
   parent: WeaponLightMachineGunRPD
   id: WeaponLightMachineGunRPDWM
   components:
+  - type: Biocode
+    factions:
+    - ArmFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - ArmFaction
 #откат
   - type: GunRequiresWield
   - type: GunWieldBonus
     minAngle: 0
     maxAngle: 0
   - type: Gun
-    fireRate: 9
+    fireRate: 18
     minAngle: 5.7
     maxAngle: 100
     angleIncrease: 1.6
@@ -638,6 +696,12 @@
   parent: WeaponShotgunBulldog
   id: WeaponShotgunBulldogWM
   components:
+  - type: Biocode
+    factions:
+    - ArmFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - ArmFaction
   - type: Wieldable
   - type: PhysicalComposition
     materialComposition:
@@ -650,7 +714,7 @@
     minAngle: 0
     maxAngle: 0
   - type: Gun
-    fireRate: 1.1
+    fireRate: 3
     minAngle: 3
     maxAngle: 13
   - type: ItemSlots
@@ -672,13 +736,23 @@
   parent: WeaponShotgunSawn
   id: WeaponShotgunSawnWM
   components:
+  - type: Biocode
+    factions:
+    - ArmFaction
+  - type: FactionWeaponBlocker
+    factions:
+    - ArmFaction
   - type: Wieldable
   - type: CursorOffsetRequiresWield
   - type: EyeCursorOffset
     maxOffset: 7
     pvsIncrease: 1.5 
   - type: BallisticAmmoProvider
-    proto: ShellShotgunSlugWM
+    proto: ShellShotgunWM
+    mayTransfer: true
+    whitelist:
+      tags:
+      - ShellShotgun
   - type: Gun
     selectedMode: FullAuto
     availableModes:
@@ -906,6 +980,14 @@
     implantAction: ActionActivateBombGrenadeImplantWM
   - type: TriggerOnActivateImplant
   - type: PlanetWarStunDrone
+  # FIsh edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
+  - type: ContainerContainer
+    containers:
+      cluster-payload: !type:Container
+  - type: ProjectileGrenade
+    fillPrototype: PelletClusterLethal
+    capacity: 30
+    triggerKey: trigger
   #- type: DeleteOnTrigger
 
 
@@ -930,6 +1012,9 @@
   id: LauncherSyringeWM
   components:
   - type: Biocode
+    factions:
+    - ClassMedic
+  - type: FactionWeaponBlocker
     factions:
     - ClassMedic
   - type: PhysicalComposition

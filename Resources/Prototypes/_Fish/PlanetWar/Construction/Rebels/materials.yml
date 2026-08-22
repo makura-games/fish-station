@@ -1,6 +1,7 @@
 - type: material
   id: MoneyWarMizMaterial
   stackEntity: MoneyWarMiz
+  # FIsh: военные кредиты ПВ — material для lathe (паттерн SS14 MaterialStorage), не отдельный Store currency
   name: material-moneywarmiz-name
   unit: material-moneywarmiz-unit
   icon: { sprite: /Textures/Objects/Economy/cash.rsi, state: cash }

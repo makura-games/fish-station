@@ -318,6 +318,10 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         if (gun.SelectedMode == SelectiveFire.Burst || gun.BurstActivated)
             fireRate = TimeSpan.FromSeconds(1f / gun.BurstFireRate);
+        // ===== FISH EDIT START: PV AMMO / WEAPON CHANGES =====
+        else if (gun.SelectedMode == SelectiveFire.SemiAuto && gun.SemiAutoFireRate > 0f)
+            fireRate = TimeSpan.FromSeconds(1f / gun.SemiAutoFireRate);
+        // ===== FISH EDIT END: PV AMMO / WEAPON CHANGES =====
 
         // First shot
         // Previously we checked shotcounter but in some cases all the bullets got dumped at once

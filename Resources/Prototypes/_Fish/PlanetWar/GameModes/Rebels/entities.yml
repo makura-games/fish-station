@@ -37,6 +37,7 @@
       settings: LifeWM
   - type: GhostRoleProfileSpawner
     prototype: MobHumanArmP0WM
+    startingGear: ArmGearP0
 
 
 - type: entity
@@ -46,6 +47,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanArmP0WM
+    startingGear: ArmGearP0
   - type: GhostRole
     name: pw-gamemodes-rebels-longtime1reinforcementarm-name
     raffle:
@@ -62,6 +64,7 @@
     name: pw-construction-rebels-mobhumanarmpc0i5-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanArmPC0I5WM
+    startingGear: ArmGearPC0I5
 
 
 - type: entity
@@ -71,6 +74,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanArmPC0I5WM
+    startingGear: ArmGearPC0I5
   - type: GhostRole
     name: pw-gamemodes-rebels-longtime4reinforcementarmpc0i5-name
     raffle:
@@ -87,6 +91,7 @@
     name: pw-construction-rebels-mobhumanarmp1-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanArmP1WM
+    startingGear: ArmGearP1
 
 
 - type: entity
@@ -96,6 +101,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanArmP1WM
+    startingGear: ArmGearP1
   - type: GhostRole
     name: pw-gamemodes-rebels-longtime5reinforcementarmp1-name
     raffle:
@@ -112,6 +118,7 @@
     name: pw-construction-rebels-mobhumanarmph5-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanArmPH5WM
+    startingGear: ArmGearPH5
 
 
 - type: entity
@@ -121,6 +128,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanArmPH5WM
+    startingGear: ArmGearPH5
   - type: GhostRole
     name: pw-gamemodes-rebels-longtime6reinforcementarmph5-name
     raffle:
@@ -137,6 +145,7 @@
     name: pw-construction-rebels-mobhumanarmpm1-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanArmPM1WM
+    startingGear: ArmGearPM1
 
 
 - type: entity
@@ -146,6 +155,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanArmPM1WM
+    startingGear: ArmGearPM1
   - type: GhostRole
     name: pw-gamemodes-rebels-longtime3reinforcementarmpm1-name
     raffle:
@@ -162,6 +172,7 @@
     name: pw-construction-rebels-mobhumanarmpe1-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanArmPE1WM
+    startingGear: ArmGearPE1
 
 
 - type: entity
@@ -171,6 +182,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanArmPE1WM
+    startingGear: ArmGearPE1
   - type: GhostRole
     name: pw-gamemodes-rebels-longtime2reinforcementarmpe1-name
     raffle:
@@ -187,6 +199,7 @@
     name: pw-construction-rebels-mobhumanarmps4-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanArmPS4WM
+    startingGear: ArmGearPS4
 
 
 - type: entity
@@ -196,6 +209,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanArmPS4WM
+    startingGear: ArmGearPS4
   - type: GhostRole
     name: pw-gamemodes-rebels-longtime7reinforcementarmps4-name
     raffle:

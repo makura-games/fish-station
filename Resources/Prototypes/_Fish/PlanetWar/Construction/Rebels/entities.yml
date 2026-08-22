@@ -30,7 +30,6 @@
     - RsdWallSolidWM
     - RsdWallRelifArmWM
     - RsdAirlocArmWM
-    - RsdDeconstructWM
     - RsdPrismaArmWM
     - RsdShuttleGunAutomatWM
     - RsdShuttleGunPulemetWM
@@ -75,7 +74,6 @@
     - RsdWallSolidWMSpeed
     - RsdWallRelifArmWMSpeed
     - RsdAirlocArmWMSpeed
-    - RsdDeconstructWM
     - RsdPrismaArmWM
     - RsdShuttleGunAutomatWM
     - RsdShuttleGunPulemetWM
@@ -168,6 +166,7 @@
     totalIntensity: 100
     intensitySlope: 30 
     maxIntensity: 25
+    maxTileBreak: 0
   - type: WhitelistTriggerCondition
     userBlacklist:
       components:
@@ -400,8 +399,8 @@
     proto: GrenadeFragLightWM
     capacity: 0
   - type: Battery
-    maxCharge: 3000 #3500
-    startingCharge: 3000 #3500
+    maxCharge: 7200 # 3000 + 1200 * 3.5
+    startingCharge: 7200
 
 
 - type: entity
@@ -792,7 +791,7 @@
       nameSegments:
       - NamesFirstMale
       - NameArmP0WM
-    - type: PirateIcon
+    - type: PlanetWarMember
       statusIcon: FactionIconArmBase
    # - type: RadarBlip
    #   color: "#e50000"
@@ -811,12 +810,13 @@
     - type: NpcFactionMember
       factions:
       - ArmFaction
-    - type: Loadout
-      prototypes: [ArmGearP0]
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmp0-name
       description: pw-construction-rebels-mobhumanarmp0-desc
       rules: pw-ghost-role-rebels-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-rebels-mobhumanarmp0
+      briefingColor: "#e50000"
     - type: ToggleableNightVision
       effect: EffectNightVisioArm
 
@@ -848,14 +848,15 @@
         0: Alive
         200: Critical
         300: Dead
-    - type: PirateIcon
+    - type: PlanetWarMember
       statusIcon: FactionIconArmPC0I5
-    - type: Loadout
-      prototypes: [ArmGearPC0I5]
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmpc0i5-name
       description: pw-construction-rebels-mobhumanarmpc0i5-desc
       rules: pw-ghost-role-rebels-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-rebels-mobhumanarmpc0i5
+      briefingColor: "#e50000"
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
       table: !type:AllSelector
@@ -896,14 +897,15 @@
       nameSegments:
       - NamesFirstMale
       - NameArmP1WM
-    - type: PirateIcon
+    - type: PlanetWarMember
       statusIcon: FactionIconArmBase
-    - type: Loadout
-      prototypes: [ArmGearP1]
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmp1-name
       description: pw-construction-rebels-mobhumanarmp1-desc
       rules: pw-ghost-role-rebels-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-rebels-mobhumanarmp1
+      briefingColor: "#e50000"
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
       table: !type:AllSelector
@@ -934,19 +936,20 @@
       nameSegments:
       - NamesFirstMale
       - NameArmPH5WM
-    - type: PirateIcon
+    - type: PlanetWarMember
       statusIcon: FactionIconArmBase
     - type: MobThresholds
       thresholds:
         0: Alive
         135: Critical
         300: Dead
-    - type: Loadout
-      prototypes: [ArmGearPH5]
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmph5-name
       description: pw-construction-rebels-mobhumanarmph5-desc
       rules: pw-ghost-role-rebels-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-rebels-mobhumanarmph5
+      briefingColor: "#e50000"
     - type: ScaleVisuals
       scale: 1.3, 1.2
     - type: EntityTableSpawner
@@ -979,7 +982,7 @@
       nameSegments:
       - NamesFirstMale
       - NameArmPM1WM
-    - type: PirateIcon
+    - type: PlanetWarMember
       statusIcon: FactionIconArmPM1
     - type: MobThresholds
       thresholds:
@@ -989,12 +992,14 @@
     - type: NpcFactionMember
       factions:
       - ArmFaction
-    - type: Loadout
-      prototypes: [ArmGearPM1]
+      - ClassMedic
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmpm1-name
       description: pw-construction-rebels-mobhumanarmpm1-desc
       rules: pw-ghost-role-rebels-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-rebels-mobhumanarmpm1
+      briefingColor: "#e50000"
     - type: ShowHealthBars
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
@@ -1026,14 +1031,15 @@
       nameSegments:
       - NamesFirstMale
       - NameArmPE1WM
-    - type: PirateIcon
+    - type: PlanetWarMember
       statusIcon: FactionIconArmPE1
-    - type: Loadout
-      prototypes: [ArmGearPE1]
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmpe1-name
       description: pw-construction-rebels-mobhumanarmpe1-desc
       rules: pw-ghost-role-rebels-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-rebels-mobhumanarmpe1
+      briefingColor: "#e50000"
     - type: EyeProtection
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
@@ -1065,19 +1071,20 @@
       nameSegments:
       - NamesFirstMale
       - NameArmPS4WM
-    - type: PirateIcon
+    - type: PlanetWarMember
       statusIcon: FactionIconArmBase
     - type: AutoImplant
       implants:
       - SmokeScreenImplantWM
     - type: ToggleableNightVision
       effect: EffectNightVisioArmSniper
-    - type: Loadout
-      prototypes: [ArmGearPS4]
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmps4-name
       description: pw-construction-rebels-mobhumanarmps4-desc
       rules: pw-ghost-role-rebels-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-rebels-mobhumanarmps4
+      briefingColor: "#e50000"
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
       table: !type:AllSelector
@@ -1896,8 +1903,9 @@
   parent: GatewayArm
   id: GatewayArmJob
   components:
-  - type: AddGameRuleOnTrigger
-    gameRule: MaxTimeRoundRestartAfterGateDeadWM
+  # FIsh edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
+  - type: PlanetWarGateway
+    team: Arm
 
 
 - type: entity

@@ -8,5 +8,16 @@ namespace Content.Shared._Fish.PlanetWar.Drone
     [RegisterComponent]
     public sealed partial class PlanetWarStunDroneComponent : Component
     {
+        /// <summary>
+        /// Длительность ослепления (flash) в секундах.
+        /// </summary>
+        [DataField]
+        public float FlashDuration = 8f;
+
+        [DataField]
+        public float FlashRange = 2.5f;
+
+        [DataField]
+        public float ElectrocutionRange = 1.5f;
     }
 }

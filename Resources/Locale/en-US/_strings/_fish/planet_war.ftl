@@ -1,5 +1,13 @@
 # PlanetWar Localization (English fallback)
 
+planetwar-announcer = Planet War
+planetwar-round-start-announcement = The war has begun. Destroy the enemy gateway and defend your own.
+planetwar-gateway-destroyed-core = The Republic gateway has been destroyed! Rebels win.
+planetwar-gateway-destroyed-arm = The Rebel gateway has been destroyed! Republic wins.
+planetwar-round-end-winner-core = Republic victory.
+planetwar-round-end-winner-arm = Rebel victory.
+planetwar-round-end-stalemate = Stalemate.
+
 job-title-rebel-militia = Militia
 job-title-rebel-leader = Leader
 job-title-rebel-chemist = Chemist

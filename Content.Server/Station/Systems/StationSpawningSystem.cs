@@ -153,6 +153,19 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
                 EquipRoleName(jobEntity, loadout, roleProto!);
             }
 
+            // FIsh edit start - экипировка jobEntity через startingGear (Sunrise), не только Loadout MapInit
+            if (prototype.StartingGear != null)
+            {
+                var startingGear = _prototypeManager.Index(prototype.StartingGear.Value);
+                EquipStartingGear(jobEntity, startingGear, raiseEvent: true);
+            }
+
+            if (loadout != null)
+            {
+                EquipRoleLoadout(jobEntity, loadout, roleProto!);
+            }
+            // FIsh edit end
+
             DoJobSpecials(job, jobEntity);
             _identity.QueueIdentityUpdate(jobEntity);
             return jobEntity;

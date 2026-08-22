@@ -1722,3 +1722,37 @@ ent-PortalCoreTinyWM = Крошечные Врата Республиканце�
     .desc = { ent-BasePortal.desc }
 ent-MagazineSTG44WM = магазин STG44
     .desc = Магазин для автомата STG44.
+
+ent-WeaponDisposableGrenadeLauncherWM = одноразовый гранатомёт
+    .desc = Однозарядный гранатомёт. После выстрела становится бесполезен. Исчезает, если долго лежит на земле.
+
+ent-BulletDisposableGrenadeWM = гранатный снаряд
+    .desc = Снаряд одноразового гранатомёта.
+
+ent-MagazineBoxPistolWM = короб патронов (.35)
+    .desc = Короб с пистолетными патронами PlanetWar.
+
+ent-MagazineBoxLightRifleWM = короб патронов (.30)
+    .desc = Короб с патронами лёгкой винтовки PlanetWar.
+
+ent-MagazineBoxRifleWM = короб патронов (.20)
+    .desc = Короб с винтовочными патронами PlanetWar.
+
+ent-MagazineBoxHeavyRifleWM = короб патронов (.10 heavy)
+    .desc = Короб с патронами тяжёлого пулемёта PlanetWar.
+
+ent-MagazineBoxAntiMaterielWM = короб патронов (antimateriel)
+    .desc = Короб со снайперскими патронами PlanetWar.
+
+ent-MagazineBoxMagnumWM = короб патронов (.45 magnum)
+    .desc = Короб с патронами magnum PlanetWar.
+
+ent-MagazineBoxMagnumFMJWM = короб патронов (.45 magnum FMJ)
+    .desc = Короб с патронами magnum FMJ PlanetWar.
+
+ent-MagazineBoxShotgunWM = короб дроби (.50)
+    .desc = Короб с дробью для дробовиков PlanetWar.
+
+ent-MagazineBoxShotgunSlugWM = короб пуль (.50 slug)
+    .desc = Короб с пулевыми патронами для дробовиков PlanetWar.
+

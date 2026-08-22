@@ -1,0 +1,109 @@
+# Одноразовый гранатомёт для лейтенанта / предводителя (PV).
+
+- type: entity
+  id: BulletDisposableGrenadeWM
+  name: disposable grenade round
+  parent: BulletGrenadeFragTimerWM
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Explosive
+    explosionType: Default
+    totalIntensity: 50
+    intensitySlope: 1
+    maxIntensity: 5
+    canCreateVacuum: false
+    maxTileBreak: 0
+  - type: ProjectileGrenade
+    fillPrototype: PelletClusterLessLethalWM
+    capacity: 30
+
+- type: entity
+  id: WeaponDisposableGrenadeLauncherWM
+  name: disposable grenade launcher
+  parent: [ BaseItem, BaseGunWieldable ]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Launchers/disposal_rocket_launcher.rsi
+    layers:
+    - state: unwielded
+      map: [ base ]
+    - state: untype
+      map: [ type ]
+      color: "#ffaa44"
+    - state: wielded
+      map: [ wielded ]
+      visible: false
+    - state: wieldedtype
+      map: [ wieldedType ]
+      color: "#ffaa44"
+      visible: false
+  - type: Clothing
+    sprite: _Sunrise/Objects/Weapons/Guns/Launchers/disposal_rocket_launcher.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,2,1
+    sprite: _Sunrise/Objects/Weapons/Guns/Launchers/disposal_rocket_launcher.rsi
+  - type: PhysicalComposition
+    materialComposition:
+      MoneyWarMizMaterial: 100
+  - type: Tag
+    tags:
+    - Recyclable
+    - SellTagWM
+  - type: Wieldable
+    unwieldOnUse: false
+    wieldSound:
+      path: /Audio/Weapons/Guns/Gunshots/grenade_launcher.ogg
+  - type: Gun
+    fireRate: 0.5
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+  - type: BasicEntityAmmoProvider
+    proto: BulletDisposableGrenadeWM
+    capacity: 1
+    count: 1
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.WieldableVisuals.Wielded:
+        base:
+          True: { visible: false }
+          False: { visible: true }
+        type:
+          True: { visible: false }
+          False: { visible: true }
+        wielded:
+          True: { visible: true }
+          False: { visible: false }
+        wieldedType:
+          True: { visible: true }
+          False: { visible: false }
+      enum.AmmoVisuals.HasAmmo:
+        base:
+          False: { visible: false }
+        type:
+          False: { visible: false }
+        wielded:
+          False: { visible: true }
+        wieldedType:
+          False: { visible: false }
+  - type: UseDelay
+    delay: 1
+  - type: GunRequiresWield
+  - type: SpeedModifiedOnWield
+    walkModifier: 0.7
+    sprintModifier: 0.7
+  - type: TimedDespawn
+    lifetime: 100
+  - type: CancelTimedDespawnOnInsert
+  - type: ExplosionResistance
+    damageCoefficient: 0.0001

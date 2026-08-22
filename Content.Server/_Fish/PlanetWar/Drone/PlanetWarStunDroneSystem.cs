@@ -43,10 +43,13 @@ namespace Content.Server._Fish.PlanetWar.Drone
 
             var coords = _transform.GetMapCoordinates(droneUid);
 
-            // 1. Blind enemies in 5x5 (radius 2.5m)
-            // 3. Shock enemies in 3x3 (radius 1.5m)
-            var range5x5 = 2.5f;
-            var range3x3 = 1.5f;
+            // ===== FISH EDIT START: PV AMMO / WEAPON CHANGES =====
+            // 1. Blind enemies (+7s к прежним 1s → 8s по умолчанию)
+            // 3. Shock enemies in electrocution range
+            var range5x5 = component.FlashRange;
+            var range3x3 = component.ElectrocutionRange;
+            var flashDuration = TimeSpan.FromSeconds(component.FlashDuration);
+            // ===== FISH EDIT END: PV AMMO / WEAPON CHANGES =====
 
             // Find all potential targets with status effects
             var dronePos = _transform.GetWorldPosition(droneUid);
@@ -59,8 +62,9 @@ namespace Content.Server._Fish.PlanetWar.Drone
                 if (_npcFaction.IsEntityFriendly(droneUid, target.Owner))
                     continue;
 
-                // Flash target (blind for 1 second)
-                _flash.Flash(target.Owner, droneUid, null, TimeSpan.FromSeconds(1), 0.8f, true);
+                // ===== FISH EDIT START: PV AMMO / WEAPON CHANGES =====
+                _flash.Flash(target.Owner, droneUid, null, flashDuration, 0.8f, true);
+                // ===== FISH EDIT END: PV AMMO / WEAPON CHANGES =====
 
                 // If in 3x3 radius, shock them!
                 var targetPos = _transform.GetWorldPosition(target.Owner);

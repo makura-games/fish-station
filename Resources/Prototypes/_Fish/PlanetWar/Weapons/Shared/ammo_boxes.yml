@@ -1,0 +1,229 @@
+# PlanetWar ammo boxes — контейнеры патронов (не магазины).
+# Цена: 3 кредита; размер 2×2; TimedDespawn отменяется при подборе.
+
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: BaseMagazineBoxWM
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    cycleable: false
+  - type: Item
+    size: Normal
+    shape:
+    - 0,0,1,1
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Appearance
+  - type: MagazineVisuals
+    magState: mag
+    steps: 3
+    zeroVisible: false
+  - type: PhysicalComposition
+    materialComposition:
+      MoneyWarMizMaterial: 3
+  - type: TimedDespawn
+    lifetime: 100
+  - type: CancelTimedDespawnOnInsert
+  - type: Tag
+    tags:
+    - TehfabTagWM
+
+# .35 pistol — mag 20 × 5 = 100
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxPistolWM
+  name: ammunition box (.35 WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgePistol
+    proto: CartridgePistolWM
+    capacity: 100
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/pistol.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: sp
+
+# .30 light rifle — mag 30 × 5 = 150
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxLightRifleWM
+  name: ammunition box (.30 WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeLightRifle
+    proto: SunriseCartridgeLightRifleWM
+    capacity: 150
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/light_rifle.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: sp
+
+# .20 rifle — mag 40 × 5 = 200
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxRifleWM
+  name: ammunition box (.20 WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeRifle
+    proto: SunriseCartridgeRifleWM
+    capacity: 200
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/rifle.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: sp
+
+# .10 heavy rifle — mag 180 × 5 = 900
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxHeavyRifleWM
+  name: ammunition box (.10 heavy WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeHeavyRifle
+    proto: CartridgeHeavyLightRifleWM
+    capacity: 900
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/rifle.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: ap
+
+# anti-materiel — mag 16 × 3 = 48
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxAntiMaterielWM
+  name: ammunition box (anti-materiel WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeAntiMateriel
+    proto: CartridgeAntiMaterielWM
+    capacity: 48
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Ammunition/Boxes/anti_materiel.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+
+# .45 magnum — speedloader 24 × 5 = 120
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxMagnumWM
+  name: ammunition box (.45 magnum WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeMagnum
+    proto: CartridgeMagnumWM
+    capacity: 120
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/magnum.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: sp
+
+# .45 magnum FMJ — speedloader 7 × 5 = 35
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxMagnumFMJWM
+  name: ammunition box (.45 magnum FMJ WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeMagnum
+    proto: CartridgeMagnumFMJWM
+    capacity: 35
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/magnum.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: fmj
+
+# .50 pellet — mag 12 × 5 = 60
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxShotgunWM
+  name: ammunition box (.50 pellet WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - ShellShotgun
+    proto: ShellShotgunWM
+    capacity: 60
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/shotgun.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: lethal
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: false
+
+# .50 slug — mag 8 × 5 = 40
+- type: entity
+  parent: BaseMagazineBoxWM
+  id: MagazineBoxShotgunSlugWM
+  name: ammunition box (.50 slug WM)
+  components:
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - ShellShotgun
+    proto: ShellShotgunSlugWM
+    capacity: 40
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Boxes/shotgun.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-slug-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: slug
+  - type: MagazineVisuals
+    magState: mag-slug
+    steps: 5
+    zeroVisible: false

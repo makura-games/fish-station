@@ -33,9 +33,12 @@
   #  requireInSpace: false
   - type: GhostRole
     name: pw-vehicles-rebels-dronarm-name-1
-    description: pw-vehicles-rebels-dronarm-desc-1
+    description: pw-vehicles-rebels-dronarm-desc
     raffle:
       settings: WM
+  - type: PlanetWarBriefing
+    briefingText: pw-briefing-rebels-dronarm
+    briefingColor: "#e50000"
   - type: StepTrigger
     blacklist:
       components:
@@ -135,7 +138,7 @@
   components:
   - type: GhostRole
     name: pw-vehicles-rebels-dronarm-name-1
-    description: pw-construction-rebels-mobhumanarmp0-desc
+    description: pw-vehicles-rebels-dronarm-desc
     raffle:
       settings: WM
   - type: GhostRoleMobSpawner
@@ -151,7 +154,7 @@
   components:
   - type: GhostRole
     name: pw-vehicles-rebels-markerdronarmturretmine-name
-    description: pw-construction-rebels-mobhumanarmp0-desc
+    description: pw-vehicles-rebels-markerdronarmturretmine-desc
     raffle:
       settings: WM
   - type: GhostRoleMobSpawner

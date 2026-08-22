@@ -202,6 +202,15 @@ public sealed partial class GunComponent : Component
     [AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
     public float FireRateModified;
 
+    // ===== FISH EDIT START: PV AMMO / WEAPON CHANGES =====
+    /// <summary>
+    /// Опциональная скорострельность только для SemiAuto.
+    /// 0 = использовать <see cref="FireRateModified"/>.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float SemiAutoFireRate;
+    // ===== FISH EDIT END: PV AMMO / WEAPON CHANGES =====
+
     /// <summary>
     /// Starts fire cooldown when equipped if true.
     /// </summary>
