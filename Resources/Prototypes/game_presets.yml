@@ -119,7 +119,7 @@
   alias:
   - dynamic
   - multiantag
-  - director
+  # Fish-edit: alias director оставили только у StorytellerClassic
   name: dynamic-title
   showInVote: true # Sunrise-Edit
   hide: false # Sunrise-Edit

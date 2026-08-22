@@ -114,9 +114,9 @@
   components:
   - type: StationEvent
     startAnnouncement: null
-    # startAudio: /Audio/Ambience/Antag/pirate_start.ogg
-    # duration: -0
-    # endAudio: /Audio/Ambience/Antag/pirate_start.ogg
+    minimumPlayers: 75 # Fish-edit: как у UnknownShuttlePirateMedium
+    earliestStart: 20
+    weight: 2
   - type: LoadMapRule
     gridPath: "/Maps/_Sunrise/Shuttles/Antag/rust_brass.yml"
 
@@ -126,9 +126,9 @@
   components:
   - type: StationEvent
     startAnnouncement: null
-    # startAudio: /Audio/Ambience/Antag/pirate_start.ogg
-    # duration: -0
-    # endAudio: /Audio/Ambience/Antag/pirate_start.ogg
+    minimumPlayers: 75 # Fish-edit: как у UnknownShuttlePirateSmall
+    earliestStart: 10
+    weight: 3
   - type: LoadMapRule
     gridPath: "/Maps/_Sunrise/Shuttles/Antag/falcon.yml"
   - type: DynamicRuleCost

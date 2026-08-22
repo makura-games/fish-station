@@ -37,6 +37,7 @@
           - Demon
           - Vox
           - Tajaran
+          - Kitsune # Fish-edit
       blacklist:
         components:
         - AntagImmune
@@ -67,6 +68,7 @@
         - Demon
         - Vox
         - Tajaran
+        - Kitsune # Fish-edit
       blacklist:
         components:
         - AntagImmune

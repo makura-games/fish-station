@@ -46,10 +46,11 @@
   threatCost: 0
   maxStress: 100
 
+# Fish-edit: оружейные подарки не Helpful — не разгоняют StationStrength перед Peak
 - type: storytellerMetadata
   id: GiftsSecurityGuns
-  threatType: Helpful
-  threatCost: 0
+  threatType: Neutral
+  threatCost: 5
   maxStress: 100
 
 - type: storytellerMetadata
@@ -60,8 +61,8 @@
 
 - type: storytellerMetadata
   id: GiftsAncientGuns
-  threatType: Helpful
-  threatCost: 0
+  threatType: Neutral
+  threatCost: 5
   maxStress: 100
 
 - type: storytellerMetadata
@@ -116,11 +117,7 @@
   threatCost: 5
   maxStress: 100
 
-- type: storytellerMetadata
-  id: SnailMigrationLowPop
-  threatType: Neutral
-  threatCost: 5
-  maxStress: 100
+# Fish-edit: SnailMigrationLowPop убран из рассказчика — на хайпопе дублировал SnailMigration
 
 - type: storytellerMetadata
   id: MimicVendorRule
@@ -130,6 +127,91 @@
 
 - type: storytellerMetadata
   id: ClosetSkeleton
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+# Fish-edit: дружественные unknown shuttle (из FriendlyTable, без отключённых CargoLost/Gym)
+- type: storytellerMetadata
+  id: UnknownShuttleTravelingCuisine
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleDisasterEvacPod
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleHonki
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleNTQuark
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleCruiser
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleCryptid
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleEternal
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleFlatline
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleNTIncorporation
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleJoe
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleLambordeere
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleMeatZone
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleMicroshuttle
+  threatType: Neutral
+  threatCost: 5
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: UnknownShuttleSpacebus
   threatType: Neutral
   threatCost: 5
   maxStress: 100
@@ -155,6 +237,19 @@
   threatType: MinorCalm
   threatCost: 15
   maxStress: 100
+
+- type: storytellerMetadata
+  id: BureaucraticError
+  threatType: MinorCalm
+  threatCost: 15
+  maxStress: 100
+
+- type: storytellerMetadata
+  id: DiseaseSpawn
+  threatType: MinorCalm
+  threatCost: 25
+  minStationStrength: 15
+  maxStress: 80
 
 - type: storytellerMetadata
   id: AnomalySpawn
@@ -366,13 +461,14 @@
   minStationStrength: 10
   maxStress: 80
 
+# Fish-edit: снижены weightModifier у мелких антагов и враждебных шаттлов
 - type: storytellerMetadata
   id: Thief
   threatType: MinorAntag
   threatCost: 40
   minStationStrength: 0
   maxStress: 90
-  weightModifier: 4.0
+  weightModifier: 1.2
 
 - type: storytellerMetadata
   id: SiliconLiberation
@@ -380,7 +476,7 @@
   threatCost: 40
   minStationStrength: 0
   maxStress: 90
-  weightModifier: 4.0
+  weightModifier: 1.2
 
 - type: storytellerMetadata
   id: PirateSmall
@@ -388,7 +484,7 @@
   threatCost: 60
   minStationStrength: 10
   maxStress: 80
-  weightModifier: 2.0
+  weightModifier: 1.0
 
 - type: storytellerMetadata
   id: Fugitive
@@ -396,7 +492,7 @@
   threatCost: 30
   maxStress: 80
   minStationStrength: 0
-  weightModifier: 2.0
+  weightModifier: 1.5
 
 - type: storytellerMetadata
   id: TerminatorSpawn
@@ -404,7 +500,7 @@
   threatCost: 40
   maxStress: 80
   minStationStrength: 10
-  weightModifier: 3.0
+  weightModifier: 1.5
 
 - type: storytellerMetadata
   id: SpiderClownSpawnHorde
@@ -419,17 +515,19 @@
   threatCost: 60
   minStationStrength: 15
   maxStress: 75
+  weightModifier: 1.0
 
 - type: storytellerMetadata
   id: UnknownShuttleManOWar
   threatType: MinorAntag
-  threatCost: 30
-  minStationStrength: 10
+  threatCost: 60
+  minStationStrength: 15
   maxStress: 75
-  weightModifier: 5.0
+  weightModifier: 1.0
 
 # =============================================================================
-# 🔴 MAJOR ANTAGONISTS / GAME MODES
+# 🔴 MAJOR ANTAGONISTS (только midround-варианты; roundstart-дубли убраны)
+# Fish-edit
 # =============================================================================
 
 - type: storytellerMetadata
@@ -452,6 +550,7 @@
   threatCost: 220
   minStationStrength: 30
   maxStress: 75
+  weightModifier: 0.8
 
 - type: storytellerMetadata
   id: LoneOpsSpawn
@@ -473,15 +572,7 @@
   threatCost: 110
   minStationStrength: 15
   maxStress: 80
-  weightModifier: 2.0
-
-- type: storytellerMetadata
-  id: Traitor
-  threatType: MajorAntag
-  threatCost: 100
-  minStationStrength: 10
-  maxStress: 85
-  weightModifier: 3.0
+  weightModifier: 1.5
 
 - type: storytellerMetadata
   id: SleeperAgents
@@ -489,7 +580,7 @@
   threatCost: 90
   minStationStrength: 20
   maxStress: 80
-  weightModifier: 5.0
+  weightModifier: 1.5
 
 - type: storytellerMetadata
   id: Nukeops
@@ -497,54 +588,6 @@
   threatCost: 250
   minStationStrength: 30
   maxStress: 85
-  weightModifier: 2.0
-
-- type: storytellerMetadata
-  id: Revolutionary
-  threatType: MajorAntag
-  threatCost: 220
-  minStationStrength: 25
-  maxStress: 85
-  weightModifier: 0.5
-
-- type: storytellerMetadata
-  id: Zombie
-  threatType: MajorAntag
-  threatCost: 220
-  minStationStrength: 30
-  maxStress: 75
-  weightModifier: 0.5
-
-- type: storytellerMetadata
-  id: Wizard
-  threatType: MajorAntag
-  threatCost: 140
-  minStationStrength: 25
-  maxStress: 75
-  weightModifier: 1.0
-
-- type: storytellerMetadata
-  id: PirateMedium
-  threatType: MajorAntag
-  threatCost: 100
-  minStationStrength: 20
-  maxStress: 80
-  weightModifier: 1.5
-
-- type: storytellerMetadata
-  id: BloodCult
-  threatType: MajorAntag
-  threatCost: 220
-  minStationStrength: 30
-  maxStress: 75
-  weightModifier: 1.0
-
-- type: storytellerMetadata
-  id: FleshCult
-  threatType: MajorAntag
-  threatCost: 220
-  minStationStrength: 30
-  maxStress: 75
   weightModifier: 1.0
 
 - type: storytellerMetadata
@@ -553,6 +596,39 @@
   threatCost: 120
   minStationStrength: 15
   maxStress: 75
+  weightModifier: 1.0
+
+# Fish-edit: midround-safe Intra/PostPlayerSpawn режимы
+- type: storytellerMetadata
+  id: Revolutionary
+  threatType: MajorAntag
+  threatCost: 220
+  minStationStrength: 25
+  maxStress: 85
+  weightModifier: 0.7
+
+- type: storytellerMetadata
+  id: BloodCult
+  threatType: MajorAntag
+  threatCost: 220
+  minStationStrength: 30
+  maxStress: 75
+  weightModifier: 0.8
+
+- type: storytellerMetadata
+  id: FleshCult
+  threatType: MajorAntag
+  threatCost: 220
+  minStationStrength: 30
+  maxStress: 75
+  weightModifier: 0.8
+
+- type: storytellerMetadata
+  id: PirateMedium
+  threatType: MajorAntag
+  threatCost: 100
+  minStationStrength: 20
+  maxStress: 80
   weightModifier: 1.0
 
 - type: storytellerMetadata

@@ -35,7 +35,9 @@ namespace Content.Client.RoundEnd
 
             RoundId = roundId;
             var roundEndTabs = new TabContainer();
-            roundEndTabs.AddChild(MakeStorytellerHistoryTab(storytellerHistory)); // Sunrise-Edit
+            // Fish-edit: вкладка истории только если в раунде был рассказчик
+            if (!string.IsNullOrEmpty(storytellerName))
+                roundEndTabs.AddChild(MakeStorytellerHistoryTab(storytellerHistory));
             roundEndTabs.AddChild(MakeRoundEndStatsTab(roundEndStats)); // Sunrise-End
             roundEndTabs.AddChild(MakeRoundEndMyStatsTab(statisticEntries)); // Sunrise-End
             roundEndTabs.AddChild(MakeRoundEndSummaryTab(gm, roundEnd, roundTimeSpan, roundId, storytellerName)); // Sunrise-Edit
@@ -280,8 +282,8 @@ namespace Content.Client.RoundEnd
             {
                 StorytellerHistoryType.HelpfulEvent => "Положительные",
                 StorytellerHistoryType.NeutralEvent => "Нейтральные события",
-                StorytellerHistoryType.MinorCalmEvent => "Мелкие проишествия",
-                StorytellerHistoryType.MajorCalmEvent => "Крупные проишествия",
+                StorytellerHistoryType.MinorCalmEvent => "Мелкие происшествия",
+                StorytellerHistoryType.MajorCalmEvent => "Крупные происшествия",
                 StorytellerHistoryType.MinorAntagEvent => "Антагонисты",
                 StorytellerHistoryType.MajorAntagEvent => "Крупные антагонисты",
                 StorytellerHistoryType.Death => "Смерти",

@@ -148,9 +148,19 @@ public sealed class StorytellerHistorySystem : EntitySystem
     /// </summary>
     public void LogHistoryEntry(StorytellerHistoryType type, string locKey, params (string key, object val)[] args)
     {
+        // Fish-edit: пишем историю только пока активен рассказчик
+        if (!IsStorytellerRoundActive())
+            return;
+
         var description = Loc.GetString(locKey, args);
         var entry = new StorytellerHistoryEntry(_gameTicker.RoundDuration(), type, description);
         _history.Add(entry);
+    }
+
+    private bool IsStorytellerRoundActive()
+    {
+        var query = EntityQueryEnumerator<StorytellerRuleComponent, ActiveGameRuleComponent>();
+        return query.MoveNext(out _, out _, out _);
     }
 
     private void OnGameRuleStarted(ref GameRuleStartedEvent args)

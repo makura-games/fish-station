@@ -136,6 +136,16 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnPlayerJoinedLobby);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<AlertLevelChangedEvent>(OnAlertLevelChanged);
+        SubscribeLocalEvent<GameRuleEndedEvent>(OnStorytellerChildRuleEnded);
+    }
+
+    private void OnStorytellerChildRuleEnded(ref GameRuleEndedEvent args)
+    {
+        var query = EntityQueryEnumerator<StorytellerRuleComponent>();
+        while (query.MoveNext(out _, out var comp))
+        {
+            comp.ActiveStorytellerRules.Remove(args.RuleEntity);
+        }
     }
 
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
@@ -179,7 +189,6 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         component.LastNeutralEventTime = Timing.CurTime;
         component.LastMajorEventTime = Timing.CurTime;
 
-        component.StateTransitionTime = Timing.CurTime + TimeSpan.FromMinutes(_random.Next(15, 30));
         component.PacingState = StorytellerPacingState.Relaxation;
         component.ThreatBudget = 30f;
         component.MajorThreatBudget = 30f;
@@ -193,12 +202,20 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             component.StorytellerType = _random.Pick(new[] { StorytellerType.Calm, StorytellerType.Classic, StorytellerType.Insane });
         }
 
+        // Fish-edit: первая Relaxation берёт длительности из YAML типа, а не хардкод 15–30
         if (_protoManager.TryIndex<StorytellerTypePrototype>(component.StorytellerType.ToString(), out var typeProto))
         {
             component.GlobalEventCooldownMinutes = typeProto.GlobalEventCooldownMinutes;
             component.HelpfulEventCooldownMinutes = typeProto.HelpfulEventCooldownMinutes;
             component.NeutralEventCooldownMinutes = typeProto.NeutralEventCooldownMinutes;
             component.MajorEventCooldownMinutes = typeProto.MajorEventCooldownMinutes;
+            var firstRelax = _random.NextFloat(typeProto.RelaxationMinMinutes, typeProto.RelaxationMaxMinutes)
+                             * typeProto.DurationMultiplier;
+            component.StateTransitionTime = Timing.CurTime + TimeSpan.FromMinutes(firstRelax);
+        }
+        else
+        {
+            component.StateTransitionTime = Timing.CurTime + TimeSpan.FromMinutes(_random.Next(15, 30));
         }
     }
 
@@ -249,6 +266,9 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         // Periodic evaluation
         if (Timing.CurTime >= component.NextCheckTime)
         {
+            // Fish-edit: чистим завершённые/удалённые дочерние правила
+            component.ActiveStorytellerRules.RemoveAll(uid => !Exists(uid) || Deleted(uid));
+
             var interval = _cfg.GetCVar(SunriseCCVars.StorytellerCheckInterval);
             component.NextCheckTime = Timing.CurTime + TimeSpan.FromSeconds(interval);
             EvaluateStoryteller((uid, component));
@@ -345,9 +365,9 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             return;
         }
 
-        // Sunrise-Edit: Split regular and major event flows to prevent minor event spam from locking out major threats
-        ExecuteRegularEventsFlow(entity, metrics);
+        // Fish-edit: сначала MajorAntag; при срабатывании он ставит LastAnyEventTime и блокирует мелкий спавн в том же тике
         ExecuteMajorEventsFlow(entity, metrics);
+        ExecuteRegularEventsFlow(entity, metrics);
     }
 
     private void ExecuteRegularEventsFlow(Entity<StorytellerRuleComponent> entity, StationMetrics metrics)
@@ -401,7 +421,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
                 rollChance = 0f;
                 break;
             case StorytellerPacingState.BuildUp:
-                rollChance = 0f;
+                // Fish-edit: MajorCalm только через major-flow (не спамит regular)
+                rollChance = 0.20f;
                 break;
             case StorytellerPacingState.Peak:
                 rollChance = 0.33f;
@@ -1092,8 +1113,13 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             if (!_protoManager.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
                 continue;
 
-            var isEventMajorAntag = metadata.ThreatType == StorytellerThreatType.MajorAntag;
-            if (isMajor != isEventMajorAntag)
+            var isEventMajor = metadata.ThreatType is StorytellerThreatType.MajorAntag or StorytellerThreatType.MajorCalm;
+            if (isMajor != isEventMajor)
+                continue;
+
+            // Fish-edit: Calm не крутит MajorAntag — бюджет слишком мал для дорогих режимов
+            if (comp.StorytellerType == StorytellerType.Calm &&
+                metadata.ThreatType == StorytellerThreatType.MajorAntag)
                 continue;
 
             if (metadata.ThreatType == StorytellerThreatType.Helpful)
@@ -1107,14 +1133,18 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
                     continue;
             }
 
-            if (metadata.ThreatType is StorytellerThreatType.MajorAntag or StorytellerThreatType.MajorCalm)
-            {
-                if (metrics.StationStrength < metadata.MinStationStrength)
-                    continue;
-            }
-            else if (comp.CrewStress > metadata.MaxStress)
-            {
+            // Fish-edit: оба фильтра сразу (раньше else-if ломал MaxStress у Major* и MinStationStrength у остальных)
+            if (metrics.StationStrength < metadata.MinStationStrength)
                 continue;
+
+            if (comp.CrewStress > metadata.MaxStress)
+                continue;
+
+            // Fish-edit: уважаем GameRule.minPlayers и midround (раньше обходился)
+            if (proto.TryGetComponent<GameRuleComponent>(out var gameRuleComp, EntityManager.ComponentFactory))
+            {
+                if (metrics.TotalPlayers < gameRuleComp.MinPlayers)
+                    continue;
             }
 
             // Evac/roundend checks
@@ -1130,6 +1160,14 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
                 var lastTime = _eventManager.TimeSinceLastEvent(proto);
                 if (lastTime != TimeSpan.Zero && currentDuration.TotalMinutes < stationEvent.ReoccurrenceDelay + lastTime.TotalMinutes)
                     continue;
+
+                // Fish-edit: maxOccurrences как у обычного event scheduler
+                if (stationEvent.MaxOccurrences.HasValue)
+                {
+                    var occurrences = GameTicker.AllPreviousGameRules.Count(p => p.Item2 == proto.ID);
+                    if (occurrences >= stationEvent.MaxOccurrences.Value)
+                        continue;
+                }
 
                 if (_roundEnd.IsRoundEndRequested() && !stationEvent.OccursDuringRoundEnd)
                     continue;
@@ -1245,10 +1283,11 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         entity.Comp.EventHistory.Add(proto.ID);
 
         // Update cooldown tracking
-        var isEventMajorAntag = metadata.ThreatType == StorytellerThreatType.MajorAntag;
-        if (isEventMajorAntag)
+        // Fish-edit: MajorCalm и MajorAntag делят major-слот и глобальный КД
+        if (metadata.ThreatType is StorytellerThreatType.MajorAntag or StorytellerThreatType.MajorCalm)
         {
             entity.Comp.LastMajorEventTime = Timing.CurTime;
+            entity.Comp.LastAnyEventTime = Timing.CurTime;
         }
         else
         {
@@ -1861,6 +1900,13 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             if (!_protoManager.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
                 continue;
 
+            if (comp.StorytellerType == StorytellerType.Calm &&
+                metadata.ThreatType == StorytellerThreatType.MajorAntag)
+            {
+                IncrementReason("Calm blocks MajorAntag");
+                continue;
+            }
+
             if (metadata.ThreatType == StorytellerThreatType.Helpful)
             {
                 if (Timing.CurTime - comp.LastHelpfulEventTime < TimeSpan.FromMinutes(comp.HelpfulEventCooldownMinutes))
@@ -1878,18 +1924,25 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
                 }
             }
 
-            if (metadata.ThreatType is StorytellerThreatType.MajorAntag or StorytellerThreatType.MajorCalm)
+            if (metrics.StationStrength < metadata.MinStationStrength)
             {
-                if (metrics.StationStrength < metadata.MinStationStrength)
-                {
-                    IncrementReason("StationStrength < MinStationStrength");
-                    continue;
-                }
+                IncrementReason("StationStrength < MinStationStrength");
+                continue;
             }
-            else if (comp.CrewStress > metadata.MaxStress)
+
+            if (comp.CrewStress > metadata.MaxStress)
             {
                 IncrementReason("CrewStress > MaxStress");
                 continue;
+            }
+
+            if (proto.TryGetComponent<GameRuleComponent>(out var gameRuleComp, EntityManager.ComponentFactory))
+            {
+                if (metrics.TotalPlayers < gameRuleComp.MinPlayers)
+                {
+                    IncrementReason($"TotalPlayers < GameRule.MinPlayers ({gameRuleComp.MinPlayers})");
+                    continue;
+                }
             }
 
             if (proto.TryGetComponent<StationEventComponent>(out var stationEvent, EntityManager.ComponentFactory))
@@ -1911,6 +1964,16 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
                 {
                     IncrementReason($"Within ReoccurrenceDelay ({stationEvent.ReoccurrenceDelay}m)");
                     continue;
+                }
+
+                if (stationEvent.MaxOccurrences.HasValue)
+                {
+                    var occurrences = GameTicker.AllPreviousGameRules.Count(p => p.Item2 == proto.ID);
+                    if (occurrences >= stationEvent.MaxOccurrences.Value)
+                    {
+                        IncrementReason($"MaxOccurrences reached ({stationEvent.MaxOccurrences.Value})");
+                        continue;
+                    }
                 }
 
                 if (_roundEnd.IsRoundEndRequested() && !stationEvent.OccursDuringRoundEnd)
