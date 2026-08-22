@@ -223,6 +223,12 @@
         Blunt: 25
     soundHit:
       collection: MetalThud
+  - type: MeleeThrowOnHit
+    speed: 12
+    distance: 4
+  - type: UseDelay
+    delay: 5
+  - type: JuggernautHammer
   - type: MultiHandedItem
   - type: Clothing
     quickEquip: false

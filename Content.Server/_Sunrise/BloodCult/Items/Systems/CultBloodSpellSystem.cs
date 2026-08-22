@@ -9,6 +9,7 @@ using Content.Shared._Sunrise.BloodCult.Items;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
@@ -225,9 +226,16 @@ public sealed class CultBloodSpellSystem : EntitySystem
             {
                 if (bloodSolution.Volume > 250)
                 {
-                    var blood = bloodSolution.SplitSolutionWithOnly(
-                        100,
-                        "Blood");
+                    // Берём реагенты крови вида цели (Blood, Slime и т.д.), а не только "Blood".
+                    var bloodReagentIds = bloodstreamComponent.BloodReferenceSolution.Contents
+                        .Select(r => (ProtoId<ReagentPrototype>)r.Reagent.Prototype)
+                        .Distinct()
+                        .ToArray();
+
+                    if (bloodReagentIds.Length == 0)
+                        bloodReagentIds = ["Blood"];
+
+                    var blood = bloodSolution.SplitSolutionWithOnly(100, bloodReagentIds);
                     cultistComponent.BloodCharges += blood.Volume / 2;
                     _popupSystem.PopupEntity($"Собрано {blood.Volume / 2} зарядов",
                         args.User,
@@ -279,7 +287,8 @@ public sealed class CultBloodSpellSystem : EntitySystem
 
             foreach (var puddleSolutionContent in puddleSolution.Value.Comp.Solution.Contents.ToList())
             {
-                if (puddleSolutionContent.Reagent.Prototype != "Blood")
+                // Кровь культиста: обычная Blood и расовые аналоги (Slime и т.п.).
+                if (!IsCultBloodReagent(puddleSolutionContent.Reagent.Prototype))
                     continue;
 
                 var amount = _solutionSystem.RemoveReagent(
@@ -307,6 +316,18 @@ public sealed class CultBloodSpellSystem : EntitySystem
         _audioSystem.PlayPvs(bloodSpell.BloodAbsorbSound, user, bloodSpell.BloodAbsorbSound.Params);
         absorbBlood.RemoveAllSolution();
         return getCharges;
+    }
+
+    /// <summary>
+    /// Реагенты, считающиеся кровью для blood rites (включая расовые аналоги).
+    /// </summary>
+    public static bool IsCultBloodReagent(string reagentId)
+    {
+        return reagentId is "Blood"
+            or "Slime"
+            or "CopperBlood" // арахниды
+            or "FluorosulfuricAcidHumanoidXeno" // ксено / части яутжа
+            or "FluorosulfuricAcidPredator"; // яутжа
     }
 
     private bool HealCultist(EntityUid target,

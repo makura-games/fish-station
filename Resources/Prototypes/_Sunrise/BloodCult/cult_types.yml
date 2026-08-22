@@ -7,7 +7,7 @@
   godProto: Narsie
   startingItems:
   - NarsieRitualDagger
-  - CultRunicMetal10
+  - CultRunicMetal30
   - BloodCultPinpointer
 
 - type: bloodCult
@@ -19,7 +19,7 @@
   godProto: Narbee
   startingItems:
   - NarbeeRitualDagger
-  - CultRunicMetal10
+  - CultRunicMetal30
   - BloodCultPinpointer
 
 - type: bloodCult
@@ -31,5 +31,5 @@
   godProto: Reaper
   startingItems:
   - ReaperRitualDagger
-  - CultRunicMetal10
+  - CultRunicMetal30
   - BloodCultPinpointer

@@ -222,7 +222,8 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
     private void AfterEntitySelected(Entity<BloodCultRuleComponent> ent, ref AfterAntagEntitySelectedEvent args)
     {
         Log.Debug($"AfterAntagEntitySelected {ToPrettyString(ent)}");
-        MakeCultist(args.EntityUid, ent.Comp);
+        // Стартовый металл/экипировка — только до завершения начального antag selection (не late join).
+        MakeCultist(args.EntityUid, ent.Comp, giveStartingItems: !ent.Comp.InitialSelectionComplete);
     }
 
     private void OnCultistsStateChanged(EntityUid uid, BloodCultistComponent component, MobStateChangedEvent ev)
@@ -246,6 +247,8 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
     private void OnAfterAntagSelectionComplete(Entity<BloodCultRuleComponent> ent, ref AntagSelectionCompleteEvent args)
     {
+        ent.Comp.InitialSelectionComplete = true;
+
         var potentialTargets = FindPotentialTargets();
 
         var priorityTargets = potentialTargets
@@ -372,6 +375,8 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
     private void OnCultistComponentRemoved(EntityUid uid, BloodCultistComponent component, ComponentRemove args)
     {
+        // ПНВ только у конструктов — у культистов не выдаём и не снимаем.
+
         if (TryComp<CollectiveMindComponent>(uid, out var collectiveMind))
         {
             collectiveMind.Minds.Remove("BloodCult");
@@ -482,7 +487,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
         return potentialTargets;
     }
 
-    public bool MakeCultist(EntityUid cultist, BloodCultRuleComponent rule)
+    public bool MakeCultist(EntityUid cultist, BloodCultRuleComponent rule, bool giveStartingItems = false)
     {
         if (!_mindSystem.TryGetMind(cultist, out var mindId, out var mind))
             return false;
@@ -519,7 +524,8 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
         cultistComponent.CultType = rule.CultType;
 
-        if (isHumanoid)
+        // Стартовый набор (включая 30 рунического металла) — только начальным культистам.
+        if (giveStartingItems && isHumanoid)
         {
             _inventorySystem.TryGetSlotEntity(cultist, "back", out var backPack);
 
@@ -533,6 +539,20 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
                 }
             }
 
+            if (_playerManager.TryGetSessionById(mind.UserId, out var session))
+            {
+                _audioSystem.PlayGlobal(rule.GreatingsSound,
+                    Filter.Empty().AddPlayer(session),
+                    false,
+                    AudioParams.Default);
+
+                _chatManager.DispatchServerMessage(session, Loc.GetString("cult-role-greeting"));
+            }
+
+            _mindSystem.TryAddObjective(mindId, mind, "CultistKillObjective");
+        }
+        else if (isHumanoid)
+        {
             if (_playerManager.TryGetSessionById(mind.UserId, out var session))
             {
                 _audioSystem.PlayGlobal(rule.GreatingsSound,

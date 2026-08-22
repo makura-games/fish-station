@@ -1,6 +1,7 @@
 ﻿using Content.Server._Sunrise.BloodCult.GameRule;
 using Content.Server._Sunrise.IncorporealSystem;
 using Content.Shared._Sunrise.BloodCult;
+using Content.Shared._Sunrise.NightVision.Components;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Maps;
@@ -30,6 +31,11 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         private void OnConstructMapInit(EntityUid uid, ConstructComponent component, MapInitEvent args)
         {
             InitializeConstructActions(uid, component);
+
+            // Красное ПНВ только для конструктов (строитель / джаггернаут / жнец).
+            var nightVision = EnsureComp<ToggleableNightVisionComponent>(uid);
+            nightVision.Effect = "EffectNightVisionSyndie";
+            Dirty(uid, nightVision);
         }
 
         private void InitializeConstructActions(EntityUid uid, ConstructComponent component)

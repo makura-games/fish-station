@@ -1,6 +1,7 @@
 - type: entity
   id: BaseConstruct
   abstract: true
+  save: false
   categories: [ HideSpawnMenu ]
   components:
     - type: ContentEye
@@ -56,12 +57,18 @@
       proto: guardian
     - type: Pullable
     - type: Actions
+    - type: ActionsContainer
+    - type: ContainerContainer
+      containers:
+        actions: !type:Container
     - type: Tag
       tags:
         - CannotSuicide
         - DoorBumpOpener
     - type: CultMember
     - type: DamageOverlay
+    - type: ToggleableNightVision
+      effect: EffectNightVisionSyndie
     - type: TTS
       voice: dragon_knight_dragon_dota_2
 
@@ -91,8 +98,11 @@
         0: Alive
         300: Dead
     - type: MovementSpeedModifier
-      baseWalkSpeed: 1
-      baseSprintSpeed: 2.5 #Fish-edit
+      baseWalkSpeed: 3.5
+      baseSprintSpeed: 3.5
+    - type: FootstepModifier
+      footstepSoundCollection:
+        collection: FootstepHeavy
     - type: Construct
       actions: [JuggernautCreateWall]
     - type: Hands
