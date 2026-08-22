@@ -29,6 +29,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
+    - BluespaceArtilleryDesignator
     - ClothingHandsPowerGlovesUplinkNTERTAmberLeader
     belt:
     - Handcuffs
@@ -67,6 +68,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
+    - BluespaceArtilleryDesignator
     - ClothingHandsPowerGlovesUplinkNTERTRedLeader
     belt:
     - Handcuffs
@@ -106,6 +108,7 @@
     - HoloprojectorField
     - WeaponAdvancedTaser
     - DoorRemoteOmni
+    - BluespaceArtilleryDesignator
     - MagazineMagnumFMJ
     - MagazineMagnum
     - MagazineMagnum

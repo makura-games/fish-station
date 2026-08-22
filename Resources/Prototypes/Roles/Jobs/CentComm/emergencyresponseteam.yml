@@ -68,6 +68,9 @@
     - MedkitCombatFilled # End of first line
     - MedkitCombatFilled
     - TelescopicShield
+    # FISH EDIT START - ЛЦУ БСА лидерам ОБР
+    - BluespaceArtilleryDesignator
+    # FISH EDIT END
     belt:
     - Stunbaton
     - Handcuffs
@@ -96,6 +99,9 @@
     - MedkitCombatFilled # End of first line
     - GrenadeShrapnel
     - EmpGrenade
+    # FISH EDIT START - ЛЦУ БСА лидерам ОБР
+    - BluespaceArtilleryDesignator
+    # FISH EDIT END
     belt:
     - Truncheon
     - Handcuffs

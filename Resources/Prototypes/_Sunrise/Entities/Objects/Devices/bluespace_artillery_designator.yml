@@ -1,0 +1,92 @@
+- type: entity
+  parent: Binoculars
+  id: BluespaceArtilleryDesignator
+  name: BSA LCU
+  description: A handheld laser designator for requesting NanoTrasen bluespace artillery strikes. Three non-rechargeable charges. Wield (Z) to look far and designate targets at range.
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Devices/bluespace_artillery_designator.rsi
+    state: icon
+  - type: Item
+    size: Small
+    sprite: _Sunrise/Objects/Devices/bluespace_artillery_designator.rsi
+  - type: Clothing
+    sprite: _Sunrise/Objects/Devices/bluespace_artillery_designator.rsi
+    quickEquip: false
+    slots:
+    - Neck
+  - type: LimitedCharges
+    maxCharges: 3
+    lastCharges: 3
+  - type: BluespaceArtilleryDesignator
+    targetingDelay: 2
+    strikeDelay: 7
+    targetMarker: EffectBluespaceArtilleryTarget
+    announcement: bluespace-artillery-announcement
+    announcementSender: bluespace-artillery-announcement-sender
+    announcementColor: "#0000FF"
+    announcementSound:
+      path: /Audio/_Sunrise/Announcements/sunrise_artillery.ogg
+      params:
+        volume: 10
+    fireModes:
+    - name: bluespace-artillery-mode-he
+      explosionType: BluespaceArtilleryHE
+      totalIntensity: 2094
+      intensitySlope: 16
+      maxIntensity: 80
+      tileBreakScale: 1.5
+      canCreateVacuum: true
+    - name: bluespace-artillery-mode-frag
+      explosionType: BluespaceArtilleryFrag
+      totalIntensity: 1754
+      intensitySlope: 5
+      maxIntensity: 25
+      tileBreakScale: 1
+      canCreateVacuum: true
+    - name: bluespace-artillery-mode-cluster
+      explosionType: BluespaceArtilleryCluster
+      totalIntensity: 3409
+      intensitySlope: 15
+      maxIntensity: 15
+      tileBreakScale: 0.5
+      canCreateVacuum: false
+
+- type: entity
+  parent: BluespaceArtilleryDesignator
+  id: AdminBluespaceArtilleryDesignator
+  suffix: Admin
+  name: ADMIN BSA LCU
+  description: An admin bluespace artillery designator with nearly unlimited charges and instant targeting lock.
+  components:
+  - type: LimitedCharges
+    maxCharges: 999
+    lastCharges: 999
+  - type: BluespaceArtilleryDesignator
+    targetingDelay: 0
+    strikeDelay: 7
+
+- type: entity
+  id: EffectBluespaceArtilleryTarget
+  categories: [ HideSpawnMenu ]
+  name: bluespace artillery target
+  components:
+  - type: Transform
+  - type: Sprite
+    drawdepth: Effects
+    noRot: true
+    sprite: Objects/Devices/pinpointer.rsi
+    layers:
+    - state: pinpointer
+      color: "#FF0000"
+      shader: unshaded
+      scale: 1.25, 1.25
+  - type: TimedDespawn
+    lifetime: 12
+  - type: Tag
+    tags:
+    - HideContextMenu
+  - type: PointLight
+    radius: 2
+    energy: 2
+    color: "#FF0000"
