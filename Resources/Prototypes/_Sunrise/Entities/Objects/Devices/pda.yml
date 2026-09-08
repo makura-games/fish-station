@@ -63,6 +63,22 @@
   - type: Icon
     sprite: _Sunrise/Objects/Devices/pda.rsi
     state: pda-blueshield
+  # Fish-Start: MedTek and AstroNav cartridges for BlueShield PDAs
+  - type: CartridgeLoader
+    uiKey: enum.PdaUiKey.Key
+    preinstalled:
+      - CrewManifestCartridge
+      - NotekeeperCartridge
+      - NanoTaskCartridge
+      - NewsReaderCartridge
+      - WantedListCartridge
+      - MedTekCartridge
+      - AstroNavCartridge
+      - NavigatorCartridge
+      - MessengerCartridge
+      - PhotoCartridge
+      - CorporateLawCartridge
+  # Fish-End
 
 - type: entity
   parent: BasePDA
@@ -85,6 +101,22 @@
   - type: Icon
     sprite: _Sunrise/Objects/Devices/pda.rsi
     state: pda-blueshield
+  # Fish-Start: MedTek and AstroNav cartridges for BlueShield PDAs
+  - type: CartridgeLoader
+    uiKey: enum.PdaUiKey.Key
+    preinstalled:
+      - CrewManifestCartridge
+      - NotekeeperCartridge
+      - NanoTaskCartridge
+      - NewsReaderCartridge
+      - WantedListCartridge
+      - MedTekCartridge
+      - AstroNavCartridge
+      - NavigatorCartridge
+      - MessengerCartridge
+      - PhotoCartridge
+      - CorporateLawCartridge
+  # Fish-End
 
 - type: entity
   parent: BasePDA
@@ -107,6 +139,22 @@
   - type: Icon
     sprite: _Sunrise/Objects/Devices/pda.rsi
     state: pda-blueshield
+  # Fish-Start: MedTek and AstroNav cartridges for BlueShield PDAs
+  - type: CartridgeLoader
+    uiKey: enum.PdaUiKey.Key
+    preinstalled:
+      - CrewManifestCartridge
+      - NotekeeperCartridge
+      - NanoTaskCartridge
+      - NewsReaderCartridge
+      - WantedListCartridge
+      - MedTekCartridge
+      - AstroNavCartridge
+      - NavigatorCartridge
+      - MessengerCartridge
+      - PhotoCartridge
+      - CorporateLawCartridge
+  # Fish-End
 
 - type: entity
   parent: BaseMedicalPDA

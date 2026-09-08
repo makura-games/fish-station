@@ -13,7 +13,7 @@
    - !type:AgeRequirement
      requiredAge: 25
   startingGear: RepresentativeBlueShieldGear
-  icon: JobIconBlueShield
+  icon: NTR_operative
 
   supervisors: job-supervisors-representative
   canBeAntag: false

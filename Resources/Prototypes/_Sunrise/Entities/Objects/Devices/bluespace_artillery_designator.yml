@@ -2,7 +2,7 @@
   parent: Binoculars
   id: BluespaceArtilleryDesignator
   name: BSA LCU
-  description: A handheld laser designator for requesting NanoTrasen bluespace artillery strikes. Three non-rechargeable charges. Wield (Z) to look far and designate targets at range.
+  description: A handheld laser designator for requesting NanoTrasen bluespace artillery strikes. Three non-rechargeable charges. Wield (Z) to look far and designate targets at range. (use LMB to designate a target, after several seconds a marker will appear where the BSA will strike) # Fish edit
   components:
   - type: Sprite
     sprite: _Sunrise/Objects/Devices/bluespace_artillery_designator.rsi
@@ -24,9 +24,9 @@
     targetMarker: EffectBluespaceArtilleryTarget
     announcement: bluespace-artillery-announcement
     announcementSender: bluespace-artillery-announcement-sender
-    announcementColor: "#0000FF"
+    announcementColor: "#00D4FF" # Fish edit
     announcementSound:
-      path: /Audio/_Sunrise/Announcements/sunrise_artillery.ogg
+      path: /Audio/_Fish/Misc/artillery.ogg # Fish-edit
       params:
         volume: 10
     fireModes:
@@ -57,7 +57,7 @@
   id: AdminBluespaceArtilleryDesignator
   suffix: Admin
   name: ADMIN BSA LCU
-  description: An admin bluespace artillery designator with nearly unlimited charges and instant targeting lock.
+  description: An admin bluespace artillery designator with nearly unlimited charges and instant targeting lock. (use LMB to designate a target, after several seconds a marker will appear where the BSA will strike) # Fish edit
   components:
   - type: LimitedCharges
     maxCharges: 999

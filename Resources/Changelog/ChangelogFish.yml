@@ -437,3 +437,47 @@
     message: Консольная команда stopglobaladminsound, что отключает проигрыш любых админ звуков на сервере для всех.
   id: 43
   url: https://github.com/makura-games/fish-station/pull/407
+- author: TiFeRi
+  time: '2026-09-08T21:01:03.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Обновление карт под изменения синих щитов.
+  - type: Tweak
+    message: Замена шкафов на шаттле ДО.
+  id: 44
+  url: https://github.com/makura-games/fish-station/pull/436
+- author: ВАШЕ_ИМЯ
+  time: '2026-09-08T21:03:34.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Офицеру Синего Щита в стандартное снаряжение возвращена гарнитура Синего Щита вместо командной.
+  - type: Tweak
+    message: Иконка должности Оперативвника Синего Щита заменена на иконку Синего Щита Центрального Командования.
+  - type: Tweak
+    message: Цвет станционных объявлений при наведении ЛЦУ БСА изменен с темно-синего на ярко-синий.
+  - type: Tweak
+    message: 'В описание обычного и админского ЛЦУ БСА добавлено пояснение по наведению: (используйте на ЛКМ, чтобы пометить точку, после нескольких секунд появится метка по которой ударит БСА).'
+  - type: Tweak
+    message: Роль Командира Синий Щит перенесена из станционного отдела Синего Щита в список ролей Центрального Командования.
+  - type: Add
+    message: В КПК Синих Щитов  добавлены предустановленные картриджи Медтек и Астронав.
+  - type: Remove
+    message: Из EMAG-инвентаря протолата убран пакет печати синдикатовских модулей для киборгов.
+  - type: Tweak
+    message: Стоимость наборов SKM-24 и SKM-28 в аплинке Синего Щита повышена до 11 БК и 16 БК соответственно.
+  id: 45
+  url: https://github.com/makura-games/fish-station/pull/437
+- author: TiFeRi
+  time: '2026-09-08T21:01:41.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Замена озвучки удара ЛЦУ БСА на другое, by Basia.
+  id: 46
+  url: https://github.com/makura-games/fish-station/pull/438
+- author: TiFeRi
+  time: '2026-09-08T21:02:27.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Маленькое обновление шаттла ПЦК.
+  id: 47
+  url: https://github.com/makura-games/fish-station/pull/439

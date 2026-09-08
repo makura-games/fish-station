@@ -1,4 +1,4 @@
-﻿# РћСЂСѓР¶РёРµ РЎРёРЅРµРіРѕ Р©РёС‚Р° (РЅР°Р±РѕСЂС‹: РѕСЂСѓР¶РёРµ + 2 РјР°РіР°Р·РёРЅР° (1 FMJ, 1 HP))
+# РћСЂСѓР¶РёРµ РЎРёРЅРµРіРѕ Р©РёС‚Р° (РЅР°Р±РѕСЂС‹: РѕСЂСѓР¶РёРµ + 2 РјР°РіР°Р·РёРЅР° (1 FMJ, 1 HP))
 
 # region РўСЏР¶С‘Р»РѕРµ РѕСЂСѓР¶РёРµ (18 BC)
 - type: listing
@@ -25,7 +25,7 @@
   productEntity: FishClothingBackpackDuffelWeaponRifleSKM24BlueShield
   icon: { sprite: _Sunrise/Interface/Misc/nt_icons.rsi, state: skm24nano }
   cost:
-    Bluecrystal: 9
+    Bluecrystal: 11
   categories:
     - FishBlueShieldAutoGun
   conditions:
@@ -59,7 +59,7 @@
   productEntity: FishClothingBackpackDuffelWeaponRifleSKM28BlueShield
   icon: { sprite: _Sunrise/Interface/Misc/nt_icons.rsi, state: skm28nano }
   cost:
-    Bluecrystal: 9
+    Bluecrystal: 16
   categories:
     - FishBlueShieldAutoGun
   conditions:

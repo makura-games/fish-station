@@ -1,11 +1,11 @@
 meta:
   format: 7
   category: Map
-  engineVersion: 271.1.0
+  engineVersion: 275.0.0
   forkId: ""
   forkVersion: ""
-  time: 08/16/2026 10:33:25
-  entityCount: 13437
+  time: 09/06/2026 22:32:24
+  entityCount: 13438
 maps:
 - 1
 grids:
@@ -589,8 +589,6 @@ entities:
     - type: SpreaderGrid
     - type: Shuttle
       dampingModifier: 0.25
-    - type: Weather
-      weather: {}
     - type: GridPathfinding
     - type: Gravity
       gravityShakeSound: !type:SoundPathSpecifier
@@ -897,9 +895,6 @@ entities:
             7360: 51,18
             7389: 51,17
             7390: 51,16
-            7393: 25,-8
-            7394: 26,-8
-            7395: 27,-8
             7490: 3,12
             7759: -12,-1
             7760: -11,-1
@@ -31763,24 +31758,6 @@ entities:
     - type: Transform
       pos: 7.437175,-22.470104
       parent: 2
-- proto: ClothingBackpackDuffelWeaponRifleAsh12
-  entities:
-  - uid: 2645
-    components:
-    - type: Transform
-      parent: 2644
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-      storage: 2644
-  - uid: 2647
-    components:
-    - type: Transform
-      parent: 2646
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-      storage: 2646
 - proto: ClothingBackpackERTClown
   entities:
   - uid: 353
@@ -58253,7 +58230,7 @@ entities:
     - type: Transform
       pos: 5.453645,20.585024
       parent: 7918
-- proto: GunSafeEnergyPistolDominator
+- proto: GunSafeEnergyGunMini
   entities:
   - uid: 4694
     components:
@@ -59556,56 +59533,16 @@ entities:
     - type: Transform
       pos: 3.5,12.5
       parent: 2
-- proto: LockerBlueshieldFilledHardsuit
+- proto: LockerBlueShieldOfficerFilled
   entities:
-  - uid: 2644
+  - uid: 2645
     components:
     - type: Transform
-      pos: 26.5,-7.5
-      parent: 2
-    - type: EntityStorage
-      air:
-        volume: 200
-        immutable: False
-        temperature: 293.14673
-        moles:
-          Oxygen: 1.7459903
-          Nitrogen: 6.568249
-    - type: ContainerContainer
-      containers:
-        entity_storage: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 2645
-        paper_label: !type:ContainerSlot
-          showEnts: False
-          occludes: True
-          ent: null
-  - uid: 2646
-    components:
-    - type: Transform
+      anchored: True
       pos: 27.5,-7.5
       parent: 2
-    - type: EntityStorage
-      air:
-        volume: 200
-        immutable: False
-        temperature: 293.14673
-        moles:
-          Oxygen: 1.7459903
-          Nitrogen: 6.568249
-    - type: ContainerContainer
-      containers:
-        entity_storage: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 2647
-        paper_label: !type:ContainerSlot
-          showEnts: False
-          occludes: True
-          ent: null
+    - type: Physics
+      bodyType: Static
 - proto: LockerBooze
   entities:
   - uid: 7919
@@ -62208,6 +62145,13 @@ entities:
     components:
     - type: Transform
       pos: 23.637966,-6.2630997
+      parent: 2
+- proto: PlasmaCanister
+  entities:
+  - uid: 2644
+    components:
+    - type: Transform
+      pos: 35.5,-17.5
       parent: 2
 - proto: PlasmaReinforcedWindowDirectional
   entities:
@@ -77084,6 +77028,22 @@ entities:
       parent: 2
     - type: Airtight
       airBlocked: True
+  - uid: 2646
+    components:
+    - type: Transform
+      anchored: True
+      pos: 23.5,4.5
+      parent: 2
+    - type: Airtight
+      airBlocked: True
+  - uid: 2647
+    components:
+    - type: Transform
+      anchored: True
+      pos: 1.5,42.5
+      parent: 2
+    - type: Airtight
+      airBlocked: True
   - uid: 2828
     components:
     - type: Transform
@@ -77457,6 +77417,14 @@ entities:
     - type: Transform
       anchored: True
       pos: 1.5,42.5
+      parent: 2
+    - type: Airtight
+      airBlocked: True
+  - uid: 13438
+    components:
+    - type: Transform
+      anchored: True
+      pos: 15.5,-26.5
       parent: 2
     - type: Airtight
       airBlocked: True

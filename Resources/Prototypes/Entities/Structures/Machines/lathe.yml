@@ -229,8 +229,8 @@
     - NightVisionDevice
     # Sunrise-End
   - type: EmagLatheRecipes
-    emagStaticPacks:
-    - SyndicateBorgModulesEmagSunrise # Sunrise-Add
+    # emagStaticPacks: # Fish edit
+    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish edit
     emagDynamicPacks:
     # - SecurityAmmo # Sunrise-edit
     - SecurityExplosives

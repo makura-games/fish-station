@@ -52,7 +52,8 @@
     eyes: ClothingEyesGlassesBlueShield
     id: BlueShieldOfficerPDA
     # outerClothing: ClothingOuterArmorBlueShield # Fish edit - commented out, managed via loadout
-    ears: ClothingHeadsetAltCommand
+    # ears: ClothingHeadsetAltCommand # Fish edit
+    ears: ClothingHeadsetBlueShield # Fish edit
     gloves: ClothingHandsGlovesCombat
   storage:
     back:

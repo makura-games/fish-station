@@ -17,7 +17,7 @@
   description: department-Blueshield-description
   color: "#0f4e81"
   roles:
-    - BlueShieldEnsign
+    # - BlueShieldEnsign # Fish-edit
     - BlueShieldOfficer
     # - BlueShieldOperative #Fish-edit
     - RepresentativeBlueShield #Fish-add
@@ -79,6 +79,7 @@
   - CentcommChef #Fish-edit
   - CentcommMedicalDoctor #Fish-edit
   - CentcommBartender #Fish-edit
+  - BlueShieldEnsign # Fish-edit
   weight: 120
 
 - type: department

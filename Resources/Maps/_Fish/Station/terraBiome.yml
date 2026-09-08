@@ -1,11 +1,11 @@
 meta:
   format: 7
   category: Map
-  engineVersion: 271.1.0
+  engineVersion: 275.0.0
   forkId: ""
   forkVersion: ""
-  time: 07/26/2026 03:06:04
-  entityCount: 9674
+  time: 09/06/2026 22:31:36
+  entityCount: 9673
 maps:
 - 1
 grids:
@@ -602,9 +602,6 @@ entities:
             7360: 51,18
             7389: 51,17
             7390: 51,16
-            7393: 25,-8
-            7394: 26,-8
-            7395: 27,-8
             7490: 3,12
         - node:
             cleanable: True
@@ -29995,24 +29992,6 @@ entities:
     - type: Transform
       pos: 7.437175,-22.470104
       parent: 2
-- proto: ClothingBackpackDuffelWeaponRifleAsh12
-  entities:
-  - uid: 2645
-    components:
-    - type: Transform
-      parent: 2644
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-      storage: 2644
-  - uid: 2647
-    components:
-    - type: Transform
-      parent: 2646
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-      storage: 2646
 - proto: ClothingBackpackERTClown
   entities:
   - uid: 353
@@ -48387,7 +48366,7 @@ entities:
     - type: Transform
       pos: 5.453645,20.585024
       parent: 7918
-- proto: GunSafeEnergyPistolDominator
+- proto: GunSafeEnergyGunMini
   entities:
   - uid: 4694
     components:
@@ -49670,56 +49649,16 @@ entities:
     - type: Transform
       pos: 3.5,12.5
       parent: 2
-- proto: LockerBlueshieldFilledHardsuit
+- proto: LockerBlueShieldOfficerFilled
   entities:
   - uid: 2644
     components:
     - type: Transform
-      pos: 26.5,-7.5
-      parent: 2
-    - type: EntityStorage
-      air:
-        volume: 200
-        immutable: False
-        temperature: 293.14673
-        moles:
-          Oxygen: 1.7459903
-          Nitrogen: 6.568249
-    - type: ContainerContainer
-      containers:
-        entity_storage: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 2645
-        paper_label: !type:ContainerSlot
-          showEnts: False
-          occludes: True
-          ent: null
-  - uid: 2646
-    components:
-    - type: Transform
+      anchored: True
       pos: 27.5,-7.5
       parent: 2
-    - type: EntityStorage
-      air:
-        volume: 200
-        immutable: False
-        temperature: 293.14673
-        moles:
-          Oxygen: 1.7459903
-          Nitrogen: 6.568249
-    - type: ContainerContainer
-      containers:
-        entity_storage: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 2647
-        paper_label: !type:ContainerSlot
-          showEnts: False
-          occludes: True
-          ent: null
+    - type: Physics
+      bodyType: Static
 - proto: LockerBooze
   entities:
   - uid: 7919
@@ -60672,6 +60611,30 @@ entities:
       parent: 2
 - proto: SunriseMultiTileAirtightBlocker
   entities:
+  - uid: 2645
+    components:
+    - type: Transform
+      anchored: True
+      pos: 23.5,4.5
+      parent: 2
+    - type: Airtight
+      airBlocked: True
+  - uid: 2646
+    components:
+    - type: Transform
+      anchored: True
+      pos: 0.5,40.5
+      parent: 2
+    - type: Airtight
+      airBlocked: True
+  - uid: 2647
+    components:
+    - type: Transform
+      anchored: True
+      pos: 15.5,-26.5
+      parent: 2
+    - type: Airtight
+      airBlocked: True
   - uid: 3009
     components:
     - type: Transform
