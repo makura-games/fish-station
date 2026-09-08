@@ -26,7 +26,7 @@
     announcementSender: bluespace-artillery-announcement-sender
     announcementColor: "#0000FF"
     announcementSound:
-      path: /Audio/_Sunrise/Announcements/sunrise_artillery.ogg
+      path: /Audio/_Fish/Misc/artillery.ogg # Fish-edit
       params:
         volume: 10
     fireModes:
