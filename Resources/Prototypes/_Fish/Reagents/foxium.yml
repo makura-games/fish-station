@@ -16,3 +16,17 @@
         showInGuidebook: true
         force: true
         probability: 0.5
+      - !type:Polymorph
+        prototype: FoxMorph
+        conditions:
+        - !type:ReagentCondition
+          reagent: Foxium
+          min: 50
+      - !type:AdjustReagent
+        reagent: Foxium
+        amount: -50
+        conditions:
+        - !type:ReagentCondition
+          reagent: Foxium
+          min: 50
+

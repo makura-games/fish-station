@@ -3,5 +3,6 @@
   name: department-FractionGhostWM
   description: department-FractionGhostWM-description
   color: "#999999"
+  editorHidden: true
   roles:
   - JobGhostWMBase

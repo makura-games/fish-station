@@ -44,6 +44,11 @@ public sealed partial class FishHealthAnalyzerControl
         ["Genetic"] = "Doxarubixadone",
     };
 
+    private static readonly Dictionary<ProtoId<DamageTypePrototype>, ProtoId<ReagentPrototype>> BasicTypeTreatments = new()
+    {
+        ["Radiation"] = "Hyronalin",
+    };
+
     private static readonly Dictionary<ProtoId<DamageTypePrototype>, ProtoId<ReagentPrototype>> AdvancedTreatments = new()
     {
         ["Blunt"] = "Bruizine",
@@ -390,7 +395,7 @@ public sealed partial class FishHealthAnalyzerControl
             var reagent = groupDamage >= SevereDamageThreshold &&
                           AdvancedTreatments.TryGetValue(damageType, out var advancedReagent)
                 ? advancedReagent
-                : basicReagent;
+                : BasicTypeTreatments.GetValueOrDefault(damageType, basicReagent);
             yield return (damageType, reagent);
         }
     }

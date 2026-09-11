@@ -3,6 +3,11 @@ using System.Linq;
 using Content.IntegrationTests.Pair;
 using Content.Shared._Fish.Achievements;
 using Robust.Shared.Prototypes;
+using Content.Shared.Mind;
+using Content.Shared.Players;
+using Content.Shared.Roles;
+using Robust.Server.Player;
+using Robust.Shared.GameObjects;
 
 namespace Content.IntegrationTests.Tests._Fish;
 
@@ -105,6 +110,48 @@ public sealed class AchievementTriggerAuditTests
 
         var seed = all.Where(p => SeedFullyImplemented.Contains(p.ID)).ToList();
         Assert.That(seed, Has.Count.EqualTo(SeedFullyImplemented.Count));
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task TestRoleAdded_ConcurrentRoleAddition_DoesNotThrowCollectionModified()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Fresh = true,
+            Dirty = true,
+            DummyTicker = false,
+            Connected = true
+        });
+
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var sPlayerMan = server.ResolveDependency<IPlayerManager>();
+        var roleSystem = entMan.System<SharedRoleSystem>();
+
+        var session = sPlayerMan.Sessions.Single();
+        var mindId = session.ContentData()!.Mind!.Value;
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.DoesNotThrow(() =>
+            {
+                // Добавляем роли подряд: OnRoleAdded асинхронно обрабатывает ContainedEntities,
+                // не должно выбрасываться InvalidOperationException (Collection was modified).
+                roleSystem.MindAddRole(mindId, "MindRoleTraitor");
+                roleSystem.MindAddJobRole(mindId, jobPrototype: "Passenger");
+                roleSystem.MindAddRole(mindId, "MindRoleDragon");
+            });
+        });
+
+        await pair.RunTicksSync(10);
+
+        await server.WaitAssertion(() =>
+        {
+            var mind = entMan.GetComponent<MindComponent>(mindId);
+            Assert.That(mind.MindRoleContainer.ContainedEntities.Count, Is.GreaterThanOrEqualTo(3));
+        });
 
         await pair.CleanReturnAsync();
     }

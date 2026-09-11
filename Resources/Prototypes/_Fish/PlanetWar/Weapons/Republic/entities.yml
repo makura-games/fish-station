@@ -37,6 +37,7 @@
     intensitySlope: 1
     maxIntensity: 2
     canCreateVacuum: false
+    maxTileBreak: 0
   - type: WhitelistTriggerCondition
     userBlacklist:
       components:
@@ -124,6 +125,7 @@
       intensitySlope: 3
       totalIntensity: 3
       canCreateVacuum: false
+      maxTileBreak: 0
     - type: BatteryAmmoProvider
       proto: BulletPistolTraceSP
       fireCost: 100
@@ -246,6 +248,7 @@
     intensitySlope: 3
     totalIntensity: 3
     canCreateVacuum: false
+    maxTileBreak: 0
   - type: BatteryAmmoProvider
     proto: PulseWM
     fireCost: 200
@@ -309,9 +312,12 @@
 #  - type: Muted
   - type: GhostRole
     name: pw-vehicles-republic-markerdroncore-name
-    description: pw-vehicles-republic-markerdroncore-desc-1
+    description: pw-vehicles-republic-markerdroncore-desc
     raffle:
       settings: WM
+  - type: PlanetWarBriefing
+    briefingText: pw-briefing-republic-droncore
+    briefingColor: "#0000e3"
   - type: CombatMode
     toggleMouseRotator: true
   - type: StepTrigger
@@ -349,6 +355,14 @@
     damageContainer: Inorganic
     damageModifierSet: DronShockWeaknessWM
   - type: PlanetWarStunDrone
+  # FIsh edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
+  - type: ContainerContainer
+    containers:
+      cluster-payload: !type:Container
+  - type: ProjectileGrenade
+    fillPrototype: PelletClusterLethal
+    capacity: 30
+    triggerKey: trigger
   - type: MovementSpeedModifier
     baseWalkSpeed : 15
     baseSprintSpeed : 12
@@ -425,9 +439,12 @@
     - LandmineImplantCoreWM
   - type: GhostRole
     name: pw-vehicles-republic-markerdroncoreturretmine-name
-    description: pw-construction-republic-mobhumancorep0-desc
+    description: pw-vehicles-republic-markerdroncoreturretmine-desc
     raffle:
       settings: WM
+  - type: PlanetWarBriefing
+    briefingText: pw-briefing-republic-droncoreturretmine
+    briefingColor: "#0000e3"
   - type: Sprite
     sprite: /Textures/_Fish/PlanetWar/WM2/33xSprait.rsi
     noRot: false
@@ -449,6 +466,7 @@
     totalIntensity: 8
     intensitySlope: 1
     maxIntensity: 8
+    maxTileBreak: 0
   - type: MovementSpeedModifier
     baseWalkSpeed : 15
     baseSprintSpeed : 9

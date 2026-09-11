@@ -158,7 +158,7 @@
   components:
   - type: GhostRole
     name: pw-vehicles-republic-markerdroncore-name
-    description: pw-construction-republic-mobhumancorep0-desc
+    description: pw-vehicles-republic-markerdroncore-desc
     raffle:
       settings: WM
   - type: GhostRoleMobSpawner
@@ -174,7 +174,7 @@
   components:
   - type: GhostRole
     name: pw-vehicles-republic-markerdroncoreturretmine-name
-    description: pw-construction-republic-mobhumancorep0-desc
+    description: pw-vehicles-republic-markerdroncoreturretmine-desc
     raffle:
       settings: WM
   - type: GhostRoleMobSpawner

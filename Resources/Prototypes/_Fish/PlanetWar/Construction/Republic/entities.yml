@@ -30,7 +30,6 @@
     - RsdWallSolidWM
     - RsdWallRelifCoreWM
     - RsdAirlocCoreWM
-    - RsdDeconstructWM
     - RsdPrismaCoreWM
     - RsdShuttleGunAutomatWM
     - RsdShuttleGunPulemetWM
@@ -75,7 +74,6 @@
     - RsdWallSolidWMSpeed
     - RsdWallRelifCoreWMSpeed
     - RsdAirlocCoreWMSpeed
-    - RsdDeconstructWM
     - RsdPrismaCoreWM
     - RsdShuttleGunAutomatWM
     - RsdShuttleGunPulemetWM
@@ -218,6 +216,7 @@
     intensitySlope: 30 
     maxIntensity: 25
     canCreateVacuum: false
+    maxTileBreak: 0
   - type: WhitelistTriggerCondition
     userBlacklist:
       components:
@@ -659,7 +658,7 @@
       nameSegments:
       - NamesFirstMale
       - NameCoreP0WM
-    - type: AssaultOperative
+    - type: PlanetWarMember
       statusIcon: FactionIconCoreBase
    # - type: RadarBlip
    #   color: "#0000e3"
@@ -680,12 +679,13 @@
     - type: NpcFactionMember
       factions:
       - CoreFaction
-    - type: Loadout
-      prototypes: [CoreGearP0]
     - type: GhostRole
       name: pw-construction-republic-mobhumancorep0-name
       description: pw-construction-republic-mobhumancorep0-desc
       rules: pw-ghost-role-republic-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-republic-mobhumancorep0
+      briefingColor: "#0000e3"
 
 
 - type: entity
@@ -715,14 +715,15 @@
         0: Alive
         200: Critical
         300: Dead
-    - type: AssaultOperative
+    - type: PlanetWarMember
       statusIcon: FactionIconCorePC0I5
-    - type: Loadout
-      prototypes: [CoreGearPC0I5]
     - type: GhostRole
       name: pw-construction-republic-mobhumancorepc0i5-name
       description: pw-construction-republic-mobhumancorepc0i5-desc
       rules: pw-ghost-role-republic-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-republic-mobhumancorepc0i5
+      briefingColor: "#0000e3"
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
       table: !type:AllSelector
@@ -763,14 +764,15 @@
       nameSegments:
       - NamesFirstMale
       - NameCoreP1WM
-    - type: AssaultOperative
+    - type: PlanetWarMember
       statusIcon: FactionIconCoreBase
-    - type: Loadout
-      prototypes: [CoreGearP1]
     - type: GhostRole
       name: pw-construction-republic-mobhumancorep1-name
       description: pw-construction-republic-mobhumancorep1-desc
       rules: pw-ghost-role-republic-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-republic-mobhumancorep1
+      briefingColor: "#0000e3"
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
       table: !type:AllSelector
@@ -801,19 +803,20 @@
       nameSegments:
       - NamesFirstMale
       - NameCorePH5WM
-    - type: AssaultOperative
+    - type: PlanetWarMember
       statusIcon: FactionIconCoreBase
     - type: MobThresholds
       thresholds:
         0: Alive
         135: Critical
         300: Dead
-    - type: Loadout
-      prototypes: [CoreGearPH5]
     - type: GhostRole
       name: pw-construction-republic-mobhumancoreph5-name
       description: pw-construction-republic-mobhumancoreph5-desc
       rules: pw-ghost-role-republic-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-republic-mobhumancoreph5
+      briefingColor: "#0000e3"
     - type: ScaleVisuals
       scale: 1.2, 1.3
     - type: EntityTableSpawner
@@ -846,7 +849,7 @@
       nameSegments:
       - NamesFirstMale
       - NameCorePM1WM
-    - type: AssaultOperative
+    - type: PlanetWarMember
       statusIcon: FactionIconCorePM1
     - type: MobThresholds
       thresholds:
@@ -856,12 +859,14 @@
     - type: NpcFactionMember
       factions:
       - CoreFaction
-    - type: Loadout
-      prototypes: [CoreGearPM1]
+      - ClassMedic
     - type: GhostRole
       name: pw-construction-republic-mobhumancorepm1-name
       description: pw-construction-republic-mobhumancorepm1-desc
       rules: pw-ghost-role-republic-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-republic-mobhumancorepm1
+      briefingColor: "#0000e3"
     - type: ShowHealthBars
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
@@ -893,14 +898,15 @@
       nameSegments:
       - NamesFirstMale
       - NameCorePE1WM
-    - type: AssaultOperative
+    - type: PlanetWarMember
       statusIcon: FactionIconCorePE1
-    - type: Loadout
-      prototypes: [CoreGearPE1]
     - type: GhostRole
       name: pw-construction-republic-mobhumancorepe1-name
       description: pw-construction-republic-mobhumancorepe1-desc
       rules: pw-ghost-role-republic-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-republic-mobhumancorepe1
+      briefingColor: "#0000e3"
     - type: EyeProtection
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
@@ -932,19 +938,20 @@
       nameSegments:
       - NamesFirstMale
       - NameCorePS4WM
-    - type: AssaultOperative
+    - type: PlanetWarMember
       statusIcon: FactionIconCoreBase
     - type: AutoImplant
       implants:
       - SmokeScreenImplantWM
     - type: ToggleableNightVision
       effect: EffectNightVisioCoreSniper
-    - type: Loadout
-      prototypes: [CoreGearPS4]
     - type: GhostRole
       name: pw-construction-republic-mobhumancoreps4-name
       description: pw-construction-republic-mobhumancoreps4-desc
       rules: pw-ghost-role-republic-rules
+    - type: PlanetWarBriefing
+      briefingText: pw-briefing-republic-mobhumancoreps4
+      briefingColor: "#0000e3"
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: false
       table: !type:AllSelector
@@ -1737,8 +1744,9 @@
   parent: GatewayCore
   id: GatewayCoreJob
   components:
-  - type: AddGameRuleOnTrigger
-    gameRule: MaxTimeRoundRestartAfterGateDeadWM
+  # FIsh edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
+  - type: PlanetWarGateway
+    team: Core
 
 
 - type: entity

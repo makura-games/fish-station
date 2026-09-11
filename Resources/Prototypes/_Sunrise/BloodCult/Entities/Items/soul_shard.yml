@@ -12,6 +12,13 @@
           sprite: _Sunrise/BloodCult/soulstone.rsi
     - type: MindContainer
     - type: SoulShard
+      autoGhostRoleOnMindRemoved: true
+    # Нужен для GhostRoleSystem.ReregisterOnGhost (проверка IsAlive).
+    - type: MobState
+      allowedStates:
+        - Alive
+    - type: BlockMovement
+      blockInteraction: false
     - type: PointLight
       color: Red
       radius: 2
@@ -37,7 +44,11 @@
       allowMovement: false
       makeSentient: false
       allowSpeech: false
+      reregister: true
       name: ghost-role-information-soul-shard-name
       description: ghost-role-information-soul-shard-description
       rules: ghost-role-information-soul-shard-rules
     - type: GhostTakeoverAvailable
+    - type: SoulShard
+      hadSoul: true
+      autoGhostRoleOnMindRemoved: true

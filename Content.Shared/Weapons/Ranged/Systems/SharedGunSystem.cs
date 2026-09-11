@@ -318,6 +318,10 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         if (gun.SelectedMode == SelectiveFire.Burst || gun.BurstActivated)
             fireRate = TimeSpan.FromSeconds(1f / gun.BurstFireRate);
+        // Sunrise edit start - откат кастомного SemiAutoFireRate
+        // else if (gun.SelectedMode == SelectiveFire.SemiAuto && gun.SemiAutoFireRate > 0f)
+        //     fireRate = TimeSpan.FromSeconds(1f / gun.SemiAutoFireRate);
+        // Sunrise edit end
 
         // First shot
         // Previously we checked shotcounter but in some cases all the bullets got dumped at once

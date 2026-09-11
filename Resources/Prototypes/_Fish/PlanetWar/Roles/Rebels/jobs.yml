@@ -6,6 +6,7 @@
   setPreference: true
   weight: 2
   jobEntity: MobHumanArmP0WMF5
+  startingGear: ArmGearP0
   icon: "IconArmBase"
   canBeAntag: false
   access:
@@ -22,6 +23,7 @@
   setPreference: true
   weight: 5
   jobEntity: MobHumanArmPC0I5WMF5
+  startingGear: ArmGearPC0I5
   icon: "IconArmPC0I5"
   canBeAntag: false
   access:
@@ -41,6 +43,7 @@
   setPreference: true
   weight: 3
   jobEntity: MobHumanArmPM1WMF5
+  startingGear: ArmGearPM1
   icon: "IconArmPM1"
   canBeAntag: false
   access:
@@ -58,6 +61,7 @@
   setPreference: true
   weight: 4
   jobEntity: MobHumanArmPE1WMF5
+  startingGear: ArmGearPE1
   icon: "IconArmPE1"
   canBeAntag: false
   access:

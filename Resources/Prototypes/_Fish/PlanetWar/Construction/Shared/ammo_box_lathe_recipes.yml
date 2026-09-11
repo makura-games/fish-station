@@ -1,0 +1,64 @@
+# Lathe recipes for PlanetWar ammo boxes (3 credits each).
+
+- type: latheRecipe
+  id: BoxPistolWMLatheRecipe
+  result: MagazineBoxPistolWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxLightRifleWMLatheRecipe
+  result: MagazineBoxLightRifleWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxRifleWMLatheRecipe
+  result: MagazineBoxRifleWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxHeavyRifleWMLatheRecipe
+  result: MagazineBoxHeavyRifleWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxAntiMaterielWMLatheRecipe
+  result: MagazineBoxAntiMaterielWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxMagnumWMLatheRecipe
+  result: MagazineBoxMagnumWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxMagnumFMJWMLatheRecipe
+  result: MagazineBoxMagnumFMJWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxShotgunWMLatheRecipe
+  result: MagazineBoxShotgunWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3
+
+- type: latheRecipe
+  id: BoxShotgunSlugWMLatheRecipe
+  result: MagazineBoxShotgunSlugWM
+  completetime: 0
+  materials:
+    MoneyWarMizMaterial: 3

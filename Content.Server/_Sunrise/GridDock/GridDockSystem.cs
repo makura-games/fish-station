@@ -9,6 +9,7 @@ using Content.Shared.Station.Components;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Random; // Fish-add
 
 namespace Content.Server._Sunrise.GridDock;
 
@@ -19,6 +20,7 @@ public sealed class GridDockSystem : EntitySystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly DockingSystem _dockSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+	[Dependency] private readonly IRobustRandom _random = default!; // Fish-add
 
     public override void Initialize()
     {
@@ -48,10 +50,12 @@ public sealed class GridDockSystem : EntitySystem
         var usedGridDocks = new HashSet<EntityUid>();
         foreach (var entry in component.Grids)
         {
-            if (!_loader.TryLoadGrid(xformMap.MapID,
-                    entry.GridPath,
-                    out var rootUid))
-                continue;
+			// Fish-start
+            var path = entry.PickPath(_random);
+
+			if (!_loader.TryLoadGrid(xformMap.MapID, path, out var rootUid))
+				continue;
+			// Fish-end
 
             var grid = Comp<MapGridComponent>(rootUid.Value.Owner);
             var width = grid.LocalAABB.Width;

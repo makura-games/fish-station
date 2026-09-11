@@ -28,10 +28,11 @@
   parent: BaseGameRule
   id: PlanetWarRule
   components:
-  #- type: NukeopsRule
-  #  roundEndBehavior: Nothing
   - type: GameRule
     minPlayers: 0
+  # Sunrise-style rule: старт/победа/конец раунда в PlanetWarRuleSystem
+  - type: PlanetWarRule
+    roundEndDelay: 60
 
 
 - type: entity

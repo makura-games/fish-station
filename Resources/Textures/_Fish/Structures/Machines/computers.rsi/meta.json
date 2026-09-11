@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-4.0",
+  "copyright": "Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/bd6873fd4dd6a61d7e46f1d75cd4d90f64c40894. comm_syndie made by Veritius, based on comm. generic_panel_open made by Errant, commit https://github.com/space-wizards/space-station-14/pull/32273.  And edited by upnostnote (discord) for Space Station 14 server Fish Station",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+    "states": [
+        {
+            "name": "bluespace_artillery",
+            "directions": 4
+        },
+        {
+            "name": "bluespace_artillery_keys",
+            "directions": 4
+        },
+		{
+            "name": "generic_panel_open",
+            "directions": 4
+        },
+        {
+            "name": "computer",
+            "directions": 4
+        },
+        {
+            "name": "generic_keyboard",
+            "directions": 4
+        }
+    ]
+}

@@ -74,3 +74,16 @@ public sealed class TeleportSpellUsedEvent : EntityEventArgs
 public sealed class TwistedConstructSpellUsedEvent : EntityEventArgs
 {
 }
+
+[Serializable, NetSerializable]
+public sealed partial class CultTeleportDoAfterEvent : SimpleDoAfterEvent
+{
+}
+
+[Serializable, NetSerializable]
+public sealed partial class CultSummonRitualDoAfterEvent : SimpleDoAfterEvent
+{
+    public new NetEntity Target;
+    public NetEntity Rune;
+    public NetEntity Summoner;
+}

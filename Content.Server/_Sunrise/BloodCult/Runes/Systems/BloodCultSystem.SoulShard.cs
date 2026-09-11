@@ -1,4 +1,5 @@
 using Content.Server._Sunrise.BloodCult.Runes.Comps;
+using Content.Server.Ghost.Roles.Components;
 using Content.Server.Roles;
 using Content.Shared._Sunrise.BloodCult.Components;
 using Content.Shared._Sunrise.BloodCult.Items;
@@ -8,6 +9,7 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Roles.Components;
+using Robust.Shared.Localization;
 
 namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 {
@@ -40,9 +42,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             var targetName = MetaData(target).EntityName;
 
             _metaDataSystem.SetEntityName(uid,
-                Robust.Shared.Localization.Loc.GetString("soul-shard-description", ("soul", targetName)));
+                Loc.GetString("soul-shard-description", ("soul", targetName)));
             _metaDataSystem.SetEntityDescription(uid,
-                Robust.Shared.Localization.Loc.GetString("soul-shard-description", ("soul", targetName)));
+                Loc.GetString("soul-shard-description", ("soul", targetName)));
         }
 
         private void OnShardMindAdded(EntityUid uid, SoulShardComponent component, MindAddedMessage args)
@@ -50,6 +52,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             if (_roleSystem.MindHasRole<TraitorRoleComponent>(args.Mind))
                 _roleSystem.MindRemoveRole<TraitorRoleComponent>(args.Mind.AsNullable());
 
+            component.HadSoul = true;
             _appearanceSystem.SetData(uid, SoulShardVisualState.State, true);
             _lightSystem.SetEnabled(uid, true);
         }
@@ -58,6 +61,37 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         {
             _appearanceSystem.SetData(uid, SoulShardVisualState.State, false);
             _lightSystem.SetEnabled(uid, false);
+
+            TryEnableSoulShardGhostRole(uid, component);
+        }
+
+        /// <summary>
+        /// Если осколок уже имел душу и сейчас пуст — делает его доступным как ghost role.
+        /// SoulShardGhost с готовым GhostRole полагается на GhostRoleSystem.ReregisterOnGhost.
+        /// </summary>
+        private void TryEnableSoulShardGhostRole(EntityUid uid, SoulShardComponent component)
+        {
+            if (!component.AutoGhostRoleOnMindRemoved || !component.HadSoul)
+                return;
+
+            if (TerminatingOrDeleted(uid))
+                return;
+
+            if (TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind)
+                return;
+
+            // Уже зарегистрирован / будет перерегистрирован через GhostRoleSystem.
+            if (HasComp<GhostRoleComponent>(uid))
+            {
+                EnsureComp<GhostTakeoverAvailableComponent>(uid);
+                return;
+            }
+
+            var ghostRole = EnsureComp<GhostRoleComponent>(uid);
+            ghostRole.RoleName = "ghost-role-information-soul-shard-name";
+            ghostRole.RoleDescription = "ghost-role-information-soul-shard-description";
+            ghostRole.RoleRules = "ghost-role-information-soul-shard-rules";
+            EnsureComp<GhostTakeoverAvailableComponent>(uid);
         }
     }
 }

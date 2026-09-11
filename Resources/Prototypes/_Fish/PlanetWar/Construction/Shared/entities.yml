@@ -788,6 +788,8 @@
   id: WeaponPistolVP78WM
   components:
 #откат
+  - type: Gun
+    fireRate: 8
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 650
@@ -820,6 +822,8 @@
   id: WeaponLightMachineGunMG60WM
   components:
 #откат
+  - type: Gun
+    fireRate: 15
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 4650
@@ -1062,6 +1066,12 @@
   id: WeaponRifleAKMWM
   components:
 #откат
+  - type: Gun
+    fireRate: 10
+    selectedMode: FullAuto
+    availableModes:
+      - SemiAuto
+      - FullAuto
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 1250
@@ -1094,6 +1104,8 @@
   id: WeaponPistolHIB88M4WM
   components:
 #откат
+  - type: Gun
+    fireRate: 8
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 650
@@ -1248,6 +1260,13 @@
   name: rocket
   parent: BulletRocket
   categories: [ HideSpawnMenu ]
+  components:
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 40
+    intensitySlope: 6
+    totalIntensity: 200
+    maxTileBreak: 0
   #components:
   #- type: RadarBlip
   #  color: "#ff0000FF"
@@ -2317,6 +2336,13 @@
       MoneyWarMizMaterial: 100
   - type: ExplosionResistance
     damageCoefficient: 0.0001
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 10
+    intensitySlope: 3
+    totalIntensity: 120
+    canCreateVacuum: false
+    maxTileBreak: 0
 
 
 - type: entity
@@ -2341,6 +2367,13 @@
       MoneyWarMizMaterial: 300
   - type: ExplosionResistance
     damageCoefficient: 0.0001
+  - type: Explosive
+    explosionType: DemolitionCharge
+    totalIntensity: 60
+    intensitySlope: 5
+    maxIntensity: 30
+    canCreateVacuum: false
+    maxTileBreak: 0
 
 
 - type: entity
@@ -2353,6 +2386,13 @@
       MoneyWarMizMaterial: 100
   - type: ExplosionResistance
     damageCoefficient: 0.0001
+  - type: Explosive
+    explosionType: Cryo
+    totalIntensity: 120
+    intensitySlope: 2
+    maxIntensity: 30
+    canCreateVacuum: false
+    maxTileBreak: 0
 
 
 - type: entity
@@ -3023,8 +3063,7 @@
     # Fish edit - for meme gamemode, do not remove
     - type: PWVulpkaninCursePending
     - type: IdBind
-    - type: NameIdentifier
-      group: GenericNumber
+    # NameIdentifier убран: RandomMetadata + name-format-ert уже даёт номер, иначе двойные цифры в имени.
     - type: RandomMetadata
       nameFormat: name-format-ert
     - type: RemoveComponentsOnTrigger
@@ -3227,7 +3266,7 @@
   - type: SelfUnremovableClothing
   - type: StorageFill
     contents:
-    - id: BoxLethalshotWM
+    - id: MagazineBoxShotgunWM
     - id: MagazineBauer127WM
       amount: 3
 
@@ -3346,7 +3385,7 @@
   - type: SelfUnremovableClothing
   - type: StorageFill
     contents:
-    - id: BoxLethalshotWM
+    - id: MagazineBoxShotgunWM
     - id: MagazineDragunovWM
       amount: 3
 
@@ -3628,15 +3667,6 @@
   #  - BaseStationAlertLevels
   #  - BaseStationNanotrasen
 #NightDayMapLightComponent
-
-
-- type: entity
-  id: MaxTimeRoundRestartAfterGateDeadWM
-  parent: BaseGameRule
-  components:
-  - type: MaxTimeRestartRule
-    roundMaxTime: 1
-    roundEndDelay: 60
 
 
 - type: entity

@@ -1,0 +1,65 @@
+- type: entity
+  id: FishBluespaceArtillery
+  parent: BaseMachine
+  name: bluespace artillery
+  description: A powerful weapon for long-range strikes. Requires a connection to a console and a high-voltage cable.
+  placement:
+    mode: SnapgridCenter
+  components:
+    - type: Clickable
+    - type: InteractionOutline
+    - type: Sprite
+      sprite: _Fish/Structures/Machines/bluespace_artillery.rsi
+      state: idle
+      noRot: true
+    - type: Appearance
+    - type: NodeContainer
+      examinable: true
+      nodes:
+        input:
+          !type:CableDeviceNode
+          nodeGroupID: HVPower
+    - type: PowerConsumer
+      voltage: High
+      drawRate: 50000
+    - type: DeviceNetwork
+    - type: DeviceList
+    - type: DeviceLinkSink
+      ports:
+        - Artillery
+    - type: BluespaceArtillery
+      chargeDuration: 8.5
+      flightDuration: 12.0
+      cooldownDuration: 60.0
+      sectorChargeSound:
+        path: /Audio/Misc/redalert.ogg
+      chargeSound:
+        path: /Audio/_Fish/Machines/BlueSpaceArtillery/bluespace_charge.ogg
+      fireSound:
+        path: /Audio/_Fish/Machines/BlueSpaceArtillery/bluespace_shot.ogg
+      impactSound:
+        path: /Audio/_Fish/Machines/BlueSpaceArtillery/bluespace_shot_alt.ogg
+      chargingState: charging
+      fireState: fire
+    - type: PointLight
+      enabled: false
+      radius: 15.0
+      color: "#bb4ccf"
+      energy: 10.0
+      offset: 6, 0
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape:
+            !type:PolygonShape
+            vertices:
+              - "-6,-1.5"
+              - "-6,1.5"
+              - "6,1.5"
+              - "6,-1.5"
+          hard: true
+          density: 100
+          mask:
+            - MachineMask
+          layer:
+            - WallLayer

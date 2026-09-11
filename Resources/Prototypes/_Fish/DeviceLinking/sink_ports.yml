@@ -1,0 +1,4 @@
+- type: sinkPort
+  id: Artillery
+  name: signal-port-name-artillery
+  description: signal-port-description-artillery

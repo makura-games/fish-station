@@ -481,3 +481,70 @@
     message: Маленькое обновление шаттла ПЦК.
   id: 47
   url: https://github.com/makura-games/fish-station/pull/439
+- author: dngcher
+  time: '2026-09-09T20:02:34.0000000+00:00'
+  changes:
+  - type: Add
+    message: БСА и консоль БСА, которые умеют стрелять в секторе станции
+  id: 48
+  url: https://github.com/makura-games/fish-station/pull/423
+  media:
+  - url: https://github.com/user-attachments/assets/ba4bd207-7f4f-4c89-b301-476246d19534
+    description: idle
+- author: dng-cher
+  time: '2026-09-11T13:43:34.0000000+00:00'
+  changes:
+  - type: Add
+    message: Рандомная ротация шаттлов для станции.
+  id: 49
+  url: https://github.com/makura-games/fish-station/pull/442
+- author: Ende
+  time: '2026-09-11T13:48:57.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фикс рекомендации по лечению от радиации
+  id: 50
+  url: https://github.com/makura-games/fish-station/pull/441
+- author: Pifagor, Kaiten
+  time: '2026-09-11T14:29:56.0000000+00:00'
+  changes:
+  - type: Add
+    message: Конструкты кровавого культа (строитель, джаггернаут, жнец) теперь имеют красное переключаемое ПНВ.
+  - type: Tweak
+    message: 'Джаггернаут переработан: скорость 3.5, тяжёлые шаги и отбрасывание при атаке с кулдауном 5 секунд.'
+  - type: Tweak
+    message: Руны культа можно рисовать на любом гриде с тайлом (станция, шаттл, планетоид).
+  - type: Fix
+    message: Слаймолюди, арахниды, ксено и яутжа теперь корректно дают кровь для ритуалов крови (включая лужи).
+  - type: Fix
+    message: Любой киборг при попытке обращения разрушается, а не становится культистом.
+  - type: Tweak
+    message: Стартовые культисты получают 30 рунического металла; обращённые и поздние присоединившиеся — нет.
+  - type: Tweak
+    message: Призыв культиста кастуется 2 секунды (до 2 тайлов до прерывания), призыв Бога — до 3 тайлов до прерывания.
+  - type: Tweak
+    message: Личный телепорт культа — 2 секунды и 1 тайл дистанция отмены, прерывается уроном или сдвигом. Телепорт руна на руна мгновенный как и была.
+  - type: Fix
+    message: После перехода в призрака осколок души снова становится доступен как роль призрака.
+  id: 51
+  url: https://github.com/makura-games/fish-station/pull/368
+- author: Pifagor, Kaiten
+  time: '2026-09-11T16:35:51.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: 'Планетарная Война полностью переносится на архитектуру Sunrise — без
+
+      временных прототипов, workaround''ов и дублирующих систем.'
+  - type: Tweak
+    message: Разнообразные правки режима согласно указаниям Мизелия.
+  - type: Tweak
+    message: Роли режимы больше не отображаются в должностях персонажа.
+  id: 52
+  url: https://github.com/makura-games/fish-station/pull/372
+- author: Kaiten
+  time: '2026-09-11T16:36:08.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: По просьбе Финекса фоксиум теперь превращает в лису от 50 единиц. Слава фыр!
+  id: 53
+  url: https://github.com/makura-games/fish-station/pull/440

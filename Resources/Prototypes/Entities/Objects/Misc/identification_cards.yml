@@ -1433,6 +1433,7 @@
     - Wizard
     - Xenoborg
     - Pirate # Sunrise-Add
+    - BluespaceArtilleryOperator # Fish edit - доступ оператора БСА для админ карты
   - type: Tag #  Ignore Chameleon tags
     tags:
     - DoorBumpOpener

@@ -3,6 +3,7 @@
   name: department-FractionArmWM
   description: department-FractionArmWM-description
   color: "#e50000"
+  editorHidden: true
   roles:
   - JobArmBase
   - JobArmPC0I5

@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Antag;
 using Content.Server.Antag.Components;
 using Content.Shared._Fish.Achievements;
@@ -80,7 +81,8 @@ public sealed partial class AchievementConditionSystem
         if (!_players.TryGetSessionById(userId, out var session))
             return;
 
-        foreach (var roleEnt in mind.MindRoleContainer.ContainedEntities)
+        var roles = mind.MindRoleContainer.ContainedEntities.ToArray();
+        foreach (var roleEnt in roles)
         {
             if (!TryComp<MindRoleComponent>(roleEnt, out var role))
                 continue;
