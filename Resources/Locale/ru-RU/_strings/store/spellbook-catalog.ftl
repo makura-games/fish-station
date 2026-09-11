@@ -50,10 +50,12 @@ spellbook-wand-locker-description = Стреляйте в своих враго�
 # Events
 spellbook-event-summon-ghosts-name = Призыв призраков
 spellbook-event-summon-ghosts-description = Кого вы позовёте?
+# Fish-Edit start: обновлены описания для отражения работы только на текущем гриде
 spellbook-event-summon-guns-name = Призыв оружия
-spellbook-event-summon-guns-description = АК-47 для всех! Размещает перед каждым случайное огнестрельное оружие. Отключает возврат средств при покупке!
+spellbook-event-summon-guns-description = АК-47 для всех! Размещает перед каждым на текущей локации или корабле случайное огнестрельное оружие. Отключает возврат средств при покупке!
 spellbook-event-summon-magic-name = Призыв магии
-spellbook-event-summon-magic-description = Размещает перед каждым случайный магический предмет. Что может пойти не так? Отключает возврат средств при покупке!
+spellbook-event-summon-magic-description = Размещает перед каждым на текущей локации или корабле случайный магический предмет. Что может пойти не так? Отключает возврат средств при покупке!
+# Fish-Edit end
 # Upgrades
 spellbook-upgrade-fireball-name = Улучшение Огненного шара
 spellbook-upgrade-fireball-description = Позволяет улучшить Огненный шар до максимального 3-го уровня!

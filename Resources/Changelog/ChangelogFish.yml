@@ -548,3 +548,10 @@
     message: По просьбе Финекса фоксиум теперь превращает в лису от 50 единиц. Слава фыр!
   id: 53
   url: https://github.com/makura-games/fish-station/pull/440
+- author: Kaiten
+  time: '2026-09-11T20:45:46.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Магия событий мага теперь затрагиает только текущий грид (будь то корабль, планетойд или станция) кроме события показа призраков.
+  id: 54
+  url: https://github.com/makura-games/fish-station/pull/445

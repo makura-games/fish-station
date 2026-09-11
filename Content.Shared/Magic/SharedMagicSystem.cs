@@ -111,6 +111,15 @@ public abstract class SharedMagicSystem : EntitySystem
         if (comp.RequiresSpeech && HasComp<MutedComponent>(args.Performer))
             hasReqs = false;
 
+        // Fish-Edit start: проверка нахождения на гриде
+        if (comp.RequiresGrid && _transform.GetGrid(args.Performer) == null)
+        {
+            args.Cancelled = true;
+            _popup.PopupClient(Loc.GetString("spell-requirements-need-grid"), args.Performer, args.Performer);
+            return;
+        }
+        // Fish-Edit end
+
         if (hasReqs)
             return;
 
@@ -472,6 +481,11 @@ public abstract class SharedMagicSystem : EntitySystem
 
         ev.Handled = true;
 
+        // Fish-Edit start: выдавать предметы только живым на том же гриде, что и заклинатель
+        var performerGrid = _transform.GetGrid(ev.Performer);
+        if (performerGrid == null)
+            return;
+
         var allHumans = _mind.GetAliveHumans();
 
         foreach (var human in allHumans)
@@ -484,6 +498,9 @@ public abstract class SharedMagicSystem : EntitySystem
             if (_tag.HasTag(ent, InvalidForGlobalSpawnSpellTag))
                 continue;
 
+            if (_transform.GetGrid(ent) != performerGrid)
+                continue;
+
             var mapCoords = _transform.GetMapCoordinates(ent);
             foreach (var spawn in EntitySpawnCollection.GetSpawns(spawns, _random))
             {
@@ -491,6 +508,7 @@ public abstract class SharedMagicSystem : EntitySystem
                 _hands.PickupOrDrop(ent, spawned);
             }
         }
+        // Fish-Edit end
 
         _audio.PlayGlobal(ev.Sound, ev.Performer);
     }
