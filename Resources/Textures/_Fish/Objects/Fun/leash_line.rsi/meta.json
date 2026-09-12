@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Created by Foxanto (Discord/Telegram) and upnostnote (Discord) for Space Station 14 server Fish-Station",
+  "size": {
+    "x": 2,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "line"
+    }
+  ]
+}

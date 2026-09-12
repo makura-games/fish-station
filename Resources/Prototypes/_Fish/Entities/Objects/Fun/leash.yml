@@ -1,0 +1,28 @@
+# Base
+- type: entity
+  parent: BaseItem
+  id: LeashBase
+  name: grey leash
+  description: A leash roulette that attaches to the collar.
+  categories: [ DoNotMap ]
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Fun/leash.rsi
+    # scale: 0.75, 0.75
+    layers:
+    - state: icon
+      # color: "#DCDCDC"
+    - state: leash-icon
+  - type: Item
+    sprite: _Fish/Objects/Fun/leash.rsi
+    size: Normal
+    inhandVisuals:
+      left:
+      - state: inhand-left
+        # color: "#DCDCDC"
+      right:
+      - state: inhand-right
+        # color: "#DCDCDC"
+  - type: Leash
+    modes: [1, 2.5, 4, 5.5, 7]
+    currentModeIndex: 2

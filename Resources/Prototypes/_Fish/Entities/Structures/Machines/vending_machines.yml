@@ -1,0 +1,28 @@
+﻿- type: entity
+  parent: VendingMachine
+  id: VendingMachinePetMate
+  suffix: DO NOT MAP
+  name: Pet-O-Mat
+  description: Bring your pet to work!
+  components:
+  - type: VendingMachine
+    pack: PetMateVendInventory
+    offState: off
+    brokenState: broken
+    normalState: normal-unshaded
+    denyState: deny-unshaded
+    ejectDelay: 2
+  - type: Sprite
+    sprite: _Fish/Structures/Machines/petmate.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: PointLight
+    radius: 1.5
+    energy: 1.8
+    color: "#ffddaa"
