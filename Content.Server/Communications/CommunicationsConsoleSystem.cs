@@ -22,12 +22,13 @@ using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.Speech;
 using Content.Shared.Speech.Components;
+using Content.Shared.UserInterface; // Sunrise-Edit
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 
 namespace Content.Server.Communications
 {
-    public sealed class CommunicationsConsoleSystem : EntitySystem
+    public sealed partial class CommunicationsConsoleSystem : EntitySystem // Sunrise-Edit
     {
         [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
         [Dependency] private readonly AlertLevelSystem _alertLevelSystem = default!;
@@ -47,6 +48,12 @@ namespace Content.Server.Communications
         {
             // All events that refresh the BUI
             SubscribeLocalEvent<AlertLevelChangedEvent>(OnAlertLevelChanged);
+            // Sunrise edit start - подписки дополнительных кодов должны находиться непосредственно в Initialize().
+            SubscribeLocalEvent<AdditionalAlertLevelChangedEvent>(OnAdditionalAlertLevelChanged);
+            SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleSetAdditionalAlertLevelMessage>(OnSetAdditionalAlertLevelMessage);
+            SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleSelectAlertStationMessage>(OnSelectAlertStationMessage);
+            SubscribeLocalEvent<CommunicationsConsoleComponent, BoundUIOpenedEvent>(OnAlertConsoleOpened);
+            // Sunrise edit end
             SubscribeLocalEvent<RoundEndSystemChangedEvent>(_ => OnGenericBroadcastEvent());
             SubscribeLocalEvent<AlertLevelDelayFinishedEvent>(_ => OnGenericBroadcastEvent());
 
@@ -111,6 +118,7 @@ namespace Content.Server.Communications
         public void OnCommunicationsConsoleMapInit(EntityUid uid, CommunicationsConsoleComponent comp, MapInitEvent args)
         {
             comp.AnnouncementCooldownRemaining = comp.InitialDelay;
+            EnsureAlertStation((uid, comp)); // Sunrise-Edit
             UpdateCommsConsoleInterface(uid, comp);
         }
 
@@ -135,7 +143,7 @@ namespace Content.Server.Communications
             var query = EntityQueryEnumerator<CommunicationsConsoleComponent>();
             while (query.MoveNext(out var uid, out var comp))
             {
-                var entStation = _stationSystem.GetOwningStation(uid);
+                var entStation = ResolveAlertStation((uid, comp)); // Sunrise-Edit
                 if (args.Station == entStation)
                     UpdateCommsConsoleInterface(uid, comp);
             }
@@ -158,27 +166,38 @@ namespace Content.Server.Communications
         /// </summary>
         public void UpdateCommsConsoleInterface(EntityUid uid, CommunicationsConsoleComponent comp)
         {
-            var stationUid = _stationSystem.GetOwningStation(uid);
+            var stationUid = ResolveAlertStation((uid, comp)); // Sunrise-Edit
             List<string>? levels = null;
             string currentLevel = default!;
             float currentDelay = 0;
+            var additionalLevels = new List<CommunicationsConsoleAdditionalAlertLevelState>(); // Sunrise-Edit
+            var alertStations = comp.CanSelectAlertStation
+                ? GetAlertStationStates()
+                : []; // Sunrise-Edit
 
             if (stationUid != null)
             {
                 if (TryComp(stationUid.Value, out AlertLevelComponent? alertComp) &&
                     alertComp.AlertLevels != null)
                 {
-                    if (alertComp.IsSelectable)
+                    if (_alertLevelSystem.IsSelectable((stationUid.Value, alertComp)) || comp.ForceAlertLevelChanges) // Sunrise-Edit
                     {
                         levels = new();
                         foreach (var (id, detail) in alertComp.AlertLevels.Levels)
                         {
-                            if (detail.Selectable)
+                            if (!detail.IsAdditional && IsAlertLevelAllowed(comp, id, detail)) // Sunrise-Edit
                             {
                                 levels.Add(id);
                             }
                         }
+
+                        if (levels.Count == 0)
+                            levels = null;
                     }
+
+                    additionalLevels = GetAdditionalAlertLevelStates(
+                        (stationUid.Value, alertComp),
+                        comp); // Sunrise-Edit
 
                     currentLevel = alertComp.CurrentLevel;
                     currentDelay = _alertLevelSystem.GetAlertLevelDelay(stationUid.Value, alertComp);
@@ -197,7 +216,12 @@ namespace Content.Server.Communications
                 canRelay,
                 comp.IsRelaying,
                 MathF.Max(0f, comp.RelayCooldownRemaining),
-                MathF.Max(0f, comp.RelayTimeRemaining)
+                MathF.Max(0f, comp.RelayTimeRemaining),
+                additionalAlertLevels: additionalLevels,
+                alertStations: alertStations,
+                selectedAlertStation: comp.CanSelectAlertStation && stationUid != null
+                    ? GetNetEntity(stationUid.Value)
+                    : null // Sunrise-Edit
                 // Sunrise-End
             ));
         }
@@ -243,20 +267,11 @@ namespace Content.Server.Communications
 
         private void OnSelectAlertLevelMessage(EntityUid uid, CommunicationsConsoleComponent comp, CommunicationsConsoleSelectAlertLevelMessage message)
         {
-            if (message.Actor is not { Valid: true } mob)
+            if (message.Actor is not { Valid: true } user)
                 return;
 
-            if (!CanUse(mob, uid))
-            {
-                _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), message.Actor, PopupType.Medium);
-                return;
-            }
-
-            var stationUid = _stationSystem.GetOwningStation(uid);
-            if (stationUid != null)
-            {
-                _alertLevelSystem.SetLevel(stationUid.Value, message.Level, true, true);
-            }
+            TrySetPrimaryAlertLevel((uid, comp), message.Level, user); // Sunrise-Edit
+            UpdateCommsConsoleInterface(uid, comp); // Sunrise-Edit - отправляем состояние после установки force cooldown.
         }
 
         private void OnAnnounceMessage(EntityUid uid, CommunicationsConsoleComponent comp,

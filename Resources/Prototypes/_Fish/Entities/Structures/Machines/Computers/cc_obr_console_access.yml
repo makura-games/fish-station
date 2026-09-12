@@ -32,9 +32,21 @@
   suffix: CentComm, Locked
   description: A computer used to make world wide announcements. Requires Central Command access.
   components:
+  - type: CommunicationsConsole
+    allowedAlertLevels: [green, blue, violet, yellow, red, gamma, delta, sierra]
   - type: AccessReader
     access: [["CentralCommand"]]
   - type: ActivatableUIRequiresAccess
+
+- type: entity
+  parent: FishComputerCommsCentComm
+  id: FishComputerCommsDso
+  name: DSO communications computer
+  suffix: DSO, Locked
+  description: A Central Command communications computer with access to the Epsilon alert level.
+  components:
+  - type: CommunicationsConsole
+    allowedAlertLevels: [green, blue, violet, yellow, red, gamma, delta, sierra, epsilon]
 
 - type: entity
   parent: CentcommComputerComms

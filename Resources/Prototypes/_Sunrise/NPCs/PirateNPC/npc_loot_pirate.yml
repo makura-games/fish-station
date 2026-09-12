@@ -4167,12 +4167,12 @@
     - id: SunriseClothingShoesBootsMagPirateMurmilloDamaged
       prob: 0.25
       orGroup: MurmilloHardsuitPool
-    - id: SunriseClothingShoesBootsMagPirateMurmillo
-      prob: 0.5
+    - id: SunriseClothingShoesBootsMagPirateMurmillo # Fish-edit
+      prob: 0.6
       orGroup: MurmilloHardsuitPool
-    - id: SunriseClothingShoesBootsMagPirateMurmilloActive
-      prob: 0.1
-      orGroup: MurmilloHardsuitPool
+    # - id: SunriseClothingShoesBootsMagPirateMurmilloActive # Fish-edit
+    #   prob: 0.1
+    #   orGroup: MurmilloHardsuitPool
     - id: PirateMedSpawner03
     - id: WeaponCrusherBroadAxe
       prob: 0.7

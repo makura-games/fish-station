@@ -235,6 +235,7 @@
           Quantity: 20
   - type: SolutionRegeneration
     solution: beaker
+    duration: 180 # Fish-edit
     generated:
       reagents:
       - ReagentId: DarkRedRum

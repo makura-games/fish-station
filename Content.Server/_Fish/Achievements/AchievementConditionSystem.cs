@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.KillTracking;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
@@ -78,10 +79,14 @@ public sealed partial class AchievementConditionSystem : EntitySystem
     /// <summary>Последний источник урона по жертве — для kill+weapon фильтра.</summary>
     private readonly Dictionary<EntityUid, string?> _lastDamageWeaponProto = new();
 
+    /// <summary>События станции, произошедшие за раунд — выдаются выжившим в конце раунда.</summary>
+    private readonly HashSet<string> _occurredRoundEvents = new();
+
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _achievements.OnRoundStarting();
         _lastDamageWeaponProto.Clear();
+        _occurredRoundEvents.Clear();
         ClearExplorationRoundState();
         ClearFunRoundState();
     }
@@ -112,33 +117,48 @@ public sealed partial class AchievementConditionSystem : EntitySystem
 
     private async void OnRoundEnd(RoundEndMessageEvent ev)
     {
+        var occurredRoundEvents = _occurredRoundEvents.ToArray();
+
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { } ent)
                 continue;
 
-            if (!TryComp<MobStateComponent>(ent, out var mob) || mob.CurrentState != MobState.Alive)
-                continue;
-
-            var onShuttle = IsOnEmergencyShuttle(ent);
-            // Без EventKey → once-per-round на ачивку (один тик выживания за раунд).
-            var ctx = new AchievementTriggerContext(
-                OnEmergencyShuttle: onShuttle,
-                RequireInRound: false); // уже PostRound
-
-            await _achievements.ContributeAsync(session, AchievementConditionKeys.RoundEndAlive, ctx);
-            await _achievements.ContributeAsync(session, AchievementConditionKeys.RoundSurvive, ctx);
-            await _achievements.ContributeAsync(
-                session,
-                AchievementConditionKeys.Counter,
-                new AchievementTriggerContext(
-                    CounterKey: "rounds-survived",
+            var isAlive = TryComp<MobStateComponent>(ent, out var mob) && mob.CurrentState == MobState.Alive;
+            if (isAlive)
+            {
+                var onShuttle = IsOnEmergencyShuttle(ent);
+                // Без EventKey → once-per-round на ачивку (один тик выживания за раунд).
+                var ctx = new AchievementTriggerContext(
                     OnEmergencyShuttle: onShuttle,
-                    RequireInRound: false));
+                    RequireInRound: false); // уже PostRound
 
-            // ShuttleArrive только на FTLCompleted — иначе +2 за раунд (FTL + round-end).
-            if (_mind.TryGetMind(ent, out var mindId, out _) && _roles.MindIsAntagonist(mindId))
-                await _achievements.ContributeAsync(session, AchievementConditionKeys.AntagWin, ctx);
+                await _achievements.ContributeAsync(session, AchievementConditionKeys.RoundEndAlive, ctx);
+                await _achievements.ContributeAsync(session, AchievementConditionKeys.RoundSurvive, ctx);
+                await _achievements.ContributeAsync(
+                    session,
+                    AchievementConditionKeys.Counter,
+                    new AchievementTriggerContext(
+                        CounterKey: "rounds-survived",
+                        OnEmergencyShuttle: onShuttle,
+                        RequireInRound: false));
+
+                // ShuttleArrive только на FTLCompleted — иначе +2 за раунд (FTL + round-end).
+                if (_mind.TryGetMind(ent, out var mindId, out _) && _roles.MindIsAntagonist(mindId))
+                    await _achievements.ContributeAsync(session, AchievementConditionKeys.AntagWin, ctx);
+            }
+
+            // События станции выдаются в конце раунда всем участникам (и живым, и погибшим в ходе событий).
+            foreach (var ruleId in occurredRoundEvents)
+            {
+                await _achievements.ContributeAsync(
+                    session,
+                    AchievementConditionKeys.StationEvent,
+                    new AchievementTriggerContext(
+                        EventId: ruleId,
+                        EventKey: $"event:{ruleId}:{session.UserId}:{ev.RoundId}",
+                        RequireInRound: false));
+            }
         }
 
         ProcessRoundEndObjectives(ev);
@@ -318,18 +338,8 @@ public sealed partial class AchievementConditionSystem : EntitySystem
         if (string.IsNullOrEmpty(ev.RuleId))
             return;
 
-        foreach (var session in _players.Sessions)
-        {
-            if (session.AttachedEntity == null)
-                continue;
-
-            _ = _achievements.ContributeAsync(
-                session,
-                AchievementConditionKeys.StationEvent,
-                new AchievementTriggerContext(
-                    EventId: ev.RuleId,
-                    EventKey: $"event:{ev.RuleId}:{session.UserId}"));
-        }
+        // Фиксируем факт наступления события; ачивки за пережитые ивенты выдаются в OnRoundEnd.
+        _occurredRoundEvents.Add(ev.RuleId);
     }
 
     private void OnEmergencyShuttleArrived(ref FTLCompletedEvent args)
