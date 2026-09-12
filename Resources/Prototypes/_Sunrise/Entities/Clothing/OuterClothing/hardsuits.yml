@@ -632,12 +632,12 @@
       coefficients:
         Blunt: 0.4
         Slash: 0.3
-        Piercing: 0.2
+        Piercing: 0.3 # Fish-edit
         Heat: 0.4
         Radiation: 0.4
         Caustic: 0.4
       flatReductions:
-        Piercing: 9
+        Piercing: 2 # Fish-edit
   - type: StaminaResistance
     damageCoefficient: 0.2
   - type: ToggleableClothing
