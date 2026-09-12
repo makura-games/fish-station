@@ -1,7 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Pair;
 using Content.Shared._Fish.Achievements;
+using Content.Shared._Sunrise.StatsBoard;
+using Content.Shared._Sunrise.Storyteller;
+using Content.Shared.GameTicking;
+using Content.Shared.GameTicking.Components;
 using Robust.Shared.Prototypes;
 using Content.Shared.Mind;
 using Content.Shared.Players;
@@ -153,6 +158,55 @@ public sealed class AchievementTriggerAuditTests
             Assert.That(mind.MindRoleContainer.ContainedEntities.Count, Is.GreaterThanOrEqualTo(3));
         });
 
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task TestRoundEnd_OccurredEventsSnapshot_SafeWhenRoundRestartClears()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Fresh = true,
+            Dirty = true,
+            DummyTicker = false,
+            Connected = true
+        });
+
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.DoesNotThrow(() =>
+            {
+                // Запускаем несколько правил станции
+                var ev1 = new GameRuleStartedEvent(EntityUid.Invalid, "DragonSpawn");
+                entMan.EventBus.RaiseLocalEvent(EntityUid.Invalid, ref ev1, true);
+                var ev2 = new GameRuleStartedEvent(EntityUid.Invalid, "IonStorm");
+                entMan.EventBus.RaiseLocalEvent(EntityUid.Invalid, ref ev2, true);
+
+                // Завершение раунда: снимок массива событий защищает от параллельного/последующего Clear
+                var endEv = new RoundEndMessageEvent(
+                    gamemodeTitle: "test",
+                    roundEndText: "test round ended",
+                    roundDuration: TimeSpan.FromMinutes(5),
+                    roundId: 1,
+                    playerCount: 1,
+                    allPlayersEndInfo: Array.Empty<RoundEndMessageEvent.RoundEndPlayerInfo>(),
+                    roundEndStats: string.Empty,
+                    statisticEntries: Array.Empty<SharedStatisticEntry>(),
+                    storytellerName: null,
+                    storytellerHistory: Array.Empty<StorytellerHistoryEntry>(),
+                    restartSound: null);
+                entMan.EventBus.RaiseEvent(EventSource.Local, endEv);
+
+                // Вызов RoundRestartCleanupEvent сбрасывает состояние в AchievementConditionSystem во время асинхронной обработки
+                var restartEv = new RoundRestartCleanupEvent();
+                entMan.EventBus.RaiseEvent(EventSource.Local, restartEv);
+            });
+        });
+
+        await pair.RunTicksSync(10);
         await pair.CleanReturnAsync();
     }
 }
