@@ -162,6 +162,72 @@
   order: 1207
   # source: Fish-expansion
 - type: achievement
+  id: FishAchExp_AbductorLights
+  name: achievement-fishexp-abductorlights-name
+  description: achievement-fishexp-abductorlights-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: AbductorsSpawn
+  oncePerRound: true
+  order: 1300
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_BloodMoon
+  name: achievement-fishexp-bloodmoon-name
+  description: achievement-fishexp-bloodmoon-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: BloodCult
+  oncePerRound: true
+  order: 1301
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_FleshOutbreak
+  name: achievement-fishexp-fleshoutbreak-name
+  description: achievement-fishexp-fleshoutbreak-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: FleshCult
+  oncePerRound: true
+  order: 1302
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_AssaultAlarm
+  name: achievement-fishexp-assaultalarm-name
+  description: achievement-fishexp-assaultalarm-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: AssaultOps
+  oncePerRound: true
+  order: 1303
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_ObrRed
+  name: achievement-fishexp-obrred-name
+  description: achievement-fishexp-obrred-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: FishObrShuttleRed
+  oncePerRound: true
+  order: 1304
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_DragonRise
+  name: achievement-fishexp-dragonrise-name
+  description: achievement-fishexp-dragonrise-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: DragonSpawn
+  oncePerRound: true
+  order: 1305
+  # source: Fish-expansion
+- type: achievement
   id: FishAchExp_ZombieHour
   name: achievement-fishexp-zombiehour-name
   description: achievement-fishexp-zombiehour-desc
@@ -172,4 +238,47 @@
   oncePerRound: true
   order: 1306
   # source: Fish-expansion
-
+- type: achievement
+  id: FishAchExp_KudzuCreep
+  name: achievement-fishexp-kudzucreep-name
+  description: achievement-fishexp-kudzucreep-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: KudzuGrowth
+  oncePerRound: true
+  order: 1307
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_IonStorm
+  name: achievement-fishexp-ionstorm-name
+  description: achievement-fishexp-ionstorm-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: IonStorm
+  oncePerRound: true
+  order: 1308
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_PlanetWar
+  name: achievement-fishexp-planetwar-name
+  description: achievement-fishexp-planetwar-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: PlanetWarRule
+  oncePerRound: true
+  order: 1309
+  # source: Fish-expansion
+- type: achievement
+  id: FishAchExp_HamsterShift
+  name: achievement-fishexp-hamstershift-name
+  description: achievement-fishexp-hamstershift-desc
+  category: FishAchFunny
+  condition: station-event
+  conditionParams:
+    event: AnimalObjectives
+  oncePerRound: true
+  order: 1310
+  # source: Fish-expansion

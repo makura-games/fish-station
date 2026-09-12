@@ -18,6 +18,17 @@
     "reason": "id:shuttle-arrive"
   },
   {
+    "id": "FishAchExp_AbductorLights",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "AbductorsSpawn"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Be aboard when abductors arrive.",
+    "status": "fully_specific",
+    "reason": "params:event"
+  },
+  {
     "id": "FishAchExp_ApcBuild",
     "condition": "craft",
     "conditionParams": {
@@ -38,6 +49,17 @@
     "description": "Perform an appendix removal.",
     "status": "fully_specific",
     "reason": "params:target"
+  },
+  {
+    "id": "FishAchExp_AssaultAlarm",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "AssaultOps"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Survive the assault ops announcement.",
+    "status": "fully_specific",
+    "reason": "params:event"
   },
   {
     "id": "FishAchExp_AssaultDrop",
@@ -102,6 +124,17 @@
     "description": "Survive near five explosions.",
     "status": "generic_but_valid",
     "reason": "allowGenericTrigger"
+  },
+  {
+    "id": "FishAchExp_BloodMoon",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "BloodCult"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Witness the blood cult round start.",
+    "status": "fully_specific",
+    "reason": "params:event"
   },
   {
     "id": "FishAchExp_BrainSurgeon",
@@ -232,6 +265,17 @@
     "reason": "params:weapon"
   },
   {
+    "id": "FishAchExp_DragonRise",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "DragonSpawn"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Witness a space dragon spawn event.",
+    "status": "fully_specific",
+    "reason": "params:event"
+  },
+  {
     "id": "FishAchExp_EnergyBlade",
     "condition": "kill",
     "conditionParams": {
@@ -292,6 +336,17 @@
     "description": "Join the flesh cult.",
     "status": "fully_specific",
     "reason": "params:antag"
+  },
+  {
+    "id": "FishAchExp_FleshOutbreak",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "FleshCult"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Be present when the flesh cult rises.",
+    "status": "fully_specific",
+    "reason": "params:event"
   },
   {
     "id": "FishAchExp_FleshPudge",
@@ -391,6 +446,17 @@
     "reason": "params:objective"
   },
   {
+    "id": "FishAchExp_HamsterShift",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "AnimalObjectives"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Play during the animal objectives event.",
+    "status": "fully_specific",
+    "reason": "params:event"
+  },
+  {
     "id": "FishAchExp_HappinessOverdose",
     "condition": "reagent-metabolize",
     "conditionParams": {
@@ -468,6 +534,17 @@
     "reason": "params:item"
   },
   {
+    "id": "FishAchExp_IonStorm",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "IonStorm"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Endure an ion storm as silicon or crew.",
+    "status": "fully_specific",
+    "reason": "params:event"
+  },
+  {
     "id": "FishAchExp_JudgeOnBench",
     "condition": "role-added",
     "conditionParams": {
@@ -521,6 +598,17 @@
     "description": "Win two fights with a combat knife.",
     "status": "fully_specific",
     "reason": "params:weapon"
+  },
+  {
+    "id": "FishAchExp_KudzuCreep",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "KudzuGrowth"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Watch kudzu claim part of the station.",
+    "status": "fully_specific",
+    "reason": "params:event"
   },
   {
     "id": "FishAchExp_LaserTag",
@@ -598,6 +686,17 @@
     "reason": "params:item"
   },
   {
+    "id": "FishAchExp_MeteorWatch",
+    "condition": "examine",
+    "conditionParams": {
+      "tag": "Meteor"
+    },
+    "trigger": "ExaminedEvent",
+    "description": "Examine three meteors.",
+    "status": "fully_specific",
+    "reason": "params:tag"
+  },
+  {
     "id": "FishAchExp_MethRun",
     "condition": "reagent-metabolize",
     "conditionParams": {
@@ -651,6 +750,17 @@
     "reason": "params:target"
   },
   {
+    "id": "FishAchExp_ObrRed",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "FishObrShuttleRed"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Be on-station when a red OBR shuttle is called.",
+    "status": "fully_specific",
+    "reason": "params:event"
+  },
+  {
     "id": "FishAchExp_OldTimer",
     "condition": "counter",
     "conditionParams": {
@@ -671,6 +781,17 @@
     "description": "Process omnizine in your body.",
     "status": "fully_specific",
     "reason": "params:reagent"
+  },
+  {
+    "id": "FishAchExp_PlanetWar",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "PlanetWarRule"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Join a Planet War gamemode round.",
+    "status": "fully_specific",
+    "reason": "params:event"
   },
   {
     "id": "FishAchExp_PrisonerStreak",
@@ -1062,6 +1183,17 @@
     "description": "Craft fifteen sheets of paper.",
     "status": "fully_specific",
     "reason": "params:item"
+  },
+  {
+    "id": "FishAch_Orig_BlobPerimeter",
+    "condition": "station-event",
+    "conditionParams": {
+      "event": "KudzuGrowth"
+    },
+    "trigger": "GameRuleStartedEvent",
+    "description": "Be present for kudzu growth five times.",
+    "status": "fully_specific",
+    "reason": "params:event"
   },
   {
     "id": "FishAch_Orig_BrigMedicBond",

@@ -11,6 +11,18 @@
   order: 2010
   # source: Fish-original
 - type: achievement
+  id: FishAch_Orig_BlobPerimeter
+  name: achievement-fishach_orig_blobperimeter-name
+  description: achievement-fishach_orig_blobperimeter-desc
+  category: FishAchStation
+  condition: station-event
+  conditionParams:
+    event: KudzuGrowth
+  progressTarget: 5
+  oncePerRound: true
+  order: 2023
+  # source: Fish-original
+- type: achievement
   id: FishAch_Orig_BrigMedicBond
   name: achievement-fishach_orig_brigmedicbond-name
   description: achievement-fishach_orig_brigmedicbond-desc

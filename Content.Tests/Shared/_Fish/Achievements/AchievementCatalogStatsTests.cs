@@ -172,11 +172,11 @@ public sealed class AchievementCatalogStatsTests
     }
 
     [Test]
-    public void CatalogBaseline_Has105Achievements()
+    public void CatalogBaseline_Has117Achievements()
     {
         var auditPath = Path.Combine(FindRepoRoot(), "Resources", "Docs", "_Fish", "AchievementsTriggerAudit.json");
         using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(auditPath));
-        Assert.That(doc.RootElement.GetArrayLength(), Is.EqualTo(105));
+        Assert.That(doc.RootElement.GetArrayLength(), Is.EqualTo(117));
     }
 
     private static string FindRepoRoot()
