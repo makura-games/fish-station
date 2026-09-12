@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "license": "CLA",
+  "copyright": "Placeholder copied from Structures/Power/apc.rsi, sprited by discord: odlieerr",
+  "size": {
+    "x": 48,
+    "y": 48
+  },
+  "states": [
+    {
+      "name": "base",
+      "directions": 4
+    }
+  ]
+}
