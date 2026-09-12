@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.KillTracking;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
@@ -116,6 +117,8 @@ public sealed partial class AchievementConditionSystem : EntitySystem
 
     private async void OnRoundEnd(RoundEndMessageEvent ev)
     {
+        var occurredRoundEvents = _occurredRoundEvents.ToArray();
+
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { } ent)
@@ -146,7 +149,7 @@ public sealed partial class AchievementConditionSystem : EntitySystem
             }
 
             // События станции выдаются в конце раунда всем участникам (и живым, и погибшим в ходе событий).
-            foreach (var ruleId in _occurredRoundEvents)
+            foreach (var ruleId in occurredRoundEvents)
             {
                 await _achievements.ContributeAsync(
                     session,
