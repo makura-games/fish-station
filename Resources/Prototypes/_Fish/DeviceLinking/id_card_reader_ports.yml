@@ -1,0 +1,39 @@
+- type: sourcePort
+  id: FishIdCardInserted
+  name: signal-port-name-fish-id-card-inserted
+  description: signal-port-description-fish-id-card-inserted
+  defaultLinks: [ Toggle, Trigger, Timer ]
+
+- type: sourcePort
+  id: FishIdCardRemoved
+  name: signal-port-name-fish-id-card-removed
+  description: signal-port-description-fish-id-card-removed
+  defaultLinks: [ Toggle, Trigger, Timer ]
+
+- type: sourcePort
+  id: FishIdCardAccessGranted
+  name: signal-port-name-fish-id-card-access-granted
+  description: signal-port-description-fish-id-card-access-granted
+  defaultLinks: [ Open, Toggle, Trigger, Timer ]
+
+- type: sourcePort
+  id: FishIdCardLocalAuthorization
+  name: signal-port-name-fish-id-card-local-authorization
+  description: signal-port-description-fish-id-card-local-authorization
+  defaultLinks: [ FishIdCardReaderAuthorization ]
+
+- type: sourcePort
+  id: FishIdCardReaderCloseRequest
+  name: signal-port-name-fish-id-card-reader-close-request
+  description: signal-port-description-fish-id-card-reader-close-request
+  defaultLinks: [ Close ]
+
+- type: sinkPort
+  id: FishIdCardReaderAuthorization
+  name: signal-port-name-fish-id-card-reader-authorization
+  description: signal-port-description-fish-id-card-reader-authorization
+
+- type: sinkPort
+  id: FishIdCardReaderDoorStatus
+  name: signal-port-name-fish-id-card-reader-door-status
+  description: signal-port-description-fish-id-card-reader-door-status
