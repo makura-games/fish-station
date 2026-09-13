@@ -115,11 +115,11 @@ namespace Content.Server.Communications
             base.Update(frameTime);
         }
 
-        public void OnCommunicationsConsoleMapInit(EntityUid uid, CommunicationsConsoleComponent comp, MapInitEvent args)
+        public void OnCommunicationsConsoleMapInit(Entity<CommunicationsConsoleComponent> entity, ref MapInitEvent args)
         {
-            comp.AnnouncementCooldownRemaining = comp.InitialDelay;
-            EnsureAlertStation((uid, comp)); // Sunrise-Edit
-            UpdateCommsConsoleInterface(uid, comp);
+            entity.Comp.AnnouncementCooldownRemaining = entity.Comp.InitialDelay;
+            EnsureAlertStation(entity); // Sunrise-Edit
+            UpdateCommsConsoleInterface(entity.Owner, entity.Comp);
         }
 
         /// <summary>
@@ -265,13 +265,13 @@ namespace Content.Server.Communications
             return !(left.TotalSeconds / expected.TotalSeconds < recallThreshold);
         }
 
-        private void OnSelectAlertLevelMessage(EntityUid uid, CommunicationsConsoleComponent comp, CommunicationsConsoleSelectAlertLevelMessage message)
+        private void OnSelectAlertLevelMessage(Entity<CommunicationsConsoleComponent> entity, ref CommunicationsConsoleSelectAlertLevelMessage message)
         {
             if (message.Actor is not { Valid: true } user)
                 return;
 
-            TrySetPrimaryAlertLevel((uid, comp), message.Level, user); // Sunrise-Edit
-            UpdateCommsConsoleInterface(uid, comp); // Sunrise-Edit - отправляем состояние после установки force cooldown.
+            TrySetPrimaryAlertLevel((entity.Owner, entity.Comp), message.Level, user); // Sunrise-Edit
+            UpdateCommsConsoleInterface(entity.Owner, entity.Comp); // Sunrise-Edit - отправляем состояние после установки force cooldown.
         }
 
         private void OnAnnounceMessage(EntityUid uid, CommunicationsConsoleComponent comp,

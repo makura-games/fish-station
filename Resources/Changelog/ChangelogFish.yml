@@ -595,3 +595,21 @@
     message: Переработан набор достижений, что палит режим игры (тех кто абузил по попе). Теперь они даются в конце раунда.
   id: 57
   url: https://github.com/makura-games/fish-station/pull/447
+- author: TiFeRi
+  time: '2026-09-13T09:24:19.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен СБ шаттл рыбы.
+  - type: Remove
+    message: Убраны шаттлы СР.
+  - type: Tweak
+    message: Добавлены газодобытчики.
+  id: 58
+  url: https://github.com/makura-games/fish-station/pull/448
+- author: ВАШЕ_ИМЯ
+  time: '2026-09-13T14:26:54.0000000+00:00'
+  changes:
+  - type: Fix
+    message: После перезаписи доступов теперь ничего не ломается
+  id: 59
+  url: https://github.com/makura-games/fish-station/pull/449
