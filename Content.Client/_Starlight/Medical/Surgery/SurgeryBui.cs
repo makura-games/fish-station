@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Content.Client._Fish.Medical.Surgery; // FIsh edit - окно со схемой тела
 using Content.Client._Starlight;
 using Content.Client.Administration.UI.CustomControls;
 using Content.Client.Hands.Systems;
@@ -20,7 +21,7 @@ namespace Content.Client._Starlight.Medical.Surgery;
 // https://github.com/RMC-14/RMC-14
 
 [UsedImplicitly]
-public sealed class SurgeryBui : BoundUserInterface
+public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - выбор частей тела
 {
     [Dependency] private readonly IEntityManager _entities = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
@@ -32,7 +33,7 @@ public sealed class SurgeryBui : BoundUserInterface
     private readonly HandsSystem _hands;
 
     [ViewVariables]
-    private SurgeryWindow? _window;
+    private FishSurgeryWindow? _window; // FIsh edit
 
     private EntityUid? _part;
     private (EntityUid Ent, EntProtoId Proto)? _surgery;
@@ -44,9 +45,11 @@ public sealed class SurgeryBui : BoundUserInterface
         _hands = _entities.System<HandsSystem>();
         _entitySystem = _entities.System<StarlightEntitySystem>();
 
-        _hands.OnPlayerItemAdded += OnPlayerItemAdded;
+        _hands.OnPlayerItemAdded += OnPlayerHeldItemChanged;
+        _hands.OnPlayerItemRemoved += OnPlayerHeldItemChanged; // FIsh edit - обновляем доступность при смене инструмента
     }
-    private void OnPlayerItemAdded(string k1, EntityUid k2)
+
+    private void OnPlayerHeldItemChanged(string handId, EntityUid item)
     {
         if (!_game.IsFirstTimePredicted) return;
         RefreshUI();
@@ -54,13 +57,14 @@ public sealed class SurgeryBui : BoundUserInterface
     protected override void Open()
     {
         base.Open();
+        ResetFishSessionState(); // FIsh edit - локальное состояние прошлого открытия не переносится в новую сессию
         UpdateState(State);
     }
 
     protected override void UpdateState(BoundUserInterfaceState? state)
     {
         if (state is SurgeryBuiState s)
-            Update(s);
+            ApplyFishState(s); // FIsh edit - обновление без сброса текущего раздела
     }
 
     public override void Update()
@@ -136,7 +140,7 @@ public sealed class SurgeryBui : BoundUserInterface
     private void TryInitWindow()
     {
         if (_window != null) return;
-        _window = new SurgeryWindow();
+        _window = CreateFishWindow(); // FIsh edit - проектное окно через единую точку совместимости
         _window.OnClose += Close;
         _window.Title = _loc.GetString("surgery-window-name");
         _window.PartsButton.Text = _loc.GetString("surgery-window-partsbutton-name");
@@ -157,13 +161,12 @@ public sealed class SurgeryBui : BoundUserInterface
             _previousSurgeries.Clear();
 
             if (!_entities.TryGetNetEntity(_part, out var netPart) ||
-                State is not SurgeryBuiState s ||
-                !s.Choices.TryGetValue(netPart.Value, out var surgeries))
+                State is not SurgeryBuiState s)
             {
                 return;
             }
 
-            OnPartPressed(netPart.Value, surgeries);
+            OnPartPressed(netPart.Value, GetFishChoices(s, netPart.Value)); // FIsh edit - область без операций допустима
         };
 
         _window.StepsButton.OnPressed += _ =>
@@ -199,12 +202,7 @@ public sealed class SurgeryBui : BoundUserInterface
         stepName.AddText(_entities.GetComponent<MetaDataComponent>(step).EntityName);
 
         var stepButton = new SurgeryStepButton { Step = step };
-        stepButton.Button.OnPressed += _ => SendMessage(new SurgeryStepChosenBuiMsg()
-        {
-            Step = stepId,
-            Part = netPart,
-            Surgery = surgeryId,
-        });
+        InitializeFishStep(stepButton, netPart, surgeryId, stepId); // FIsh edit - проектная настройка этапа
 
         _window.Steps.AddChild(stepButton);
     }
@@ -216,6 +214,9 @@ public sealed class SurgeryBui : BoundUserInterface
 
         _part = _entities.GetEntity(netPart);
         _surgery = (surgery, surgeryId);
+
+        _window.DismissConfirmation();
+        PrepareFishStepsForOperation(); // FIsh edit - сброс проектного состояния этапов
 
         _window.Steps.DisposeAllChildren();
 
@@ -230,6 +231,7 @@ public sealed class SurgeryBui : BoundUserInterface
                     && _system.IsSurgeryValid(body, part, requirementId, surgeryId, out _, out _, out _))
                 {
                     var label = new ChoiceControl();
+                    InitializeFishRequirement(label); // FIsh edit - проектное оформление предварительных операций
                     label.Button.OnPressed += _ =>
                     {
                         _previousSurgeries.Add(surgeryId);
@@ -265,6 +267,8 @@ public sealed class SurgeryBui : BoundUserInterface
 
         _part = _entities.GetEntity(netPart);
 
+        RememberFishChoices(surgeryIds); // FIsh edit - запоминаем состав списка, а не пересоздаём его на каждом снимке
+
         _window.Surgeries.DisposeAllChildren();
 
         var surgeries = new List<(Entity<SurgeryComponent> Ent, EntProtoId Id, string Name, bool IsCompleted, Texture?)>();
@@ -295,8 +299,7 @@ public sealed class SurgeryBui : BoundUserInterface
             var surgeryButton = new ChoiceControl();
 
             surgeryButton.Set(Name, texture);
-            if (IsCompleted)
-                surgeryButton.Button.Modulate = Color.Green;
+            InitializeFishOperation(surgeryButton, Id, IsCompleted); // FIsh edit - оформление и отслеживание операции
             surgeryButton.Button.OnPressed += _ => OnSurgeryPressed(Ent, netPart, Id);
             _window.Surgeries.AddChild(surgeryButton);
         }
@@ -311,6 +314,7 @@ public sealed class SurgeryBui : BoundUserInterface
             !_entities.HasComponent<SurgeryComponent>(_surgery?.Ent) ||
             !_entities.TryGetComponent(_part, out OrganComponent? part))
         {
+            RefreshFishAreaCard(); // FIsh edit - сброс текущего этапа при потере области или операции
             return;
         }
 
@@ -339,6 +343,11 @@ public sealed class SurgeryBui : BoundUserInterface
                 status = StepStatus.Complete;
             }
 
+            if (!PrepareFishStepPresentation(stepButton, ref status)) // FIsh edit - стабильное проектное представление
+            {
+                i++;
+                continue;
+            }
             stepButton.Button.Disabled = status != StepStatus.Next;
 
             var stepName = new FormattedMessage();
@@ -379,9 +388,10 @@ public sealed class SurgeryBui : BoundUserInterface
             }
 
             var texture = _entities.GetComponentOrNull<SpriteComponent>(stepButton.Step)?.Icon?.Default;
-            stepButton.Set(stepName, texture);
+            ApplyFishStepPresentation(stepButton, stepName, status, i, texture); // FIsh edit - проектное представление этапа
             i++;
         }
+        RefreshFishAreaCard(); // FIsh edit - текущий этап и причина недоступности обновляются вместе со списком
     }
 
     private void View(ViewType type)
@@ -401,6 +411,7 @@ public sealed class SurgeryBui : BoundUserInterface
         _window.StepsButton.Disabled = type != ViewType.Steps || _previousSurgeries.Count == 0;
 
         var partName = GetSelectedPartName();
+        ApplyFishView(type); // FIsh edit - схема и состояние выбранной области
 
         if (partName != null &&
             _entities.TryGetComponent(_surgery?.Ent, out MetaDataComponent? surgeryMeta))
@@ -478,6 +489,7 @@ public sealed class SurgeryBui : BoundUserInterface
 
         if (disposing)
             _window?.Dispose();
-        _hands.OnPlayerItemAdded -= OnPlayerItemAdded;
+        _hands.OnPlayerItemAdded -= OnPlayerHeldItemChanged;
+        _hands.OnPlayerItemRemoved -= OnPlayerHeldItemChanged; // FIsh edit
     }
 }
