@@ -20,13 +20,13 @@ public sealed class DeimplantBoundUserInterface : BoundUserInterface
 
         _window.OnImplantChange += implant => SendMessage(new DeimplantChangeVerbMessage(implant));
     }
-    
-    public void UpdateState(Dictionary<string, string> implantList, string? implant)
+
+    public void UpdateState(Dictionary<string, string> implantList, string? implant, bool hasStoredImplant, bool blocked)
     {
         if (_window != null)
         {
             _window.UpdateImplantList(implantList);
-            _window.UpdateState(implant);
+            _window.UpdateState(implant, hasStoredImplant, blocked);
         }
     }
 }

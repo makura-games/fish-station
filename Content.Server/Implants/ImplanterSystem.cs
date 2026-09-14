@@ -22,6 +22,7 @@ public sealed partial class ImplanterSystem : SharedImplanterSystem
         InitializeImplanted();
 
         SubscribeLocalEvent<ImplanterComponent, AfterInteractEvent>(OnImplanterAfterInteract);
+        SubscribeLocalEvent<ImplanterComponent, ExtractorSetModeMessage>(OnExtractorSetMode);
 
         SubscribeLocalEvent<ImplanterComponent, ImplantEvent>(OnImplant);
         SubscribeLocalEvent<ImplanterComponent, DrawEvent>(OnDraw);
@@ -37,8 +38,21 @@ public sealed partial class ImplanterSystem : SharedImplanterSystem
         if (!CheckTarget(target, component.Whitelist, component.Blacklist))
             return;
 
+        // Block interaction if extractor has stored implant and BlockWhileImplantStored is true
+        if (component.BlockWhileImplantStored && component.ImplanterSlot.HasItem)
+        {
+            _popup.PopupEntity(Loc.GetString("implanter-blocked-implant-stored"), uid, args.User);
+            args.Handled = true;
+            return;
+        }
+
         //TODO: Rework when surgery is in for implant cases
-        if (component.CurrentMode == ImplanterToggleMode.Draw && !component.ImplantOnly)
+        if (component.ExtractionMode != ExtractorExtractionMode.None)
+        {
+            // Extractor always tries to draw (even with ImplantOnly=true)
+            TryDraw(component, args.User, target, uid);
+        }
+        else if (component.CurrentMode == ImplanterToggleMode.Draw && !component.ImplantOnly)
         {
             TryDraw(component, args.User, target, uid);
         }
@@ -134,5 +148,11 @@ public sealed partial class ImplanterSystem : SharedImplanterSystem
         Draw(args.Used.Value, args.User, args.Target.Value, component);
 
         args.Handled = true;
+    }
+
+    private void OnExtractorSetMode(EntityUid uid, ImplanterComponent component, ExtractorSetModeMessage args)
+    {
+        component.ExtractionMode = args.Mode;
+        Dirty(uid, component);
     }
 }

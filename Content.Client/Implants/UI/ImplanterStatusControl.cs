@@ -46,6 +46,31 @@ public sealed class ImplanterStatusControl : Control
             _ => Loc.GetString("injector-invalid-injector-toggle-mode")
         };
 
+        // EXTRACTOR: Only show extractor-specific status for actual extractors
+        if (_parent.ExtractionMode != ExtractorExtractionMode.None)
+        {
+            if (_parent.ImplanterSlot.HasItem)
+            {
+                // Blocked: implant stored
+                _label.SetMarkup(Loc.GetString("implanter-label-blocked",
+                    ("implantName", _parent.ImplantData.Item1)));
+            }
+            else
+            {
+                // Ready: show current extraction mode
+                string modeName = _parent.ExtractionMode switch
+                {
+                    ExtractorExtractionMode.MindShield => Loc.GetString("implanter-radial-mindshield"),
+                    ExtractorExtractionMode.Tracking => Loc.GetString("implanter-radial-tracking"),
+                    ExtractorExtractionMode.Random => Loc.GetString("implanter-radial-random"),
+                    _ => Loc.GetString("implanter-empty-text")
+                };
+                _label.SetMarkup(Loc.GetString("implanter-label-extractor-ready", ("mode", modeName)));
+            }
+            return;
+        }
+
+        // Normal implanters: original Draw/Inject display (unchanged)
         if (_parent.CurrentMode == ImplanterToggleMode.Draw)
         {
             string implantName = _parent.DeimplantChosen != null

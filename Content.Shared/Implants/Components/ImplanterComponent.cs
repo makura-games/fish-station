@@ -4,6 +4,7 @@ using Content.Shared.Whitelist;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Implants.Components;
 /// <summary>
@@ -96,10 +97,40 @@ public sealed partial class ImplanterComponent : Component
     public List<EntProtoId> DeimplantWhitelist = new();
 
     /// <summary>
-    /// The subdermal implants that may be removed via this implanter
+    /// Damage applied on catastrophic failure (no implant container found)
     /// </summary>
     [DataField]
     public DamageSpecifier DeimplantFailureDamage = new();
+
+    /// <summary>
+    /// Damage applied to target on failed extraction attempt (wrong implant selected, etc.)
+    /// </summary>
+    [DataField]
+    public DamageSpecifier ExtractionFailureDamage = new();
+
+    /// <summary>
+    /// If true, extractor only allows selecting MindShieldImplant and TrackingImplant directly (old-style UI)
+    /// </summary>
+    [DataField]
+    public bool RestrictToCommonImplants = false;
+
+    /// <summary>
+    /// If true, enable "Random Implant" extraction option (old-style UI)
+    /// </summary>
+    [DataField]
+    public bool AllowRandomExtraction = false;
+
+    /// <summary>
+    /// If true, block interaction while an extracted implant is stored in the implanter (old-style UI)
+    /// </summary>
+    [DataField]
+    public bool BlockWhileImplantStored = false;
+
+    /// <summary>
+    /// Extraction mode for implant extractor (only used by ImplanterExtractor)
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public ExtractorExtractionMode ExtractionMode = ExtractorExtractionMode.None;
 
     /// <summary>
     /// Chosen implant to remove, if necessary.
@@ -111,11 +142,20 @@ public sealed partial class ImplanterComponent : Component
 
     // Sunrise-Start
     /// <summary>
-    /// Ограничение на внедрение: если true — имplanter можно использовать только на себе (внедрение в других запрещено).
+    /// Ограничение на внедрение: если true — имплантер можно использовать только на себе (внедрение в других запрещено).
     /// </summary>
     [DataField]
     public bool OnlySelfImplant = false;
     // Sunrise-End
+}
+
+[Serializable, NetSerializable]
+public enum ExtractorExtractionMode : byte
+{
+    None,
+    MindShield,
+    Tracking,
+    Random
 }
 
 [Serializable, NetSerializable]

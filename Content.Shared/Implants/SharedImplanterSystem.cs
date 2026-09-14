@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Containers.ItemSlots;
@@ -13,6 +14,7 @@ using Content.Shared.Verbs;
 using Content.Shared.Whitelist;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
 
@@ -28,6 +30,7 @@ public abstract class SharedImplanterSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damageableSystem = default!;
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
     {
@@ -67,6 +70,9 @@ public abstract class SharedImplanterSystem : EntitySystem
     private void OnEntEjected(EntityUid uid, ImplanterComponent component, EntRemovedFromContainerMessage args)
     {
         component.ImplantData = ("", "");
+        // Reset extraction mode to Random when implant is removed from extractor
+        if (component.ExtractionMode != ExtractorExtractionMode.None)
+            component.ExtractionMode = ExtractorExtractionMode.Random;
         ChangeOnImplantVisualizer(uid, component);
         Dirty(uid, component);
     }
@@ -104,6 +110,14 @@ public abstract class SharedImplanterSystem : EntitySystem
         if (!args.CanAccess || !args.CanInteract)
             return;
 
+        // Extractor with stored implant: no verbs
+        if (component.ExtractionMode != ExtractorExtractionMode.None && component.ImplanterSlot.HasItem)
+            return;
+
+        // Old-style extractor verb blocking
+        if (component.BlockWhileImplantStored && component.ImplanterSlot.HasItem)
+            return;
+
         if (component.CurrentMode == ImplanterToggleMode.Draw)
         {
             args.Verbs.Add(new InteractionVerb()
@@ -117,6 +131,14 @@ public abstract class SharedImplanterSystem : EntitySystem
     private void OnUseInHand(EntityUid uid, ImplanterComponent? component, UseInHandEvent args)
     {
         if (!Resolve(uid, ref component))
+            return;
+
+        // Extractor with stored implant: completely blocked
+        if (component.ExtractionMode != ExtractorExtractionMode.None && component.ImplanterSlot.HasItem)
+            return;
+
+        // Old-style extractor: block use if BlockWhileImplantStored is true
+        if (component.BlockWhileImplantStored && component.ImplanterSlot.HasItem)
             return;
 
         if (component.CurrentMode == ImplanterToggleMode.Draw)
@@ -133,6 +155,42 @@ public abstract class SharedImplanterSystem : EntitySystem
     {
         if (!Resolve(uid, ref component))
             return;
+
+        // Extractor: open radial menu when empty (regardless of current extraction mode)
+        if (component.ExtractionMode != ExtractorExtractionMode.None && !component.ImplanterSlot.HasItem)
+        {
+            _uiSystem.TryToggleUi(uid, ExtractorRadialMenuUiKey.Key, user);
+            return;
+        }
+
+        // Extractor with stored implant: block all UI
+        if (component.ExtractionMode != ExtractorExtractionMode.None && component.ImplanterSlot.HasItem)
+            return;
+
+        // Old-style implanters: build filtered implant list and open dropdown
+        var implantList = new Dictionary<string, string>();
+
+        if (component.RestrictToCommonImplants)
+        {
+            var commonIds = new[] { "MindShieldImplant", "TrackingImplant" };
+            foreach (var id in commonIds)
+            {
+                if (_proto.TryIndex(id, out EntityPrototype? proto))
+                    implantList.Add(proto.ID, proto.Name);
+            }
+        }
+        else
+        {
+            foreach (var implant in component.DeimplantWhitelist)
+            {
+                if (_proto.Resolve(implant, out var proto))
+                    implantList.Add(proto.ID, proto.Name);
+            }
+        }
+
+        if (component.AllowRandomExtraction)
+            implantList.Add("__RANDOM__", Loc.GetString("implanter-random-extract"));
+
         _uiSystem.TryToggleUi(uid, DeimplantUiKey.Key, user);
         component.DeimplantChosen ??= component.DeimplantWhitelist.FirstOrNull();
         Dirty(uid, component);
@@ -143,6 +201,17 @@ public abstract class SharedImplanterSystem : EntitySystem
     public void Implant(EntityUid user, EntityUid target, EntityUid implanter, ImplanterComponent component)
     {
         if (!CanImplantOther(user, target, implanter, component)) // Sunrise-Edit
+            return;
+
+        // Block re-implanting an extracted implant if old-style extractor has BlockWhileImplantStored enabled
+        if (component.BlockWhileImplantStored && component.ImplanterSlot.HasItem)
+        {
+            _popup.PopupEntity(Loc.GetString("implanter-cannot-reimplant-extracted"), implanter, user);
+            return;
+        }
+
+        // Extractor with ExtractionMode never enters Inject mode (implantOnly = true)
+        if (component.ExtractionMode != ExtractorExtractionMode.None)
             return;
 
         if (!CanImplant(user, target, implanter, component, out var implant, out _))
@@ -207,8 +276,8 @@ public abstract class SharedImplanterSystem : EntitySystem
             _whitelistSystem.IsWhitelistFailOrNull(blacklist, target);
     }
 
-    //Draw the implant out of the target
-    //TODO: Rework when surgery is in so implant cases can be a thing
+    // Draw the implant out of the target
+    // TODO: Rework when surgery is in so implant cases can be a thing
     public void Draw(EntityUid implanter, EntityUid user, EntityUid target, ImplanterComponent component)
     {
         var implanterContainer = component.ImplanterSlot.ContainerSlot;
@@ -216,82 +285,201 @@ public abstract class SharedImplanterSystem : EntitySystem
         if (implanterContainer is null)
             return;
 
-        var permanentFound = false;
-
-        if (_container.TryGetContainer(target, ImplanterComponent.ImplantSlotId, out var implantContainer))
+        // EXTRACTOR-SPECIFIC: Block if implant already stored
+        if (component.ImplanterSlot.HasItem)
         {
-            var implantCompQuery = GetEntityQuery<SubdermalImplantComponent>();
+            _popup.PopupEntity(Loc.GetString("implanter-blocked-implant-stored"), implanter, user);
+            return;
+        }
 
-            if (component.AllowDeimplantAll)
-            {
-                foreach (var implant in implantContainer.ContainedEntities)
-                {
-                    if (!implantCompQuery.TryGetComponent(implant, out var implantComp))
-                        continue;
+        // EXTRACTOR-SPECIFIC: If ExtractionMode is set, use extractor logic
+        if (component.ExtractionMode != ExtractorExtractionMode.None)
+        {
+            DrawExtractor(implanter, user, target, component, implanterContainer);
+            return;
+        }
 
-                    //Don't remove a permanent implant and look for the next that can be drawn
-                    if (!_container.CanRemove(implant, implantContainer))
-                    {
-                        DrawPermanentFailurePopup(implant, target, user);
-                        permanentFound = implantComp.Permanent;
-                        continue;
-                    }
+        // Original logic for other implanters
+        if (!_container.TryGetContainer(target, ImplanterComponent.ImplantSlotId, out var implantContainer))
+        {
+            DrawCatastrophicFailure(implanter, component, user);
+            return;
+        }
 
-                    DrawImplantIntoImplanter(implanter, target, implant, implantContainer, implanterContainer, implantComp);
-                    permanentFound = implantComp.Permanent;
+        var implantCompQuery = GetEntityQuery<SubdermalImplantComponent>();
 
-                    //Break so only one implant is drawn
-                    break;
-                }
+        // Determine which implant to extract
+        EntityUid? implantToExtract = null;
+        SubdermalImplantComponent? implantComp = null;
 
-                if (component.CurrentMode == ImplanterToggleMode.Draw && !component.ImplantOnly && !permanentFound)
-                    ImplantMode(implanter, component);
-            }
-            else
-            {
-                EntityUid? implant = null;
-                var implants = implantContainer.ContainedEntities;
-                foreach (var implantEntity in implants)
-                {
-                    if (TryComp<SubdermalImplantComponent>(implantEntity, out var subdermalComp))
-                    {
-                        if (component.DeimplantChosen == subdermalComp.DrawableProtoIdOverride ||
-                            (Prototype(implantEntity) != null && component.DeimplantChosen == Prototype(implantEntity)!))
-                            implant = implantEntity;
-                    }
-                }
-
-                if (implant != null && implantCompQuery.TryGetComponent(implant, out var implantComp))
-                {
-                    //Don't remove a permanent implant
-                    if (!_container.CanRemove(implant.Value, implantContainer))
-                    {
-                        DrawPermanentFailurePopup(implant.Value, target, user);
-                        permanentFound = implantComp.Permanent;
-
-                    }
-                    else
-                    {
-                        DrawImplantIntoImplanter(implanter, target, implant.Value, implantContainer, implanterContainer, implantComp);
-                        permanentFound = implantComp.Permanent;
-                    }
-
-                    if (component.CurrentMode == ImplanterToggleMode.Draw && !component.ImplantOnly && !permanentFound)
-                        ImplantMode(implanter, component);
-                }
-                else
-                {
-                    DrawCatastrophicFailure(implanter, component, user);
-                }
-            }
-
-            Dirty(implanter, component);
-
+        if (component.AllowRandomExtraction && (component.DeimplantChosen == null || component.DeimplantChosen.Value.ToString() == "__RANDOM__"))
+        {
+            // Random mode - pick from ALL removable implants
+            implantToExtract = GetRandomExtractableImplant(implantContainer, implantCompQuery);
         }
         else
         {
-            DrawCatastrophicFailure(implanter, component, user);
+            // Specific implant mode - find selected implant
+            implantToExtract = GetSelectedExtractableImplant(implantContainer, implantCompQuery, component);
         }
+
+        if (implantToExtract == null || !implantCompQuery.TryGetComponent(implantToExtract.Value, out implantComp))
+        {
+            // FAILED EXTRACTION - apply ExtractionFailureDamage to TARGET
+            _damageableSystem.TryChangeDamage(target, component.ExtractionFailureDamage, ignoreResistances: true, origin: implanter);
+            _popup.PopupEntity(Loc.GetString("implanter-extraction-failed"), target, user);
+            return;
+        }
+
+        // Check if permanent
+        if (!_container.CanRemove(implantToExtract.Value, implantContainer))
+        {
+            DrawPermanentFailurePopup(implantToExtract.Value, target, user);
+            return;
+        }
+
+        // SUCCESS - extract implant into implanter
+        _container.Remove(implantToExtract.Value, implantContainer);
+        _container.Insert(implantToExtract.Value, implanterContainer);
+
+        // Update implant data for UI
+        var implantData = Comp<MetaDataComponent>(implantToExtract.Value);
+        component.ImplantData = (implantData.EntityName, implantData.EntityDescription);
+
+        // Raise DNA transfer event
+        var ev = new TransferDnaEvent { Donor = target, Recipient = implanter };
+        RaiseLocalEvent(target, ref ev);
+
+        Dirty(implanter, component);
+        _popup.PopupEntity(Loc.GetString("implanter-extraction-success"), target, user);
+    }
+
+    private void DrawExtractor(EntityUid implanter, EntityUid user, EntityUid target, ImplanterComponent component, ContainerSlot implanterContainer)
+    {
+        if (!_container.TryGetContainer(target, ImplanterComponent.ImplantSlotId, out var implantContainer))
+        {
+            // No implants at all -> ExtractionFailureDamage to TARGET
+            _damageableSystem.TryChangeDamage(target, component.ExtractionFailureDamage, ignoreResistances: true, origin: implanter);
+            _popup.PopupEntity(Loc.GetString("implanter-extraction-failed-no-implants"), target, user);
+            return;
+        }
+
+        var implantToExtract = FindImplantByExtractionMode(implantContainer, component);
+
+        if (implantToExtract == null)
+        {
+            // Selected implant not found -> ExtractionFailureDamage to TARGET
+            _damageableSystem.TryChangeDamage(target, component.ExtractionFailureDamage, ignoreResistances: true, origin: implanter);
+            _popup.PopupEntity(Loc.GetString("implanter-extraction-failed-not-found"), target, user);
+            return;
+        }
+
+        // Check if permanent (fused)
+        if (!_container.CanRemove(implantToExtract.Value, implantContainer))
+        {
+            DrawPermanentFailurePopup(implantToExtract.Value, target, user);
+            return; // NO damage for permanent implants
+        }
+
+        // SUCCESS - extract implant into implanter
+        _container.Remove(implantToExtract.Value, implantContainer);
+        _container.Insert(implantToExtract.Value, implanterContainer);
+
+        // Update implant data for UI
+        var implantData = Comp<MetaDataComponent>(implantToExtract.Value);
+        component.ImplantData = (implantData.EntityName, implantData.EntityDescription);
+
+        // Raise DNA transfer event
+        var ev = new TransferDnaEvent { Donor = target, Recipient = implanter };
+        RaiseLocalEvent(target, ref ev);
+
+        Dirty(implanter, component);
+        _popup.PopupEntity(Loc.GetString("implanter-extraction-success"), target, user);
+    }
+
+    private EntityUid? FindImplantByExtractionMode(BaseContainer implantContainer, ImplanterComponent component)
+    {
+        var implantCompQuery = GetEntityQuery<SubdermalImplantComponent>();
+        var candidates = new List<EntityUid>();
+
+        foreach (var entity in implantContainer.ContainedEntities)
+        {
+            if (!implantCompQuery.TryGetComponent(entity, out var comp))
+                continue;
+            if (!_container.CanRemove(entity, implantContainer))
+                continue;
+            candidates.Add(entity);
+        }
+
+        if (candidates.Count == 0)
+            return null;
+
+        return component.ExtractionMode switch
+        {
+            ExtractorExtractionMode.MindShield => FindCandidateByProtoId(candidates, "MindShieldImplant"),
+            ExtractorExtractionMode.Tracking => FindCandidateByProtoId(candidates, "TrackingImplant"),
+            ExtractorExtractionMode.Random => candidates[_random.Next(candidates.Count)],
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// Find a candidate implant matching the given proto ID.
+    /// Returns actual null (not struct default) when no match is found.
+    /// </summary>
+    private EntityUid? FindCandidateByProtoId(List<EntityUid> candidates, string targetId)
+    {
+        foreach (var candidate in candidates)
+        {
+            if (Prototype(candidate)?.ID == targetId)
+                return candidate;
+
+            if (TryComp(candidate, out SubdermalImplantComponent? comp) &&
+                comp.DrawableProtoIdOverride?.ToString() == targetId)
+                return candidate;
+        }
+
+        return null;
+    }
+
+    private EntityUid? GetRandomExtractableImplant(BaseContainer implantContainer, EntityQuery<SubdermalImplantComponent> implantCompQuery)
+    {
+        var candidates = new List<EntityUid>();
+        foreach (var entity in implantContainer.ContainedEntities)
+        {
+            if (implantCompQuery.TryGetComponent(entity, out var comp) && _container.CanRemove(entity, implantContainer))
+                candidates.Add(entity);
+        }
+        if (candidates.Count == 0)
+            return null;
+        var index = _random.Next(candidates.Count);
+        return candidates[index];
+    }
+
+    private EntityUid? GetSelectedExtractableImplant(BaseContainer implantContainer, EntityQuery<SubdermalImplantComponent> implantCompQuery, ImplanterComponent component)
+    {
+        // Handle random selection marker
+        if (component.DeimplantChosen.HasValue && component.DeimplantChosen.Value.ToString() == "__RANDOM__")
+            return GetRandomExtractableImplant(implantContainer, implantCompQuery);
+
+        foreach (var entity in implantContainer.ContainedEntities)
+        {
+            if (implantCompQuery.TryGetComponent(entity, out var comp))
+            {
+                EntProtoId? protoId = comp.DrawableProtoIdOverride;
+                if (!protoId.HasValue)
+                {
+                    var proto = Prototype(entity);
+                    if (proto != null)
+                        protoId = proto.ID;
+                }
+                if (protoId.HasValue && component.DeimplantChosen == protoId)
+                {
+                    return _container.CanRemove(entity, implantContainer) ? entity : null;
+                }
+            }
+        }
+        return null;
     }
 
     private void DrawPermanentFailurePopup(EntityUid implant, EntityUid target, EntityUid user)
@@ -415,4 +603,15 @@ public sealed class DeimplantChangeVerbMessage : BoundUserInterfaceMessage
 public enum DeimplantUiKey : byte
 {
     Key
+}
+
+[Serializable, NetSerializable]
+public sealed class ExtractorSetModeMessage : BoundUserInterfaceMessage
+{
+    public readonly ExtractorExtractionMode Mode;
+
+    public ExtractorSetModeMessage(ExtractorExtractionMode mode)
+    {
+        Mode = mode;
+    }
 }

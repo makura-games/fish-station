@@ -21,18 +21,44 @@ public sealed class ImplanterSystem : SharedImplanterSystem
 
     private void OnHandleImplanterState(EntityUid uid, ImplanterComponent component, ref AfterAutoHandleStateEvent args)
     {
-        if (_uiSystem.TryGetOpenUi<DeimplantBoundUserInterface>(uid, DeimplantUiKey.Key, out var bui))
+        // Extractor: radial menu manages its own state; nothing else to update
+        if (component.ExtractionMode != ExtractorExtractionMode.None
+            || _uiSystem.TryGetOpenUi<ExtractorRadialMenuBoundUserInterface>(uid, ExtractorRadialMenuUiKey.Key, out _))
         {
-            // TODO: Don't use protoId for deimplanting
-            // and especially not raw strings!
+            component.UiUpdateNeeded = true;
+            return;
+        }
+
+        // Old-style implanters: update dropdown BUI
+        if (_uiSystem.TryGetOpenUi<DeimplantBoundUserInterface>(uid, DeimplantUiKey.Key, out var deimplantBui))
+        {
             Dictionary<string, string> implants = new();
-            foreach (var implant in component.DeimplantWhitelist)
+
+            if (component.RestrictToCommonImplants)
             {
-                if (_proto.Resolve(implant, out var proto))
-                    implants.Add(proto.ID, proto.Name);
+                var commonIds = new[] { "MindShieldImplant", "TrackingImplant" };
+                foreach (var id in commonIds)
+                {
+                    if (_proto.Resolve(id, out var proto))
+                        implants.Add(proto.ID, proto.Name);
+                }
+            }
+            else
+            {
+                foreach (var implant in component.DeimplantWhitelist)
+                {
+                    if (_proto.Resolve(implant, out var proto))
+                        implants.Add(proto.ID, proto.Name);
+                }
             }
 
-            bui.UpdateState(implants, component.DeimplantChosen);
+            if (component.AllowRandomExtraction)
+                implants.Add("__RANDOM__", Loc.GetString("implanter-random-extract"));
+
+            bool hasStoredImplant = component.ImplanterSlot.HasItem;
+            bool blocked = component.BlockWhileImplantStored && hasStoredImplant;
+
+            deimplantBui.UpdateState(implants, component.DeimplantChosen, hasStoredImplant, blocked);
         }
 
         component.UiUpdateNeeded = true;
