@@ -209,3 +209,17 @@
         - id: WeaponGunLaserCarbineAutomatic
         - id: MagazineBatteryLr60
           amount: 2
+# Набор EVA рхбзз
+- type: entity
+  parent: ClothingBackpackDuffelCBURN
+  id: ClothingBackpackDuffelCBURNEVABundle
+  name: CBURN insulated EVA suit
+  description: "A heavyweight, tough and padded EVA capable biosuit used for special cleanup operations."
+  components:
+    - type: EntityTableContainerFill
+      containers:
+        storagebase: !type:AllSelector
+          children:
+            - id: ClothingOuterSoftsuitCBURN
+            - id: ClothingHeadSoftsuitCBURN
+            - id: DoubleEmergencyOxygenTankFilled

@@ -1,0 +1,15 @@
+- type: listing
+  id: ERTUplinkCBURNEvaBundle
+  productEntity: ClothingBackpackDuffelCBURNEVABundle
+  icon: { sprite: _Sunrise/Interface/Misc/nt_icons.rsi, state: cburneva }
+  cost:
+    Crystallite: 8
+  categories:
+    - NTEquipment
+  conditions:
+    - !type:ListingLimitedStockCondition
+      stock: 2
+    - !type:StoreWhitelistCondition
+      whitelist:
+        tags:
+          - CBURN

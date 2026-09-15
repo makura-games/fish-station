@@ -467,3 +467,49 @@
     - BoxCleanerGrenades
     - CrowbarRed
     - ClothingHandsPowerGlovesUplinkNTERTRed
+#fish-start
+- type: entity
+  id: RandomHumanoidSpawnerCBURNLeader
+  name: CBURN Leader
+  suffix: ERTRole
+  components:
+    - type: Sprite
+      sprite: Markers/jobs.rsi
+      state: cburn
+    - type: RandomHumanoidSpawner
+      settings: CBURNLeader
+- type: randomHumanoidSettings
+  id: CBURNLeader
+  parent: EventHumanoidCentcomm
+  speciesBlacklist:
+  - Diona
+  - Vox
+  - Felinid
+  - Moth
+  - Arachnid
+  - Reptilian
+  - Vulpkanin
+  - Swine
+  - Tajaran
+  - Demon
+  - SlimePerson
+  - Dwarf
+  - HumanoidXeno
+  - Predator
+  - Kitsune
+  components:
+    - type: Loadout
+      prototypes: [ CBURNLeaderGear ]
+      roleLoadout: [ RoleSurvivalExtended ]
+    - type: GhostRole
+      name: ghost-role-information-cburn-leader-name
+      description: ghost-role-information-cburn-leader-description
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstLeader
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
+#fish-end

@@ -74,3 +74,5 @@ ent-ClothingBackpackDuffelSyndicateOperative = вещмешок оператив
     .desc = { ent-ClothingBackpackDuffelSyndicateBundle.desc }
 ent-ClothingBackpackDuffelSyndicateOperativeMedic = вещмешок оперативника-медика
     .desc = Большой вещевой мешок для хранения дополнительного медицинского снаряжения.
+ent-ClothingBackpackDuffelCBURNEVABundle = Набор EVA РХБЗЗ
+    .desc = Массивный, прочный защитный костюм с мягкой внутренней подкладкой, предназначенный для проведения специальных работ по очистке.
