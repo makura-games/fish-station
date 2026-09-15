@@ -1,3 +1,4 @@
+using Content.Shared.Atmos.Components;
 using Content.Shared.Stunnable;
 using Content.Shared.Throwing;
 using Content.Shared.Timing;
@@ -91,6 +92,12 @@ public sealed class MeleeThrowOnHitSystem : EntitySystem
         RaiseLocalEvent(ent.Owner, ref attemptEvent);
 
         if (attemptEvent.Cancelled)
+            return;
+
+        // Не выбрасывать цель с активными магнитными ботинками, если оружие помечено
+        if (HasComp<ThrowOnHitMagbootsImmuneComponent>(ent.Owner)
+            && TryComp<MovedByPressureComponent>(target, out var moved)
+            && !moved.Enabled)
             return;
 
         var startEvent = new MeleeThrowOnHitStartEvent(ent.Owner, user);

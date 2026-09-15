@@ -26,6 +26,7 @@
   - type: MeleeThrowOnHit
     speed: 15
     distance: 7
+  - type: ThrowOnHitMagbootsImmune
   - type: Item
     size: Normal
     shape:
