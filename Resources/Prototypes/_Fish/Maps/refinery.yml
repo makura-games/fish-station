@@ -1,0 +1,94 @@
+- type: gameMap
+  id: FishRefinery
+  mapName: 'Refinery Starport'
+  mapPath: /Maps/_Fish/Station/Refinery.yml
+  minPlayers: 100
+  maxPlayers: 350
+  stations:
+    StarlightRefinery:
+      stationProto: StandardNanotrasenStation
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: '{0} Refinery {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: 'FSDR'
+        - type: StationEmergencyShuttle
+          emergencyShuttlePath: /Maps/_Fish/Shuttles/emergency_refinery.yml
+        - type: StationJobs
+          availableJobs:
+            #command
+            Captain: [ 1, 1 ]
+            Adjutant: [ 1, 1 ]
+            NanoTrasenRepresentative: [ 1, 1 ]
+            HeadOfPersonnel: [ 1, 1 ]
+            ComMaid: [ 1, 1 ]
+            #service
+            Bartender: [ 3, 3 ]
+            Botanist: [ 4, 4 ]
+            Chef: [ 3, 3 ]
+            Janitor: [ 4, 4 ]
+            Chaplain: [ 2, 2 ]
+            Librarian: [ 2, 2 ]
+            ServiceWorker: [ 5, 5 ]
+            Reporter: [ 2, 2 ]
+            #engineering
+            ChiefEngineer: [ 1, 1 ]
+            SeniorEngineer: [ 1, 1 ]
+            AtmosphericTechnician: [ 4, 4 ]
+            StationEngineer: [ 6, 6 ]
+            TechnicalAssistant: [ 4, 4 ]
+            #medical
+            ChiefMedicalOfficer: [ 1, 1 ]
+            SeniorPhysician: [ 1, 1 ]
+            Chemist: [ 3, 3 ]
+            MedicalDoctor: [ 6, 6 ]
+            Paramedic: [ 3, 3 ]
+            MedicalIntern: [ 3, 3 ]
+            Psychologist: [ 1, 1 ]
+            MedicalPathologist: [ 1, 1 ]
+            #science
+            ResearchDirector: [ 1, 1 ]
+            SeniorResearcher: [ 1, 1 ]
+            Scientist: [ 6, 6 ]
+            ResearchAssistant: [ 4, 4 ]
+            Roboticist: [ 3, 3 ]
+            #security
+            HeadOfSecurity: [ 1, 1 ]
+            Warden: [ 1, 1 ]
+            SeniorOfficer: [ 1, 1 ]
+            SecurityOfficer: [ 12, 12 ]
+            SecurityCadet: [ 6, 6 ]
+            Brigmedic: [ 2, 2 ]
+            Detective: [ 2, 2 ]
+            SecurityPilot: [ 2, 2 ]
+            #supply
+            Quartermaster: [ 1, 1 ]
+            SalvageSpecialist: [ 4, 4 ]
+            MiningSpecialist: [ 4, 4 ]
+            CargoTechnician: [ 6, 6 ]
+            MailCarrier: [ 2, 2 ]
+            #civilian
+            Passenger: [ -1, -1 ]
+            Clown: [ 2, 2 ]
+            Mime: [ 2, 2 ]
+            Musician: [ 2, 2 ]
+            #silicon
+            StationAi: [ 1, 1 ]
+            Borg: [ 5, 5 ]
+            MedicalBorg: [ 4, 4 ]
+            EngineerBorg: [ 2, 2 ]
+            MiningBorg: [ 2, 2 ]
+            JanitorBorg: [ 2, 2 ]
+            ServiceBorg: [ 2, 2 ]
+            ClownBorg: [ 2, 2 ]
+            PeaceBorg: [ 2, 2 ]
+            SecurityBorg: [ 4, 4 ]
+            #law
+            Magistrat: [ 1, 1 ]
+            IAA: [ 2, 2 ]
+            Lawyer: [ 2, 2 ]
+            NtrOfficer: [ 2, 2 ]
+            #blueshield
+            BlueShieldOfficer: [ 1, 1 ]
+            RepresentativeBlueShield: [ 1, 1 ]
