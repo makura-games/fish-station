@@ -26,7 +26,9 @@
   - type: MeleeThrowOnHit
     speed: 15
     distance: 7
+  # Fish edit start - иммунитет к отбрасыванию для магнитных ботинок
   - type: ThrowOnHitMagbootsImmune
+  # Fish edit end
   - type: Item
     size: Normal
     shape:
