@@ -45,6 +45,14 @@
     layers:
       - state: box
       - state: bottle
+  - type: Item # Fish-start
+    size: Normal
+    shape:
+    - 0,0,1,1
+  - type: Storage
+    whitelist:
+      tags:
+      - Bottle # Fish-end
 
 - type: entity
   name: sterile mask box

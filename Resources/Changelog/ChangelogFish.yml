@@ -613,3 +613,43 @@
     message: После перезаписи доступов теперь ничего не ломается
   id: 59
   url: https://github.com/makura-games/fish-station/pull/449
+- author: dan4ikk3
+  time: '2026-09-17T12:08:46.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен скафандр EVA РХБЗЗ в аплинк РХБЗЗ
+  - type: Tweak
+    message: 'Изменен урон для тактического топора. Теперь он наносит:
+
+      18 порезов и 5 структурного урона в одной руке; 25 порезов и 10 структурного урона при метании.'
+  - type: Tweak
+    message: 'Изминения резистов экзокостюма РХБЗЗ: +10% защиты от ударов, +30% защиты от режущего урона.'
+  - type: Tweak
+    message: 'Изменения резистов EVA РХБЗЗ: +20% к ударным, +10% к режущим, +10% к колющим.'
+  - type: Fix
+    message: Возвращение роли Лидера РХБЗЗ. Исправлен баг с невозможностью его спавна.
+  id: 60
+  url: https://github.com/makura-games/fish-station/pull/453
+- author: TiFeRi
+  time: '2026-09-17T21:16:11.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: пачка фиксов карт
+  id: 61
+  url: https://github.com/makura-games/fish-station/pull/459
+- author: dan4ikk3
+  time: '2026-09-18T12:41:39.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен поиск по IC, OCC и должности в манифесте после конца раунда
+  id: 62
+  url: https://github.com/makura-games/fish-station/pull/462
+- author: dan4ikk3
+  time: '2026-09-18T20:53:25.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Коробка для бутылочек теперь занимает 2х2 в инвентаре. Хранилище осталось прежним.
+  - type: Fix
+    message: Теперь нельзя класть бутылочки в пачку из под сигарет
+  id: 63
+  url: https://github.com/makura-games/fish-station/pull/465

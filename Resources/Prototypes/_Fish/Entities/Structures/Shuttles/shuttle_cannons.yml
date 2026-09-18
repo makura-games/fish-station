@@ -1,0 +1,1228 @@
+- type: entity
+  id: FishShuttleGunBullfrogNoMag
+  parent: ShuttleGunBase
+  name: EXP-3600g "Bullfrog"
+  description: A powerful 40mm stationary automatic grenade launcher. A cartridge is required for use.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/exp_3600.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: cover_open
+      renderingStrategy: NoRotation
+    - state: bal-127
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-5
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.5
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Gun
+    projectileSpeed: 66
+    fireRate: 1.25
+    maxAngle: 15
+    minAngle: 1
+    angleIncrease: 3
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/ship_duster.ogg
+      params:
+        variation: 0.05
+        pitch: 0.85
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: ShellBlastArtillery
+    fireCost: 10
+  - type: Battery
+    maxCharge: 50
+    startingCharge: 50
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 2.5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: GunneryTrackable
+
+- type: entity
+  id: FishShuttleGunLongbowNoMag
+  parent: ShuttleGunBase
+  name: BAL-15 "Longbow"
+  description: A powerful stationary heavy autocanon. A cartridge is required for use.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/bal_127.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: cover_open
+      renderingStrategy: NoRotation
+    - state: bal-127
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-7
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Gun
+    minAngle: 1
+    maxAngle: 3
+    projectileSpeed: 50
+    fireRate: 0.8
+    soundGunshot:
+      path: /Audio/_Sunrise/Weapons/Guns/Snipers/Bauer127/bauer127_shot.ogg
+      params:
+        pitch: 1.1
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: GunneryTrackable
+  - type: BatteryAmmoProvider
+    proto: CartridgeAntiMaterielBlast
+    fireCost: 10
+  - type: Battery
+    maxCharge: 50
+    startingCharge: 50
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: AutoLinkReceiver
+    channel: Longbow
+
+- type: entity
+  id: FishShuttleGunVympelNoMag
+  parent: ShuttleGunBase
+  name: BAL-15-2 "Vympel"
+  description: A powerful stationary twin heavy autocanon. A cartridge is required for use.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/bal_127_2.rsi
+    granularLayersRendering: true
+    scale: 0.85, 0.85
+    layers:
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: cover_open
+      renderingStrategy: NoRotation
+    - state: bal-127-2
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-14
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Gun
+    selectedMode: Burst
+    availableModes:
+    - Burst
+    - FullAuto
+    burstFireRate: 6
+    shotsPerBurst: 4
+    burstCooldown: 1
+    minAngle: 5
+    maxAngle: 30
+    angleIncrease: 1
+    angleDecay: 20
+    projectileSpeed: 33
+    fireRate: 2
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/ship_friendship.ogg
+      params:
+        pitch: 1.2
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: GunneryTrackable
+  - type: BatteryAmmoProvider
+    proto: CartridgeAntiMaterielBlast
+    fireCost: 1
+  - type: Battery
+    maxCharge: 50
+    startingCharge: 50
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 2
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: MagazineVisuals
+    magState: mag
+    steps: 15
+    zeroVisible: false
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 125
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: AutoLinkReceiver
+    channel: Vympel
+
+- type: entity
+  id: FishShuttleGunQuadlingNoMag
+  parent: ShuttleGunBase
+  name: BAL-15-4 "Quadling"
+  description: THE POWER OF ELEVE... ahem, four barrels. Stationary quad heavy autocanon.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/bal_127_4.rsi
+    granularLayersRendering: true
+    scale: 0.85, 0.85
+    layers:
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: cover_open
+      renderingStrategy: NoRotation
+    - state: bal-127
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-13
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Gun
+    selectedMode: FullAuto
+    availableModes:
+    - Burst
+    - FullAuto
+    burstFireRate: 12
+    shotsPerBurst: 10
+    burstCooldown: 3
+    minAngle: 5
+    maxAngle: 30
+    angleIncrease: 1
+    angleDecay: 20
+    projectileSpeed: 30
+    fireRate: 4
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/ship_duster.ogg
+      params:
+        pitch: 1.9
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: GunneryTrackable
+  - type: BatteryAmmoProvider
+    proto: CartridgeAntiMaterielBlast
+    fireCost: 1
+  - type: Battery
+    maxCharge: 100
+    startingCharge: 100
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 2
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: MagazineVisuals
+    magState: mag
+    steps: 14
+    zeroVisible: false
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: AutoLinkReceiver
+    channel: Quadling
+
+- type: entity
+  id: FishShuttleGunSquallNoMag
+  parent: ShuttleGunBase
+  name: BAL-308 "Squall"
+  description: A powerful stationary minigun. A cartridge is required for use.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/bal_308.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
+      state: cover_open
+      renderingStrategy: NoRotation
+    - state: bal-308
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-13
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Gun
+    selectedMode: FullAuto
+    availableModes:
+    - Burst
+    - FullAuto
+    projectileSpeed: 30
+    fireRate: 12
+    burstFireRate: 25
+    shotsPerBurst: 20
+    burstCooldown: 0.75
+    minAngle: 1
+    maxAngle: 45
+    angleIncrease: 0.75
+    angleDecay: 25
+    soundGunshot:
+      path: /Audio/_Sunrise/Weapons/Guns/HMGs/minigun_shot.ogg
+      params:
+        pitch: 0.8
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: GunneryTrackable
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.4,0.3,0.4"
+        density: 100
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: BatteryAmmoProvider
+    proto: CartridgeRifleHeavySP
+    fireCost: 1
+  - type: Battery
+    maxCharge: 200
+    startingCharge: 200
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 2
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: MagazineVisuals
+    magState: mag
+    steps: 14
+    zeroVisible: false
+  - type: AutoLinkReceiver
+    channel: Squall
+
+- type: entity
+  id: FishShuttleGunTeslaOrionNoMag
+  parent: ShuttleGunBase
+  name: TSL-200c "Orion"
+  description: Hi-tech stationary energy unit based on the principle of an experimental Tesla engine.. Effective against electronics. Uses the power cage to fire tesla or ion bolt.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/tesla.rsi
+    layers:
+    - state: tsl-200c
+    - state: mag-unshaded-4
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: ContainerContainer
+    containers:
+      cell_slot: !type:ContainerSlot
+  - type: Gun
+    fireRate: 0.6
+    projectileSpeed: 28
+    useKey: false
+    soundGunshot:
+      path: /Audio/Effects/Lightning/lightningshock.ogg
+      params:
+        variation: 0.2
+  - type: GunneryTrackable
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: true
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+            - PowerCage
+  - type: Battery
+    maxCharge: 2800
+    startingCharge: 2800
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 500
+    batteryRechargeRate: 100
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 5000
+  - type: ExtensionCableReceiver
+  - type: BatteryAmmoProvider
+    proto: TeslaGunBulletOrion
+    fireCost: 400
+  - type: BatteryWeaponFireModes
+    fireModes:
+    - proto: TeslaGunBulletOrion
+      fireCost: 400
+    - proto: BulletEMPMedium
+      fireCost: 500
+  - type: AmbientSound
+    enabled: true
+    sound:
+      path: /Audio/Effects/tesla.ogg
+    range: 5
+    volume: -13
+
+- type: entity
+  id: FishShuttleGunTeslaHyperionNoMag
+  parent: ShuttleGunBase
+  name: TSL-300c "Hyperion"
+  description: Hi-tech stationary energy unit based on the principle of an experimental Tesla engine.. Effective against electronics. Uses the power cage to fire tesla or ion bolt.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/tesla_2.rsi
+    layers:
+    - state: tsl-300c
+    - state: mag-unshaded-4
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: ContainerContainer
+    containers:
+      cell_slot: !type:ContainerSlot
+  - type: Gun
+    fireRate: 0.4
+    projectileSpeed: 27
+    useKey: false
+    soundGunshot:
+      path: /Audio/Effects/Lightning/lightningshock.ogg
+      params:
+        variation: 0.2
+  - type: GunneryTrackable
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: true
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+            - PowerCage
+  - type: Battery
+    maxCharge: 2700
+    startingCharge: 2700
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 500
+    batteryRechargeRate: 100
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 5000
+  - type: ExtensionCableReceiver
+  - type: BatteryAmmoProvider
+    proto: TeslaGunBulletLarge
+    fireCost: 900
+  - type: BatteryWeaponFireModes
+    fireModes:
+    - proto: TeslaGunBulletLarge
+      fireCost: 900
+    - proto: BulletEMPLarge
+      fireCost: 1000
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.9,0.45,0.9"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: AmbientSound
+    enabled: true
+    sound:
+      path: /Audio/Effects/tesla.ogg
+    range: 5
+    volume: -8
+
+- type: entity
+  id: FishShuttleGunRocketMetla120mmNoMag
+  parent: ShuttleGunBase
+  name: RCT-120 "Metla"
+  description: A 120mm rocket launcher system with two rails for rockets. Accurate and reliable, well suited for precision strikes against individual targets. Rockets must be loaded manually.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    scale: 1.1,1.1
+    sprite: _Sunrise/Objects/Weapons/Guns/Shuttles/Metla.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: _Starlight/Objects/Weapons/Guns/Turrets/pointdefense.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - state: space_artillery
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-2
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 90
+  - type: Pullable
+  - type: Gun
+    projectileSpeed: 80
+    selectedMode: Burst
+    burstCooldown: 25
+    shotsPerBurst: 1
+    burstFireRate: 0.3
+    angleDecay: 20
+    minAngle: 0
+    maxAngle: 1
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      params:
+        variation: 0.08
+        volume: 6
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: Rocket120mmMetlaLongFlight
+    fireCost: 300
+  - type: Battery
+    maxCharge: 600
+    startingCharge: 600
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: MagazineVisuals
+    magState: mag
+    steps: 3
+    zeroVisible: false
+  - type: Appearance
+  - type: RadarBlip
+    color: "#44FF88"
+    scale: 1.5
+    shape: Circle
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 9000
+
+- type: entity
+  id: FishShuttleGunCyerxa120mmNoMag
+  parent: ShuttleGunBase
+  name: CYERXA Dual 120mm Cannons
+  description: A powerful dual 120mm cannon system designed for heavy shuttle combat. Fires devastating blast grenades with extreme destructive power. Each activation fires both barrels in rapid succession.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/cyerxa_120mm.rsi
+    state: space_artillery
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 90
+  - type: Pullable
+  - type: Gun
+    projectileSpeed: 60
+    fireRate: 1.0
+    burstFireRate: 6
+    shotsPerBurst: 2
+    burstCooldown: 50
+    selectedMode: Burst
+    angleDecay: 30
+    minAngle: 5
+    maxAngle: 15
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/_Starlight/Weapons/Shuttleguns/uaf_cyrexa_452.ogg
+      params:
+        variation: 0.05
+        volume: 5
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: Grenade120mmBlast
+    fireCost: 300
+  - type: Battery
+    maxCharge: 6000
+    startingCharge: 6000
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 4
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: RadarBlip
+    color: "#FFB300"
+    scale: 1.2
+    shape: Square
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 5000
+
+- type: entity
+  id: FishShuttleGunApolloNoMag
+  parent: ShuttleGunBase
+  name: Apollo Heavy Laser Cannon
+  description: A devastating heavy laser cannon system designed for siege warfare. Fires an extremely powerful laser beam that melts through armor and structures. Slow recharge time between shots.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/Apollo.rsi
+    layers:
+    - state: space_artillery
+  - type: ContainerContainer
+    containers:
+      cell_slot: !type:ContainerSlot
+  - type: Gun
+    fireRate: 1
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
+      params:
+        variation: 0.05
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: Magazine
+        startingItem: PowerCageHigh
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+            - PowerCage
+  - type: Battery
+    maxCharge: 10000
+    startingCharge: 10000
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 500
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: BatteryAmmoProvider
+    proto: ApolloHeavyLaser
+    fireCost: 500
+  - type: RadarLaserTracker
+    laserColor: "#FF44FF"
+    traceDuration: 0.75
+    maxRange: 128.0
+  - type: RadarBlip
+    color: "#FF44FF"
+    scale: 1.4
+    shape: Square
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: AutoLoader
+    container: cell_slot
+    whitelist:
+      tags:
+      - PowerCage
+
+- type: entity
+  id: FishShuttleGunRocketVanyk60mmNoMag
+  parent: ShuttleGunBase
+  name: Vanyk-MK2 Multi-Rocket System
+  description: A 60mm single-shot rocket launcher system. Each pull of the trigger launches one rocket. Accurate and reliable, well suited for precision strikes against individual targets. Uses magazine-fed 30-round capacity.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    scale: 1.1,1.1
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/vanyk-MK2.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: _Starlight/Objects/Weapons/Guns/Turrets/pointdefense.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - state: space_artillery
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-8
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 90
+  - type: Pullable
+  - type: Gun
+    projectileSpeed: 40
+    selectedMode: Burst
+    burstCooldown: 13
+    shotsPerBurst: 1
+    burstFireRate: 0.3
+    angleDecay: 20
+    minAngle: 0
+    maxAngle: 8
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      params:
+        variation: 0.08
+        volume: 6
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: MagazineVisuals
+    magState: mag
+    steps: 9
+    zeroVisible: false
+  - type: BatteryAmmoProvider
+    proto: Cartridge60mmRocketLongFlight
+    fireCost: 100
+  - type: Battery
+    maxCharge: 1600
+    startingCharge: 1600
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: Appearance
+  - type: RadarBlip
+    color: "#44FF88"
+    scale: 1.0
+    shape: Circle
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 6000
+
+- type: entity
+  id: FishShuttleGunCharonNoMag
+  parent: ShuttleGunBase
+  name: M321-CHARYBDIS 'Thanatos' 280mm Railgun
+  description: A single-shot electromagnetic railgun of unparalleled destructive capability. Accelerates a 280mm slug to devastating velocities. Requires manual loading of each round into the open chamber before firing. Named for the devouring whirlpool of legend - because that is what awaits those who face one.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/Charon.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: _Starlight/Objects/Weapons/Guns/Turrets/pointdefense.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - state: space_artillery
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 120
+  - type: Pullable
+  - type: Gun
+    projectileSpeed: 150
+    fireRate: 100
+    burstCooldown: 180
+    selectedMode: Burst
+    angleDecay: 90
+    minAngle: 0
+    maxAngle: 0
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/_Starlight/Weapons/Shuttleguns/leviathan_fire.ogg
+      params:
+        variation: 0.05
+        volume: 15
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: CartridgeCharon280mmSlug
+    fireCost: 1200
+  - type: Battery
+    maxCharge: 1200
+    startingCharge: 1200
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: RadarBlip
+    color: "#FF6600"
+    scale: 1.5
+    shape: Triangle
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 25000
+
+- type: entity
+  id: FishShuttleGunVespera50mmNoMag
+  parent: ShuttleGunBase
+  name: ADMP-27 VESPERA 50mm Rapid-Fire Missile Rack
+  description: A rapid-fire swarm missile rack. Saturates targets with guided warheads to overwhelm defenses.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/Vespera.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: _Starlight/Objects/Weapons/Guns/Turrets/pointdefense.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - state: space_artillery
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-8
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 90
+  - type: Pullable
+  - type: Gun
+    shotsPerBurst: 13
+    burstCooldown: 20
+    burstFireRate: 13
+    fireRate: 16
+    selectedMode: FullAuto
+    angleDecay: 20
+    minAngle: 15
+    maxAngle: 40
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      params:
+        variation: 0.08
+        volume: 6
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: Cartridge50mmRocket
+    fireCost: 100
+  - type: Battery
+    maxCharge: 2600
+    startingCharge: 2600
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 20
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: MagazineVisuals
+    magState: mag
+    steps: 9
+    zeroVisible: true
+  - type: Appearance
+  - type: RadarBlip
+    color: "#00FFAA"
+    scale: 1.0
+    shape: Circle
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 6000
+
+- type: entity
+  id: FishShuttleGunDravonNoMag
+  parent: ShuttleGunBase
+  name: Dravon 75mm Artillery Cannon
+  description: A full-automatic 75mm artillery cannon designed for sustained suppression fire. Despite its smaller caliber compared to the AK570, its longer barrel and higher muzzle velocity give it greater effective range. Magazine-fed, 15-round capacity.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/Dravon.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: _Starlight/Objects/Weapons/Guns/Turrets/pointdefense.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - state: space_artillery
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 90
+  - type: Pullable
+  - type: Gun
+    projectileSpeed: 40
+    fireRate: 1
+    selectedMode: FullAuto
+    angleDecay: 30
+    minAngle: 0
+    maxAngle: 8
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/_Starlight/Weapons/Shuttleguns/120mm_mortar.ogg
+      params:
+        variation: 0.05
+        volume: 5
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: CartridgeDravon75mmHE
+    fireCost: 10
+  - type: Battery
+    maxCharge: 150
+    startingCharge: 150
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: RadarBlip
+    color: "#FFB300"
+    scale: 1.0
+    shape: Square
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 7500
+
+- type: entity
+  id: FishShuttleGunAK570NoMag
+  parent: ShuttleGunBase
+  name: AK570 90mm Artillery Cannon
+  description: A rapid-fire 90mm artillery cannon optimized for overwhelming volume of fire. Higher caliber than the Dravon with more explosive force per shell, though its shorter barrel means slightly less range. Magazine-fed, 20-round capacity.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    scale: 1.25,1.25
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/AK570.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: _Starlight/Objects/Weapons/Guns/Turrets/pointdefense.rsi
+      state: support
+      renderingStrategy: NoRotation
+    - state: space_artillery
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 90
+  - type: Pullable
+  - type: Gun
+    projectileSpeed: 30
+    fireRate: 1.25
+    burstFireRate: 2.5
+    burstCooldown: 2
+    shotsPerBurst: 4
+    selectedMode: Burst
+    angleDecay: 15
+    minAngle: 2
+    maxAngle: 20
+    angleIncrease: 4
+    availableModes:
+    - Burst
+    - FullAuto
+    soundGunshot:
+      path: /Audio/_Starlight/Weapons/Shuttleguns/120mm_mortar.ogg
+      params:
+        variation: 0.05
+        volume: 6
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: Cartridge90mmAutoHE
+    fireCost: 10
+  - type: Battery
+    maxCharge: 150
+    startingCharge: 150
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: RadarBlip
+    color: "#FF9900"
+    scale: 1.0
+    shape: Square
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 7000
+
+- type: entity
+  id: FishShuttleGunLeviathanNoMag
+  parent: ShuttleGunBase
+  name: Leviathan 240mm Siege Cannon
+  description: The largest artillery piece cleared for shuttle deployment. This monstrous 240mm siege cannon fires a single manually-loaded shell that can penetrate layered armor and obliterate fortified positions. Extremely difficult to anchor. Each shot requires the crew to physically insert a 240mm shell into the open breech. The Leviathan does not forgive mistakes.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/Leviathan.rsi
+    granularLayersRendering: true
+    layers:
+    - sprite: Structures/Machines/station_anchor.rsi
+      state: station_anchor
+      renderingStrategy: NoRotation
+    - state: space_artillery
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.8
+        density: 900
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 180
+  - type: Pullable
+  - type: Gun
+    projectileSpeed: 180
+    fireRate: 100
+    burstCooldown: 120
+    selectedMode: Burst
+    angleDecay: 90
+    minAngle: 0
+    maxAngle: 0
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/_Starlight/Weapons/Shuttleguns/uaf_cyrexa_452.ogg
+      params:
+        variation: 0.03
+        volume: 18
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: BatteryAmmoProvider
+    proto: CartridgeLeviathan240mmCluster
+    fireCost: 1200
+  - type: Battery
+    maxCharge: 1200
+    startingCharge: 1200
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 5
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: RadarBlip
+    color: "#FF2200"
+    scale: 2.5
+    shape: Triangle
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: StaticPrice
+    price: 50000
+
+- type: entity
+  id: FishShuttleGunDynamreNoMag
+  parent: ShuttleGunBase
+  name: AMX-9 DYNAMRE Dual Turbolaser
+  description: A twin-barreled turbolaser system mounting two Apollo-class heavy laser emitters in a single housing. Both barrels fire simultaneously, delivering twice the destructive payload per trigger pull. Significantly heavier than the standard Apollo. Requires an Omega-capacity power cage to operate.
+  suffix: Autocharge, Debug
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Weapons/Guns/Shuttleguns/Dynamre.rsi
+    state: space_artillery
+  - type: ContainerContainer
+    containers:
+      cell_slot: !type:ContainerSlot
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        density: 700
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Anchorable
+    delay: 120
+  - type: Pullable
+  - type: Gun
+    fireRate: 0.6
+    shotsPerBurst: 2
+    burstFireRate: 50
+    burstCooldown: 3.0
+    selectedMode: Burst
+    availableModes:
+    - Burst
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
+      params:
+        variation: 0.05
+        volume: 9
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: Power Cage
+        startingItem: PowerCageOmega
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+            - PowerCage
+  - type: Battery
+    maxCharge: 12000
+    startingCharge: 12000
+    netsync: false
+  - type: ApcPowerReceiverBattery
+    idleLoad: 100
+    batteryRechargeRate: 100
+    batteryRechargeEfficiency: 1.0
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: BatteryAmmoProvider
+    proto: DynamreDualLaser
+    fireCost: 1000
+  - type: RadarLaserTracker
+    laserColor: "#FF44FF"
+    traceDuration: 0.75
+    maxRange: 128.0
+  - type: RadarBlip
+    color: "#FF44FF"
+    scale: 1.6
+    shape: Square
+    requireInSpace: true
+  - type: GunneryTrackable
+  - type: AutoLoader
+    container: cell_slot
+    whitelist:
+      tags:
+      - PowerCage
+  - type: StaticPrice
+    price: 28000

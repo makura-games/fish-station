@@ -30,10 +30,11 @@
         availableJobs:
           CentCommOfficer: [ 3, 3 ]
           CentCommTrainee: [ 3, 3 ]
-          CentcommBlueShield: [ 3, 3 ]
+          CentcommBlueShield: [ 6, 6 ]
           CentcommMedicalDoctor: [ 1, 1 ]
           CentcommChef: [ 1, 1 ]
           CentcommBartender: [ 1, 1 ]
           CentcommSectoralJudge: [ 1, 1 ]
           OversightOfficer: [ 1, 1 ]
           SpecOpsOfficer: [ 1, 1 ]
+          BlueShieldEnsign: [ 1, 1 ]

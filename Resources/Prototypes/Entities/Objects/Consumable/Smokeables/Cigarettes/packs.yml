@@ -50,6 +50,12 @@
   - type: Storage
     grid:
     - 0,0,4,1
+    whitelist: # Fish-Start
+      tags:
+      - Cigarette
+      - Matchstick
+      components:
+      - IgnitionSource # Fish-End
   - type: EntityTableContainerFill
     containers:
       storagebase:
@@ -120,6 +126,12 @@
   - type: Storage
     grid:
     - 0,0,4,1
+    whitelist: # Fish-start
+      tags:
+      - Cigarette
+      - Matchstick
+      components:
+      - IgnitionSource # Fish-end
   - type: ItemCounter
     count:
       tags: [Cigarette]
@@ -267,4 +279,3 @@
       weight: 7
     - id: CigaretteSaline
       weight: 7
-
