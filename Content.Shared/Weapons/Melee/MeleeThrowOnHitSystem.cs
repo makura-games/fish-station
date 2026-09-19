@@ -95,6 +95,9 @@ public sealed partial class MeleeThrowOnHitSystem : EntitySystem
         ThrowOnHitHelper(weapon, args.Component.Thrower, args.Target, weaponPhysics.LinearVelocity);
     }
 
+    /// <summary>
+    /// Raises throw-on-hit events, applies stun, and launches the target in the given direction.
+    /// </summary>
     private void ThrowOnHitHelper(Entity<MeleeThrowOnHitComponent> ent, EntityUid? user, EntityUid target, Vector2 direction)
     {
         var attemptEvent = new AttemptMeleeThrowOnHitEvent(target, user);

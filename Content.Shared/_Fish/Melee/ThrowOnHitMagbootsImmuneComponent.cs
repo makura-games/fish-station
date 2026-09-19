@@ -1,4 +1,4 @@
-namespace Content.Shared.Weapons.Melee.Components;
+namespace Content.Shared._Fish.Melee;
 
 /// <summary>
 /// Marks a melee weapon whose throw-on-hit effect is resisted by active magnetic boots.
