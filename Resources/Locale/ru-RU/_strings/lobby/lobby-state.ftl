@@ -33,5 +33,8 @@ lobby-state-playtime-comment-normal =
     *[other]часов
     }. Не забывайте делать перерывы!
 lobby-state-playtime-comment-concerning = Сегодня вы играли {$hours} часов. Пожалуйста, сделайте перерыв.
-lobby-state-playtime-comment-grasstouchless = {$hours} часов. Лучше выйти из игры и заняться сексом.
+# Fish edit start - изменен текст комментария времени игры
+# lobby-state-playtime-comment-grasstouchless = {$hours} часов. Лучше выйти из игры и заняться сексом.
+lobby-state-playtime-comment-grasstouchless = {$hours} часов. Вы поглощены игрой и пути назад уже  нет. Часть станции, часть игры.
+# Fish edit end
 lobby-state-playtime-comment-selfdestructive = {$hours} часов. Серьезно?
