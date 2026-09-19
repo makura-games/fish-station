@@ -1,0 +1,148 @@
+- type: entity
+  parent: BaseWallmountMetallic
+  id: FishIdCardReader
+  name: ID card reader
+  description: A wall-mounted device that checks inserted ID cards and transmits logic signals.
+  suffix: Custom
+  components:
+  - type: WallMount
+    arc: 360
+  - type: Sprite
+    drawdepth: WallMountedItems
+    sprite: _Fish/Structures/Wallmounts/id_card_reader.rsi
+    state: base
+  - type: IdCardReader
+  - type: AccessReader
+  - type: ItemSlots
+    slots:
+      IdCardReader-card:
+        name: id-card-reader-slot-name
+        insertSound: /Audio/Machines/id_insert.ogg
+        ejectSound: /Audio/Machines/id_swipe.ogg
+        ejectOnInteract: true
+        ejectOnBreak: true
+        swap: false
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      IdCardReader-card: !type:ContainerSlot
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: BasicDevice
+  - type: WirelessNetworkConnection
+    range: 200
+  - type: DeviceLinkSource
+    ports:
+    - FishIdCardInserted
+    - FishIdCardRemoved
+    - FishIdCardAccessGranted
+    - FishIdCardLocalAuthorization
+    - FishIdCardReaderCloseRequest
+    lastSignals:
+      FishIdCardAccessGranted: false
+      FishIdCardLocalAuthorization: false
+  - type: DeviceLinkSink
+    ports:
+    - FishIdCardReaderAuthorization
+    - FishIdCardReaderDoorStatus
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 80
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ Destruction ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderTwoAuthorizations
+  suffix: Custom, 2 authorizations
+  components:
+  - type: IdCardReader
+    requiredAuthorizations: 2
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderThreeAuthorizations
+  suffix: Custom, 3 authorizations
+  components:
+  - type: IdCardReader
+    requiredAuthorizations: 3
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderCommand
+  suffix: Command
+  components:
+  - type: AccessReader
+    access: [["Command"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderCaptain
+  suffix: Captain
+  components:
+  - type: AccessReader
+    access: [["Captain"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderHeadOfPersonnel
+  suffix: Head of Personnel
+  components:
+  - type: AccessReader
+    access: [["HeadOfPersonnel"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderHeadOfSecurity
+  suffix: Head of Security
+  components:
+  - type: AccessReader
+    access: [["HeadOfSecurity"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderChiefEngineer
+  suffix: Chief Engineer
+  components:
+  - type: AccessReader
+    access: [["ChiefEngineer"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderChiefMedicalOfficer
+  suffix: Chief Medical Officer
+  components:
+  - type: AccessReader
+    access: [["ChiefMedicalOfficer"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderResearchDirector
+  suffix: Research Director
+  components:
+  - type: AccessReader
+    access: [["ResearchDirector"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderQuartermaster
+  suffix: Quartermaster
+  components:
+  - type: AccessReader
+    access: [["Quartermaster"]]
+
+- type: entity
+  parent: FishIdCardReader
+  id: FishIdCardReaderCentralCommand
+  suffix: Central Command
+  components:
+  - type: AccessReader
+    access: [["CentralCommand"]]
