@@ -26,7 +26,7 @@ public sealed partial class CCVars
     ///     Config for when the restart vote should be allowed to be called based on percentage of ghosts.
     /// </summary>
     public static readonly CVarDef<int> VoteRestartGhostPercentage =
-        CVarDef.Create("vote.restart_ghost_percentage", 55, CVar.SERVERONLY);
+        CVarDef.Create("vote.restart_ghost_percentage", 90, CVar.SERVERONLY); // Fish-edit
 
     /// <summary>
     ///     See vote.enabled, but specific to preset votes
