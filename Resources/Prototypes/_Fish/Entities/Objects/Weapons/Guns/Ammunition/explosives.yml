@@ -1,0 +1,7 @@
+- type: entity
+  parent: GrenadeCleanade
+  id: FishSuperGrenadeCleanade
+  name: super cleanade grenade round
+  components:
+  - type: CartridgeAmmo
+    proto: FishBulletSuperGrenadeCleanade

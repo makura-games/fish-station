@@ -1,0 +1,30 @@
+- type: entity
+  parent: BaseWeaponLauncher
+  id: FishWeaponLauncherHydraCleanade
+  name: hydra grenade launcher (civilian)
+  description: PLOOP... FSSSSSS...
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Launchers/hydra_launcher.rsi
+    layers:
+    - state: icon
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Launchers/hydra_launcher.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+  - type: AmmoCounter
+  - type: GunRequiresWield
+  - type: ContainerContainer
+    containers:
+      revolver-ammo: !type:Container
+  - type: RevolverAmmoProvider
+    proto: null
+    capacity: 6
+    soundEject:
+      path: /Audio/Weapons/Guns/MagOut/sfrifle_magout.ogg
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/sfrifle_magin.ogg
