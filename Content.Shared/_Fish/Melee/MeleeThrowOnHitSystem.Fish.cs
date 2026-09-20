@@ -8,7 +8,7 @@ namespace Content.Shared.Weapons.Melee;
 
 public sealed partial class MeleeThrowOnHitSystem
 {
-    // Fish edit start - иммунитет к отбрасыванию для магнитных ботинок
+    // Fish-start - иммунитет к отбрасыванию для магнитных ботинок
     /// <inheritdoc/>
     private partial bool ShouldApplyThrow(Entity<MeleeThrowOnHitComponent> ent, EntityUid target)
     {
@@ -19,5 +19,5 @@ public sealed partial class MeleeThrowOnHitSystem
 
         return true;
     }
-    // Fish edit end
+    // Fish-end
 }

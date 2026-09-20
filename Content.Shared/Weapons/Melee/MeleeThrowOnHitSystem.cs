@@ -11,21 +11,21 @@ namespace Content.Shared.Weapons.Melee;
 /// <summary>
 /// This handles <see cref="MeleeThrowOnHitComponent"/>
 /// </summary>
-// FIsh edit start - делаем класс partial для выноса Fish-логики
+// Fish-start - делаем класс partial для выноса Fish-логики
 public sealed partial class MeleeThrowOnHitSystem : EntitySystem
-// FIsh edit end
+// Fish-end
 {
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly UseDelaySystem _delay = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
 
-    // FIsh edit start - partial-метод для расширения Fish-логикой отмены отбрасывания
+    // Fish-start - partial-метод для расширения Fish-логикой отмены отбрасывания
     /// <summary>
     /// Возвращает false для отмены отбрасывания. Реализация в Fish partial.
     /// </summary>
     private partial bool ShouldApplyThrow(Entity<MeleeThrowOnHitComponent> ent, EntityUid target);
-    // FIsh edit end
+    // Fish-end
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -106,10 +106,10 @@ public sealed partial class MeleeThrowOnHitSystem : EntitySystem
         if (attemptEvent.Cancelled)
             return;
 
-        // FIsh edit start - Fish-логика отмены отбрасывания
+        // Fish-start - Fish-логика отмены отбрасывания
         if (!ShouldApplyThrow(ent, target))
             return;
-        // FIsh edit end
+        // Fish-end
 
         var startEvent = new MeleeThrowOnHitStartEvent(ent.Owner, user);
         RaiseLocalEvent(target, ref startEvent);
