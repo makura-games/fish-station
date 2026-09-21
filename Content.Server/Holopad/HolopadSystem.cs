@@ -515,6 +515,13 @@ public sealed class HolopadSystem : SharedHolopadSystem
             if (!_telephoneSystem.IsSourceInRangeOfReceiver(source, receiver))
                 continue;
 
+            // Изоляция кастомных голопадов. fish-edit start
+            var sourceIsRemote = HasComp<RemoteHolopadTransmitterComponent>(entity) || HasComp<RemoteHolopadReceiverComponent>(entity);
+            var receiverIsRemote = HasComp<RemoteHolopadTransmitterComponent>(receiverUid) || HasComp<RemoteHolopadReceiverComponent>(receiverUid);
+
+            if (sourceIsRemote != receiverIsRemote)
+                continue;
+            //fish-edit end
             var name = MetaData(receiverUid).EntityName;
 
             if (TryComp<LabelComponent>(receiverUid, out var label) && !string.IsNullOrEmpty(label.CurrentLabel))
