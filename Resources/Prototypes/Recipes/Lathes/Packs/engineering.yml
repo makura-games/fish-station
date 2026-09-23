@@ -65,6 +65,8 @@
   - JawsOfLife
   - Fulton
   - FultonBeacon
+  - EngiAlertsMonitor # Sunrise-Add
+  - AtmosAlertsMonitor # Sunrise-Add
 
 - type: latheRecipePack
   id: AtmosTools
