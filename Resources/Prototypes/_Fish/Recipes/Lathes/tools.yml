@@ -1,0 +1,23 @@
+- type: latheRecipe
+  parent: BaseToolRecipe
+  id: FishEngiAlertsMonitor
+  result: EngiAlertsMonitor
+  categories:
+  - Tools
+  completetime: 4
+  materials:
+    Steel: 1000
+    Glass: 500
+    Plastic: 150
+
+- type: latheRecipe
+  parent: BaseToolRecipe
+  id: FishAtmosAlertsMonitor
+  result: AtmosAlertsMonitor
+  categories:
+  - Tools
+  completetime: 4
+  materials:
+    Steel: 1000
+    Glass: 500
+    Plastic: 150

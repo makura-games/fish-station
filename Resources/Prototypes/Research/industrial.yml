@@ -177,6 +177,8 @@
     - BorgModuleAdvancedTool
     - Fulton
     - FultonBeacon
+    - FishEngiAlertsMonitor # FIsh edit
+    - FishAtmosAlertsMonitor # FIsh edit
 
 - type: technology
   id: MassExcavation

@@ -45,7 +45,7 @@
       # Sunrise edit start
       extendedAccessOptions:
         announcement: access-system-accesses-delay-yellow
-        accessGroup: YellowAlertAccesses # Sunrise-Edit
+        # FIsh edit - расширенный доступ жёлтого кода задаётся отдельно у дверей.
       # Sunrise edit end
     red:
       visualPriority: 30 # Sunrise-Edit

@@ -46,6 +46,7 @@ public sealed partial class FishHealthAnalyzerControl
 
     private static readonly Dictionary<ProtoId<DamageTypePrototype>, ProtoId<ReagentPrototype>> BasicTypeTreatments = new()
     {
+        ["Caustic"] = "Sigynate",
         ["Radiation"] = "Hyronalin",
     };
 

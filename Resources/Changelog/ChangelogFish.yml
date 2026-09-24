@@ -653,3 +653,58 @@
     message: Теперь нельзя класть бутылочки в пачку из под сигарет
   id: 63
   url: https://github.com/makura-games/fish-station/pull/465
+- author: TiFeRi
+  time: '2026-09-19T22:33:18.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Снижение стоимости подкрепления ЯО (с 30ТК до 18ТК).
+  - type: Tweak
+    message: Добавление подкрепления ЯО лон оперу.
+  id: 64
+  url: https://github.com/makura-games/fish-station/pull/464
+- author: erikundel
+  time: '2026-09-22T17:37:39.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: вернул в спавнменю вентиляторы
+  id: 65
+  url: https://github.com/makura-games/fish-station/pull/468
+- author: NekutGit
+  time: '2026-09-22T20:28:39.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Бита Хоумран больше не отбрасывает цели с включёнными магнитными ботинками
+  id: 66
+  url: https://github.com/makura-games/fish-station/pull/454
+- author: Endennsss
+  time: '2026-09-24T18:56:10.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фиксы рекомендуемого лекарства в анализаторе здоровья
+  - type: Fix
+    message: Фикс доступов в ЖК
+  id: 67
+  url: https://github.com/makura-games/fish-station/pull/473
+- author: NekutGit
+  time: '2026-09-24T18:59:14.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлены рецепты создания для портативных консолей атмосферных угроз и управления питанием
+  - type: Tweak
+    message: В технологию "Продвинутые инструменты" добавлено изучение для двух портативных консолей атмосферных угроз и управления питанием
+  id: 68
+  url: https://github.com/makura-games/fish-station/pull/472
+  media:
+  - url: https://github.com/user-attachments/assets/9350eed5-3648-46e1-9f6f-c26838c999d8
+    description: IMG_20260923_224428_115
+  - url: https://github.com/user-attachments/assets/4a7f7cd0-4171-4f58-8721-20c4094de434
+    description: IMG_20260923_224427_719
+- author: Endennsss
+  time: '2026-09-24T19:04:55.0000000+00:00'
+  changes:
+  - type: Add
+    message: Молнии в спавн меню
+  id: 69
+  url: https://github.com/makura-games/fish-station/pull/471
+  media:
+  - url: https://github.com/user-attachments/assets/5779808e-b0c3-4145-9d47-02ce3e365af7
