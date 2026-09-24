@@ -1,0 +1,7 @@
+- type: vendingMachineInventory
+  id: PetMateVendInventory
+  startingInventory:
+    # Collars
+    ClothingNeckCollarBase: 3
+    # Leashs
+    LeashBase: 3
