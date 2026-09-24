@@ -1,0 +1,16 @@
+- type: entity
+  parent: CleanerGrenade
+  id: FishSuperCleanade
+  name: super cleanade
+  description: An upgraded cleanade releasing a specialized foam that cleans, removes trash, and restores broken lights.
+  components:
+  - type: SmokeOnTrigger
+    keysIn:
+    - timer
+    duration: 15
+    spreadAmount: 50
+    smokePrototype: FishSuperCleanFoam
+    solution:
+      reagents:
+      - ReagentId: SpaceCleaner
+        Quantity: 30
