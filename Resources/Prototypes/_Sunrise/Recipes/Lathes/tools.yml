@@ -8,31 +8,3 @@
     Silver: 250
     Plasma: 500
     Uranium: 200
-
-# Sunrise-Add-Start
-# Портативные консольные планшеты инженерного отдела
-
-- type: latheRecipe
-  parent: BaseToolRecipe
-  id: EngiAlertsMonitor
-  result: EngiAlertsMonitor
-  categories:
-  - Tools
-  completetime: 4
-  materials:
-    Steel: 1000
-    Glass: 500
-    Plastic: 150
-
-- type: latheRecipe
-  parent: BaseToolRecipe
-  id: AtmosAlertsMonitor
-  result: AtmosAlertsMonitor
-  categories:
-  - Tools
-  completetime: 4
-  materials:
-    Steel: 1000
-    Glass: 500
-    Plastic: 150
-# Sunrise-Add-End
