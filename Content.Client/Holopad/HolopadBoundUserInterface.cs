@@ -24,6 +24,7 @@ public sealed class HolopadBoundUserInterface : BoundUserInterface
 
         _window = this.CreateWindow<HolopadWindow>();
         _window.Title = Loc.GetString("holopad-window-title", ("title", EntMan.GetComponent<MetaDataComponent>(Owner).EntityName));
+        _window.SendRemoteHolopadStopBroadcastMessageAction += () => SendMessage(new RemoteHolopadStopBroadcastMessage()); //fish-edit
 
         if (this.UiKey is not HolopadUiKey)
         {

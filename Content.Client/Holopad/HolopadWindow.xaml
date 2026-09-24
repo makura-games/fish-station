@@ -44,6 +44,11 @@
                     </Control>
                 </GridContainer>
 
+                <!-- fish-edit start. Кнопка выключения трансляции. Видна только для транслирующего голопада во время звонка. -->
+                <BoxContainer Name="RemoteBroadcastContainer" Orientation="Vertical" ReservesSpace="False" Visible="False">
+                    <Button Name="StopBroadcastButton" Text="{Loc 'holopad-window-stop-broadcast'}" Margin="10 5 10 5"/>
+                </BoxContainer>
+                <!-- fish-edit end -->
             </BoxContainer>
 
             <!-- Call placement controls (either this or the active call controls will be active) -->
