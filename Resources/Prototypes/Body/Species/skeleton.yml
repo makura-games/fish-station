@@ -2,12 +2,16 @@
   id: Skeleton
   onlyGroupWhitelisted: true
   limits:
+    # Fish edit start - повышение лимита причесок и лицевой растительности до 3
     enum.HumanoidVisualLayers.Hair:
-      limit: 1
+      # limit: 1
+      limit: 3
       required: false
     enum.HumanoidVisualLayers.FacialHair:
-      limit: 1
+      # limit: 1
+      limit: 3
       required: false
+    # Fish edit end
     enum.HumanoidVisualLayers.Chest:
       limit: 2
       required: false

@@ -179,9 +179,12 @@
   id: Tajaran
   onlyGroupWhitelisted: true
   limits:
+    # Fish edit start - повышение лимита причесок до 3
     enum.HumanoidVisualLayers.Hair:
-      limit: 1
+      # limit: 1
+      limit: 3
       required: false
+    # Fish edit end
     enum.HumanoidVisualLayers.FacialHair:
       limit: 0
       required: false
