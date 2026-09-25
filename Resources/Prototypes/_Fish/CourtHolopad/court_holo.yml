@@ -1,0 +1,30 @@
+- type: entity
+  parent: HolopadBluespace
+  id: FishHolopadRemoteTransmitter
+  suffix: Remote Transmitter
+  components:
+  - type: Telephone
+    unlistedNumber: false
+  - type: RemoteHolopadTransmitter
+  - type: Label
+    currentLabel: holopad-remote-transmitter
+
+- type: entity
+  parent: HolopadBluespace
+  id: FishHolopadRemoteReceiver
+  suffix: Remote Receiver
+  components:
+  - type: Telephone
+    unlistedNumber: false
+  - type: RemoteHolopadReceiver
+  - type: Label
+    currentLabel: holopad-remote-receiver
+
+- type: entity
+  id: ActionRemoteHolopadExitView
+  components:
+  - type: Action
+    icon: Interface/Actions/eyeclose.png
+    useDelay: 1
+  - type: InstantAction
+    event: !type:RemoteHolopadExitViewActionEvent

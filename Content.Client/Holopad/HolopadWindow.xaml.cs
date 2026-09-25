@@ -43,6 +43,8 @@ public sealed partial class HolopadWindow : FancyWindow
     public event Action? SendHolopadActivateProjectorMessageAction;
     public event Action? SendHolopadRequestStationAiMessageAction;
 
+    partial void UpdateRemoteAppearance(bool lockButtons); // Fish-edit
+
     public HolopadWindow()
     {
         RobustXamlLoader.Load(this);
@@ -297,6 +299,8 @@ public sealed partial class HolopadWindow : FancyWindow
         CallPlacementControlsContainer.Visible = !ActiveCallControlsContainer.Visible;
         CallerIdContainer.Visible = (_currentState == TelephoneState.Ringing);
         AnswerCallButton.Visible = (_currentState == TelephoneState.Ringing);
+
+        UpdateRemoteAppearance(lockButtons); // Fish-edit
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

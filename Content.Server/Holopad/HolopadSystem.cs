@@ -42,7 +42,7 @@ public sealed class HolopadSystem : SharedHolopadSystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly PvsOverrideSystem _pvs = default!;
     [Dependency] private readonly SharedPowerStateSystem _powerState = default!;
-
+    [Dependency] private readonly RemoteHolopadSystem _remoteHolopad = default!; // Fish-edit
     private float _updateTimer = 1.0f;
     private const float UpdateTime = 1.0f;
 
@@ -102,10 +102,13 @@ public sealed class HolopadSystem : SharedHolopadSystem
 
         var receiver = GetEntity(args.Receiver);
 
-        if (!TryComp<TelephoneComponent>(receiver, out var receiverTelephone))
+        if (!_remoteHolopad.CanCall(source.Owner, receiver)) // Fish-edit
             return;
 
-        LinkHolopadToUser(source, args.Actor);
+        if (!TryComp<TelephoneComponent>(receiver, out var receiverTelephone)) // Fish-Edit
+            return;
+
+        LinkHolopadToUser(source, args.Actor); // Fish-Edit
         _telephoneSystem.CallTelephone((source, sourceTelephone), (receiver, receiverTelephone), args.Actor);
     }
 
@@ -148,6 +151,9 @@ public sealed class HolopadSystem : SharedHolopadSystem
 
     private void OnHolopadEndCall(Entity<HolopadComponent> entity, ref HolopadEndCallMessage args)
     {
+        if (HasComp<RemoteHolopadReceiverComponent>(entity)) // Fish-Edit
+            return;
+
         if (!TryComp<TelephoneComponent>(entity, out var entityTelephone))
             return;
 
@@ -173,6 +179,9 @@ public sealed class HolopadSystem : SharedHolopadSystem
 
     private void OnHolopadStartBroadcast(Entity<HolopadComponent> source, ref HolopadStartBroadcastMessage args)
     {
+        if (HasComp<RemoteHolopadTransmitterComponent>(source) || HasComp<RemoteHolopadReceiverComponent>(source)) // Fish-Edit
+            return;
+
         if (IsHolopadControlLocked(source, args.Actor) || IsHolopadBroadcastOnCoolDown(source))
             return;
 
@@ -206,6 +215,9 @@ public sealed class HolopadSystem : SharedHolopadSystem
 
     private void OnHolopadStationAiRequest(Entity<HolopadComponent> entity, ref HolopadStationAiRequestMessage args)
     {
+        if (HasComp<RemoteHolopadTransmitterComponent>(entity) || HasComp<RemoteHolopadReceiverComponent>(entity)) // Fish-Edit
+            return;
+
         if (IsHolopadControlLocked(entity, args.Actor))
             return;
 
@@ -510,6 +522,9 @@ public sealed class HolopadSystem : SharedHolopadSystem
                 continue;
 
             if (source == receiver)
+                continue;
+
+            if (!_remoteHolopad.IsListedFor(entity.Owner, receiverUid)) // Fish-edit
                 continue;
 
             if (!_telephoneSystem.IsSourceInRangeOfReceiver(source, receiver))
