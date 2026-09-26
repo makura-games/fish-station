@@ -37,6 +37,7 @@
   - type: MovementIgnoreGravity
   - type: GravityAffected
   - type: Damageable
+  - type: Injurable
     damageContainer: Biological
   - type: Examiner
   - type: NoSlip
@@ -106,4 +107,10 @@
     - state: green
     - sprite: _Sunrise/Interface/Misc/antag_preview.rsi
       state: test
+
+- type: antagSpecifier
+  parent: BaseAntagSpecifier
+  id: Disease
+  pickPlayer: false
+  spawnerPrototype: SpawnPointGhostDisease
 

@@ -9,9 +9,9 @@ namespace Content.Shared._Sunrise.BluespaceArtillery;
 /// Режимы ЛЦУ БСА через SelectType verbs.
 /// Z / UseInHand оставляем биноклю (wield + зум), без перехвата под смену режима.
 /// </summary>
-public abstract class SharedBluespaceArtilleryDesignatorSystem : EntitySystem
+public abstract partial class SharedBluespaceArtilleryDesignatorSystem : EntitySystem
 {
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     public override void Initialize()
     {

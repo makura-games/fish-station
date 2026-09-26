@@ -7,7 +7,7 @@ using Robust.Client.ComponentTrees;
 
 namespace Content.Client._Fish.Lightning;
 
-public sealed class SkyLightningVisualsSystem : EntitySystem
+public sealed partial class SkyLightningVisualsSystem : EntitySystem
 {
     [Dependency] private AppearanceSystem _appearance = default!;
     [Dependency] private SpriteSystem _sprite = default!;

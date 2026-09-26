@@ -32,13 +32,13 @@ namespace Content.Server._Fish.Achievements;
 /// </summary>
 public sealed partial class AchievementConditionSystem : EntitySystem
 {
-    [Dependency] private readonly AchievementManager _achievements = default!;
-    [Dependency] private readonly SharedMindSystem _mind = default!;
-    [Dependency] private readonly SharedRoleSystem _roles = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly TagSystem _tags = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private AchievementManager _achievements = default!;
+    [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private SharedRoleSystem _roles = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private TagSystem _tags = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private static readonly ProtoId<TagPrototype> MouseTag = "Mouse";
     private static readonly ProtoId<TagPrototype> HamsterTag = "Hamster";

@@ -21,15 +21,15 @@ namespace Content.Server._Sunrise.Disease;
 
 using Robust.Server.GameObjects;
 
-public sealed class DiseaseRoleSystem : SharedDiseaseRoleSystem
+public sealed partial class DiseaseRoleSystem : SharedDiseaseRoleSystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedActionsSystem _actionsSystem = default!;
-    [Dependency] private readonly StoreSystem _store = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedChargesSystem _sharedCharges = default!;
-    [Dependency] private readonly AudioSystem _audio = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedActionsSystem _actionsSystem = default!;
+    [Dependency] private StoreSystem _store = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedChargesSystem _sharedCharges = default!;
+    [Dependency] private AudioSystem _audio = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
 
     private static readonly List<string> _bloodReagents = new()
     {

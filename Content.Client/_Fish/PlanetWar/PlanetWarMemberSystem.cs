@@ -7,9 +7,9 @@ namespace Content.Client._Fish.PlanetWar;
 /// <summary>
 /// Отображение фракционных иконок PlanetWar.
 /// </summary>
-public sealed class PlanetWarMemberSystem : EntitySystem
+public sealed partial class PlanetWarMemberSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
 
     public override void Initialize()
     {

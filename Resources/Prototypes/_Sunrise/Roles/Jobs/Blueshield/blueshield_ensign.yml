@@ -15,7 +15,6 @@
   startingGear: BlueShieldEnsignGear
   icon: JobIconBlueShield
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   accessGroups:
   - AllAccess # Fish-edit
   special:

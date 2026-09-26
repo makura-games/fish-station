@@ -16,7 +16,7 @@
   icon: NTR_operative
 
   supervisors: job-supervisors-representative
-  canBeAntag: false
+  # canBeAntag: false # Fish-edit
   accessGroups:
   - AllAccess
   special:

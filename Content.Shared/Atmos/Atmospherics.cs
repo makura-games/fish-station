@@ -104,6 +104,21 @@ namespace Content.Shared.Atmos
         public const float OxygenMolesGasMiner = MolesCellGasMiner * OxygenStandard;
         public const float NitrogenMolesGasMiner = MolesCellGasMiner * NitrogenStandard;
 
+        /// <summary>
+        /// Converts Grams to Kilograms.
+        /// </summary>
+        public const float gToKg = 0.001f;
+
+        /// <summary>
+        /// Convert kPa to Kg/m^2
+        /// </summary>
+        public const float kPaToKg_m2 = 0.00980665f;
+
+        /// <summary>
+        /// Convert Kg/m^2 to kPa
+        /// </summary>
+        public const float Kg_m2TokPa = 101.9716212978f;
+
         #endregion
 
         /// <summary>
@@ -138,8 +153,19 @@ namespace Content.Shared.Atmos
         /// </summary>
         public const float MinimumAirToSuspend = (MolesCellStandard * MinimumAirRatioToSuspend);
 
-        public const float MinimumTemperatureToMove = (T20C + 100f);
+        /// <summary>
+        /// The minimum difference in temperature between <see cref="GasMixture"/>s
+        /// (<see cref="TileAtmosphere"/>s) required
+        /// for LINDA to report a pressure difference between them for space wind.
+        /// In Kelvin.
+        /// </summary>
+        public const float MinimumTemperatureToMove = 5f;
 
+        /// <summary>
+        /// The minimum difference in moles between <see cref="GasMixture"/>s
+        /// (<see cref="TileAtmosphere"/>s) required for LINDA to
+        /// report a pressure difference between them for space wind.
+        /// </summary>
         public const float MinimumMolesDeltaToMove = (MolesCellStandard * MinimumAirRatioToMove);
 
         /// <summary>
@@ -187,7 +213,7 @@ namespace Content.Shared.Atmos
             //Sunrise - Start
             [Gas.BZ] = Loc.GetString("gas-bz-abbreviation"),
             [Gas.Healium] = Loc.GetString("gas-healium-abbreviation"),
-            [Gas.Nitrium] = Loc.GetString("gas-nitrium-abbreviation"),                                                        
+            [Gas.Nitrium] = Loc.GetString("gas-nitrium-abbreviation"),
             [Gas.Pluoxium] = Loc.GetString("gas-pluoxium-abbreviation"),
             [Gas.Hydrogen] = Loc.GetString("gas-hydrogen-abbreviation"),
             [Gas.HyperNoblium] = Loc.GetString("gas-hyper-noblium-abbreviation"),
@@ -201,20 +227,20 @@ namespace Content.Shared.Atmos
             //Sunrise - End
             //Fish - Start
             [Gas.Zenthium] = Loc.GetString("gas-zenthium-abbreviation"), //Fish edit start
-            [Gas.Krypium] = Loc.GetString("gas-krypium-abbreviation"), 
-            [Gas.Prallium] = Loc.GetString("gas-prallium-abbreviation"), 
-            [Gas.Chaoson] = Loc.GetString("gas-chaoson-abbreviation"), 
-            [Gas.Garodin] = Loc.GetString("gas-garodin-abbreviation"), 
-            [Gas.Baratrium] = Loc.GetString("gas-baratrium-abbreviation"), 
-            [Gas.Ethylium] = Loc.GetString("gas-ethylium-abbreviation"), 
-            [Gas.Zimmera] = Loc.GetString("gas-zimmera-abbreviation"), 
-            [Gas.Framel] = Loc.GetString("gas-framel-abbreviation"), 
-            [Gas.Klemennon] = Loc.GetString("gas-klemennon-abbreviation"), 
-            [Gas.ProtoUltimium] = Loc.GetString("gas-proto-ultimium-abbreviation"), 
-            [Gas.ZimmerousFrezonite] = Loc.GetString("gas-zimmerous-frezonite-abbreviation"), 
-            [Gas.AntiUltimium] = Loc.GetString("gas-anti-ultimium-abbreviation"), 
-            [Gas.Ultimium] = Loc.GetString("gas-ultimium-abbreviation"), 
-            [Gas.Permafrost] = Loc.GetString("gas-permafrost-abbreviation"), 
+            [Gas.Krypium] = Loc.GetString("gas-krypium-abbreviation"),
+            [Gas.Prallium] = Loc.GetString("gas-prallium-abbreviation"),
+            [Gas.Chaoson] = Loc.GetString("gas-chaoson-abbreviation"),
+            [Gas.Garodin] = Loc.GetString("gas-garodin-abbreviation"),
+            [Gas.Baratrium] = Loc.GetString("gas-baratrium-abbreviation"),
+            [Gas.Ethylium] = Loc.GetString("gas-ethylium-abbreviation"),
+            [Gas.Zimmera] = Loc.GetString("gas-zimmera-abbreviation"),
+            [Gas.Framel] = Loc.GetString("gas-framel-abbreviation"),
+            [Gas.Klemennon] = Loc.GetString("gas-klemennon-abbreviation"),
+            [Gas.ProtoUltimium] = Loc.GetString("gas-proto-ultimium-abbreviation"),
+            [Gas.ZimmerousFrezonite] = Loc.GetString("gas-zimmerous-frezonite-abbreviation"),
+            [Gas.AntiUltimium] = Loc.GetString("gas-anti-ultimium-abbreviation"),
+            [Gas.Ultimium] = Loc.GetString("gas-ultimium-abbreviation"),
+            [Gas.Permafrost] = Loc.GetString("gas-permafrost-abbreviation"),
             [Gas.Riminon] = Loc.GetString("gas-riminon-abbreviation"),
             [Gas.AxoNoblium] = Loc.GetString("gas-axonoblium-abbreviation"),
             //Fish - End
@@ -258,7 +284,7 @@ namespace Content.Shared.Atmos
         /// <summary>
         ///     Amount of heat released per mole of burnt hydrogen or tritium (hydrogen isotope)
         /// </summary>
-        public const float FireHydrogenEnergyReleased = 284e4f;
+        public const float FireHydrogenEnergyReleased = 284e3f;
         public const float FireMinimumTemperatureToExist = T0C + 100f;
         public const float FireMinimumTemperatureToSpread = T0C + 150f;
         public const float FireSpreadRadiosityScale = 0.85f;
@@ -269,8 +295,8 @@ namespace Content.Shared.Atmos
         public const float SuperSaturationEnds = SuperSaturationThreshold / 3;
 
         public const float OxygenBurnRateBase = 1.4f;
-        public const float PlasmaMinimumBurnTemperature = (100f+T0C);
-        public const float PlasmaUpperTemperature = (1370f+T0C);
+        public const float PlasmaMinimumBurnTemperature = 100f + T0C;
+        public const float PlasmaUpperTemperature = 1370f + T0C;
         public const float PlasmaOxygenFullburn = 10f;
         public const float PlasmaBurnRateDelta = 9f;
 

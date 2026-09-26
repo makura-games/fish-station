@@ -5,11 +5,10 @@ ent-MobKitsunePlayerFox = kitsune fox
     .desc = They're a nine tailed fox.
 
 ent-MacKitsune = Urist McKitsune
-    .desc = { ent-BaseSpeciesMobOrganic.desc }
 
 ent-MobKitsunePrime = prime kitsune
+    .desc = { "" }
     .suffix = ADMEME
-    .desc = { ent-MacKitsune.desc }
 
 ent-ActionKitsuneTransform = Fox Transform
     .desc = Transform into a nine-tailed fox form, taking 9 slash damage. Takes 5 seconds. Duration: 4 minutes. Cooldown: 15 seconds.

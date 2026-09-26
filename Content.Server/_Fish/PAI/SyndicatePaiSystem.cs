@@ -31,20 +31,20 @@ namespace Content.Server._Fish.PAI;
 
 public sealed partial class SyndicatePaiSystem : SharedSyndicatePaiSystem
 {
-    [Dependency] private readonly SharedPopupSystem _serverPopup = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly SharedActionsSystem _serverActions = default!;
-    [Dependency] private readonly SharedContainerSystem _serverContainer = default!;
-    [Dependency] private readonly ActionContainerSystem _actionContainer = default!;
-    [Dependency] private readonly MetaDataSystem _metadata = default!;
-    [Dependency] private readonly EmagSystem _emag = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly HealthAnalyzerSystem _healthAnalyzer = default!;
-    [Dependency] private readonly ItemToggleSystem _itemToggle = default!;
-    [Dependency] private readonly SharedUserInterfaceSystem _serverUi = default!;
-    [Dependency] private readonly SharedStationSystem _station = default!;
+    [Dependency] private SharedPopupSystem _serverPopup = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private SharedActionsSystem _serverActions = default!;
+    [Dependency] private SharedContainerSystem _serverContainer = default!;
+    [Dependency] private ActionContainerSystem _actionContainer = default!;
+    [Dependency] private MetaDataSystem _metadata = default!;
+    [Dependency] private EmagSystem _emag = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private HealthAnalyzerSystem _healthAnalyzer = default!;
+    [Dependency] private ItemToggleSystem _itemToggle = default!;
+    [Dependency] private SharedUserInterfaceSystem _serverUi = default!;
+    [Dependency] private SharedStationSystem _station = default!;
 
     private const string SunriseCriminalRecordsBui = "SunriseCriminalRecordsConsoleBoundUserInterface";
 

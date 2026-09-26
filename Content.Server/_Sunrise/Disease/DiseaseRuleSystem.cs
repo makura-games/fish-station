@@ -10,10 +10,10 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Sunrise.Disease;
 
-public sealed class DiseaseRuleSystem : GameRuleSystem<DiseaseRuleComponent>
+public sealed partial class DiseaseRuleSystem : GameRuleSystem<DiseaseRuleComponent>
 {
-    [Dependency] private readonly ChatSystem _chatSystem = default!;
-    
+    [Dependency] private ChatSystem _chatSystem = default!;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -24,12 +24,12 @@ public sealed class DiseaseRuleSystem : GameRuleSystem<DiseaseRuleComponent>
     protected override void Started(EntityUid uid, DiseaseRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
-        
-        Timer.Spawn(TimeSpan.FromMinutes(6), () => 
+
+        Timer.Spawn(TimeSpan.FromMinutes(6), () =>
         {
             var message = Loc.GetString("disease-biohazard-announcement");
             var sender = Loc.GetString("disease-biohazard-announcement-sender");
-            
+
             _chatSystem.DispatchGlobalAnnouncement(message, sender, playDefault: true, colorOverride: Color.Red);
         });
     }

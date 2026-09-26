@@ -75,6 +75,7 @@ guide-entry-botanicals = Botanicals
 guide-entry-cloning = Cloning
 guide-entry-cryogenics = Cryogenics
 guide-entry-mangleness = Mangleness
+guide-entry-medicaldrugs = Medical Drugs # Fish edit
 guide-entry-science = Science
 guide-entry-technologies = Technologies
 guide-entry-anomalous-research = Anomalous Research

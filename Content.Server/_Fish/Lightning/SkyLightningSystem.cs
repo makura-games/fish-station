@@ -12,7 +12,7 @@ namespace Content.Server._Fish.Lightning;
 /// <summary>
 /// Применяет электрический удар вокруг точки спавна молнии.
 /// </summary>
-public sealed class SkyLightningSystem : EntitySystem
+public sealed partial class SkyLightningSystem : EntitySystem
 {
     [Dependency] private ElectrocutionSystem _electrocution = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;

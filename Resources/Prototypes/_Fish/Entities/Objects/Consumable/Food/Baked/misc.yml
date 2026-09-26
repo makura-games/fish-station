@@ -12,17 +12,16 @@
   - type: Sprite
     sprite: _Fish/Objects/Consumable/Food/Baked/croissantmango.rsi
     state: croissantmango
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 13
-        reagents:
-        - ReagentId: Nutriment
-          Quantity: 7
-        - ReagentId: Butter
-          Quantity: 2
-        - ReagentId: Vitamin
-          Quantity: 4
+  - type: Solution
+    solution:
+      maxVol: 13
+      reagents:
+      - ReagentId: Nutriment
+        Quantity: 7
+      - ReagentId: Butter
+        Quantity: 2
+      - ReagentId: Vitamin
+        Quantity: 4
   - type: DamageOtherOnHit
     damage:
       types:
@@ -37,15 +36,14 @@
   - type: Sprite
     sprite: _Fish/Objects/Consumable/Food/Baked/muffinmango.rsi
     state: bakedmuffinmango
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 14
-        reagents:
-        - ReagentId: Nutriment
-          Quantity: 10
-        - ReagentId: Vitamin
-          Quantity: 4
+  - type: Solution
+    solution:
+      maxVol: 14
+      reagents:
+      - ReagentId: Nutriment
+        Quantity: 10
+      - ReagentId: Vitamin
+        Quantity: 4
   - type: FlavorProfile
     flavors:
       - sweet
@@ -101,15 +99,14 @@
     - state: pancakesma9
       map: ["pancakesma9"]
       visible: false
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 11
-        reagents:
-        - ReagentId: Nutriment
-          Quantity: 8
-        - ReagentId: Vitamin
-          Quantity: 3
+  - type: Solution
+    solution:
+      maxVol: 11
+      reagents:
+      - ReagentId: Nutriment
+        Quantity: 8
+      - ReagentId: Vitamin
+        Quantity: 3
   - type: FlavorProfile
     flavors:
       - mango

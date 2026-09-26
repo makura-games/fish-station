@@ -20,17 +20,17 @@ namespace Content.Server._Sunrise.BluespaceArtillery;
 /// <summary>
 /// Серверная логика наведения и запуска блюспейс-артиллерии.
 /// </summary>
-public sealed class BluespaceArtilleryDesignatorSystem : SharedBluespaceArtilleryDesignatorSystem
+public sealed partial class BluespaceArtilleryDesignatorSystem : SharedBluespaceArtilleryDesignatorSystem
 {
-    [Dependency] private readonly ChatSystem _chat = default!;
-    [Dependency] private readonly ExplosionSystem _explosion = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
-    [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedChargesSystem _charges = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private ExplosionSystem _explosion = default!;
+    [Dependency] private IMapManager _mapManager = default!;
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedChargesSystem _charges = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

@@ -17,14 +17,14 @@ namespace Content.Server._Fish.PlanetWar.Drone
     /// <summary>
     /// Handles PlanetWar stun drones triggering.
     /// </summary>
-    public sealed class PlanetWarStunDroneSystem : EntitySystem
+    public sealed partial class PlanetWarStunDroneSystem : EntitySystem
     {
-        [Dependency] private readonly FlashSystem _flash = default!;
-        [Dependency] private readonly EmpSystem _emp = default!;
-        [Dependency] private readonly ElectrocutionSystem _electrocution = default!;
-        [Dependency] private readonly EntityLookupSystem _lookup = default!;
-        [Dependency] private readonly SharedTransformSystem _transform = default!;
-        [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
+        [Dependency] private FlashSystem _flash = default!;
+        [Dependency] private EmpSystem _emp = default!;
+        [Dependency] private ElectrocutionSystem _electrocution = default!;
+        [Dependency] private EntityLookupSystem _lookup = default!;
+        [Dependency] private SharedTransformSystem _transform = default!;
+        [Dependency] private NpcFactionSystem _npcFaction = default!;
 
         public override void Initialize()
         {

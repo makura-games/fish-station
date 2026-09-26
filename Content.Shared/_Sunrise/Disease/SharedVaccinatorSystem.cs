@@ -20,16 +20,16 @@ namespace Content.Shared.Chemistry.EntitySystems;
 /// <summary>
 /// This handles <see cref="SolutionContainerMixerComponent"/>
 /// </summary>
-public abstract class SharedVaccinatorSystem : EntitySystem
+public abstract partial class SharedVaccinatorSystem : EntitySystem
 {
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solution = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedSolutionContainerSystem _solution = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
     /// <summary>
     /// A cache of all reactions indexed by at most ONE of their required reactants.
     /// I.e., even if a reaction has more than one reagent, it will only ever appear once in this dictionary.

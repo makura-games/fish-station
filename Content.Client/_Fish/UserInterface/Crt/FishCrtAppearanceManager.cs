@@ -10,9 +10,9 @@ internal interface IFishCrtAppearanceManager
     event Action<FishCrtAppearanceSettings>? AppearanceChanged;
 }
 
-internal sealed class FishCrtAppearanceManager : IFishCrtAppearanceManager, IPostInjectInit
+internal sealed partial class FishCrtAppearanceManager : IFishCrtAppearanceManager, IPostInjectInit
 {
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
 
     public FishCrtAppearanceSettings Settings { get; private set; } = new(true, true);
 

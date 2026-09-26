@@ -1,6 +1,7 @@
 using Content.Client.Stylesheets;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos.EntitySystems;
 using Content.Shared.Atmos.Monitor;
 using Content.Shared.FixedPoint;
 using Content.Shared.Temperature;
@@ -22,6 +23,7 @@ public sealed partial class AtmosAlarmEntryContainer : BoxContainer
 
     private readonly IEntityManager _entManager;
     private readonly IResourceCache _cache;
+    private readonly SharedAtmosphereSystem _atmosphere;
 
     private Dictionary<AtmosAlarmType, string> _alarmStrings = new Dictionary<AtmosAlarmType, string>()
     {
@@ -84,6 +86,7 @@ public sealed partial class AtmosAlarmEntryContainer : BoxContainer
 
         _entManager = IoCManager.Resolve<IEntityManager>();
         _cache = IoCManager.Resolve<IResourceCache>();
+        _atmosphere = _entManager.System<SharedAtmosphereSystem>();
 
         NetEntity = uid;
         Coordinates = coordinates;
@@ -196,12 +199,11 @@ public sealed partial class AtmosAlarmEntryContainer : BoxContainer
                     foreach ((var gas, (var mol, var percent, var alert)) in keyValuePairs)
                     {
                         FixedPoint2 gasPercent = percent * 100f;
-
-                        var gasShorthand = _gasShorthands.GetValueOrDefault(gas, "X");
+                        var gasAbbreviation = Loc.GetString(_atmosphere.GetGas(gas).Abbreviation);
 
                         var gasLabel = new Label()
                         {
-                            Text = Loc.GetString("atmos-alerts-window-other-gases-value", ("shorthand", gasShorthand), ("value", gasPercent)),
+                            Text = Loc.GetString("atmos-alerts-window-other-gases-value", ("shorthand", gasAbbreviation), ("value", gasPercent)),
                             FontOverride = normalFont,
                             FontColorOverride = GetAlarmStateColor(alert),
                             HorizontalAlignment = HAlignment.Center,

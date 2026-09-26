@@ -11,9 +11,9 @@ namespace Content.Shared._Fish.Clothing;
 /// <summary>
 /// Shows protection values for the current visor state.
 /// </summary>
-public sealed class VisorExamineSystem : EntitySystem
+public sealed partial class VisorExamineSystem : EntitySystem
 {
-    [Dependency] private readonly ExamineSystemShared _examine = default!;
+    [Dependency] private ExamineSystemShared _examine = default!;
 
     public override void Initialize()
     {

@@ -14,13 +14,13 @@ namespace Content.Server._Fish.Achievements;
 /// <summary>
 /// Единый gate: gameplay (раунд / ghost / arena) и persistence (playtime → БД).
 /// </summary>
-public sealed class AchievementGameplayGateSystem : EntitySystem
+public sealed partial class AchievementGameplayGateSystem : EntitySystem
 {
-    [Dependency] private readonly GameTicker _ticker = default!;
-    [Dependency] private readonly SharedMindSystem _mind = default!;
-    [Dependency] private readonly AdminTestArenaSystem _adminArena = default!;
-    [Dependency] private readonly PlayTimeTrackingManager _playTime = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private GameTicker _ticker = default!;
+    [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private AdminTestArenaSystem _adminArena = default!;
+    [Dependency] private PlayTimeTrackingManager _playTime = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     /// <summary>
     /// Можно ли засчитывать gameplay-достижение этому session.

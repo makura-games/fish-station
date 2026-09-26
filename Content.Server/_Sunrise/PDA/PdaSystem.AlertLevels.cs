@@ -10,7 +10,7 @@ public sealed partial class PdaSystem
      * Synchronization of primary and additional station alert levels to PDAs.
      */
 
-    [Dependency] private readonly AlertLevelSystem _alertLevel = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!;
 
     private void OnAdditionalAlertLevelChanged(AdditionalAlertLevelChangedEvent args)
     {

@@ -35,9 +35,9 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
 {
     private const float StatusColorTransitionDuration = 0.18f;
 
-    [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IResourceCache _cache = default!;
+    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IResourceCache _cache = default!;
 
     private readonly SpriteSystem _spriteSystem;
     private readonly DamageableSystem _damageable;

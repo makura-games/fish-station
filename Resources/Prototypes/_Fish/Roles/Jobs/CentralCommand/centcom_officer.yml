@@ -28,7 +28,7 @@
   overrideConsoleVisibility: false # Sunrise added
   supervisors: job-supervisors-centcomhead
   radioBold: true
-  canBeAntag: false
+  # canBeAntag: false # Fish-edit
   alwaysUseSpawner: true
   accessGroups:
   - AllAccess

@@ -1,4 +1,10 @@
 # Compatibility fallbacks for deleted upstream prototypes used by PlanetWar
+# Fish added start - WeaponRifleARG удалён из Sunrise; заглушка на WeaponRifleAk (тот же MagazineLightRifle)
+- type: entity
+  abstract: true
+  parent: WeaponRifleAk
+  id: WeaponRifleARG
+# Fish added end
 - type: entity
   abstract: true
   parent: BaseMagazineLightRifle

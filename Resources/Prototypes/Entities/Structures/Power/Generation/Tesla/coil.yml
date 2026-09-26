@@ -80,6 +80,7 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Damageable
+  - type: Injurable
     damageContainer: StructuralInorganic
   - type: ExaminableDamage
     messages: WindowMessages
@@ -182,6 +183,7 @@
     doAfterDelay: 5 # Fish-edit
     fuelCost: 5 # Fish-edit
   - type: Damageable
+  - type: Injurable
     damageContainer: StructuralInorganic
   - type: DamageVisuals
     thresholds: [8, 16, 25]

@@ -8,7 +8,6 @@
   jobEntity: MobHumanArmP0WMF5
   startingGear: ArmGearP0
   icon: "IconArmBase"
-  canBeAntag: false
   access:
   - AssArmBase
   alwaysUseSpawner: true
@@ -25,7 +24,6 @@
   jobEntity: MobHumanArmPC0I5WMF5
   startingGear: ArmGearPC0I5
   icon: "IconArmPC0I5"
-  canBeAntag: false
   access:
   - AssArmBase
   - AssArmPC0I5
@@ -45,7 +43,6 @@
   jobEntity: MobHumanArmPM1WMF5
   startingGear: ArmGearPM1
   icon: "IconArmPM1"
-  canBeAntag: false
   access:
   - AssArmBase
   - AssArmPM1
@@ -63,7 +60,6 @@
   jobEntity: MobHumanArmPE1WMF5
   startingGear: ArmGearPE1
   icon: "IconArmPE1"
-  canBeAntag: false
   access:
   - AssArmBase
   - AssArmPE1

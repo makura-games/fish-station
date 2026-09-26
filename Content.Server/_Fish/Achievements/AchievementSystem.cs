@@ -10,10 +10,10 @@ namespace Content.Server._Fish.Achievements;
 /// <summary>
 /// Сеть и server-side hooks семейств условий.
 /// </summary>
-public sealed class AchievementSystem : EntitySystem
+public sealed partial class AchievementSystem : EntitySystem
 {
-    [Dependency] private readonly AchievementManager _achievements = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private AchievementManager _achievements = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private static readonly TimeSpan SnapshotRequestCooldown = TimeSpan.FromSeconds(2);
     private readonly Dictionary<NetUserId, TimeSpan> _lastSnapshotRequest = new();

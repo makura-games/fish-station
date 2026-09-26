@@ -10,7 +10,7 @@ public sealed partial class AlertLevelDisplaySystem
      * Display updates for simultaneously active alert levels.
      */
 
-    [Dependency] private readonly AlertLevelSystem _alertLevel = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!;
 
     private void OnAdditionalAlertChanged(AdditionalAlertLevelChangedEvent args)
     {

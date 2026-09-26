@@ -90,21 +90,6 @@
         - id: MagazineRifleFMJ
         - id: MagazineRifleSP
 
-# Набор Лектер Мк3
-- type: entity
-  id: FishClothingBackpackDuffelWeaponLecterMk3BlueShield
-  parent: ClothingBackpackDuffelMilitary
-  name: Bundle Lecter Mk3
-  description: Lecter Mk3 with 1 FMJ magazine and 1 SP magazine.
-  components:
-  - type: EntityTableContainerFill
-    containers:
-      storagebase: !type:AllSelector
-        children:
-        - id: WeaponRifleLecterMk3
-        - id: MagazineRifleFMJ
-        - id: MagazineRifleSP
-
 # Набор Лектер XL8
 - type: entity
   id: FishClothingBackpackDuffelWeaponRifleLecterXL8BlueShield
@@ -161,7 +146,7 @@
     containers:
       storagebase: !type:AllSelector
         children:
-        - id: WeaponShotgunCombat
+        - id: WeaponShotgunEnforcer
         - id: BoxShotgunSlug
         - id: BoxBeanbag
 

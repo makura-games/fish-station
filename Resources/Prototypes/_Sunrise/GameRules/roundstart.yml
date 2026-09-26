@@ -18,11 +18,9 @@
     cost: 100
   - type: AntagSelection
     agentName: disease-agent-name
-    definitions:
-    - spawnerPrototype: SpawnPointGhostDisease
-      min: 1
-      max: 1
-      pickPlayer: false
+    antags:
+    - !type:FixedAntagCount
+      proto: Disease
 
 - type: entity
   id: Fugitive

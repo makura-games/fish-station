@@ -17,13 +17,13 @@ namespace Content.Shared._Fish.Maps;
 /// but do not hard-collide with other grids unless a dense anchored blocker occupies the cell.
 /// Uses <see cref="PreventCollideEvent"/> so engine grid fixture generation stays unchanged.
 /// </summary>
-public sealed class GridTileCollisionSystem : EntitySystem
+public sealed partial class GridTileCollisionSystem : EntitySystem
 {
-    [Dependency] private readonly SharedMapSystem _map = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedBroadphaseSystem _broadphase = default!;
-    [Dependency] private readonly TurfSystem _turf = default!;
-    [Dependency] private readonly ITileDefinitionManager _tileDefinitions = default!;
+    [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedBroadphaseSystem _broadphase = default!;
+    [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private ITileDefinitionManager _tileDefinitions = default!;
 
     /// <summary>
     /// Full-tile dense blockers: walls, airlocks, windows, etc.

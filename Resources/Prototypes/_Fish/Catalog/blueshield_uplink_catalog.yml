@@ -105,23 +105,6 @@
       - BlueShield
 
 - type: listing
-  id: FishERTUplinkWeaponLecterMk3BlueShield
-  name: blueshield-gun-bundle-lecter-mk3-name
-  productEntity: FishClothingBackpackDuffelWeaponLecterMk3BlueShield
-  icon: { sprite: _Sunrise/Interface/Misc/nt_icons.rsi, state: lecter_mk3 }
-  cost:
-    Bluecrystal: 9
-  categories:
-    - FishBlueShieldAutoGun
-  conditions:
-  - !type:ListingLimitedStockCondition
-    stock: 1
-  - !type:StoreWhitelistCondition
-    whitelist:
-      tags:
-      - BlueShield
-
-- type: listing
   id: FishERTUplinkWeaponRifleLecterXL8
   name: blueshield-gun-bundle-lecter-xl8-name
   productEntity: FishClothingBackpackDuffelWeaponRifleLecterXL8BlueShield

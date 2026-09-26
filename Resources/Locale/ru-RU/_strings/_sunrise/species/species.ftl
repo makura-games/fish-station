@@ -3,10 +3,7 @@ species-name-swine = Троттин
 species-name-tajaran = Таяран
 species-name-predator = Яутжа
 species-name-xeno = Ксеноморф
-species-name-demon = Аркана
 species-name-resomi = Резоми
+species-name-demon = Аркана
 species-name-abductor = Абдуктор
 species-name-milira = Милира
-# species-name-kitsune = Кицунэ # Fish-edit
-
-species-name-vulpkanin = Вульпканин

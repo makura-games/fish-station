@@ -14,7 +14,6 @@
   startingGear: BlueShieldOperativeGear
   icon: NTR_operative # Fish-edit
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   setPreference: true # fish-edit
   overrideConsoleVisibility: false # fish-edit
   accessGroups:

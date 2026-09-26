@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Content.Shared._Sunrise.SolutionRegenerationSwitcher;
 using Content.Shared.Actions;
 using Content.Shared.Body.Components;
@@ -24,14 +25,14 @@ namespace Content.Shared._Fish.PAI;
 /// </summary>
 public abstract partial class SharedSyndicatePaiSystem : EntitySystem
 {
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private SharedUserInterfaceSystem _ui = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private TimeSpan _nextUiRefresh;
 
@@ -270,9 +271,9 @@ public abstract partial class SharedSyndicatePaiSystem : EntitySystem
         }
 
         if (!switcher.KeepSolution &&
-            _solutions.TryGetSolution(hypo, regeneration.SolutionName, out var solution))
+            TryGetHypoSolution(hypo, out var solutionEnt, out _))
         {
-            _solutions.RemoveAllSolution(solution.Value);
+            _solutions.RemoveAllSolution(solutionEnt.Value);
         }
 
         regeneration.ChangeGenerated(reagent);
@@ -441,11 +442,8 @@ public abstract partial class SharedSyndicatePaiSystem : EntitySystem
 
     protected void ClearHypoReservoir(EntityUid hypo)
     {
-        if (!TryComp<SolutionRegenerationComponent>(hypo, out var regen))
-            return;
-
-        if (_solutions.TryGetSolution(hypo, regen.SolutionName, out var solution))
-            _solutions.RemoveAllSolution(solution.Value);
+        if (TryGetHypoSolution(hypo, out var solutionEnt, out _))
+            _solutions.RemoveAllSolution(solutionEnt.Value);
     }
 
     /// <summary>
@@ -550,7 +548,7 @@ public abstract partial class SharedSyndicatePaiSystem : EntitySystem
         }
 
         if (!TryComp<SolutionRegenerationComponent>(hypo.Value, out var regen) ||
-            !_solutions.TryGetSolution(hypo.Value, regen.SolutionName, out _, out var solution))
+            !TryGetHypoSolution(hypo.Value, out _, out var solution))
             return;
 
         volume = solution.Volume.Float();
@@ -576,9 +574,33 @@ public abstract partial class SharedSyndicatePaiSystem : EntitySystem
             return;
 
         var primary = solution.GetPrimaryReagentId();
-        if (primary != null && _prototypes.TryIndex(primary.Value.Prototype, out ReagentPrototype? current))
+        if (primary != null && _prototypes.TryIndex(primary.Value.Prototype, out ReagentPrototype? current) && current != null)
             reagentName = current.LocalizedName;
         else if (primary != null)
             reagentName = primary.Value.Prototype;
+    }
+
+    protected bool TryGetHypoSolution(
+        EntityUid hypo,
+        [NotNullWhen(true)] out Entity<SolutionComponent>? solutionEnt,
+        [NotNullWhen(true)] out Solution? solution)
+    {
+        solutionEnt = null;
+        solution = null;
+
+        if (TryComp<SolutionComponent>(hypo, out var solutionComp))
+        {
+            solutionEnt = (hypo, solutionComp);
+            solution = solutionComp.Solution;
+            return true;
+        }
+
+        if (TryComp<InjectorComponent>(hypo, out var injector) &&
+            _solutions.TryGetSolution(hypo, injector.SolutionName, out solutionEnt, out solution))
+        {
+            return true;
+        }
+
+        return _solutions.TryGetSolution(hypo, "hypospray", out solutionEnt, out solution);
     }
 }

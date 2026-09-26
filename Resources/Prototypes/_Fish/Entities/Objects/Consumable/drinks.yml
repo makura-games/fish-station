@@ -1,10 +1,9 @@
 - type: entity
-  parent: [DrinkBottleBaseSmallEmpty, DrinkWaterBottleFull]
+  parent: DrinkWaterBottleFull # Fish-Edit: DrinkBottleBaseSmallEmpty удалён из vanilla; DrinkWaterBottleFull уже наследует small-base через DrinkBottlePlasticSmallBaseFull
   id: FishDrinkWaterBottleEmpty
   name: empty water bottle
   description: A reusable plastic bottle with no contents.
   components:
-  - type: SolutionContainerManager
-    solutions:
-      drink:
-        maxVol: 30
+  - type: Solution
+    solution:
+      maxVol: 30

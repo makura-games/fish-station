@@ -7,11 +7,11 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._Fish.DelayedOpen;
 
-public sealed class DelayedOpenSystem : EntitySystem
+public sealed partial class DelayedOpenSystem : EntitySystem
 {
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedDoorSystem _door = default!;
-    [Dependency] private readonly AccessReaderSystem _access = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedDoorSystem _door = default!;
+    [Dependency] private AccessReaderSystem _access = default!;
 
     public override void Initialize()
     {

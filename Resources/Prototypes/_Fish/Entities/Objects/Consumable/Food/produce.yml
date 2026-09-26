@@ -7,17 +7,17 @@
   - type: FlavorProfile
     flavors:
       - mango
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 25
-        reagents:
-        - ReagentId: Nutriment
-          Quantity: 13
-        - ReagentId: Vitamin
-          Quantity: 5
+  - type: Solution
+    solution:
+      maxVol: 25
+      reagents:
+      - ReagentId: Nutriment
+        Quantity: 13
+      - ReagentId: Vitamin
+        Quantity: 5
   - type: Sprite
     sprite: _Fish/Objects/Specific/Hydroponics/mango.rsi
+    state: produce # Fish-Edit: ясный стейт для предсказуемого отображения
   - type: Produce
     seedId: Mango
   - type: Extractable
@@ -39,19 +39,18 @@
   - type: FlavorProfile
     flavors:
       - oxygenmango
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 40
-        reagents:
-        - ReagentId: Nutriment
-          Quantity: 8
-        - ReagentId: Vitamin
-          Quantity: 4
-        - ReagentId: Dexalin
-          Quantity: 10
-        - ReagentId: Saline
-          Quantity: 10
+  - type: Solution
+    solution:
+      maxVol: 40
+      reagents:
+      - ReagentId: Nutriment
+        Quantity: 8
+      - ReagentId: Vitamin
+        Quantity: 4
+      - ReagentId: Dexalin
+        Quantity: 10
+      - ReagentId: Saline
+        Quantity: 10
   - type: Sprite
     sprite: _Fish/Objects/Specific/Hydroponics/oxygen_mango.rsi
   - type: Produce

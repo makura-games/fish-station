@@ -7,7 +7,6 @@
   weight: 10
   jobEntity: MobObserver
   icon: "JobIconPassenger"
-  canBeAntag: false
   access:
   - AssCoreBase
   - AssArmBase

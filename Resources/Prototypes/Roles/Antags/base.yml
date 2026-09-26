@@ -1,0 +1,148 @@
+- type: antagSpecifier
+  abstract: true
+  id: BaseAntagSpecifier
+  jobBlacklist:
+  - CentralCommandOfficial
+  - DeathSquad
+  - ERTLeader
+  - ERTChaplain
+  - ERTEngineer
+  - ERTSecurity
+  - ERTMedical
+  - ERTJanitor
+  - CBURN
+  # Sunrise edit start - роли, ранее защищённые общим canBeAntag
+  - Adjutant # Fish edit
+  - BlueShieldEnsign
+  - BlueShieldOfficer
+  - BlueShieldOfficerFish # Fish edit
+  - BlueShieldOperative
+  - Borg
+  - Brigmedic
+  - Captain
+  - CBURNAgentEVA
+  - CBURNLeader
+  - CentCommHead # Fish edit
+  - CentCommOfficer # Fish edit
+  - CentCommOfficial
+  - CentCommOperator
+  - CentcommBartender # Fish edit
+  - CentcommBlueShield # Fish edit
+  - CentcommChef # Fish edit
+  - CentcommMedicalDoctor # Fish edit
+  - CentcommSectoralJudge # Fish edit
+  - CentCommTrainee # Fish edit
+  - ChiefEngineer # Fish edit
+  - ChiefMedicalOfficer # Fish edit
+  - ClownBorg
+  - ComMaid # Fish edit
+  - Detective
+  - EngineerBorg
+  - HeadOfPersonnel
+  - HeadOfPrison
+  - HeadOfSecurity
+  - IAA
+  - JanitorBorg
+  - Lawyer
+  - Magistrat
+  - MedicalBorg
+  - MedicalIntern
+  - MiningBorg
+  - NanoTrasenRepresentative
+  - NtrGuard
+  - NtrLeader
+  - NtrOfficer
+  - OversightOfficer # Fish edit
+  - PeaceBorg
+  - PlanetPrisoner
+  - PrisonChef
+  - PrisonDoctor
+  - PrisonEngineer
+  - PrisonInspector
+  - PrisonPilot
+  - PrisonScientist
+  - PrisonTrainee
+  - PrisonWorker
+  - Quartermaster # Fish edit
+  - RepresentativeBlueShield # Fish edit
+  - ResearchAssistant
+  - ResearchDirector # Fish edit
+  - SecurityBorg
+  - SecurityCadet
+  - SecurityOfficer
+  - SecurityPilot
+  - SeniorOfficer
+  - ServiceBorg
+  - SpecOpsOfficer # Fish edit
+  - StationAi
+  - TechnicalAssistant
+  - TSFMarine
+  - USSPCaptain
+  - USSPCrew
+  - USSPOfficer
+  - USSPOfficerAlt
+  - USSPSoldier
+  - Visitor
+  - Warden
+  # Sunrise edit end
+  blacklist:
+    components:
+    - AntagImmune
+    - MindShield # Fish edit - сущности с имплантом щита разума не могут быть выбраны антагонистами
+
+# Command
+- type: antagSpecifier
+  abstract: true
+  parent: BaseAntagSpecifier
+  id: CommandBlacklistedAntag
+  jobBlacklist:
+  - Captain
+  - HeadOfPersonnel
+  - HeadOfSecurity
+  - ChiefMedicalOfficer
+  - ResearchDirector
+  - ChiefEngineer
+  - Quartermaster
+
+# Borgs
+- type: antagSpecifier
+  abstract: true
+  parent: BaseAntagSpecifier
+  id: CyborgBlacklistedAntag
+  jobBlacklist:
+  - StationAi
+  - Borg
+
+# Learner Roles
+- type: antagSpecifier
+  abstract: true
+  parent: BaseAntagSpecifier
+  id: InternBlacklistedAntag
+  jobBlacklist:
+  - SecurityCadet
+  - MedicalIntern
+  - ResearchAssistant
+  - TechnicalAssistant
+  - Visitor
+
+# Security
+- type: antagSpecifier
+  abstract: true
+  parent: BaseAntagSpecifier
+  id: SecurityBlacklistedAntag
+  jobBlacklist:
+  - HeadOfSecurity
+  - Warden
+  - Detective
+  - SecurityOfficer
+  - SecurityCadet
+
+- type: antagSpecifier
+  abstract: true
+  parent: [ CommandBlacklistedAntag, SecurityBlacklistedAntag ]
+  id: MindshieldRestrictedAntag
+
+- type: antagSpecifier
+  abstract: true
+  parent: [ MindshieldRestrictedAntag, CyborgBlacklistedAntag, InternBlacklistedAntag ]
+  id: RestrictedAntag

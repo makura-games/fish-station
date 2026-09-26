@@ -7,7 +7,7 @@ namespace Content.Shared._Sunrise.Disease;
 
 public sealed partial class GiveDiseaseImmunityEntityEffectSystem : EntityEffectSystem<TransformComponent, GiveDiseaseImmunity>
 {
-    [Dependency] private readonly EntityManager _entityManager = default!;
+    [Dependency] private EntityManager _entityManager = default!;
 
     protected override void Effect(Entity<TransformComponent> entity, ref EntityEffectEvent<GiveDiseaseImmunity> args)
     {

@@ -7,7 +7,6 @@
   startingGear: DeathSquadGear
   icon: "JobIconDeathSquad"
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   # Fish added start - requirements
   requirements:
     - !type:DepartmentTimeRequirement

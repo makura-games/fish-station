@@ -15,12 +15,11 @@
   parent: LeavesCannabis
   id: LeavesCannabisWM
   components:
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        reagents:
-        - ReagentId: THCPW
-          Quantity: 10
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: THCPW
+        Quantity: 10
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 100
@@ -86,12 +85,11 @@
       - cotton
   - type: Edible
     requiresSpecialDigestion: true
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        reagents:
-        - ReagentId: FiberPW
-          Quantity: 10
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: FiberPW
+        Quantity: 10
   - type: Produce
     seedId: cottonWM
   - type: PhysicalComposition

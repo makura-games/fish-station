@@ -7,12 +7,11 @@
   description: An integrated Syndicate pAI hypospray. Regenerates combat-medicine reagents and can inject the bound owner without hands.
   categories: [ HideSpawnMenu ]
   components:
-  - type: SolutionContainerManager
-    solutions:
-      hypospray:
-        maxVol: 20
+  - type: Solution
+    id: hypospray
+    solution:
+      maxVol: 20
   - type: SolutionRegeneration
-    solution: hypospray
     duration: 2
     generated:
       reagents:
@@ -52,12 +51,11 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: SyndicatePaiAutoHypo
-  - type: SolutionContainerManager
-    solutions:
-      hypospray:
-        maxVol: 10
+  - type: Solution
+    id: hypospray
+    solution:
+      maxVol: 10
   - type: SolutionRegeneration
-    solution: hypospray
     duration: 1
     generated:
       reagents:
