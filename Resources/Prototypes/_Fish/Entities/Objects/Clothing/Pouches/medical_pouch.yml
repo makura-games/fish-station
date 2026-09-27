@@ -1,0 +1,50 @@
+- type: entity
+  parent: [BaseClothingBeltSounds, ClothingBeltStorageBase, ContentsExplosionResistanceBase]
+  id: FishPouchMedical
+  name: medical pouch
+  description: A pouch for carrying medicine bottles.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical.rsi
+    scale: 0.75, 0.75
+    layers:
+    - state: icon
+  - type: Appearance
+  - type: Item
+    size: Normal # внешний размер 2x2
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - pocket # позволяет класть подсумок в обычный карман несмотря на размер
+  - type: Storage
+    maxItemSize: Small # строго меньше Normal, иначе ремень не примет вложенную ёмкость
+    grid:
+    - 0,0,4,1 # 5x2 = 10 слотов
+    whitelist:
+      tags:
+      - Bottle
+  - type: ExplosionResistance
+    damageCoefficient: 0.01 # содержимому наносится 1% взрывного урона
+    worn: false # защита не передаётся владельцу
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - FishPouchMedical
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalParamedic
+  name: paramedic medical pouch
+  description: A red and white pouch for carrying medicine bottles.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_paramedic.rsi
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalNanotrasen
+  name: Nanotrasen medical pouch
+  description: A dark medical pouch for carrying medicine bottles. Made for professionals.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_nanotrasen.rsi

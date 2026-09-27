@@ -189,6 +189,7 @@
       - PatchPack # Sunrise-Add
       - AutoMender # Sunrise-Add
       - MedipenCase # Sunrise-Edit
+      - FishPouchMedical # Fish-edit
       components:
       - Injector
       - Pill
