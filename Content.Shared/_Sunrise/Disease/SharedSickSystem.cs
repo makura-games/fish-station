@@ -17,10 +17,10 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Shared._Sunrise.Disease;
 using Robust.Shared.Random;
-public abstract class SharedSickSystem : EntitySystem
+public abstract partial class SharedSickSystem : EntitySystem
 {
 
-    [Dependency] private readonly IRobustRandom _robustRandom = default!;
+    [Dependency] private IRobustRandom _robustRandom = default!;
     public override void Initialize()
     {
         base.Initialize();

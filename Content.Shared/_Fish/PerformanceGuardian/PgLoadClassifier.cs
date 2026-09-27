@@ -82,9 +82,9 @@ public sealed class PgLoadClassifier
         AtmosSpike = atmosActive / Math.Max(1f, _baseAtmos);
         EventSpike = eventRatePerSec / Math.Max(1f, _baseEvents);
 
-        primaryHint = ClassifyPrimary(awakeBodies, atmosActive, eventRatePerSec);
-
         var anomalous = IsAnomalous(awakeBodies, atmosActive, eventRatePerSec);
+        primaryHint = ClassifyPrimary(awakeBodies, atmosActive, eventRatePerSec, anomalous);
+
         if (!anomalous)
         {
             _confirmStreak = 0;
@@ -119,9 +119,10 @@ public sealed class PgLoadClassifier
         return pressureHit && PressureRatio >= PressureThreshold * 1.15f;
     }
 
-    public PgLoadSource ClassifyPrimary(int awakeBodies, int atmosActive, int eventRatePerSec)
+    public PgLoadSource ClassifyPrimary(int awakeBodies, int atmosActive, int eventRatePerSec, bool? isAnomalous = null)
     {
-        if (!IsAnomalous(awakeBodies, atmosActive, eventRatePerSec)
+        var anomalous = isAnomalous ?? IsAnomalous(awakeBodies, atmosActive, eventRatePerSec);
+        if (!anomalous
             && PressureRatio < 1.25f
             && AwakeSpike < 1.4f
             && AtmosSpike < 1.4f

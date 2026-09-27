@@ -1,14 +1,14 @@
-﻿using Content.Server.Hands.Systems;
+using Content.Server.Hands.Systems;
 using Content.Shared.Body.Events;
 using Content.Shared.Timing;
 using Content.Shared.Weapons.Melee.Events;
 
 namespace Content.Server._Sunrise.BloodCult.Juggernaut;
 
-public sealed class JuggernautSystem : EntitySystem
+public sealed partial class JuggernautSystem : EntitySystem
 {
-    [Dependency] private readonly HandsSystem _handsSystem = default!;
-    [Dependency] private readonly UseDelaySystem _useDelay = default!;
+    [Dependency] private HandsSystem _handsSystem = default!;
+    [Dependency] private UseDelaySystem _useDelay = default!;
 
     public override void Initialize()
     {

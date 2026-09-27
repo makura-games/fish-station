@@ -19,7 +19,6 @@
   startingGear: IAAGear
   icon: "JobIconFishIAA" #Fish-edit
   supervisors: job-supervisors-oversight #Fish-edit
-  canBeAntag: false
   displayWeight: 40
   alternativeTitles:
   - job-alt-title-inspector

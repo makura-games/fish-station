@@ -18,13 +18,13 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.Kitsune
 {
-    public sealed class KitsuneFireSystem : EntitySystem
+    public sealed partial class KitsuneFireSystem : EntitySystem
     {
-        [Dependency] private readonly DamageableSystem _damageable = default!;
-        [Dependency] private readonly IGameTiming _timing = default!;
-        [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-        [Dependency] private readonly SharedAudioSystem _audio = default!;
-        [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+        [Dependency] private DamageableSystem _damageable = default!;
+        [Dependency] private IGameTiming _timing = default!;
+        [Dependency] private SharedDoAfterSystem _doAfter = default!;
+        [Dependency] private SharedAudioSystem _audio = default!;
+        [Dependency] private SharedAppearanceSystem _appearance = default!;
 
         public override void Initialize()
         {

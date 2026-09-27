@@ -38,13 +38,7 @@
   - type: RandomHumanoidAppearance
     randomizeName: false
 
-- type: entity
-  parent: MobHumanTerminator
-  id: MobTerminatorRandomization
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: RandomHumanoidAppearance
-    randomizeName: false
+# Fish edit - удалён MobTerminatorRandomization, т.к. вся система Терминатора удалена из Sunrise
 
 # Sunrise / Extra
 - type: entity

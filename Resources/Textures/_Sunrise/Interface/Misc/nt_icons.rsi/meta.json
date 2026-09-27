@@ -263,9 +263,6 @@
       "name": "monkeycube"
     },
     {
-      "name": "mp5"
-    },
-    {
       "name": "mp7"
     },
     {
@@ -437,7 +434,17 @@
       "name": "342incendiary"
     },
     {
-      "name": "cburneva"
-    }
+      "name": "medipen_case"
+    },
+    {
+      "name": "double_tank"
+    },
+    {
+      "name": "double_tank_red"
+    },
+      {
+          "name": "cburneva"
+      }
   ]
 }
+

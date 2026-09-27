@@ -12,7 +12,7 @@
   startingGear: BlueShieldOfficerGearFish
   icon: JobIconBlueShield
   supervisors: job-supervisors-centcom
-  canBeAntag: false
+  # canBeAntag: false # Fish-edit
   access:
    - Command
    - Bar

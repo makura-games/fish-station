@@ -13,10 +13,10 @@ public sealed partial class ObrCallSystem
 {
     public static readonly ProtoId<ObrCallSettingsPrototype> DefaultSettingsId = "DefaultObrCallSettings";
 
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private IMapManager _mapManager = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     /// <summary>
     /// Ищет безопасную точку ~arrivalDistance от станции и отправляет шаттл туда через FTL (без стыковки).

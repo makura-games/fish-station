@@ -16,7 +16,6 @@
   startingGear: AdjutantGear
   icon: JobIconAdjutant
   supervisors: job-supervisors-command
-  canBeAntag: false # Fish-edit
   alternativeTitles:
   - job-alt-title-secretary
   access:

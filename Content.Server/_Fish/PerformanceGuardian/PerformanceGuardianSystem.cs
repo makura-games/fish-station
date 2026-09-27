@@ -12,16 +12,16 @@ namespace Content.Server._Fish.PerformanceGuardian;
 /// <summary>
 /// Фасад: idle-мониторинг, диагностика по инциденту/кнопке, сеть для админов.
 /// </summary>
-public sealed class PerformanceGuardianSystem : EntitySystem
+public sealed partial class PerformanceGuardianSystem : EntitySystem
 {
-    [Dependency] private readonly IAdminManager _admins = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly ISharedPlayerManager _players = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly SharedTransformSystem _xform = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly PgCollectorSystem _collector = default!;
+    [Dependency] private IAdminManager _admins = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ISharedPlayerManager _players = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private SharedTransformSystem _xform = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private PgCollectorSystem _collector = default!;
 
     private readonly HashSet<ICommonSession> _subscribers = new();
     private readonly PgLoadClassifier _classifier = new();

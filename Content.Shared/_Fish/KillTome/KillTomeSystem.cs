@@ -24,13 +24,13 @@ namespace Content.Shared._Fish.KillTome;
 // 3. Each name shall be written on a new line.
 // 4. Names must be written in the format: "Name, Delay (in seconds)" (e.g., John Doe, 40).
 // 5. A humanoid can be killed by the same Kill Tome only once.
-public sealed class KillTomeSystem : EntitySystem
+public sealed partial class KillTomeSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
-    [Dependency] private readonly DamageableSystem _damageSystem = default!;
-    [Dependency] private readonly ISharedAdminLogManager _adminLogs = default!;
-    [Dependency] private readonly NameModifierSystem _nameModifierSystem = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private SharedPopupSystem _popupSystem = default!;
+    [Dependency] private DamageableSystem _damageSystem = default!;
+    [Dependency] private ISharedAdminLogManager _adminLogs = default!;
+    [Dependency] private NameModifierSystem _nameModifierSystem = default!;
 
     /// <inheritdoc/>
     public override void Initialize()

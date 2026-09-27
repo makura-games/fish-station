@@ -26,8 +26,8 @@ public sealed class DiseaseImmuneClothingSystem : EntitySystem
         if (!isCorrectSlot)
             return;
 
-        EnsureComp<DiseaseTempImmuneComponent>(args.Equipee).Prob += component.Prob;
-        if (Comp<DiseaseTempImmuneComponent>(args.Equipee).Prob > 1) Comp<DiseaseTempImmuneComponent>(args.Equipee).Prob = 1;
+        EnsureComp<DiseaseTempImmuneComponent>(args.EquipTarget).Prob += component.Prob;
+        if (Comp<DiseaseTempImmuneComponent>(args.EquipTarget).Prob > 1) Comp<DiseaseTempImmuneComponent>(args.EquipTarget).Prob = 1;
 
         component.IsActive = true;
     }
@@ -37,8 +37,8 @@ public sealed class DiseaseImmuneClothingSystem : EntitySystem
         if (!component.IsActive)
             return;
 
-        EnsureComp<DiseaseTempImmuneComponent>(args.Equipee).Prob -= component.Prob;
-        if (Comp<DiseaseTempImmuneComponent>(args.Equipee).Prob < 0) Comp<DiseaseTempImmuneComponent>(args.Equipee).Prob = 0;
+        EnsureComp<DiseaseTempImmuneComponent>(args.EquipTarget).Prob -= component.Prob;
+        if (Comp<DiseaseTempImmuneComponent>(args.EquipTarget).Prob < 0) Comp<DiseaseTempImmuneComponent>(args.EquipTarget).Prob = 0;
 
         component.IsActive = false;
     }

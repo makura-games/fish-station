@@ -50,7 +50,7 @@
 - type: storytellerMetadata
   id: GiftsSecurityGuns
   threatType: Neutral
-  threatCost: 5
+  threatCost: 0
   maxStress: 100
 
 - type: storytellerMetadata
@@ -62,7 +62,7 @@
 - type: storytellerMetadata
   id: GiftsAncientGuns
   threatType: Neutral
-  threatCost: 5
+  threatCost: 0
   maxStress: 100
 
 - type: storytellerMetadata
@@ -116,8 +116,6 @@
   threatType: Neutral
   threatCost: 5
   maxStress: 100
-
-# Fish-edit: SnailMigrationLowPop убран из рассказчика — на хайпопе дублировал SnailMigration
 
 - type: storytellerMetadata
   id: MimicVendorRule
@@ -312,19 +310,19 @@
   maxStress: 90
 
 - type: storytellerMetadata
-  id: GameRuleSpaceDustMinor
+  id: SpaceDustMinor
   threatType: MinorCalm
   threatCost: 5
   maxStress: 80
 
 - type: storytellerMetadata
-  id: GameRuleSpaceDustMajor
+  id: SpaceDustMajor
   threatType: MinorCalm
   threatCost: 10
   maxStress: 80
 
 - type: storytellerMetadata
-  id: GameRuleMeteorSwarmSmall
+  id: MeteorSwarmSmall
   threatType: MinorCalm
   threatCost: 20
   maxStress: 70
@@ -422,14 +420,14 @@
   maxStress: 70
 
 - type: storytellerMetadata
-  id: GameRuleMeteorSwarmMedium
+  id: MeteorSwarmMedium
   threatType: MajorCalm
   threatCost: 90
   minStationStrength: 10
   maxStress: 80
 
 - type: storytellerMetadata
-  id: GameRuleMeteorSwarmLarge
+  id: MeteorSwarmLarge
   threatType: MajorCalm
   threatCost: 110
   minStationStrength: 15
@@ -492,7 +490,7 @@
   threatCost: 30
   maxStress: 80
   minStationStrength: 0
-  weightModifier: 1.5
+  weightModifier: 2.0
 
 - type: storytellerMetadata
   id: SpiderClownSpawnHorde

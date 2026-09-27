@@ -352,8 +352,9 @@
     weightless: True
   - type: IntrinsicRadioReceiver
   - type: Damageable
-    damageContainer: Inorganic
     damageModifierSet: DronShockWeaknessWM
+  - type: Injurable
+    damageContainer: Inorganic
   - type: PlanetWarStunDrone
   # FIsh edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
   - type: ContainerContainer

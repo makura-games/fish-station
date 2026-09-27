@@ -9,7 +9,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Zenthium: 1871.71051 # Zenthium
@@ -51,7 +51,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Krypium: 1871.71051 # Krypium
@@ -93,7 +93,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Prallium: 1871.71051 # Prallium
@@ -135,7 +135,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Chaoson: 1871.71051 # Chaoson
@@ -177,7 +177,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Garodin: 1871.71051 # Garodin
@@ -219,7 +219,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Baratrium: 1871.71051 # Baratrium
@@ -261,7 +261,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Ethylium: 1871.71051 # Ethylium
@@ -303,7 +303,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Zimmera: 1871.71051 # Zimmera
@@ -345,7 +345,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Framel: 1871.71051 # Framel
@@ -387,7 +387,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Klemennon: 1871.71051 # Klemennon
@@ -429,7 +429,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         ProtoUltimium: 1871.71051 # Proto-Ultimium
@@ -471,7 +471,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         ZimmerousFrezonite: 1871.71051 # ZimmerousFrezonite
@@ -513,7 +513,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         AntiUltimium: 1871.71051 # AntiUltimium
@@ -555,7 +555,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Ultimium: 1871.71051 # Ultimium
@@ -597,7 +597,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Permafrost: 1871.71051 # Permafrost
@@ -639,7 +639,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Permafrost: 1000 # Permafrost
@@ -681,7 +681,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         Riminon: 1871.71051 # Riminon
@@ -723,7 +723,7 @@
     layers:
     - state: nitrium
   - type: GasCanister
-    gasMixture:
+    air:
       volume: 1000
       moles:
         AxoNoblium: 1871.71051 # AxoNoblium

@@ -14,7 +14,7 @@ public sealed partial class EmergencyLightSystem
      * Emergency-light updates for the highest-priority active alert level.
      */
 
-    [Dependency] private readonly AlertLevelSystem _alertLevel = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!;
 
     private void OnAdditionalAlertLevelChanged(AdditionalAlertLevelChangedEvent ev)
     {

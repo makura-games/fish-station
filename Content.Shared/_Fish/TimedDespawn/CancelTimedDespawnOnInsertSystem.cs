@@ -7,9 +7,9 @@ namespace Content.Shared._Fish.TimedDespawn;
 /// <summary>
 /// Общий механизм отмены TimedDespawn при подборе предмета.
 /// </summary>
-public sealed class CancelTimedDespawnOnInsertSystem : EntitySystem
+public sealed partial class CancelTimedDespawnOnInsertSystem : EntitySystem
 {
-    [Dependency] private readonly SharedContainerSystem _container = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
 
     public override void Initialize()
     {

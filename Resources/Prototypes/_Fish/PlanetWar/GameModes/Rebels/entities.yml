@@ -370,6 +370,13 @@
   parent: MarkerBase
   id: MarkerStartItemGatewayArm
   components:
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape:
+            !type:PhysShapeAabb
+            bounds: "-0.5,-0.5,0.5,0.5"
+          hard: false
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: true
       table: !type:AllSelector

@@ -9,10 +9,10 @@ namespace Content.Client._Fish.Clothing;
 /// <summary>
 /// Manages the visor overlay for the local player.
 /// </summary>
-public sealed class VisorOverlaySystem : EntitySystem
+public sealed partial class VisorOverlaySystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private IOverlayManager _overlayManager = default!;
+    [Dependency] private IPlayerManager _player = default!;
 
     private VisorOverlay _overlay = default!;
     private bool _enabled;

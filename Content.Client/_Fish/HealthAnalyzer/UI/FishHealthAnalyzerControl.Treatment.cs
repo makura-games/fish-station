@@ -221,6 +221,8 @@ public sealed partial class FishHealthAnalyzerControl
         if (!_entityManager.TryGetComponent<DamageableComponent>(target, out var damageable))
             return false;
 
+        _entityManager.TryGetComponent<InjurableComponent>(target, out var injurable);
+
         var bleedingCovered = false;
         foreach (var item in MinorInjuryTreatments)
         {
@@ -228,8 +230,8 @@ public sealed partial class FishHealthAnalyzerControl
                 !prototype.TryGetComponent<HealingComponent>(out var healing, _entityManager.ComponentFactory))
                 continue;
 
-            if (healing.DamageContainers != null && damageable.DamageContainerID is { } container &&
-                !healing.DamageContainers.Contains(container))
+            if (healing.DamageContainers != null &&
+                (injurable?.DamageContainer is not { } container || !healing.DamageContainers.Contains(container)))
                 continue;
 
             var conditions = new List<string>();

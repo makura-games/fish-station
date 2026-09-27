@@ -8,9 +8,7 @@ using Robust.Shared.Player;
 
 namespace Content.Client.Audio;
 
-// FIsh edit start - делаем класс partial для выноса Fish-логики
 public sealed partial class ClientGlobalSoundSystem : SharedGlobalSoundSystem
-// FIsh edit end
 {
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

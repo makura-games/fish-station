@@ -19,7 +19,6 @@
   startingGear: CMOGear
   icon: "JobIconChiefMedicalOfficer"
   supervisors: job-supervisors-captain
-  canBeAntag: false # Fish-edit
   radioBold: true # Sunrise-Edit
   displayWeight: 60 # Sunrise-Edit
   # Sunrise-Start

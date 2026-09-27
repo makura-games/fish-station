@@ -8,12 +8,12 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.PlanetWar;
 
-public sealed class PlanetWarVulpkaninRuleSystem : GameRuleSystem<PlanetWarVulpkaninRuleComponent>
+public sealed partial class PlanetWarVulpkaninRuleSystem : GameRuleSystem<PlanetWarVulpkaninRuleComponent>
 {
-    [Dependency] private readonly HumanoidProfileSystem _humanoidProfile = default!;
-    [Dependency] private readonly SharedVisualBodySystem _visualBody = default!;
-    [Dependency] private readonly SunriseHumanoidProfileSystem _sunriseProfile = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
+    [Dependency] private HumanoidProfileSystem _humanoidProfile = default!;
+    [Dependency] private SharedVisualBodySystem _visualBody = default!;
+    [Dependency] private SunriseHumanoidProfileSystem _sunriseProfile = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
 
     public override void Update(float frameTime)
     {

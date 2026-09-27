@@ -11,15 +11,15 @@ using Robust.Shared.Timing;
 namespace Content.Client._Fish.PerformanceGuardian;
 
 [UsedImplicitly]
-public sealed class PerformanceGuardianUIController : UIController,
+public sealed partial class PerformanceGuardianUIController : UIController,
     IOnStateEntered<GameplayState>,
     IOnStateExited<GameplayState>,
     IOnSystemChanged<PerformanceGuardianSystem>
 {
-    [Dependency] private readonly IClientAdminManager _admin = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IConsoleHost _con = default!;
+    [Dependency] private IClientAdminManager _admin = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IConsoleHost _con = default!;
 
     private PerformanceGuardianWindow? _window;
     private PerformanceGuardianSystem? _system;

@@ -8,10 +8,10 @@ namespace Content.Server._Fish.Singularity;
 /// Sends a one-shot admin alert when a containment field generator discharges to 50% or below.
 /// Re-alerts only after the charge recovers above the threshold and drops again.
 /// </summary>
-public sealed class ContainmentFieldAdminAlertSystem : EntitySystem
+public sealed partial class ContainmentFieldAdminAlertSystem : EntitySystem
 {
-    [Dependency] private readonly IChatManager _chat = default!;
-    [Dependency] private readonly SharedStationSystem _station = default!;
+    [Dependency] private IChatManager _chat = default!;
+    [Dependency] private SharedStationSystem _station = default!;
 
     private readonly HashSet<EntityUid> _wasAboveThreshold = new();
     private readonly HashSet<EntityUid> _alertedLowCharge = new();

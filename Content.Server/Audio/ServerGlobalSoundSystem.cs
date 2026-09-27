@@ -7,9 +7,7 @@ using Robust.Shared.Player;
 
 namespace Content.Server.Audio;
 
-// FIsh edit start - делаем класс partial для выноса Fish-логики
 public sealed partial class ServerGlobalSoundSystem : SharedGlobalSoundSystem
-// FIsh edit end
 {
     [Dependency] private IConsoleHost _conHost = default!;
     [Dependency] private StationSystem _stationSystem = default!;

@@ -10,7 +10,6 @@
   joinNotifyCrew: true
   radioBold: true
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   accessGroups: # Fish-edit
   - AllAccess
   alternativeTitles:

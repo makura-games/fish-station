@@ -4,10 +4,10 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.PlanetWar;
 
-public sealed class PlanetWarGuideSystem : EntitySystem
+public sealed partial class PlanetWarGuideSystem : EntitySystem
 {
-    [Dependency] private readonly GuidebookSystem _guidebookSystem = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private GuidebookSystem _guidebookSystem = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public override void Initialize()
     {

@@ -36,21 +36,21 @@ using Content.Server._Sunrise.Misc.ShiftedAsciiTableAccent;
 
 namespace Content.Server._Sunrise.Disease;
 
-public sealed class SickSystem : SharedSickSystem
+public sealed partial class SickSystem : SharedSickSystem
 {
-    [Dependency] private readonly AutoEmoteSystem _autoEmote = default!;
-    [Dependency] private readonly StoreSystem _store = default!;
-    [Dependency] private readonly IRobustRandom _robustRandom = default!;
-    [Dependency] private readonly IServerEntityManager _entityManager = default!;
-    [Dependency] private readonly VomitSystem _vomitSystem = default!;
-    [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly DamageableSystem _damageableSystem = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private AutoEmoteSystem _autoEmote = default!;
+    [Dependency] private StoreSystem _store = default!;
+    [Dependency] private IRobustRandom _robustRandom = default!;
+    [Dependency] private IServerEntityManager _entityManager = default!;
+    [Dependency] private VomitSystem _vomitSystem = default!;
+    [Dependency] private BloodstreamSystem _bloodstream = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private PopupSystem _popupSystem = default!;
+    [Dependency] private DamageableSystem _damageableSystem = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private InventorySystem _inventory = default!;
     private EntityLookupSystem Lookup => _entityManager.System<EntityLookupSystem>();
 
     [ValidatePrototypeId<DamageTypePrototype>] private const string HeatDamage = "Heat";
@@ -402,7 +402,7 @@ public sealed class SickSystem : SharedSickSystem
             return;
 
         // uid - цель обнимания (target), args.User - инициатор (initiator)
-        
+
         // 1. Цель (uid) больна, инициатор (args.User) здоров. Цель заражает инициатора.
         if (TryComp<SickComponent>(uid, out var sickTarget))
         {

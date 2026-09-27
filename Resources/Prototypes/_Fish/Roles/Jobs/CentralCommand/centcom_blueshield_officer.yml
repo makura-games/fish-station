@@ -15,7 +15,7 @@
 
   overrideConsoleVisibility: false
   supervisors: job-supervisors-centcom
-  canBeAntag: false
+  # canBeAntag: false # Fish-edit
   alwaysUseSpawner: true
   accessGroups:
   - AllAccess

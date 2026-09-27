@@ -13,11 +13,11 @@ namespace Content.Server._Fish.Achievements;
 /// Админ-команда для ручных/особых достижений.
 /// </summary>
 [AdminCommand(AdminFlags.Admin)]
-public sealed class AchievementGrantCommand : IConsoleCommand
+public sealed partial class AchievementGrantCommand : IConsoleCommand
 {
-    [Dependency] private readonly AchievementManager _achievements = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private AchievementManager _achievements = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
     public string Command => "achgrant";
     public string Description => "Выдать достижение игроку (admin).";

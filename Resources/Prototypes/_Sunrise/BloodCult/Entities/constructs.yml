@@ -37,6 +37,7 @@
           layer:
             - FlyingMobLayer
     - type: Damageable
+    - type: Injurable
       damageContainer: Biological
     - type: BecomeDustOnDeath
     - type: MobThresholds
@@ -79,7 +80,6 @@
   description: big and scary
   components:
     - type: Damageable
-      damageContainer: Biological
       damageModifierSet: BloodCultJuggernautModifierSet
     - type: Fixtures
       fixtures:
@@ -102,7 +102,7 @@
       baseSprintSpeed: 3.5
     - type: FootstepModifier
       footstepSoundCollection:
-        collection: FootstepHeavy
+        collection: FootstepThud
     - type: Construct
       actions: [JuggernautCreateWall]
     - type: Hands

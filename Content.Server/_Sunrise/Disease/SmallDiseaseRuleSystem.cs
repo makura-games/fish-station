@@ -15,11 +15,11 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Sunrise.Disease;
 
-public sealed class SmallDiseaseRuleSystem : GameRuleSystem<SmallDiseaseRuleComponent>
+public sealed partial class SmallDiseaseRuleSystem : GameRuleSystem<SmallDiseaseRuleComponent>
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly ChatSystem _chatSystem = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private ChatSystem _chatSystem = default!;
 
     public override void Initialize()
     {

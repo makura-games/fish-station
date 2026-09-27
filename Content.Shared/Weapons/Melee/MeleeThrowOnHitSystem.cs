@@ -17,7 +17,6 @@ public sealed partial class MeleeThrowOnHitSystem : EntitySystem
     [Dependency] private UseDelaySystem _delay = default!;
     [Dependency] private SharedStunSystem _stun = default!;
     [Dependency] private ThrowingSystem _throwing = default!;
-
     /// <inheritdoc/>
     public override void Initialize()
     {

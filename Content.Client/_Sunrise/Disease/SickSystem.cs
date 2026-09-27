@@ -9,11 +9,11 @@ using Robust.Shared.Prototypes;
 using Content.Shared._Sunrise.Disease;
 using Content.Shared.Ghost;
 namespace Content.Client._Sunrise.Disease;
-public sealed class SickSystem : EntitySystem
+public sealed partial class SickSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
     public override void Initialize()
     {
         base.Initialize();

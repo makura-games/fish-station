@@ -4,10 +4,10 @@ using Robust.Shared.Timing;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 
-public sealed class DiseaseVaccineTimerSystem : SharedSickSystem
+public sealed partial class DiseaseVaccineTimerSystem : SharedSickSystem
 {
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _movementSpeed = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private MovementSpeedModifierSystem _movementSpeed = default!;
     public override void Initialize()
     {
         base.Initialize();

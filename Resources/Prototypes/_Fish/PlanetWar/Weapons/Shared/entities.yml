@@ -1066,17 +1066,17 @@
         Asphyxiation: -100
         Cellular: -50
         Mangleness: -30
-  - type: SolutionContainerManager
-    solutions:
-      ammo:
-        maxVol: 50
-        reagents:
-        - ReagentId: OmnizinePW
-          Quantity: 20
-        - ReagentId: EphedrinePW
-          Quantity: 5
-        - ReagentId: EpinephrinePW
-          Quantity: 5
+  - type: Solution
+    id: ammo
+    solution:
+      maxVol: 50
+      reagents:
+      - ReagentId: OmnizinePW
+        Quantity: 20
+      - ReagentId: EphedrinePW
+        Quantity: 5
+      - ReagentId: EpinephrinePW
+        Quantity: 5
   - type: RefillableSolution
     solution: ammo
   - type: InjectableSolution

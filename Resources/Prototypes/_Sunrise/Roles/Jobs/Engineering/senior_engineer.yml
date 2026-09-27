@@ -18,7 +18,7 @@
   icon: "JobIconSeniorEngineer"
   supervisors: job-supervisors-ce
   displayWeight: 30
-  canBeAntag: false # Fish-edit
+  # canBeAntag: false # Fish-edit
   alternativeTitles:
   - job-alt-title-foreman
   - job-alt-title-brigadier

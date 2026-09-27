@@ -12,8 +12,8 @@ namespace Content.Server._Fish.Achievements;
 
 public sealed partial class AchievementConditionSystem
 {
-    [Dependency] private readonly ITileDefinitionManager _tileDefinitionManager = default!;
-    [Dependency] private readonly SharedToolSystem _tools = default!;
+    [Dependency] private ITileDefinitionManager _tileDefinitionManager = default!;
+    [Dependency] private SharedToolSystem _tools = default!;
 
     private static readonly ProtoId<ToolQualityPrototype> PryingQuality = "Prying";
 

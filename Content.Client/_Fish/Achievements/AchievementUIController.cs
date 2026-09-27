@@ -13,17 +13,17 @@ namespace Content.Client._Fish.Achievements;
 /// <summary>
 /// Единый контроллер окна достижений для Lobby и ESC.
 /// </summary>
-public sealed class AchievementUIController :
+public sealed partial class AchievementUIController :
     UIController,
     IOnStateEntered<LobbyState>,
     IOnStateEntered<GameplayState>,
     IOnStateExited<LobbyState>,
     IOnStateExited<GameplayState>
 {
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IEntitySystemManager _systems = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IUserInterfaceManager _ui = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private AchievementWindow? _window;
     private FishAchievementToastHost? _toastHost;

@@ -13,8 +13,8 @@ namespace Content.Client._Fish.RoundEnd
     [GenerateTypedNameReferences]
     public sealed partial class NoEorgPopup : FancyWindow
     {
-        [Dependency] private readonly IConfigurationManager _cfg = default!;
-        [Dependency] private readonly IUriOpener _uri = default!;
+        [Dependency] private IConfigurationManager _cfg = default!;
+        [Dependency] private IUriOpener _uri = default!;
 
         private float _remainingTime;
 

@@ -11,7 +11,7 @@ namespace Content.Client._Fish.PerformanceGuardian;
 [GenerateTypedNameReferences]
 public sealed partial class PerformanceGuardianWindow : DefaultWindow
 {
-    [Dependency] private readonly IConsoleHost _console = default!;
+    [Dependency] private IConsoleHost _console = default!;
 
     public event Action? RefreshPressed;
     public event Action? DiagnosePressed;

@@ -10,7 +10,7 @@ namespace Content.Server._Fish.Achievements;
 
 public sealed partial class AchievementConditionSystem
 {
-    [Dependency] private readonly SharedObjectivesSystem _objectives = default!;
+    [Dependency] private SharedObjectivesSystem _objectives = default!;
 
     private async void ProcessRoundEndObjectives(RoundEndMessageEvent ev)
     {

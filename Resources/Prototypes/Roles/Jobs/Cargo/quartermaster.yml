@@ -17,7 +17,6 @@
   startingGear: QuartermasterGear
   icon: "JobIconQuarterMaster"
   supervisors: job-supervisors-captain
-  canBeAntag: false # Fish-edit
   radioBold: true # Sunrise-Edit
   displayWeight: 40  # Sunrise-Edit
   # Sunrise-Start

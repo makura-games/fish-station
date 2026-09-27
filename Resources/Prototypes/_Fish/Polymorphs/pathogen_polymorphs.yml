@@ -208,18 +208,6 @@
     revertOnDelete: true
     allowRepeatedMorphs: true
 
-- type: polymorph
-  id: PathogenPolymorphTerminator
-  configuration:
-    entity: MobTerminatorRandomization
-    forced: true
-    transferDamage: true
-    transferName: true
-    inventory: Transfer
-    revertOnDeath: true
-    revertOnCrit: false
-    revertOnDelete: true
-    allowRepeatedMorphs: true
 
 - type: polymorph
   id: PathogenPolymorphAbductor
