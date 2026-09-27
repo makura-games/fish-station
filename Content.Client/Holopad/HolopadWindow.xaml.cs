@@ -43,6 +43,11 @@ public sealed partial class HolopadWindow : FancyWindow
     public event Action? SendHolopadActivateProjectorMessageAction;
     public event Action? SendHolopadRequestStationAiMessageAction;
 
+    /// <summary>
+    /// Ручное завершение трансляции с транслирующего голопада. fish-edit
+    /// </summary>
+    public event Action? SendRemoteHolopadStopBroadcastMessageAction;
+
     public HolopadWindow()
     {
         RobustXamlLoader.Load(this);
@@ -61,11 +66,13 @@ public sealed partial class HolopadWindow : FancyWindow
         StartBroadcastButton.OnPressed += args => { OnHolopadStartBroadcastMessage(); };
         ActivateProjectorButton.OnPressed += args => { OnHolopadActivateProjectorMessage(); };
         RequestStationAiButton.OnPressed += args => { OnHolopadRequestStationAiMessage(); };
+        StopBroadcastButton.OnPressed += args => { SendRemoteHolopadStopBroadcastMessageAction?.Invoke(); }; //fish-edit
 
         // XML formatting
         AnswerCallButton.AddStyleClass("ButtonAccept");
         EndCallButton.AddStyleClass("Caution");
         StartBroadcastButton.AddStyleClass("Caution");
+        StopBroadcastButton.AddStyleClass("Caution"); //fish-edit
 
         HolopadContactListPanel.PanelOverride = new StyleBoxFlat
         {
@@ -290,13 +297,17 @@ public sealed partial class HolopadWindow : FancyWindow
         StartBroadcastButton.Disabled = (_currentState != TelephoneState.Idle || !hasBroadcastAccess || lockButtons);
         RequestStationAiButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
         ActivateProjectorButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
+        StopBroadcastButton.Disabled = (_currentState != TelephoneState.InCall || lockButtons); //fish-edit
 
         // Update control visibility
+        var isTransmitter = _entManager.HasComponent<RemoteHolopadTransmitterComponent>(_owner.Value); //fish-edit
+
         FetchingAvailableHolopadsContainer.Visible = (ContactsList.ChildCount == 0);
         ActiveCallControlsContainer.Visible = (_currentState != TelephoneState.Idle || _currentUiKey == HolopadUiKey.AiRequestWindow);
         CallPlacementControlsContainer.Visible = !ActiveCallControlsContainer.Visible;
         CallerIdContainer.Visible = (_currentState == TelephoneState.Ringing);
         AnswerCallButton.Visible = (_currentState == TelephoneState.Ringing);
+        RemoteBroadcastContainer.Visible = isTransmitter && _currentState == TelephoneState.InCall; //fish-edit
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
