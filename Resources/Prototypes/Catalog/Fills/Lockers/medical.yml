@@ -45,6 +45,7 @@
     children:
     - id: ClothingEyesHudMedical
     - id: ClothingBeltMedicalFilled
+    - id: FishPouchMedical # Fish-edit
     - id: JetInjector
     - id: MedipenCaseMedic # Sunrise-edit
     - id: HandheldHealthAnalyzer
@@ -123,6 +124,7 @@
     - id: ClothingEyesHudMedical
     - id: ClothingOuterHardsuitVoidParamed
     - id: ClothingBeltMedicalEMTFilled
+    - id: FishPouchMedicalParamedic # Fish-edit
     - id: JetInjector
     - id: MedipenCaseParamedic # Sunrise-edit
     - id: HandheldHealthAnalyzer
