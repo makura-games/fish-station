@@ -464,6 +464,7 @@
   - VialBluespace # Sunrise-Add
   - BluespacePillPatchCanister # Sunrise-Add
   - JugBluespace # Sunrise-Add
+  - FishPouchMedicalBluespace # Fish-edit
   radioChannels:
   - Medical
 

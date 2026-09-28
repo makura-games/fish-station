@@ -26,10 +26,6 @@
   - type: ExplosionResistance
     damageCoefficient: 0.01 # содержимому наносится 1% взрывного урона
     worn: false # защита не передаётся владельцу
-  - type: Tag
-    tags:
-    - WhitelistChameleon
-    - FishPouchMedical
 
 - type: entity
   parent: FishPouchMedical
@@ -48,3 +44,50 @@
   components:
   - type: Sprite
     sprite: _Fish/Objects/Clothing/Pouches/medical_nanotrasen.rsi
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - FishPouchMedical
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalBrigmedic
+  name: brigmedic medical pouch
+  description: A pouch for carrying medicine bottles, issued to brigmedics.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_brigmedic.rsi
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalBluespace
+  name: bluespace medical pouch
+  description: A compact pouch for medicine bottles. Bluespace technology provides more room than its exterior suggests.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_bluespace.rsi
+    scale: 1, 1
+  - type: Item
+    size: Small
+    shape:
+    - 0,0,0,1
+  - type: Storage
+    grid:
+    - 0,0,4,2
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - FishPouchMedical
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalSyndicate
+  name: syndicate medical pouch
+  description: A dark red pouch for carrying medicine bottles.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_syndicate.rsi
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - FishPouchMedical

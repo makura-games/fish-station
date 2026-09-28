@@ -14,6 +14,7 @@
         - id: HandheldBSOCrewMonitor
         - id: WeaponMultiphaseGun
         - id: MedipenCaseBlueShield
+        - id: FishPouchMedicalNanotrasen # Fish edit
 
 - type: entity
   id: LockerBlueshieldFilledHardsuit
@@ -33,3 +34,4 @@
         - id: ClothingOuterHardsuitBlueShield
         - id: OxygenTankFilled
         - id: MedipenCaseBlueShield
+        - id: FishPouchMedicalNanotrasen # Fish edit

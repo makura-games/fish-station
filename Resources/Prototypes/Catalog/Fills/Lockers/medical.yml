@@ -45,7 +45,6 @@
     children:
     - id: ClothingEyesHudMedical
     - id: ClothingBeltMedicalFilled
-    - id: FishPouchMedical # Fish-edit
     - id: JetInjector
     - id: MedipenCaseMedic # Sunrise-edit
     - id: HandheldHealthAnalyzer

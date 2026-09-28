@@ -228,6 +228,7 @@
   id: LockerFillChiefMedicalOfficerNoHardsuit
   table: !type:AllSelector
     children:
+    - id: FishPouchMedical # Fish-edit
     - id: ClothingEyesHudMedical
     - id: ClothingBeltMedicalFilled
     - id: HandheldCrewMonitor

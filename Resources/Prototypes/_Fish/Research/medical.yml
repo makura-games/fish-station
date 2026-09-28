@@ -1,0 +1,11 @@
+- type: technology
+  id: FishMedicalPouches
+  name: research-technology-fish-medical-pouches
+  icon:
+    sprite: _Fish/Objects/Clothing/Pouches/medical.rsi
+    state: icon
+  discipline: Biochemical
+  tier: 2
+  cost: 8000
+  recipeUnlocks:
+  - FishPouchMedical

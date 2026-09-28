@@ -114,6 +114,7 @@
   id: FillLockerBrigmedic
   table: !type:AllSelector
     children:
+    - id: FishPouchMedicalBrigmedic # Fish-edit
     - id: ClothingEyesGlassesSecurity
     - id: WeaponTaser
     - id: BoxBeaker # Sunrise-edit

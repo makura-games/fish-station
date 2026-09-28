@@ -7,6 +7,7 @@
     containers:
       entity_storage: !type:AllSelector
         children:
+        - id: FishPouchMedicalBrigmedic # Fish-edit
         - id: WeaponDisabler
           amount: 2
         - id: SecurityMedkit
