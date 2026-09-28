@@ -1,0 +1,31 @@
+- type: listing
+  id: FishUplinkMedicalPouch
+  productEntity: FishPouchMedicalSyndicate
+  cost:
+    Telecrystal: 3
+  categories:
+  - UplinkChemicals
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+      - LoneOpsUplink
+      - AssaultOpsUplink
+
+- type: listing
+  id: FishUplinkMedicalPouchOperatives
+  productEntity: FishPouchMedicalSyndicate
+  categories:
+  - UplinkChemicals
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - NukeOpsUplink
+      - LoneOpsUplink
+      - AssaultOpsUplink

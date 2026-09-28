@@ -83,10 +83,13 @@
   parent: FishPouchMedical
   id: FishPouchMedicalSyndicate
   name: syndicate medical pouch
-  description: A dark red pouch for carrying medicine bottles.
+  description: A blood-red pouch for carrying medicine bottles and more.
   components:
   - type: Sprite
     sprite: _Fish/Objects/Clothing/Pouches/medical_syndicate.rsi
+  - type: Storage
+    grid:
+    - 0,0,7,1 # 8 столбцов и 2 строки = 16 ячеек, горизонтально
   - type: Tag
     tags:
     - WhitelistChameleon

@@ -383,6 +383,7 @@
     - CrowbarRed
     - PowerCellHigh
     - MedipenCaseERTMedic
+    - FishPouchMedicalNanotrasen # Fish-edit: подсумок медика ОБР «Амбер»
 
 - type: startingGear
   id: ERTMedicalGearGamma
@@ -414,6 +415,7 @@
     - ChemistryBottleOmnizine
     - CrowbarRed
     - MedipenCaseERTMedic
+    - FishPouchMedicalBluespace # Fish-edit: подсумок медика ОБР «Красный»
 
 # Janitor
 

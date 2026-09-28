@@ -14,4 +14,4 @@ ent-FishPouchMedicalBluespace = bluespace medical pouch
     .desc = A compact pouch for medicine bottles. Bluespace technology provides more room than its exterior suggests.
 
 ent-FishPouchMedicalSyndicate = syndicate medical pouch
-    .desc = A dark red pouch for carrying medicine bottles.
+    .desc = A blood-red pouch for carrying medicine bottles and more.
