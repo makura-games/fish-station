@@ -1,3 +1,4 @@
+# Базовые варианты носятся в карманах; доступ в медицинские пояса даёт только тег FishPouchMedical у отдельных вариантов.
 - type: entity
   parent: [BaseClothingBeltSounds, ClothingBeltStorageBase, ContentsExplosionResistanceBase]
   id: FishPouchMedical
@@ -22,7 +23,8 @@
     - 0,0,4,1 # 5x2 = 10 слотов
     whitelist:
       tags:
-      - Bottle
+      - Bottle # используется общий тег флаконов, а не проверка содержащихся в них реагентов
+  # Защита распространяется на содержимое без передачи владельцу; Damageable самому подсумку не добавляется.
   - type: ExplosionResistance
     damageCoefficient: 0.01 # содержимому наносится 1% взрывного урона
     worn: false # защита не передаётся владельцу
@@ -46,7 +48,7 @@
     sprite: _Fish/Objects/Clothing/Pouches/medical_nanotrasen.rsi
   - type: Tag
     tags:
-    - WhitelistChameleon
+    - WhitelistChameleon # сохраняем тег одежды при переопределении списка тегов
     - FishPouchMedical
 
 - type: entity
@@ -70,10 +72,10 @@
   - type: Item
     size: Small
     shape:
-    - 0,0,0,1
+    - 0,0,0,1 # внешний размер 1 столбец на 2 строки не зависит от размера кадра спрайта
   - type: Storage
     grid:
-    - 0,0,4,2
+    - 0,0,4,2 # внутреннее хранилище: 5 столбцов и 3 строки, 15 ячеек по горизонтали
   - type: Tag
     tags:
     - WhitelistChameleon

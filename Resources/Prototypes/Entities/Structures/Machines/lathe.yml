@@ -541,7 +541,7 @@
     - Chemistry
     - SurgeryDynamicSunrise # Sunrise-Add
     - MedicalDynamicSunrise # Sunrise-Add
-    - FishMedicalPouchesDynamic # Fish-edit
+    - FishMedicalPouchesDynamic # Fish-edit: рецепты подсумков открываются исследованиями T2 и T3
     - MedicalCyberlimbDynamic # Sunrise-Add
     - MedicalCyberOrgansDynamic # Sunrise-Add
     - MedicalImplantDynamic # Sunrise-Add

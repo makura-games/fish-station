@@ -225,7 +225,7 @@
       - PatchPack # Sunrise-Add
       - AutoMender # Sunrise-Add
       - MedipenCase # Sunrise-Edit
-      - FishPouchMedical # Fish-edit
+      - FishPouchMedical # Fish-edit: только варианты НаноТрейзен, блюспейс и Синдиката имеют этот тег
       components:
       - Injector
       - Pill

@@ -464,7 +464,7 @@
   - VialBluespace # Sunrise-Add
   - BluespacePillPatchCanister # Sunrise-Add
   - JugBluespace # Sunrise-Add
-  - FishPouchMedicalBluespace # Fish-edit
+  - FishPouchMedicalBluespace # Fish-edit: блюспейс-подсумок доступен на мед-фабе после T3 «Блюспейс-химия»
   radioChannels:
   - Medical
 
