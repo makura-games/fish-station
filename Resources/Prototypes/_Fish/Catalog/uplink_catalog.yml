@@ -16,11 +16,12 @@
       - LoneOpsUplink
       - AssaultOpsUplink
 
-# Ядерным оперативникам (включая одиночных) и диверсионному отряду подсумок намеренно выдаётся бесплатно.
+# Ядерным оперативникам (включая одиночных) и диверсионному отряду подсумок дешевле за 1 ТК.
 - type: listing
   id: FishUplinkMedicalPouchOperatives
   productEntity: FishPouchMedicalSyndicate
-  # cost намеренно отсутствует: пустая стоимость отображается как «Бесплатно», а Telecrystal: 0 — как «0 ТК».
+  cost:
+    Telecrystal: 1
   categories:
   - UplinkChemicals
   conditions:
