@@ -708,3 +708,12 @@
   url: https://github.com/makura-games/fish-station/pull/471
   media:
   - url: https://github.com/user-attachments/assets/5779808e-b0c3-4145-9d47-02ce3e365af7
+- author: dan4ikk3
+  time: '2026-09-29T07:35:39.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен продвинутый голопад, работающий отдельно от обычной сети голопадов. Позвонив с него, напрямую видно и слышно всё происходящее вокруг приёмника в реальном времени.
+  id: 70
+  url: https://github.com/makura-games/fish-station/pull/469
+  media:
+  - url: https://github.com/user-attachments/assets/d725c3e1-bb75-47d4-8f0e-8a66d3226313
