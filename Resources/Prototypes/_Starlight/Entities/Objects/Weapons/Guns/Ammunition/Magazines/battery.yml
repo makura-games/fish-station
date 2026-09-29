@@ -15,7 +15,7 @@
     whitelist:
       tags:
         - CartridgeBattery
-    capacity: 16 # Fish-edit
+    capacity: 18 # Fish-edit
   - type: ContainerContainer
     containers:
       ballistic-ammo: !type:Container
@@ -58,7 +58,7 @@
   components:
   - type: BallisticAmmoProvider
     proto: CartridgeBattery
-    capacity: 32  # Fish-edit
+    capacity: 36  # Fish-edit
   - type: Sprite
     layers:
     - state: base
