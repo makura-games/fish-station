@@ -1,0 +1,48 @@
+- type: latheRecipe
+  id: FishWeaponLauncherHydraCleanade
+  result: FishWeaponLauncherHydraCleanade
+  completetime: 8
+  materials:
+    Steel: 3000
+    Plastic: 1500
+
+- type: latheRecipe
+  id: GrenadeCleanade
+  result: GrenadeCleanade
+  categories:
+  - Ammo
+  completetime: 3
+  materials:
+    Steel: 225
+    Plastic: 150
+    Gold: 75
+
+- type: latheRecipe
+  id: FishSuperGrenadeCleanade
+  result: FishSuperGrenadeCleanade
+  categories:
+  - Ammo
+  completetime: 4
+  materials:
+    Steel: 900
+    Plastic: 600
+    Gold: 300
+
+- type: latheRecipe
+  id: FishSuperCleanade
+  result: FishSuperCleanade
+  categories:
+  - Ammo
+  completetime: 4
+  materials:
+    Steel: 900
+    Plastic: 600
+    Gold: 300
+
+- type: latheRecipePack
+  id: JanitorAdvancedFish
+  recipes:
+  - FishWeaponLauncherHydraCleanade
+  - GrenadeCleanade
+  - FishSuperGrenadeCleanade
+  - FishSuperCleanade

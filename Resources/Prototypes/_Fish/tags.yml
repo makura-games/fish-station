@@ -17,4 +17,7 @@
   id: CentCommRapier
 
 - type: Tag
+  id: GrenadeCleanadeBox
+  
+- type: Tag
   id: FishPouchMedical # разрешает выбранным вариантам подсумка храниться в медицинских поясах
