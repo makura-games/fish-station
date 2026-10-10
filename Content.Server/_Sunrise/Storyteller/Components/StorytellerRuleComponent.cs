@@ -34,6 +34,38 @@ public sealed partial class StorytellerRuleComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public float MajorThreatBudget = 30f;
 
+    // Fish-start - буфер для целевого майнд-антагониста
+    /// <summary>
+    /// Randomly chosen MajorAntag target that the storyteller builds a buffer towards.
+    /// </summary>
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public EntProtoId? TargetMajorEvent;
+
+    /// <summary>
+    /// Buffered budget accumulated specifically towards the target major antag (up to 25% of major budget generation).
+    /// </summary>
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public float TargetMajorBudget = 0f;
+
+    /// <summary>
+    /// Target major antag threat cost threshold.
+    /// </summary>
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public float TargetMajorCost = 0f;
+
+    /// <summary>
+    /// Whether the target major antag has already been spawned.
+    /// </summary>
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public bool TargetMajorTriggered = false;
+
+    /// <summary>
+    /// Last timestamp when a station strength boosting event was triggered.
+    /// </summary>
+    [AutoPausedField, ViewVariables(VVAccess.ReadWrite)]
+    public TimeSpan LastStrengthBoostingEventTime;
+    // Fish-end
+
     /// <summary>
     /// Maximum threat budget the storyteller can accumulate.
     /// </summary>

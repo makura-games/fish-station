@@ -517,27 +517,27 @@
 
 # =============================================================================
 # 🔴 MAJOR ANTAGONISTS (только midround-варианты; roundstart-дубли убраны)
-# Fish-edit
+# Fish-start - скорректированы стоимости крупных антагонистов
 # =============================================================================
 
 - type: storytellerMetadata
   id: DragonSpawn
   threatType: MajorAntag
-  threatCost: 100
+  threatCost: 125
   minStationStrength: 20
   maxStress: 75
 
 - type: storytellerMetadata
   id: NinjaSpawn
   threatType: MajorAntag
-  threatCost: 120
+  threatCost: 100
   minStationStrength: 15
   maxStress: 75
 
 - type: storytellerMetadata
   id: ZombieOutbreak
   threatType: MajorAntag
-  threatCost: 220
+  threatCost: 200
   minStationStrength: 30
   maxStress: 75
   weightModifier: 0.8
@@ -545,21 +545,21 @@
 - type: storytellerMetadata
   id: LoneOpsSpawn
   threatType: MajorAntag
-  threatCost: 90
+  threatCost: 125
   minStationStrength: 15
   maxStress: 80
 
 - type: storytellerMetadata
   id: WizardSpawn
   threatType: MajorAntag
-  threatCost: 140
+  threatCost: 100
   minStationStrength: 25
   maxStress: 75
 
 - type: storytellerMetadata
   id: AbductorsSpawn
   threatType: MajorAntag
-  threatCost: 110
+  threatCost: 75
   minStationStrength: 15
   maxStress: 80
   weightModifier: 1.5
@@ -567,7 +567,7 @@
 - type: storytellerMetadata
   id: SleeperAgents
   threatType: MajorAntag
-  threatCost: 90
+  threatCost: 100
   minStationStrength: 20
   maxStress: 80
   weightModifier: 1.5
@@ -575,7 +575,7 @@
 - type: storytellerMetadata
   id: Nukeops
   threatType: MajorAntag
-  threatCost: 250
+  threatCost: 200
   minStationStrength: 30
   maxStress: 85
   weightModifier: 1.0
@@ -583,7 +583,7 @@
 - type: storytellerMetadata
   id: AssaultOps
   threatType: MajorAntag
-  threatCost: 120
+  threatCost: 150
   minStationStrength: 15
   maxStress: 75
   weightModifier: 1.0
@@ -592,7 +592,7 @@
 - type: storytellerMetadata
   id: Revolutionary
   threatType: MajorAntag
-  threatCost: 220
+  threatCost: 200
   minStationStrength: 25
   maxStress: 85
   weightModifier: 0.7
@@ -600,7 +600,7 @@
 - type: storytellerMetadata
   id: BloodCult
   threatType: MajorAntag
-  threatCost: 220
+  threatCost: 200
   minStationStrength: 30
   maxStress: 75
   weightModifier: 0.8
@@ -608,7 +608,7 @@
 - type: storytellerMetadata
   id: FleshCult
   threatType: MajorAntag
-  threatCost: 220
+  threatCost: 200
   minStationStrength: 30
   maxStress: 75
   weightModifier: 0.8
@@ -616,7 +616,7 @@
 - type: storytellerMetadata
   id: PirateMedium
   threatType: MajorAntag
-  threatCost: 100
+  threatCost: 125
   minStationStrength: 20
   maxStress: 80
   weightModifier: 1.0
@@ -628,3 +628,4 @@
   minStationStrength: 20
   maxStress: 75
   weightModifier: 1.0
+# Fish-end
