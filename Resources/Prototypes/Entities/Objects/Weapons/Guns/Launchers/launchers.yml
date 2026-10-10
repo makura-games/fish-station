@@ -110,7 +110,10 @@
       tags:
       - Grenade
       - HandGrenadeAmmo #Sunrise-edit
-    proto: GrenadeCleanade
+    # Fish edit start - снаряды по умолчанию заменены на супер-чистящие
+    # proto: GrenadeCleanade
+    proto: FishSuperGrenadeCleanade
+    # Fish edit end
     capacity: 6
     chambers: [ True, True, True, True, True, True ]
     ammoSlots: [ null, null, null, null, null, null ]

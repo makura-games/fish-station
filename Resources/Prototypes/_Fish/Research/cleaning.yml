@@ -1,0 +1,16 @@
+- type: technology
+  id: AdvancedCleaningProducts
+  name: research-technology-advanced-cleaning-products
+  icon:
+    sprite: Objects/Weapons/Guns/Launchers/hydra_launcher.rsi
+    state: icon
+  discipline: CivilianServices
+  tier: 3
+  cost: 10000
+  recipeUnlocks:
+  - FishWeaponLauncherHydraCleanade
+  - GrenadeCleanade
+  - FishSuperGrenadeCleanade
+  - FishSuperCleanade
+  technologyPrerequisites:
+  - AdvancedCleaning

@@ -149,6 +149,10 @@
     - PowerCellsStatic
     - ElectronicsStatic
     - HydroponicsStatic
+    # Fish added start - продвинутые чистящие средства
+    dynamicPacks:
+    - JanitorAdvancedFish
+    # Fish added end
   - type: EmagLatheRecipes
     emagStaticPacks:
     - SecurityStaticSunrise # Sunrise-Add
@@ -232,6 +236,9 @@
     - SurgeryDynamicSunrise
     - NightVisionDevice
     # Sunrise-End
+    # Fish added start - продвинутые чистящие средства
+    - JanitorAdvancedFish
+    # Fish added end
   - type: EmagLatheRecipes
     # emagStaticPacks: # Fish edit
     # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish edit
