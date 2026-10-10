@@ -257,6 +257,7 @@
   - VestSecUpgradeBullet
   - VestSecUpgradeRiot
   - VestSecUpgradeReflective
+  - PouchAmmo
   technologyPrerequisites:
   - AdvancedRiotControl
   radioChannels:

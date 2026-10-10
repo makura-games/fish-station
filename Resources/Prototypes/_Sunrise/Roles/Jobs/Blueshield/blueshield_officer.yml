@@ -8,7 +8,7 @@
       department: Security
       time: 62000 # 20 hrs
     - !type:AgeRequirement
-      requiredAge: 30
+      requiredAge: 29
   startingGear: BlueShieldOfficerGear
   icon: JobIconBlueShield
   supervisors: job-supervisors-centcom
@@ -42,7 +42,7 @@
     - Mining
   special:
     - !type:AddImplantSpecial
-      implants: [ MindShieldImplant, BluespaceImplant ] # Fish edit
+      implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ]
 
 - type: startingGear
   id: BlueShieldOfficerGear
@@ -66,7 +66,6 @@
   equipment:
     shoes: ClothingShoesBootsBlueShieldFilled
     eyes: ClothingEyesGlassesBlueShield
-    outerClothing: ClothingOuterArmorBlueShield
+    #outerClothing: ClothingOuterArmorBlueShield # Fish-edit - commented out, managed via loadout
     gloves: ClothingHandsGlovesCombat
-    # outerClothing: ClothingOuterArmorBlueShield # Fish edit - commented out, managed via loadout
 

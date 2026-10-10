@@ -56,6 +56,9 @@
   id: SpawnPointBlueShieldEnsign
   parent: SpawnPointJobBase
   name: blue shield ensign
+  # Fish-start - hide from spawn menu
+  categories: [ HideSpawnMenu ]
+  # Fish-end
   components:
   - type: SpawnPoint
     job_id: BlueShieldEnsign

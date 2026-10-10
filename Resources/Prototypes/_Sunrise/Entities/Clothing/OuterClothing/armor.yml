@@ -19,15 +19,9 @@
     sprite: _Sunrise/Clothing/OuterClothing/Armor/blueshield.rsi
   - type: Clothing
     sprite: _Sunrise/Clothing/OuterClothing/Armor/blueshield.rsi
-  - type: Tag
-    tags:
-    - Vest
-    - NudeBottom
-    - WhitelistChameleon
-  - type: Construction
-    graph: UpgradeArmorVestBlueshield
-    node: start
-  # Fish edit start - armor stats
+  - type: Pierceable
+    level: Metal
+  # Fish-start - armor stats
   - type: Armor
     modifiers:
       coefficients:
@@ -39,7 +33,15 @@
         Shock: 0.80
   - type: StaminaResistance
     damageCoefficient: 0.60
-  # Fish edit end
+  # Fish-end
+  - type: Tag
+    tags:
+    - Vest
+    - NudeBottom
+    - WhitelistChameleon
+  - type: Construction
+    graph: UpgradeArmorVestBlueshield
+    node: start
 
 - type: entity
   parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing]

@@ -32,6 +32,7 @@
     eyes: ClothingEyesGlassesBlueShield
     # head через BlueShieldHead loadout # Fish-edit
     id: BlueShieldOperativePDA
+    outerClothing: ClothingOuterArmorBlueShield
     ears: ClothingHeadsetCentCom
     gloves: ClothingHandsGlovesCombat
     neck: ClothingBSMantle

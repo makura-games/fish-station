@@ -110,6 +110,7 @@
   id: JobBlueShieldOfficer
   groups:
   - BlueShieldHead
+  - SunriseLoadoutGroupBlueShieldMask
   - BlueShieldNeck
   - BlueShieldOuterClothing # Fish-add
   - BlueShieldJumpsuit

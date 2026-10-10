@@ -49706,17 +49706,6 @@ entities:
     - type: Transform
       pos: 86.44739,10.61898
       parent: 2
-- proto: ClothingHeadHelmetSwat
-  entities:
-  - uid: 6657
-    components:
-    - type: Transform
-      parent: 6654
-    - type: Clothing
-      inSlot: head
-      inSlotFlag: HEAD
-    - type: Physics
-      canCollide: False
 - proto: ClothingKimonoPink
   entities:
   - uid: 6708
@@ -49785,19 +49774,6 @@ entities:
     - type: Transform
       pos: 81.53254,11.610725
       parent: 2
-- proto: ClothingMaskGasBlueShield
-  entities:
-  - uid: 6658
-    components:
-    - type: Transform
-      parent: 6654
-    - type: Clothing
-      inSlot: mask
-      inSlotFlag: MASK
-    - type: DiseaseImmuneClothing
-      isActive: True
-    - type: Physics
-      canCollide: False
 - proto: ClothingMaskMuzzle
   entities:
   - uid: 6720
@@ -49898,17 +49874,6 @@ entities:
         actions: !type:Container
           ents:
           - 8
-- proto: ClothingOuterArmorBlueShield
-  entities:
-  - uid: 6659
-    components:
-    - type: Transform
-      parent: 6654
-    - type: Clothing
-      inSlot: outerClothing
-      inSlotFlag: OUTERCLOTHING
-    - type: Physics
-      canCollide: False
 - proto: ClothingOuterArmorReflective
   entities:
   - uid: 6733
@@ -88744,7 +88709,7 @@ entities:
         outerClothing: !type:ContainerSlot
           showEnts: False
           occludes: False
-          ent: 6659
+          ent: null
         neck: !type:ContainerSlot
           showEnts: False
           occludes: False
@@ -88752,7 +88717,7 @@ entities:
         mask: !type:ContainerSlot
           showEnts: False
           occludes: False
-          ent: 6658
+          ent: null
         eyes: !type:ContainerSlot
           showEnts: False
           occludes: False
@@ -88760,7 +88725,7 @@ entities:
         head: !type:ContainerSlot
           showEnts: False
           occludes: False
-          ent: 6657
+          ent: null
         suitstorage: !type:ContainerSlot
           showEnts: False
           occludes: False
@@ -88771,8 +88736,6 @@ entities:
           ent: 6655
     - type: Physics
       bodyType: Static
-    - type: DiseaseTempImmune
-      prob: 0.35
 - proto: MaterialCloth
   entities:
   - uid: 12269

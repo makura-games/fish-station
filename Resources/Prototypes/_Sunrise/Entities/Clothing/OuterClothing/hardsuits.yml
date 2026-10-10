@@ -48,7 +48,7 @@
   - type: PressureProtection
     highPressureMultiplier: 0.525
     lowPressureMultiplier: 10000
-  # Fish edit start - hardsuit stats
+  # Fish-start - hardsuit stats
   - type: ClothingSpeedModifier
     walkModifier: 0.90
     sprintModifier: 0.90
@@ -64,7 +64,7 @@
         Shock: 0.80
   - type: StaminaResistance
     damageCoefficient: 0.60
-  # Fish edit end
+  # Fish-end
   - type: ExplosionResistance
     damageCoefficient: 0.6
   - type: ToggleableClothing

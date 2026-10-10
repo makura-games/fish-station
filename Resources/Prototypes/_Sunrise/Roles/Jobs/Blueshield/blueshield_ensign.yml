@@ -19,7 +19,7 @@
   - AllAccess # Fish-edit
   special:
     - !type:AddImplantSpecial
-      implants: [ MindShieldImplant ]
+      implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ]
 
 - type: startingGear
   id: BlueShieldEnsignGear
@@ -28,7 +28,7 @@
     eyes: ClothingEyesGlassesBlueShield
     head: ClothingHeadHatBeretBlueShield
     id: BlueShieldEnsignPDA
-    # outerClothing: ClothingOuterArmorBlueShield # Fish edit - commented out, managed via loadout
+    outerClothing: ClothingOuterArmorBlueShield
     ears: ClothingHeadsetBlueShieldEnsign
     gloves: ClothingHandsGlovesCombat
     pocket2: WeaponTaser # fish-add
@@ -46,6 +46,6 @@
     shoes: ClothingShoesBootsBlueShieldFilled
     eyes: ClothingEyesGlassesBlueShield
     head: ClothingHeadHatBeretBlueShield
-    # outerClothing: ClothingOuterArmorBlueShield # Fish edit - commented out, managed via loadout
+    outerClothing: ClothingOuterArmorBlueShield
     belt: ClothingBeltBlueShieldWebbingFilled
     gloves: ClothingHandsGlovesCombat
