@@ -1,0 +1,13 @@
+- type: entity
+  parent: BaseMechAction
+  id: FishActionMechMassScanner
+  name: mass scanner
+  description: Opens the mass scanner centered on the mech.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: Interface/Actions/actions_ai.rsi
+      state: mass_scanner
+  - type: InstantAction
+    event: !type:MechOpenMassScannerEvent

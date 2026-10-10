@@ -29,6 +29,10 @@
     - NanoTrasen
   - type: Mech
     entryDelay: 1
+  # FIsh added start - разрешаем установку мозгов в шахтёрский под.
+  - type: MechBrain
+    canInsertBrain: true
+  # FIsh added end
   - type: MechVulnerableToEMP
   - type: MechAir
   - type: GravityAffected
@@ -76,6 +80,9 @@
         type: MechBoundUserInterface
       enum.MechEquipmentSelectUiKey.Key:
         type: MechEquipmentSelectBoundUserInterface
+      # FIsh edit - интерфейс сканера массы для шахтёрского пода.
+      enum.RadarConsoleUiKey.Key:
+        type: RadarConsoleBoundUserInterface
   - type: Puller
     needsHands: false
   - type: InputMover
@@ -267,6 +274,7 @@
     openState: mining_pod_open
     brokenState: mining_pod_broken
     mechToPilotDamageMultiplier: 0.0
+    mechMassScannerAction: FishActionMechMassScanner # FIsh edit - действие сканера массы.
     maxEquipmentAmount: 4
     airtight: true
     pilotWhitelist:
@@ -297,6 +305,11 @@
       - PowerCageMedium
   - type: AccessReader
     access: [["Mining"]]
+  # FIsh added start - добавляем радар для сканера массы шахтёрского пода.
+  - type: RadarConsole
+    maxRange: 256
+    followEntity: true
+  # FIsh added end
   - type: Storage
     grid:
     - 0,0,11,7
@@ -361,9 +374,20 @@
     noRot: true
     sprite: Objects/Specific/Mech/ripley.rsi
     scale: 1.08, 1.08
+    # FIsh edit start - добавляем слой движения, чтобы SpriteMovement не обращался к отсутствующему слою.
     layers:
-    - map: [ "enum.MechVisualLayers.Base" ]
+    - map: [ "enum.MechVisualLayers.Base", "movement" ]
       state: death
+    # FIsh edit end
+  # FIsh added start - добавляем SpriteMovement для Death Ripley.
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: death
+    noMovementLayers:
+      movement:
+        state: death
+  # FIsh added end
   - type: FootstepModifier
     footstepSoundCollection:
       path: /Audio/Mecha/sound_mecha_powerloader_step.ogg

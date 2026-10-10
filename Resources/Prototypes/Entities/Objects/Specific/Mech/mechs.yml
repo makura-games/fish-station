@@ -70,6 +70,10 @@
   components:
   - type: MobMover
   - type: Mech
+  # FIsh added start - разрешаем установку мозгов в базовые мехи.
+  - type: MechBrain
+    canInsertBrain: true
+  # FIsh added end
   - type: MechAir
   - type: AirFilter
     # everything except oxygen and nitrogen
@@ -122,6 +126,9 @@
       enum.MechEquipmentSelectUiKey.Key:
         type: MechEquipmentSelectBoundUserInterface
       # Sunrise edit end
+      # FIsh edit - интерфейс сканера массы для мехов с соответствующим действием.
+      enum.RadarConsoleUiKey.Key:
+        type: RadarConsoleBoundUserInterface
   - type: MeleeWeapon
     hidden: true
     animation: WeaponArcMechDisabled # Sunrise-Edit
@@ -409,6 +416,7 @@
     openState: clarke-open
     brokenState: clarke-broken
     mechToPilotDamageMultiplier: 0.0 # Sunrise edit
+    mechMassScannerAction: FishActionMechMassScanner # FIsh edit - действие сканера массы.
     airtight: true
     pilotWhitelist:
       components:
@@ -436,6 +444,11 @@
     autoRot: true
     radius: 8
     netsync: false
+  # FIsh added start - добавляем радар для сканера массы Кларка.
+  - type: RadarConsole
+    maxRange: 256
+    followEntity: true
+  # FIsh added end
   - type: Tag
     tags:
     - DoorBumpOpener
