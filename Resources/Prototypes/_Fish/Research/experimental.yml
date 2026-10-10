@@ -1,0 +1,15 @@
+# Fish: T3-технология Experimental, открывающая рецепт апгрейд-модуля борга до Mk2.
+# Иконка — кадр Generic Borg Mk2, вырезанный из _Lust/Mobs/Silicon/chassis.rsi/robot_tipped.png.
+- type: technology
+  id: AdvancedCyborgChassis
+  name: research-technology-advanced-cyborg-chassis
+  icon:
+    sprite: _Fish/Research/borg_mk2.rsi
+    state: icon
+  discipline: Experimental
+  tier: 3
+  cost: 10000
+  recipeUnlocks:
+  - FishBorgUpgradeModule
+  technologyPrerequisites:
+  - IndustrialRobotic

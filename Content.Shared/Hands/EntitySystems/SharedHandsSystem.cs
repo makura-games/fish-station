@@ -104,6 +104,18 @@ public abstract partial class SharedHandsSystem
         RaiseLocalEvent(ent, new HandCountChangedEvent(ent));
     }
 
+    // Fish: включение/выключение отображения предметов в руках на спрайте в рантайме
+    // (например, при апгрейде борга на Mk2). Поле реплицируется через HandsComponentState,
+    // поэтому отдельного Dirty у вызывающего не требуется.
+    public void SetShowInHands(Entity<HandsComponent?> ent, bool show)
+    {
+        if (!Resolve(ent, ref ent.Comp, false) || ent.Comp.ShowInHands == show)
+            return;
+
+        ent.Comp.ShowInHands = show;
+        Dirty(ent);
+    }
+
     /// <summary>
     /// Removes the specified hand from the specified entity
     /// </summary>

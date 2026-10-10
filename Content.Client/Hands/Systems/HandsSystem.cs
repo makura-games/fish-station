@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 using Content.Client.DisplacementMap;
 using Content.Client.Examine;
 using Content.Client.Strip;
@@ -21,6 +22,7 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using static Robust.Client.GameObjects.SpriteComponent;
 
 namespace Content.Client.Hands.Systems
 {
@@ -63,6 +65,11 @@ namespace Content.Client.Hands.Systems
             if (args.Current is not HandsComponentState state)
                 return;
 
+            // Fish: запоминаем смену ShowInHands, чтобы после применения state
+            // перерисовать in-hand слои уже занятых рук (например, апгрейд борга на Mk2).
+            var showInHandsChanged = state.ShowInHands != ent.Comp.ShowInHands;
+            ent.Comp.ShowInHands = state.ShowInHands;
+
             var newHands = state.Hands.Keys.Except(ent.Comp.Hands.Keys); // hands that were added between states
             var oldHands = ent.Comp.Hands.Keys.Except(state.Hands.Keys); // hands that were removed between states
 
@@ -78,6 +85,17 @@ namespace Content.Client.Hands.Systems
             ent.Comp.SortedHands = new (state.SortedHands);
 
             SetActiveHand(ent.AsNullable(), state.ActiveHandId);
+
+            // Fish: смена флага сама по себе не вызывает UpdateHandVisuals —
+            // обновляем слои всех рук, в которых уже лежат предметы.
+            if (showInHandsChanged && TryComp(ent, out SpriteComponent? sprite))
+            {
+                foreach (var handId in ent.Comp.SortedHands)
+                {
+                    if (GetHeldItem((ent, ent.Comp), handId) is { } held)
+                        UpdateHandVisuals((ent, ent.Comp, sprite), held, handId);
+                }
+            }
 
             _stripSys.UpdateUi(ent);
         }
@@ -320,6 +338,13 @@ namespace Content.Client.Hands.Systems
                 }
 
                 _sprite.LayerSetData((ent, sprite), index, layerData);
+
+                // Fish: у боргов со смещённым корнем спрайта (SpriteOffset) предметы в руках
+                // поднимаются вместе с телом и оказываются чуть выше нужного — компенсируем на 0.25.
+                if (sprite.Offset != Vector2.Zero && sprite[index] is Layer layer)
+                {
+                    _sprite.LayerSetOffset(layer, layer.Offset + new Vector2(0f, -0.25f));
+                }
 
                 // Add displacement maps
                 var displacement = hand.Value.Location switch

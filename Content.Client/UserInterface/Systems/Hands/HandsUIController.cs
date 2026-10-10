@@ -68,6 +68,11 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
     {
         if (entity.Owner != _player.LocalEntity)
             return;
+
+        // Fish: пересчёт роутинга Functional-рук до добавления кнопки — событие поднимается
+        // после вставки руки в компонент, поэтому новая рука уже учтена в проверке.
+        HandsGui?.UpdateFunctionalRouting(entity.Comp);
+
         if (_handsSystem.TryGetHand((entity.Owner, entity.Comp), name, out var hand))
             AddHand(name, hand.Value);
     }
@@ -76,6 +81,11 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
     {
         if (entity.Owner != _player.LocalEntity)
             return;
+
+        // Fish: событие поднимается до удаления руки из компонента,
+        // поэтому исходящая рука исключается из пересчёта.
+        HandsGui?.UpdateFunctionalRouting(entity.Comp, name);
+
         RemoveHand(name);
     }
 
@@ -286,7 +296,7 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
         button.StoragePressed += StorageActivate;
         button.Pressed += HandPressed;
 
-        HandsGui?.AddHandButton(button); // Sunrise-Edit - функциональные руки выводятся отдельно
+        HandsGui?.AddHandButton(button); // Sunrise-Edit - роутинг Functional-рук решает HotbarGui (FunctionalInMainRow)
 
         if (hand.EmptyRepresentative is { } representative)
         {

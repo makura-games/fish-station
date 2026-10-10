@@ -23,7 +23,15 @@ public sealed partial class MeleeWeaponSystem
         if (!Timing.IsFirstTimePredicted)
             return;
 
-        var lunge = GetLungeAnimation(localPos);
+        // Fish: база lunge-анимации — текущий Offset спрайта пользователя, а не Vector2.Zero:
+        // иначе анимация затирает настройки смещения (например, корневой SpriteOffset Mk2)
+        // и сущность после удара навсегда остаётся в нулевом положении. Для мобов с Offset=0
+        // поведение не меняется.
+        var baseOffset = TryComp(user, out SpriteComponent? userSprite)
+            ? userSprite.Offset
+            : Vector2.Zero;
+
+        var lunge = GetLungeAnimation(localPos, baseOffset);
 
         // Stop any existing lunges on the user.
         _animation.Stop(user, MeleeLungeKey);
@@ -203,10 +211,12 @@ public sealed partial class MeleeWeaponSystem
     }
 
     /// <summary>
-    /// Get the sprite offset animation to use for mob lunges.
+    /// Gets the sprite offset animation to use for mob lunges.
     /// This is applied to the attacker to show who is attacking.
+    /// Fish: keyframes считаются от baseOffset (текущий Offset спрайта), чтобы не затирать
+    /// пользовательские смещения — иначе после lunge Offset сбрасывается в ноль и не восстанавливается.
     /// </summary>
-    private Animation GetLungeAnimation(Vector2 direction)
+    private Animation GetLungeAnimation(Vector2 direction, Vector2 baseOffset)
     {
         const float length = 0.1f;
 
@@ -222,9 +232,9 @@ public sealed partial class MeleeWeaponSystem
                     InterpolationMode = AnimationInterpolationMode.Linear,
                     KeyFrames =
                     {
-                        new AnimationTrackProperty.KeyFrame(Vector2.Zero, 0f),
-                        new AnimationTrackProperty.KeyFrame(direction.Normalized() * 0.15f, length*0.4f),
-                        new AnimationTrackProperty.KeyFrame(Vector2.Zero, length*0.6f),
+                        new AnimationTrackProperty.KeyFrame(baseOffset, 0f),
+                        new AnimationTrackProperty.KeyFrame(baseOffset + direction.Normalized() * 0.15f, length*0.4f),
+                        new AnimationTrackProperty.KeyFrame(baseOffset, length*0.6f),
                     },
                 },
             },

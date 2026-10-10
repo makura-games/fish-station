@@ -1,4 +1,6 @@
 ﻿using Content.Shared.Actions;
+// Fish-edit
+using Content.Shared.DoAfter;
 using Content.Shared.Radio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -48,6 +50,18 @@ public sealed partial class BorgSwitchableTypeComponent : Component
 
     [DataField]
     public ProtoId<RadioChannelPrototype>[] NotifyChannels = [];
+
+    // Fish-Start
+    // DoAfter текущего апгрейда до Mk2 через BorgUpgradeModule: пока он запущен,
+    // второй апгрейд той же цели блокируется (дедупликация DoAfter работает per-user
+    // и от второго игрока с отдельным предметом не спасает).
+    // Сознательно не DataField: DoAfterId — runtime-идентификатор, YAML-сериализатор ему не нужен.
+    /// <summary>
+    /// Запущенный апгрейд до Mk2, либо <c>null</c>.
+    /// </summary>
+    [ViewVariables]
+    public DoAfterId? ActiveUpgradeDoAfter;
+    // Fish-End
 }
 
 /// <summary>

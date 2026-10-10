@@ -90,10 +90,13 @@
     laws: Crewsimov
   - type: Inventory
     templateId: borg
+  # Fish: статические chassis-руки (hand_right/hand_left) есть только у Mk2-прототипов,
+  # апгрейднутого BorgChassisSelectable (runtime-выдача) и риперов; остальные борги
+  # получают руки только от модулей. canBeStripped оставлен true для Strip-UI рук.
   - type: Hands
     showInHands: false
     disableExplosionRecursion: true
-    canBeStripped: false
+    canBeStripped: true
   - type: ComplexInteraction
   - type: IntrinsicRadioReceiver
   - type: IntrinsicRadioTransmitter

@@ -1,0 +1,17 @@
+# Fish: рецепт апгрейд-модуля борга. Сам предмет BorgUpgradeModule не дублируем —
+# Fish-id относится только к рецепту, результат остаётся ванильным.
+# База BaseGoldBorgModuleRecipe — та же, что у остальных модульных рецептов T3-уровня.
+# Materials заданы полностью (все ключи родителя), 100 units = 1 лист/слиток:
+# ванильный T3-модуль стоит 500 стали/стекла, 250 пластика и 50 золота, сюда добавлены серебро и уран.
+- type: latheRecipe
+  parent: BaseGoldBorgModuleRecipe
+  id: FishBorgUpgradeModule
+  result: BorgUpgradeModule
+  materials:
+    Steel: 2000
+    Plastic: 1400
+    Glass: 1200
+    Gold: 500
+    Silver: 500
+    Uranium: 300
+

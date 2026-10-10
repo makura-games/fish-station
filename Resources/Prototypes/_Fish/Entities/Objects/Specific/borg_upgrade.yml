@@ -1,0 +1,17 @@
+# Upgrade Module: предмет-заготовка для перехода обычного борга в Mk2.
+# Механика: отменяемый DoAfter на 15 секунд с циклическим rped.ogg; по завершении
+# сущность борга не пересоздаётся — у неё меняется только тип (BorgSwitchableTypeComponent),
+# поэтому мозг, имя, модули и инвентарь остаются на месте.
+- type: entity
+  id: BorgUpgradeModule
+  parent: BaseSecurityUpgrade
+  name: cyborg upgrade module
+  description: An upgrade module that converts a standard cyborg into its upgraded Mk2 variant.
+  components:
+  - type: BorgUpgradeModule
+  - type: AmbientSound
+    enabled: false
+    volume: 5
+    range: 3
+    sound:
+      path: /Audio/Items/rped.ogg

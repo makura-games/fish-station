@@ -3,6 +3,7 @@ using Content.Server.Radio.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords.Systems;
 using Content.Server._Sunrise.Messenger;
+// Fish-edit
 using Content.Shared.Inventory;
 using Content.Shared.Radio;
 using Content.Shared.Roles;
@@ -39,16 +40,11 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
             activeRadio.Channels = [.. radioChannels];
 
         // Borg transponder for the robotics console
-        if (TryComp(ent, out BorgTransponderComponent? transponder))
-        {
-            _borgSystem.SetTransponderSprite(
-                (ent.Owner, transponder),
-                new SpriteSpecifier.Rsi(new ResPath("Mobs/Silicon/chassis.rsi"), prototype.SpriteBodyState));
-
-            _borgSystem.SetTransponderName(
-                (ent.Owner, transponder),
-                Loc.GetString($"borg-type-{borgType}-transponder"));
-        }
+        // Fish-Start
+        // Спрайт и имя транспондера обновляем через общий хелпер: он же используется
+        // при апгрейде до Mk2, где RSI берётся из холста нового borgType.
+        UpdateTransponder(ent, borgType);
+        // Fish-End
 
         // Configure modules
         if (TryComp(ent, out BorgChassisComponent? chassis))
@@ -142,4 +138,31 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
         }
     }
     // Sunrise-End
+
+    // Fish-Start
+    /// <summary>
+    /// Обновляет иконку и имя борга в робоконсоли под выбранный тип.
+    /// RSI берётся из <see cref="BorgTypePrototype.SpriteRsiPath"/> (Mk2-холст), а если его нет —
+    /// из спекификатора транспондера, с фолбэком на общий Mobs/Silicon/chassis.rsi.
+    /// </summary>
+    private void UpdateTransponder(Entity<BorgSwitchableTypeComponent> ent, ProtoId<BorgTypePrototype> borgType)
+    {
+        if (!TryComp(ent, out BorgTransponderComponent? transponder))
+            return;
+
+        var prototype = Prototypes.Index(borgType);
+
+        var transponderRsi = prototype.SpriteRsiPath
+            ?? (transponder.Sprite as SpriteSpecifier.Rsi)?.RsiPath
+            ?? new ResPath("Mobs/Silicon/chassis.rsi");
+
+        _borgSystem.SetTransponderSprite(
+            (ent.Owner, transponder),
+            new SpriteSpecifier.Rsi(transponderRsi, prototype.SpriteBodyState));
+
+        _borgSystem.SetTransponderName(
+            (ent.Owner, transponder),
+            Loc.GetString($"borg-type-{borgType}-transponder"));
+    }
+    // Fish-End
 }

@@ -33,7 +33,12 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
         IoCManager.InjectDependencies(this);
 
         var group = new ButtonGroup();
-        foreach (var borgType in _prototypeManager.EnumeratePrototypes<BorgTypePrototype>().OrderBy(PrototypeName))
+        // Fish-Start
+        // Скрытые типы (Mk2) не участвуют в выборе специализации.
+        foreach (var borgType in _prototypeManager.EnumeratePrototypes<BorgTypePrototype>()
+                     .Where(type => !type.HideInMenu)
+                     .OrderBy(PrototypeName))
+        // Fish-End
         {
             var button = new Button
             {

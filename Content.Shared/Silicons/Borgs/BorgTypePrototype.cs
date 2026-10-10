@@ -1,4 +1,5 @@
-﻿using Content.Shared.Interaction.Components;
+﻿// Fish-edit
+using Content.Shared.Interaction.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Radio;
 using Content.Shared.Roles;
@@ -7,6 +8,12 @@ using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+// Fish-edit
+using System.Numerics;
+// Fish-edit
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
+// Fish-edit
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Silicons.Borgs;
 
@@ -15,12 +22,24 @@ namespace Content.Shared.Silicons.Borgs;
 /// </summary>
 /// <seealso cref="SharedBorgSwitchableTypeSystem"/>
 [Prototype]
-public sealed partial class BorgTypePrototype : IPrototype
+public sealed partial class BorgTypePrototype : IPrototype, IInheritingPrototype
 {
     private static readonly ProtoId<SoundCollectionPrototype> DefaultFootsteps = new("FootstepBorg");
 
     [IdDataField]
     public required string ID { get; set; }
+
+    // Fish-Start
+    // Поддержка parent: для borgType (Mk2-варианты поверх существующих специализаций).
+    /// <inheritdoc/>
+    [ParentDataField(typeof(AbstractPrototypeIdArraySerializer<BorgTypePrototype>))]
+    public string[]? Parents { get; private set; }
+
+    /// <inheritdoc />
+    [NeverPushInheritance]
+    [AbstractDataField]
+    public bool Abstract { get; private set; }
+    // Fish-End
 
     //
     // Description info (name/desc) is configured via localization strings directly.
@@ -31,6 +50,16 @@ public sealed partial class BorgTypePrototype : IPrototype
     /// </summary>
     [DataField]
     public required EntProtoId DummyPrototype;
+
+    // Fish-Start
+    // Скрытие типа из меню выбора специализации.
+    /// <summary>
+    /// Не показывать тип в меню выбора специализации.
+    /// Используется для Mk2-вариантов, скрытых от ручного выбора.
+    /// </summary>
+    [DataField]
+    public bool HideInMenu;
+    // Fish-End
 
     //
     // Functional information
@@ -125,6 +154,28 @@ public sealed partial class BorgTypePrototype : IPrototype
     /// </summary>
     [DataField]
     public string SpriteToggleLightState { get; set; } = "robot_l";
+
+    // Fish-Start
+    // Отдельный холст спрайта для типов, чей RSI не совпадает с RSI chassis сущности.
+    // Нужен Mk2: у них корпус рисуется из _Lust/Mobs/Silicon/chassis.rsi, а живая сущность
+    // осталась на Mobs/Silicon/chassis.rsi от родительского chassis. Без этого поля
+    // смена borgType меняла бы только state и оставляла старый холст (а у security
+    // state sec_mk2* на vanilla-RSI вообще отсутствует).
+    /// <summary>
+    /// RSI, из которого берутся все слои спрайта. <c>null</c> — RSI не трогаем.
+    /// </summary>
+    [DataField]
+    public ResPath? SpriteRsiPath;
+
+    /// <summary>
+    /// Смещение слоёв спрайта в тайлах. <c>null</c> — смещение не трогаем.
+    /// Для _Lust (холст 32x64 против vanilla 32x32) нужно 0,0.5, иначе борг висит на полтайла ниже.
+    /// Вешается на корень SpriteComponent, а не на отдельные слои: так runtime-слои
+    /// предметов (in-hand, надетая экипировка) наследуют сдвиг и едут вместе с телом.
+    /// </summary>
+    [DataField]
+    public Vector2? SpriteOffset;
+    // Fish-End
 
     //
     // Minor information

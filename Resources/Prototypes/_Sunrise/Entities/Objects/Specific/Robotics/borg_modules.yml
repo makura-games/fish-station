@@ -322,6 +322,7 @@
     - item: WelderBorg
     - item: Flash
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: Flash
         whitelist:
@@ -336,6 +337,7 @@
     - item: HandheldRoboAnalyzerUnpowered
     - item: Nanopaste1
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: Nanopaste1
         whitelist:
@@ -405,6 +407,7 @@
     - item: RubberStampDenied
     - item: BooksBag
       hand:
+        location: Functional
         emptyLabel: borg-slot-documents-empty
         emptyRepresentative: BookBase
         whitelist:
@@ -417,6 +420,7 @@
           - Write
     - item: Paper
       hand:
+        location: Functional
         emptyLabel: borg-slot-documents-empty
         emptyRepresentative: Paper
         whitelist:
@@ -429,6 +433,7 @@
           - Write
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-documents-empty
         emptyRepresentative: Paper
         whitelist:
@@ -441,6 +446,7 @@
           - Write
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-documents-empty
         emptyRepresentative: Paper
         whitelist:
@@ -472,6 +478,7 @@
     - item: BorgBoozeDispenser
     - item: DrinkShaker
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: DrinkShaker
         whitelist:
@@ -479,6 +486,7 @@
           - FitsInDispenser
     - item: DrinkShaker
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: DrinkShaker
         whitelist:
@@ -486,6 +494,7 @@
           - FitsInDispenser
     - item: DrinkGlass
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: DrinkGlass
         whitelist:
@@ -493,6 +502,7 @@
           - FitsInDispenser
     - item: DrinkGlass
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: DrinkGlass
         whitelist:
@@ -521,6 +531,7 @@
     - item: RollingPin
     - item: Beaker
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: Beaker
         whitelist:
@@ -528,6 +539,7 @@
           - FitsInDispenser
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-small-containers-empty
         emptyRepresentative: Beaker
         whitelist:
@@ -535,6 +547,7 @@
           - FitsInDispenser
     - item: ReagentContainerFlour
       hand:
+        location: Functional
         emptyLabel: borg-slot-food-empty
         emptyRepresentative: FoodBreadPlain
         whitelist:
@@ -542,6 +555,7 @@
           - Edible
     - item: FoodCondimentBottleEnzyme
       hand:
+        location: Functional
         emptyLabel: borg-slot-food-empty
         emptyRepresentative: FoodBreadPlain
         whitelist:
@@ -549,6 +563,7 @@
           - Edible
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-food-empty
         emptyRepresentative: FoodBreadPlain
         whitelist:
@@ -556,6 +571,7 @@
           - Edible
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-food-empty
         emptyRepresentative: FoodBreadPlain
         whitelist:
@@ -563,6 +579,7 @@
           - Edible
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-food-empty
         emptyRepresentative: FoodBreadPlain
         whitelist:
@@ -570,6 +587,7 @@
           - Edible
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-food-empty
         emptyRepresentative: FoodBreadPlain
         whitelist:
@@ -599,6 +617,7 @@
     - item: PlantBag
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-food-empty
         emptyRepresentative: FoodApple
         whitelist:
@@ -606,6 +625,7 @@
           - Edible
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-seeds-empty
         emptyRepresentative: AppleSeeds
         whitelist:
@@ -613,6 +633,7 @@
           - Seed
     - item: null
       hand:
+        location: Functional
         emptyLabel: borg-slot-seeds-empty
         emptyRepresentative: AppleSeeds
         whitelist:
@@ -653,6 +674,7 @@
     - item: Drill
     - item: BoneGel
     - hand:
+        location: Functional
         emptyLabel: borg-slot-organs-empty
         emptyRepresentative: BorgModuleOrganPlaceholder
         whitelist:
@@ -785,6 +807,7 @@
     - item: SyringeBluespace
     - item: Beaker
       hand:
+        location: Functional
         emptyLabel: borg-slot-chemical-containers-empty
         emptyRepresentative: Beaker
         whitelist:
@@ -794,6 +817,7 @@
           - ChemDispensable
     - item: Beaker
       hand:
+        location: Functional
         emptyLabel: borg-slot-chemical-containers-empty
         emptyRepresentative: Beaker
         whitelist:
@@ -803,6 +827,7 @@
           - ChemDispensable
     - item: Jug
       hand:
+        location: Functional
         emptyLabel: borg-slot-chemical-containers-empty
         emptyRepresentative: Jug
         whitelist:

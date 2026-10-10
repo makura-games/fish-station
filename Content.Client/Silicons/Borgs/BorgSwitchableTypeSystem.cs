@@ -1,4 +1,6 @@
-﻿using Content.Shared.Movement.Components;
+﻿// Fish-edit
+using System.Numerics;
+using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
 using Robust.Client.GameObjects;
@@ -40,6 +42,23 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
     {
         if (TryComp(entity, out SpriteComponent? sprite))
         {
+            // Fish-Start
+            // Mk2 рисуется из отдельного холста (_Lust), а RSI слоёв у живой сущности
+            // остался от родительского chassis. Меняем его до выставления state, иначе
+            // state вроде sec_mk2* будет искаться в vanilla-RSI и даст ERRO.
+            if (prototype.SpriteRsiPath is { } rsiPath)
+            {
+                _sprite.LayerSetRsi((entity, sprite), BorgVisualLayers.Body, rsiPath);
+                _sprite.LayerSetRsi((entity, sprite), BorgVisualLayers.Light, rsiPath);
+                _sprite.LayerSetRsi((entity, sprite), BorgVisualLayers.LightStatus, rsiPath);
+            }
+
+            // Сдвиг уходит на корень спрайта: так runtime-слои предметов (in-hand,
+            // надетая экипировка) наследуют сдвиг и едут вместе с телом, а не отстают.
+            // Присваиваем безусловно, чтобы сбросить сдвиг у типов без него.
+            _sprite.SetOffset((entity.Owner, sprite), prototype.SpriteOffset ?? Vector2.Zero);
+            // Fish-End
+
             _sprite.LayerSetRsiState((entity, sprite), BorgVisualLayers.Body, prototype.SpriteBodyState);
             _sprite.LayerSetRsiState((entity, sprite), BorgVisualLayers.LightStatus, prototype.SpriteToggleLightState);
         }

@@ -1,0 +1,118 @@
+# Borg Mk2: копии ванильных borg-шаблонов (_Fish/InventoryTemplates/borg.mk2-версии
+# исходников из Resources/Prototypes/InventoryTemplates/borg.yml) с добавленным слотом belt.
+#
+# Шаблоны копируются, а не наследуются: InventoryTemplatePrototype не реализует
+# IInheritingPrototype (см. Content.Shared/Inventory/InventoryTemplatePrototype.cs),
+# поэтому parent: у inventoryTemplate не работает.
+#
+# offset у head перенесён как у ванильных боргов — шлемам правильно ехать вместе с корнем
+# спрайта (_Lust, SpriteOffset 0,0.5 на уровне Sprite). belt опущен на 0.25 (подбор).
+# armor спрятан на 5,5, его не трогаем.
+#
+# Применяется в двух местах:
+#   - спавн: BorgTypePrototype.InventoryTemplateId (Content.Server/.../BorgSwitchableTypeSystem.cs, SelectBorgModule);
+#   - апгрейд на месте: InventorySystem.SetTemplateId (BorgSwitchableTypeSystem.Upgrade.cs).
+# Обычные борги на эти шаблоны не переходят — у них остаются borgShort/borgTall/borgDutch.
+
+- type: inventoryTemplate
+  id: borgShortMk2
+  slots:
+  - name: head
+    slotTexture: head
+    slotFlags: HEAD
+    uiWindowPos: 1,0
+    strippingWindowPos: 0,0
+    displayName: Head
+    offset: 0.015625, -0.1875
+    blacklist:
+      tags:
+      - SecurityHelmet
+      - HelmetEVA
+      - FullCovered
+      - Helmet
+      - WeldingMask
+      - NightVisionDevice
+      - NVDHandcrafted
+  - name: armor
+    slotTexture: suit
+    slotFlags: OUTERCLOTHING
+    uiWindowPos: 1,0
+    strippingWindowPos: 0,1
+    displayName: Armor
+    offset: 5,5
+  - name: belt
+    slotTexture: belt
+    slotFlags: BELT
+    uiWindowPos: 2,0
+    strippingWindowPos: 0,2
+    displayName: Belt
+    offset: 0,-0.25
+
+- type: inventoryTemplate
+  id: borgTallMk2
+  slots:
+  - name: head
+    slotTexture: head
+    slotFlags: HEAD
+    uiWindowPos: 1,0
+    strippingWindowPos: 0,0
+    displayName: Head
+    offset: 0.015625, 0
+    blacklist:
+      tags:
+      - SecurityHelmet
+      - HelmetEVA
+      - FullCovered
+      - Helmet
+      - WeldingMask
+      - NightVisionDevice
+      - NVDHandcrafted
+  - name: armor
+    slotTexture: suit
+    slotFlags: OUTERCLOTHING
+    uiWindowPos: 1,0
+    strippingWindowPos: 0,1
+    displayName: Armor
+    offset: 5,5
+  - name: belt
+    slotTexture: belt
+    slotFlags: BELT
+    uiWindowPos: 2,0
+    strippingWindowPos: 0,2
+    displayName: Belt
+    offset: 0,-0.25
+
+# taller than tall
+- type: inventoryTemplate
+  id: borgDutchMk2
+  slots:
+  - name: head
+    slotTexture: head
+    slotFlags: HEAD
+    uiWindowPos: 1,0
+    strippingWindowPos: 0,0
+    displayName: Head
+    offset: 0, 0.09375
+    blacklist:
+      tags:
+      - SecurityHelmet
+      - HelmetEVA
+      - FullCovered
+      - Helmet
+      - WeldingMask
+      - NightVisionDevice
+      - NVDHandcrafted
+  - name: armor
+    slotTexture: suit
+    slotFlags: OUTERCLOTHING
+    uiWindowPos: 1,0
+    strippingWindowPos: 0,1
+    displayName: Armor
+    offset: 5,5
+  - name: belt
+    slotTexture: belt
+    slotFlags: BELT
+    uiWindowPos: 2,0
+    strippingWindowPos: 0,2
+    displayName: Belt
+    offset: 0,-0.25

@@ -13,10 +13,10 @@
   cost: 15000
   recipeUnlocks:
   - ExosuitFabricatorHyperConvectionMachineCircuitboard
+  # Fish-edit: Durand убран — ветка Industrial Robotics больше не требует Durand.
   technologyPrerequisites:
   - BasicRobotics
   - IndustrialEngineering
-  - Durand
 
 # - type: technology
 #   id: Phazon

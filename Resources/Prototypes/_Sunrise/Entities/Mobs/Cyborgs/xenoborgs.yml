@@ -41,7 +41,18 @@
     templateId: FishXenoborgReaper
   - type: InventorySlots
   - type: Body
+  # Fish: постоянные chassis-руки рипера; showInHands включает отображение
+  # предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
   - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
     showInHands: true
   - type: DamageStateVisuals
     states:

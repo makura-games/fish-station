@@ -176,12 +176,17 @@ public sealed class HandsComponentState : ComponentState
     public readonly List<string> SortedHands;
     public readonly string? ActiveHandId;
 
+    // Fish: ShowInHands больше не только YAML-значение: сервер может включить его в
+    // рантайме (например, при апгрейде борга на Mk2), поэтому поле реплицируется.
+    public readonly bool ShowInHands;
+
     public HandsComponentState(HandsComponent handComp)
     {
         // cloning lists because of test networking.
         Hands = new(handComp.Hands);
         SortedHands = new(handComp.SortedHands);
         ActiveHandId = handComp.ActiveHandId;
+        ShowInHands = handComp.ShowInHands;
     }
 }
 
