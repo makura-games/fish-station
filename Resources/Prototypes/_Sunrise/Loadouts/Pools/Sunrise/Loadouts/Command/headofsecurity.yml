@@ -28,7 +28,9 @@
     requirement:
       !type:RoleTimeRequirement
       role: JobHeadOfSecurity
-      time: 7142400 #1984 hrs
+      # Fish-start - 198h 4m requirement
+      time: 713040 # 198 hrs 4 mins
+      # Fish-end
 
 - type: loadout
   id: HeadofSecurityWeapon
