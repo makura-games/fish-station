@@ -802,3 +802,10 @@
     message: Не смотря на великую лень Феликса скинуть адекватно спрайты, был подготовлен и вырезан спрайт для иконок костюма джагаклоуна для ивента.
   id: 80
   url: https://github.com/makura-games/fish-station/pull/487
+- author: dnghcer
+  time: '2026-10-07T09:40:00.0000000+00:00'
+  changes:
+  - type: Add
+    message: Новые 7 видов catwalk 
+  id: 81
+  url: https://github.com/makura-games/fish-station/pull/483

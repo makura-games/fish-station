@@ -1,0 +1,14 @@
+ent-FishFloorHardCatwalkIron = укреплённый железный мостик
+    .desc = Мостик, который идеально вписывается в окружение и помогает в прокладывании проводки.
+ent-FishFloorHardCatwalkWhiteIron = укреплённый светлый мостик
+    .desc = { ent-FishFloorHardCatwalkIron.desc }
+ent-FishFloorHardCatwalkDarkIron = укреплённый тёмный мостик
+    .desc = { ent-FishFloorHardCatwalkIron.desc }
+ent-FishFloorHardCatwalkSmothIron = укреплённый гладкий мостик
+    .desc = { ent-FishFloorHardCatwalkIron.desc }
+ent-FishFloorHardCatwalkFlatwhite = укреплённый монотонно-белый мостик
+    .desc = { ent-FishFloorHardCatwalkIron.desc }
+ent-FishFloorHardCatwalkMaint = укреплённый технический мостик
+    .desc = { ent-FishFloorHardCatwalkIron.desc }
+ent-FishFloorHardCatwalkTitanium = укреплённый титановый мостик
+    .desc = { ent-FishFloorHardCatwalkIron.desc }
