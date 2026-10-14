@@ -7,9 +7,9 @@
   components:
   - type: Sprite
     sprite: _Fish/Clothing/Neck/Cloaks/ntrepresentative.rsi
-    state: ntrepresentative
+    state: icon
   - type: Clothing
     sprite: _Fish/Clothing/Neck/Cloaks/ntrepresentative.rsi
     clothingVisuals:
       neck:
-      - state: ntrepresentative
+      - state: equipped-NECK
