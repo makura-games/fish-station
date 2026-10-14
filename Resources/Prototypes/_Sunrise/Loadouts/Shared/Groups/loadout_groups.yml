@@ -187,6 +187,14 @@
   - NanoTrasenRepresentativeModsuit
 
 - type: loadoutGroup
+  id: NanoTrasenRepresentativeNeck
+  name: loadout-group-nanotrasenrepresentative-neck
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - NTRepresentativeCloak # Fish-Edit
+
+- type: loadoutGroup
   id: BlueShieldHead
   name: loadout-group-blueshield-head
   maxLimit: 1

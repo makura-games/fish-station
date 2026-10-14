@@ -1,0 +1,10 @@
+- type: loadout
+  id: NTRepresentativeCloak
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+     !type:RoleTimeRequirement
+      role: JobNanoTrasenRepresentative
+      time: 36000 # 10 hours
+  equipment:
+    neck: ClothingNeckCloakNanoTrasenRepresentativeFish
