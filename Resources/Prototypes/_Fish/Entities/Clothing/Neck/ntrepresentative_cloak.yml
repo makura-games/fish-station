@@ -6,10 +6,10 @@
   suffix: Fish
   components:
   - type: Sprite
-    sprite: _Fish\Clothing\Neck\Cloaks\ntrepresentative.rsi
+    sprite: _Fish/Clothing/Neck/Cloaks/ntrepresentative.rsi
     state: ntrepresentative
   - type: Clothing
-    sprite: _Fish\Clothing\Neck\Cloaks\ntrepresentative.rsi
+    sprite: _Fish/Clothing/Neck/Cloaks/ntrepresentative.rsi
     clothingVisuals:
       neck:
       - state: ntrepresentative
