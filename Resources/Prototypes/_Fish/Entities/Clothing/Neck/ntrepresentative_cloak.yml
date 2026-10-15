@@ -1,8 +1,8 @@
 - type: entity
   parent: ClothingCloakBase
-  id: ClothingNeckCloakNanoTrasenRepresentativeFish
-  name: ent-ClothingNeckCloakNanoTrasenRepresentativeFish
-  description: ent-ClothingNeckCloakNanoTrasenRepresentativeFish
+  id: FishClothingNeckCloakNanoTrasenRepresentative
+  name: nt representative cape
+  description: A high-quality cloak crafted from luxurious black imperial velvet, intricately inlaid with gold. Reserved for the highest-ranking officials.
   suffix: Fish
   components:
   - type: Sprite

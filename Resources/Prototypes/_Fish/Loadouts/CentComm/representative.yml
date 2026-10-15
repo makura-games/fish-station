@@ -7,4 +7,4 @@
       role: JobNanoTrasenRepresentative
       time: 36000 # 10 hours
   equipment:
-    neck: ClothingNeckCloakNanoTrasenRepresentativeFish
+    neck: FishClothingNeckCloakNanoTrasenRepresentative

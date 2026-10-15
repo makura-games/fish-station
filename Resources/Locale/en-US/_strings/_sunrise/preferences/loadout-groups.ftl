@@ -49,6 +49,7 @@ loadout-group-captain-pants = { loadout-group-pants }
 loadout-group-medical-doctor-neck = { loadout-group-neck }
 loadout-group-nanotrasenrepresentative-jumpsuit = { loadout-group-jumpsuit }
 loadout-group-nanotrasenrepresentative-outerclothing = { loadout-group-outer-clothing }
+loadout-group-nanotrasenrepresentative-neck = { loadout-group-neck }
 loadout-group-paramedic-gloves = { loadout-group-gloves }
 loadout-group-paramedic-mask = { loadout-group-mask }
 loadout-group-paramedic-neck = { loadout-group-neck }
