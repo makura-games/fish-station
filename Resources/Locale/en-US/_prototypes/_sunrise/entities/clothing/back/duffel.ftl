@@ -38,3 +38,5 @@ ent-ClothingBackpackDuffelRandomColorSpawner = duffel bag (random color)
 ent-ClothingBackpackDuffelGreytideMaterials = greytide material duffel bag
     .desc = A duffel bag packed with smuggled materials parcels.
     .suffix = DEBUG
+ent-FishComMaidDuffel = Commaid duffel bag
+    .desc = A spacious duffel bag with pink accents and neat trim. It appears to be intended for storing the Command Headquarters maid’s supplies, though there’s nothing stopping you from using it for something more practical.
