@@ -2,7 +2,7 @@
   name: mimic
   id: MobMimic
   parent: [ SimpleMobBase, MobCombat ]
-  description: Surprise. # When this gets a proper write this should use the object's actual description >:)
+  description: mob-mimic-description
   components:
   - type: Tag
     tags:
@@ -33,14 +33,29 @@
   - type: AnimationPlayer
   - type: MeleeWeapon
     angle: 0
-    animation: WeaponArcFist
+    animation: WeaponArcBite
     damage:
       types:
-        Blunt: 20
+        Slash: 2
+        Piercing: 8
   - type: MovementSpeedModifier
-    baseWalkSpeed : 1
-    baseSprintSpeed : 1
+    baseWalkSpeed : 2.5
+    baseSprintSpeed : 2.5
   - type: Butcherable
     spawned:
     - id: DrinkChangelingStingCan
       amount: 1
+  - type: StaminaDamageOnHit
+    damage: 15
+  - type: GhostRole
+    allowMovement: false
+    makeSentient: false
+    allowSpeech: false
+    reregister: true
+    name: ghost-role-information-mimic-name
+    description: ghost-role-information-mimic-description
+    rules: ghost-role-information-mimic-rules
+  - type: GhostTakeoverAvailable
+
+
+
