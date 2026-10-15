@@ -3,6 +3,7 @@
   effects:
   - !type:SexLoadoutEffect
     sex:
+    - Male # Fish - edit
     - Female
     - Unsexed
 
@@ -12,4 +13,5 @@
   - !type:SexLoadoutEffect
     sex:
     - Male
+    - Female # Fish - edit
     - Unsexed
