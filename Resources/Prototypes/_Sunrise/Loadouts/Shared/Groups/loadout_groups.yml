@@ -185,14 +185,15 @@
   - CommonSatchel
   - CommonDuffel
   - NanoTrasenRepresentativeModsuit
-
+# Fish-start
 - type: loadoutGroup
   id: NanoTrasenRepresentativeNeck
   name: loadout-group-nanotrasenrepresentative-neck
   minLimit: 0
   maxLimit: 1
   loadouts:
-  - NTRepresentativeCloak # Fish-Edit
+  - NTRepresentativeCloak
+  # Fish-end
 
 - type: loadoutGroup
   id: BlueShieldHead
