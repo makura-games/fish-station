@@ -354,6 +354,7 @@
     - MedicalCyberlimbDynamic
     - MedicalCyberOrgansDynamic
     # Sunrise-end
+    - FishBorgModules # Fish-Edit
   - type: MaterialStorage
     whitelist: *StandardMaterialWhitelist
   - type: OreSiloClient

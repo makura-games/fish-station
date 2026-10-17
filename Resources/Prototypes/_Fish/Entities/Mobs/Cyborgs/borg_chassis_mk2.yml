@@ -1,0 +1,692 @@
+- type: entity
+  id: FishBorgChassisGenericMk2
+  parent: BorgChassisGeneric
+  name: generic cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: robot
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: robot_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: robot_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: robot_e
+    noMindState: robot_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: robot
+    name: generic cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 при апгрейде запрещена — оставляем штатную BorgArmorSiliconLoadout из BaseBorgChassisNT.
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadout ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishGenericMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisEngineerMk2
+  parent: BorgChassisEngineer
+  name: engineer cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: engineer
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: engineer_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: engineer_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: engineer_e
+    noMindState: engineer_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: engineer
+    name: engineer cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 при апгрейде запрещена — оставляем штатную BorgArmorSiliconLoadout из BaseBorgChassisNT.
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadout ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishEngineeringMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisMiningMk2
+  parent: BorgChassisMining
+  name: salvage cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: miner
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: miner_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: miner_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: miner_e
+    noMindState: miner_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: miner
+    name: salvage cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 при апгрейде запрещена — оставляем штатную BorgArmorSiliconLoadout из BaseBorgChassisNT.
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadout ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishMiningMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisJanitorMk2
+  parent: BorgChassisJanitor
+  name: janitor cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: janitor
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: janitor_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: janitor_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: janitor_e
+    noMindState: janitor_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: janitor
+    name: janitor cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 при апгрейде запрещена — оставляем штатную BorgArmorSiliconLoadout из BaseBorgChassisNT.
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadout ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishJanitorMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisMedicalMk2
+  parent: BorgChassisMedical
+  name: medical cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: medical
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: medical_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: medical_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: medical_e
+    noMindState: medical_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: medical
+    name: medical cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 при апгрейде запрещена — оставляем штатную BorgArmorSiliconLoadout из BaseBorgChassisNT.
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadout ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishMedicalMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisMedicalMk2Battery
+  parent: FishBorgChassisMedicalMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisGenericMk2Battery
+  parent: FishBorgChassisGenericMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisEngineerMk2Battery
+  parent: FishBorgChassisEngineerMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisMiningMk2Battery
+  parent: FishBorgChassisMiningMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisJanitorMk2Battery
+  parent: FishBorgChassisJanitorMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisServiceMk2Battery
+  parent: FishBorgChassisServiceMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisPeaceMk2Battery
+  parent: FishBorgChassisPeaceMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisClownMk2Battery
+  parent: FishBorgChassisClownMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisSecurityMk2Battery
+  parent: FishBorgChassisSecurityMk2
+  suffix: Battery
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Boris
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHigh
+
+- type: entity
+  id: FishBorgChassisServiceMk2
+  parent: BorgChassisService
+  name: service cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: service
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: service_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: service_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: service_e
+    noMindState: service_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: service
+    name: service cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 при апгрейде запрещена — оставляем штатную BorgArmorSiliconLoadout из BaseBorgChassisNT.
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadout ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishServiceMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisPeaceMk2
+  parent: BorgChassisPeace
+  name: peace cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: peace
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: peace_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: peace_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: peace_e
+    noMindState: peace_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: peace
+    name: peace cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 вместо BorgArmorSiliconLoadout из BaseBorgChassisNT (положена только Security/Peace).
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadoutMk2 ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishPeaceMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisClownMk2
+  parent: BorgChassisClown
+  name: clown cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: clown
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: clown_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: clown_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: clown_e
+    noMindState: clown_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: clown
+    name: clown cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 при апгрейде запрещена — оставляем штатную BorgArmorSiliconLoadout из BaseBorgChassisNT.
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadout ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishClownMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest
+
+- type: entity
+  id: FishBorgChassisSecurityMk2
+  parent: BorgChassisSecurity
+  name: security cyborg Mk2
+  components:
+  - type: Sprite
+    sprite: _Lust/Mobs/Silicon/chassis.rsi
+    offset: 0,0.4
+    scale: 0.8,0.8
+    layers:
+    - state: sec_mk2
+      map: ["enum.BorgVisualLayers.Body", "movement"]
+    - state: sec_mk2_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: sec_mk2_l
+      shader: unshaded
+      map: ["light","enum.BorgVisualLayers.LightStatus"]
+      visible: false
+  - type: BorgChassis
+    hasMindState: sec_mk2_e
+    noMindState: sec_mk2_e_r
+  - type: BorgTransponder
+    sprite:
+      sprite: _Lust/Mobs/Silicon/chassis.rsi
+      state: sec_mk2
+    name: security cyborg Mk2
+  - type: FlashImmunity
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      300: Dead
+  - type: PowerCellDraw
+    drawRate: 0.5
+  # Броня Mk2 вместо BorgArmorSiliconLoadout из BaseBorgChassisNT (положена только Security/Peace).
+  - type: Loadout
+    prototypes: [ BorgArmorSiliconLoadoutMk2 ]
+  # AI видит Mk2 на 7 тайлов вместо 3 (стандарт для всех боргов).
+  - type: StationAiVision
+    range: 7
+  # Постоянные chassis-руки только у Mk2 (и риперов); showInHands включает
+  # отображение предметов из этих рук на спрайте. Модульные руки (Functional) не видны.
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+  # Не падает в крите и гасит фонарь (BorgNoFallSystem).
+  - type: BorgNoFall
+  - type: BorgSwitchableType
+    selectedBorgType: FishSecurityMk2
+  # Механика отдыха: действие, блок движения и пониженный расход в rest.
+  - type: BorgRest

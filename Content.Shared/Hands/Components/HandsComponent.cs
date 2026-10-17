@@ -63,8 +63,10 @@ public sealed partial class HandsComponent : Component
     /// <summary>
     ///     Data about the current sprite layers that the hand is contributing to the owner entity. Used for sprite in-hands.
     ///     Used by the client.
+    ///     Fish: ключ — hand ID (string), а не HandLocation: несколько Functional-рук борга
+    ///     разделяли бы один HashSet и вторая рука стирала слои первой при перерисовке.
     /// </summary>
-    public readonly Dictionary<HandLocation, HashSet<string>> RevealedLayers = new();
+    public readonly Dictionary<string, HashSet<string>> RevealedLayers = new(); // Fish-Edit
 
     /// <summary>
     ///     The time at which throws will be allowed again.
@@ -126,8 +128,12 @@ public sealed partial class HandsComponent : Component
 [Serializable, NetSerializable]
 public partial record struct Hand
 {
+    /// <summary>
+    /// Fish: дефолт Functional — модульные руки боргов (BorgHand) в YAML не задают location явно;
+    /// все остальные руки (мобы, HandOrgan, ExtraHandsEquipment) location указывают явно.
+    /// </summary>
     [DataField]
-    public HandLocation Location = HandLocation.Middle;
+    public HandLocation Location = HandLocation.Functional;  // Fish-Edit
 
     /// <summary>
     /// The label to be displayed for this hand when it does not contain an entity
@@ -176,12 +182,20 @@ public sealed class HandsComponentState : ComponentState
     public readonly List<string> SortedHands;
     public readonly string? ActiveHandId;
 
+    // Fish: ShowInHands больше не только YAML-значение: сервер может включить его в
+    // рантайме (например, при апгрейде борга на Mk2), поэтому поле реплицируется.
+    public readonly bool ShowInHands;
+
+    /// <summary>
+    /// Fish: включает <see cref="ShowInHands"/> в состояние — сервер может менять его в рантайме.
+    /// </summary>
     public HandsComponentState(HandsComponent handComp)
     {
         // cloning lists because of test networking.
         Hands = new(handComp.Hands);
         SortedHands = new(handComp.SortedHands);
         ActiveHandId = handComp.ActiveHandId;
+        ShowInHands = handComp.ShowInHands;  // Fish-Edit
     }
 }
 

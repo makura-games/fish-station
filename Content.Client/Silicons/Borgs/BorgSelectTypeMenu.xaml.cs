@@ -27,13 +27,19 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
 
     private static readonly List<ProtoId<GuideEntryPrototype>> GuidebookEntries = new() { "Cyborgs", "Robotics" };
 
+    /// <summary>
+    /// Fish: заполняет список специализаций при открытии меню.
+    /// Скрытые типы (Mk2) не показываются — они недоступны для ручного выбора.
+    /// </summary>
     public BorgSelectTypeMenu()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
 
         var group = new ButtonGroup();
-        foreach (var borgType in _prototypeManager.EnumeratePrototypes<BorgTypePrototype>().OrderBy(PrototypeName))
+        // Fish: фильтр скрытых типов (HideInMenu) и сортировка —
+        // в _Fish/Silicons/Borgs/BorgSelectTypeMenu.Selection.cs.
+        foreach (var borgType in GetSelectableBorgTypes()) // Fish-Edit
         {
             var button = new Button
             {
@@ -52,6 +58,9 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
         HelpGuidebookIds = GuidebookEntries;
     }
 
+    /// <summary>
+    /// Fish: обновляет панель информации о выбранной специализации.
+    /// </summary>
     private void UpdateInformation(BorgTypePrototype prototype)
     {
         _selectedBorgType = prototype;
@@ -61,7 +70,7 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
         ConfirmTypeButton.Disabled = false;
 
         NameLabel.Text = PrototypeName(prototype);
-        DescriptionLabel.Text = Loc.GetString($"borg-type-{prototype.ID}-desc");
+        DescriptionLabel.Text = GetBorgTypeDescription(prototype); // Fish-Edit
         ChassisView.SetPrototype(prototype.DummyPrototype);
     }
 
@@ -73,8 +82,7 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
         ConfirmedBorgType?.Invoke(_selectedBorgType);
     }
 
-    private static string PrototypeName(BorgTypePrototype prototype)
-    {
-        return Loc.GetString($"borg-type-{prototype.ID}-name");
-    }
+    // Fish: PrototypeName (Fish-ключи локализации), фильтр HideInMenu и сортировка
+    // перенесены в _Fish/Silicons/Borgs/BorgSelectTypeMenu.Selection.cs
+    // Fish-Edit
 }
