@@ -52,6 +52,9 @@ public sealed partial class ANHN_O2_N2_Reaction : IGasReactionEffect
         if (produceN2O < 0.001f)
             return ReactionResult.NoReaction;
 
+        // Fish-edit: не даём реакции превратить весь объём за один тик.
+        produceN2O = MathF.Min(produceN2O, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         // расход только азота и кислорода
         mixture.AdjustMoles(Gas.Nitrogen, -produceN2O * 2f);
         mixture.AdjustMoles(Gas.Oxygen,   -produceN2O);

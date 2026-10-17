@@ -28,16 +28,18 @@ public sealed partial class RiminonSynthesisReaction : IGasReactionEffect
         var totalHallu = bz + frezon + healium + nitrium;
         var efficiency = 1.5f;
 
-        var produce = totalHallu * efficiency * 0.5f;
+        // Fish-edit: превращаем постепенно — не более MaxConversionFractionPerTick от каждого газа за тик.
+        var conversion = Atmospherics.MaxConversionFractionPerTick;
+        var produce = totalHallu * efficiency * conversion;
 
         if (produce < 0.1f)
             return ReactionResult.NoReaction;
 
         // расход всех галлюциногенов
-        mixture.AdjustMoles(Gas.BZ, -bz * 0.5f);
-        mixture.AdjustMoles(Gas.Frezon, -frezon * 0.5f);
-        mixture.AdjustMoles(Gas.Healium, -healium * 0.5f);
-        mixture.AdjustMoles(Gas.Nitrium, -nitrium * 0.5f);
+        mixture.AdjustMoles(Gas.BZ, -bz * conversion);
+        mixture.AdjustMoles(Gas.Frezon, -frezon * conversion);
+        mixture.AdjustMoles(Gas.Healium, -healium * conversion);
+        mixture.AdjustMoles(Gas.Nitrium, -nitrium * conversion);
 
         mixture.AdjustMoles(Gas.Riminon, produce);
 

@@ -4,6 +4,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
+using Content.Shared.Radiation.Components;
 using Content.Shared.Radiation.Events;
 using Content.Shared.Rejuvenate;
 using Robust.Shared.GameStates;
@@ -193,6 +194,12 @@ public sealed partial class DamageableSystem
 
     private void OnIrradiated(Entity<DamageableComponent> ent, ref OnIrradiatedEvent args)
     {
+        // FIsh edit start - иммунитет к облучению (газ Крипиум): новое облучение не накапливается,
+        // уже полученный радиационный урон при этом не лечится.
+        if (HasComp<RadiationImmunityComponent>(ent.Owner))
+            return;
+        // FIsh edit end
+
         var damageValue = FixedPoint2.New(args.TotalRads);
 
         // Radiation should really just be a damage group instead of a list of types.

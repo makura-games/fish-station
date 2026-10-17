@@ -43,6 +43,9 @@ public sealed partial class PralliumSynthesisReaction : IGasReactionEffect
         if (produce < 0.06f)
             return ReactionResult.NoReaction;
 
+        // Fish-edit: не даём реакции превратить весь объём за один тик.
+        produce = MathF.Min(produce, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         // Потребляем реагенты
         var consOxy = produce / efficiency * 2.5f;
         var consCo2 = produce / efficiency * 1.5f;

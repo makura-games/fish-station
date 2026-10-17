@@ -13,7 +13,7 @@ public sealed partial class GarodinSynthesisReaction : IGasReactionEffect
     public ReactionResult React(GasMixture mixture, IGasMixtureHolder? holder, AtmosphereSystem atmosphereSystem, float heatScale)
     {
         var temperature = mixture.Temperature;
-        if (temperature < 10000f || temperature > 20000f)
+        if (temperature < 1000f || temperature > 2000f)
             return ReactionResult.NoReaction;
 
         var plasma = mixture.GetMoles(Gas.Plasma);
@@ -31,6 +31,9 @@ public sealed partial class GarodinSynthesisReaction : IGasReactionEffect
 
         if (produce < 0.08f)
             return ReactionResult.NoReaction;
+
+        // Fish-edit: не даём реакции превратить весь объём за один тик.
+        produce = MathF.Min(produce, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
 
         // Потребляем
         var consPlasma = produce / efficiency * 0.75f * 1.2f;

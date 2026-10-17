@@ -30,6 +30,10 @@
 - type: statusEffect
   id: PressureImmunity
 
+# Fish-edit: иммунитет к облучению (газ Крипиум)
+- type: statusEffect
+  id: FishRadiationImmunity
+
 - type: statusEffect
   id: Muted
   alert: Muted

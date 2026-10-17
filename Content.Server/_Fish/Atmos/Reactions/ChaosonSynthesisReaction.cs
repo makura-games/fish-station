@@ -38,6 +38,9 @@ public sealed partial class ChaosonSynthesisReaction : IGasReactionEffect
         if (produce < 0.12f)
             return ReactionResult.NoReaction;
 
+        // Fish-edit: не даём реакции превратить весь объём за один тик.
+        produce = MathF.Min(produce, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         var consumedN2O = produce / efficiency;
         var consumedFrezon = produce / efficiency;
 

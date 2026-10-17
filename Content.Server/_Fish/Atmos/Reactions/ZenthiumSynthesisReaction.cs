@@ -34,6 +34,9 @@ public sealed partial class ZenthiumSynthesisReaction : IGasReactionEffect
         if (produceAmount < 0.05f)
             return ReactionResult.NoReaction;
 
+        // Fish-edit: не даём реакции превратить весь объём за один тик.
+        produceAmount = MathF.Min(produceAmount, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         var healiumConsumed = produceAmount / 1.8f;
         var frezonConsumed  = produceAmount * 4f / 1.8f;
 

@@ -6,7 +6,7 @@
   flavor: sweet
   color: "#008d8d"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.8
       effects:
       - !type:MovementSpeedModifier
@@ -44,7 +44,7 @@
   flavor: metallic
   color: "#82005d"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.6
       effects:
       - !type:MovementSpeedModifier
@@ -54,17 +54,19 @@
           min: 0.8
         walkSpeedModifier: 0.65
         sprintSpeedModifier: 0.5
-      # Полная защита от радиации
-      - !type:HealthChange
+      # Fish-edit: иммунитет к облучению вместо прежнего полного «аннулирования» радиации.
+      # Новое облучение не накапливается, но уже полученный радиационный урон не лечится —
+      # для его снятия нужны обычные препараты. time > 10с — на случай замедленного
+      # метаболизма (например, powered stasis bed), иначе между обработками был бы разрыв.
+      - !type:GenericStatusEffect
         conditions:
         - !type:ReagentCondition
           reagent: Krypium
           min: 0.5
-        scaling: true
-        ignoreResistances: true
-        damage:
-          types:
-            Radiation: -10.0
+        key: FishRadiationImmunity
+        component: RadiationImmunity
+        type: Add
+        time: 11.0
       - !type:PopupMessage
         conditions:
         - !type:ReagentCondition
@@ -88,7 +90,7 @@
   flavor: sweet
   color: "#a0ffff"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.35
       effects:
       - !type:Oxygenate
@@ -121,7 +123,7 @@
   flavor: weh
   color: "#ff69b4"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.4
       effects:
         # Ржет
@@ -182,12 +184,14 @@
         - !type:ReagentCondition
           reagent: Chaoson
           min: 1.1
-      # Полиморф в ящерицу при очень высокой концентрации
+      # Полиморф в ящерицу при очень высокой концентрации.
+      # Порог 20 ед. соответствует примерно одному вдоху чистого Хаосона при 1 атм
+      # (объём вдоха 0.5 л * BreathMolesToReagentMultiplier = ~24 ед.), порог 45 был недостижим.
       - !type:Polymorph
         conditions:
         - !type:ReagentCondition
           reagent: Chaoson
-          min: 45
+          min: 20
         prototype: ArtifactLizard
 
 - type: reagent
@@ -198,7 +202,7 @@
   flavor: bitter
   color: "#f0bb29"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.6
       effects:
       - !type:HealthChange
@@ -229,7 +233,7 @@
   flavor: metallic
   color: "#3300eb"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.5
       effects:
       # временный иммунитет к давлению
@@ -260,7 +264,7 @@
   flavor: alcohol
   color: "#ff1493"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.45
       effects:
       # Очень сильное опьянение
@@ -304,7 +308,7 @@
   flavor: sharp
   color: "#8a2be2"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.65
       effects:
       - !type:HealthChange
@@ -336,7 +340,7 @@
   flavor: sweet
   color: "#00ffaa"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.4
       effects:
       # Питание + утоление жажды
@@ -381,7 +385,7 @@
   flavor: metallic
   color: "#0062b8"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.55
       effects:
       - !type:ModifyStatusEffect
@@ -441,7 +445,7 @@
   flavor: bitter
   color: "#b85959"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.6
       effects:
       - !type:HealthChange
@@ -472,7 +476,7 @@
   flavor: cold
   color: "#5ea1b4"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.45
       effects:
       - !type:HealthChange
@@ -496,7 +500,7 @@
   flavor: bitter
   color: "#1a1a1a"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.35
       effects:
       - !type:HealthChange
@@ -536,7 +540,7 @@
   flavor: sweet
   color: "#62ff43"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.25
       effects:
       - !type:Oxygenate
@@ -577,13 +581,13 @@
         effectProto: StatusEffectDrunk
         time: 6.0
         type: Remove
-      - !type:GenericStatusEffect
+      - !type:ModifyStatusEffect
         conditions:
         - !type:ReagentCondition
           reagent: Ultimium
           min: 0.1
-        key: ForcedSleep
-        component: ForcedSleeping
+        effectProto: StatusEffectForcedSleeping
+        time: 6.0
         type: Remove
       # Долгий иммунитет к давлению
       - !type:GenericStatusEffect
@@ -613,7 +617,7 @@
   flavor: sweet
   color: "#43ddff"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.25
       effects:
       - !type:HealthChange
@@ -644,7 +648,7 @@
 #   flavor: cold
 #   color: "#a5f2ff"
 #   metabolisms:
-#     Bloodstream:
+#     Respiration:
 #       metabolismRate: 0.4
 #       effects:
 #       # - !type:GenericStatusEffect
@@ -678,7 +682,7 @@
   flavor: bitter
   color: "#ff4500"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 0.6
       effects:
       - !type:HealthChange
@@ -709,13 +713,13 @@
   flavor: mindful
   color: "#ff00ff"
   metabolisms:
-    Bloodstream:
+    Respiration:
       metabolismRate: 1
       effects:
       - !type:MovementSpeedModifier
         conditions:
         - !type:ReagentCondition
-          reagent: Zenthium
+          reagent: Riminon # Fish-edit: раньше здесь ошибочно проверялся Zenthium (копипаста), из-за чего замедление не работало
           min: 0.4
         walkSpeedModifier: 0.5
         sprintSpeedModifier: 0.5

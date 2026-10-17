@@ -47,8 +47,9 @@
 - type: gasReaction
   id: GarodinSynthesis
   priority: 2
-  minimumTemperature: 10000
-  maximumTemperature: 20000
+  # Fish-edit: синтез гародина идёт при 1000-2000 K вместо прежних 10000-20000 K
+  minimumTemperature: 1000
+  maximumTemperature: 2000
   minimumRequirements:
     Plasma: 0.05  # plasma
     Frezon: 0.05  # frezon
