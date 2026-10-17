@@ -176,3 +176,25 @@
   conditions:
   - !type:ListingLimitedStockCondition
     stock: 1
+
+- type: listing
+  id: UplinkFishClothingHeadHatCatEars
+  productEntity: ClothingHeadHatCatEars
+  cost:
+    Suntick: 40
+  categories:
+  - General
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: UplinkFishBunnyEars
+  productEntity: BunnyEars
+  cost:
+    Suntick: 30
+  categories:
+  - General
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1  
