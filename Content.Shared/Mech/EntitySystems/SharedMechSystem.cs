@@ -64,6 +64,9 @@ public abstract partial class SharedMechSystem : EntitySystem
         SubscribeLocalEvent<MechComponent, MobStateChangedEvent>(OnMobState);
         SubscribeLocalEvent<MechComponent, EntityStorageIntoContainerAttemptEvent>(OnEntityStorageDump);
         SubscribeLocalEvent<MechComponent, GetAdditionalAccessEvent>(OnGetAdditionalAccess);
+        // FIsh added start - подключаем расширения мехов Fish.
+        InitializeFish();
+        // FIsh added end
         SubscribeLocalEvent<MechComponent, DragDropTargetEvent>(OnDragDrop);
         SubscribeLocalEvent<MechComponent, CanDropTargetEvent>(OnCanDragDrop);
         SubscribeLocalEvent<MechComponent, GotEmaggedEvent>(OnEmagged);
@@ -175,6 +178,9 @@ public abstract partial class SharedMechSystem : EntitySystem
         _actions.AddAction(pilot, ref component.MechUiActionEntity, component.MechUiAction, mech);
         _actions.AddAction(pilot, ref component.MechLightsActionEntity, component.MechLightsAction, mech);
         _actions.AddAction(pilot, ref component.MechEjectActionEntity, component.MechEjectAction, mech);
+        // FIsh added start - добавляем дополнительные действия меха из проекта Fish.
+        AddFishMechActions(pilot, mech, component);
+        // FIsh added end
     }
 
     private void RemoveUser(EntityUid mech, EntityUid pilot)
@@ -185,6 +191,9 @@ public abstract partial class SharedMechSystem : EntitySystem
         RemComp<InteractionRelayComponent>(pilot);
 
         _actions.RemoveProvidedActions(pilot, mech);
+        // FIsh added start - пересчитываем ограничения мозга после удаления relay-компонента.
+        UpdateFishBrainMovement(pilot);
+        // FIsh added end
     }
 
     public void ToggleLights(EntityUid uid, MechComponent component)
@@ -405,7 +414,9 @@ public abstract partial class SharedMechSystem : EntitySystem
         if (!Resolve(uid, ref component))
             return false;
 
-        return IsEmpty(component) && _actionBlocker.CanMove(toInsert);
+        // FIsh edit start - учитываем настройку мозгов и ограничения пилота.
+        return CanInsertFishPilot((uid, component), toInsert);
+        // FIsh edit end
     }
 
     /// <summary>
@@ -436,12 +447,9 @@ public abstract partial class SharedMechSystem : EntitySystem
         if (!CanInsert(uid, toInsert.Value, component))
             return false;
 
-        SetupUser(uid, toInsert.Value);
-        var ev = new MechSayEvent(uid, component.MessageHello);
-        RaiseLocalEvent(uid, ref ev, true);
-        _container.Insert(toInsert.Value, component.PilotSlot);
-        UpdateAppearance(uid, component);
-        return true;
+        // FIsh edit start - вставка с откатом временных компонентов при отказе контейнера.
+        return DoInsertFishPilot((uid, component), toInsert.Value);
+        // FIsh edit end
     }
 
     /// <summary>
@@ -512,6 +520,11 @@ public abstract partial class SharedMechSystem : EntitySystem
         if (args.Handled)
             return;
 
+        // FIsh edit start - не даём обработать мозг как обычный drag and drop.
+        if (!CanDragDropFishPilot((uid, component), args.Dragged))
+            return;
+        // FIsh edit end
+
         args.Handled = true;
 
         var doAfterEventArgs = new DoAfterArgs(EntityManager, args.Dragged, component.EntryDelay, new MechEntryEvent(), uid, target: uid)
@@ -526,7 +539,9 @@ public abstract partial class SharedMechSystem : EntitySystem
     {
         args.Handled = true;
 
-        args.CanDrop |= !component.Broken && CanInsert(uid, args.Dragged, component);
+        // FIsh edit start - мозг вставляется через обычное использование меха.
+        args.CanDrop |= CanDragDropFishPilot((uid, component), args.Dragged);
+        // FIsh edit end
     }
 
     private void OnEmagged(EntityUid uid, MechComponent component, ref GotEmaggedEvent args)

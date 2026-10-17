@@ -49,7 +49,9 @@ public sealed partial class MechSystem : SharedMechSystem
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
-    [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    // FIsh edit start - проверки пилота используют whitelist-систему из SharedMechSystem.
+    // [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    // FIsh edit end
     [Dependency] private SharedToolSystem _toolSystem = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private TagSystem _tag = default!;
@@ -84,7 +86,7 @@ public sealed partial class MechSystem : SharedMechSystem
 
         SubscribeLocalEvent<MechAirComponent, GetFilterAirEvent>(OnGetFilterAir);
 
-        InitializeSunrise(); // Sunrise-Edit — регистрация расширений мехов
+        InitializeSunrise(); // Sunrise-Edit: регистрация расширений мехов
 
         #region Equipment UI message relays
         SubscribeLocalEvent<MechComponent, MechGrabberEjectMessage>(ReceiveEquipmentUiMesssages);
@@ -100,6 +102,11 @@ public sealed partial class MechSystem : SharedMechSystem
 
     private void OnInteractUsing(EntityUid uid, MechComponent component, InteractUsingEvent args)
     {
+        // FIsh added start - вставляем роботизированный мозг через обычное использование.
+        if (HandleFishBrainInteraction((uid, component), args))
+            return;
+        // FIsh added end
+
         if (TryComp<WiresPanelComponent>(uid, out var panel) && !panel.Open)
             return;
 
@@ -156,7 +163,7 @@ public sealed partial class MechSystem : SharedMechSystem
         }
 
         // TODO: this should just be damage and battery
-        SetSunriseMaxIntegrity(uid, component); // Sunrise-Edit — сохраняем пороги прочности существующих прототипов
+        SetSunriseMaxIntegrity(uid, component); // Sunrise-Edit: сохраняем пороги прочности существующих прототипов
         component.Integrity = component.MaxIntegrity;
         component.Energy = component.MaxEnergy;
 
@@ -214,7 +221,10 @@ public sealed partial class MechSystem : SharedMechSystem
                 Act = () => ToggleMechUi(uid, component, args.User),
                 Text = Loc.GetString("mech-ui-open-verb")
             };
-            args.Verbs.Add(enterVerb);
+            // FIsh edit start - мозг устанавливается ЛКМ, без отдельного verb входа.
+            if (CanOfferFishMechEntry((uid, component), args.User, args.Using))
+                args.Verbs.Add(enterVerb);
+            // FIsh edit end
             args.Verbs.Add(openUiVerb);
         }
         else if (!IsEmpty(component))
@@ -249,35 +259,9 @@ public sealed partial class MechSystem : SharedMechSystem
         if (args.Cancelled || args.Handled)
             return;
 
-        if (_whitelistSystem.IsWhitelistFail(component.PilotWhitelist, args.User))
-        {
-            _popup.PopupEntity(Loc.GetString("mech-no-enter", ("item", uid)), Identity.Entity(args.User, EntityManager));
-            return;
-        }
-
-        if (_whitelistSystem.IsWhitelistPass(component.PilotBlacklist, args.User))
-        {
-            _popup.PopupEntity(Loc.GetString("mech-no-enter", ("item", uid)), args.User);
-            return;
-        }
-
-        if (TryComp<AccessReaderComponent>(uid, out var accessReader))
-            if (!_accessReader.IsAllowed(args.Args.User, uid, accessReader))
-            {
-                _popup.PopupEntity(Loc.GetString("mech-no-access", ("item", uid)), args.User);
-                return;
-            }
-
-        foreach (var hand in _hands.EnumerateHands(args.Args.User))
-        {
-            _hands.DoDrop(args.Args.User, hand);
-        }
-
-        _factionSystem.Up(args.Args.User, uid);
-        TryInsert(uid, args.Args.User, component);
-        _actionBlocker.UpdateCanMove(uid);
-
-        args.Handled = true;
+        // FIsh edit start - общая проверка актора и пилота находится в Fish partial.
+        args.Handled = TryEnterMech((uid, component), args.User, args.Args.Used ?? args.User);
+        // FIsh edit end
     }
 
     private void OnMechExit(EntityUid uid, MechComponent component, MechExitEvent args)
@@ -304,7 +288,7 @@ public sealed partial class MechSystem : SharedMechSystem
             component.PilotSlot.ContainedEntity != null)
         {
             var damage = args.DamageDelta * component.MechToPilotDamageMultiplier;
-            RemoveSunrisePilotDamage(damage); // Sunrise-Edit — Mangleness не передаётся пилоту
+            RemoveSunrisePilotDamage(damage); // Sunrise-Edit: Mangleness не передаётся пилоту
             _damageable.ChangeDamage(component.PilotSlot.ContainedEntity.Value, damage);
         }
     }

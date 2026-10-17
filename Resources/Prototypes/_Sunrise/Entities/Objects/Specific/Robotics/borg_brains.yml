@@ -82,6 +82,7 @@
   - type: Input
     context: "ghost"
   - type: BlockMovement
+    blockInteraction: false # FIsh edit - мозг можно использовать для установки в мех.
   - type: ToggleableGhostRole
     examineTextMindPresent: sofia-installed
     examineTextMindSearching: sofia-still-searching

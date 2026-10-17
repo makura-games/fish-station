@@ -98,6 +98,7 @@
 #      stopSearchVerbPopup: positronic-brain-stopped-searching
 #      job: Borg
     - type: BlockMovement
+      blockInteraction: false # FIsh edit - мозг можно использовать для установки в мех.
     - type: Examiner
     - type: BorgBrain
     - type: IntrinsicRadioReceiver
