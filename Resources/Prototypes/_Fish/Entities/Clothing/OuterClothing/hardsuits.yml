@@ -42,3 +42,37 @@
         Shock: 0.1
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitDeathsquadFish
+
+- type: entity
+  parent: ClothingOuterHardsuitBase
+  id: FishClothingOuterHardsuitCentcomBlack
+  name: C-115M field hardsuit
+  description: A hardsuit designed for an elite special operations officer.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/centcom_officer_black.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/centcom_officer_black.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.45
+    lowPressureMultiplier: 1000
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.7
+        Caustic: 0.8
+  - type: StaminaResistance
+    damageCoefficient: 0.7
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+  - type: ToggleableClothing
+    clothingPrototype: FishClothingHeadHelmetHardsuitCentcomBlack
+  - type: Item
+    size: Huge

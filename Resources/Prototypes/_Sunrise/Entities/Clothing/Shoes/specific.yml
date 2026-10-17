@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: ClothingShoesBase
   id: ClothingShoesGreenLizardskin
   name: green lizardskin shoes
@@ -30,6 +30,7 @@
       sprite: _Sunrise/Clothing/Shoes/Specific/centcom_officer_black.rsi
     - type: Clothing
       sprite: _Sunrise/Clothing/Shoes/Specific/centcom_officer_black.rsi
+    - type: NoSlip # Fish edit
 
 - type: entity
   parent: ClothingShoesBaseButcherable

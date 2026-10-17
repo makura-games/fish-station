@@ -64,3 +64,26 @@
     mustEquip: true
     disableOnUnequip: true
     targetSlot: head
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitSecurityRed
+  id: FishClothingHeadHelmetHardsuitCentcomBlack
+  categories: [ HideSpawnMenu, DoNotMap ]
+  name: field hardsuit helmet
+  description: Designed for an elite special operations officer.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/centcom_officer_black.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/centcom_officer_black.rsi
+  - type: PointLight
+    color: '#4ac4ff'
+    radius: 6
+    energy: 2
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide

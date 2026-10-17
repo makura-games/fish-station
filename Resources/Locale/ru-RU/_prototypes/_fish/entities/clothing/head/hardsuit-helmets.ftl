@@ -5,3 +5,7 @@ ent-ClothingHeadHelmetVoidParamedFish = { ent-ClothingHeadHelmetVoidParamed }
 ent-ClothingHeadHelmetHardsuitDeathsquadFish = { ent-ClothingHeadHelmetHardsuitDeathsquad }
     .desc = { ent-ClothingHeadHelmetHardsuitDeathsquad.desc }
     .suffix = Fish
+
+ent-FishClothingHeadHelmetHardsuitCentcomBlack = полевой шлем скафандра
+    .desc = Предназначен для элитного офицера специальных операций.
+    .suffix = Fish
