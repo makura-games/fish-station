@@ -62,6 +62,11 @@
   equipment:
     back: ClothingBackpackSatchelLeather
 
+- type: loadout
+  id: FishComMaidDuffel # fish edit
+  equipment:
+    back: FishComMaidDuffel
+
 # Neck
 - type: loadout
   id: ComMaidBunnyButterfly
