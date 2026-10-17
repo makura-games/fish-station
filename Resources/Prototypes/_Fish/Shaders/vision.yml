@@ -1,0 +1,24 @@
+- type: shader
+  id: FishNightVision
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/night_vision.swsl
+
+- type: shader
+  id: FishNightVisionExposure
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/night_exposure.swsl
+
+- type: shader
+  id: FishThermalWorld
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/thermal_world.swsl
+
+- type: shader
+  id: FishThermalContact
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/thermal_contact.swsl
+
+- type: shader
+  id: FishThermalExposure
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/thermal_exposure.swsl

@@ -1,0 +1,65 @@
+light_mode unshaded;
+blend_mode none;
+
+uniform sampler2D SCREEN_TEXTURE;
+#include "/Textures/_Fish/Shaders/Vision/vision_sampling.swsl"
+uniform sampler2D EXPOSURE_TEXTURE;
+uniform highp vec2 viewport_size;
+uniform highp vec2 aperture_radii;
+uniform highp float edge_fraction;
+uniform highp float activation;
+uniform bool noise_enabled;
+uniform highp float noise_frame;
+uniform highp vec4 phosphor_color;
+
+highp float bright_sample(highp vec2 offset) {
+    highp vec2 uv = clamp(UV + offset / viewport_size, vec2(0.0), vec2(1.0));
+    if (!night_visible(uv)) {
+        return 0.0;
+    }
+    highp float brightness = luminance(zTextureSpec(SCREEN_TEXTURE, uv).rgb);
+    return brightness * smoothstep(0.20, 0.65, brightness);
+}
+
+void fragment() {
+    highp vec3 original = zTextureSpec(SCREEN_TEXTURE, UV).rgb;
+    highp float radius = length((UV - vec2(0.5)) * viewport_size / aperture_radii);
+    highp float aperture = 1.0 - smoothstep(1.0 - edge_fraction, 1.0, radius);
+    if (!night_visible(UV)) {
+        COLOR = vec4(original, 1.0);
+        return;
+    }
+    if (aperture <= 0.0) {
+        COLOR = vec4(original * (1.0 - activation), 1.0);
+    } else {
+        // Локальная засветка: все выборки находятся в радиусе шести экранных пикселей.
+        highp float halo = bright_sample(vec2(3.0, 0.0)) + bright_sample(vec2(-3.0, 0.0));
+        halo += bright_sample(vec2(0.0, 3.0)) + bright_sample(vec2(0.0, -3.0));
+        halo += bright_sample(vec2(6.0, 0.0)) + bright_sample(vec2(-6.0, 0.0));
+        halo += bright_sample(vec2(0.0, 6.0)) + bright_sample(vec2(0.0, -6.0));
+        halo += bright_sample(vec2(4.0, 4.0)) + bright_sample(vec2(-4.0, 4.0));
+        halo += bright_sample(vec2(4.0, -4.0)) + bright_sample(vec2(-4.0, -4.0));
+        highp float gain = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
+        highp float brightness = max(luminance(original), 0.0);
+        // Усиление теней сохраняет детали, яркие источники входят в мягкое насыщение люминофора.
+        highp float energy = (brightness + halo * (1.35 / 12.0)) * mix(1.0, 2.0, gain);
+        highp float base_tone = energy / (energy + 0.25);
+        highp float overload = 1.0 - exp(-3.5 * max(energy - 0.24, 0.0));
+        highp float tone = mix(base_tone, 1.0, overload * 0.92);
+        if (noise_enabled) {
+            highp vec2 pixel = floor(UV * viewport_size);
+            highp float grain = fract(sin(dot(pixel, vec2(12.9898, 78.233)) + noise_frame * 37.719) * 43758.5453);
+            // Мультипликативный шум не создаёт цветную пелену поверх чёрного.
+            tone *= 1.0 + (grain * 2.0 - 1.0) * mix(0.085, 0.015, tone);
+            // Слабая построчная помеха меняется вместе с зерном, не смещая изображение мира.
+            highp float row_noise = fract(sin(floor(pixel.y / 2.0) * 17.13 + noise_frame * 3.71) * 15731.743);
+            highp float scanline = 0.5 + 0.5 * sin(pixel.y * 1.5707963);
+            tone *= 1.0 - 0.025 * scanline - 0.04 * row_noise;
+        }
+        tone = clamp(tone, 0.0, 1.0);
+        highp vec3 phosphor = mix(phosphor_color.rgb, mix(phosphor_color.rgb, vec3(1.0), 0.94), smoothstep(0.52, 0.94, tone));
+        highp float vignette = 1.0 - 0.85 * smoothstep(0.35, 1.0, radius);
+        highp vec3 night = phosphor * tone * vignette * aperture;
+        COLOR = vec4(mix(original, night, activation), 1.0);
+    }
+}

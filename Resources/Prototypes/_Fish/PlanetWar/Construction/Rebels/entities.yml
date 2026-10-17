@@ -707,7 +707,8 @@
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    - type: FishThermalVision
+  - type: FishVisionDevice
   - type: ItemToggle
     predictable: false
     onUse: false

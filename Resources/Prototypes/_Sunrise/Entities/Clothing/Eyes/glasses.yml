@@ -107,8 +107,8 @@
   - type: ComponentToggler
     parent: true
     components:
-      - type: NightVision
-        effect: EffectNightVisionSyndie
+      - type: FishNightVision # FIsh edit - красная оптика скрытого ПНВ синдиката.
+        color: "#FF1020"
 
 # region thermals
 - type: entity
@@ -136,7 +136,8 @@
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    - type: FishThermalVision # FIsh edit - силуэты зависят от температуры.
+  - type: FishVisionDevice # FIsh edit - согласование нескольких приборов.
   - type: PowerCellDraw
     drawRate: 15
     useCharge: 15
@@ -246,7 +247,8 @@
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    - type: FishThermalVision # FIsh edit - та же оптика для очков-хамелеона.
+  - type: FishVisionDevice # FIsh edit - согласование нескольких приборов.
   - type: PowerCellDraw
     drawRate: 3
     useCharge: 15

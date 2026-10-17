@@ -1,0 +1,33 @@
+light_mode unshaded;
+blend_mode none;
+
+
+
+uniform sampler2D SCREEN_TEXTURE;
+#include "/Textures/_Fish/Shaders/Vision/vision_sampling.swsl"
+uniform sampler2D PREVIOUS_TEXTURE;
+uniform highp vec2 adaptation;
+uniform bool reset_history;
+
+void fragment() {
+    highp float energy = 0.0;
+    highp float weight = 0.0;
+    // Замер 16x16 выполняется только для одного пикселя истории, а не для всего экрана.
+    for (highp int y = 0; y < 16; y++) {
+        for (highp int x = 0; x < 16; x++) {
+            highp vec2 uv = (vec2(float(x), float(y)) + 0.5) / 16.0;
+            if (night_visible(uv)) {
+                highp float sample_weight = 1.0 - 0.5 * length(uv * 2.0 - 1.0);
+                highp float brightness = luminance(zTextureSpec(SCREEN_TEXTURE, uv).rgb);
+                energy += brightness * brightness * sample_weight;
+                weight += sample_weight;
+            }
+        }
+    }
+    highp float brightness = sqrt(energy / max(weight, 1.0));
+    highp float target = mix(1.2, 0.85, smoothstep(0.04, 0.6, brightness));
+    highp float previous = texture2D(PREVIOUS_TEXTURE, vec2(0.5)).r;
+    highp float rate = target < previous ? adaptation.x : adaptation.y;
+    highp float gain = reset_history ? target : mix(previous, target, rate);
+    COLOR = vec4(gain, 0.0, 0.0, 1.0);
+}
