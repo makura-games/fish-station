@@ -1,0 +1,14 @@
+- type: entity
+  parent: BulletGrenadeCleanade
+  id: FishBulletSuperGrenadeCleanade
+  name: super cleanade grenade round
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SmokeOnTrigger
+    duration: 7
+    spreadAmount: 50
+    smokePrototype: FishSuperCleanFoam
+    solution:
+      reagents:
+      - ReagentId: SpaceCleaner
+        Quantity: 30
