@@ -197,3 +197,20 @@
   - Bra
   - Pants
   - Socks #socks
+
+- type: roleLoadout
+  id: JobCentCommMaid
+  groups:
+  - ComMaidHead
+  - ComMaidNeck
+  - ComMaidJumpsuit
+  - ComMaidGloves
+  - ComMaidShoes
+  - ComMaidBackpack
+  - SunriseSurvival
+  - GroupSpeciesBreathTool
+  - Bra
+  - Pants
+  - Socks
+  - SunriseTrinkets
+  - Contributors
