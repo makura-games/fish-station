@@ -1,0 +1,20 @@
+# Выделение источников, уменьшение маски, размытие и наложение свечения.
+- type: shader
+  id: FishBloomExtract
+  kind: source
+  path: /Textures/_Fish/Shaders/bloom_extract.swsl
+
+- type: shader
+  id: FishBloomDownsample
+  kind: source
+  path: /Textures/_Fish/Shaders/bloom_downsample.swsl
+
+- type: shader
+  id: FishBloomBlur
+  kind: source
+  path: /Textures/_Fish/Shaders/bloom_blur.swsl
+
+- type: shader
+  id: FishBloomComposite
+  kind: source
+  path: /Textures/_Fish/Shaders/bloom_composite.swsl

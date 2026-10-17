@@ -1,0 +1,9 @@
+fish-options-bloom-label = Bloom
+fish-options-bloom-enabled = Glowing objects
+fish-options-bloom-enabled-tooltip = Adds soft halos around glowing parts of objects and floor tiles.
+fish-options-bloom-strength = Bloom intensity
+fish-options-bloom-quality = Bloom quality
+fish-options-bloom-quality-tooltip = Higher quality makes halos smoother but increases GPU load.
+fish-options-bloom-quality-low = Low
+fish-options-bloom-quality-medium = Medium
+fish-options-bloom-quality-high = High

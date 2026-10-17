@@ -1,0 +1,26 @@
+light_mode unshaded;
+blend_mode none;
+
+uniform highp vec2 sample_step;
+uniform highp int axis_samples;
+
+void fragment() {
+    // На Low шестнадцать bilinear-выборок покрывают все 64 texel блока 8x8.
+    if (axis_samples == 4) {
+        highp vec3 sum = vec3(0.0);
+        for (highp int y = 0; y < 4; y++) {
+            for (highp int x = 0; x < 4; x++) {
+                highp vec2 offset = vec2(float(x * 2 - 3), float(y * 2 - 3)) * sample_step;
+                sum += zTexture(UV + offset).rgb;
+            }
+        }
+        COLOR = vec4(sum / 16.0, 1.0);
+    } else {
+        // Четыре bilinear-выборки сохраняют исходный downsample Medium и High.
+        highp vec3 sum = zTexture(UV + sample_step).rgb;
+        sum += zTexture(UV - sample_step).rgb;
+        sum += zTexture(UV + vec2(sample_step.x, -sample_step.y)).rgb;
+        sum += zTexture(UV + vec2(-sample_step.x, sample_step.y)).rgb;
+        COLOR = vec4(sum * 0.25, 1.0);
+    }
+}
