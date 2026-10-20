@@ -14,10 +14,6 @@
         nameGenerator:
           !type:NanotrasenNameGenerator
           prefixCreator: 'FH'
-      - type: SpawnGridAndDockToStation
-        grids:
-        - gridPath: /Maps/_Fish/Shuttles/security_jay.yml
-          priorityTag: DockFishSecurity
       - type: StationEmergencyShuttle
         emergencyShuttlePath: /Maps/_Fish/Shuttles/emergency_barratry.yml
       - type: StationGoal

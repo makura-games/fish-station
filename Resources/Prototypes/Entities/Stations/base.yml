@@ -52,10 +52,16 @@
   components:
     - type: SpawnGridAndDockToStation
       grids:
-        - gridPath: /Maps/_Sunrise/Shuttles/Salvage/mining.yml
+# Fish-start
+        - gridPath: /Maps/_Fish/Shuttles/mining.yml
           priorityTag: DockMining
-        - gridPath: /Maps/_Sunrise/Shuttles/Security/security.yml
-          priorityTag: DockSecurity
+        - gridPaths: 
+            - /Maps/_Fish/Shuttles/security/security_Bliznec.yml
+            - /Maps/_Fish/Shuttles/security/security_Sherhen.yml
+            - /Maps/_Fish/Shuttles/security/security_Sozicatel.yml
+            - /Maps/_Fish/Shuttles/security/security_jay.yml
+          priorityTag: DockFishSecurity
+# Fish-end
 #    - type: StationCargoShuttle
 #      path: /Maps/Shuttles/cargo.yml
     - type: GridSpawn
@@ -80,7 +86,7 @@
           - /Maps/Ruins/biodome_satellite.yml
           - /Maps/Ruins/derelict.yml
           - /Maps/_Sunrise/Ruins/djstation.yml # Sunrise-Edit
-          - /Maps/_Sunrise/Ruins/empty_flagship.yml # Sunrise-Edit
+          #- /Maps/_Sunrise/Ruins/empty_flagship.yml # Sunrise-Edit # Fish-Edit
           - /Maps/Ruins/hydro_outpost.yml
           - /Maps/Ruins/old_ai_sat.yml
           - /Maps/Ruins/ruined_prison_ship.yml
