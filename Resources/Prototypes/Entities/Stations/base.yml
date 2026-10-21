@@ -60,6 +60,9 @@
             - /Maps/_Fish/Shuttles/security/security_Sherhen.yml
             - /Maps/_Fish/Shuttles/security/security_Sozicatel.yml
             - /Maps/_Fish/Shuttles/security/security_jay.yml
+            - /Maps/_Sunrise/Shuttles/Security/mosquitt.yml
+            - /Maps/_Sunrise/Shuttles/Security/stargaze.yml
+            - /Maps/_Sunrise/Shuttles/Security/vanguard.yml
           priorityTag: DockFishSecurity
 # Fish-end
 #    - type: StationCargoShuttle
