@@ -6,10 +6,6 @@ using Content.Shared.Throwing;
 
 namespace Content.Server._Fish.Mobs.Mimic;
 
-/// <summary>
-/// Прыжок мимика: моб отбрасывает сам себя в сторону выбранной точки.
-/// Механика полностью самостоятельная чтото типо дубликата прыжка зомби но с своей темой
-/// </summary>
 public sealed partial class MimicJumpSystem : EntitySystem
 {
     [Dependency] private ThrowingSystem _throwing = default!;
@@ -24,9 +20,10 @@ public sealed partial class MimicJumpSystem : EntitySystem
 
         SubscribeLocalEvent<MimicJumpComponent, MimicJumpActionEvent>(OnJump);
         SubscribeLocalEvent<MimicJumpComponent, ThrowDoHitEvent>(OnThrowDoHit);
+        SubscribeLocalEvent<MimicJumpComponent, StopThrowEvent>(OnStopThrow);
     }
 
-    private void OnJump(EntityUid uid, MimicJumpComponent component, MimicJumpActionEvent args)
+    private void OnJump(Entity<MimicJumpComponent> ent, ref MimicJumpActionEvent args)
     {
         if (args.Handled)
             return;
@@ -34,32 +31,37 @@ public sealed partial class MimicJumpSystem : EntitySystem
         args.Handled = true;
 
         var mapCoords = _transform.ToMapCoordinates(args.Target);
-        var position = _transform.GetMapCoordinates(uid).Position;
+        var position = _transform.GetMapCoordinates(ent).Position;
         var direction = mapCoords.Position - position;
 
-        // Дальность прыжка ограничена, чтобы мимик не улетал через весь контур.
-        if (direction.Length() > component.MaxJumpDistance)
-            direction = direction.Normalized() * component.MaxJumpDistance;
+        if (direction.Length() > ent.Comp.MaxJumpDistance)
+            direction = direction.Normalized() * ent.Comp.MaxJumpDistance;
 
-        _throwing.TryThrow(uid, direction, component.JumpSpeed, uid, component.PushbackRatio);
+        _throwing.TryThrow(ent, direction, ent.Comp.JumpSpeed, ent, ent.Comp.PushbackRatio);
+
+        ent.Comp.Jumping = HasComp<ThrownItemComponent>(ent);
     }
 
-    /// <summary>
-    /// Цель в которую влетел мимик падает в стан
-    /// </summary>
-    private void OnThrowDoHit(EntityUid uid, MimicJumpComponent component, ThrowDoHitEvent args)
+    private void OnThrowDoHit(Entity<MimicJumpComponent> ent, ref ThrowDoHitEvent args)
     {
-        if (_mobState.IsDead(uid))
+        if (!ent.Comp.Jumping)
             return;
 
-        // Мимики друг друга не оглушают.
+        if (_mobState.IsDead(ent))
+            return;
+
         if (HasComp<MimicJumpComponent>(args.Target))
             return;
 
         if (!_mobState.IsAlive(args.Target))
             return;
 
-        _stun.TryAddParalyzeDuration(args.Target, TimeSpan.FromSeconds(component.ParalyzeTime));
-        _damageable.TryChangeDamage(args.Target, component.Damage, origin: args.Thrown);
+        _stun.TryAddParalyzeDuration(args.Target, TimeSpan.FromSeconds(ent.Comp.ParalyzeTime));
+        _damageable.TryChangeDamage(args.Target, ent.Comp.Damage, origin: args.Thrown);
+    }
+
+    private void OnStopThrow(Entity<MimicJumpComponent> ent, ref StopThrowEvent args)
+    {
+        ent.Comp.Jumping = false;
     }
 }

@@ -2,7 +2,9 @@
   name: mimic
   id: MobMimic
   parent: [ SimpleMobBase, MobCombat ]
-  description: mob-mimic-description
+  # Fish edit start
+  description: A mimic lurking in an abandoned area, disguised as a long-forgotten soda vending machine
+  # Fish edit end
   components:
   - type: Tag
     tags:
@@ -33,18 +35,23 @@
   - type: AnimationPlayer
   - type: MeleeWeapon
     angle: 0
+    # Fish edit start
     animation: WeaponArcBite
     damage:
       types:
         Slash: 2
         Piercing: 8
+    # Fish edit end
   - type: MovementSpeedModifier
+    # Fish edit start
     baseWalkSpeed : 2.5
     baseSprintSpeed : 2.5
+    # Fish edit end
   - type: Butcherable
     spawned:
     - id: DrinkChangelingStingCan
       amount: 1
+  # Fish edit start
   - type: StaminaDamageOnHit
     damage: 15
   - type: GhostRole
@@ -56,7 +63,6 @@
     description: ghost-role-information-mimic-description
     rules: ghost-role-information-mimic-rules
   - type: GhostTakeoverAvailable
-  # Fish edit start - прыжок мимика
   - type: MimicJump
   - type: Sleeping # мимик спит как персонаж будится только кликом урон игнорит
     wakeThreshold: 10000

@@ -1,45 +1,39 @@
 using Content.Shared._Fish.Mobs.Mimic;
+using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Mind;
-using Content.Shared.Movement.Components;
-using Content.Shared.Popups;
+using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Events;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Mobs.Mimic;
 
-/// <summary>
-/// Сон мимика работает на механике сна мимик спит, как персонаж в кровати
-/// просыпается когда по нему кто-то кликнет и еще сон непробудный типо
-/// (урон его не будит)и кнопки Проснуться у мимика тоже нету
-/// </summary>
 public sealed partial class MimicSleepSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
-    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        // ComponentStartup срабатывает после того как SleepingSystem усыпит.
         SubscribeLocalEvent<SleepingComponent, ComponentStartup>(OnSleepingStartup);
         SubscribeLocalEvent<SleepingComponent, SleepStateChangedEvent>(OnSleepStateChanged);
+        SubscribeLocalEvent<SleepingComponent, UpdateCanMoveEvent>(OnUpdateCanMove);
     }
 
-    /// <summary>
-    /// Пока мимик спит он не может двигаться
-    /// </summary>
     private void OnSleepingStartup(Entity<SleepingComponent> ent, ref ComponentStartup args)
     {
-        if (!HasComp<MimicJumpComponent>(ent))
+        if (!TryComp<MimicJumpComponent>(ent, out var jump))
             return;
 
-        // Мимика можно будить только кликом
         if (ent.Comp.WakeAction is { } action && TryComp<ActionComponent>(action, out var actionComp))
         {
             _actions.RemoveAction((action, actionComp));
@@ -47,35 +41,44 @@ public sealed partial class MimicSleepSystem : EntitySystem
             Dirty(ent, ent.Comp);
         }
 
-        SetCanMove(ent, false);
+        jump.Awake = false;
+        _actionBlocker.UpdateCanMove(ent.Owner);
     }
 
-    /// <summary>
-    /// Мимик проснулся
-    /// </summary>
+    private void OnUpdateCanMove(Entity<SleepingComponent> ent, ref UpdateCanMoveEvent args)
+    {
+        if (!TryComp<MimicJumpComponent>(ent, out var jump) || jump.Awake)
+            return;
+
+        args.Cancel();
+    }
+
     private void OnSleepStateChanged(Entity<SleepingComponent> ent, ref SleepStateChangedEvent args)
     {
         if (args.FellAsleep)
             return;
 
-        if (!HasComp<MimicJumpComponent>(ent))
+        if (!TryComp<MimicJumpComponent>(ent, out var jump))
             return;
 
-        // Мимик оживает
-        _mind.MakeSentient(ent.Owner, allowMovement: true, allowSpeech: false);
-        SetCanMove(ent, true);
+        if (Transform(ent.Owner).LifeStage > ComponentLifeStage.Running)
+            return;
 
-        // Действие прыжка появляется вместе с пробуждением.
-        if (TryComp<MimicJumpComponent>(ent, out var jump))
-            _actions.AddAction(ent.Owner, jump.ActionId);
+        if (_mobState.IsDead(ent))
+            return;
+
+        jump.Awake = true;
+
+        _mind.MakeSentient(ent.Owner, allowMovement: true, allowSpeech: false);
+
+        _actions.AddAction(ent.Owner, ref jump.JumpAction, jump.ActionId);
 
         _audio.PlayPvs(new SoundPathSpecifier("/Audio/_Sunrise/Weapons/Melee/mimicry_swing.ogg"), ent);
-        _popup.PopupEntity(Loc.GetString("mimic-wake-up"), ent.Owner, ent.Owner, PopupType.MediumCaution);
-    }
 
-    private void SetCanMove(Entity<SleepingComponent> ent, bool canMove)
-    {
-        if (TryComp<InputMoverComponent>(ent, out var mover))
-            mover.CanMove = canMove;
+        Timer.Spawn(0, () =>
+        {
+            if (Exists(ent.Owner))
+                _actionBlocker.UpdateCanMove(ent.Owner);
+        });
     }
 }

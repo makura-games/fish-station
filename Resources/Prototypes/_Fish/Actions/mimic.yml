@@ -1,14 +1,13 @@
-# Fish edit start - действие прыжка мимика
+# Fish edit start
 - type: entity
   parent: BaseAction
-  id: ActionMimicJump
+  id: FishActionMimicJump
   name: Jump
-  description: ""
+  description: The mimic leaps towards the selected location.
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
     useDelay: 15
-    checkCanInteract: false
     icon:
       sprite: Interface/Actions/jump.rsi
       state: icon
