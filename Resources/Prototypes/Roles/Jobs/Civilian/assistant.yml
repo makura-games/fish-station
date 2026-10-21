@@ -13,9 +13,9 @@
   - job-alt-title-off-duty-crew
   # Sunrise-End
   # Fish-Start
-  #access:
-  #- Maintenance
-  # Fish-End  
+  access:
+  - Maintenance
+  # Fish-End
 
 - type: startingGear
   id: PassengerGear
