@@ -2,9 +2,7 @@
   name: mimic
   id: MobMimic
   parent: [ SimpleMobBase, MobCombat ]
-  # Fish edit start
-  description: A mimic lurking in an abandoned area, disguised as a long-forgotten soda vending machine
-  # Fish edit end
+  description: A mimic lurking in an abandoned area, disguised as a long-forgotten soda vending machine # fish editS
   components:
   - type: Tag
     tags:
@@ -41,9 +39,7 @@
       types:
         Slash: 2
         Piercing: 8
-    # Fish edit end
   - type: MovementSpeedModifier
-    # Fish edit start
     baseWalkSpeed : 2.5
     baseSprintSpeed : 2.5
     # Fish edit end

@@ -61,7 +61,7 @@ public sealed partial class MimicSleepSystem : EntitySystem
         if (!TryComp<MimicJumpComponent>(ent, out var jump))
             return;
 
-        if (Transform(ent.Owner).LifeStage > ComponentLifeStage.Running)
+        if (TerminatingOrDeleted(ent.Owner))
             return;
 
         if (_mobState.IsDead(ent))
