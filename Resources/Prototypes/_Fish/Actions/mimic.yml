@@ -1,0 +1,21 @@
+# Fish edit start - действие прыжка мимика
+- type: entity
+  parent: BaseAction
+  id: ActionMimicJump
+  name: Jump
+  description: ""
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    useDelay: 15
+    checkCanInteract: false
+    icon:
+      sprite: Interface/Actions/jump.rsi
+      state: icon
+    itemIconStyle: NoItem
+  - type: TargetAction
+    range: 200
+    checkCanAccess: false
+  - type: WorldTargetAction
+    event: !type:MimicJumpActionEvent
+# Fish edit end

@@ -56,6 +56,11 @@
     description: ghost-role-information-mimic-description
     rules: ghost-role-information-mimic-rules
   - type: GhostTakeoverAvailable
+  # Fish edit start - прыжок мимика
+  - type: MimicJump
+  - type: Sleeping # мимик спит как персонаж будится только кликом урон игнорит
+    wakeThreshold: 10000
+  # Fish edit end
 
 
 
