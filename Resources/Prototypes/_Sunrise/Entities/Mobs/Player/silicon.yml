@@ -198,7 +198,7 @@
 
 - type: entity
   id: PlayerBorgSyndicateReaperBattery
-  parent: BorgChassisSyndicateReaper
+  parent: FishBorgChassisSyndicateReaper # Fish-Edit
   suffix: Battery, Tools
   components:
     - type: NukeOperative
@@ -320,7 +320,7 @@
     price: 500
 
 - type: entity
-  parent: SyndicateReaperBorgChassisDerelictSunrise
+  parent: FishBorgChassisSyndicateReaperDerelict # Fish-Edit
   id: PlayerSyndicateReaperBorgDerelict
   suffix: Battery, Module
   components:

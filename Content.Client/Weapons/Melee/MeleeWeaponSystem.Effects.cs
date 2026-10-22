@@ -23,7 +23,9 @@ public sealed partial class MeleeWeaponSystem
         if (!Timing.IsFirstTimePredicted)
             return;
 
-        var lunge = GetLungeAnimation(localPos);
+        // Fish: база lunge (постоянное Offset спрайта) и приведение амплитуды к масштабу
+        // тела — _Fish/Weapons/Melee/MeleeWeaponSystem.Mk2Lunge.cs.
+        var lunge = GetLungeAnimation(user, localPos); // Fish-Edit
 
         // Stop any existing lunges on the user.
         _animation.Stop(user, MeleeLungeKey);
@@ -202,34 +204,9 @@ public sealed partial class MeleeWeaponSystem
         };
     }
 
-    /// <summary>
-    /// Get the sprite offset animation to use for mob lunges.
-    /// This is applied to the attacker to show who is attacking.
-    /// </summary>
-    private Animation GetLungeAnimation(Vector2 direction)
-    {
-        const float length = 0.1f;
-
-        return new Animation
-        {
-            Length = TimeSpan.FromSeconds(length),
-            AnimationTracks =
-            {
-                new AnimationTrackComponentProperty()
-                {
-                    ComponentType = typeof(SpriteComponent),
-                    Property = nameof(SpriteComponent.Offset),
-                    InterpolationMode = AnimationInterpolationMode.Linear,
-                    KeyFrames =
-                    {
-                        new AnimationTrackProperty.KeyFrame(Vector2.Zero, 0f),
-                        new AnimationTrackProperty.KeyFrame(direction.Normalized() * 0.15f, length*0.4f),
-                        new AnimationTrackProperty.KeyFrame(Vector2.Zero, length*0.6f),
-                    },
-                },
-            },
-        };
-    }
+    // Fish: GetLungeAnimation(Vector2) перенесён в _Fish/Weapons/Melee/MeleeWeaponSystem.Mk2Lunge.cs
+    // Fish: новая сигнатура принимает базовое смещение спрайта и масштаб (см. DoLunge).
+    // Fish-Edit
 
     /// <summary>
     /// Updates the effect positions to follow the user

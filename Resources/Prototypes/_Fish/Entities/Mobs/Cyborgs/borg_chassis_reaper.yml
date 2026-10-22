@@ -1,0 +1,40 @@
+# Fish-варианты синди-риперов с постоянными chassis-руками:
+# showInHands включает отображение предметов из этих рук на спрайте,
+# модульные руки (Functional) не видны. Наследуют Sunrise-шасси целиком,
+# добавляется только Hands-компонент (паттерн как у Mk2 в borg_chassis_mk2.yml).
+- type: entity
+  id: FishBorgChassisSyndicateReaper
+  parent: BorgChassisSyndicateReaper
+  components:
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+    canBeStripped: true
+
+- type: entity
+  id: FishBorgChassisSyndicateReaperDerelict
+  parent: SyndicateReaperBorgChassisDerelictSunrise
+  components:
+  - type: Hands
+    hands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    sortedHands:
+    - hand_right
+    - hand_left
+    activeHandId: hand_right
+    showInHands: true
+    # Затирают base-Hands (BaseBorgChassisNotIonStormable), который derelict-родитель
+    # наследует целиком, поскольку собственного Hands у него нет.
+    disableExplosionRecursion: true
+    canBeStripped: false

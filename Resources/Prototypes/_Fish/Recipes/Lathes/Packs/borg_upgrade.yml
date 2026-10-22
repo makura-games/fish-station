@@ -1,0 +1,6 @@
+# Fish-пак латхи с рецептом апгрейд-модуля борга до Mk2.
+# Подключён к ExosuitFabricator в ванильном lathe.yml маркированной строкой Fish-edit.
+- type: latheRecipePack
+  id: FishBorgModules
+  recipes:
+  - FishBorgUpgradeModuleRecipe

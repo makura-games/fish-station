@@ -16,7 +16,7 @@
   technologyPrerequisites:
   - BasicRobotics
   - IndustrialEngineering
-  - Durand
+# - Durand Fish-Edit
 
 # - type: technology
 #   id: Phazon

@@ -58,10 +58,24 @@ namespace Content.Client.Hands.Systems
         }
 
         #region StateHandling
+
+        /// <summary>
+        /// Fish: применяет сетевое состояние рук и при смене ShowInHands перерисовывает
+        /// in-hand слои уже занятых рук — сам флаг изменения состояния не вызывает
+        /// UpdateHandVisuals.
+        /// </summary>
         private void HandleComponentState(Entity<HandsComponent> ent, ref ComponentHandleState args)
         {
             if (args.Current is not HandsComponentState state)
                 return;
+
+            // Fish: смена ShowInHands запоминается и применяется здесь же; refresh занятых
+            // рук — перед _stripSys.UpdateUi. Логика: _Fish/Hands/Systems/HandsSystem.ShowInHands.cs.
+            var showInHandsChanged = ApplyShowInHandsState(ent, state); // Fish-Edit
+
+            // Fish: CanBeStripped приходит в состоянии — рантайм-апгрейд борга на Mk2
+            // делает chassis-руки стрипаемыми и на клиенте (Strip-UI).
+            ent.Comp.CanBeStripped = state.CanBeStripped; // Fish-Edit
 
             var newHands = state.Hands.Keys.Except(ent.Comp.Hands.Keys); // hands that were added between states
             var oldHands = ent.Comp.Hands.Keys.Except(state.Hands.Keys); // hands that were removed between states
@@ -78,6 +92,13 @@ namespace Content.Client.Hands.Systems
             ent.Comp.SortedHands = new (state.SortedHands);
 
             SetActiveHand(ent.AsNullable(), state.ActiveHandId);
+
+            // Fish: смена флага сама по себе не вызывает UpdateHandVisuals —
+            // обновляем слои всех рук, в которых уже лежат предметы.
+            // Fish-Start
+            if (showInHandsChanged)
+                RefreshHeldInHandsVisuals(ent);
+            // Fish-End
 
             _stripSys.UpdateUi(ent);
         }
@@ -261,25 +282,12 @@ namespace Content.Client.Hands.Systems
             if (ent == _playerManager.LocalEntity)
                 OnPlayerItemAdded?.Invoke(handId, held);
 
-            if (!handComp.ShowInHands)
+            // Fish: очистка старых слоёв до раннего выхода по ShowInHands и привязка
+            // RevealedLayers по handId — _Fish/Hands/Systems/HandsSystem.ShowInHands.cs.
+            // Fish-Start
+            if (!TryPrepareRevealedLayers(ent.Owner, handComp, sprite, handId, out var revealedLayers))
                 return;
-
-            // Remove old layers. We could also just set them to invisible, but as items may add arbitrary layers, this
-            // may eventually bloat the player with lots of layers.
-            if (handComp.RevealedLayers.TryGetValue(hand.Value.Location, out var revealedLayers))
-            {
-                foreach (var key in revealedLayers)
-                {
-                    _sprite.RemoveLayer((ent, sprite), key);
-                }
-
-                revealedLayers.Clear();
-            }
-            else
-            {
-                revealedLayers = new();
-                handComp.RevealedLayers[hand.Value.Location] = revealedLayers;
-            }
+            // Fish-End
 
             if (HandIsEmpty((ent, handComp), handId))
             {
@@ -296,6 +304,10 @@ namespace Content.Client.Hands.Systems
                 RaiseLocalEvent(held, new HeldVisualsUpdatedEvent(ent, revealedLayers), true);
                 return;
             }
+
+            // Fish: компенсация in-hand смещения Mk2 зависит только от сущности и её
+            // borgType, а не от слоя — вычисляем один раз на вызов вне цикла по слоям.
+            var needsMk2Compensation = NeedsMk2HandOffsetCompensation(ent.Owner); // Fish-Edit
 
             // add the new layers
             foreach (var (key, layerData) in ev.Layers)
@@ -320,6 +332,8 @@ namespace Content.Client.Hands.Systems
                 }
 
                 _sprite.LayerSetData((ent, sprite), index, layerData);
+
+                ApplyMk2HandOffsetCompensation((ent, sprite), index, needsMk2Compensation); // Fish-Edit
 
                 // Add displacement maps
                 var displacement = hand.Value.Location switch

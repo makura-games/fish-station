@@ -11,7 +11,6 @@ using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.StationRecords;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Utility;
 
 namespace Content.Server.Silicons.Borgs;
 
@@ -26,6 +25,9 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
     [Dependency] private MessengerServerSystem _messenger = default!;
     [Dependency] private StationSystem _station = default!;
 
+    /// <summary>
+    /// Fish: применяет выбранный тип — радиоканалы, транспондер, модули и максимум слотов.
+    /// </summary>
     protected override void SelectBorgModule(Entity<BorgSwitchableTypeComponent> ent, ProtoId<BorgTypePrototype> borgType)
     {
         var prototype = Prototypes.Index(borgType);
@@ -39,16 +41,11 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
             activeRadio.Channels = [.. radioChannels];
 
         // Borg transponder for the robotics console
-        if (TryComp(ent, out BorgTransponderComponent? transponder))
-        {
-            _borgSystem.SetTransponderSprite(
-                (ent.Owner, transponder),
-                new SpriteSpecifier.Rsi(new ResPath("Mobs/Silicon/chassis.rsi"), prototype.SpriteBodyState));
-
-            _borgSystem.SetTransponderName(
-                (ent.Owner, transponder),
-                Loc.GetString($"borg-type-{borgType}-transponder"));
-        }
+        // Fish-Start
+        // Спрайт и имя транспондера обновляем через общий хелпер: он же используется
+        // при апгрейде до Mk2, где RSI берётся из холста нового borgType.
+        UpdateTransponder(ent, borgType);
+        // Fish-End
 
         // Configure modules
         if (TryComp(ent, out BorgChassisComponent? chassis))
