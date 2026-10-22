@@ -35,6 +35,7 @@
     context: "aghost"
   - type: Ghost
     canInteract: true
+  - type: AdminGhost #Fish-edit
   - type: GhostHearing
   - type: Hands
     startingHands:

@@ -1,0 +1,22 @@
+# Кнопка самозапрета на взаимодействие с миром для админского призрака (aghost).
+- type: entity
+  parent: BaseMentalAction
+  id: FishActionAghostToggleInteraction
+  name: Toggle World Interaction
+  description: Blocks picking up, using and dropping objects so you don't accidentally interfere with the round.
+  suffix: Fish
+  categories: [ HideSpawnMenu ]
+  components:
+  # Иконки action-сущностей задаются через Sprite: базовый слой и слой включённого состояния.
+  - type: Action
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - texture: Interface/VerbIcons/pickup.svg.192dpi.png
+      map: ["enum.ActionVisuals.Icon"]
+    - texture: Interface/VerbIcons/lock-red.svg.192dpi.png
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+  - type: InstantAction
+    event: !type:ToggleAghostInteractionActionEvent
