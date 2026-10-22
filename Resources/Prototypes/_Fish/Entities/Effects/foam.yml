@@ -1,0 +1,7 @@
+- type: entity
+  parent: Foam
+  id: FishSuperCleanFoam
+  name: super clean foam
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SuperCleanFoam
