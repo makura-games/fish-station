@@ -1,0 +1,31 @@
+﻿- type: antag
+  id: FishClockworkServant
+  name: roles-antag-fish-clockwork-servant-name
+  antagonist: true
+  setPreference: true
+  objective: roles-antag-fish-clockwork-servant-objective
+  playTimeTracker: AntagFishClockworkServant
+  tags:
+  - OffStation
+  - Roundstart
+
+- type: startingGear
+  id: FishClockworkServantGear
+  equipment:
+    pocket1: FishClockworkSlab
+
+- type: antagSpecifier
+  parent: BaseAntagSpecifier
+  id: FishClockworkServant
+  prefRoles: [ FishClockworkServant ]
+  spawnerPrototype: FishSpawnPointGhostClockworkServant # Fish-edit: BaseAntagSpawner для ghost roles
+  startingGear: FishClockworkServantGear
+  blacklist:
+    components:
+    - BibleUser
+  mindRoles:
+  - FishMindRoleClockworkServant
+  components:
+  - type: NpcFactionMember
+    factions:
+    - FishClockworkCult

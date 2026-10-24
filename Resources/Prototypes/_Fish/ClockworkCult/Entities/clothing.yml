@@ -1,0 +1,57 @@
+﻿# Clockwork armaments — reuse known-good clothing RSIs so PrototypeSaveTest
+# (AllItemsHaveSpritesTest) always sees a valid SpriteComponent.Icon.
+- type: entity
+  parent: ClothingHeadBase
+  id: FishClothingHeadHelmetClockwork
+  name: clockwork helmet
+  description: Brass helmet forged in Ratvar's armory.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Helmets/security.rsi
+    state: icon
+  - type: Clothing
+    sprite: Clothing/Head/Helmets/security.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.8
+
+- type: entity
+  parent: ClothingOuterBaseLarge
+  id: FishClothingOuterArmorClockwork
+  name: clockwork armor
+  description: Heavy brass plate that gleams with golden light.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Armor/security.rsi
+    state: icon
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Armor/security.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.5
+        Heat: 0.6
+
+# Parent combat gloves so sprite/inhand layers are guaranteed valid
+# (Clothing/Hands/Gloves/color.rsi does not exist — Color/color.rsi does).
+- type: entity
+  parent: ClothingHandsGlovesCombat
+  id: FishClothingHandsGlovesClockwork
+  name: clockwork gauntlets
+  description: Brass gauntlets.
+  suffix: Fish
+
+- type: entity
+  parent: ClothingShoesBootsCombat
+  id: FishClothingShoesClockwork
+  name: clockwork treads
+  description: Brass boots.
+  suffix: Fish

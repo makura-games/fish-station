@@ -1,0 +1,99 @@
+﻿- type: entity
+  parent: BaseItem
+  id: FishClockworkSlab
+  name: clockwork slab
+  description: A strange metal tablet. A piece of brass scripture still sticks out of its sides.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: dread_ipad
+  - type: Item
+    size: Small
+  - type: FishClockworkSlab
+  - type: ActivatableUI
+    key: enum.FishClockworkSlabUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FishClockworkSlabUiKey.Key:
+        type: FishClockworkSlabBoundUserInterface
+
+- type: entity
+  parent: BaseItem
+  id: FishIntegrationCog
+  name: integration cog
+  description: A small brass cog that can siphon power from an APC.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: gear_base
+  - type: Item
+    size: Tiny
+  - type: FishIntegrationCog
+
+- type: entity
+  parent: BaseItem
+  id: FishReplicaFabricator
+  name: replica fabricator
+  description: A device that converts matter into brass and Ratvarian structures.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: replica_fabricator
+  - type: Item
+    size: Normal
+  - type: FishReplicaFabricator
+
+- type: entity
+  parent: ClothingEyesBase
+  id: FishWraithSpectacles
+  name: wraith spectacles
+  description: Glasses that grant true sight at a terrible cost.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: wraith_specs
+  - type: Clothing
+    sprite: _Fish/ClockworkCult/objects.rsi
+  - type: FishWraithSpectacles
+  - type: FishNightVision
+
+- type: entity
+  parent: ClothingEyesBase
+  id: FishJudicialVisor
+  name: judicial visor
+  description: A brass visor capable of smiting an area.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: judicial_visor_0
+  - type: Clothing
+    sprite: _Fish/ClockworkCult/objects.rsi
+  - type: FishJudicialVisor
+
+- type: entity
+  parent: BaseItem
+  id: FishRatvarianSpear
+  name: ratvarian spear
+  description: A razor-sharp brass spear that drinks vitality from the wounded.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: ratvarian_spear
+  - type: MeleeWeapon
+    wideAnimation: WeaponArcThrust
+    damage:
+      types:
+        Piercing: 18
+        Structural: 10
+    soundHit:
+      path: /Audio/_Fish/ClockworkCult/machines/clockcult/brass_skewer.ogg
+  - type: Item
+    size: Normal
+  - type: FishRatvarianSpear
+

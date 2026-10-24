@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "tgstation Clockwork Cult assets (commit f42d5a43ca9c7e2201878566c37162ccaea3a34d). CC-BY-SA-3.0. Artists: SkowronX, FuryMcFlurry, Xhuis and tgstation contributors.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "uniform"
+    },
+    {
+      "name": "suit"
+    },
+    {
+      "name": "back"
+    },
+    {
+      "name": "id"
+    },
+    {
+      "name": "belt"
+    },
+    {
+      "name": "mask"
+    },
+    {
+      "name": "glasses"
+    },
+    {
+      "name": "ears"
+    },
+    {
+      "name": "head"
+    },
+    {
+      "name": "suit_storage"
+    },
+    {
+      "name": "pocket"
+    },
+    {
+      "name": "gloves"
+    },
+    {
+      "name": "shoes"
+    },
+    {
+      "name": "hand_r"
+    },
+    {
+      "name": "hand_l"
+    },
+    {
+      "name": "hand_active"
+    },
+    {
+      "name": "toggle"
+    },
+    {
+      "name": "pull"
+    },
+    {
+      "name": "act_resist"
+    },
+    {
+      "name": "act_drop"
+    },
+    {
+      "name": "act_throw_off"
+    },
+    {
+      "name": "act_throw_on"
+    },
+    {
+      "name": "act_equip"
+    },
+    {
+      "name": "swap_1"
+    },
+    {
+      "name": "swap_2"
+    },
+    {
+      "name": "swap_1_m"
+    },
+    {
+      "name": "harm"
+    },
+    {
+      "name": "help"
+    },
+    {
+      "name": "disarm"
+    },
+    {
+      "name": "grab"
+    },
+    {
+      "name": "walking"
+    },
+    {
+      "name": "running"
+    },
+    {
+      "name": "zone_sel"
+    },
+    {
+      "name": "neck"
+    },
+    {
+      "name": "craft"
+    },
+    {
+      "name": "area_edit"
+    },
+    {
+      "name": "talk_wheel"
+    },
+    {
+      "name": "template"
+    },
+    {
+      "name": "template_active"
+    },
+    {
+      "name": "template_small"
+    },
+    {
+      "name": "template_intent"
+    },
+    {
+      "name": "template_tiny"
+    },
+    {
+      "name": "template_acts"
+    },
+    {
+      "name": "template_acts_selected"
+    }
+  ]
+}

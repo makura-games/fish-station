@@ -1,0 +1,45 @@
+﻿- type: entity
+  id: FishClockworkCult
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: GameRule
+    minPlayers: 24
+  - type: FishClockworkCultRule
+  - type: FishClockworkPower
+  - type: RuleGrids
+  - type: LoadMapRule
+    gridPath: /Maps/_Fish/Nonstations/reebe.yml
+  # PrePlayerSpawn picks lobby sessions with no AttachedEntity; without this
+  # AntagSelectEntityEvent never spawns a humanoid and assignment fails.
+  - type: AntagLoadProfileRule
+    speciesOverride: Human
+  - type: AntagSelection
+    selectionTime: PrePlayerSpawn
+    agentName: fish-clockwork-round-end-agent-name
+    antags:
+    - !type:LinearAntagCount
+      proto: FishClockworkServant
+      playerRatio: 12
+      range:
+        min: 3
+        max: 6
+  - type: DynamicRuleCost
+    cost: 180
+
+- type: gamePreset
+  id: FishClockworkCult
+  alias:
+  - clockworkcult
+  - clockcult
+  - ratvar
+  name: fish-clockwork-title
+  description: fish-clockwork-description
+  showInVote: true
+  minPlayers: 24
+  rules:
+  - FishClockworkCult
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation
