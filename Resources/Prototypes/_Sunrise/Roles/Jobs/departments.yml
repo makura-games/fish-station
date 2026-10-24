@@ -17,9 +17,11 @@
   description: department-Blueshield-description
   color: "#0f4e81"
   roles:
-    # - BlueShieldEnsign # Fish-edit
     - BlueShieldOfficer
-    # - BlueShieldOperative #Fish-edit
+    - BlueShieldEnsign # Fish-edit
+    - BlueShieldOperative # Fish-edit
+    - BlueShieldOfficerFish # Fish-add
+    - CentcommBlueShield # Fish-add
     - RepresentativeBlueShield #Fish-add
   primary: false
   weight: 50
