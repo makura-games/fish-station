@@ -1,0 +1,81 @@
+- type: decal
+  id: circle1
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle1
+
+- type: decal
+  id: circle2
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle2
+
+- type: decal
+  id: circle3
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle3
+
+- type: decal
+  id: circle4
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle4
+
+- type: decal
+  id: circle5
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle5
+
+- type: decal
+  id: circle6
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle6
+
+- type: decal
+  id: circle7
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle7
+
+- type: decal
+  id: circle8
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle8
+
+- type: decal
+  id: circle9
+  tags: ["station", "markings"]
+  defaultCleanable: false
+  defaultSnap: true
+  sprite:
+    sprite: _Starlight/Decals/planet.rsi
+    state: circle9
+
