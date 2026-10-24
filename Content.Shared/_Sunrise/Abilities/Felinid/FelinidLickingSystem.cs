@@ -137,11 +137,13 @@ public sealed partial class FelinidLickingSystem : EntitySystem
             return false;
         }
 
-        if (HasInnerOrOuterClothing(target))
-        {
-            errorMessage = Loc.GetString("felinid-licking-blocked-by-clothing");
-            return false;
-        }
+        // FIsh edit start - фелиниды могут зализывать раны, не снимая одежду
+        // if (HasInnerOrOuterClothing(target))
+        // {
+        //     errorMessage = Loc.GetString("felinid-licking-blocked-by-clothing");
+        //     return false;
+        // }
+        // FIsh edit end
 
         if (!HasDamageToHeal(target, damageable, ent.Comp))
             return false;
@@ -191,17 +193,19 @@ public sealed partial class FelinidLickingSystem : EntitySystem
         return false;
     }
 
-    /// <summary>
-    /// Проверяет, есть ли у сущности внутренняя или внешняя одежда
-    /// </summary>
-    private bool HasInnerOrOuterClothing(EntityUid uid)
-    {
-        if (!TryComp<InventoryComponent>(uid, out var inventory))
-            return false;
-
-        var enumerator = _inventory.GetSlotEnumerator((uid, inventory), SlotFlags.INNERCLOTHING | SlotFlags.OUTERCLOTHING);
-        return enumerator.NextItem(out _);
-    }
+    // FIsh edit start - проверка одежды больше не используется
+    // /// <summary>
+    // /// Проверяет, есть ли у сущности внутренняя или внешняя одежда
+    // /// </summary>
+    // private bool HasInnerOrOuterClothing(EntityUid uid)
+    // {
+    //     if (!TryComp<InventoryComponent>(uid, out var inventory))
+    //         return false;
+    //
+    //     var enumerator = _inventory.GetSlotEnumerator((uid, inventory), SlotFlags.INNERCLOTHING | SlotFlags.OUTERCLOTHING);
+    //     return enumerator.NextItem(out _);
+    // }
+    // FIsh edit end
 }
 
 [Serializable, NetSerializable]
