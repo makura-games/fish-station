@@ -1,0 +1,128 @@
+# Fish-start: органы КПБ
+- type: entity
+  parent: OrganBaseOrganic
+  id: OrganIpc
+  abstract: true
+  suffix: IPC
+
+- type: entity
+  parent: OrganIpc
+  id: OrganIpcExternal
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _Fish/Mobs/Species/Ipc/parts.rsi
+  - type: VisualOrgan
+    data:
+      sprite: _Fish/Mobs/Species/Ipc/parts.rsi
+  - type: VisualOrganMarkings
+    markingData:
+      group: Ipc
+  - type: GibbableOrgan
+
+- type: entity
+  parent: [ OrganBaseTorsoSexed, OrganBaseTorso, OrganIpcExternal ]
+  id: OrganIpcTorso
+
+- type: entity
+  parent: [ OrganBaseHead, OrganIpcExternal ]
+  id: OrganIpcHead
+  components:
+  - type: Sprite
+    sprite: _Fish/Mobs/Species/Ipc/parts.rsi
+    state: head_m
+
+- type: entity
+  parent: [ OrganBaseArmLeft, OrganIpcExternal ]
+  id: OrganIpcArmLeft
+
+- type: entity
+  parent: [ OrganBaseArmRight, OrganIpcExternal ]
+  id: OrganIpcArmRight
+
+- type: entity
+  parent: [ OrganBaseHandLeft, OrganIpcExternal ]
+  id: OrganIpcHandLeft
+
+- type: entity
+  parent: [ OrganBaseHandRight, OrganIpcExternal ]
+  id: OrganIpcHandRight
+
+- type: entity
+  parent: [ OrganBaseLegLeft, OrganIpcExternal ]
+  id: OrganIpcLegLeft
+
+- type: entity
+  parent: [ OrganBaseLegRight, OrganIpcExternal ]
+  id: OrganIpcLegRight
+
+- type: entity
+  parent: [ OrganBaseFootLeft, OrganIpcExternal ]
+  id: OrganIpcFootLeft
+
+- type: entity
+  parent: [ OrganBaseFootRight, OrganIpcExternal ]
+  id: OrganIpcFootRight
+
+# Внутренние компоненты (Paradise: posibrain, optical sensor, microphone, cell)
+- type: entity
+  parent: [ OrganBaseBrain, OrganIpc ]
+  id: OrganIpcPosibrain
+  name: positronic brain
+  description: A positronic brain for an integrated positronic chassis.
+  components:
+  - type: Sprite
+    sprite: _Fish/Mobs/Species/Ipc/organs.rsi
+    layers:
+    - state: microcell
+  - type: Organ
+
+- type: entity
+  parent: [ OrganBaseEyes, OrganIpc ]
+  id: OrganIpcEyes
+  name: optical sensors
+  description: Robotic optical sensors. Weld-proof.
+  components:
+  - type: Sprite
+    sprite: _Fish/Mobs/Species/Ipc/organs.rsi
+    layers:
+    - state: eyeball-l
+    - state: eyeball-r
+  - type: VisualOrganMarkings
+    markingData:
+      layers:
+      - Eyes
+      group: Ipc
+  - type: FlashImmunity
+    showInExamine: false
+
+- type: entity
+  parent: [ OrganBaseEars, OrganIpc ]
+  id: OrganIpcEars
+  name: microphone
+  description: Sonic receptors for an IPC chassis.
+  components:
+  - type: Sprite
+    sprite: _Fish/Mobs/Species/Ipc/organs.rsi
+    state: ears
+
+- type: entity
+  parent: [ OrganBaseTongue, OrganIpc ]
+  id: OrganIpcTongue
+  name: vocal modulator
+  description: Produces speech for positronic chassis.
+  components:
+  - type: Sprite
+    sprite: _Fish/Mobs/Species/Ipc/organs.rsi
+    state: tongue
+
+- type: entity
+  parent: [ OrganBaseHeart, OrganIpc ]
+  id: OrganIpcCell
+  name: microbattery
+  description: A small, powerful cell for fully prosthetic bodies.
+  components:
+  - type: Sprite
+    sprite: _Fish/Mobs/Species/Ipc/organs.rsi
+    state: heart-on
+# Fish-end

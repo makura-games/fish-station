@@ -11,3 +11,5 @@
     Vox: 1
     Vulpkanin: 4
     Milira: 3
+    # Fish-edit: КПБ не в random weights — ломает AllGamePresetsStart (blacklist культов / objectives).
+    # Раса доступна в лобби через roundStart: true на species Ipc.

@@ -214,9 +214,11 @@
     - Mech
     damage:
       types:
-        Heat: -6
-        Shock: -6
-        Caustic: -6
+        # Fish-start: кабель чинит brute у КПБ (Paradise cable coil), не burn
+        Blunt: -6
+        Slash: -6
+        Piercing: -6
+        # Fish-end
         Mangleness: -1
     # Sunrise end
 

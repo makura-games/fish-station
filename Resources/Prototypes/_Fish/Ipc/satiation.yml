@@ -1,0 +1,11 @@
+# Fish-start: КПБ не едят/не пьют — нулевой расход для совместимости с SatiationSystem
+- type: satiation
+  id: IpcSatiationHunger
+  parent: NormalSatiationHunger
+  baseChangeRate: 0
+
+- type: satiation
+  id: IpcSatiationThirst
+  parent: NormalSatiationThirst
+  baseChangeRate: 0
+# Fish-end

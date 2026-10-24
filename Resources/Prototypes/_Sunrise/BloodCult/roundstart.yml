@@ -29,7 +29,7 @@
   prefRoles: [ BloodCultist ]
   blacklist:
     components:
-    # - Synth # Sunrise-TODO: КПБ
+    - FishIpc # Fish-edit: КПБ
     - BibleUser
   mindRoles:
   - MindRoleCultist

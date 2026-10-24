@@ -95,6 +95,23 @@
       collection: Welder
     qualities: [ Welding ]
   - type: Welder
+  # Fish-start: ремонт burn у КПБ/силиконов (Paradise welder)
+  - type: FishWeldingHealing
+    qualityNeeded: Welding
+    fuelCost: 5
+    doAfterDelay: 3
+    allowSelfHeal: true
+    requireWelderFuel: true
+    damageContainers:
+    - Synth
+    - Silicon
+    - Xenoborg
+    - Mech
+    damage:
+      types:
+        Heat: -10
+        Shock: -5
+  # Fish-end
   - type: PointLight
     enabled: false
     radius: 1.5

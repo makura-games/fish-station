@@ -1,0 +1,38 @@
+<Document>
+  # КПБ (IPC)
+  <GuideEntityEmbed Entity="MobIpc" Caption="КПБ"/>
+
+  КПБ (Кибернетический Позитронный Блок, англ. IPC) — разумный синтетик с позитронным мозгом.
+  Это [color=yellow]самостоятельная личность[/color]: у КПБ [color=red]нет законов робототехники[/color], их нельзя «сломать» емагом как борга.
+
+  ## Питание
+  <Box>
+    <GuideEntityEmbed Entity="APCBasic" Caption="ЛКП"/>
+    <GuideEntityEmbed Entity="BorgCharger" Caption="Зарядник боргов"/>
+    <GuideEntityEmbed Entity="PowerCellMedium" Caption="Батарея"/>
+  </Box>
+
+  КПБ питаются от внутренней батареи (~1.5 Дж/с). Способы зарядки:
+
+  - [color=yellow]ЛКП[/color]: Alt+ЛКМ (зарядка от сети).
+  - [color=yellow]Зарядник боргов[/color]: лечь внутрь станции зарядки.
+  - [color=yellow]Смена батареи[/color]: открыть панель и заменить ячейку (не самостоятельно).
+
+  При нулевом заряде КПБ отключается (forced sleep) до появления энергии.
+
+  ## Ремонт
+  <Box>
+    <GuideEntityEmbed Entity="Welder" Caption="Сварка"/>
+    <GuideEntityEmbed Entity="CableApcStack" Caption="Кабели"/>
+    <GuideEntityEmbed Entity="Nanopaste" Caption="Нанопаста"/>
+  </Box>
+
+  - Сварка — грубые повреждения.
+  - Кабели / нанопаста — ожоги и электроповреждения (damageContainer Synth).
+  - После смерти — починка и кнопка перезапуска (ПКМ).
+
+  ## Особенности
+  - Не дышат, не едят, нет кровотока.
+  - Встроенное радио (Binary + Common).
+  - Уязвимы к теплу и шоку сильнее людей; яды почти не действуют.
+</Document>

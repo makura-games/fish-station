@@ -52,7 +52,7 @@
     - Kitsune # Fish-edit
   blacklist:
     components:
-    # - Synth # Sunrise-TODO: КПБ
+    - FishIpc # Fish-edit: КПБ вместо закомментированного Synth
     - BibleUser
   mindRoles:
   - MindRoleFleshCultistLeader
@@ -84,7 +84,7 @@
     - Kitsune # Fish-edit
   blacklist:
     components:
-    # - Synth # Sunrise-TODO: КПБ
+    - FishIpc # Fish-edit: КПБ
     - BibleUser
   mindRoles:
   - MindRoleFleshCultist
