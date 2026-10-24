@@ -113,14 +113,14 @@
       - state: CAP-equipped-OUTERCLOTHING
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHatHoodWinterCaptain
-  # Fish-start - бронированная зимняя куртка капитана
+  # Fish-start - бронированная зимняя куртка капитана (30/30/30/60%)
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.6
-        Piercing: 0.6
-        Heat: 0.35
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.4
   - type: StaminaResistance
     damageCoefficient: 0.75
   # Fish-end
@@ -387,13 +387,23 @@
       toggleable-clothing: !type:ContainerSlot { }
       storagebase: !type:Container
         ents: [ ]
+  # Fish-start - защита на уровне бронежилета вместо унаследованной от ClothingOuterArmorHoS
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.8
+        Caustic: 0.75
+  # Fish-end
 ##########################################################
 
 - type: entity
   parent: [ClothingOuterWinterCoatToggleable, BaseSecurityCommandContraband]
   id: ClothingOuterWinterHoSUnarmored
   name: head of security's winter coat
-  description: A sturdy coat, a warm coat, but not an armored coat.
+  description: A sturdy, utilitarian winter coat designed to protect a head of security from any brig-bound threats and hypothermic events.
   components:
   - type: Sprite
     sprite: Clothing/OuterClothing/WinterCoats/coat.rsi
@@ -412,6 +422,15 @@
       - state: HOS-equipped-OUTERCLOTHING
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHatHoodWinterHOS
+  # Fish-start - защита на уровне бронежилета
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.8
+  # Fish-end
 
 - type: entity
   parent: ClothingOuterWinterCoatToggleable
@@ -712,6 +731,15 @@
       - state: SEC-equipped-OUTERCLOTHING
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHatHoodWinterSec
+  # Fish-start - защита на уровне бронежилета
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.8
+  # Fish-end
 
 - type: entity
   parent: ClothingOuterWinterCoatToggleable
@@ -763,13 +791,23 @@
       toggleable-clothing: !type:ContainerSlot { }
       storagebase: !type:Container
         ents: [ ]
+  # Fish-start - защита на уровне бронежилета вместо унаследованной от ClothingOuterArmorWarden
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.8
+        Caustic: 0.9
+  # Fish-end
 ################################################################
 
 - type: entity
   parent: [ClothingOuterWinterCoatToggleable, BaseSecurityContraband]
   id: ClothingOuterWinterWardenUnarmored
   name: warden's winter coat
-  description: A sturdy coat, a warm coat, but not an armored coat.
+  description: A sturdy, utilitarian winter coat designed to protect a warden from any brig-bound threats and hypothermic events.
   components:
   - type: Sprite
     sprite: Clothing/OuterClothing/WinterCoats/coat.rsi
@@ -788,6 +826,15 @@
       - state: WARD-equipped-OUTERCLOTHING
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHatHoodWinterWarden
+  # Fish-start - защита на уровне бронежилета
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.8
+  # Fish-end
 
 - type: entity
   parent: [ClothingOuterWinterCoatToggleable, BaseSyndicateContraband]
@@ -826,6 +873,16 @@
     sprite: Clothing/OuterClothing/WinterCoats/syndicate/coatsyndiecaparmored.rsi
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHatHoodWinterSyndie
+  # Fish-start - сохраняем прежнюю броню ClothingOuterArmorWarden после перевода курток СБ на уровень бронежилета
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.7
+        Heat: 0.7
+        Caustic: 0.9
+  # Fish-end
 ##############################################################
 
 - type: entity
