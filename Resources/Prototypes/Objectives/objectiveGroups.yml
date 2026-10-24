@@ -52,8 +52,10 @@
 - type: weightedRandom
   id: TraitorObjectiveGroupSocial
   weights:
-#    RandomTraitorAliveObjective: 1 - Removed because the objective was boring and didn't progress the round.
+    # Fish-start - keep-alive часто, но не гарантированно
+    RandomTraitorAliveObjective: 2
     RandomTraitorProgressObjective: 1
+    # Fish-end
 
 - type: weightedRandom
   id: TraitorObjectiveGroupSabotage

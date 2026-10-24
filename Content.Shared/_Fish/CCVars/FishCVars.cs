@@ -59,5 +59,12 @@ namespace Content.Shared.CCVar
         /// </summary>
         public static readonly CVarDef<int> AchievementsMaxDbUpsertsPerRound =
             CVarDef.Create("fish.achievements.max_db_upserts_per_round", 15, CVar.SERVERONLY);
+
+        /// <summary>
+        /// Overall playtime (часы), ниже которого игрок считается новичком и защищён от целей антагов.
+        /// 0 = отключить проверку новичков.
+        /// </summary>
+        public static readonly CVarDef<float> AntagTargetNewbiePlaytimeHours =
+            CVarDef.Create("fish.antag_target.newbie_playtime_hours", 10f, CVar.SERVER | CVar.REPLICATED);
     }
 }

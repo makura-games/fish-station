@@ -112,12 +112,12 @@ namespace Content.Shared.Preferences
         /// <summary>
         /// When spawning into a round what's the preferred spot to spawn.
         /// </summary>
-        // Fish edit start - Приоритет спавна по умолчанию криокапсулы
+        // Fish-start: приоритет спавна по умолчанию — криокапсулы
         // [DataField]
         // public SpawnPriorityPreference SpawnPriority { get; private set; } = SpawnPriorityPreference.None;
         [DataField]
         public SpawnPriorityPreference SpawnPriority { get; private set; } = SpawnPriorityPreference.Cryosleep;
-        // Fish edit end
+        // Fish-end
 
         /// <summary>
         /// <see cref="_jobPriorities"/>
@@ -233,6 +233,9 @@ namespace Content.Shared.Preferences
                 Sex = sex.Value,
                 Appearance = HumanoidCharacterAppearance.DefaultWithSpecies(species.Value, sex.Value),
                 SunriseProfile = SunriseCharacterProfile.DefaultForSpecies(species.Value, sex.Value), // Sunrise-Edit
+                // Fish-start - защита от целей антагов включена по умолчанию
+                _traitPreferences = new HashSet<ProtoId<TraitPrototype>> { "FishAntagTargetProtection" },
+                // Fish-end
             };
         }
 
@@ -341,7 +344,9 @@ namespace Content.Shared.Preferences
         public static HumanoidCharacterProfile Random(HashSet<string>? ignoredSpecies = null)
         {
             var config = RandomizeConfigAll;
-            var baseProfile = new HumanoidCharacterProfile();
+            // Fish-start - случайный профиль тоже получает защиту от целей антагов
+            var baseProfile = DefaultWithSpecies();
+            // Fish-end
             if (ignoredSpecies != null)
             {
                 baseProfile.Species = RandomSpecies(ignoredSpecies);
@@ -408,10 +413,12 @@ namespace Content.Shared.Preferences
         {
             species ??= DefaultSpecies;
 
+            // Fish-start - базовый профиль через DefaultWithSpecies (защита от целей антагов)
             return Random(
                 RandomizeConfigAll ^ RandomizeCfg.Species,
-                new HumanoidCharacterProfile().WithSpecies(species)
+                DefaultWithSpecies(species)
             );
+            // Fish-end
         }
 
         public HumanoidCharacterProfile WithName(string name)

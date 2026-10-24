@@ -1,0 +1,22 @@
+shipyard-console-title = Shipyard Console
+shipyard-console-header = Shuttle catalog
+shipyard-console-balance = Cargo account balance:
+shipyard-console-balance-value = { $amount }$
+shipyard-console-cost = Cost: { $amount }$
+shipyard-console-purchase = Purchase
+shipyard-console-purchasing = Purchasing...
+shipyard-console-busy = The console is already processing a purchase.
+shipyard-console-access-denied = Access denied.
+shipyard-console-invalid-vessel = Selected shuttle is unavailable.
+shipyard-console-no-station = Console is not linked to a station bank account.
+shipyard-console-insufficient-funds = Insufficient funds (need { $cost }$ on the Cargo account).
+shipyard-console-no-dock = No free docking port available.
+shipyard-console-spawn-failed = Failed to create the shuttle. Funds were not charged.
+shipyard-console-purchase-success = Shuttle "{ $vessel }" purchased and docked to the station.
+
+shipyard-vessel-siera-name = Sierra
+shipyard-vessel-siera-desc = A small salvage shuttle for scouting and mining.
+shipyard-vessel-oredozer-name = Oredozer
+shipyard-vessel-oredozer-desc = A mid-size mining shuttle with room for equipment.
+shipyard-vessel-nomad-name = Nomad
+shipyard-vessel-nomad-desc = A large expedition shuttle for longer trips.

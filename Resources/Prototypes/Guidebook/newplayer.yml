@@ -2,7 +2,7 @@
   id: NewPlayer
   name: guide-entry-newplayer
   priority: 0
-  text: "/ServerInfo/Guidebook/NewPlayer/NewPlayer.xml"
+  text: "/ServerInfo/Guidebook/_Fish/NewPlayer/NewPlayer.xml" # Fish-edit: русское введение для новичков
   children:
   - Controls
   - CharacterCreation

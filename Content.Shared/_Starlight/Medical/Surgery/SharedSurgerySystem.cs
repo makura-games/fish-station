@@ -15,6 +15,7 @@ using Content.Shared.Standing;
 using Content.Shared.Starlight.Medical.Surgery.Effects.Step;
 using Content.Shared.Starlight.Medical.Surgery.Events;
 using Content.Shared.Starlight.Medical.Surgery.Steps.Parts;
+using Content.Shared._Fish.Skills; // Fish-edit: навыки хирургии
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
@@ -45,6 +46,7 @@ public abstract partial class SharedSurgerySystem : EntitySystem
     [Dependency] private SharedItemSystem _item = default!;
     [Dependency] private StarlightEntitySystem _entitySystem = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private SharedSkillSystem _skills = default!; // Fish-edit: навыки хирургии
 
     public override void Initialize()
     {

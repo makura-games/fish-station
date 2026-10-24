@@ -258,20 +258,26 @@ public sealed class BloodCultReviewTests
 
         await server.WaitPost(() =>
         {
-            // Пустой CultTargets → TargetsKill() == true (All на пустой коллекции).
+            // Fish-start: подготовка ритуала — жертва через BloodCultRuleSystem (RA0002 Access)
             var rule = server.EntMan.Spawn("Paper", map.MapCoords);
-            server.EntMan.EnsureComponent<BloodCultRuleComponent>(rule);
+            var ruleComp = server.EntMan.EnsureComponent<BloodCultRuleComponent>(rule);
             server.EntMan.EnsureComponent<GameRuleComponent>(rule);
 
             user = server.EntMan.Spawn("MobHuman", map.MapCoords);
             server.EntMan.EnsureComponent<BloodCultistComponent>(user);
             server.EntMan.EnsureComponent<DoAfterComponent>(user);
 
+            var victim = server.EntMan.Spawn("MobHuman", map.MapCoords);
+            var cultRule = server.System<BloodCultRuleSystem>();
+            Assert.That(cultRule.AddSpecificCultTarget(victim, ruleComp), Is.True);
+            Assert.That(cultRule.MarkCultTargetKilled(victim, ruleComp), Is.True);
+
             rune = server.EntMan.Spawn("ApocalypseRune", map.MapCoords);
             var apoc = server.EntMan.GetComponent<CultRuneApocalypseComponent>(rune);
             apoc.SummonMinCount = 1;
 
             cultists.Add(user);
+            // Fish-end
         });
 
         await server.WaitPost(() =>

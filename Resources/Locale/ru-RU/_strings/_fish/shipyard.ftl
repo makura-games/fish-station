@@ -1,0 +1,22 @@
+shipyard-console-title = Консоль верфи
+shipyard-console-header = Каталог шаттлов
+shipyard-console-balance = Баланс счёта снабжения:
+shipyard-console-balance-value = { $amount }$
+shipyard-console-cost = Стоимость: { $amount }$
+shipyard-console-purchase = Купить
+shipyard-console-purchasing = Покупка...
+shipyard-console-busy = Консоль уже обрабатывает покупку.
+shipyard-console-access-denied = Нет доступа к консоли верфи.
+shipyard-console-invalid-vessel = Выбранный шаттл недоступен.
+shipyard-console-no-station = Консоль не привязана к станции или у станции нет счёта.
+shipyard-console-insufficient-funds = Недостаточно средств (нужно { $cost }$ на счёте снабжения).
+shipyard-console-no-dock = Нет свободного дока для стыковки шаттла.
+shipyard-console-spawn-failed = Не удалось создать шаттл. Средства не списаны.
+shipyard-console-purchase-success = Шаттл «{ $vessel }» куплен и пристыкован к станции.
+
+shipyard-vessel-siera-name = Сьерра
+shipyard-vessel-siera-desc = Небольшой утилизаторский шаттл для разведки и добычи.
+shipyard-vessel-oredozer-name = Рудокоп
+shipyard-vessel-oredozer-desc = Средний шахтёрский шаттл с местом под оборудование.
+shipyard-vessel-nomad-name = Номад
+shipyard-vessel-nomad-desc = Крупный экспедиционный шаттл для длительных вылетов.

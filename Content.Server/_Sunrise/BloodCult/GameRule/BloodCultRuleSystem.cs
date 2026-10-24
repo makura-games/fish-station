@@ -172,6 +172,20 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
         return true;
     }
 
+    // Fish-start: публичный API для тестов/админки — без прямой записи в CultTargets извне Access.
+    /// <summary>
+    /// Пометить цель культа как убитую/принесённую в жертву.
+    /// </summary>
+    public bool MarkCultTargetKilled(EntityUid target, BloodCultRuleComponent rule)
+    {
+        if (!rule.CultTargets.ContainsKey(target))
+            return false;
+
+        rule.CultTargets[target] = true;
+        return true;
+    }
+    // Fish-end
+
     /// <summary>
     /// Manually remove a specific entity as a cult target.
     /// </summary>
@@ -327,7 +341,12 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
 
         while (query.MoveNext(out _, out var cultRuleComponent, out _))
         {
+            // Fish-start - пустой список не считается «все убиты» (All() на пустом = true)
+            if (cultRuleComponent.CultTargets.Count == 0)
+                continue;
+
             if (cultRuleComponent.CultTargets.Values.All(value => value))
+            // Fish-end
             {
                 return true;
             }
@@ -481,12 +500,20 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
     private List<EntityUid> FindPotentialTargets()
     {
         var potentialTargets = new List<EntityUid>();
+        // Fish-start - исключаем защищённых от целей антагов
+        var protection = EntityManager.System<Content.Shared._Fish.Antag.SharedAntagTargetingProtectionSystem>();
+        // Fish-end
 
         var query = EntityQueryEnumerator<MindContainerComponent, AntagTargetComponent, HumanoidProfileComponent>();
         while (query.MoveNext(out var uid, out var mind, out _, out _))
         {
             if (mind.Mind == null || HasComp<BloodCultistComponent>(uid))
                 continue;
+
+            // Fish-start
+            if (protection.IsBodyProtected(uid, mind.Mind))
+                continue;
+            // Fish-end
 
             potentialTargets.Add(uid);
         }

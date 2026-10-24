@@ -109,6 +109,10 @@ public sealed partial class SunriseCriminalRecordsWindow : DefaultWindow
             _caseEditor.ConsoleEntity = _owner?.Owner;
             _caseEditor.OnBack += () => _owner?.SetUIState(SunriseCriminalRecordsUIState.List);
             _caseEditor.OnSave += (id, laws, circs, notes) => _owner?.UpdateCase(id, laws, circs, notes);
+            // Fish-start
+            _caseEditor.OnPrintQuickDocument += (recordId, caseId, templateId) =>
+                _owner?.PrintQuickDocument(recordId, caseId, templateId);
+            // Fish-end
         }
 
         // Handle case selection: prioritze user selection, then open case, then last case
@@ -120,6 +124,11 @@ public sealed partial class SunriseCriminalRecordsWindow : DefaultWindow
         {
             _caseEditor.OnFinalize = () => _owner?.CloseCase(activeCase.Id);
             _caseEditor.OnReopen = () => _owner?.ReopenCase(activeCase.Id);
+            // Fish-start
+            _caseEditor.PrisonerName = state.SelectedName;
+            _caseEditor.PrisonerJob = state.JobTitle;
+            _caseEditor.SelectedStationRecord = state.SelectedStationRecord;
+            // Fish-end
             _caseEditor.Setup(activeCase, state.Cases);
         }
         else

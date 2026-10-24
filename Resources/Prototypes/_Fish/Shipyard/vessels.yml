@@ -1,0 +1,24 @@
+# Каталог шаттлов верфи. Используем уже существующие grid-карты Salvage.
+- type: vessel
+  id: FishVesselSiera
+  name: shipyard-vessel-siera-name
+  description: shipyard-vessel-siera-desc
+  price: 3500
+  shuttlePath: /Maps/_Sunrise/Shuttles/Salvage/siera.yml
+  group: civilian
+
+- type: vessel
+  id: FishVesselOredozer
+  name: shipyard-vessel-oredozer-name
+  description: shipyard-vessel-oredozer-desc
+  price: 5500
+  shuttlePath: /Maps/_Sunrise/Shuttles/Salvage/oredozer.yml
+  group: civilian
+
+- type: vessel
+  id: FishVesselNomad
+  name: shipyard-vessel-nomad-name
+  description: shipyard-vessel-nomad-desc
+  price: 8000
+  shuttlePath: /Maps/_Sunrise/Shuttles/Salvage/nomad.yml
+  group: civilian

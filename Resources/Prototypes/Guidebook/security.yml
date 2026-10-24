@@ -1,8 +1,14 @@
 ﻿- type: guideEntry
   id: Security
   name: guide-entry-security
-  text: "/ServerInfo/Guidebook/Security/Security.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Security/Security.xml" # Fish-edit: русские руководства СБ
   children:
+  # Fish-start: роли и процедуры СБ
+  - SecurityCadet
+  - SecurityArrest
+  - SecurityWarden
+  - SecurityHoS
+  # Fish-end
   - Forensics
   - Defusal
   - CriminalRecords
@@ -21,7 +27,7 @@
 - type: guideEntry
   id: CriminalRecords
   name: guide-entry-criminal-records
-  text: "/ServerInfo/Guidebook/Security/CriminalRecords.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Security/CriminalRecords.xml" # Fish-edit: Sunrise/Fish записи и документы
 
 - type: guideEntry
   id: SpaceLaw

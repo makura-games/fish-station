@@ -140,21 +140,31 @@
 
 # social
 
+# Fish-start - keep-alive: любой незащищённый персонаж (не только другой агент)
 - type: entity
-  parent: [BaseTraitorSocialObjective, BaseKeepAliveObjective]
+  parent: [BaseTraitorObjective, BaseKeepAliveObjective]
   id: RandomTraitorAliveObjective
-  description: Identify yourself at your own risk. We just need them alive.
+  description: Keep them alive until the end of the shift. Identify yourself at your own risk.
   components:
   - type: Objective
     difficulty: 1.75
+    icon:
+      sprite: Objects/Misc/folders.rsi
+      state: folder-colormap
+  - type: ObjectiveBlacklistRequirement
+    blacklist:
+      components:
+      - KillPersonCondition
+  - type: SocialObjective
   - type: TargetObjective
-    title: objective-condition-other-traitor-alive-title
+    title: objective-condition-fish-keep-alive-title
   - type: PickRandomPerson
     conditions:
-    - !type:RoleCondition
-      whitelist:
-        components:
-        - TraitorRole
+    - !type:AntagonistTagCondition
+      tags:
+      - OnStation
+    - !type:AntagTargetingProtectedCondition
+      inverted: true
     # Can't have multiple objectives to help/save the same person
     - !type:ObjectiveTargetCondition
       inverted: true
@@ -162,6 +172,7 @@
         components:
         - HelpProgressCondition
         - KeepAliveCondition
+# Fish-end
 
 - type: entity
   parent: [BaseTraitorSocialObjective, BaseHelpProgressObjective]
