@@ -4,10 +4,11 @@
   description: job-description-doctor
   playTimeTracker: JobCentcommMedicalDoctor
   requirements:
-    - !type:DiscordRoleRequirement
+    - !type:OverallPlaytimeRequirement
+      time: 920000
     - !type:DepartmentTimeRequirement
       department: Medical
-      time: 7200 #2 hrs # Sunrise-RoleTime
+      time: 72000 #20 hrs # Sunrise-RoleTime
   startingGear: DoctorGear
   icon: "JobIconCentcommMedicalDoctor"
   supervisors: job-supervisors-centcom
@@ -24,4 +25,3 @@
     prototype: WehMedipen
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]
-
