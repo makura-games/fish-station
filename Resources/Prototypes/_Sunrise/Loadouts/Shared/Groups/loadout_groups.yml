@@ -1581,6 +1581,7 @@
   loadouts:
   - ComMaidBackpackSatchelLeather
   - ComMaidModsuit
+  - FishComMaidDuffel
 
 - type: loadoutGroup
   id: ComMaidNeck
