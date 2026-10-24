@@ -1,0 +1,774 @@
+- type: entity
+  parent: BaseGameRule
+  id: DmArenaRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: DmArenaRule
+    gear: DmArenaBaseGear
+    budget: 100
+    shopItems:
+    - gear: DmArenaSpear
+      name: dm-arena-item-spear
+      description: dm-arena-desc-spear
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: Spear
+      cost: 5
+      inHand: true
+    - gear: DmArenaCrowbar
+      name: dm-arena-item-crowbar
+      description: dm-arena-desc-crowbar
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: Crowbar
+      cost: 5
+      inHand: true
+    - gear: DmArenaKnife
+      name: dm-arena-item-knife
+      description: dm-arena-desc-knife
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: CombatKnife
+      cost: 7
+      inHand: true
+    - gear: DmArenaBat
+      name: dm-arena-item-bat
+      description: dm-arena-desc-bat
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: BaseBallBat
+      cost: 9
+      inHand: true
+    - gear: DmArenaMachete
+      name: dm-arena-item-machete
+      description: dm-arena-desc-machete
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: Machete
+      cost: 10
+      inHand: true
+    - gear: DmArenaCleaver
+      name: dm-arena-item-cleaver
+      description: dm-arena-desc-cleaver
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: ButchCleaver
+      cost: 11
+      inHand: true
+    - gear: DmArenaKatana
+      name: dm-arena-item-katana
+      description: dm-arena-desc-katana
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: Katana
+      cost: 12
+      inHand: true
+    - gear: DmArenaFireaxe
+      name: dm-arena-item-fireaxe
+      description: dm-arena-desc-fireaxe
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: FireAxe
+      cost: 14
+      inHand: true
+    - gear: DmArenaSledge
+      name: dm-arena-item-sledge
+      description: dm-arena-desc-sledge
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: Sledgehammer
+      cost: 14
+      inHand: true
+    - gear: DmArenaClaymore
+      name: dm-arena-item-claymore
+      description: dm-arena-desc-claymore
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: Claymore
+      cost: 15
+      inHand: true
+    - gear: DmArenaSabre
+      name: dm-arena-item-sabre
+      description: dm-arena-desc-sabre
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: CaptainSabre
+      cost: 16
+      inHand: true
+    - gear: DmArenaEsword
+      name: dm-arena-item-esword
+      description: dm-arena-desc-esword
+      category: dm-arena-category-weapons
+      group: dm-arena-group-melee
+      sprite: EnergySword
+      cost: 27
+    - gear: DmArenaSvalinn
+      name: dm-arena-item-svalinn
+      description: dm-arena-desc-svalinn
+      category: dm-arena-category-weapons
+      group: dm-arena-group-pistols
+      sprite: WeaponLaserSvalinn
+      cost: 10
+    - gear: DmArenaInspector
+      name: dm-arena-item-inspector
+      description: dm-arena-desc-inspector
+      category: dm-arena-category-weapons
+      group: dm-arena-group-pistols
+      sprite: WeaponRevolverInspector
+      cost: 29
+      ammoType: revolver
+    - gear: DmArenaCobra
+      name: dm-arena-item-cobra
+      description: dm-arena-desc-cobra
+      category: dm-arena-category-weapons
+      group: dm-arena-group-pistols
+      sprite: WeaponPistolCobra
+      cost: 32
+      ammoType: cobra
+    - gear: DmArenaMateba
+      name: dm-arena-item-mateba
+      description: dm-arena-desc-mateba
+      category: dm-arena-category-weapons
+      group: dm-arena-group-pistols
+      sprite: WeaponRevolverMateba
+      cost: 34
+      ammoType: revolver
+    - gear: DmArenaViper
+      name: dm-arena-item-viper
+      description: dm-arena-desc-viper
+      category: dm-arena-category-weapons
+      group: dm-arena-group-pistols
+      sprite: WeaponPistolViper
+      cost: 37
+      ammoType: viper
+    - gear: DmArenaPython
+      name: dm-arena-item-python
+      description: dm-arena-desc-python
+      category: dm-arena-category-weapons
+      group: dm-arena-group-pistols
+      sprite: WeaponRevolverPython
+      cost: 41
+      ammoType: revolver
+    - gear: DmArenaN1984
+      name: dm-arena-item-n1984
+      description: dm-arena-desc-n1984
+      category: dm-arena-category-weapons
+      group: dm-arena-group-pistols
+      sprite: WeaponPistolN1984
+      cost: 48
+      ammoType: n1984
+    - gear: DmArenaDoublebarrel
+      name: dm-arena-item-doublebarrel
+      description: dm-arena-desc-doublebarrel
+      category: dm-arena-category-weapons
+      group: dm-arena-group-shotguns
+      sprite: WeaponShotgunDoubleBarreled
+      cost: 20
+      ammoType: shotgun
+    - gear: DmArenaEnforcer
+      name: dm-arena-item-enforcer
+      description: dm-arena-desc-enforcer
+      category: dm-arena-category-weapons
+      group: dm-arena-group-shotguns
+      sprite: WeaponShotgunEnforcer
+      cost: 24
+      ammoType: shotgun
+    - gear: DmArenaKammerer
+      name: dm-arena-item-kammerer
+      description: dm-arena-desc-kammerer
+      category: dm-arena-category-weapons
+      group: dm-arena-group-shotguns
+      sprite: WeaponShotgunKammerer
+      cost: 24
+      ammoType: shotgun
+    - gear: DmArenaBulldog
+      name: dm-arena-item-bulldog
+      description: dm-arena-desc-bulldog
+      category: dm-arena-category-weapons
+      group: dm-arena-group-shotguns
+      sprite: WeaponShotgunBulldog
+      cost: 31
+      ammoType: bulldog
+    - gear: DmArenaWt550
+      name: dm-arena-item-wt550
+      description: dm-arena-desc-wt550
+      category: dm-arena-category-weapons
+      group: dm-arena-group-shotguns
+      sprite: WeaponSubMachineGunWt550
+      cost: 46
+      ammoType: wt550
+    - gear: DmArenaDrozd
+      name: dm-arena-item-drozd
+      description: dm-arena-desc-drozd
+      category: dm-arena-category-weapons
+      group: dm-arena-group-shotguns
+      sprite: WeaponSubMachineGunDrozd
+      cost: 58
+      ammoType: drozd
+    - gear: DmArenaMosin
+      name: dm-arena-item-mosin
+      description: dm-arena-desc-mosin
+      category: dm-arena-category-weapons
+      group: dm-arena-group-rifles
+      sprite: WeaponSniperMosin
+      cost: 24
+      ammoType: mosin
+    - gear: DmArenaLasercarbine
+      name: dm-arena-item-lasercarbine
+      description: dm-arena-desc-lasercarbine
+      category: dm-arena-category-weapons
+      group: dm-arena-group-rifles
+      sprite: WeaponLaserCarbine
+      cost: 26
+    - gear: DmArenaAkms
+      name: dm-arena-item-akms
+      description: dm-arena-desc-akms
+      category: dm-arena-category-weapons
+      group: dm-arena-group-rifles
+      sprite: WeaponRifleAk
+      cost: 51
+      ammoType: akms
+    - gear: DmArenaEstoc
+      name: dm-arena-item-estoc
+      description: dm-arena-desc-estoc
+      category: dm-arena-category-weapons
+      group: dm-arena-group-rifles
+      sprite: WeaponRifleEstoc
+      cost: 55
+      ammoType: rifle
+    - gear: DmArenaLecter
+      name: dm-arena-item-lecter
+      description: dm-arena-desc-lecter
+      category: dm-arena-category-weapons
+      group: dm-arena-group-rifles
+      sprite: WeaponRifleLecter
+      cost: 60
+      ammoType: rifle
+    - gear: DmArenaVestBp
+      name: dm-arena-item-vest-bp
+      description: dm-arena-desc-vest-bp
+      category: dm-arena-category-armor
+      group: dm-arena-group-suits
+      sprite: ClothingOuterArmorBulletproof
+      cost: 9
+      equipFirst: true
+    - gear: DmArenaVestRefl
+      name: dm-arena-item-vest-refl
+      description: dm-arena-desc-vest-refl
+      category: dm-arena-category-armor
+      group: dm-arena-group-suits
+      sprite: ClothingOuterArmorReflective
+      cost: 9
+      equipFirst: true
+    - gear: DmArenaVestRiot
+      name: dm-arena-item-vest-riot
+      description: dm-arena-desc-vest-riot
+      category: dm-arena-category-armor
+      group: dm-arena-group-suits
+      sprite: ClothingOuterArmorRiot
+      cost: 15
+      equipFirst: true
+    - gear: DmArenaVestCarapace
+      name: dm-arena-item-vest-carapace
+      description: dm-arena-desc-vest-carapace
+      category: dm-arena-category-armor
+      group: dm-arena-group-suits
+      sprite: ClothingOuterArmorCaptainCarapace
+      cost: 22
+      equipFirst: true
+    - gear: DmArenaVestHeavy
+      name: dm-arena-item-vest-heavy
+      description: dm-arena-desc-vest-heavy
+      category: dm-arena-category-armor
+      group: dm-arena-group-suits
+      sprite: ClothingOuterArmorHeavy
+      cost: 37
+      equipFirst: true
+    - gear: DmArenaHelmRiot
+      name: dm-arena-item-helm-riot
+      description: dm-arena-desc-helm-riot
+      category: dm-arena-category-armor
+      group: dm-arena-group-helmets
+      sprite: ClothingHeadHelmetRiot
+      cost: 10
+      equipFirst: true
+    - gear: DmArenaHelmSwat
+      name: dm-arena-item-helm-swat
+      description: dm-arena-desc-helm-swat
+      category: dm-arena-category-armor
+      group: dm-arena-group-helmets
+      sprite: ClothingHeadHelmetSwat
+      cost: 15
+      equipFirst: true
+    - gear: DmArenaShield
+      name: dm-arena-item-shield
+      description: dm-arena-desc-shield
+      category: dm-arena-category-armor
+      group: dm-arena-group-extras
+      sprite: RiotShield
+      cost: 15
+      inHand: true
+    - gear: DmArenaAmPistol
+      name: dm-arena-item-am-pistol
+      description: dm-arena-desc-am-pistol
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazinePistol
+      cost: 4
+      maxCount: 3
+      ammoFor: base
+    - gear: DmArenaAmBuckshot
+      name: dm-arena-item-am-buckshot
+      description: dm-arena-desc-am-buckshot
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: BoxLethalshot
+      cost: 5
+      maxCount: 3
+      ammoFor: shotgun
+    - gear: DmArenaAmSlugs
+      name: dm-arena-item-am-slugs
+      description: dm-arena-desc-am-slugs
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: BoxShotgunSlug
+      cost: 5
+      maxCount: 3
+      ammoFor: shotgun
+    - gear: DmArenaAmViper
+      name: dm-arena-item-am-viper
+      description: dm-arena-desc-am-viper
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazinePistolHighCapacity
+      cost: 6
+      maxCount: 3
+      ammoFor: viper
+    - gear: DmArenaAmCobra
+      name: dm-arena-item-am-cobra
+      description: dm-arena-desc-am-cobra
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazinePistolCaselessRifle
+      cost: 6
+      maxCount: 3
+      ammoFor: cobra
+    - gear: DmArenaAmN1984
+      name: dm-arena-item-am-n1984
+      description: dm-arena-desc-am-n1984
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazineMagnum
+      cost: 7
+      maxCount: 3
+      ammoFor: n1984
+    - gear: DmArenaAmRevolver
+      name: dm-arena-item-am-revolver
+      description: dm-arena-desc-am-revolver
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: SpeedLoaderMagnumSP
+      cost: 7
+      maxCount: 3
+      ammoFor: revolver
+    - gear: DmArenaAmIncendiary
+      name: dm-arena-item-am-incendiary
+      description: dm-arena-desc-am-incendiary
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazineRifleIncendiary
+      cost: 7
+      maxCount: 2
+      ammoFor: rifle
+    - gear: DmArenaAmBulldog
+      name: dm-arena-item-am-bulldog
+      description: dm-arena-desc-am-bulldog
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazineShotgun
+      cost: 8
+      maxCount: 3
+      ammoFor: bulldog
+    - gear: DmArenaAmDrozd
+      name: dm-arena-item-am-drozd
+      description: dm-arena-desc-am-drozd
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazinePistolSubMachineGunSP
+      cost: 8
+      maxCount: 3
+      ammoFor: drozd
+    - gear: DmArenaAmWt550
+      name: dm-arena-item-am-wt550
+      description: dm-arena-desc-am-wt550
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazinePistolSubMachineGunTopMountedSP
+      cost: 8
+      maxCount: 3
+      ammoFor: wt550
+    - gear: DmArenaAmMosin
+      name: dm-arena-item-am-mosin
+      description: dm-arena-desc-am-mosin
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: SpeedLoaderHeavyRifleRFMJ
+      cost: 8
+      maxCount: 3
+      ammoFor: mosin
+    - gear: DmArenaAmAkms
+      name: dm-arena-item-am-akms
+      description: dm-arena-desc-am-akms
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazineLightRifleSP
+      cost: 9
+      maxCount: 3
+      ammoFor: akms
+    - gear: DmArenaAmRifle
+      name: dm-arena-item-am-rifle
+      description: dm-arena-desc-am-rifle
+      category: dm-arena-category-gear
+      group: dm-arena-group-ammo
+      sprite: MagazineRifleSP
+      cost: 9
+      maxCount: 3
+      ammoFor: rifle
+    - gear: DmArenaSmoke
+      name: dm-arena-item-smoke
+      description: dm-arena-desc-smoke
+      category: dm-arena-category-gear
+      group: dm-arena-group-extras
+      sprite: SmokeGrenade
+      cost: 8
+      maxCount: 2
+    - gear: DmArenaGauze
+      name: dm-arena-item-gauze
+      description: dm-arena-desc-gauze
+      category: dm-arena-category-medicine
+      group: dm-arena-group-heal
+      sprite: Gauze
+      cost: 3
+      maxCount: 4
+    - gear: DmArenaBrutepack
+      name: dm-arena-item-brutepack
+      description: dm-arena-desc-brutepack
+      category: dm-arena-category-medicine
+      group: dm-arena-group-heal
+      sprite: Brutepack
+      cost: 4
+      maxCount: 3
+    - gear: DmArenaOintment
+      name: dm-arena-item-ointment
+      description: dm-arena-desc-ointment
+      category: dm-arena-category-medicine
+      group: dm-arena-group-heal
+      sprite: Ointment
+      cost: 4
+      maxCount: 3
+    - gear: DmArenaBlood
+      name: dm-arena-item-blood
+      description: dm-arena-desc-blood
+      category: dm-arena-category-medicine
+      group: dm-arena-group-heal
+      sprite: Bloodpack
+      cost: 5
+      maxCount: 3
+    - gear: DmArenaKitBasic
+      name: dm-arena-item-kit-basic
+      description: dm-arena-desc-kit-basic
+      category: dm-arena-category-medicine
+      group: dm-arena-group-kits
+      sprite: MedkitFilled
+      cost: 12
+      maxCount: 2
+    - gear: DmArenaKitBrute
+      name: dm-arena-item-kit-brute
+      description: dm-arena-desc-kit-brute
+      category: dm-arena-category-medicine
+      group: dm-arena-group-kits
+      sprite: MedkitBruteFilled
+      cost: 15
+      maxCount: 2
+    - gear: DmArenaKitBurn
+      name: dm-arena-item-kit-burn
+      description: dm-arena-desc-kit-burn
+      category: dm-arena-category-medicine
+      group: dm-arena-group-kits
+      sprite: MedkitBurnFilled
+      cost: 15
+      maxCount: 2
+    - gear: DmArenaKitCombat
+      name: dm-arena-item-kit-combat
+      description: dm-arena-desc-kit-combat
+      category: dm-arena-category-medicine
+      group: dm-arena-group-kits
+      sprite: MedkitCombatFilled
+      cost: 26
+    - gear: DmArenaKitAdvanced
+      name: dm-arena-item-kit-advanced
+      description: dm-arena-desc-kit-advanced
+      category: dm-arena-category-medicine
+      group: dm-arena-group-kits
+      sprite: MedkitAdvancedFilled
+      cost: 30
+    - gear: DmArenaKitUniversal
+      name: dm-arena-item-kit-universal
+      description: dm-arena-desc-kit-universal
+      category: dm-arena-category-medicine
+      group: dm-arena-group-kits
+      sprite: MedkitUniversalFilled
+      cost: 36
+    - gear: DmArenaMinistim
+      name: dm-arena-item-ministim
+      description: dm-arena-desc-ministim
+      category: dm-arena-category-medicine
+      group: dm-arena-group-pens
+      sprite: StimpackMini
+      cost: 6
+    - gear: DmArenaPenEmergency
+      name: dm-arena-item-pen-emergency
+      description: dm-arena-desc-pen-emergency
+      category: dm-arena-category-medicine
+      group: dm-arena-group-pens
+      sprite: EmergencyMedipen
+      cost: 8
+      maxCount: 3
+    - gear: DmArenaPenCombat
+      name: dm-arena-item-pen-combat
+      description: dm-arena-desc-pen-combat
+      category: dm-arena-category-medicine
+      group: dm-arena-group-pens
+      sprite: CombatMedipen
+      cost: 24
+      maxCount: 2
+    - gear: DmArenaGlow
+      name: dm-arena-item-glow
+      description: dm-arena-desc-glow
+      category: dm-arena-category-fun
+      sprite: GlowstickRed
+      cost: 1
+      maxCount: 3
+    - gear: DmArenaCowboy
+      name: dm-arena-item-cowboy
+      description: dm-arena-desc-cowboy
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatCowboyBrown
+      cost: 2
+    - gear: DmArenaSombrero
+      name: dm-arena-item-sombrero
+      description: dm-arena-desc-sombrero
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatSombrero
+      cost: 2
+    - gear: DmArenaPirate
+      name: dm-arena-item-pirate
+      description: dm-arena-desc-pirate
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatPirate
+      cost: 2
+    - gear: DmArenaDuck
+      name: dm-arena-item-duck
+      description: dm-arena-desc-duck
+      category: dm-arena-category-fun
+      sprite: ToyRubberDuck
+      cost: 2
+      inHand: true
+    - gear: DmArenaToysword
+      name: dm-arena-item-toysword
+      description: dm-arena-desc-toysword
+      category: dm-arena-category-fun
+      sprite: ToySword
+      cost: 2
+      inHand: true
+    - gear: DmArenaBeer
+      name: dm-arena-item-beer
+      description: dm-arena-desc-beer
+      category: dm-arena-category-fun
+      sprite: DrinkBeerBottleFull
+      cost: 2
+      maxCount: 3
+    - gear: DmArenaTophat
+      name: dm-arena-item-tophat
+      description: dm-arena-desc-tophat
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatTophat
+      cost: 2
+    - gear: DmArenaFez
+      name: dm-arena-item-fez
+      description: dm-arena-desc-fez
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatFez
+      cost: 2
+    - gear: DmArenaWitch
+      name: dm-arena-item-witch
+      description: dm-arena-desc-witch
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatWitch
+      cost: 2
+    - gear: DmArenaPumpkin
+      name: dm-arena-item-pumpkin
+      description: dm-arena-desc-pumpkin
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatPumpkin
+      cost: 2
+    - gear: DmArenaBunny
+      name: dm-arena-item-bunny
+      description: dm-arena-desc-bunny
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatBunny
+      cost: 2
+    - gear: DmArenaSanta
+      name: dm-arena-item-santa
+      description: dm-arena-desc-santa
+      category: dm-arena-category-fun
+      sprite: ClothingHeadHatSantahat
+      cost: 2
+    - gear: DmArenaLizard
+      name: dm-arena-item-lizard
+      description: dm-arena-desc-lizard
+      category: dm-arena-category-fun
+      sprite: PlushieLizard
+      cost: 2
+      inHand: true
+    - gear: DmArenaHorn
+      name: dm-arena-item-horn
+      description: dm-arena-desc-horn
+      category: dm-arena-category-fun
+      sprite: BikeHorn
+      cost: 2
+      inHand: true
+    - gear: DmArenaClown
+      name: dm-arena-item-clown
+      description: dm-arena-desc-clown
+      category: dm-arena-category-fun
+      sprite: ClothingMaskClown
+      cost: 8
+    sets:
+    - name: dm-arena-set-assault
+      description: dm-arena-set-desc-assault
+      items:
+      - DmArenaAkms
+      - DmArenaVestHeavy
+      - DmArenaKitBasic
+    - name: dm-arena-set-laser
+      description: dm-arena-set-desc-laser
+      items:
+      - DmArenaLasercarbine
+      - DmArenaKnife
+      - DmArenaVestRefl
+      - DmArenaHelmRiot
+      - DmArenaKitBurn
+      - DmArenaSmoke
+    - name: dm-arena-set-butcher
+      description: dm-arena-set-desc-butcher
+      items:
+      - DmArenaMachete
+      - DmArenaVestRiot
+      - DmArenaHelmRiot
+      - DmArenaShield
+      - DmArenaKitBrute
+      - DmArenaPenCombat
+    - name: dm-arena-set-duelist
+      description: dm-arena-set-desc-duelist
+      items:
+      - DmArenaKatana
+      - DmArenaPython
+      - DmArenaVestBp
+      - DmArenaHelmSwat
+      - DmArenaKitBasic
+      - DmArenaPenEmergency
+    - name: dm-arena-set-breacher
+      description: dm-arena-set-desc-breacher
+      items:
+      - DmArenaBulldog
+      - DmArenaMachete
+      - DmArenaVestRiot
+      - DmArenaHelmRiot
+      - DmArenaKitCombat
+    - name: dm-arena-set-sniper
+      description: dm-arena-set-desc-sniper
+      items:
+      - DmArenaMosin
+      - DmArenaKnife
+      - DmArenaVestBp
+      - DmArenaHelmSwat
+      - DmArenaKitBasic
+      - DmArenaAmMosin
+      - DmArenaSmoke
+    - name: dm-arena-set-blade
+      description: dm-arena-set-desc-blade
+      items:
+      - DmArenaEsword
+      - DmArenaVestRefl
+      - DmArenaHelmSwat
+      - DmArenaKitAdvanced
+      - DmArenaPenEmergency
+    - name: dm-arena-set-joker
+      description: dm-arena-set-desc-joker
+      items:
+      - DmArenaClown
+      - DmArenaToysword
+      - DmArenaDuck
+      - DmArenaBeer
+      - DmArenaBeer
+      - DmArenaBeer
+      - DmArenaGlow
+      - DmArenaGlow
+      - DmArenaGlow
+      - DmArenaMateba
+      - DmArenaVestRiot
+      - DmArenaKitBasic
+    - name: dm-arena-set-knight
+      description: dm-arena-set-desc-knight
+      items:
+      - DmArenaClaymore
+      - DmArenaShield
+      - DmArenaVestCarapace
+      - DmArenaHelmRiot
+      - DmArenaKitBrute
+    - name: dm-arena-set-pistolero
+      description: dm-arena-set-desc-pistolero
+      items:
+      - DmArenaViper
+      - DmArenaAmViper
+      - DmArenaVestBp
+      - DmArenaHelmSwat
+      - DmArenaKitBasic
+    - name: dm-arena-set-trooper
+      description: dm-arena-set-desc-trooper
+      items:
+      - DmArenaDrozd
+      - DmArenaAmDrozd
+      - DmArenaVestBp
+      - DmArenaHelmRiot
+      - DmArenaKitBasic
+    - name: dm-arena-set-pirate
+      description: dm-arena-set-desc-pirate
+      items:
+      - DmArenaSabre
+      - DmArenaInspector
+      - DmArenaAmRevolver
+      - DmArenaPirate
+      - DmArenaVestBp
+      - DmArenaGauze
+    - name: dm-arena-set-lumberjack
+      description: dm-arena-set-desc-lumberjack
+      items:
+      - DmArenaFireaxe
+      - DmArenaVestRiot
+      - DmArenaHelmRiot
+      - DmArenaKitBrute
+      - DmArenaGauze
+    - name: dm-arena-set-gentleman
+      description: dm-arena-set-desc-gentleman
+      items:
+      - DmArenaBat
+      - DmArenaTophat
+      - DmArenaVestBp
+      - DmArenaBlood
+      - DmArenaBrutepack
+      - DmArenaBrutepack
+  - type: LoadMapRule
+    mapPath: /Maps/_Fish/Nonstations/dm_arena.yml
+  - type: RuleGrids

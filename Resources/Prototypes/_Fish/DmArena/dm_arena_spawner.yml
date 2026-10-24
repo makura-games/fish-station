@@ -1,0 +1,10 @@
+- type: entity
+  id: DmArenaSpawnPoint
+  parent: MarkerBase
+  name: dm arena spawn point
+  description: A fighter appears here when entering the DM arena.
+  components:
+  - type: DmArenaSpawnPoint
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    state: green
