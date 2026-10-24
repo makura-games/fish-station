@@ -51,6 +51,10 @@
         Slash: 0.95
         Piercing: 0.95
         Heat: 0.95
+  # Fish-edit: Action Hotbar crime report while worn
+  - type: SecurityCrimeReport
+  - type: AccessReader
+    access: [["Security"]]
 
 - type: entity
   parent: [ClothingMaskGas, BaseSyndicateContraband]
@@ -116,6 +120,13 @@
     sprite: Clothing/Mask/gascentcom.rsi
   - type: BreathMask
   - type: IngestionBlocker
+  # Fish-edit: crime report; спецканал из гарнитуры (CentCom)
+  - type: SecurityCrimeReport
+  - type: AccessReader
+    access: [["Security"]]
+  # Fish-edit: EMP-устойчивость спецмаски ЦК (как ClothingHeadsetNinja)
+  - type: EmpResistance
+    strengthMultiplier: 0
 
 - type: entity
   parent: [ClothingMaskGas, BaseCargoContraband]
@@ -507,6 +518,13 @@
         Slash: 0.95
         Piercing: 0.95
         Heat: 0.95
+  # Fish-edit: crime report для ОБР/ДСО (каналы ERT/DeathSquad из гарнитуры)
+  - type: SecurityCrimeReport
+  - type: AccessReader
+    access: [["Security"]]
+  # Fish-edit: EMP-устойчивость ОБР/ДСО (DeathSquad наследует); обычная Sec-маска без этого
+  - type: EmpResistance
+    strengthMultiplier: 0
 
 - type: entity
   parent: ClothingMaskGasERT
