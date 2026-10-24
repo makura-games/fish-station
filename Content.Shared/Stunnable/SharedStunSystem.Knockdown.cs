@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Crit;
 using Content.Shared.Alert;
 using Content.Shared.Buckle.Components;
 using Content.Shared.CCVar;
@@ -9,6 +10,7 @@ using Content.Shared.Gravity;
 using Content.Shared.Hands;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Input;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
@@ -91,6 +93,16 @@ public abstract partial class SharedStunSystem
             // If it's null then we don't want to stand up
             if (!knockedDown.AutoStand || knockedDown.DoAfterId.HasValue || knockedDown.NextUpdate > GameTiming.CurTime)
                 continue;
+
+            // Fish-start: soft-crit — AutoStand даёт бесконечный spam popup/do-after; только ручное вставание
+            if (TryComp<MobStateComponent>(uid, out var autoMob) &&
+                SharedFishComplexCritSystem.AllowsSoftCritActions(EntityManager, uid, autoMob.CurrentState))
+            {
+                knockedDown.AutoStand = false;
+                DirtyField(uid, knockedDown, nameof(KnockedDownComponent.AutoStand));
+                continue;
+            }
+            // Fish-end
 
             TryStanding(uid);
         }
@@ -270,14 +282,36 @@ public abstract partial class SharedStunSystem
         var stand = !entity.Comp2.DoAfterId.HasValue;
         SetAutoStand((entity, entity.Comp2), stand);
 
+        // Fish-start: soft-crit — повторное нажатие не сбрасывает do-after; без AutoStand-спама
+        var softCrit = TryComp<MobStateComponent>(entity.Owner, out var mobState) &&
+            SharedFishComplexCritSystem.AllowsSoftCritActions(EntityManager, entity.Owner, mobState.CurrentState);
+
+        if (!stand && softCrit)
+            return;
+
         if (!stand || !TryStanding((entity, entity.Comp2)))
+        {
             CancelKnockdownDoAfter((entity, entity.Comp2));
+            // Soft-crit: не оставляем AutoStand — иначе Update спамит попытки/popup каждый тик.
+            if (softCrit)
+                SetAutoStand((entity, entity.Comp2), false);
+        }
+        else if (softCrit)
+        {
+            // Do-after уже идёт — AutoStand не нужен (при отмене игрок жмёт снова).
+            SetAutoStand((entity, entity.Comp2), false);
+        }
+        // Fish-end
     }
 
     public bool TryStanding(Entity<KnockedDownComponent?> entity)
     {
         // If we aren't knocked down or can't be knocked down, then we did technically succeed in standing up
         if (!Resolve(entity, ref entity.Comp, false))
+            return true;
+
+        // Fish-edit: повтор «встать» не должен CancelDuplicate сбрасывать текущий do-after
+        if (entity.Comp.DoAfterId != null)
             return true;
 
         if (!KnockdownOver((entity, entity.Comp)))
@@ -299,13 +333,19 @@ public abstract partial class SharedStunSystem
         var ev = new GetStandUpTimeEvent(crawler.StandTime);
         RaiseLocalEvent(entity, ref ev);
 
+        // Fish-start: soft-crit — длинное вставание не рвём микро-уроном / дубликатом
+        var softCritStand = TryComp<MobStateComponent>(entity.Owner, out var standMob) &&
+            SharedFishComplexCritSystem.AllowsSoftCritActions(EntityManager, entity.Owner, standMob.CurrentState);
+        // Fish-end
+
         var doAfterArgs = new DoAfterArgs(EntityManager, entity, ev.DoAfterTime, new TryStandDoAfterEvent(), entity, entity)
         {
-            BreakOnDamage = true,
+            // Fish-edit: soft-crit — BreakOnDamage off, иначе oxy/тик сбрасывает прогресс
+            BreakOnDamage = !softCritStand,
             DamageThreshold = 5,
             CancelDuplicate = true,
             RequireCanInteract = false,
-            BreakOnHandChange = true
+            BreakOnHandChange = !softCritStand // Fish-edit: в crit руки дёргаются — не отменять
         };
 
         // If we try standing don't try standing again
@@ -319,6 +359,15 @@ public abstract partial class SharedStunSystem
 
     public bool KnockdownOver(Entity<KnockedDownComponent> entity)
     {
+        // Fish-start: soft-crit — таймер weaken не блокирует «встать» (иначе кнопка мертва),
+        // но Blocker.CanMove сохраняем: иначе встают при других блокерах движения.
+        if (TryComp<MobStateComponent>(entity.Owner, out var softMob) &&
+            SharedFishComplexCritSystem.AllowsSoftCritActions(EntityManager, entity.Owner, softMob.CurrentState))
+        {
+            return Blocker.CanMove(entity);
+        }
+        // Fish-end
+
         if (entity.Comp.NextUpdate > GameTiming.CurTime)
             return false;
 
@@ -417,6 +466,18 @@ public abstract partial class SharedStunSystem
     {
         if (args.Handled)
             return;
+
+        // Fish-start: soft-crit — только обычное вставание; ForceStandUp включает AutoStand и спамит
+        if (TryComp<MobStateComponent>(entity.Owner, out var alertMob) &&
+            SharedFishComplexCritSystem.AllowsSoftCritActions(EntityManager, entity.Owner, alertMob.CurrentState))
+        {
+            if (!TryStanding(entity.Owner))
+                SetAutoStand((entity.Owner, entity.Comp), false);
+
+            args.Handled = true;
+            return;
+        }
+        // Fish-end
 
         // If we're already trying to stand, or we fail to stand try forcing it
         if (!TryStanding(entity.Owner))

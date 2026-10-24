@@ -307,8 +307,11 @@ namespace Content.Server.Atmos.EntitySystems
             }
             else
             {
+                var wasOnFire = flammable.OnFire;
                 flammable.OnFire |= ignite;
                 UpdateAppearance(uid, flammable);
+                if (flammable.OnFire != wasOnFire)
+                    Dirty(uid, flammable);
             }
         }
 
@@ -351,6 +354,7 @@ namespace Content.Server.Atmos.EntitySystems
             RaiseLocalEvent(ent, ref extinguished);
 
             UpdateAppearance(ent, ent.Comp);
+            Dirty(ent);
             return true;
         }
 
@@ -375,6 +379,7 @@ namespace Content.Server.Atmos.EntitySystems
 
                 var extinguished = new IgnitedEvent();
                 RaiseLocalEvent(uid, ref extinguished);
+                Dirty(uid, flammable);
             }
 
             UpdateAppearance(uid, flammable);
