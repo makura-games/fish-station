@@ -185,6 +185,30 @@ public sealed partial class ObrCallSystem : EntitySystem
         TryProcessCall(actor, ent.Owner, args.TeamId, args.Mission, purchaseMode: true);
     }
 
+    /// <summary>
+    /// Автоматически вызывает отряд по игровому событию, без консоли и игрока-инициатора.
+    /// Если сектор ЦК недоступен, шаттл прибывает к станции.
+    /// </summary>
+    /// <param name="teamId">Прототип вызываемого отряда.</param>
+    /// <param name="mission">Текст миссии для брифинга отряда.</param>
+    public bool TryCallTeamAutomatically(
+        ProtoId<ObrTeamPrototype> teamId,
+        string mission = "")
+    {
+        if (!_prototypes.TryIndex(teamId, out var team))
+            return false;
+
+        if (!team.CentCommAvailable || IsTeamAlreadyActive(team.ID))
+            return false;
+
+        if (!TryGetMainStation(out var station))
+            return false;
+
+        var centcommGrid = TryGetCentCommGrid(out var grid) ? grid : (EntityUid?) null;
+
+        return SpawnAndFtlObrShuttle(team, mission, station, centcommGrid, EntityUid.Invalid, EntityUid.Invalid, purchaseMode: false, cost: 0);
+    }
+
     private void TryProcessCall(
         EntityUid actor,
         EntityUid console,
@@ -356,7 +380,7 @@ public sealed partial class ObrCallSystem : EntitySystem
         ObrTeamPrototype team,
         string mission,
         EntityUid station,
-        EntityUid centcommGrid,
+        EntityUid? centcommGrid,
         EntityUid actor,
         EntityUid console,
         bool purchaseMode,
@@ -396,9 +420,24 @@ public sealed partial class ObrCallSystem : EntitySystem
 
             MarkMissionTargetsOnGrid(grid);
 
-            if (!TryFtlObrToCentCommDistantPoint(grid, shuttle, centcommGrid))
+            // Сначала пробуем прибыть к ЦК, затем к станции.
+            var arrived = centcommGrid is { } centcomm && !Deleted(centcomm) &&
+                          TryFtlObrToCentCommDistantPoint(grid, shuttle, centcomm);
+
+            if (!arrived)
             {
-                _sawmill.Warning($"OBR shuttle {ToPrettyString(grid)} could not FTL to CentComm safe distant point");
+                // Станция — это сущность в nullspace, FTL нужна её крупнейшая сетка.
+                var stationGrid = TryComp<StationDataComponent>(station, out var stationData)
+                    ? _station.GetLargestGrid((station, stationData))
+                    : null;
+
+                if (stationGrid is { } target)
+                    arrived = TryFtlObrToDistantPoint(grid, shuttle, target);
+            }
+
+            if (!arrived)
+            {
+                _sawmill.Warning($"OBR shuttle {ToPrettyString(grid)} could not FTL to its arrival point");
                 continue;
             }
 
@@ -418,12 +457,15 @@ public sealed partial class ObrCallSystem : EntitySystem
         _activeCalls[team.ID] = ruleUid;
 
         var teamName = Loc.GetString(team.Name);
+        var callerNote = actor.Valid
+            ? $"{ToPrettyString(actor)} spawned OBR team {team.ID} via {ToPrettyString(console)}"
+            : $"Automatically spawned OBR team {team.ID}";
         var purchaseNote = charged ? $" for {cost}" : " (CentComm)";
         var missionNote = string.IsNullOrWhiteSpace(mission) ? string.Empty : $"; mission: {mission}";
         _adminLog.Add(
             LogType.Action,
             LogImpact.High,
-            $"{ToPrettyString(actor)} spawned OBR team {team.ID} via {ToPrettyString(console)}{purchaseNote}{missionNote}");
+            $"{callerNote}{purchaseNote}{missionNote}");
 
         if (console.Valid && !Deleted(console))
         {
@@ -470,6 +512,12 @@ public sealed partial class ObrCallSystem : EntitySystem
 
         return false;
     }
+
+    /// <summary>
+    /// Основная станция, к которой автоматически вызывается отряд.
+    /// </summary>
+    public bool TryGetMainStation(out EntityUid station)
+        => TryGetTargetStation(EntityUid.Invalid, purchaseMode: false, out station);
 
     /// <summary>
     /// Для покупки — основная станция с банковским счётом (как у cargo console / storyteller metrics).
@@ -522,6 +570,13 @@ public sealed partial class ObrCallSystem : EntitySystem
 
     private void Fail(EntityUid console, EntityUid actor, string message, bool purchaseMode)
     {
+        // Автоматический вызов не имеет консоли и инициатора — только пишем в лог.
+        if (!actor.Valid)
+        {
+            _sawmill.Warning($"OBR automatic call failed: {message}");
+            return;
+        }
+
         _popup.PopupEntity(message, console, actor, PopupType.MediumCaution);
         UpdateUi(console, purchaseMode, actor, message);
     }
@@ -724,7 +779,8 @@ public sealed partial class ObrCallSystem : EntitySystem
     }
 
     /// <summary>
-    /// Публичный API для тестов.
+    /// Проверка, активен ли отряд: правило, ожидающий вызов или уже загруженный шаттл.
+    /// Используется правилом революции и тестами.
     /// </summary>
     public bool IsTeamActive(string teamId) => IsTeamAlreadyActive(teamId);
 

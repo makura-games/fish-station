@@ -27,4 +27,11 @@ public sealed partial class RevolutionaryRuleComponent : Component
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan ShuttleCallTime = TimeSpan.FromMinutes(5);
+
+    // Fish edit start - защита от повторного вызова ОБР Гамма после победы революции
+    /// <summary>
+    /// Был ли уже вызван отряд ОБР Гамма после заковывания живого командования.
+    /// </summary>
+    public bool GammaCalled;
+    // Fish edit end
 }

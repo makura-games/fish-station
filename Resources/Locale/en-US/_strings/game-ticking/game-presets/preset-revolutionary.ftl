@@ -45,6 +45,12 @@ rev-stalemate = Both Command and the head revolutionaries have all died. It's a 
 
 rev-reverse-stalemate = Both Command and the head revolutionaries survived.
 
+rev-ert-gamma-announcement =
+    Attention station!
+    Our sensors have detected the death of all station heads, and as a result the facility is now under the command of the Department of Special Operations. An Emergency Response Team has already been dispatched to your sector, and Gamma code has been declared on the station.
+    Glory to NanoTrasen!
+rev-ert-gamma-mission = Suppress the revolution and restore Central Command's control over the station.
+
 rev-headrev-count = {$initialCount ->
     [one] There was one head revolutionary:
     *[other] There were {$initialCount} head revolutionaries:

@@ -53,7 +53,7 @@
     maxOccurrences: 99
     weight: 0
   - type: LoadMapRule
-    gridPath: /Maps/_Fish/Shuttles/DSO/ERT/ert_striker_Roles_Gamma.yml
+    gridPath: /Maps/_Fish/Shuttles/DSO/ERT/ert_large_Roles_Gamma.yml
 
 - type: entity
   id: FishObrShuttleCburn

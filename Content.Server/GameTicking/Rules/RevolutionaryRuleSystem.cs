@@ -1,6 +1,8 @@
 using System.Linq;
 using Content.Server.Administration.Logs;
+using Content.Server.AlertLevel;
 using Content.Server.Antag;
+using Content.Server.Chat.Systems;
 using Content.Server.EUI;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Server.Mind;
@@ -8,10 +10,8 @@ using Content.Server.Popups;
 using Content.Server.Revolutionary;
 using Content.Server.Revolutionary.Components;
 using Content.Server.Roles;
-using Content.Server.RoundEnd;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Systems;
-using Content.Server.AlertLevel;
 using Content.Shared.Database;
 using Content.Shared.Flash;
 using Content.Shared.GameTicking.Components;
@@ -34,7 +34,10 @@ using Content.Shared.Cuffs.Components;
 using Robust.Shared.Player;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
+using Content.Server.RoundEnd;
 using Content.Shared.Popups;
+using Content.Server._Fish.ObrCall; // Fish edit - автоматический вызов ОБР Гамма после победы революции
+using Content.Shared._Fish.ObrCall; // Fish edit - прототип отряда ОБР
 
 namespace Content.Server.GameTicking.Rules;
 
@@ -57,12 +60,18 @@ public sealed partial class RevolutionaryRuleSystem : GameRuleSystem<Revolutiona
     [Dependency] private RoundEndSystem _roundEnd = default!;
     [Dependency] private SharedStunSystem _stun = default!;
     [Dependency] private StationSystem _stationSystem = default!;
-    [Dependency] private AlertLevelSystem _alertLevel = default!; // Sunrise-Edit
     [Dependency] private AdminVerbSystem _adminVerbSystem = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!; // Fish edit - код Гамма после потери командования
+    [Dependency] private ChatSystem _chat = default!; // Fish edit - объявление о переходе под командование ДСО
+    [Dependency] private ObrCallSystem _obr = default!; // Fish edit - автоматический вызов ОБР Гамма
 
     //Used in OnPostFlash, no reference to the rule component is available
     public readonly ProtoId<NpcFactionPrototype> RevolutionaryNpcFaction = "Revolutionary";
     public readonly ProtoId<NpcFactionPrototype> RevPrototypeId = "Rev";
+    // Fish edit start - отряд, который вызывается после победы революции
+    private static readonly ProtoId<ObrTeamPrototype> GammaTeamId = "ObrGamma";
+    private const string GammaAlertLevel = "gamma";
+    // Fish edit end
     private Dictionary<EntityUid, TimeSpan> _scheduledSmites = new();
 
 
@@ -93,19 +102,54 @@ public sealed partial class RevolutionaryRuleSystem : GameRuleSystem<Revolutiona
         {
             component.CommandCheck = _timing.CurTime + component.TimerWait;
 
-            // Check for command loss
-            if (CheckCommandLose())
+            // Fish edit start - смерть всех глав завершает раунд (Эпсилон), а закованные живые главы вызывают ОБР Гамма
+            if (CheckAllCommandDead())
             {
-                //  Sunrise-Edit-Start
+                // Все главы мертвы: как раньше — код Эпсилон и завершение раунда.
                 var stations = _stationSystem.GetStations();
                 foreach (var station in stations)
                 {
-                    _alertLevel.SetLevel(station, "epsilon", true, true, true);
+                    _alertLevel.SetLevel(station, "epsilon", playSound: true, announce: true, force: true);
                 }
+
                 _roundEnd.EndRound();
-                //  Sunrise-Edit-End
                 GameTicker.EndGameRule(uid, gameRule);
             }
+            else if (!component.GammaCalled && CheckAllCommandDetained())
+            {
+                // Все живые главы закованы: вызываем большой отряд ОБР Гамма.
+                var deployed = _obr.IsTeamActive(GammaTeamId) ||
+                               _obr.TryCallTeamAutomatically(
+                                   GammaTeamId,
+                                   Loc.GetString("rev-ert-gamma-mission"));
+
+                if (deployed)
+                {
+                    component.GammaCalled = true;
+
+                    if (_obr.TryGetMainStation(out var station))
+                    {
+                        // Код Гамма должен быть выставлен, если он ещё не активен.
+                        if (_alertLevel.GetLevel(station) != GammaAlertLevel)
+                        {
+                            _alertLevel.SetLevel(
+                                station,
+                                GammaAlertLevel,
+                                playSound: false,
+                                announce: false,
+                                force: true);
+                        }
+
+                        _chat.DispatchStationAnnouncement(
+                            station,
+                            Loc.GetString("rev-ert-gamma-announcement"),
+                            sender: Loc.GetString("chat-manager-sender-announcement"),
+                            playDefaultSound: true,
+                            colorOverride: Color.Gold);
+                    }
+                }
+            }
+            // Fish edit end
 
             // Execute scheduled smites for banned players
             if (_scheduledSmites.Count > 0)
@@ -217,8 +261,19 @@ public sealed partial class RevolutionaryRuleSystem : GameRuleSystem<Revolutiona
     //TODO: Enemies of the revolution
     private void OnCommandMobStateChanged(EntityUid uid, CommandStaffComponent comp, MobStateChangedEvent ev)
     {
-        if (ev.NewMobState == MobState.Dead || ev.NewMobState == MobState.Invalid)
-            CheckCommandLose();
+        if (ev.NewMobState != MobState.Dead && ev.NewMobState != MobState.Invalid)
+            return;
+
+        // Fish edit start - не ждём плановой проверки, чтобы условия победы проверялись сразу после гибели командования
+        var rules = QueryAllRules();
+        while (rules.MoveNext(out var ruleUid, out var ruleComp, out var ruleData))
+        {
+            if (GameTicker.IsGameRuleActive(ruleUid, ruleData))
+                ruleComp.CommandCheck = _timing.CurTime;
+        }
+        // Fish edit end
+
+        CheckCommandLose();
     }
 
     /// <summary>
@@ -236,6 +291,48 @@ public sealed partial class RevolutionaryRuleSystem : GameRuleSystem<Revolutiona
 
         return IsGroupDetainedOrDead(commandList, true, true, true);
     }
+
+    // Fish edit start - новые условия победы революции: Эпсилон при смерти всех глав, Гамма при их заковывании
+    /// <summary>
+    /// Все главы мертвы (или их нет). Мёртвыми считаются также главы без <see cref="MobStateComponent"/>.
+    /// </summary>
+    private bool CheckAllCommandDead()
+    {
+        var heads = AllEntityQuery<CommandStaffComponent>();
+        while (heads.MoveNext(out var id, out _))
+        {
+            if (!TryComp<MobStateComponent>(id, out var state))
+                continue;
+
+            if (state.CurrentState != MobState.Dead && state.CurrentState != MobState.Invalid)
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Все живые главы закованы в наручники/стяжки. Мёртвые главы не учитываются.
+    /// </summary>
+    private bool CheckAllCommandDetained()
+    {
+        var heads = AllEntityQuery<CommandStaffComponent>();
+        while (heads.MoveNext(out var id, out _))
+        {
+            // Нет MobState — считаем главу мёртвым и пропускаем.
+            if (!TryComp<MobStateComponent>(id, out var state))
+                continue;
+
+            if (state.CurrentState == MobState.Dead || state.CurrentState == MobState.Invalid)
+                continue;
+
+            if (!TryComp<CuffableComponent>(id, out var cuffed) || cuffed.CuffedHandCount <= 0)
+                return false;
+        }
+
+        return true;
+    }
+    // Fish edit end
 
     private void OnHeadRevMobStateChanged(EntityUid uid, HeadRevolutionaryComponent comp, MobStateChangedEvent ev)
     {
