@@ -98,7 +98,7 @@
           maximumDistance: 300
           stationGrid: false
           minCount: 12
-          maxCount: 26 # Fish-Edit
+          maxCount: 26 # Fish-edit: Лимит обломков увеличен с 16 до 26
           addComponents:
           - type: IFF
             flags: HideLabel
