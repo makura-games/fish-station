@@ -1651,4 +1651,7 @@ FishGyroscope50K: Gyroscope
 FishGyroscope100K: Gyroscope
 FishGyroscope200K: Gyroscope
 HighSecCommandLocked: AirlockCommandLocked
+HighSecCentralCommandLocked: AirlockCentralCommandLocked
+HighSecArmoryLocked: AirlockArmoryLocked
+HighSecCaptainLocked: AirlockCaptainLocked
 # region Fish-End
