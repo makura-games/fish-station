@@ -23267,7 +23267,7 @@ entities:
     components:
     - type: Transform
       parent: 2
-      pos: 9.5,-17.5
+      pos: 9.5,-17.45
     - type: CMExplosionEffect
 - proto: WindoorNukeopLocked
   entities:
