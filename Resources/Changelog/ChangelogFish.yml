@@ -1031,3 +1031,52 @@
     message: 'Удаление карт из пула на фиксы: Ирефит, Сухарик, Оазис, Плазма, Сноуболл, Терра Исланд,'
   id: 102
   url: https://github.com/makura-games/fish-station/pull/540
+- author: TiFeRi
+  time: '2026-10-25T11:13:34.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Фикс карт для апстрима часть 1
+  id: 103
+  url: https://github.com/makura-games/fish-station/pull/552
+- author: TiFeRi
+  time: '2026-10-25T11:13:43.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Фикс карт для апстрима часть 2
+  id: 104
+  url: https://github.com/makura-games/fish-station/pull/553
+- author: TiFeRi
+  time: '2026-10-25T11:13:55.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Фикс карт для апстрима часть 3
+  id: 105
+  url: https://github.com/makura-games/fish-station/pull/554
+- author: TiFeRi
+  time: '2026-10-25T11:14:06.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Фикс карт для апстрима часть 4
+  id: 106
+  url: https://github.com/makura-games/fish-station/pull/555
+- author: TiFeRi
+  time: '2026-10-25T13:18:40.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Миграция сломанных штук до починки.
+  id: 107
+  url: https://github.com/makura-games/fish-station/pull/558
+- author: TiFeRi
+  time: '2026-10-25T23:22:39.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлены ушки в рыбаплинк, бонусом идут кроличьи.
+  id: 108
+  url: https://github.com/makura-games/fish-station/pull/505
+- author: KrytoiChuvaaak
+  time: '2026-10-25T23:25:54.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Предметы в лоадауте Синего Щита теперь требуют суммарное наигранное время по всем ролям СЩ, а не только по офицеру.
+  id: 109
+  url: https://github.com/makura-games/fish-station/pull/516

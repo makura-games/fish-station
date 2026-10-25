@@ -28,7 +28,7 @@ jobs:
       # Пустую настройку отклонит валидатор; подмена обычной сборкой недопустима.
       publish_fork_id: ${{ vars.PUBLISH_STABLE_FORK_ID || ' ' }}
       concurrency_group: 'publish-mapping'
-      required_branch: 'stable'
+      # required_branch: 'stable' # Fish-edit. МЕНЯ ЗАСТАВЛЯЮТ ДЕЛАТЬ АПСТРИМЫ И НЕ ДАЮТ ВЫБИРАТЬ ВЕТКУ!
       use_private_content: ${{ inputs.use_private_content }}
       private_commit_hash: ${{ inputs.private_commit_hash }}
       server_platforms: '--platform win-x64 --platform linux-x64 --platform osx-x64 --platform linux-arm64'
