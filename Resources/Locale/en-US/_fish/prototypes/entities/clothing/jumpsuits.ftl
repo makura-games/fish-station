@@ -1,3 +1,3 @@
-ent-FishClothingUniformJumpsuitConnor = android uniform
+ent-FishClothingUniformJumpsuitAndroid = android uniform
     .desc = 28 stab wounds! You didn't leave him a chance, huh?
     .suffix = Fish, Clothing

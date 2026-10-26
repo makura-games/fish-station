@@ -1,0 +1,13 @@
+- type: entity
+  parent: ClothingHeadHatCowboyBrown
+  id: FishClothingHeadHatLightingdiod
+  name: lighting diod
+  description: maybe, you should to hide this if you're a deviant.
+  components:
+    - type: Sprite
+      sprite: _Fish/Clothing/Head/Hats/lighting_diod.rsi
+    - type: Clothing
+      sprite: _Fish/Clothing/Head/Hats/lighting_diod.rsi
+    - type: Tag
+      tags:
+      - WhitelistChameleon

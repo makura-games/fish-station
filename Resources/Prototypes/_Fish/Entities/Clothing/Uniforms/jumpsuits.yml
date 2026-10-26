@@ -31,8 +31,8 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: ClothingUniformJumpsuitConnor
-  name: connor uniform
+  id: FishClothingUniformJumpsuitAndroid
+  name: android uniform.
   description: 28 stab wounds. You didn't leave him a chance, huh?
   components:
   - type: Sprite
