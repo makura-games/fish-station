@@ -12,7 +12,7 @@
         - id: ClothingMaskBreath
         - id: EmergencyOxygenTankFilled
         - id: EmergencyMedipen
-        - id: SpaceMedipen
+        - id: SpaceMedipen #fish-edit
         - id: FoodSnackNutribrick
         - id: DrinkWaterBottleFull
   - type: Sprite
