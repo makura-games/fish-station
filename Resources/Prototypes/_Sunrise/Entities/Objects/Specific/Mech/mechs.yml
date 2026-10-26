@@ -638,8 +638,8 @@
         Structural: 180
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2
-    baseSprintSpeed: 3.5
+    baseWalkSpeed: 1.8 # fish-edit
+    baseSprintSpeed: 3.15 # fish-edit
   - type: Reflect
     reflectProb: 0.10
     spread: 180
@@ -807,8 +807,8 @@
         Structural: 300
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 2
+    baseWalkSpeed: 1.35 # FIsh edit
+    baseSprintSpeed: 1.8 # FIsh edit
   - type: Loadout
     prototypes: [ MechArmorMediumSyndiLoadout ]
   - type: CanMoveInAir
@@ -882,8 +882,8 @@
         Structural: 220
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 2
+    baseWalkSpeed: 1.35 # FIsh edit
+    baseSprintSpeed: 1.8 # FIsh edit
   - type: Loadout
     prototypes: [ MechArmorHeavySyndiLoadout ]
   - type: CanMoveInAir
