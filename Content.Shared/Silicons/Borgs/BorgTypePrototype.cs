@@ -14,7 +14,7 @@ namespace Content.Shared.Silicons.Borgs;
 /// </summary>
 /// <seealso cref="SharedBorgSwitchableTypeSystem"/>
 [Prototype]
-public sealed partial class BorgTypePrototype : IPrototype
+public sealed partial class BorgTypePrototype : IPrototype // Fish-edit: IInheritingPrototype — в _Fish/BorgTypePrototype.Mk2.cs
 {
     private static readonly ProtoId<SoundCollectionPrototype> DefaultFootsteps = new("FootstepBorg");
 

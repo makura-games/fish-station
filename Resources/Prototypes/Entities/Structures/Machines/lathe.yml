@@ -350,6 +350,7 @@
     - MedicalCyberlimbDynamic
     - MedicalCyberOrgansDynamic
     # Sunrise-end
+    - FishBorgModules # Fish-edit: рецепт апгрейд-модуля борга до Mk2
   - type: MaterialStorage
     whitelist: *StandardMaterialWhitelist
   - type: OreSiloClient

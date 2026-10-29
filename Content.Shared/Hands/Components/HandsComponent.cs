@@ -81,8 +81,10 @@ public sealed partial class HandsComponent : Component, IComponentDelta
     /// <summary>
     /// Data about the current sprite layers that the hand is contributing to the owner entity. Used for sprite in-hands.
     /// Used by the client.
+    /// Fish: ключ — hand ID (string), а не HandLocation: несколько Functional-рук борга
+    /// разделяли бы один HashSet и вторая рука стирала слои первой при перерисовке.
     /// </summary>
-    public readonly Dictionary<HandLocation, HashSet<string>> RevealedLayers = new();
+    public readonly Dictionary<string, HashSet<string>> RevealedLayers = new(); // Fish-edit
 
     /// <summary>
     /// The time at which throws will be allowed again.
@@ -147,8 +149,12 @@ public sealed partial class HandsComponent : Component, IComponentDelta
 [Serializable, NetSerializable]
 public partial record struct Hand
 {
+    /// <summary>
+    /// Fish: дефолт Functional — модульные руки боргов (BorgHand) в YAML не задают location явно;
+    /// все остальные руки (мобы, HandOrgan, ExtraHandsEquipment) location указывают явно.
+    /// </summary>
     [DataField]
-    public HandLocation Location = HandLocation.Middle;
+    public HandLocation Location = HandLocation.Functional;  // Fish-edit
 
     /// <summary>
     /// The label to be displayed for this hand when it does not contain an entity

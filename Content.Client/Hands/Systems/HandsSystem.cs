@@ -59,6 +59,11 @@ namespace Content.Client.Hands.Systems
         }
 
         #region StateHandling
+
+        /// <summary>
+        /// Fish: применяет сетевое состояние рук и обновляет in-hand слои всех рук
+        /// после полного состояния, включая смену ShowInHands.
+        /// </summary>
         private void HandleComponentState(Entity<HandsComponent> ent, ref ComponentHandleState args)
         {
             // No need to update everything if we are only switching hands.
@@ -293,25 +298,12 @@ namespace Content.Client.Hands.Systems
             if (ent == _playerManager.LocalEntity)
                 OnPlayerItemAdded?.Invoke(handId, held);
 
-            if (!handComp.ShowInHands)
+            // Fish: очистка старых слоёв до раннего выхода по ShowInHands и привязка
+            // RevealedLayers по handId — _Fish/Hands/Systems/HandsSystem.ShowInHands.cs.
+            // Fish-start
+            if (!TryPrepareRevealedLayers(ent.Owner, handComp, sprite, handId, out var revealedLayers))
                 return;
-
-            // Remove old layers. We could also just set them to invisible, but as items may add arbitrary layers, this
-            // may eventually bloat the player with lots of layers.
-            if (handComp.RevealedLayers.TryGetValue(hand.Value.Location, out var revealedLayers))
-            {
-                foreach (var key in revealedLayers)
-                {
-                    _sprite.RemoveLayer((ent, sprite), key);
-                }
-
-                revealedLayers.Clear();
-            }
-            else
-            {
-                revealedLayers = new();
-                handComp.RevealedLayers[hand.Value.Location] = revealedLayers;
-            }
+            // Fish-end
 
             if (HandIsEmpty((ent, handComp), handId))
             {
@@ -328,6 +320,10 @@ namespace Content.Client.Hands.Systems
                 RaiseLocalEvent(held, new HeldVisualsUpdatedEvent(ent, revealedLayers), true);
                 return;
             }
+
+            // Fish: компенсация in-hand смещения Mk2 зависит только от сущности и её
+            // borgType, а не от слоя — вычисляем один раз на вызов вне цикла по слоям.
+            var needsMk2Compensation = NeedsMk2HandOffsetCompensation(ent.Owner); // Fish-edit
 
             // add the new layers
             foreach (var (key, layerData) in ev.Layers)
@@ -352,6 +348,8 @@ namespace Content.Client.Hands.Systems
                 }
 
                 _sprite.LayerSetData((ent, sprite), index, layerData);
+
+                ApplyMk2HandOffsetCompensation((ent, sprite), index, needsMk2Compensation); // Fish-edit
 
                 // Add displacement maps
                 // Sunrise-Edit - учитываем displacement-карты выбранного типа тела.
