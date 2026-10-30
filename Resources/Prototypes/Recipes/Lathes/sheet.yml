@@ -65,7 +65,7 @@
 - type: latheRecipe
   id: SheetPGlass1
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket2 # Sunrise edit
+  ticketProtoId: SalvageTicket10 # FIsh edit - баланс mining points
   result: SheetPGlass1
   completetime: 0.15  # Sunrise edit
   materials:
@@ -83,7 +83,7 @@
 - type: latheRecipe
   id: SheetRPGlass1
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket3 # Sunrise edit
+  ticketProtoId: SalvageTicket15 # FIsh edit - баланс mining points
   result: SheetRPGlass1
   completetime: 0.15  # Sunrise edit
   materials:
@@ -105,6 +105,7 @@
 - type: latheRecipe
   id: SheetPlasma1
   printTicket: true # Sunrise edit
+  ticketProtoId: SalvageTicket10 # FIsh edit - баланс mining points ближе к SS13
   result: SheetPlasma1
   completetime: 0.15  # Sunrise edit
   materials:
@@ -120,7 +121,7 @@
 - type: latheRecipe
   id: SheetPlasteel1
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket2 # Sunrise edit
+  ticketProtoId: SalvageTicket10 # FIsh edit - баланс mining points
   result: SheetPlasteel1
   completetime: 0.25  # Sunrise edit
   materials:
@@ -147,7 +148,7 @@
 - type: latheRecipe
   id: SheetUGlass1
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket3 # Sunrise edit
+  ticketProtoId: SalvageTicket20 # FIsh edit - баланс mining points
   result: SheetUGlass1
   completetime: 0.15  # Sunrise edit
   materials:
@@ -165,7 +166,7 @@
 - type: latheRecipe
   id: SheetRUGlass1
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket4 # Sunrise edit
+  ticketProtoId: SalvageTicket25 # FIsh edit - баланс mining points
   result: SheetRUGlass1
   completetime: 0.15  # Sunrise edit
   materials:
@@ -208,7 +209,7 @@
 - type: latheRecipe
   id: MaterialDiamond
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket20 # Sunrise edit
+  ticketProtoId: SalvageTicket50 # FIsh edit - баланс mining points ближе к SS13 diamond
   result: MaterialDiamond1
   completetime: 0.5  # Sunrise edit
   materials:
@@ -217,7 +218,7 @@
 - type: latheRecipe
   id: SheetUranium1
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket2 # Sunrise edit
+  ticketProtoId: SalvageTicket15 # FIsh edit - баланс mining points
   result: SheetUranium1
   completetime: 0.15  # Sunrise edit
   materials:
@@ -226,6 +227,7 @@
 - type: latheRecipe
   id: IngotGold1
   printTicket: true # Sunrise edit
+  ticketProtoId: SalvageTicket10 # FIsh edit - баланс mining points
   result: IngotGold1
   completetime: 0.25  # Sunrise edit
   materials:
@@ -234,6 +236,7 @@
 - type: latheRecipe
   id: IngotSilver1
   printTicket: true # Sunrise edit
+  ticketProtoId: SalvageTicket10 # FIsh edit - баланс mining points
   result: IngotSilver1
   completetime: 0.25  # Sunrise edit
   materials:
@@ -251,7 +254,7 @@
 - type: latheRecipe
   id: MaterialBananium1
   printTicket: true # Sunrise edit
-  ticketProtoId: SalvageTicket5 # Sunrise edit
+  ticketProtoId: SalvageTicket30 # FIsh edit - баланс mining points
   result: MaterialBananium1
   completetime: 0.15  # Sunrise edit
   materials:

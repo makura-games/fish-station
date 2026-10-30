@@ -1,0 +1,45 @@
+# FIsh: дополнительные позиции mining vendor (SS13-inspired, без дубликатов существующих listing)
+
+- type: listing
+  id: VendorMiningAdvancedMineralScanner
+  productEntity: AdvancedMineralScanner
+  cost:
+    SalvageTicket: 800
+  categories:
+  - TicketTools
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 3
+
+- type: listing
+  id: VendorMiningOreBagOfHolding
+  productEntity: OreBagOfHolding
+  cost:
+    SalvageTicket: 1000
+  categories:
+  - MiningEquipment
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 2
+
+- type: listing
+  id: VendorMiningWeaponCrusher
+  productEntity: WeaponCrusher
+  cost:
+    SalvageTicket: 450
+  categories:
+  - TicketTools
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 3
+
+- type: listing
+  id: VendorMiningWeaponCrusherGlaive
+  productEntity: WeaponCrusherGlaive
+  cost:
+    SalvageTicket: 700
+  categories:
+  - TicketTools
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 2
