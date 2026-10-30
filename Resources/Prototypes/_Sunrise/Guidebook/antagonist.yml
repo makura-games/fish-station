@@ -1,7 +1,9 @@
+# Fish-start: To remove - функционал разумной болезни
 - type: guideEntry
   id: Disease
   name: guide-entry-disease
   text: "/ServerInfo/Guidebook/_Sunrise/Antagonist/Disease.xml"
+# Fish-end
 
 - type: guideEntry
   id: FleshCult

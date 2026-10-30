@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 using Content.Shared._Sunrise.Disease;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;

@@ -99,7 +99,7 @@
   components:
   - type: Sprite
     layers: !Remove
-    sprite: _Sunrise/Structures/Doors/Airlocks/Standard/security.rsi
+    sprite: _Sunrise/Structures/Doors/Airlocks/Standard/security_standard.rsi
 
 - type: !PartialOnly entity
   id: AirlockMaint
@@ -183,7 +183,7 @@
   components:
   - type: Sprite
     layers: !Remove
-    sprite: _Sunrise/Structures/Doors/Airlocks/Glass/security.rsi
+    sprite: _Sunrise/Structures/Doors/Airlocks/Glass/security_standard.rsi
 
 - type: !PartialOnly entity
   id: AirlockSyndicateGlass

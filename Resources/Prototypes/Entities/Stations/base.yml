@@ -49,7 +49,7 @@
 # Fish-start
         - gridPath: /Maps/_Fish/Shuttles/mining.yml
           priorityTag: DockMining
-        - gridPaths: 
+        - gridPaths:
             - /Maps/_Fish/Shuttles/security/security_Bliznec.yml
             - /Maps/_Fish/Shuttles/security/security_Sherhen.yml
             - /Maps/_Fish/Shuttles/security/security_Sozicatel.yml
@@ -109,19 +109,19 @@
           - ChunkDebrisSmall
           - ChunkDebrisSmall
           - ChunkDebris
-# Fish-start
-#        vgroid: !type:DungeonSpawnGroup
-#          minimumDistance: 300
-#          maximumDistance: 350
-#          nameDataset: NamesBorer
-#          stationGrid: false
-#          addComponents:
-#          - type: Gravity
-#            enabled: true
-#            inherent: true
-#          protos:
-#          - VGRoid
-# Fish-end
+  # Sunrise-Start: Удалён планетоид до удаления его Wizard апстримом при запланированной ими переработке Salvage работы
+        # vgroid: !type:DungeonSpawnGroup
+        #   minimumDistance: 300
+        #   maximumDistance: 350
+        #   nameDataset: NamesBorer
+        #   stationGrid: false
+        #   addComponents:
+        #   - type: Gravity
+        #     enabled: true
+        #     inherent: true
+        #   protos:
+        #   - VGRoid
+  # Sunrise-End
 
 # Sunrise-Edit: Вынесено в _Sunrise
 #- type: entity

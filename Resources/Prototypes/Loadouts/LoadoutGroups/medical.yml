@@ -50,6 +50,8 @@
   - ChiefMedicalOfficerJumpskirt
   - ChiefMedicalOfficerTurtleneckJumpsuit
   - ChiefMedicalOfficerTurtleneckJumpskirt
+  - SeniorPhysicianJumpsuit # Fish-edit - гардероб ведущего врача открыт для всех врачей
+  - SeniorPhysicianJumpskirt # Fish-edit
 
 - type: loadoutGroup
   id: ChiefMedicalOfficerOuterClothing

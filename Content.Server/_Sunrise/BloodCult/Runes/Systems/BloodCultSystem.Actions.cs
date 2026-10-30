@@ -285,6 +285,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             var doAfter = new DoAfterArgs(_entityManager, uid, TimeSpan.FromSeconds(2), ev, uid)
             {
                 BreakOnMove = true,
+                MovementThreshold = 2f, // Fish-edit: радиус прерывания движения = 2
                 BreakOnDamage = true,
                 NeedHand = false,
                 CancelDuplicate = true,

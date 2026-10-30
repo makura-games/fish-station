@@ -38,7 +38,6 @@ using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Maps;
 using Content.Shared.Mind.Components;
-using Content.Shared.Mindshield.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Pulling.Components;
@@ -374,7 +373,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             };
 
             if (component.InvokersMinCount > 1 || component.GatherInvokers)
+            {
                 cultists = GatherCultists(uid, component.CultistGatheringRange);
+                cultists.Add(args.User); // Fish-edit: инициатор всегда включен в число вызывающих
+            }
 
             if (cultists.Count < component.InvokersMinCount)
             {
@@ -470,7 +472,8 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
                 var hasMind = _mindSystem.TryGetMind(victim.Value, out var mindId, out var mind);
 
-                var canConvert = !HasComp<MindShieldComponent>(victim.Value)
+                _mindShield.GetMindshieldStatus(victim.Value, out var mindshielded, out _);
+                var canConvert = !mindshielded
                                       && !HasComp<BibleUserComponent>(victim.Value);
 
                 if (hasMind && canConvert )
@@ -587,6 +590,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             }
 
             _bloodCultRuleSystem.MakeCultist(target, rule, giveStartingItems: false);
+            // Fish-start - При конвертации новому культисту выдаётся кинжал и локатор культа
+            GiveConvertedCultistItems(target, rule);
+            // Fish-end
             _stunSystem.TryAddParalyzeDuration(target, TimeSpan.FromSeconds(2f));
             HealCultist(target);
 
@@ -1354,10 +1360,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             _entityManager.SpawnEntity(rune, coords);
         }
 
-        // Fish-start
+        // Fish-start - спавн камня души при жертвоприношении
         /// <summary>
-        /// Attempts to create a soul shard from the sacrifice target, transferring the victim's mind into it.
-        /// Returns false if the target has no mind or the mind is already in another living body.
+        /// Creates a soul shard from the sacrifice target, transferring the victim's mind into it if valid,
+        /// and gibs the target.
         /// </summary>
         private bool SpawnShard(EntityUid target)
         {
@@ -1372,11 +1378,8 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             if (_entityManager.TryGetComponent<MindContainerComponent>(target, out var mindComponent) && mindComponent.HasMind)
             {
                 targetMindId = mindComponent.Mind;
-                if (targetMindId.HasValue) targetMind = _entityManager.GetComponent<MindComponent>(targetMindId.Value);
-            }
-            else
-            {
-                return false;
+                if (targetMindId.HasValue)
+                    targetMind = _entityManager.GetComponent<MindComponent>(targetMindId.Value);
             }
 
             if (targetMindId != null && targetMind != null)
@@ -1387,13 +1390,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 {
                     if (_entityManager.HasComponent<MobStateComponent>(currentEntity) && !_entityManager.HasComponent<GhostComponent>(currentEntity))
                     {
-                        return false;
+                        targetMindId = null;
+                        targetMind = null;
                     }
                 }
-            }
-            else
-            {
-                return false;
             }
         // Fish-end
 
@@ -1433,6 +1433,28 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             // Достаточно любой грид+тайл: станция, шаттл, планетойд экспедиции.
             return true;
         }
+
+        // Fish-start - Выдача кинжала и локатора при конвертации
+        private void GiveConvertedCultistItems(EntityUid cultist, BloodCultRuleComponent rule)
+        {
+            if (rule.CultType == null ||
+                !ProtoMan.TryIndex<BloodCultPrototype>($"{rule.CultType.Value.ToString()}Cult", out var cultPrototype))
+                return;
+
+            var coords = Transform(cultist).Coordinates;
+            _inventorySystem.TryGetSlotEntity(cultist, "back", out var backPack);
+
+            var itemsToGive = new[] { cultPrototype.DaggerProto, (EntProtoId)"BloodCultPinpointer" };
+            foreach (var itemProto in itemsToGive)
+            {
+                var item = Spawn(itemProto, coords);
+                if (backPack != null && _storageSystem.Insert(backPack.Value, item, out _))
+                    continue;
+                if (_handsSystem.TryPickupAnyHand(cultist, item))
+                    continue;
+            }
+        }
+        // Fish-end
 
         private void HealCultist(EntityUid player)
         {

@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 using Content.Shared.Humanoid;
 using Content.Shared._Sunrise.Disease;
 using Robust.Shared.Network;
