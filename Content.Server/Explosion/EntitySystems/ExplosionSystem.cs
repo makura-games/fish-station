@@ -50,6 +50,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     [Dependency] private PathfindingSystem _pathfindingSystem = default!;
     [Dependency] private SharedCameraRecoilSystem _recoilSystem = default!;
     [Dependency] private ThrowingSystem _throwingSystem = default!;
+    // Fish-edit: blast trauma после EnsureComp+ThrowSpeed
+    [Dependency] private Content.Server._Fish.Reactions.FishCharacterReactionsSystem _fishReactions = default!;
     [Dependency] private PvsOverrideSystem _pvsSys = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedTransformSystem _transformSystem = default!;

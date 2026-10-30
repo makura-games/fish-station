@@ -1,6 +1,8 @@
+using Content.Shared._Fish.Crit; // Fish-edit: не эмоутить в Crit-unconscious
 using Content.Shared.Damage.Systems;
 using Content.Shared.Chat;
 using Content.Shared.Chat.Prototypes;
+using Content.Shared.Mobs.Systems; // Fish-edit
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -12,6 +14,7 @@ public sealed partial class EmoteOnDamageSystem : EntitySystem
     [Dependency] private IGameTiming _gameTiming = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ChatSystem _chatSystem = default!;
+    [Dependency] private MobStateSystem _mobState = default!; // Fish-edit
 
     public override void Initialize()
     {
@@ -24,6 +27,11 @@ public sealed partial class EmoteOnDamageSystem : EntitySystem
     {
         if (!args.DamageIncreased)
             return;
+
+        // Fish-start: мёртвые / Crit-unconscious не кричат от урона
+        if (_mobState.IsDead(uid) || HasComp<FishCritUnconsciousComponent>(uid))
+            return;
+        // Fish-end
 
         if (emoteOnDamage.LastEmoteTime + emoteOnDamage.EmoteCooldown > _gameTiming.CurTime)
             return;
