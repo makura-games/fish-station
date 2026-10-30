@@ -1,0 +1,19 @@
+﻿- type: npcFaction
+  id: FishClockworkCult
+  friendly:
+  - FishClockworkCult
+  hostile:
+  - NanoTrasen
+  - Syndicate
+  - Thief
+  - Zombie
+  - Revolutionary
+  - Xeno
+  - BloodCult
+  - AllHostile
+
+- type: collectiveMind
+  id: FishClockworkCult
+  name: collective-mind-fish-clockwork
+  keycode: 'щ' # Fish-edit: не конфликтовать с BloodCult 'р'
+  color: "#BE8700"

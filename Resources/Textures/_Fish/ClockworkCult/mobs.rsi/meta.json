@@ -1,0 +1,59 @@
+﻿{
+    "version":  1,
+    "license":  "CC-BY-SA-3.0",
+    "copyright":  "tgstation Clockwork Cult assets (commit f42d5a43ca9c7e2201878566c37162ccaea3a34d). CC-BY-SA-3.0. Artists: SkowronX, FuryMcFlurry, Xhuis and tgstation contributors.",
+    "size":  {
+                 "x":  32,
+                 "y":  32
+             },
+    "states":  [
+                   {
+                       "name":  "anime_fragment"
+                   },
+                   {
+                       "name":  "clockwork_marauder"
+                   },
+                   {
+                       "name":  "marauder_emerge"
+                   },
+                   {
+                       "name":  "bg_gear"
+                   },
+                   {
+                       "name":  "bg_clock"
+                   },
+                   {
+                       "name":  "aiframe"
+                   },
+                   {
+                       "name":  "eye1"
+                   },
+                   {
+                       "name":  "eye2"
+                   },
+                   {
+                       "name":  "eye3"
+                   },
+                   {
+                       "name":  "eye4"
+                   },
+                   {
+                       "name":  "eye5"
+                   },
+                   {
+                       "name":  "eye6"
+                   },
+                   {
+                       "name":  "eye7"
+                   },
+                   {
+                       "name":  "eye8"
+                   },
+                   {
+                       "name":  "eye9"
+                   },
+                   {
+                       "name":  "eye10"
+                   }
+               ]
+}

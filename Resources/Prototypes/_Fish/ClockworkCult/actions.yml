@@ -1,0 +1,50 @@
+- type: entity
+  parent: BaseAction
+  id: FishActionCallClockworkArmor
+  name: call clockwork armor
+  description: Summons your bound brass armor.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    useDelay: 180
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/actions.rsi
+    layers:
+    - state: clockwork_armor
+  - type: InstantAction
+    event: !type:FishClockworkCallArmorActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: FishActionCallRatvarianSpear
+  name: call ratvarian spear
+  description: Summons your bound Ratvarian spear.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    useDelay: 30
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/actions.rsi
+    layers:
+    - state: ratvarian_spear
+  - type: InstantAction
+    event: !type:FishClockworkCallSpearActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: FishActionEminenceMassRecall
+  name: mass recall
+  description: Recall all living servants to the Ark.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    useDelay: 120
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/actions.rsi
+    layers:
+    - state: eminence_rally
+  - type: InstantAction
+    event: !type:FishEminenceMassRecallActionEvent

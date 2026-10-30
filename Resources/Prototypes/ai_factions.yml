@@ -19,6 +19,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 - type: npcFaction
   id: NanoTrasen
   hostile:
@@ -38,6 +40,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit: вражда со слугами Ратвара
+  - FishClockworkCult
 - type: npcFaction
   id: Mouse
   hostile:
@@ -88,6 +92,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 
 - type: npcFaction
   id: SimpleNeutral
@@ -112,6 +118,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 - type: npcFaction
   id: Xeno
   hostile:
@@ -133,6 +141,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 - type: npcFaction
   id: Zombie
   hostile:
@@ -155,6 +165,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 - type: npcFaction
   id: Revolutionary
   hostile:
@@ -172,6 +184,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 - type: npcFaction
   id: AllHostile
   hostile:
@@ -196,6 +210,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 - type: npcFaction
   id: Wizard
   hostile:
@@ -221,6 +237,8 @@
   - BloodCult
   - Pirate
   - Soviet
+  # Fish-edit
+  - FishClockworkCult
 
 - type: npcFaction
   id: Xenoborg

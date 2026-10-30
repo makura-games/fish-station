@@ -33,3 +33,6 @@
 
 - type: playTimeTracker
   id: JobBlueShieldFish
+
+- type: playTimeTracker
+  id: AntagFishClockworkServant

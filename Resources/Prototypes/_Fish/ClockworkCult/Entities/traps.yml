@@ -1,0 +1,105 @@
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: FishBaseClockworkTrap
+  suffix: Fish
+  components:
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.35,-0.35,0.35,0.35"
+        hard: false
+        density: 60
+        layer:
+        - MidImpassable
+  - type: Damageable
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 80
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: FishClockworkTrap
+  - type: FishClockworkStructure
+
+- type: entity
+  parent: FishBaseClockworkTrap
+  id: FishBrassSkewer
+  name: brass skewer
+  description: A vicious brass spike that impales trespassers.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: brass_skewer
+  - type: FishClockworkTrap
+    kind: BrassSkewer
+    consumedOnTrigger: false
+    skewerDamage: 25
+    skewerStunSeconds: 3
+
+- type: entity
+  parent: FishBaseClockworkTrap
+  id: FishSteamVent
+  name: steam vent
+  description: Hisses scalding steam that blinds and slows.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: steam_vent_0
+  - type: FishClockworkTrap
+    kind: SteamVent
+    consumedOnTrigger: false
+    steamDurationSeconds: 4
+
+- type: entity
+  parent: FishBaseClockworkTrap
+  id: FishPressureSensor
+  name: pressure sensor
+  description: Triggers nearby clockwork traps when stepped on.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: pressure_sensor
+  - type: FishClockworkTrap
+    kind: PressureSensor
+    consumedOnTrigger: false
+    triggerRange: 1
+
+- type: entity
+  parent: FishBaseClockworkTrap
+  id: FishTrapLever
+  name: clockwork lever
+  description: A brass lever that arms nearby traps.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: lever
+  - type: FishClockworkTrap
+    kind: Lever
+    consumedOnTrigger: false
+    triggerRange: 2
+  - type: InteractionOutline
+
+- type: entity
+  parent: FishBaseClockworkTrap
+  id: FishTrapRepeater
+  name: clockwork repeater
+  description: Relays a trap signal to nearby mechanisms.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: repeater
+  - type: FishClockworkTrap
+    kind: Repeater
+    consumedOnTrigger: false
+    triggerRange: 3
+  - type: InteractionOutline
