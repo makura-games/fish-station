@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DoAfter;
@@ -174,8 +174,13 @@ public abstract partial class SharedToolSystem : EntitySystem
         else
             examineText = Loc.GetString("tool-component-doafter-examine", ("quality", qualitiesText));
 
+        // Fish-start: множитель навыка для релевантных качеств инструмента
+        var skillDelayMult = GetToolSkillDelayMultiplier(user, toolQualitiesNeeded);
+        var adjustedDelay = delay / toolComponent.SpeedModifier * skillDelayMult;
+        // Fish-end
+
         var toolEvent = new ToolDoAfterEvent(fuel, doAfterEv, GetNetEntity(target));
-        var doAfterArgs = new DoAfterArgs(EntityManager, user, delay / toolComponent.SpeedModifier, toolEvent, tool, target: target, used: tool)
+        var doAfterArgs = new DoAfterArgs(EntityManager, user, adjustedDelay, toolEvent, tool, target: target, used: tool)
         {
             BreakOnDamage = true,
             BreakOnMove = true,

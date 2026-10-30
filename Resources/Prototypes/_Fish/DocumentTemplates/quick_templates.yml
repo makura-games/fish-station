@@ -1,0 +1,13 @@
+# Fish-start - шаблоны быстрого оформления с консоли уголовных дел
+- type: docTemplate
+  parent: BaseSunriseDocTemplateSecurity
+  id: FishSentence
+  name: doc-template-fish-sentence-name
+  content: /Documents/_Fish/Security/FishSentence.xml
+
+- type: docTemplate
+  parent: BaseSunriseDocTemplateSecurity
+  id: FishSearchWarrant
+  name: doc-template-fish-search-warrant-name
+  content: /Documents/_Fish/Security/FishSearchWarrant.xml
+# Fish-end

@@ -56,9 +56,11 @@
     clothingPrototype: ClothingOuterWingsBlack
     requiredSlot: innerClothing
     slot: outerClothing
+  # Fish-edit: keep medal slot from ClothingUniformBase (override replaces parent ContainerContainer)
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
+      medal: !type:ContainerSlot
 
 - type: entity
   parent: ClothingUniformBase
@@ -74,9 +76,11 @@
     clothingPrototype: ClothingOuterWingsWhite
     requiredSlot: innerClothing
     slot: outerClothing
+  # Fish-edit: keep medal slot from ClothingUniformBase (override replaces parent ContainerContainer)
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
+      medal: !type:ContainerSlot
 
 - type: entity
   parent: ClothingUniformBase

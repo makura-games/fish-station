@@ -58,6 +58,12 @@
                 <Button Name="ReopenButton" Text="{Loc 'sunrise-records-reopen-case'}" StyleClasses="ButtonSquare" Visible="False"/>
                 <Button Name="FinalizeButton" Text="{Loc 'sunrise-records-finalize-case'}" StyleClasses="ButtonSquare"/>
             </BoxContainer>
+            <!-- Fish-start - быстрые документы -->
+            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" SeparationOverride="12" Margin="0 4">
+                <Button Name="PrintSentenceButton" Text="{Loc 'fish-criminal-records-print-sentence'}" StyleClasses="ButtonSquare"/>
+                <Button Name="PrintWarrantButton" Text="{Loc 'fish-criminal-records-print-warrant'}" StyleClasses="ButtonSquare"/>
+            </BoxContainer>
+            <!-- Fish-end -->
         </BoxContainer>
     </BoxContainer>
 </Control>

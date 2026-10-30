@@ -32,6 +32,8 @@
           conditions:
           - !type:HasBudgetCondition
           - !type:MaxRuleOccurenceCondition
+          - !type:PlayerCountCondition
+            min: 45
         - id: Zombie
           weight: 5
           conditions:

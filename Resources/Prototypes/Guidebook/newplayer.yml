@@ -3,6 +3,10 @@
   name: guide-entry-newplayer
   priority: 0
   text: "/ServerInfo/Guidebook/NewPlayer/NewPlayer.xml"
+  # Fish-start - русское введение только для ru-RU
+  localizedText:
+    ru-RU: "/ServerInfo/Guidebook/_Fish/NewPlayer/NewPlayer.xml"
+  # Fish-end
   children:
   - Controls
   - CharacterCreation

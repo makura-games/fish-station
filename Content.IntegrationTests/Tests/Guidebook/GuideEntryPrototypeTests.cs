@@ -32,10 +32,20 @@ public sealed class GuideEntryPrototypeTests : GameTest
 
         await client.WaitAssertion(() =>
         {
-            using var reader = resMan.ContentFileReadText(proto.Text);
-            var text = reader.ReadToEnd();
+            using (var reader = resMan.ContentFileReadText(proto.Text))
+            {
+                var text = reader.ReadToEnd();
+                Assert.That(parser.TryAddMarkup(new Document(), text), $"Failed to parse the guide entry's document.");
+            }
 
-            Assert.That(parser.TryAddMarkup(new Document(), text), $"Failed to parse the guide entry's document.");
+            foreach (var localized in proto.LocalizedText.Values)
+            {
+                using var localizedReader = resMan.ContentFileReadText(localized);
+                var localizedText = localizedReader.ReadToEnd();
+                Assert.That(
+                    parser.TryAddMarkup(new Document(), localizedText),
+                    $"Failed to parse localized guide document {localized} for {proto.ID}.");
+            }
         });
     }
 }

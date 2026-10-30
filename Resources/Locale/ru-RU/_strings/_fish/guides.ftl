@@ -1,3 +1,10 @@
+## FISH security guides
+
+guide-entry-security-cadet = Кадет СБ
+guide-entry-security-arrest = Задержание и обыск
+guide-entry-security-warden = Смотритель и бриг
+guide-entry-security-hos = Глава СБ
+
 ## FISH rules
 
 guide-entry-fish-rules = Правила сервера

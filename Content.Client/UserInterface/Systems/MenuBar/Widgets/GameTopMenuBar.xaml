@@ -43,6 +43,18 @@
         HorizontalExpand="True"
         AppendStyleClass="{x:Static style:StyleClass.ButtonSquare}"
         />
+    <!-- Fish-start - кнопка меню навыков -->
+    <ui:MenuButton
+        Name="SkillsButton"
+        Access="Internal"
+        Icon="{xe:Tex '/Textures/Interface/VerbIcons/plus.svg.192dpi.png'}"
+        ToolTip="{Loc 'game-hud-open-skills-menu-button-tooltip'}"
+        BoundKey = "{x:Static is:ContentKeyFunctions.OpenSkillsMenu}"
+        MinSize="42 64"
+        HorizontalExpand="True"
+        AppendStyleClass="{x:Static style:StyleClass.ButtonSquare}"
+        />
+    <!-- Fish-end -->
     <ui:MenuButton
         Name="EmotesButton"
         Access="Internal"

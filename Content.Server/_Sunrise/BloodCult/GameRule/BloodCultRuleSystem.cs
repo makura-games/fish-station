@@ -14,6 +14,7 @@ using Content.Shared._Sunrise.BloodCult;
 using Content.Shared._Sunrise.BloodCult.Components;
 using Content.Shared._Sunrise.CollectiveMind;
 using Content.Shared._Sunrise.Humanoid;
+using Content.Shared._Fish.Antag;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Bible.Components;
@@ -64,6 +65,7 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private SunriseHumanoidBodySystem _sunriseBody = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
+    [Dependency] private SharedAntagTargetingProtectionSystem _antagProtection = default!;
 
     private static readonly ProtoId<TagPrototype> CultistTag = "Cultist";
     private static readonly ProtoId<TagPrototype> DeconvertedCultistTag = "DeconvertedCultist";
@@ -172,6 +174,20 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
         }
         return true;
     }
+
+    // Fish-start: публичный API для тестов/админки — без прямой записи в CultTargets извне Access.
+    /// <summary>
+    /// Пометить цель культа как убитую/принесённую в жертву.
+    /// </summary>
+    public bool MarkCultTargetKilled(EntityUid target, BloodCultRuleComponent rule)
+    {
+        if (!rule.CultTargets.ContainsKey(target))
+            return false;
+
+        rule.CultTargets[target] = true;
+        return true;
+    }
+    // Fish-end
 
     /// <summary>
     /// Manually remove a specific entity as a cult target.
@@ -334,7 +350,12 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
 
         while (query.MoveNext(out _, out var cultRuleComponent, out _))
         {
+            // Fish-start - пустой список не считается «все убиты» (All() на пустом = true)
+            if (cultRuleComponent.CultTargets.Count == 0)
+                continue;
+
             if (cultRuleComponent.CultTargets.Values.All(value => value))
+            // Fish-end
             {
                 return true;
             }
@@ -487,7 +508,10 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
 
     private List<EntityUid> FindPotentialTargets()
     {
-        var potentialTargets = new List<EntityUid>();
+        var preferred = new List<EntityUid>();
+        // Fish-start - если защищены все, оставляем запасной список: пустой CultTargets не даёт завершить культ
+        var fallback = new List<EntityUid>();
+        // Fish-end
 
         var query = EntityQueryEnumerator<MindContainerComponent, AntagTargetComponent, HumanoidProfileComponent>();
         while (query.MoveNext(out var uid, out var mind, out _, out _))
@@ -495,10 +519,17 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
             if (mind.Mind == null || HasComp<BloodCultistComponent>(uid))
                 continue;
 
-            potentialTargets.Add(uid);
+            // Fish-start
+            fallback.Add(uid);
+            if (_antagProtection.IsBodyProtected(uid, mind.Mind))
+                continue;
+            // Fish-end
+
+            preferred.Add(uid);
         }
 
-        return potentialTargets;
+        // Fish-edit - предпочтение незащищённым; иначе любой не-культист, чтобы ритуал оставался достижимым
+        return preferred.Count > 0 ? preferred : fallback;
     }
 
     public bool MakeCultist(EntityUid cultist, BloodCultRuleComponent rule, bool assignMindData = true, bool giveStartingItems = false)

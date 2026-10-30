@@ -159,6 +159,9 @@
         whitelist:
           tags:
           - CentCommRapier
+  - type: ContainerContainer
+    containers:
+      item: !type:ContainerSlot
   - type: ItemMapper
     sprite: _Fish/Clothing/Belt/centcom_sheath.rsi
     mapLayers:

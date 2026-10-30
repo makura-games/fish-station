@@ -59,16 +59,20 @@
   name: shipyard console
   description: Used to purchase and sell shuttles
   components:
-  #- type: ShipyardConsole
-  #- type: AccessReader
-  #  access:
-  #  - [ Captain ]
-  #- type: ActivatableUI
-  #  key: enum.ShipyardConsoleUiKey.Shipyard
-  #- type: UserInterface
-  #  interfaces:
-  #  - key: enum.ShipyardConsoleUiKey.Shipyard
-  #    type: ShipyardConsoleBoundUserInterface
+  # Fish-start: рабочая верфь (покупка шаттлов со счёта Cargo)
+  - type: ShipyardConsole
+  - type: AccessReader
+    access:
+    - [ Captain ]
+    - [ Quartermaster ]
+    - [ Cargo ]
+  - type: ActivatableUI
+    key: enum.ShipyardConsoleUiKey.Shipyard
+  - type: UserInterface
+    interfaces:
+      enum.ShipyardConsoleUiKey.Shipyard:
+        type: ShipyardConsoleBoundUserInterface
+  # Fish-end
   - type: Computer
     board: ShipyardComputerCircuitboard
   - type: PointLight

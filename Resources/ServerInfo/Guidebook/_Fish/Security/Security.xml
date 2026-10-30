@@ -1,0 +1,57 @@
+<Document>
+# Служба безопасности
+
+[color=#cb0000]Служба безопасности (СБ)[/color] защищает экипаж и станцию: реагирует на преступления, задерживает нарушителей, охраняет бриг и помогает при чрезвычайных ситуациях.
+
+Вы сталкиваетесь с угрозами вроде [textlink="агентов Синдиката" link="Traitors"], [textlink="ядерных оперативников" link="NuclearOperatives"], [textlink="зомби" link="Zombies"] и обычными нарушениями Корпоративного Закона.
+
+## Состав отдела
+  <Box>
+    <GuideEntityEmbed Entity="ToyFigurineSecurity" Caption="Офицер"/>
+    <GuideEntityEmbed Entity="ToyFigurineDetective" Caption="Детектив"/>
+    <GuideEntityEmbed Entity="ToyFigurineWarden" Caption="Смотритель"/>
+    <GuideEntityEmbed Entity="ToyFigurineHeadOfSecurity" Caption="ГСБ"/>
+  </Box>
+
+- [textlink="Кадет" link="SecurityCadet"] — учится под наставничеством офицера.
+- [color=#cb0000]Офицер СБ[/color] — патруль, задержания, реагирование на вызовы.
+- [color=#cb0000]Детектив[/color] — расследования и улики ([textlink="криминалистика" link="Forensics"]).
+- [textlink="Смотритель" link="SecurityWarden"] — бриг, заключённые, оружейная.
+- [textlink="Глава СБ (ГСБ)" link="SecurityHoS"] — руководство отделом и координация с командованием.
+
+## Базовый принцип
+Вы — член экипажа, а не «враг станции». Сотрудничество и спокойный тон часто эффективнее запугивания. Оружие напоказ без причины портит репутацию отдела.
+
+Обязательно читайте [textlink="Корпоративный Закон" link="SpaceLaw"] и [textlink="криминальные записи" link="CriminalRecords"].
+
+## Нелетальное снаряжение
+  <Box>
+    <GuideEntityEmbed Entity="Stunbaton"/>
+    <GuideEntityEmbed Entity="Handcuffs"/>
+    <GuideEntityEmbed Entity="WeaponDisabler"/>
+  </Box>
+Дубинка и станнер ограничивают движение. Наручники фиксируют руки. Снимая наручники в [color=red]режиме вреда[/color], вы можете повалить цель.
+
+## Вспышки
+  <Box>
+    <GuideEntityEmbed Entity="Flash"/>
+    <GuideEntityEmbed Entity="ClothingEyesGlassesSecurity"/>
+    <GuideEntityEmbed Entity="GrenadeFlashBang"/>
+  </Box>
+Вспышка ослепляет незащищённых в зоне (клавиша [color=yellow]Z[/color] для площади) или при ударе в [color=red]режиме вреда[/color]. У СБ есть защита глаз — носите очки.
+
+## Летальное оружие
+  <Box>
+    <GuideEntityEmbed Entity="WeaponLaserCarbine"/>
+    <GuideEntityEmbed Entity="WeaponShotgunKammerer"/>
+    <GuideEntityEmbed Entity="WeaponPistolMk58"/>
+    <GuideEntityEmbed Entity="WeaponRifleLecter"/>
+  </Box>
+Летальное оружие — крайняя мера при реальной угрозе жизни экипажа или станции. Не эскалируйте без необходимости.
+
+## Что читать дальше
+- [textlink="Задержание и обыск" link="SecurityArrest"]
+- [textlink="Работа кадета" link="SecurityCadet"]
+- [textlink="Бриг и приговоры" link="SecurityWarden"]
+- [textlink="Криминальные записи и документы" link="CriminalRecords"]
+</Document>
