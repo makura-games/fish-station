@@ -1,0 +1,192 @@
+﻿- type: entity
+  id: FishBaseClockworkStructure
+  abstract: true
+  parent: BaseStructure
+  suffix: Fish
+  components:
+  - type: Damageable
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: FishClockworkStructure
+  - type: Anchorable
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+
+- type: entity
+  parent: FishBaseClockworkStructure
+  id: FishClockworkArk
+  name: clockwork ark
+  description: A massive amalgamation of brass and steam power. It must be defended.
+  components:
+  - type: Sprite
+    sprite: Mobs/Demons/ratvar.rsi
+    state: spawn
+    scale: 1.5,1.5
+  - type: FishClockworkArk
+  - type: Damageable
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 500
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.0,-1.0,1.0,1.0"
+        density: 1000
+        mask:
+        - MachineMask
+        layer:
+        - WallLayer
+
+- type: entity
+  parent: FishBaseClockworkStructure
+  id: FishStargazer
+  name: stargazer
+  description: A lantern-shaped machine that draws power from starlight.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: stargazer
+  - type: FishStargazer
+
+- type: entity
+  parent: FishBaseClockworkStructure
+  id: FishOcularWarden
+  name: ocular warden
+  description: A floating brass eye that judges the unfaithful.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: ocular_warden
+  - type: FishOcularWarden
+
+- type: entity
+  parent: FishBaseClockworkStructure
+  id: FishManiaMotor
+  name: mania motor
+  description: A two-pronged transmitter that whispers madness.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: mania_motor
+  - type: FishManiaMotor
+
+- type: entity
+  parent: FishBaseClockworkStructure
+  id: FishClockworkObelisk
+  name: clockwork obelisk
+  description: A brass obelisk hanging in midair.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: obelisk
+  - type: FishClockworkObelisk
+
+- type: entity
+  parent: FishBaseClockworkStructure
+  id: FishHeraldBeacon
+  name: herald's beacon
+  description: A beacon used to declare war in Ratvar's name.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: pressure_sensor
+  - type: FishHeraldBeacon
+
+- type: entity
+  parent: FishBaseClockworkStructure
+  id: FishEminenceSpire
+  name: eminence spire
+  description: A spire that elevates a servant to Eminence.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/objects.rsi
+    state: stargazer
+  - type: FishEminenceSpire
+
+# Боевая оболочка мародёра — ghost takeover + MobState
+- type: entity
+  id: FishClockworkMarauderShell
+  name: clockwork marauder
+  description: A suit of thrumming brass armor awaiting a mind.
+  suffix: Fish
+  save: false
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Fish/ClockworkCult/mobs.rsi
+    layers:
+    - state: clockwork_marauder
+    noRot: true
+  - type: FishClockworkMarauder
+  - type: FishClockworkServant
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+            radius: 0.35
+        density: 300
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Input
+    context: "human"
+  - type: InputMover
+  - type: MobMover
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 4.5
+  - type: Damageable
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      200: Dead
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Critical
+    - Dead
+  - type: CombatMode
+  - type: Hands
+  - type: Examiner
+  - type: Actions
+  - type: NpcFactionMember
+    factions:
+    - FishClockworkCult
+  - type: GhostRole
+    name: fish-clockwork-marauder-ghost-name
+    description: fish-clockwork-marauder-ghost-desc
+    rules: ghost-role-component-default-rules
+  - type: GhostTakeoverAvailable

@@ -1,0 +1,95 @@
+﻿{
+    "version":  1,
+    "license":  "CC-BY-SA-3.0",
+    "copyright":  "tgstation Clockwork Cult assets (commit f42d5a43ca9c7e2201878566c37162ccaea3a34d). CC-BY-SA-3.0. Artists: SkowronX, FuryMcFlurry, Xhuis and tgstation contributors.",
+    "size":  {
+                 "x":  32,
+                 "y":  32
+             },
+    "states":  [
+                   {
+                       "name":  "sigil"
+                   },
+                   {
+                       "name":  "ratvars_flame"
+                   },
+                   {
+                       "name":  "spatial_gateway"
+                   },
+                   {
+                       "name":  "city_of_cogs_rift"
+                   },
+                   {
+                       "name":  "ratvar_alert"
+                   },
+                   {
+                       "name":  "sigilvitality"
+                   },
+                   {
+                       "name":  "sigilsubmission"
+                   },
+                   {
+                       "name":  "sigiltransgression"
+                   },
+                   {
+                       "name":  "sigiltransmission"
+                   },
+                   {
+                       "name":  "sigildull"
+                   },
+                   {
+                       "name":  "sigilactiveoverlay"
+                   },
+                   {
+                       "name":  "sigilactivepulse"
+                   },
+                   {
+                       "name":  "nothing"
+                   },
+                   {
+                       "name":  "ratvarbeamglow"
+                   },
+                   {
+                       "name":  "ratvarwallglow"
+                   },
+                   {
+                       "name":  "ratvarfloorglow"
+                   },
+                   {
+                       "name":  "ratvardoorglow"
+                   },
+                   {
+                       "name":  "ratvargearglow"
+                   },
+                   {
+                       "name":  "ratvarwindowglow"
+                   },
+                   {
+                       "name":  "ratvarwindowglow_s"
+                   },
+                   {
+                       "name":  "ratvargrilleglow"
+                   },
+                   {
+                       "name":  "ratvarbrokengrilleglow"
+                   },
+                   {
+                       "name":  "ratvarwindoorglow"
+                   },
+                   {
+                       "name":  "warden_gaze"
+                   },
+                   {
+                       "name":  "volt_hit"
+                   },
+                   {
+                       "name":  "mending_mantra"
+                   },
+                   {
+                       "name":  "servant_blocker"
+                   },
+                   {
+                       "name":  "eminence"
+                   }
+               ]
+}

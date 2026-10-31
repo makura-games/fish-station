@@ -1,0 +1,14 @@
+﻿<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'fish-clockwork-slab-title'}"
+                      MinSize="420 480"
+                      SetSize="460 520">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <controls:StripeBack>
+            <Label Name="StatusLabel" Align="Center" StyleClasses="LabelHeading" Margin="4"/>
+        </controls:StripeBack>
+        <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+            <BoxContainer Name="ScriptureContainer" Orientation="Vertical" SeparationOverride="4"/>
+        </ScrollContainer>
+    </BoxContainer>
+</controls:FancyWindow>

@@ -1,0 +1,299 @@
+﻿{
+    "version":  1,
+    "license":  "CC-BY-SA-3.0",
+    "copyright":  "tgstation Clockwork Cult assets (commit f42d5a43ca9c7e2201878566c37162ccaea3a34d). CC-BY-SA-3.0. Artists: SkowronX, FuryMcFlurry, Xhuis and tgstation contributors.",
+    "size":  {
+                 "x":  32,
+                 "y":  32
+             },
+    "states":  [
+                   {
+                       "name":  "rare_pepe"
+                   },
+                   {
+                       "name":  "dread_ipad"
+                   },
+                   {
+                       "name":  "overlay_template"
+                   },
+                   {
+                       "name":  "judicial"
+                   },
+                   {
+                       "name":  "vanguard"
+                   },
+                   {
+                       "name":  "compromise"
+                   },
+                   {
+                       "name":  "geis"
+                   },
+                   {
+                       "name":  "volt"
+                   },
+                   {
+                       "name":  "hateful_manacles"
+                   },
+                   {
+                       "name":  "belligerent_eye"
+                   },
+                   {
+                       "name":  "vanguard_cogwheel"
+                   },
+                   {
+                       "name":  "geis_capacitor"
+                   },
+                   {
+                       "name":  "replicant_alloy"
+                   },
+                   {
+                       "name":  "hierophant_ansible"
+                   },
+                   {
+                       "name":  "judicial_visor_0"
+                   },
+                   {
+                       "name":  "judicial_visor_1"
+                   },
+                   {
+                       "name":  "truesight_lens"
+                   },
+                   {
+                       "name":  "wraith_specs"
+                   },
+                   {
+                       "name":  "soul_vessel"
+                   },
+                   {
+                       "name":  "soul_vessel-searching"
+                   },
+                   {
+                       "name":  "soul_vessel-occupied"
+                   },
+                   {
+                       "name":  "replica_fabricator"
+                   },
+                   {
+                       "name":  "ratvarian_spear"
+                   },
+                   {
+                       "name":  "brass_filaments"
+                   },
+                   {
+                       "name":  "ocular_warden"
+                   },
+                   {
+                       "name":  "ocular_warden_unwrenched"
+                   },
+                   {
+                       "name":  "blind_eye"
+                   },
+                   {
+                       "name":  "gear_base"
+                   },
+                   {
+                       "name":  "tinkerers_cache"
+                   },
+                   {
+                       "name":  "tinkerers_cache_unwrenched"
+                   },
+                   {
+                       "name":  "interdiction_lens"
+                   },
+                   {
+                       "name":  "interdiction_lens_inactive"
+                   },
+                   {
+                       "name":  "interdiction_lens_recharged"
+                   },
+                   {
+                       "name":  "interdiction_lens_active"
+                   },
+                   {
+                       "name":  "interdiction_lens_discharged"
+                   },
+                   {
+                       "name":  "interdiction_lens_unwrenched"
+                   },
+                   {
+                       "name":  "lens_gem"
+                   },
+                   {
+                       "name":  "prolonging_prism"
+                   },
+                   {
+                       "name":  "prolonging_prism_inactive"
+                   },
+                   {
+                       "name":  "prolonging_prism_unwrenched"
+                   },
+                   {
+                       "name":  "onyx_prism"
+                   },
+                   {
+                       "name":  "mania_motor"
+                   },
+                   {
+                       "name":  "mania_motor_inactive"
+                   },
+                   {
+                       "name":  "mania_motor_unwrenched"
+                   },
+                   {
+                       "name":  "mania_motor_antennae"
+                   },
+                   {
+                       "name":  "tinkerers_daemon"
+                   },
+                   {
+                       "name":  "tinkerers_daemon_unwrenched"
+                   },
+                   {
+                       "name":  "replication_plate"
+                   },
+                   {
+                       "name":  "t_belligerent_eye"
+                   },
+                   {
+                       "name":  "t_vanguard_cogwheel"
+                   },
+                   {
+                       "name":  "t_geis_capacitor"
+                   },
+                   {
+                       "name":  "t_replicant_alloy"
+                   },
+                   {
+                       "name":  "t_hierophant_ansible"
+                   },
+                   {
+                       "name":  "t_random_component"
+                   },
+                   {
+                       "name":  "tinkerglow"
+                   },
+                   {
+                       "name":  "obelisk"
+                   },
+                   {
+                       "name":  "obelisk_inactive"
+                   },
+                   {
+                       "name":  "obelisk_unwrenched"
+                   },
+                   {
+                       "name":  "obelisk_prism"
+                   },
+                   {
+                       "name":  "stargazer"
+                   },
+                   {
+                       "name":  "stargazer_unwrenched"
+                   },
+                   {
+                       "name":  "stargazer_light"
+                   },
+                   {
+                       "name":  "brass_skewer"
+                   },
+                   {
+                       "name":  "brass_skewer_extended"
+                   },
+                   {
+                       "name":  "brass_skewer_pokeybit"
+                   },
+                   {
+                       "name":  "steam_vent_0"
+                   },
+                   {
+                       "name":  "steam_vent_1"
+                   },
+                   {
+                       "name":  "pressure_sensor"
+                   },
+                   {
+                       "name":  "lever"
+                   },
+                   {
+                       "name":  "repeater"
+                   },
+                   {
+                       "name":  "repeater_on"
+                   },
+                   {
+                       "name":  "clockwork_floor"
+                   },
+                   {
+                       "name":  "clockwork_wall"
+                   },
+                   {
+                       "name":  "wall_gear"
+                   },
+                   {
+                       "name":  "marauder_armor"
+                   },
+                   {
+                       "name":  "fallen_armor"
+                   },
+                   {
+                       "name":  "anime_fragment"
+                   },
+                   {
+                       "name":  "smashed_anime_fragment"
+                   },
+                   {
+                       "name":  "cogscarab_shell"
+                   },
+                   {
+                       "name":  "alloy_shards"
+                   },
+                   {
+                       "name":  "pinion_lock"
+                   },
+                   {
+                       "name":  "shard_small1"
+                   },
+                   {
+                       "name":  "shard_small2"
+                   },
+                   {
+                       "name":  "shard_small3"
+                   },
+                   {
+                       "name":  "shard_medium1"
+                   },
+                   {
+                       "name":  "shard_medium2"
+                   },
+                   {
+                       "name":  "shard_large1"
+                   },
+                   {
+                       "name":  "shard_large2"
+                   },
+                   {
+                       "name":  "clockgolem_dead"
+                   },
+                   {
+                       "name":  "gear_bit1"
+                   },
+                   {
+                       "name":  "gear_bit2"
+                   },
+                   {
+                       "name":  "gear_bit3"
+                   },
+                   {
+                       "name":  "gear_bit4"
+                   },
+                   {
+                       "name":  "relay"
+                   },
+                   {
+                       "name":  "relay_off"
+                   },
+                   {
+                       "name":  "relay_o"
+                   }
+               ]
+}

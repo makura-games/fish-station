@@ -1,0 +1,134 @@
+﻿{
+    "version":  1,
+    "license":  "CC-BY-SA-3.0",
+    "copyright":  "tgstation Clockwork Cult assets (commit f42d5a43ca9c7e2201878566c37162ccaea3a34d). CC-BY-SA-3.0. Artists: SkowronX, FuryMcFlurry, Xhuis and tgstation contributors.",
+    "size":  {
+                 "x":  32,
+                 "y":  32
+             },
+    "states":  [
+                   {
+                       "name":  "ratvarian_spear"
+                   },
+                   {
+                       "name":  "clockwork_armor"
+                   },
+                   {
+                       "name":  "clockwork_marauder"
+                   },
+                   {
+                       "name":  "linked_minds"
+                   },
+                   {
+                       "name":  "hierophant_slab"
+                   },
+                   {
+                       "name":  "hierophant"
+                   },
+                   {
+                       "name":  "warp_down"
+                   },
+                   {
+                       "name":  "Hateful_Manacles"
+                   },
+                   {
+                       "name":  "Judicial_Visor"
+                   },
+                   {
+                       "name":  "Vanguard"
+                   },
+                   {
+                       "name":  "Sentinel\u0027s_Compromise"
+                   },
+                   {
+                       "name":  "Geis"
+                   },
+                   {
+                       "name":  "Replicant"
+                   },
+                   {
+                       "name":  "Tinkerer\u0027s_Cache"
+                   },
+                   {
+                       "name":  "Wraith_Spectacles"
+                   },
+                   {
+                       "name":  "Sigil_of_Transgression"
+                   },
+                   {
+                       "name":  "Ocular_Warden"
+                   },
+                   {
+                       "name":  "Cogscarab"
+                   },
+                   {
+                       "name":  "Vitality_Matrix"
+                   },
+                   {
+                       "name":  "Mending_Mantra"
+                   },
+                   {
+                       "name":  "Sigil_of_Submission"
+                   },
+                   {
+                       "name":  "Soul_Vessel"
+                   },
+                   {
+                       "name":  "Replica_Fabricator"
+                   },
+                   {
+                       "name":  "Spatial_Gateway"
+                   },
+                   {
+                       "name":  "Kindle"
+                   },
+                   {
+                       "name":  "Sigil_of_Accession"
+                   },
+                   {
+                       "name":  "Sigil_of_Transmission"
+                   },
+                   {
+                       "name":  "Prolonging_Prism"
+                   },
+                   {
+                       "name":  "Mania_Motor"
+                   },
+                   {
+                       "name":  "Tinkerer\u0027s_Daemon"
+                   },
+                   {
+                       "name":  "Clockwork_Obelisk"
+                   },
+                   {
+                       "name":  "Stargazer"
+                   },
+                   {
+                       "name":  "Linked_Vanguard"
+                   },
+                   {
+                       "name":  "Judicial_Marker"
+                   },
+                   {
+                       "name":  "Abscond"
+                   },
+                   {
+                       "name":  "Integration_Cog"
+                   },
+                   {
+                       "name":  "eminence_rally"
+                   },
+                   {
+                       "name":  "eminence_avoid"
+                   },
+                   {
+                       "name":  "eminence_reinforce"
+                   },
+                   {
+                       "name":  "eminence_unlimited_power"
+                   },
+                   {
+                       "name":  "eminence_repair"
+                   }
+               ]
+}

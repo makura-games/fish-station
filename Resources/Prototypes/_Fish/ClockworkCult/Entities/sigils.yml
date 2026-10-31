@@ -1,0 +1,146 @@
+﻿# Без MarkerBase: компонент Marker скрывает спрайт у игроков (MarkersVisible=false).
+- type: entity
+  id: FishBaseClockworkSigil
+  abstract: true
+  placement:
+    mode: SnapgridCenter
+  suffix: Fish
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Tag
+    tags:
+    - ForceFixRotations
+  - type: Physics
+    bodyType: Static
+    canCollide: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        hard: false
+        layer:
+        - MidImpassable
+  - type: FishClockworkTrap
+    consumedOnTrigger: true
+  - type: FishClockworkSigil
+
+- type: entity
+  parent: FishBaseClockworkSigil
+  id: FishSigilTransgression
+  name: sigil of transgression
+  description: A faint brass sigil that smites trespassers.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/effects.rsi
+    state: sigiltransgression
+  - type: FishClockworkSigil
+    sigilType: Transgression
+
+- type: entity
+  parent: FishBaseClockworkSigil
+  id: FishSigilSubmission
+  name: sigil of submission
+  description: A luminous sigil that converts those who linger.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/effects.rsi
+    state: sigilsubmission
+  - type: FishClockworkSigil
+    sigilType: Submission
+
+- type: entity
+  parent: FishBaseClockworkSigil
+  id: FishVitalityMatrix
+  name: vitality matrix
+  description: A sigil that drains life into vitality and heals servants.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/effects.rsi
+    state: sigilvitality
+  - type: FishClockworkSigil
+    sigilType: Vitality
+  - type: FishVitalityMatrix
+
+- type: entity
+  parent: FishBaseClockworkSigil
+  id: FishSigilTransmission
+  name: sigil of transmission
+  description: A sigil that stores and relays clockwork power.
+  components:
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/effects.rsi
+    state: sigiltransmission
+  - type: FishClockworkSigil
+    sigilType: Transmission
+
+- type: entity
+  id: FishCityOfCogsRift
+  name: clockwork rift
+  description: A one-way bluespace anomaly leading to Reebe.
+  suffix: Fish
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Tag
+    tags:
+    - ForceFixRotations
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/effects.rsi
+    state: city_of_cogs_rift
+  - type: Physics
+    bodyType: Static
+    canCollide: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        hard: false
+        layer:
+        - MidImpassable
+  - type: FishCityOfCogsRift
+    lifetimeSeconds: 120
+
+- type: entity
+  id: FishSpatialGatewayPortal
+  name: spatial gateway
+  description: A miniaturized gateway through spacetime.
+  suffix: Fish
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Tag
+    tags:
+    - ForceFixRotations
+  - type: Sprite
+    sprite: _Fish/ClockworkCult/effects.rsi
+    state: spatial_gateway
+  - type: Physics
+    bodyType: Static
+    canCollide: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        hard: false
+        layer:
+        - MidImpassable
+  - type: FishCityOfCogsRift
+    lifetimeSeconds: 4
+    isSpatialGateway: true
