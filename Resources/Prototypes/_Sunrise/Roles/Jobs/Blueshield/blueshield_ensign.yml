@@ -1,25 +1,27 @@
-- type: job
-  id: BlueShieldEnsign
-  name: job-name-blueshield-ensign
-  description: job-description-blueshield-ensign
-  playTimeTracker: JobBlueShieldEnsign
-  requirements:
-    - !type:DepartmentTimeRequirement
-      department: BlueShield
-      time: 62000 # 20 hrs
-    - !type:DepartmentTimeRequirement
-      department: Command
-      time: 62000 # 20 hrs
-    - !type:AgeRequirement
-      requiredAge: 35
-  startingGear: BlueShieldEnsignGear
-  icon: JobIconBlueShield
-  supervisors: job-supervisors-centcom
-  accessGroups:
-  - AllAccess # Fish-edit
-  special:
-    - !type:AddImplantSpecial
-      implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ]
+# Fish-start
+# - type: job
+#   id: BlueShieldEnsign
+#   name: job-name-blueshield-ensign
+#   description: job-description-blueshield-ensign
+#   playTimeTracker: JobBlueShieldEnsign
+#   requirements:
+#     - !type:DepartmentTimeRequirement
+#       department: BlueShield
+#       time: 62000 # 20 hrs
+#     - !type:DepartmentTimeRequirement
+#       department: Command
+#       time: 62000 # 20 hrs
+#     - !type:AgeRequirement
+#       requiredAge: 35
+#   startingGear: BlueShieldEnsignGear
+#   icon: JobIconBlueShield
+#   supervisors: job-supervisors-centcom
+#   accessGroups:
+#   - AllAccess # Fish-edit
+#   special:
+#     - !type:AddImplantSpecial
+#       implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ]
+# Fish-end
 
 - type: startingGear
   id: BlueShieldEnsignGear
