@@ -24,6 +24,9 @@ namespace Content.IntegrationTests.Tests._Fish.GridWelding;
 [TestFixture]
 public sealed class GridWeldingTest
 {
+    /// <summary>
+    /// Validates edge alignment before and during welding, then checks the surviving grid and transferred contents.
+    /// </summary>
     [TestCase("moving", true)]
     [TestCase("larger-second", true)]
     [TestCase("quarter-turn", true)]
@@ -66,9 +69,8 @@ public sealed class GridWeldingTest
         {
             var maps = entities.System<SharedMapSystem>();
             map = maps.CreateMap(out var mapId);
-            var manager = server.ResolveDependency<IMapManager>();
-            var a = manager.CreateGridEntity(mapId);
-            var b = manager.CreateGridEntity(mapId);
+            var a = maps.CreateGridEntity(mapId);
+            var b = maps.CreateGridEntity(mapId);
             first = a.Owner;
             second = b.Owner;
             var tile = new Tile(server.ResolveDependency<ITileDefinitionManager>()["Plating"].TileId);
@@ -198,7 +200,7 @@ public sealed class GridWeldingTest
             entities.EventBus.RaiseLocalEvent(welder,
                 new BeforeRangedInteractEvent(user, welder, null, new EntityCoordinates(second, (Vector2) secondTile + new Vector2(0.5f)), true));
 
-            if (succeeds || scenario is "drift-during-welding" or "dropped-welder" or "removed-tile" or "shared-spin")
+            if (scenario is "drift-during-welding" or "dropped-welder" or "removed-tile" or "shared-spin")
                 Assert.That(entities.GetComponent<GridWeldingComponent>(welder).DoAfter, Is.Not.Null);
             if (scenario == "drift-during-welding")
                 transform.SetWorldPosition(second, new Vector2(1.2f, 0));
@@ -208,7 +210,9 @@ public sealed class GridWeldingTest
                 maps.SetTile(b, secondTile, Tile.Empty);
         });
 
-        await pair.RunSeconds(6);
+        if (succeeds)
+            await server.WaitAssertion(() => Assert.That(entities.GetComponent<GridWeldingComponent>(welder).DoAfter, Is.Not.Null));
+        await GridWeldingTestHelpers.WaitForWeldingAsync(pair, welder);
         await server.WaitAssertion(() =>
         {
             Assert.That(entities.EntityExists(consumed), Is.EqualTo(!succeeds));
@@ -249,8 +253,8 @@ public sealed class GridWeldingTest
             await server.WaitPost(() =>
             {
                 var transform = entities.System<SharedTransformSystem>();
-                var manager = server.ResolveDependency<IMapManager>();
-                var destination = manager.CreateGridEntity(entities.GetComponent<TransformComponent>(first).MapID);
+                var maps = entities.System<SharedMapSystem>();
+                var destination = maps.CreateGridEntity(entities.GetComponent<TransformComponent>(first).MapID);
                 third = destination.Owner;
                 var tile = new Tile(server.ResolveDependency<ITileDefinitionManager>()["Plating"].TileId);
                 entities.System<SharedMapSystem>().SetTiles(destination,
@@ -262,9 +266,9 @@ public sealed class GridWeldingTest
                     new BeforeRangedInteractEvent(user, welder, null, new EntityCoordinates(first, 0.5f, -0.5f), true));
                 entities.EventBus.RaiseLocalEvent(welder,
                     new BeforeRangedInteractEvent(user, welder, null, new EntityCoordinates(third, 0.5f, -1.5f), true));
-                Assert.That(entities.GetComponent<GridWeldingComponent>(welder).DoAfter, Is.Not.Null);
             });
-            await pair.RunSeconds(6);
+            await server.WaitAssertion(() => Assert.That(entities.GetComponent<GridWeldingComponent>(welder).DoAfter, Is.Not.Null));
+            await GridWeldingTestHelpers.WaitForWeldingAsync(pair, welder);
             await server.WaitAssertion(() =>
             {
                 Assert.That(entities.EntityExists(first), Is.False);
@@ -276,6 +280,9 @@ public sealed class GridWeldingTest
         await pair.CleanReturnAsync();
     }
 
+    /// <summary>
+    /// Welds an engine-created split fragment back onto the original ship and restores anchored gravity equipment.
+    /// </summary>
     [TestCase(false)]
     [TestCase(true)]
     public async Task WeldsActuallySplitGridBackTogether(bool growFragment)
@@ -288,14 +295,14 @@ public sealed class GridWeldingTest
         EntityUid fragment = default;
         EntityUid map = default;
         EntityUid machine = default;
+        EntityUid welder = default;
 
         await server.WaitPost(() =>
         {
             server.CfgMan.SetCVar(CVars.GridSplitting, true);
             var maps = entities.System<SharedMapSystem>();
             map = maps.CreateMap(out var mapId);
-            var manager = server.ResolveDependency<IMapManager>();
-            var grid = manager.CreateGridEntity(mapId);
+            var grid = maps.CreateGridEntity(mapId);
             first = grid.Owner;
             var tile = new Tile(server.ResolveDependency<ITileDefinitionManager>()["Plating"].TileId);
             maps.SetTiles(grid, [(new Vector2i(0, -1), tile), (new Vector2i(0, 0), tile), (new Vector2i(0, 1), tile),
@@ -312,29 +319,34 @@ public sealed class GridWeldingTest
             physics.SetLinearVelocity(first, new Vector2(2, 0));
 
             maps.SetTile(grid, new Vector2i(1, 0), Tile.Empty);
-            fragment = manager.GetAllGrids(mapId).Single(g => g.Owner != first).Owner;
+            fragment = maps.GetAllGrids(mapId).Single(g => g.Owner != first).Owner;
             Assert.That(entities.GetComponent<TransformComponent>(machine).GridUid, Is.EqualTo(fragment));
             Assert.That(entities.GetComponent<PhysicsComponent>(fragment).BodyType, Is.EqualTo(BodyType.Dynamic));
             Assert.That(entities.GetComponent<GravityComponent>(first).Enabled, Is.False);
 
+            // После split начало сетки фрагмента может сместиться; сохраняем реальную локальную точку шва.
+            var fragmentClick = transform.WithEntityId(new EntityCoordinates(first, 2.5f, 0.5f), fragment);
             if (growFragment)
             {
-                var part = entities.GetComponent<Robust.Shared.Map.Components.MapGridComponent>(fragment);
-                maps.SetTiles(fragment, part, [(new Vector2i(2, 2), tile), (new Vector2i(2, 3), tile)]);
+                var part = entities.GetComponent<MapGridComponent>(fragment);
+                var seamTile = fragmentClick.Position.Floored();
+                maps.SetTiles(fragment, part, [(seamTile + Vector2i.Up * 2, tile), (seamTile + Vector2i.Up * 3, tile)]);
             }
 
-            transform.SetWorldPosition(fragment, new Vector2(-1, 0));
+            transform.SetWorldPosition(fragment, transform.GetWorldPosition(fragment) - Vector2.UnitX);
             var user = entities.SpawnEntity("MobHuman", new EntityCoordinates(first, 0.5f, 0.5f));
-            var welder = entities.SpawnEntity("Welder", new EntityCoordinates(first, 0.5f, 0.5f));
+            welder = entities.SpawnEntity("Welder", new EntityCoordinates(first, 0.5f, 0.5f));
             Assert.That(entities.System<SharedHandsSystem>().TryPickupAnyHand(user, welder));
             Assert.That(entities.System<ItemToggleSystem>().TryActivate(welder, user));
 
             var interaction = entities.System<SharedInteractionSystem>();
             interaction.UserInteraction(user, new EntityCoordinates(first, 0.5f, 0.5f), null);
-            interaction.UserInteraction(user, new EntityCoordinates(fragment, 2.5f, 0.5f), null);
+            interaction.UserInteraction(user, fragmentClick, null);
         });
 
-        await pair.RunSeconds(6);
+        await server.WaitAssertion(() => Assert.That(entities.GetComponent<GridWeldingComponent>(welder).DoAfter, Is.Not.Null,
+            "Selecting the actual split-fragment seam must start welding."));
+        await GridWeldingTestHelpers.WaitForWeldingAsync(pair, welder);
         await server.WaitAssertion(() =>
         {
             Assert.That(entities.EntityExists(fragment), Is.False);

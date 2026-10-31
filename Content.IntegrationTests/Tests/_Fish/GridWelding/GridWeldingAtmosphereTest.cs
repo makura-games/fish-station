@@ -21,6 +21,9 @@ namespace Content.IntegrationTests.Tests._Fish.GridWelding;
 [TestFixture]
 public sealed class GridWeldingAtmosphereTest
 {
+    /// <summary>
+    /// Verifies that merging preserves tile state and reconnects moved sensors to the restored gas mixture.
+    /// </summary>
     [Test]
     public async Task WeldingPreservesGasFireDecalsAndFloorLayers()
     {
@@ -31,14 +34,14 @@ public sealed class GridWeldingAtmosphereTest
         EntityUid first = default;
         EntityUid second = default;
         EntityUid sensor = default;
+        EntityUid welder = default;
 
         await server.WaitPost(() =>
         {
             var maps = entities.System<SharedMapSystem>();
             map = maps.CreateMap(out var mapId);
-            var manager = server.ResolveDependency<IMapManager>();
-            var a = manager.CreateGridEntity(mapId);
-            var b = manager.CreateGridEntity(mapId);
+            var a = maps.CreateGridEntity(mapId);
+            var b = maps.CreateGridEntity(mapId);
             first = a.Owner;
             second = b.Owner;
             var tile = new Tile(server.ResolveDependency<ITileDefinitionManager>()["Plating"].TileId);
@@ -80,7 +83,7 @@ public sealed class GridWeldingAtmosphereTest
             Assert.That(entities.System<DecalSystem>().TryAddDecal("Dirt", new EntityCoordinates(second, 1, 1), out _));
 
             var user = entities.SpawnEntity("MobHuman", new EntityCoordinates(first, 0.5f, 0.5f));
-            var welder = entities.SpawnEntity("Welder", new EntityCoordinates(first, 0.5f, 0.5f));
+            welder = entities.SpawnEntity("Welder", new EntityCoordinates(first, 0.5f, 0.5f));
             Assert.That(entities.System<SharedHandsSystem>().TryPickupAnyHand(user, welder));
             Assert.That(entities.System<ItemToggleSystem>().TryActivate(welder, user));
             entities.EventBus.RaiseLocalEvent(welder,
@@ -89,7 +92,7 @@ public sealed class GridWeldingAtmosphereTest
                 new BeforeRangedInteractEvent(user, welder, null, new EntityCoordinates(second, 1.5f, 0.5f), true));
         });
 
-        await pair.RunSeconds(6);
+        await GridWeldingTestHelpers.WaitForWeldingAsync(pair, welder);
         await server.WaitAssertion(() =>
         {
             Assert.That(entities.EntityExists(second), Is.False);

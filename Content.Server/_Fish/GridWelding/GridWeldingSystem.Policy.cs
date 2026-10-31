@@ -20,6 +20,9 @@ public sealed partial class GridWeldingSystem
                HasComp<ImmortalGridComponent>(grid);
     }
 
+    /// <summary>
+    /// Identifies service shuttles whose existing UID must survive a merge to preserve references held by other systems.
+    /// </summary>
     private bool HasPersistentRole(EntityUid grid)
     {
         return HasComp<ArrivalsShuttleComponent>(grid) || HasComp<EmergencyShuttleComponent>(grid) ||
@@ -27,6 +30,9 @@ public sealed partial class GridWeldingSystem
                HasComp<CargoShuttleComponent>(grid) || HasComp<SalvageShuttleComponent>(grid);
     }
 
+    /// <summary>
+    /// Propagates the original grid's identity through repeated splits so rejoining fragments can preserve that grid.
+    /// </summary>
     private void OnGridSplit(ref GridSplitEvent args)
     {
         var origin = EnsureComp<GridWeldingOriginComponent>(args.Grid);
@@ -37,6 +43,13 @@ public sealed partial class GridWeldingSystem
             EnsureComp<GridWeldingOriginComponent>(fragment).OriginalGrid = origin.OriginalGrid;
     }
 
+    /// <summary>
+    /// Chooses the grid whose UID and settings survive, preferring a static body, persistent service role,
+    /// station membership, shared split origin, then greater fixture mass. Ties preserve the first grid.
+    /// </summary>
+    /// <remarks>
+    /// Static body priority can leave a service shuttle as the consumed grid; <see cref="CanMergeGrids"/> rejects that merge.
+    /// </remarks>
     private EntityUid GetSurvivingGrid(EntityUid first, EntityUid second)
     {
         var a = Comp<PhysicsComponent>(first);

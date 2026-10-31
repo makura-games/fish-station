@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared.Tools.Components;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 
@@ -6,17 +7,91 @@ namespace Content.Server._Fish.GridWelding;
 
 public sealed partial class GridWeldingSystem
 {
-    // Выбор части по клику и проверка досягаемости поверхности тайла.
-    private bool CanSelectTarget(Entity<GridWeldingComponent> welder, EntityUid user, EntityUid? target)
+    /// <summary>
+    /// Applies a validated grid click by clearing, replacing or using the current edge selection.
+    /// </summary>
+    private bool SelectTile(Entity<GridWeldingComponent> welder, EntityUid user, EntityUid grid, Vector2i tile)
     {
-        if (target == null || HasComp<MapGridComponent>(target))
+        var selection = welder.Comp;
+        if (selection.User == user && selection.Grid == grid && selection.Tile == tile)
+        {
+            ClearSelection(selection);
+            Popup(user, "fish-grid-welding-cleared");
             return true;
+        }
 
-        // Обычные взаимодействия с предметами сохраняются, пока не выбран край на другом гриде.
-        return welder.Comp.User == user && HasComp<MapGridComponent>(welder.Comp.Grid) &&
-               _transform.GetGrid(target.Value) is { } targetGrid && targetGrid != welder.Comp.Grid;
+        if (!HasValidSelection(selection, user))
+        {
+            selection.User = user;
+            selection.Grid = grid;
+            selection.Tile = tile;
+            Popup(user, "fish-grid-welding-selected");
+            return true;
+        }
+
+        if (selection.Grid == grid)
+        {
+            Popup(user, "fish-grid-welding-same-grid");
+            return true;
+        }
+
+        return TryStartWelding(welder, user, grid, tile);
     }
 
+    /// <summary>
+    /// Validates the tool, target and selected surface without creating or changing the welder's selection.
+    /// </summary>
+    /// <remarks><paramref name="handled"/> is true when the click belongs to an existing weld or produces feedback.</remarks>
+    private bool CanSelectTile(Entity<WelderComponent?> welder, EntityUid user, EntityCoordinates location,
+        EntityUid? target, out Entity<MapGridComponent> grid, out Vector2i tile, out bool handled, bool quiet = false)
+    {
+        grid = default;
+        tile = default;
+        handled = false;
+        if (!CanSelectTarget(target) || !CanUseWelder(welder, user))
+            return false;
+
+        TryComp(welder, out GridWeldingComponent? selection);
+        if (selection?.DoAfter != null)
+        {
+            handled = true;
+            return false;
+        }
+
+        var selected = selection is { } state && state.User == user ? (EntityUid?) state.Grid : null;
+        if (!TryGetClickedGrid(location, target, selected, out grid))
+            return false;
+
+        tile = _maps.GetTileRef(grid, grid.Comp, location).GridIndices;
+        handled = true;
+        if (!CanReachTile(user, grid, grid.Comp, tile))
+        {
+            if (!quiet)
+                Popup(user, "fish-grid-welding-unreachable");
+            return false;
+        }
+
+        if (!HasValidSelection(selection, user) && !IsEdgeTile(grid, grid.Comp, tile))
+        {
+            if (!quiet)
+                Popup(user, "fish-grid-welding-edge-required");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool CanSelectTarget(EntityUid? target) => target == null || HasComp<MapGridComponent>(target);
+
+    /// <summary>Rejects stale selections when ownership changed, the grid vanished or the selected tile was removed.</summary>
+    private bool HasValidSelection(GridWeldingComponent? selection, EntityUid user)
+    {
+        return selection != null && selection.User == user &&
+               TryComp(selection.Grid, out MapGridComponent? grid) &&
+               !_maps.GetTileRef(selection.Grid, grid, selection.Tile).Tile.IsEmpty;
+    }
+
+    /// <summary>Resolves the clicked tile across overlapping grids, preferring an unselected solid candidate.</summary>
     private bool TryGetClickedGrid(EntityCoordinates location, EntityUid? target, EntityUid? selected,
         out Entity<MapGridComponent> grid)
     {
@@ -33,7 +108,7 @@ public sealed partial class GridWeldingSystem
             // Клиент тоже ищет грид по мировой точке и при перекрытии может снова прислать первый.
             var candidates = new List<Entity<MapGridComponent>>();
             var radius = new Vector2(0.2f);
-            _map.FindGridsIntersecting(world.MapId, new Box2(world.Position - radius, world.Position + radius),
+            _maps.FindGridsIntersecting(world.MapId, new Box2(world.Position - radius, world.Position + radius),
                 ref candidates, approx: true, includeMap: false);
             var bestDistance = float.PositiveInfinity;
             var found = false;
@@ -62,7 +137,7 @@ public sealed partial class GridWeldingSystem
         if (hasReference)
             return true;
 
-        if (_map.TryFindGridAt(world, out var uid, out var component))
+        if (_maps.TryFindGridAt(world, out var uid, out var component))
         {
             grid = (uid, component);
             return true;
@@ -72,6 +147,7 @@ public sealed partial class GridWeldingSystem
         return false;
     }
 
+    /// <summary>Accepts a grid only when it still has a nonempty tile at the click on the same map.</summary>
     private bool TryGetSolidGrid(EntityUid? uid, EntityCoordinates location, out Entity<MapGridComponent> grid)
     {
         grid = default;
@@ -85,6 +161,7 @@ public sealed partial class GridWeldingSystem
         return true;
     }
 
+    /// <summary>Measures unobstructed reach to the closest point on the tile rather than requiring its center.</summary>
     private bool CanReachTile(EntityUid user, EntityUid uid, MapGridComponent grid, Vector2i tile)
     {
         var position = _transform.WithEntityId(Transform(user).Coordinates, uid).Position;

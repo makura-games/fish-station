@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Content.Server._Fish.GridWelding;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Item.ItemToggle;
@@ -17,6 +18,9 @@ namespace Content.IntegrationTests.Tests._Fish.GridWelding;
 [TestFixture]
 public sealed class GridWeldingSplitTest
 {
+    /// <summary>
+    /// Exercises real shuttle fixtures and checks that welding does not permanently disable later grid splitting.
+    /// </summary>
     [TestCase("cargo", true)]
     [TestCase("emergency", true)]
     [TestCase("cargo", false)]
@@ -30,6 +34,7 @@ public sealed class GridWeldingSplitTest
         EntityUid first = default;
         EntityUid donor = default;
         EntityUid marker = default;
+        EntityUid welder = default;
         Vector2i bridge = default;
 
         await server.WaitPost(() =>
@@ -48,7 +53,7 @@ public sealed class GridWeldingSplitTest
             bridge = edge + Vector2i.Right;
             var tile = new Tile(server.ResolveDependency<ITileDefinitionManager>()["Plating"].TileId);
             maps.SetTile(first, grid, bridge, tile);
-            var b = server.ResolveDependency<IMapManager>().CreateGridEntity(mapId);
+            var b = maps.CreateGridEntity(mapId);
             donor = b.Owner;
             maps.SetTiles(b, [(bridge + Vector2i.Right, tile), (bridge + Vector2i.Right * 2, tile)]);
             var transform = entities.System<SharedTransformSystem>();
@@ -58,14 +63,16 @@ public sealed class GridWeldingSplitTest
             marker = entities.SpawnEntity("WallSolid", maps.GridTileToLocal(donor, b.Comp, bridge + Vector2i.Right * 2));
             var userCoordinates = maps.GridTileToLocal(first, grid, bridge);
             var user = entities.SpawnEntity("MobHuman", userCoordinates);
-            var welder = entities.SpawnEntity("Welder", userCoordinates);
+            welder = entities.SpawnEntity("Welder", userCoordinates);
             entities.System<SharedHandsSystem>().TryPickupAnyHand(user, welder);
             entities.System<ItemToggleSystem>().TryActivate(welder, user);
             var interaction = entities.System<SharedInteractionSystem>();
             interaction.UserInteraction(user, userCoordinates, null);
             interaction.UserInteraction(user, maps.GridTileToLocal(donor, b.Comp, bridge + Vector2i.Right), null);
         });
-        await pair.RunSeconds(6);
+        await server.WaitAssertion(() => Assert.That(entities.GetComponent<GridWeldingComponent>(welder).DoAfter, Is.Not.Null,
+            "Selecting the shuttle bridge and donor edge must start welding."));
+        await GridWeldingTestHelpers.WaitForWeldingAsync(pair, welder);
         await server.WaitAssertion(() =>
         {
             Assert.That(entities.EntityExists(donor), Is.False);
@@ -104,6 +111,9 @@ public sealed class GridWeldingSplitTest
         await pair.CleanReturnAsync();
     }
 
+    /// <summary>
+    /// Repeats merge and split at positive, negative, and chunk-boundary tile coordinates to expose stale fixtures.
+    /// </summary>
     [TestCase(0)]
     [TestCase(12)]
     [TestCase(13)]
@@ -119,6 +129,7 @@ public sealed class GridWeldingSplitTest
         EntityUid second = default;
         EntityUid machine = default;
         EntityUid user = default;
+        EntityUid welder = default;
         var bridge = new Vector2i(baseX + 3, 1);
         Tile plating = default;
 
@@ -127,9 +138,8 @@ public sealed class GridWeldingSplitTest
             server.CfgMan.SetCVar(CVars.GridSplitting, true);
             var maps = entities.System<SharedMapSystem>();
             map = maps.CreateMap(out var mapId);
-            var manager = server.ResolveDependency<IMapManager>();
-            var a = manager.CreateGridEntity(mapId);
-            var b = manager.CreateGridEntity(mapId);
+            var a = maps.CreateGridEntity(mapId);
+            var b = maps.CreateGridEntity(mapId);
             first = a.Owner;
             second = b.Owner;
             plating = new Tile(server.ResolveDependency<ITileDefinitionManager>()["Plating"].TileId);
@@ -150,7 +160,7 @@ public sealed class GridWeldingSplitTest
             maps.SetTiles(b, tilesB);
             machine = entities.SpawnEntity("WallSolid", new EntityCoordinates(second, baseX + 5.5f, 2.5f));
             user = entities.SpawnEntity("MobHuman", new EntityCoordinates(first, baseX + 2.5f, 1.5f));
-            var welder = entities.SpawnEntity("Welder", new EntityCoordinates(first, baseX + 2.5f, 1.5f));
+            welder = entities.SpawnEntity("Welder", new EntityCoordinates(first, baseX + 2.5f, 1.5f));
             entities.System<SharedHandsSystem>().TryPickupAnyHand(user, welder);
             entities.System<ItemToggleSystem>().TryActivate(welder, user);
         });
@@ -163,14 +173,19 @@ public sealed class GridWeldingSplitTest
             {
                 var maps = entities.System<SharedMapSystem>();
                 maps.SetTile(first, entities.GetComponent<MapGridComponent>(first), bridge, plating);
+                // Каждый split может переносить начало сетки; точку шва переводим из координат исходного грида.
+                var donorClick = entities.System<SharedTransformSystem>().WithEntityId(
+                    new EntityCoordinates(first, baseX + 4.5f, 1.5f), donor);
                 var interaction = entities.System<SharedInteractionSystem>();
                 interaction.UserInteraction(user, new EntityCoordinates(first, baseX + 3.5f, 1.5f), null);
-                interaction.UserInteraction(user, new EntityCoordinates(donor, baseX + 4.5f, 1.5f), null);
+                interaction.UserInteraction(user, donorClick, null);
             });
-            await pair.RunSeconds(6);
+            await server.WaitAssertion(() => Assert.That(entities.GetComponent<GridWeldingComponent>(welder).DoAfter, Is.Not.Null,
+                $"Welding cycle {cycle + 1} must start before waiting for completion."));
+            await GridWeldingTestHelpers.WaitForWeldingAsync(pair, welder);
             await server.WaitAssertion(() =>
             {
-                Assert.That(entities.EntityExists(donor), Is.False, "Welding must first consume the other grid.");
+                Assert.That(entities.EntityExists(donor), Is.False, $"Welding cycle {cycle + 1} must first consume the other grid.");
                 Assert.That(entities.GetComponent<TransformComponent>(machine).GridUid, Is.EqualTo(first));
             });
 
@@ -188,8 +203,8 @@ public sealed class GridWeldingSplitTest
                 Assert.That(second, Is.Not.EqualTo(first), "Removing the only connecting tile must split the welded grid.");
                 Assert.That(entities.EntityExists(second), Is.True);
                 Assert.That(entities.GetComponent<TransformComponent>(machine).Anchored, Is.True);
-                var manager = server.ResolveDependency<IMapManager>();
-                Assert.That(manager.GetAllGrids(entities.GetComponent<TransformComponent>(first).MapID).Count(), Is.EqualTo(2));
+                var maps = entities.System<SharedMapSystem>();
+                Assert.That(maps.GetAllGrids(entities.GetComponent<TransformComponent>(first).MapID).Count(), Is.EqualTo(2));
             });
         }
 

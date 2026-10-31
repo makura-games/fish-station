@@ -30,6 +30,9 @@ public sealed partial class GridWeldingSystem
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private IGameTiming _timing = default!;
 
+    /// <summary>
+    /// Transfers the donor's geometry and game-owned state into the chosen survivor while conserving total momentum.
+    /// </summary>
     private void MergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, EntityUid user)
     {
         if (GetSurvivingGrid(first, second) == second)
@@ -96,20 +99,20 @@ public sealed partial class GridWeldingSystem
         }
     }
 
-    private void RestoreDecals(Entity<MapGridComponent> grid, HashSet<(uint Index, Decal Decal)> decals,
+    /// <summary>Rotates donor decals into survivor space using a solid support tile for placement validation.</summary>
+    private void RestoreDecals(Entity<MapGridComponent> grid, HashSet<(DecalIndex Index, Decal Decal)> decals,
         WeldAlignment alignment)
     {
         if (decals.Count == 0)
             return;
 
         // Ищем опору после слияния: у целевого грида до него могли быть только решётки.
-        var tiles = _maps.GetAllTilesEnumerator(grid, grid.Comp);
+        var tiles = _maps.GetAllTiles(grid, grid.Comp);
         while (tiles.MoveNext(out var tile))
         {
             if (_turf.IsSpace(tile.Value))
                 continue;
 
-            EnsureComp<DecalGridComponent>(grid);
             var support = _maps.GridTileToLocal(grid, grid.Comp, tile.Value.GridIndices);
             foreach (var (_, decal) in decals)
             {
@@ -122,6 +125,7 @@ public sealed partial class GridWeldingSystem
         }
     }
 
+    /// <summary>Combines linear and orbital angular momentum about the merged grids' shared center of mass.</summary>
     private static (Vector2 Linear, float Angular, float Mass) CaptureMomentum(
         PhysicsComponent a, PhysicsComponent b, Matrix3x2 worldA, Matrix3x2 worldB)
     {
@@ -137,6 +141,7 @@ public sealed partial class GridWeldingSystem
         return (a.Momentum + b.Momentum, angular, mass);
     }
 
+    /// <summary>Removes the parallel-axis contribution to obtain inertia about the body's own center of mass.</summary>
     private static float CenterInertia(PhysicsComponent body)
     {
         return Math.Max(0, body.Inertia - body.FixturesMass * body.LocalCenter.LengthSquared());
@@ -144,6 +149,7 @@ public sealed partial class GridWeldingSystem
 
     private static float Cross(Vector2 a, Vector2 b) => a.X * b.Y - a.Y * b.X;
 
+    /// <summary>Copies removable floor layers into the snapped survivor coordinates before the donor is deleted.</summary>
     private Dictionary<Vector2i, List<ProtoId<ContentTileDefinition>>> CaptureTileHistory(
         EntityUid grid, Matrix3x2 matrix)
     {
@@ -159,6 +165,7 @@ public sealed partial class GridWeldingSystem
         return result;
     }
 
+    /// <summary>Restores floor-layer histories in the survivor's chunks and marks them for synchronization.</summary>
     private void RestoreTileHistory(EntityUid grid,
         Dictionary<Vector2i, List<ProtoId<ContentTileDefinition>>> snapshot)
     {

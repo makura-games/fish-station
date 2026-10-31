@@ -20,8 +20,19 @@ public sealed partial class GridWeldingSystem
     private const float MaxRelativeAngularSpeed = 0.1f;
     private static readonly Vector2i[] EdgeDirections = [Vector2i.Up, Vector2i.Right, Vector2i.Down, Vector2i.Left];
 
+    /// <summary>
+    /// Maps the second grid's local coordinates into the first grid's tile lattice using a snapped quarter-turn rotation.
+    /// </summary>
     internal readonly record struct WeldAlignment(Matrix3x2 Matrix, Angle Rotation);
 
+    /// <summary>
+    /// Revalidates the selected tiles, welder, reach, and relative motion, then computes a candidate alignment
+    /// from the second grid into the first. The snap distance is measured at the seam on the grid that would be moved.
+    /// </summary>
+    /// <remarks>
+    /// Runs throughout the DoAfter. Whole-grid merge restrictions are checked separately by <see cref="CanMergeGrids"/>.
+    /// On failure, <paramref name="reason"/> identifies the localization key for the failed check.
+    /// </remarks>
     private bool CanWeld(Entity<GridWeldingComponent> welder, EntityUid user,
         GridWeldingDoAfterEvent args, out WeldAlignment alignment, out string reason)
     {
@@ -113,6 +124,14 @@ public sealed partial class GridWeldingSystem
         return true;
     }
 
+    /// <summary>
+    /// Checks protection, joints, station membership, and tile overlap before a merge can consume a grid.
+    /// Rejects a survivor choice that would delete a service shuttle's persistent role and UID.
+    /// </summary>
+    /// <remarks>
+    /// Scans the second grid in the first grid's coordinate space at action start and completion, rather than every tick.
+    /// On failure, <paramref name="reason"/> identifies the localization key for the failed check.
+    /// </remarks>
     private bool CanMergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, out string reason)
     {
         reason = "fish-grid-welding-protected";
@@ -133,7 +152,7 @@ public sealed partial class GridWeldingSystem
         reason = "fish-grid-welding-overlap";
         var a = Comp<MapGridComponent>(first);
         var b = Comp<MapGridComponent>(second);
-        var tiles = _maps.GetAllTilesEnumerator(second, b);
+        var tiles = _maps.GetAllTiles(second, b);
         while (tiles.MoveNext(out var tile))
         {
             var destination = TransformTile(tile.Value.GridIndices, alignment.Matrix);
@@ -144,6 +163,10 @@ public sealed partial class GridWeldingSystem
         return true;
     }
 
+    /// <summary>
+    /// Transforms a tile's center and floors the result to obtain its destination index.
+    /// Using the center avoids assigning a rotated tile to the neighboring cell at an exact tile boundary.
+    /// </summary>
     internal static Vector2i TransformTile(Vector2i tile, Matrix3x2 matrix)
     {
         return Vector2.Transform((Vector2) tile + new Vector2(0.5f), matrix).Floored();

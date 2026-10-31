@@ -22,7 +22,6 @@ namespace Content.Server._Fish.GridWelding;
 public sealed partial class GridWeldingSystem : EntitySystem
 {
     [Dependency] private SharedMapSystem _maps = default!;
-    [Dependency] private IMapManager _map = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
@@ -56,70 +55,25 @@ public sealed partial class GridWeldingSystem : EntitySystem
 
     private void OnBeforeInteract(Entity<GridWeldingComponent> ent, ref BeforeRangedInteractEvent args)
     {
-        if (args.Handled || !CanSelectTarget(ent, args.User, args.Target) ||
-            !TryComp(ent, out WelderComponent? welder))
+        if (args.Handled)
             return;
 
-        args.Handled = TrySelectTile((ent, welder), args.User, args.ClickLocation, args.Target);
+        args.Handled = TrySelectTile((ent.Owner, null), args.User, args.ClickLocation, args.Target);
     }
 
     /// <summary>
     /// Selects the first tile or starts welding to another grid, resolving overlapping grids at the click position.
     /// Clicking the selected tile again clears the selection.
     /// </summary>
-    public bool TrySelectTile(Entity<WelderComponent> welder, EntityUid user, EntityCoordinates location,
+    /// <returns>Whether welding consumed the click, including rejected grid clicks that displayed feedback.</returns>
+    public bool TrySelectTile(Entity<WelderComponent?> welder, EntityUid user, EntityCoordinates location,
         EntityUid? target = null)
     {
-        if (!CanUseWelder(welder.AsNullable(), user))
-            return false;
+        if (!CanSelectTile(welder, user, location, target, out var grid, out var tile, out var handled))
+            return handled;
 
         var selection = EnsureComp<GridWeldingComponent>(welder);
-        if (selection.DoAfter != null)
-            return true;
-
-        var selectedGridUid = selection.User == user ? (EntityUid?) selection.Grid : null;
-        if (!TryGetClickedGrid(location, target, selectedGridUid, out var clickedGrid))
-            return false;
-
-        var (gridUid, grid) = clickedGrid;
-        var tile = _maps.GetTileRef(gridUid, grid, location);
-        if (!CanReachTile(user, gridUid, grid, tile.GridIndices))
-        {
-            Popup(user, "fish-grid-welding-unreachable");
-            return true;
-        }
-
-        if (selection.User == user && selection.Grid == gridUid && selection.Tile == tile.GridIndices)
-        {
-            ClearSelection(selection);
-            Popup(user, "fish-grid-welding-cleared");
-            return true;
-        }
-
-        if (selection.User != user ||
-            !TryComp(selection.Grid, out MapGridComponent? selectedGrid) ||
-            _maps.GetTileRef(selection.Grid, selectedGrid, selection.Tile).Tile.IsEmpty)
-        {
-            if (!IsEdgeTile(gridUid, grid, tile.GridIndices))
-            {
-                Popup(user, "fish-grid-welding-edge-required");
-                return true;
-            }
-
-            selection.User = user;
-            selection.Grid = gridUid;
-            selection.Tile = tile.GridIndices;
-            Popup(user, "fish-grid-welding-selected");
-            return true;
-        }
-
-        if (selection.Grid == gridUid)
-        {
-            Popup(user, "fish-grid-welding-same-grid");
-            return true;
-        }
-
-        return TryStartWelding((welder, selection), user, gridUid, tile.GridIndices);
+        return SelectTile((welder, selection), user, grid, tile);
     }
 
     /// <summary>
@@ -163,6 +117,7 @@ public sealed partial class GridWeldingSystem : EntitySystem
         return true;
     }
 
+    /// <summary>Revalidates the moving seam every tick so changed geometry or lost tool access cancels the action.</summary>
     private void OnWeldAttempt(Entity<GridWeldingComponent> ent, ref DoAfterAttemptEvent<GridWeldingDoAfterEvent> args)
     {
         if (!CanWeld(ent, args.DoAfter.Args.User, args.Event, out _, out _))
@@ -185,6 +140,7 @@ public sealed partial class GridWeldingSystem : EntitySystem
         TryFinishWelding(ent, args);
     }
 
+    /// <summary>Rechecks the completed action before spending fuel and transferring either grid's contents.</summary>
     private bool TryFinishWelding(Entity<GridWeldingComponent> welder, GridWeldingDoAfterEvent args)
     {
         var first = GetEntity(args.FirstGrid);
@@ -208,6 +164,7 @@ public sealed partial class GridWeldingSystem : EntitySystem
         return true;
     }
 
+    /// <summary>Releases the selected seam and interrupts welding when the user stops holding this tool.</summary>
     private void OnUnequipped(Entity<GridWeldingComponent> ent, ref GotUnequippedHandEvent args)
     {
         if (ent.Comp.DoAfter is { } id)
@@ -223,6 +180,7 @@ public sealed partial class GridWeldingSystem : EntitySystem
         comp.DoAfter = null;
     }
 
+    /// <summary>Checks active-hand ownership, interaction permission, tool activation and fuel without consuming any.</summary>
     private bool CanUseWelder(Entity<WelderComponent?> welder, EntityUid user)
     {
         return !TerminatingOrDeleted(welder) && Resolve(welder, ref welder.Comp, false) && !TerminatingOrDeleted(user) &&
