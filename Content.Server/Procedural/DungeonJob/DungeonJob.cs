@@ -1,3 +1,4 @@
+using System.Numerics; // Fish-edit: нужен для Vector2.Transform в проверке расстояния спавна
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Decals;
@@ -173,6 +174,26 @@ public sealed partial class DungeonJob : Job<List<Dungeon>>
         {
             var oldMap = _xformQuery.Comp(_gridUid).MapUid;
             _entManager.System<ShuttleSystem>().TryFTLProximity(_gridUid, _targetCoordinates.Value);
+
+            // Fish-start: TryFTLProximity может расширить поиск на все гриды карты и унести данж на десятки тысяч тайлов,
+            // поэтому, если данж оказался слишком далеко, возвращаем его в запрошенную точку.
+            var targetMap = _transform.ToMapCoordinates(_targetCoordinates.Value);
+            var gridXform = _xformQuery.Comp(_gridUid);
+
+            if (gridXform.MapID == targetMap.MapId)
+            {
+                var gridCenter = Vector2.Transform(_grid.LocalAABB.Center, _transform.GetWorldMatrix(gridXform));
+                var maxDistance = MaxSpawnDistance + MathF.Max(_grid.LocalAABB.Width, _grid.LocalAABB.Height);
+
+                if ((gridCenter - targetMap.Position).Length() > maxDistance)
+                {
+                    _sawmill.Warning($"Dungeon {_entManager.ToPrettyString(_gridUid)} was placed too far away, moving it back to the target coordinates.");
+                    // Центр грида смещён от его начала с учётом поворота, который мог выставить TryFTLProximity.
+                    var centerOffset = gridCenter - _transform.GetWorldPosition(gridXform);
+                    _transform.SetWorldPosition(_gridUid, targetMap.Position - centerOffset);
+                }
+            }
+            // Fish-end
             _entManager.DeleteEntity(oldMap);
         }
 
