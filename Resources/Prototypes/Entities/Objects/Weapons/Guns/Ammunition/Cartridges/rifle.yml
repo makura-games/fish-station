@@ -31,6 +31,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#3F47DB"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletRifleTraceSP
+  # Fish-End
 
 - type: entity
   id: CartridgeRifleFMJ
@@ -46,6 +51,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#B68F0E"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletRifleTraceFMJ
+  # Fish-End
 
 - type: entity
   id: CartridgeRifleAP
@@ -61,6 +71,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#540000"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletRifleTraceAP
+  # Fish-End
 
 - type: entity
   id: CartridgeRiflePractice
@@ -77,6 +92,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#dbdbdb"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletRifleTracePractice
+  # Fish-End
 
 - type: entity
   id: CartridgeRifleIncendiary
@@ -93,6 +113,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#ff6e52"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletTrace
+  # Fish-End
 
 - type: entity
   id: CartridgeRifleUranium
@@ -109,3 +134,8 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#65fe08"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletRifleTraceUranium
+  # Fish-End
