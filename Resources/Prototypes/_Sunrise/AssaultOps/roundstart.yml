@@ -77,7 +77,7 @@
       proto: SunriseAssaultCommander
     - !type:LinearAntagCount
       proto: SunriseAssaultOperative
-      playerRatio: 20 # Fish-edit
+      playerRatio: 25 # Fish-edit
       range:
         min: 1
         max: 5
