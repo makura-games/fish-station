@@ -11,6 +11,7 @@ using Content.Shared.Light.Components;
 using Content.Shared.Mech.Components;
 using Content.Shared.Movement.Components;
 using Content.Shared.NPC.Components;
+using Content.Shared.NPC.Prototypes;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Vehicle.Components;
 using Content.Shared.Vehicle.Systems;
@@ -18,6 +19,7 @@ using Content.Shared.Verbs;
 using Content.Shared.Whitelist;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Fish.Mech;
@@ -25,6 +27,8 @@ namespace Content.IntegrationTests.Tests._Fish.Mech;
 [TestFixture, NonParallelizable]
 public sealed class MechBrainTest
 {
+    private static readonly ProtoId<NpcFactionPrototype> NanotrasenFaction = "NanoTrasen";
+
     [TestCase("MechHamtrBattery", "PositronicBrain")]
     [TestCase("MechHamtrBattery", "PersonalAI")]
     [TestCase("MechHamtrBattery", "MMI")]
@@ -240,7 +244,7 @@ public sealed class MechBrainTest
             initialInputMover = entMan.HasComponent<InputMoverComponent>(brain);
             initialBlockInteraction = entMan.GetComponent<BlockMovementComponent>(brain).BlockInteraction;
             inserted = entMan.System<MechSystem>().TryInsert(mech, brain);
-            entMan.System<NpcFactionSystem>().AddFactions(mech, ["NanoTrasen"]);
+            entMan.System<NpcFactionSystem>().AddFaction(mech, NanotrasenFaction);
             entMan.EnsureComponent<UnremoveableComponent>(brain);
             entMan.System<SharedCombatModeSystem>().SetInCombatMode(brain, true);
         });
@@ -257,7 +261,7 @@ public sealed class MechBrainTest
             Assert.That(entMan.HasComponent<InputMoverComponent>(brain), Is.True);
             Assert.That(entMan.GetComponent<CombatModeComponent>(brain).IsInCombatMode, Is.True);
             Assert.That(entMan.GetComponent<BlockMovementComponent>(brain).BlockInteraction, Is.False);
-            Assert.That(entMan.System<NpcFactionSystem>().IsMemberOfAny(mech, ["NanoTrasen"]), Is.True);
+            Assert.That(entMan.System<NpcFactionSystem>().IsMember(mech, NanotrasenFaction), Is.True);
         });
 
         await server.WaitPost(() =>
