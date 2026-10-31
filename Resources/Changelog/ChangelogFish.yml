@@ -1305,3 +1305,12 @@
     message: За ГЦК теперь можно зайти(навреное?)
   id: 132
   url: https://github.com/makura-games/fish-station/pull/590
+- author: Pythagorius-cra
+  time: '2026-10-31T23:02:58.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Музыкальный автомат снова работает как оригинальный jukebox SS14, а не как пустой кассетник без кассет.
+  - type: Add
+    message: В jukebox добавлен большой список лицензированных треков SS13/SS14 и полный каталог A-Guy.
+  id: 133
+  url: https://github.com/makura-games/fish-station/pull/584
