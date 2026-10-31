@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 shop-disease-currency = Evolution Points
 listing-disease-cough-name = Cough
 listing-disease-cough-description = Infected start coughing.

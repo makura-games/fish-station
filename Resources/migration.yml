@@ -1322,6 +1322,7 @@ ClothingHandsPowerGlovesUplinkNTERTGamma: null
 ClothingHandsPowerGlovesUplinkNTERTGammaLeader: null
 ClothingHandsPowerGlovesUplinkNTERTCBURN: null
 ClothingHandsPowerGlovesUplinkNTERTEpsilon: null
+DrinkDarkRedRumBottleFull: DrinkRedRumBottleFull
 # 2026-09-10
 ClothingOuterArmorBlueShield: null
 
@@ -1641,15 +1642,6 @@ BigThruster: ThrusterLarge
 HugeRedThruster: ThrusterLarge
 HugeThruster: ThrusterLarge
 RustedThruster: Thruster
-FishGyroscope01K: Gyroscope
-FishGyroscope05K: Gyroscope
-FishGyroscope1K: Gyroscope
-FishGyroscope5K: Gyroscope
-FishGyroscope10K: Gyroscope
-FishGyroscope20K: Gyroscope
-FishGyroscope50K: Gyroscope
-FishGyroscope100K: Gyroscope
-FishGyroscope200K: Gyroscope
 HighSecCommandLocked: AirlockCommandLocked
 HighSecCentralCommandLocked: AirlockCentralCommandLocked
 HighSecArmoryLocked: AirlockArmoryLocked

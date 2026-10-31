@@ -1,8 +1,8 @@
-// Sunrise added start
+// Fish-start: To remove - функционал разумной болезни
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Power;
 using Robust.Client.GameObjects;
-// Sunrise added end
+// Fish-end
 
 namespace Content.Client.Medical;
 
@@ -14,7 +14,7 @@ public enum DiseaseMachineVisualLayers : byte
     IsRunning
 }
 
-// Sunrise added start
+// Fish-start: To remove - функционал разумной болезни
 [RegisterComponent]
 public sealed partial class DiseaseMachineVisualsComponent : Component
 {
@@ -43,4 +43,4 @@ public sealed class DiseaseMachineVisualsSystem : VisualizerSystem<DiseaseMachin
         }
     }
 }
-// Sunrise added end
+// Fish-end

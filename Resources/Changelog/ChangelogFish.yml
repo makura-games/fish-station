@@ -1156,3 +1156,131 @@
     message: Таракамоли получили способность летать, как Нианы.
   id: 118
   url: https://github.com/makura-games/fish-station/pull/564
+- author: ВАШЕ_ИМЯ
+  time: '2026-10-29T11:43:44.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен вещмешок горничной командования
+  id: 119
+  url: https://github.com/makura-games/fish-station/pull/504
+- author: Kaiten
+  time: '2026-10-29T22:37:03.0000000+00:00'
+  changes:
+  - type: Fix
+    message: (Надеюсь) генокрад и культисты плоти жрали тела так, что из них выпадали их действия как предметы.
+  - type: Fix
+    message: Новые культисты крови теперь получают кинжал и локатор (но всё также без металла, он только у стартовых).
+  - type: Fix
+    message: Если преподносить на руну человека без души, то он гибнется с появлением камня души как гост роли.
+  - type: Fix
+    message: Разумная болезнь теперь адекватно лечится и заражает людей не оставляя их перманентно без крови.
+  - type: Fix
+    message: Убраны лишние роли синего щита из меню выбора ролей.
+  - type: Fix
+    message: Рыбные дебаг гироскопы и двигатели снова работают и вырезаны из миграции.
+  - type: Fix
+    message: Все роли синего щита получили новый комплект имплантов как и у Офицера.
+  id: 120
+  url: https://github.com/makura-games/fish-station/pull/572
+- author: KrytoiChuvaaak
+  time: '2026-10-30T15:25:56.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Зимняя куртка капитана больше не даёт защиты от урона и от стамины.
+  id: 121
+  url: https://github.com/makura-games/fish-station/pull/528
+- author: KrytoiChuvaaak
+  time: '2026-10-30T15:28:08.0000000+00:00'
+  changes:
+  - type: Add
+    message: У админ-призрака появилась кнопка самозапрета на взаимодействие с миром.
+  - type: Add
+    message: Имя админ-призрака теперь подписывается должностью администратора, в том числе в LOOC.
+  id: 122
+  url: https://github.com/makura-games/fish-station/pull/537
+- author: dan4ikk3
+  time: '2026-10-30T15:33:48.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена ДМ арена.
+  - type: Add
+    message: Добавлена уникальная карта ДМ арены.
+  - type: Add
+    message: Добавлены готовые наборы снаряжения для ДМ арены.
+  - type: Add
+    message: Добавлена команда dmarena, которой администраторы включают и выключают ДМ арену.
+  id: 123
+  url: https://github.com/makura-games/fish-station/pull/522
+  media:
+  - url: https://github.com/user-attachments/assets/020667d1-e462-4fdd-95c5-1d404f78979f
+    description: изображение
+  - url: https://github.com/user-attachments/assets/99f1040e-d1bb-4a88-85c4-b9badab9dd8b
+    description: изображение
+- author: dan4ikk3
+  time: '2026-10-30T15:35:38.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена плюшка Андре Люсайн
+  id: 124
+  url: https://github.com/makura-games/fish-station/pull/569
+  media:
+  - url: https://github.com/user-attachments/assets/8d72711a-0607-4d97-97c5-bcf36c3fd13f
+    description: изображение
+- author: TiFeRi
+  time: '2026-10-30T16:05:02.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Фикс цели на мутаген, добавление в нее еще двух баночек.
+  id: 125
+  url: https://github.com/makura-games/fish-station/pull/575
+- author: Kaiten
+  time: '2026-10-30T22:59:37.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим 30.10.2026
+  id: 126
+  url: https://github.com/makura-games/fish-station/pull/579
+- author: dan4ikk3
+  time: '2026-10-30T23:22:44.0000000+00:00'
+  changes:
+  - type: Add
+    message: НШЦК захотел завести себе персональную кошко-девочку и теперь рассматривает заявки на горничную центрального командования.
+  - type: Tweak
+    message: Теперь на сервисные и медецинские роли ЦК можно зайти без ВЛа.
+  id: 127
+  url: https://github.com/makura-games/fish-station/pull/498
+- author: NekutGit
+  time: '2026-10-31T09:40:49.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена боевая винтовка SCAR-H калибра .308 в раскраске Синдиката с биокодом.
+  - type: Add
+    message: Добавлены 20-зарядные и 30-зарядные магазины для SCAR-H.
+  - type: Add
+    message: Добавлен оружейный кейс наполненный винтовкой SCAR-H и комплектом из магазинов для него с патронами ПП.
+  id: 128
+  url: https://github.com/makura-games/fish-station/pull/578
+  media:
+  - url: https://github.com/user-attachments/assets/c4d2c988-3075-477c-b3c0-78467471b0dd
+    description: изображение
+- author: dan4ikk3
+  time: '2026-10-31T10:25:42.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Исправлен баг с удалением феленидов на арене.
+  - type: Fix
+    message: Исправлен баг с неправильным отоброжением игроков на арене.
+  - type: Fix
+    message: Исправлен баг с поясным щитом, теперь он разряжается при получении урона.
+  - type: Tweak
+    message: Теперь на арену можно попасть лишь после 20 минут раунда.
+  - type: Tweak
+    message: 'Во время боя нельзя прописать ghost 10 секунд при получении урона на дмарене.
+
+      Режимо боя сбивается при получении критического состояния или воскрешении основного тела.'
+  - type: Tweak
+    message: С критованого бойца нельзя снять вещи.
+  - type: Remove
+    message: Удалены перчатки полярной звезды и тяжелая броня из конструктора арены.
+  id: 129
+  url: https://github.com/makura-games/fish-station/pull/585

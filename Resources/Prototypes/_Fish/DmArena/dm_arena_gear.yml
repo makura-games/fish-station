@@ -1,0 +1,624 @@
+- type: startingGear
+  id: FishDmArenaBaseGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitTactical
+    outerClothing: ClothingOuterArmorBasic
+    head: ClothingHeadHelmetBasic
+    mask: ClothingMaskGasSecurity
+    eyes: ClothingEyesGlassesCheapSunglasses
+    gloves: ClothingHandsGlovesFingerless
+    shoes: ClothingShoesSwat
+    back: ClothingBackpack
+    pocket1: WeaponPistolM1984
+    pocket2: MagazinePistol40FMJ
+  storage:
+    back:
+    - Brutepack
+    - Ointment
+
+- type: startingGear
+  id: FishDmArenaSpear
+  inhand:
+  - SpearUranium
+
+- type: startingGear
+  id: FishDmArenaCrowbar
+  inhand:
+  - Crowbar
+
+- type: startingGear
+  id: FishDmArenaKnife
+  inhand:
+  - CombatKnife
+
+- type: startingGear
+  id: FishDmArenaBat
+  inhand:
+  - BaseBallBat
+
+- type: startingGear
+  id: FishDmArenaCleaver
+  inhand:
+  - ButchCleaver
+
+- type: startingGear
+  id: FishDmArenaKatana
+  inhand:
+  - Katana
+
+- type: startingGear
+  id: FishDmArenaFireaxe
+  inhand:
+  - FireAxe
+
+- type: startingGear
+  id: FishDmArenaSledge
+  inhand:
+  - Sledgehammer
+
+- type: startingGear
+  id: FishDmArenaSabre
+  inhand:
+  - CaptainSabre
+
+- type: startingGear
+  id: FishDmArenaEsword
+  equipment:
+    suitstorage: EnergySword
+
+- type: startingGear
+  id: FishDmArenaSvalinn
+  equipment:
+    suitstorage: WeaponLaserSvalinn
+
+- type: startingGear
+  id: FishDmArenaInspector
+  equipment:
+    suitstorage: WeaponRevolverInspector
+  storage:
+    back:
+    - SpeedLoaderMagnumSP
+    - SpeedLoaderMagnumSP
+
+- type: startingGear
+  id: FishDmArenaCobra
+  equipment:
+    suitstorage: WeaponPistolCobra
+  storage:
+    back:
+    - MagazinePistolCaselessRifle
+    - MagazinePistolCaselessRifle
+
+- type: startingGear
+  id: FishDmArenaViper
+  equipment:
+    suitstorage: WeaponPistolViper
+  storage:
+    back:
+    - MagazinePistolHighCapacity
+    - MagazinePistolHighCapacity
+
+- type: startingGear
+  id: FishDmArenaPython
+  equipment:
+    suitstorage: WeaponRevolverPythonAP
+  storage:
+    back:
+    - SpeedLoaderMagnumAP
+
+- type: startingGear
+  id: FishDmArenaN1984
+  equipment:
+    suitstorage: FishWeaponPistolN1984
+  storage:
+    back:
+    - MagazinePistol
+    - MagazinePistol
+
+- type: startingGear
+  id: FishDmArenaDoublebarrel
+  equipment:
+    suitstorage: WeaponShotgunDoubleBarreled
+  storage:
+    back:
+    - BoxLethalshot
+    - BoxLethalshot
+
+- type: startingGear
+  id: FishDmArenaEnforcer
+  equipment:
+    suitstorage: WeaponShotgunEnforcer
+  storage:
+    back:
+    - BoxLethalshot
+    - BoxLethalshot
+
+- type: startingGear
+  id: FishDmArenaKammerer
+  equipment:
+    suitstorage: WeaponShotgunKammerer
+  storage:
+    back:
+    - BoxLethalshot
+    - BoxShotgunSlug
+
+- type: startingGear
+  id: FishDmArenaBulldog
+  equipment:
+    suitstorage: WeaponShotgunBulldog
+  storage:
+    back:
+    - MagazineShotgun
+    - MagazineShotgun
+
+- type: startingGear
+  id: FishDmArenaWt550
+  equipment:
+    suitstorage: WeaponSubMachineGunWt550
+  storage:
+    back:
+    - MagazinePistolSubMachineGunTopMountedSP
+    - MagazinePistolSubMachineGunTopMountedSP
+
+- type: startingGear
+  id: FishDmArenaDrozd
+  equipment:
+    suitstorage: WeaponSubMachineGunDrozd
+  storage:
+    back:
+    - MagazinePistolSubMachineGunSP
+    - MagazinePistolSubMachineGunSP
+
+- type: startingGear
+  id: FishDmArenaMosin
+  equipment:
+    suitstorage: WeaponSniperMosin
+  storage:
+    back:
+    - SpeedLoaderHeavyRifleRFMJ
+    - SpeedLoaderHeavyRifleRFMJ
+    - ClothingHeadHatUshanka
+    - DrinkVodkaBottleFull
+
+- type: startingGear
+  id: FishDmArenaLasercarbine
+  equipment:
+    suitstorage: WeaponLaserCarbine
+
+- type: startingGear
+  id: FishDmArenaAkms
+  equipment:
+    suitstorage: WeaponRifleAk
+  storage:
+    back:
+    - MagazineLightRifleSP
+    - MagazineLightRifleSP
+
+- type: startingGear
+  id: FishDmArenaEstoc
+  equipment:
+    suitstorage: WeaponRifleEstoc
+  storage:
+    back:
+    - MagazineRifleSP
+    - MagazineRifleSP
+
+- type: startingGear
+  id: FishDmArenaLecter
+  equipment:
+    suitstorage: WeaponRifleLecter
+  storage:
+    back:
+    - MagazineRifleSP
+    - MagazineRifleSP
+    - MagazineRifleIncendiary
+
+- type: startingGear
+  id: FishDmArenaVestBp
+  equipment:
+    outerClothing: ClothingOuterArmorBulletproof
+
+- type: startingGear
+  id: FishDmArenaVestRefl
+  equipment:
+    outerClothing: ClothingOuterArmorReflective
+
+- type: startingGear
+  id: FishDmArenaVestRiot
+  equipment:
+    outerClothing: ClothingOuterArmorRiot
+
+- type: startingGear
+  id: FishDmArenaVestCarapace
+  equipment:
+    outerClothing: ClothingOuterArmorCaptainCarapace
+
+- type: startingGear
+  id: FishDmArenaHelmRiot
+  equipment:
+    head: ClothingHeadHelmetRiot
+
+- type: startingGear
+  id: FishDmArenaHelmSwat
+  equipment:
+    head: ClothingHeadHelmetSwat
+
+- type: startingGear
+  id: FishDmArenaShield
+  inhand:
+  - RiotShield
+
+- type: startingGear
+  id: FishDmArenaAmPistol
+  storage:
+    back:
+    - MagazinePistol
+    - MagazinePistol
+
+- type: startingGear
+  id: FishDmArenaAmBuckshot
+  storage:
+    back:
+    - BoxLethalshot
+
+- type: startingGear
+  id: FishDmArenaAmSlugs
+  storage:
+    back:
+    - BoxShotgunSlug
+
+- type: startingGear
+  id: FishDmArenaAmViper
+  storage:
+    back:
+    - MagazinePistolHighCapacity
+    - MagazinePistolHighCapacity
+
+- type: startingGear
+  id: FishDmArenaAmCobra
+  storage:
+    back:
+    - MagazinePistolCaselessRifle
+    - MagazinePistolCaselessRifle
+
+- type: startingGear
+  id: FishDmArenaAmN1984
+  storage:
+    back:
+    - MagazinePistol
+    - MagazinePistol
+
+- type: startingGear
+  id: FishDmArenaAmRevolver
+  storage:
+    back:
+    - SpeedLoaderMagnumSP
+    - SpeedLoaderMagnumSP
+
+- type: startingGear
+  id: FishDmArenaAmIncendiary
+  storage:
+    back:
+    - MagazineRifleIncendiary
+
+- type: startingGear
+  id: FishDmArenaAmBulldog
+  storage:
+    back:
+    - MagazineShotgun
+    - MagazineShotgun
+
+- type: startingGear
+  id: FishDmArenaAmDrozd
+  storage:
+    back:
+    - MagazinePistolSubMachineGunSP
+    - MagazinePistolSubMachineGunSP
+
+- type: startingGear
+  id: FishDmArenaAmWt550
+  storage:
+    back:
+    - MagazinePistolSubMachineGunTopMountedSP
+    - MagazinePistolSubMachineGunTopMountedSP
+
+- type: startingGear
+  id: FishDmArenaAmMosin
+  storage:
+    back:
+    - SpeedLoaderHeavyRifleRFMJ
+    - SpeedLoaderHeavyRifleRFMJ
+
+- type: startingGear
+  id: FishDmArenaAmAkms
+  storage:
+    back:
+    - MagazineLightRifleSP
+    - MagazineLightRifleSP
+
+- type: startingGear
+  id: FishDmArenaAmRifle
+  storage:
+    back:
+    - MagazineRifleSP
+    - MagazineRifleSP
+
+- type: startingGear
+  id: FishDmArenaSmoke
+  storage:
+    back:
+    - SmokeGrenade
+
+- type: startingGear
+  id: FishDmArenaGauze
+  storage:
+    back:
+    - Gauze
+
+- type: startingGear
+  id: FishDmArenaBrutepack
+  storage:
+    back:
+    - Brutepack
+
+- type: startingGear
+  id: FishDmArenaOintment
+  storage:
+    back:
+    - Ointment
+
+- type: startingGear
+  id: FishDmArenaBlood
+  storage:
+    back:
+    - Bloodpack
+
+- type: startingGear
+  id: FishDmArenaKitBasic
+  storage:
+    back:
+    - MedkitFilled
+
+- type: startingGear
+  id: FishDmArenaKitBrute
+  storage:
+    back:
+    - MedkitBruteFilled
+
+- type: startingGear
+  id: FishDmArenaKitBurn
+  storage:
+    back:
+    - MedkitBurnFilled
+
+- type: startingGear
+  id: FishDmArenaKitCombat
+  storage:
+    back:
+    - MedkitCombatFilled
+
+- type: startingGear
+  id: FishDmArenaKitUniversal
+  storage:
+    back:
+    - MedkitUniversalFilled
+
+- type: startingGear
+  id: FishDmArenaMinistim
+  storage:
+    back:
+    - StimpackMini
+
+- type: startingGear
+  id: FishDmArenaPenEmergency
+  storage:
+    back:
+    - EmergencyMedipen
+
+- type: startingGear
+  id: FishDmArenaPenCombat
+  storage:
+    back:
+    - CombatMedipen
+
+- type: startingGear
+  id: FishDmArenaGlow
+  storage:
+    back:
+    - GlowstickRed
+
+- type: startingGear
+  id: FishDmArenaCowboy
+  equipment:
+    head: ClothingHeadHatCowboyBrown
+
+- type: startingGear
+  id: FishDmArenaSombrero
+  equipment:
+    head: ClothingHeadHatSombrero
+
+- type: startingGear
+  id: FishDmArenaPirate
+  equipment:
+    head: ClothingHeadHatPirate
+
+- type: startingGear
+  id: FishDmArenaDuck
+  inhand:
+  - ToyRubberDuck
+
+- type: startingGear
+  id: FishDmArenaToysword
+  inhand:
+  - ToySword
+
+- type: startingGear
+  id: FishDmArenaBeer
+  storage:
+    back:
+    - DrinkBeerBottleFull
+
+- type: startingGear
+  id: FishDmArenaTophat
+  equipment:
+    head: ClothingHeadHatTophat
+
+- type: startingGear
+  id: FishDmArenaFez
+  equipment:
+    head: ClothingHeadHatFez
+
+- type: startingGear
+  id: FishDmArenaWitch
+  equipment:
+    head: ClothingHeadHatWitch
+
+- type: startingGear
+  id: FishDmArenaPumpkin
+  equipment:
+    head: ClothingHeadHatPumpkin
+
+- type: startingGear
+  id: FishDmArenaBunny
+  equipment:
+    head: ClothingHeadHatBunny
+
+- type: startingGear
+  id: FishDmArenaSanta
+  equipment:
+    head: ClothingHeadHatSantahat
+
+- type: startingGear
+  id: FishDmArenaLizard
+  inhand:
+  - PlushieLizard
+
+- type: startingGear
+  id: FishDmArenaHorn
+  inhand:
+  - BikeHorn
+
+- type: startingGear
+  id: FishDmArenaClown
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitClown
+    mask: ClothingMaskClown
+    shoes: ClothingShoesClownLarge
+  storage:
+    back:
+    - BikeHorn
+
+- type: startingGear
+  id: FishDmArenaDeagle
+  equipment:
+    suitstorage: WeaponPistolDeagle
+  storage:
+    back:
+    - MagazineMagnum
+    - MagazineMagnum
+
+- type: startingGear
+  id: FishDmArenaSawn
+  equipment:
+    suitstorage: WeaponShotgunSawn
+  storage:
+    back:
+    - BoxLethalshot
+    - BoxLethalshot
+
+- type: startingGear
+  id: FishDmArenaUzi
+  equipment:
+    suitstorage: SunriseWeaponSubMachineGunUzi
+  storage:
+    back:
+    - MagazinePistolSubMachineGun
+    - MagazinePistolSubMachineGun
+
+- type: startingGear
+  id: FishDmArenaSiar
+  equipment:
+    suitstorage: WeaponSIAR52
+  storage:
+    back:
+    - MagazinePistolSubMachineGunCaselessExtended
+    - MagazinePistolSubMachineGunCaselessExtended
+
+- type: startingGear
+  id: FishDmArenaM16
+  equipment:
+    suitstorage: WeaponRifleM16A4
+  storage:
+    back:
+    - MagazineRifleSP
+    - MagazineRifleSP
+
+- type: startingGear
+  id: FishDmArenaVestElite
+  equipment:
+    outerClothing: ClothingOuterVestWebElite
+
+- type: startingGear
+  id: FishDmArenaHelmAltyn
+  equipment:
+    head: FishClothingHeadHelmetPubgBlack
+
+- type: startingGear
+  id: FishDmArenaShieldBullet
+  inhand:
+  - RiotBulletShield
+
+- type: startingGear
+  id: FishDmArenaShieldLaser
+  inhand:
+  - RiotLaserShield
+
+- type: startingGear
+  id: FishDmArenaShieldEnergy
+  inhand:
+  - EnergyShield
+
+- type: startingGear
+  id: FishDmArenaDomeBelt
+  equipment:
+    belt: FishEnergyDomeGeneratorMicroreactor
+
+- type: startingGear
+  id: FishDmArenaAmBulldogSlug
+  storage:
+    back:
+    - MagazineShotgunSlug
+    - MagazineShotgunSlug
+
+- type: startingGear
+  id: FishDmArenaAmUzi
+  storage:
+    back:
+    - MagazinePistolSubMachineGun
+    - MagazinePistolSubMachineGun
+
+- type: startingGear
+  id: FishDmArenaAmSiar
+  storage:
+    back:
+    - MagazinePistolSubMachineGunCaselessExtended
+    - MagazinePistolSubMachineGunCaselessExtended
+
+- type: startingGear
+  id: FishDmArenaAmDeagle
+  storage:
+    back:
+    - MagazineMagnum
+    - MagazineMagnum
+
+- type: startingGear
+  id: FishDmArenaPenPyra
+  storage:
+    back:
+    - PyraAutoInjector
+
+- type: startingGear
+  id: FishDmArenaPenPunct
+  storage:
+    back:
+    - PunctAutoInjector

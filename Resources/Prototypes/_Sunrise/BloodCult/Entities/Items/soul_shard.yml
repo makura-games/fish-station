@@ -13,20 +13,16 @@
     - type: Input
       context: ghost
     - type: InputMover
-    # Fish-start: параметры движения камня душ
     - type: BlockMovement
       blockInteraction: false
       blockUse: false
-    # Fish-end
     - type: Examiner
-    # Fish-start: авто-роль призрака при удалении разума
     - type: SoulShard
       autoGhostRoleOnMindRemoved: true
     # Нужен для GhostRoleSystem.ReregisterOnGhost (проверка IsAlive).
     - type: MobState
       allowedStates:
         - Alive
-    # Fish-end
     - type: PointLight
       color: Red
       radius: 2
@@ -57,8 +53,6 @@
       description: ghost-role-information-soul-shard-description
       rules: ghost-role-information-soul-shard-rules
     - type: GhostTakeoverAvailable
-    # Fish-start: сохранение роли призрака для камня с душой
     - type: SoulShard
       hadSoul: true
       autoGhostRoleOnMindRemoved: true
-    # Fish-end

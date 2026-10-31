@@ -5,6 +5,7 @@ job-name-centcomtr = стажер Центком
 job-name-centcom-blueshield = оперативник «Синий щит»
 job-name-oversightofficer = офицер внутреннего надзора
 job-name-specopsofficer = офицер специальных операций
+job-name-centcom-maid = горничная Центком
 # Перевод трекеров времени
 JobCentcommSectoralJudge = секторальный судья
 jobCentCommOfficer = офицер Центком
@@ -13,3 +14,4 @@ JobCentcomBlueShield = оперативник «Синий щит»
 JobRepresentativeBlueShield = оперативник «Синий щит»
 JobOversightOfficer = оперативник «Синий щит»
 JobSpecOpsOfficer = special operations officer
+JobCentCommMaid = горничная Центком
