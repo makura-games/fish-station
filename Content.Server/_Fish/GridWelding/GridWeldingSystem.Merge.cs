@@ -3,12 +3,15 @@ using Content.Server.Administration.Logs;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Decals;
 using Content.Server.Gravity;
+using Content.Server.Pinpointer;
 using Content.Server.Station.Systems;
 using Content.Shared.Database;
 using Content.Shared.Decals;
 using Content.Shared.Maps;
+using Content.Shared.Pinpointer;
 using Content.Shared.Station.Components;
 using Robust.Server.Physics;
+using Robust.Shared.GameStates;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
@@ -24,6 +27,8 @@ public sealed partial class GridWeldingSystem
     [Dependency] private GridFixtureSystem _gridFixture = default!;
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private DecalSystem _decal = default!;
+    [Dependency] private ChunkEntitySystem _chunkEntities = default!;
+    [Dependency] private NavMapSystem _navMap = default!;
     [Dependency] private TurfSystem _turf = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private GravitySystem _gravity = default!;
@@ -53,7 +58,7 @@ public sealed partial class GridWeldingSystem
         var donorWorld = alignment.Matrix * worldA;
         var momentum = CaptureMomentum(bodyA, bodyB, worldA, donorWorld);
         var atmos = _atmosphere.CaptureGridWeldingAtmosphere(second, alignment.Matrix);
-        var decals = _decal.GetDecalsIntersecting(second, b.LocalAABB.Enlarged(1));
+        var decals = CaptureDecals(second);
         var history = CaptureTileHistory(second, alignment.Matrix);
 
         if (!HasComp<StationMemberComponent>(first) && TryComp(second, out StationMemberComponent? station))
@@ -70,9 +75,12 @@ public sealed partial class GridWeldingSystem
 
         // Merge ищет незакреплённые сущности только над тайлами. Переносим также детей над пустыми клетками.
         var loose = new List<EntityUid>();
+        var beacons = new List<EntityUid>();
         var children = xformB.ChildEnumerator;
         while (children.MoveNext(out var child))
         {
+            if (HasComp<NavMapBeaconComponent>(child))
+                beacons.Add(child);
             if (!Transform(child).Anchored)
                 loose.Add(child);
         }
@@ -85,22 +93,36 @@ public sealed partial class GridWeldingSystem
         }
 
         _gridFixture.Merge(first, second, alignment.Matrix, a, b, xformA, xformB);
+        _navMap.RefreshGridWeldingBeacons(beacons);
         _atmosphere.RestoreGridWeldingAtmosphere(first, atmos);
         _gravity.RefreshGravity(first);
         RestoreTileHistory(first, history);
 
         RestoreDecals((first, a), decals, alignment);
 
-        if (bodyA.BodyType == BodyType.Dynamic && momentum.Mass > 0)
+        if (bodyA.BodyType == BodyType.Dynamic && float.IsFinite(bodyA.Mass) && bodyA.Mass > 0)
         {
-            _physics.SetLinearVelocity(first, momentum.Linear / momentum.Mass, body: bodyA);
+            // После перестройки фикстур масса может отличаться от суммы исходных масс.
+            _physics.SetLinearVelocity(first, momentum.Linear / bodyA.Mass, body: bodyA);
             var inertia = CenterInertia(bodyA);
             _physics.SetAngularVelocity(first, inertia > 0 ? momentum.Angular / inertia : 0, body: bodyA);
         }
     }
 
-    /// <summary>Rotates donor decals into survivor space using a solid support tile for placement validation.</summary>
-    private void RestoreDecals(Entity<MapGridComponent> grid, HashSet<(DecalIndex Index, Decal Decal)> decals,
+    /// <summary>Snapshots decals from existing chunks without scanning the grid's bounding rectangle.</summary>
+    private List<Decal> CaptureDecals(EntityUid grid)
+    {
+        var decals = new List<Decal>();
+        foreach (var chunk in _chunkEntities.GetChunks(grid))
+        {
+            if (TryComp<DecalChunkComponent>(chunk.Owner, out var chunkDecals))
+                decals.AddRange(chunkDecals.Decals.Values);
+        }
+        return decals;
+    }
+
+    /// <summary>Rotates decals into survivor space using a solid support tile for placement validation.</summary>
+    private void RestoreDecals(Entity<MapGridComponent> grid, IReadOnlyList<Decal> decals,
         WeldAlignment alignment)
     {
         if (decals.Count == 0)
@@ -114,7 +136,7 @@ public sealed partial class GridWeldingSystem
                 continue;
 
             var support = _maps.GridTileToLocal(grid, grid.Comp, tile.Value.GridIndices);
-            foreach (var (_, decal) in decals)
+            foreach (var decal in decals)
             {
                 var position = Vector2.Transform(decal.Coordinates + new Vector2(0.5f), alignment.Matrix) - new Vector2(0.5f);
                 // После поворота начало декали может оказаться над пустотой. Проверяем опору отдельно от отрисовки.
@@ -126,7 +148,7 @@ public sealed partial class GridWeldingSystem
     }
 
     /// <summary>Combines linear and orbital angular momentum about the merged grids' shared center of mass.</summary>
-    private static (Vector2 Linear, float Angular, float Mass) CaptureMomentum(
+    private static (Vector2 Linear, float Angular) CaptureMomentum(
         PhysicsComponent a, PhysicsComponent b, Matrix3x2 worldA, Matrix3x2 worldB)
     {
         var mass = a.Mass + b.Mass;
@@ -138,7 +160,7 @@ public sealed partial class GridWeldingSystem
         var center = (a.Mass * centerA + b.Mass * centerB) / mass;
         var angular = CenterInertia(a) * a.AngularVelocity + CenterInertia(b) * b.AngularVelocity +
                       Cross(centerA - center, a.Momentum) + Cross(centerB - center, b.Momentum);
-        return (a.Momentum + b.Momentum, angular, mass);
+        return (a.Momentum + b.Momentum, angular);
     }
 
     /// <summary>Removes the parallel-axis contribution to obtain inertia about the body's own center of mass.</summary>

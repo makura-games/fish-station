@@ -37,7 +37,11 @@ internal static class GridWeldingTestHelpers
         while (remainingTicks-- > 0)
         {
             await pair.RunTicksSync(1);
-            await server.WaitAssertion(() => finished = entities.GetComponent<GridWeldingComponent>(welder).DoAfter == null);
+            await server.WaitAssertion(() =>
+            {
+                var selection = entities.GetComponent<GridWeldingComponent>(welder);
+                finished = selection.DoAfter == null && selection.PendingWeld == null;
+            });
             if (finished)
                 return;
         }

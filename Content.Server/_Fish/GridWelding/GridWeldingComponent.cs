@@ -1,3 +1,4 @@
+using Content.Shared._Fish.GridWelding;
 using Content.Shared.DoAfter;
 
 namespace Content.Server._Fish.GridWelding;
@@ -19,4 +20,7 @@ public sealed partial class GridWeldingComponent : Component
 
     /// <summary>The active welding action, if any.</summary>
     public DoAfterId? DoAfter;
+
+    /// <summary>The completed action waiting for its turn to merge, also identifying its pending request.</summary>
+    public GridWeldingDoAfterEvent? PendingWeld;
 }

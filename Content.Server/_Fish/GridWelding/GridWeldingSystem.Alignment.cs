@@ -129,14 +129,15 @@ public sealed partial class GridWeldingSystem
     /// Rejects a survivor choice that would delete a service shuttle's persistent role and UID.
     /// </summary>
     /// <remarks>
-    /// Scans the second grid in the first grid's coordinate space at action start and completion, rather than every tick.
+    /// Scans the consumed grid in survivor coordinates at action start and completion, rather than every tick.
     /// On failure, <paramref name="reason"/> identifies the localization key for the failed check.
     /// </remarks>
     private bool CanMergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, out string reason)
     {
         reason = "fish-grid-welding-protected";
         var survivor = GetSurvivingGrid(first, second);
-        if (IsProtectedGrid(first) || IsProtectedGrid(second) || HasPersistentRole(survivor == first ? second : first))
+        if (IsProtectedGrid(first) || IsProtectedGrid(second) || HasPersistentRole(survivor == first ? second : first) ||
+            IsMagnetTarget(first, second))
             return false;
 
         reason = "fish-grid-welding-attached";
@@ -150,12 +151,20 @@ public sealed partial class GridWeldingSystem
             return false;
 
         reason = "fish-grid-welding-overlap";
+        var matrix = alignment.Matrix;
+        if (survivor == second)
+        {
+            // Проверяем тайлы переносимой части, даже если вторым был выбран большой принимающий грид.
+            Matrix3x2.Invert(matrix, out matrix);
+            (first, second) = (second, first);
+        }
+
         var a = Comp<MapGridComponent>(first);
         var b = Comp<MapGridComponent>(second);
         var tiles = _maps.GetAllTiles(second, b);
         while (tiles.MoveNext(out var tile))
         {
-            var destination = TransformTile(tile.Value.GridIndices, alignment.Matrix);
+            var destination = TransformTile(tile.Value.GridIndices, matrix);
             if (!_maps.GetTileRef(first, a, destination).Tile.IsEmpty)
                 return false;
         }

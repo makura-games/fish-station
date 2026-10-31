@@ -4,6 +4,7 @@ using Content.Shared.ActionBlocker;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
 using Content.Shared.Hands;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
@@ -42,15 +43,24 @@ public sealed partial class GridWeldingSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<GridSplitEvent>(OnGridSplit);
         SubscribeLocalEvent<WelderComponent, ComponentStartup>(OnWelderStartup);
+        SubscribeLocalEvent<GridWeldingComponent, ComponentShutdown>(OnWeldingShutdown);
         SubscribeLocalEvent<GridWeldingComponent, BeforeRangedInteractEvent>(OnBeforeInteract);
         SubscribeLocalEvent<GridWeldingComponent, GotUnequippedHandEvent>(OnUnequipped);
         SubscribeLocalEvent<GridWeldingComponent, GridWeldingDoAfterEvent>(OnWeldFinished);
         SubscribeLocalEvent<GridWeldingComponent, DoAfterAttemptEvent<GridWeldingDoAfterEvent>>(OnWeldAttempt);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
     }
 
     private void OnWelderStartup(Entity<WelderComponent> ent, ref ComponentStartup args)
     {
         EnsureComp<GridWeldingComponent>(ent);
+    }
+
+    private void OnWeldingShutdown(Entity<GridWeldingComponent> ent, ref ComponentShutdown args)
+    {
+        if (_doAfter.IsRunning(ent.Comp.DoAfter))
+            _doAfter.Cancel(ent.Comp.DoAfter);
+        ClearSelection(ent.Comp);
     }
 
     private void OnBeforeInteract(Entity<GridWeldingComponent> ent, ref BeforeRangedInteractEvent args)
@@ -59,6 +69,32 @@ public sealed partial class GridWeldingSystem : EntitySystem
             return;
 
         args.Handled = TrySelectTile((ent.Owner, null), args.User, args.ClickLocation, args.Target);
+    }
+
+    /// <summary>Revalidates the moving seam every tick so changed geometry or lost tool access cancels the action.</summary>
+    private void OnWeldAttempt(Entity<GridWeldingComponent> ent, ref DoAfterAttemptEvent<GridWeldingDoAfterEvent> args)
+    {
+        if (!CanWeld(ent, args.DoAfter.Args.User, args.Event, out _, out _))
+            args.Cancel();
+    }
+
+    private void OnWeldFinished(Entity<GridWeldingComponent> ent, ref GridWeldingDoAfterEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        args.Handled = true;
+        TryQueueCompletedWeld(ent, args);
+    }
+
+    /// <summary>Releases the selected seam and interrupts active or queued welding when the user drops the tool.</summary>
+    private void OnUnequipped(Entity<GridWeldingComponent> ent, ref GotUnequippedHandEvent args)
+    {
+        if (_doAfter.IsRunning(ent.Comp.DoAfter))
+            _doAfter.Cancel(ent.Comp.DoAfter);
+        else if (ent.Comp.PendingWeld != null)
+            Popup(args.User, "fish-grid-welding-interrupted");
+        ClearSelection(ent.Comp);
     }
 
     /// <summary>
@@ -81,6 +117,9 @@ public sealed partial class GridWeldingSystem : EntitySystem
     /// </summary>
     public bool TryStartWelding(Entity<GridWeldingComponent> welder, EntityUid user, EntityUid second, Vector2i secondTile)
     {
+        if (welder.Comp.DoAfter != null || welder.Comp.PendingWeld != null)
+            return true;
+
         var ev = new GridWeldingDoAfterEvent(GetNetEntity(welder.Comp.Grid), GetNetEntity(second), welder.Comp.Tile, secondTile);
         if (!CanWeld(welder, user, ev, out var alignment, out var reason) ||
             !CanMergeGrids(welder.Comp.Grid, second, alignment, out reason))
@@ -109,67 +148,12 @@ public sealed partial class GridWeldingSystem : EntitySystem
             AttemptFrequency = AttemptFrequency.EveryTick,
         };
 
-        if (_doAfter.TryStartDoAfter(args, out var id))
+        if (_doAfter.TryStartDoAfter(args, out var id) && _doAfter.IsRunning(id))
         {
             welder.Comp.DoAfter = id;
             Popup(user, "fish-grid-welding-started");
         }
         return true;
-    }
-
-    /// <summary>Revalidates the moving seam every tick so changed geometry or lost tool access cancels the action.</summary>
-    private void OnWeldAttempt(Entity<GridWeldingComponent> ent, ref DoAfterAttemptEvent<GridWeldingDoAfterEvent> args)
-    {
-        if (!CanWeld(ent, args.DoAfter.Args.User, args.Event, out _, out _))
-            args.Cancel();
-    }
-
-    private void OnWeldFinished(Entity<GridWeldingComponent> ent, ref GridWeldingDoAfterEvent args)
-    {
-        if (args.Handled)
-            return;
-
-        args.Handled = true;
-        ent.Comp.DoAfter = null;
-        if (args.Cancelled)
-        {
-            Popup(args.User, "fish-grid-welding-interrupted");
-            return;
-        }
-
-        TryFinishWelding(ent, args);
-    }
-
-    /// <summary>Rechecks the completed action before spending fuel and transferring either grid's contents.</summary>
-    private bool TryFinishWelding(Entity<GridWeldingComponent> welder, GridWeldingDoAfterEvent args)
-    {
-        var first = GetEntity(args.FirstGrid);
-        var second = GetEntity(args.SecondGrid);
-        if (!CanWeld(welder, args.User, args, out var alignment, out var reason) ||
-            !CanMergeGrids(first, second, alignment, out reason))
-        {
-            Popup(args.User, reason);
-            return false;
-        }
-
-        var comp = Comp<WelderComponent>(welder);
-        if (!_solutionContainer.TryGetSolution(welder.Owner, comp.FuelSolutionName, out var solution))
-            return false;
-
-        _solutionContainer.RemoveReagent(solution.Value, comp.FuelReagent, FixedPoint2.New(WeldingFuel));
-        _tool.PlayToolSound(welder, Comp<ToolComponent>(welder), args.User);
-        MergeGrids(first, second, alignment, args.User);
-        ClearSelection(welder.Comp);
-        Popup(args.User, "fish-grid-welding-complete");
-        return true;
-    }
-
-    /// <summary>Releases the selected seam and interrupts welding when the user stops holding this tool.</summary>
-    private void OnUnequipped(Entity<GridWeldingComponent> ent, ref GotUnequippedHandEvent args)
-    {
-        if (ent.Comp.DoAfter is { } id)
-            _doAfter.Cancel(id);
-        ClearSelection(ent.Comp);
     }
 
     private static void ClearSelection(GridWeldingComponent comp)
@@ -178,6 +162,7 @@ public sealed partial class GridWeldingSystem : EntitySystem
         comp.Grid = default;
         comp.Tile = default;
         comp.DoAfter = null;
+        comp.PendingWeld = null;
     }
 
     /// <summary>Checks active-hand ownership, interaction permission, tool activation and fuel without consuming any.</summary>

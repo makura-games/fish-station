@@ -52,7 +52,7 @@ public sealed partial class GridWeldingSystem
             return false;
 
         TryComp(welder, out GridWeldingComponent? selection);
-        if (selection?.DoAfter != null)
+        if (selection?.DoAfter != null || selection?.PendingWeld != null)
         {
             handled = true;
             return false;

@@ -1,5 +1,6 @@
 using Content.Server._Sunrise.ImmortalGrid;
 using Content.Server.Salvage.Expeditions;
+using Content.Server.Salvage.Magnet;
 using Content.Server.Shuttles.Components;
 using Content.Shared._Sunrise.UnbuildableGrid;
 using Content.Shared.Cargo.Components;
@@ -13,23 +14,6 @@ namespace Content.Server._Fish.GridWelding;
 
 public sealed partial class GridWeldingSystem
 {
-    // Удаление грида при слиянии не должно обходить защиту строительства или менять идентификатор служебного шаттла.
-    private bool IsProtectedGrid(EntityUid grid)
-    {
-        return HasComp<ProtectedGridComponent>(grid) || HasComp<UnbuildableGridComponent>(grid) ||
-               HasComp<ImmortalGridComponent>(grid);
-    }
-
-    /// <summary>
-    /// Identifies service shuttles whose existing UID must survive a merge to preserve references held by other systems.
-    /// </summary>
-    private bool HasPersistentRole(EntityUid grid)
-    {
-        return HasComp<ArrivalsShuttleComponent>(grid) || HasComp<EmergencyShuttleComponent>(grid) ||
-               HasComp<StationCargoShuttleComponent>(grid) || HasComp<StationEmergencyShuttleComponent>(grid) ||
-               HasComp<CargoShuttleComponent>(grid) || HasComp<SalvageShuttleComponent>(grid);
-    }
-
     /// <summary>
     /// Propagates the original grid's identity through repeated splits so rejoining fragments can preserve that grid.
     /// </summary>
@@ -41,6 +25,39 @@ public sealed partial class GridWeldingSystem
 
         foreach (var fragment in args.NewGrids)
             EnsureComp<GridWeldingOriginComponent>(fragment).OriginalGrid = origin.OriginalGrid;
+    }
+
+    // Удаление грида при слиянии не должно обходить защиту строительства или менять идентификатор служебного шаттла.
+    private bool IsProtectedGrid(EntityUid grid)
+    {
+        return HasComp<ProtectedGridComponent>(grid) || HasComp<UnbuildableGridComponent>(grid) ||
+               HasComp<ImmortalGridComponent>(grid);
+    }
+
+    /// <summary>
+    /// Rejects either grid while a salvage magnet still owns its lifetime, including paused or expired targets
+    /// that have not yet been removed by the magnet's cleanup.
+    /// </summary>
+    private bool IsMagnetTarget(EntityUid first, EntityUid second)
+    {
+        var magnets = AllEntityQuery<SalvageMagnetDataComponent>();
+        while (magnets.MoveNext(out _, out var magnet))
+        {
+            if (magnet.ActiveEntities is { } active && (active.Contains(first) || active.Contains(second)))
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Identifies service shuttles whose existing UID must survive a merge to preserve references held by other systems.
+    /// </summary>
+    private bool HasPersistentRole(EntityUid grid)
+    {
+        return HasComp<ArrivalsShuttleComponent>(grid) || HasComp<EmergencyShuttleComponent>(grid) ||
+               HasComp<StationCargoShuttleComponent>(grid) || HasComp<StationEmergencyShuttleComponent>(grid) ||
+               HasComp<CargoShuttleComponent>(grid) || HasComp<SalvageShuttleComponent>(grid);
     }
 
     /// <summary>
