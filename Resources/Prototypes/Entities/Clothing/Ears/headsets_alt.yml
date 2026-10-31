@@ -40,6 +40,9 @@
     sprite: _Sunrise/Clothing/Ears/Headsets/centcom.rsi # Sunrise-Edit
   - type: Clothing
     sprite: _Sunrise/Clothing/Ears/Headsets/centcom.rsi # Sunrise-Edit
+  # Fish-edit: EMP-устойчивость гарнитуры ЦК (паттерн ClothingHeadsetNinja)
+  - type: EmpResistance
+    strengthMultiplier: 0
 
 - type: entity
   parent: [ClothingHeadsetAlt, BaseCommandContraband]
