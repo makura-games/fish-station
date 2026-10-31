@@ -7,6 +7,9 @@
     ArrowRouletteErot: 3
     ArrowRouletteEros: 3
 #Sunrise-end
+    PortableBlockGame: 2 # Fish-edit
+    PortableMinesweeper: 2 # Fish-edit
+    PortableSpaceVillain: 2 # Fish-edit
     DiceBag: 6
     Paper: 8
     d6Dice: 8

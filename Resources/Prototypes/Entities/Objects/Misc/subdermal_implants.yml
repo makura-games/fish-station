@@ -91,7 +91,7 @@
 #Security implants
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: [ BaseSubdermalImplant, DeathRattleImplant ] # Fish-edit
   id: TrackingImplant
   name: tracking implant
   description: This implant has a tracking device attached to the suit sensor network.
@@ -112,6 +112,11 @@
     - type: StationLimitedNetwork
     - type: WirelessNetworkConnection
       range: 500
+    # Fish-start
+    - type: RattleOnTrigger
+      radioChannel: Security
+      sendToMessenger: false
+    # Fish-end
 
 #Traitor implants
 

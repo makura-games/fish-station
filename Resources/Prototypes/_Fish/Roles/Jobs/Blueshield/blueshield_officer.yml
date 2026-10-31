@@ -35,7 +35,7 @@
    - BlueShield
   special:
    - !type:AddImplantSpecial
-     implants: [ MindShieldImplant, BluespaceImplant ]
+     implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ] # Fish-edit
 
 - type: startingGear
   id: BlueShieldOfficerGearFish

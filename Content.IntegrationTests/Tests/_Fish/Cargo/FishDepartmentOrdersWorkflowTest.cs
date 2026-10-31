@@ -203,7 +203,6 @@ public sealed class FishDepartmentOrdersWorkflowTest
                 clipboard = server.EntMan.SpawnEntity("BoxFolderQmClipboard", new EntityCoordinates(map.Grid, 2.5f, 0.5f));
                 user = server.EntMan.SpawnEntity("MobHuman", new EntityCoordinates(map.Grid, 1.5f, 0.5f));
                 pallet = server.EntMan.SpawnEntity("CargoPalletBuy", new EntityCoordinates(map.Grid, 6.5f, 0.5f));
-                server.System<SharedTransformSystem>().AnchorEntity((pallet, server.EntMan.GetComponent<TransformComponent>(pallet)));
                 var power = server.System<PowerReceiverSystem>();
                 power.SetPowerDisabled(department, false);
                 power.SetNeedsPower(department, false);

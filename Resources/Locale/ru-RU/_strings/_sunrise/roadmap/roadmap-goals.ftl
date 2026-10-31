@@ -23,8 +23,10 @@ roadmap-goal-syndicate-cyborgs-desc = Более продвинутые и по�
 roadmap-goal-new-guns-name = Расширение огнестрела
 roadmap-goal-new-guns-desc = Добавление разнообразного огнестрельного вооружения (а как же огнемёт?).
 
+# Fish-start: To remove - функционал разумной болезни
 roadmap-goal-smart-viruse-name = Разумная болезнь
 roadmap-goal-smart-viruse-desc = Антагонист, цель которого — заразить станцию болезнью.
+# Fish-end
 
 roadmap-goal-cargo-rework-name = Реворк карго
 roadmap-goal-cargo-rework-desc = Удаление торгового аванпоста и шаттла карго, реализация покупки и продажи на станции.
