@@ -590,7 +590,7 @@
 #CENTCOMM / ERT HARDSUITS
 #ERT Leader Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieCommander, SunriseHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieCommander, SunriseHardsuitHelmetNightVisionCyan, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - дополнительно Fish-ПНВ.
   id: ClothingHeadHelmetHardsuitERTLeader
   name: ERT leader hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
@@ -610,7 +610,7 @@
 
 #ERT Chaplain Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionWhite ] # Sunrise-Edit - сохраняем ночное зрение.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionWhite, FishHardsuitHelmetNightVisionWhite ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - дополнительно Fish-ПНВ.
   id: ClothingHeadHelmetHardsuitERTChaplain
   name: ERT chaplain hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
@@ -623,7 +623,7 @@
 
 #ERT Engineer Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - дополнительно Fish-ПНВ.
   id: ClothingHeadHelmetHardsuitERTEngineer
   name: ERT engineer hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
@@ -648,7 +648,7 @@
 
 #ERT Medical Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieElite, SunriseHardsuitHelmetNightVisionMint ] # Sunrise-Edit - сохраняем ночное зрение.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieElite, SunriseHardsuitHelmetNightVisionMint, FishHardsuitHelmetNightVisionMint ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - дополнительно Fish-ПНВ.
   id: ClothingHeadHelmetHardsuitERTMedical
   name: ERT medic hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
@@ -661,7 +661,7 @@
 
 #ERT Security Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - дополнительно Fish-ПНВ.
   id: ClothingHeadHelmetHardsuitERTSecurity
   name: ERT security hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
@@ -683,7 +683,7 @@
 
 #ERT Janitor Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionPurple ] # Sunrise-Edit - сохраняем ночное зрение.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionPurple, FishHardsuitHelmetNightVisionPurple ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - дополнительно Fish-ПНВ.
   id: ClothingHeadHelmetHardsuitERTJanitor
   name: ERT janitor hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
@@ -696,7 +696,7 @@
 
 #CBURN Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
+  parent: [ BaseCentcommContraband, ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ] # Fish-edit - ПНВ для костюма ОБР-химзащиты.
   id: ClothingHeadHelmetCBURN
   name: CBURN exosuit helmet
   description: A pressure resistant and fireproof hood worn by special cleanup units.
@@ -720,7 +720,7 @@
 
 #Deathsquad Hardsuit
 - type: entity
-  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase, BaseCentcommContraband ] # Sunrise-Edit - сохраняем фонарь шлема.
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase, BaseCentcommContraband, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем фонарь шлема. Fish-edit - добавляем Fish-ПНВ.
   id: ClothingHeadHelmetHardsuitDeathsquad
   name: deathsquad hardsuit helmet
   description: A robust helmet for special operations.

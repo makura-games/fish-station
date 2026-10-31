@@ -196,6 +196,12 @@
     action: ActionToggleNightVision
     prioritized: false
     lightingColor: '#FF983326'
+  # Fish-start: Сохраняем тёплый оттенок сверхъестественного зрения.
+  - type: FishNaturalNightVision
+    tint: '#FF983380'
+    darknessSaturation: 0.1
+    shadowContrast: 1.05
+  # Fish-end
   - type: FootprintEmitter
   # Sunrise-End
 

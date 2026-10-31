@@ -18,7 +18,9 @@
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    # Fish-edit - термальная маска использует оптику Fish вместо устаревшего оверлея.
+    - type: FishThermalVision
+  - type: FishVisionDevice
   - type: ToggleClothing
     action: ActionToggleThermalVision
     disableOnUnequip: true

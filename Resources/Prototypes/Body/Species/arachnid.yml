@@ -160,6 +160,11 @@
     action: ActionToggleNightVision
     prioritized: false
     lightingColor: '#FFFFFF15'
+  # Fish-start: Контрастное природное зрение с меньшим различением цветов в темноте.
+  - type: FishNaturalNightVision
+    darknessSaturation: 0.03
+    shadowContrast: 1.25
+  # Fish-end
   # Sunrise-end
 
 - type: entity

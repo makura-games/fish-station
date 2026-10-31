@@ -9,7 +9,9 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.PowerCell;
+using Content.Shared.Stealth.Components;
 using Content.Shared.Temperature.Components;
+using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -139,6 +141,151 @@ public sealed class FishVisionTest
                 }
             });
         }
+    }
+
+    [TestCase("ClothingMaskGasDeathSquadFish", "mask", null, true)]
+    [TestCase("ClothingHeadHelmetHardsuitERTLeader", "head", "#00FFFF", false)]
+    [TestCase("ClothingHeadHelmetHardsuitERTChaplain", "head", "#FFFFFF", false)]
+    [TestCase("ClothingHeadHelmetHardsuitERTMedical", "head", "#ADFFEC", false)]
+    [TestCase("ClothingHeadHelmetHardsuitERTJanitor", "head", "#CBADFF", false)]
+    [TestCase("ClothingHeadHelmetCBURN", "head", "#00FFFF", false)]
+    [TestCase("ClothingHeadHelmetHardsuitDeathsquadFish", "head", null, false)]
+    [TestCase("FishClothingHeadHelmetHardsuitCentcomBlack", "head", "#00FFFF", false)]
+    public async Task HardsuitAndMaskDevicesResolveFromTheirSlots(string prototype, string slot, string? expectedColor, bool thermal)
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var server = pair.Server;
+        var client = pair.Client;
+        var map = await pair.CreateTestMap();
+        var session = server.PlayerMan.GetSessionById(client.Session!.UserId);
+        var previousEntity = session.AttachedEntity;
+        EntityUid wearer = default;
+        EntityUid device = default;
+        var equipped = false;
+        var activated = false;
+        await server.WaitPost(() =>
+        {
+            wearer = server.EntMan.SpawnEntity("MobHuman", map.GridCoords);
+            device = server.EntMan.SpawnEntity(prototype, map.GridCoords);
+            server.PlayerMan.SetAttachedEntity(session, wearer);
+            equipped = server.System<InventorySystem>().TryEquip(wearer, device, slot, force: true);
+        });
+        Assert.That(equipped, Is.True);
+        // Надетый, но выключенный прибор не должен давать оптику.
+        await Check(false);
+
+        await server.WaitPost(() => activated = server.System<ItemToggleSystem>().TryActivate(device, wearer));
+        Assert.That(activated, Is.True);
+        await Check(true);
+
+        // Снятие прибора обязано убирать оптику с носителя, а не оставлять её висеть.
+        await server.WaitPost(() => equipped = server.System<InventorySystem>().TryUnequip(wearer, slot, force: true));
+        Assert.That(equipped, Is.True);
+        await Check(false);
+
+        await server.WaitPost(() =>
+        {
+            server.PlayerMan.SetAttachedEntity(session, previousEntity);
+            server.EntMan.DeleteEntity(map.MapUid);
+        });
+        await pair.CleanReturnAsync();
+
+        async Task Check(bool expected)
+        {
+            // Ждём доставку включения или снятия и применения состояния на клиенте.
+            await pair.RunTicksSync(NetworkTicks);
+            await server.WaitAssertion(() =>
+            {
+                if (thermal)
+                {
+                    Assert.That(server.EntMan.TryGetComponent<FishThermalVisionComponent>(wearer, out var vision),
+                        Is.EqualTo(expected));
+                    if (expected)
+                        Assert.That(vision!.Range, Is.GreaterThan(0f));
+                }
+                else
+                {
+                    Assert.That(server.EntMan.TryGetComponent<FishNightVisionComponent>(wearer, out var vision),
+                        Is.EqualTo(expected));
+                    if (expected && expectedColor != null)
+                        Assert.That(vision!.Color, Is.EqualTo(Color.FromHex(expectedColor)));
+                }
+            });
+            await client.WaitAssertion(() =>
+            {
+                var vision = client.System<FishVisionSystem>();
+                Assert.That(thermal ? vision.ThermalViewer != null : vision.NightPresentation.Source != null,
+                    Is.EqualTo(expected));
+                if (expected && !thermal)
+                {
+                    var color = vision.NightPresentation.Color;
+                    if (expectedColor != null)
+                        Assert.That(color, Is.EqualTo(Color.FromHex(expectedColor)));
+                    else
+                        Assert.That(color.G, Is.GreaterThan(color.R));
+                }
+            });
+        }
+    }
+
+    [Test]
+    public async Task CloakedBodyStaysVisibleToThermalContacts()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var server = pair.Server;
+        var client = pair.Client;
+        var map = await pair.CreateTestMap();
+        var session = server.PlayerMan.GetSessionById(client.Session!.UserId);
+        var previousEntity = session.AttachedEntity;
+        EntityUid viewer = default;
+        EntityUid hidden = default;
+        EntityUid open = default;
+        NetEntity hiddenNet = default;
+        NetEntity openNet = default;
+        await server.WaitPost(() =>
+        {
+            viewer = server.EntMan.SpawnEntity("MobHuman", map.GridCoords);
+            hidden = server.EntMan.SpawnEntity("MobHuman", new EntityCoordinates(map.Grid, 2, 0));
+            open = server.EntMan.SpawnEntity("MobHuman", new EntityCoordinates(map.Grid, 0, 2));
+            hiddenNet = server.EntMan.GetNetEntity(hidden);
+            openNet = server.EntMan.GetNetEntity(open);
+            server.PlayerMan.SetAttachedEntity(session, viewer);
+            server.EntMan.AddComponent<FishThermalVisionComponent>(viewer);
+            // Маскировка живёт в постшейдере спрайта, поэтому проверяем именно её.
+            server.EntMan.AddComponent<StealthComponent>(hidden);
+        });
+        // Ждём доставку маскировки и применение клиентского постшейдера.
+        await pair.RunTicksSync(NetworkTicks);
+        await client.WaitAssertion(() =>
+        {
+            var vision = client.System<FishVisionSystem>();
+            var hiddenUid = client.EntMan.GetEntity(hiddenNet);
+            var openUid = client.EntMan.GetEntity(openNet);
+            var stealth = client.EntMan.GetComponent<StealthComponent>(hiddenUid);
+            Assert.That(stealth.Enabled, Is.True);
+            Assert.That(vision.CanDrawThermalContact((hiddenUid, client.EntMan.GetComponent<SpriteComponent>(hiddenUid))),
+                Is.True, "Cloaking hides the picture, not the heat: a cloaked body must stay a thermal contact.");
+            Assert.That(vision.CanDrawThermalContact((openUid, client.EntMan.GetComponent<SpriteComponent>(openUid))),
+                Is.True);
+        });
+        // Спрятанный движком спрайт (гост или админская невидимость) тепловизор тоже не должен показывать.
+        await client.WaitPost(() =>
+        {
+            var openUid = client.EntMan.GetEntity(openNet);
+            client.System<SpriteSystem>().SetVisible((openUid, client.EntMan.GetComponent<SpriteComponent>(openUid)), false);
+        });
+        await client.WaitAssertion(() =>
+        {
+            var openUid = client.EntMan.GetEntity(openNet);
+            Assert.That(client.System<FishVisionSystem>().CanDrawThermalContact(
+                (openUid, client.EntMan.GetComponent<SpriteComponent>(openUid))), Is.False);
+        });
+        await server.WaitPost(() =>
+        {
+            server.PlayerMan.SetAttachedEntity(session, previousEntity);
+            server.EntMan.DeleteEntity(map.MapUid);
+        });
+        await pair.CleanReturnAsync();
     }
 
     [Test]

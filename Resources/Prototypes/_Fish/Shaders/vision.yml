@@ -22,3 +22,18 @@
   id: FishThermalExposure
   kind: source
   path: /Textures/_Fish/Shaders/Vision/thermal_exposure.swsl
+
+- type: shader
+  id: FishNaturalNightVision
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/natural_vision.swsl
+
+- type: shader
+  id: FishNaturalNightVisionExposure
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/natural_exposure.swsl
+
+- type: shader
+  id: FishNaturalNightVisionLighting
+  kind: source
+  path: /Textures/_Fish/Shaders/Vision/natural_lighting.swsl
