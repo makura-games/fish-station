@@ -59,6 +59,12 @@
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
+      # Fish edit start - медали на форме
+      medal1: !type:ContainerSlot
+      medal2: !type:ContainerSlot
+      medal3: !type:ContainerSlot
+      medal4: !type:ContainerSlot
+      # Fish edit end
 
 - type: entity
   parent: ClothingUniformBase
@@ -77,6 +83,12 @@
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
+      # Fish edit start - медали на форме
+      medal1: !type:ContainerSlot
+      medal2: !type:ContainerSlot
+      medal3: !type:ContainerSlot
+      medal4: !type:ContainerSlot
+      # Fish edit end
 
 - type: entity
   parent: ClothingUniformBase
