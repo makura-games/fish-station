@@ -1,4 +1,9 @@
-- files: ["folder Music-main"]
-  license: "CC-BY-SA-3.0"
-  copyright: "created by A-Guy"
+- files:
+  - "0_nuclearoperations_remake_full.ogg"
+  - "1_nuclearoperations_remake_prep.ogg"
+  - "2_nuclearoperations_remake_infil.ogg"
+  - "3_nuclearoperations_remake_def.ogg"
+  - "revolution.ogg"
+  license: "CC0-1.0"
+  copyright: "Created by A-Guy (A-Guy173). Converted from MP3 to mono OGG for Space Station 14."
   source: "https://github.com/A-Guy173/Music"
