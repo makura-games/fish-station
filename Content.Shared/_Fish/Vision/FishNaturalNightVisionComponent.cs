@@ -12,7 +12,7 @@ public sealed partial class FishNaturalNightVisionComponent : Component
 
     /// <summary>Radius in world units that receives the full natural light boost.</summary>
     [DataField, AutoNetworkedField]
-    public float FullLightRadius = 1.5f;
+    public float FullLightRadius = 2.5f;
 
     /// <summary>Distance over which the natural light boost smoothly fades to zero.</summary>
     [DataField, AutoNetworkedField]

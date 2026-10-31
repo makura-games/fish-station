@@ -95,11 +95,11 @@ public sealed class FishVisionEyeProtectionTest
     }
 
     /// <summary>
-    /// Only a usable legacy thermal effect takes priority over an equipped Fish night-vision device.
+    /// Встроенные термалы используют новую картинку и возвращают ПНВ шлема после отключения.
     /// </summary>
     [TestCase("MobHuman", false)]
     [TestCase(ProtectedHuman, true)]
-    public async Task LegacyThermalAvailabilityControlsHelmetNightVision(string wearerPrototype, bool expectNightVision)
+    public async Task IntrinsicThermalsRestoreHelmetNightVisionWhenDisabled(string wearerPrototype, bool hasEyeProtection)
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var server = pair.Server;
@@ -129,9 +129,17 @@ public sealed class FishVisionEyeProtectionTest
         {
             var wearer = client.EntMan.GetEntity(wearerNet);
             // Ненетворкаемая защита глаз здесь приходит из прототипа, как у бойцов PlanetWar.
-            Assert.That(client.EntMan.HasComponent<EyeProtectionComponent>(wearer), Is.EqualTo(expectNightVision));
-            Assert.That(client.System<FishVisionSystem>().NightPresentation.Source != null, Is.EqualTo(expectNightVision),
-                "A blocked legacy thermal effect must not suppress the helmet's usable night vision.");
+            Assert.That(client.EntMan.HasComponent<EyeProtectionComponent>(wearer), Is.EqualTo(hasEyeProtection));
+            Assert.That(client.System<FishVisionSystem>().ThermalViewer, Is.EqualTo(wearer));
+            Assert.That(client.System<FishVisionSystem>().NightPresentation.Source, Is.Null);
+        });
+
+        await server.WaitPost(() => server.EntMan.RemoveComponent<ThermalVisionComponent>(server.EntMan.GetEntity(wearerNet)));
+        await pair.RunTicksSync(NetworkTicks);
+        await client.WaitAssertion(() =>
+        {
+            Assert.That(client.System<FishVisionSystem>().ThermalViewer, Is.Null);
+            Assert.That(client.System<FishVisionSystem>().NightPresentation.Source, Is.Not.Null);
         });
 
         await server.WaitPost(() =>
