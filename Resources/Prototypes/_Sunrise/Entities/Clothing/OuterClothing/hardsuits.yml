@@ -1034,6 +1034,10 @@
   id: ClothingOuterModsuitBase
   name: modsuit base
   components:
+  - type: ToggleableClothing
+    action: ActionToggleSuitPiece
+    slot: head
+    verbText: toggle-clothing-verb-helmet
   - type: Clothing
     equipSound: /Audio/_Sunrise/Modsuit/modsuit_equipsound.ogg
     unequipSound: /Audio/_Sunrise/Modsuit/modsuit_unequipsound.ogg

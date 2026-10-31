@@ -22,7 +22,7 @@
   - CentralCommand
   special:
     - !type:AddImplantSpecial
-      implants: [ MindShieldImplant ]
+      implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ] # Fish-edit
 
 - type: startingGear
   id: BlueShieldOperativeGear
@@ -42,6 +42,7 @@
   storage:
     back:
     - HandheldBSOCrewMonitor
+    - FishUplinkNTERTBlueShield # Fish-edit
 
 - type: chameleonOutfit
   id: BlueShieldOperativeChameleonOutfit

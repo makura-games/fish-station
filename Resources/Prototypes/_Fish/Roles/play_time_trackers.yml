@@ -35,4 +35,7 @@
   id: JobBlueShieldFish
 
 - type: playTimeTracker
+  id: JobCentCommMaid
+
+- type: playTimeTracker
   id: AntagFishClockworkServant

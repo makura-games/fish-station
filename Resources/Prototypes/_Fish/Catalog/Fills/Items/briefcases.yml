@@ -1,0 +1,15 @@
+- type: entity
+  id: FishBriefcaseWeaponScarHFilled
+  suffix: Fish
+  parent: BriefcaseWeapon
+  name: secure SCAR-H case
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - id: FishWeaponRifleDarkScarHBiocode
+        - id: FishMagazineScarHFMJ
+          amount: 2
+        - id: FishMagazineLargeScarHFMJ
+          amount: 2

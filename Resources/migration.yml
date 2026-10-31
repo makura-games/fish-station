@@ -1322,6 +1322,7 @@ ClothingHandsPowerGlovesUplinkNTERTGamma: null
 ClothingHandsPowerGlovesUplinkNTERTGammaLeader: null
 ClothingHandsPowerGlovesUplinkNTERTCBURN: null
 ClothingHandsPowerGlovesUplinkNTERTEpsilon: null
+DrinkDarkRedRumBottleFull: DrinkRedRumBottleFull
 # 2026-09-10
 ClothingOuterArmorBlueShield: null
 
@@ -1634,3 +1635,15 @@ DrinkWaterJug: JugWater
 
 #2026-09-05
 AsimovCircuitBoard: CrewsimovCircuitBoard
+
+# region Fish-Start
+BigRedThruster: ThrusterLarge
+BigThruster: ThrusterLarge
+HugeRedThruster: ThrusterLarge
+HugeThruster: ThrusterLarge
+RustedThruster: Thruster
+HighSecCommandLocked: AirlockCommandLocked
+HighSecCentralCommandLocked: AirlockCentralCommandLocked
+HighSecArmoryLocked: AirlockArmoryLocked
+HighSecCaptainLocked: AirlockCaptainLocked
+# region Fish-End
