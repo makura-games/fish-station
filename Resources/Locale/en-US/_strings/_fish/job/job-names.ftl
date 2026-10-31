@@ -14,4 +14,4 @@ JobCentcomBlueShield = оперативник «Синий щит»
 JobRepresentativeBlueShield = оперативник «Синий щит»
 JobOversightOfficer = оперативник «Синий щит»
 JobSpecOpsOfficer = special operations officer
-JobCentCommMaid = горничная Центком
+JobBlueShieldEnsign = горничная Центком

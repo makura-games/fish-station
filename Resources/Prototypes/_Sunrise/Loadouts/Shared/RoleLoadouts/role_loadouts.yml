@@ -86,25 +86,27 @@
 #   - Contributors
 # FIsh edit end
 
-- type: roleLoadout
-  id: JobBlueShieldEnsign
-  groups:
-  - BlueShieldHead
-  - BlueShieldNeck
-  - BlueShieldOuterClothing # Fish-add
-  - BlueShieldJumpsuit
-  - BlueShieldBackpack
-  - BlueShieldBelt
-  # - BlueshieldGun # Fish-Edit
-  - Bra # Fish-Edit
-  - Pants # Fish-Edit
-# - BlueShieldBra # Fish-Edit
-# - BlueShieldPants # Fish-Edit
-  - SunriseTrinkets
-  - SunriseSurvivalSecurity
-  - GroupSpeciesBreathTool
-  - Socks
-  - Contributors
+# Fish-start
+# - type: roleLoadout
+#   id: JobBlueShieldEnsign
+#   groups:
+#   - BlueShieldHead
+#   - BlueShieldNeck
+#   - BlueShieldOuterClothing # Fish-add
+#   - BlueShieldJumpsuit
+#   - BlueShieldBackpack
+#   - BlueShieldBelt
+#   # - BlueshieldGun # Fish-Edit
+#   - Bra # Fish-Edit
+#   - Pants # Fish-Edit
+# # - BlueShieldBra # Fish-Edit
+# # - BlueShieldPants # Fish-Edit
+#   - SunriseTrinkets
+#   - SunriseSurvivalSecurity
+#   - GroupSpeciesBreathTool
+#   - Socks
+#   - Contributors
+# Fish-end
 
 - type: roleLoadout
   id: JobBlueShieldOfficer
