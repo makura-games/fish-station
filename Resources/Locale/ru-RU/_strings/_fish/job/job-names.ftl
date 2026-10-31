@@ -14,4 +14,4 @@ JobCentCommTrainee = стажер Центком
 JobRepresentativeBlueShield = оперативник «Синий щит»
 JobOversightOfficer = офицер внутреннего надщора
 JobSpecOpsOfficer = офицер специальных операций
-JobCentCommMaid = горничная Центком
+JobBlueShieldEnsign = горничная Центком
