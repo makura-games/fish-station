@@ -59,10 +59,13 @@ public sealed partial class SunriseMechSystem : EntitySystem
     {
         var curTime = _timing.CurTime;
 
-        if (curTime < ent.Comp.NextPulseTime)
-            return;
+    /// <summary> fish-edit start
+    /// if (curTime < ent.Comp.NextPulseTime)
+    ///     return;
+    /// </summary> fish-edit end
 
-        ent.Comp.NextPulseTime = curTime + ent.Comp.CooldownTime;
+
+        ent.Comp.NextPulseTime = curTime;
 
         _damageable.TryChangeDamage(ent.Owner, ent.Comp.EmpDamage);
 
