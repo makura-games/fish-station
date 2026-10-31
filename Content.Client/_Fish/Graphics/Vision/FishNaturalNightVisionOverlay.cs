@@ -52,8 +52,8 @@ internal sealed partial class FishNaturalNightVisionOverlay : Overlay
         _viewer = viewer;
         _profile = profile;
         _lightingStrength = FiniteClamp(profile.LightingStrength, 0f, 0.35f, 0.25f);
-        var radius = FiniteClamp(profile.FullLightRadius, 0f, 32f, 3.5f);
-        _lightingRadii = new Vector2(radius, radius + FiniteClamp(profile.LightFadeWidth, 0.1f, 32f, 3f));
+        var radius = FiniteClamp(profile.FullLightRadius, 0f, 32f, 1.5f);
+        _lightingRadii = new Vector2(radius, radius + FiniteClamp(profile.LightFadeWidth, 0.1f, 32f, 0.5f));
     }
 
     internal void Reset()
