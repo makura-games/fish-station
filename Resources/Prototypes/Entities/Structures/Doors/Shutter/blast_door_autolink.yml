@@ -155,6 +155,7 @@
   - type: AutoLinkReceiver
     channel: Windows
 
+
 - type: entity
   id: BlastDoorWindowsOpen
   parent: BlastDoorOpen
@@ -162,4 +163,3 @@
   components:
   - type: AutoLinkReceiver
     channel: Windows
-

@@ -1,5 +1,5 @@
 - type: entity
-  parent: [ BaseShutter, StructureHealthDoorStrong ]
+  parent: [BaseShutter, StructureHealthDoorStrong]
   id: BlastDoor
   name: blast door
   description: Blast-retardant AND fire-retardant!
@@ -39,7 +39,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 350
+        damage: 1500 # Fish-edit: синхронизация звука разрушения с порогом разрушения
       behaviors:
       - !type:PlaySoundBehavior
         sound:
@@ -80,6 +80,7 @@
     airBlocked: false
   - type: RadiationBlocker
     enabled: false
+
 
 - type: entity
   parent: [ BaseStructureDynamic, StructureHealthDoor ]
