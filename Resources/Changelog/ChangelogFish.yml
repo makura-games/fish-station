@@ -1298,3 +1298,10 @@
     message: Фикс РМ с ПИИ в мехах на шаттле
   id: 131
   url: https://github.com/makura-games/fish-station/pull/588
+- author: dan4ikk3
+  time: '2026-10-31T22:50:22.0000000+00:00'
+  changes:
+  - type: Fix
+    message: За ГЦК теперь можно зайти(навреное?)
+  id: 132
+  url: https://github.com/makura-games/fish-station/pull/590
