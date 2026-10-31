@@ -296,27 +296,10 @@ public sealed partial class SponsorTierEntry : Control
 
     private void LoadAllowedSpecies(IReadOnlyCollection<string> speciesList)
     {
-        foreach (var species in speciesList)
-        {
-            if (!_prototypeManager.TryIndex(species, out SpeciesPrototype? speciesPrototype))
-                continue;
-
-            var dummyEnt = _entityManager.SpawnEntity(speciesPrototype.DollPrototype, MapCoordinates.Nullspace);
-
-            var view = new SpriteView
-            {
-                SetSize = new Vector2(128, 128),
-                Scale = new Vector2(4, 4),
-            };
-            view.SetEntity(dummyEnt);
-            _spriteViews.Add(view);
-
-            var panel = CreateEntityIcon(speciesPrototype.Name, view);
-
-            AllowedSpeciesGrid.AddChild(panel);
-        }
-
-        AllowedSpeciesBox.Visible = AllowedSpeciesGrid.ChildCount > 0;
+        // Fish-start: расы бесплатны для всех — не показываем их как эксклюзив подписки
+        AllowedSpeciesBox.Visible = false;
+        _ = speciesList;
+        // Fish-end
     }
 
     private void LoadAllowedMarkings(IReadOnlyCollection<string> markingsList)

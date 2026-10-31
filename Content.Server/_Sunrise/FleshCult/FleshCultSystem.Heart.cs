@@ -6,6 +6,8 @@ using Content.Server.Body.Components;
 using Content.Server.Traits.Assorted;
 using Content.Shared._Sunrise;
 using Content.Shared._Sunrise.FleshCult;
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Part;
@@ -265,16 +267,21 @@ public sealed partial class FleshCultSystem
         {
             foreach (var cont in _containerSystem.GetAllContainers(args.Args.Target.Value, container).ToArray())
             {
+                // Fish-start: Не выбрасывать служебный контейнер экшенов
+                if (cont.ID == ActionsContainerComponent.ContainerId)
+                    continue;
+                // Fish-end
+
                 foreach (var ent in cont.ContainedEntities.ToArray())
                 {
+                    // Fish-start: Не выбрасывать органы и действия наружу
+                    if (HasComp<OrganComponent>(ent) || HasComp<ActionComponent>(ent))
                     {
-                        if (HasComp<OrganComponent>(ent))
-                        {
-                            continue;
-                        }
-                        _containerSystem.Remove(ent, cont, force: true);
-                        Transform(ent).Coordinates = xform.Coordinates;
+                        continue;
                     }
+                    // Fish-end
+                    _containerSystem.Remove(ent, cont, force: true);
+                    Transform(ent).Coordinates = xform.Coordinates;
                 }
             }
         }

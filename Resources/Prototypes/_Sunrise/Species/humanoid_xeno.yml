@@ -3,7 +3,7 @@
   id: HumanoidXeno
   name: species-name-xeno
   roundStart: true
-  sponsorOnly: true
+  sponsorOnly: false # Fish-edit: расы бесплатны для всех
   prototype: MobHumanoidXeno
   bodyTypes:
   - HumanoidXenoNormal

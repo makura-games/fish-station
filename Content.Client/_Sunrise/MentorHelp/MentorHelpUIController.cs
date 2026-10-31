@@ -503,7 +503,8 @@ public interface IMentorHelpUIHandler : IDisposable
 
 public sealed class PlayerMentorHelpUIHandler : IMentorHelpUIHandler
 {
-    public bool IsOpen { get; private set; }
+    // Sunrise-Edit: как у AHelp — IsOpen по реальному окну, иначе toggle бинда/кнопки не закрывает
+    public bool IsOpen => _window is { Disposed: false, IsOpen: true };
     public bool HasMentorPermissions => false;
     public event Action? OnClose;
     public int? CurrentTicketId { get; private set; }
@@ -520,26 +521,24 @@ public sealed class PlayerMentorHelpUIHandler : IMentorHelpUIHandler
 
     public void OpenWindow()
     {
-        if (_window != null)
+        if (_window == null)
         {
-            _window.MoveToFront();
-            IsOpen = true;
-            return;
+            _window = new MentorHelpWindow();
+            _window.MentorHelp.Initialize(_mentorHelpSystem, _ownerUserId, false);
+            _window.OnClose += () =>
+            {
+                _window?.MentorHelp.Cleanup();
+                CurrentTicketId = null;
+                OnClose?.Invoke();
+                _window = null;
+            };
         }
 
-        _window = new MentorHelpWindow();
-        _window.MentorHelp.Initialize(_mentorHelpSystem, _ownerUserId, false);
-        _window.OnClose += () =>
-        {
-            _window?.MentorHelp.Cleanup();
-            IsOpen = false;
-            CurrentTicketId = null;
-            OnClose?.Invoke();
-            _window = null;
-        };
-
-        _window.OpenCentered();
-        IsOpen = true;
+        // Sunrise-Edit: повторный Open не должен только MoveToFront при уже открытом — toggle закрывает через CloseWindow
+        if (_window.IsOpen)
+            _window.MoveToFront();
+        else
+            _window.OpenCentered();
 
         _mentorHelpSystem?.RequestTickets(onlyMine: true);
     }
@@ -558,13 +557,7 @@ public sealed class PlayerMentorHelpUIHandler : IMentorHelpUIHandler
     public void CloseWindow()
     {
         CurrentTicketId = null;
-        if (_window == null)
-        {
-            IsOpen = false;
-            return;
-        }
-
-        _window.Close();
+        _window?.Close();
     }
 
     public void TicketUpdated(MentorHelpTicketData ticket)
@@ -600,7 +593,8 @@ public sealed class PlayerMentorHelpUIHandler : IMentorHelpUIHandler
 public sealed class MentorMentorHelpUIHandler : IMentorHelpUIHandler
 {
     public int? CurrentTicketId { get; private set; }
-    public bool IsOpen { get; private set; }
+    // Sunrise-Edit: как у AHelp — IsOpen по реальному окну, иначе toggle бинда/кнопки не закрывает
+    public bool IsOpen => _window is { Disposed: false, IsOpen: true };
     public bool HasMentorPermissions => true;
     public event Action? OnClose;
 
@@ -616,26 +610,24 @@ public sealed class MentorMentorHelpUIHandler : IMentorHelpUIHandler
 
     public void OpenWindow()
     {
-        if (_window != null)
+        if (_window == null)
         {
-            _window.MoveToFront();
-            IsOpen = true;
-            return;
+            _window = new MentorHelpWindow();
+            _window.MentorHelp.Initialize(_mentorHelpSystem, _ownerUserId, true);
+            _window.OnClose += () =>
+            {
+                _window?.MentorHelp.Cleanup();
+                CurrentTicketId = null;
+                OnClose?.Invoke();
+                _window = null;
+            };
         }
 
-        _window = new MentorHelpWindow();
-        _window.MentorHelp.Initialize(_mentorHelpSystem, _ownerUserId, true);
-        _window.OnClose += () =>
-        {
-            _window?.MentorHelp.Cleanup();
-            IsOpen = false;
-            CurrentTicketId = null;
-            OnClose?.Invoke();
-            _window = null;
-        };
-
-        _window.OpenCentered();
-        IsOpen = true;
+        // Sunrise-Edit: повторный Open при уже открытом окне — только на передний план
+        if (_window.IsOpen)
+            _window.MoveToFront();
+        else
+            _window.OpenCentered();
 
         _mentorHelpSystem?.RequestTickets(onlyMine: false);
     }
@@ -651,13 +643,7 @@ public sealed class MentorMentorHelpUIHandler : IMentorHelpUIHandler
     public void CloseWindow()
     {
         CurrentTicketId = null;
-        if (_window == null)
-        {
-            IsOpen = false;
-            return;
-        }
-
-        _window.Close();
+        _window?.Close();
     }
 
     public void TicketUpdated(MentorHelpTicketData ticket)

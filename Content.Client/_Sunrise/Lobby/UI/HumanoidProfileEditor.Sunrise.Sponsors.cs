@@ -15,11 +15,10 @@ public sealed partial class HumanoidProfileEditor
 {
     private IEnumerable<SpeciesPrototype> GetSunriseAvailableSpecies()
     {
-        var sponsorPrototypes = _sponsorsMgr?.GetClientPrototypes() ?? [];
-
+        // Fish-start: все roundStart расы доступны в редакторе без спонсорства
         return _prototypeManager.EnumeratePrototypes<SpeciesPrototype>()
-            .Where(species => species.RoundStart &&
-                (!species.SponsorOnly || sponsorPrototypes.Contains(species.ID)));
+            .Where(species => species.RoundStart);
+        // Fish-end
     }
 
     private FlavorText.FlavorText CreateSunriseFlavorText()

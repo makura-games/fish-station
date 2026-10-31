@@ -250,7 +250,4 @@
       shader: unshaded
     - state: panel
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
-  - type: PointLight
-    radius: 1.5
-    energy: 1.6
-    color: "#aa97cf"
+  # Sunrise-Edit: убран PointLight — в темноте светился как лампа (репорт Discord)

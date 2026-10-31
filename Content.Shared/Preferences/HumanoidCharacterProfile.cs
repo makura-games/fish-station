@@ -278,7 +278,9 @@ namespace Content.Shared.Preferences
             var random = IoCManager.Resolve<IRobustRandom>();
 
             var pool = prototypeManager.EnumeratePrototypes<SpeciesPrototype>()
-                .Where(x => x.RoundStart && !x.SponsorOnly && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID))) // Sunrise-Edit
+                // Fish-start: все roundStart расы доступны без спонсорства
+                .Where(x => x.RoundStart && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID)))
+                // Fish-end
                 .ToArray();
             var species = random.Pick(pool);
             return species;
@@ -660,9 +662,10 @@ namespace Content.Shared.Preferences
             var configManager = collection.Resolve<IConfigurationManager>();
             var prototypeManager = collection.Resolve<IPrototypeManager>();
 
+            // Fish-start: SponsorOnly не ограничивает выбор расы; остальные спонсорские проверки ниже сохранены
             if (!prototypeManager.TryIndex(Species, out var speciesPrototype) ||
-                !speciesPrototype.RoundStart ||
-                speciesPrototype.SponsorOnly && !sponsorPrototypes.Contains(Species.Id)) // Sunrise-Edit
+                !speciesPrototype.RoundStart)
+            // Fish-end
             {
                 Species = HumanoidCharacterProfile.DefaultSpecies;
                 speciesPrototype = prototypeManager.Index(Species);

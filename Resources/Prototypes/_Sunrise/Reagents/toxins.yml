@@ -156,10 +156,11 @@
   metabolisms:
     Bloodstream:
       effects:
+      # Sunrise-Edit: было time: 30 + Add — стакалось на десятки минут
       - !type:ModifyStatusEffect
         effectProto: StatusEffectMuted
-        type: Add
-        time: 30
+        type: Update
+        time: 15
 
 - type: reagent
   id: NocturineAbductor

@@ -7,11 +7,14 @@ namespace Content.Shared.Humanoid.Prototypes;
 
 public sealed partial class SpeciesPrototype
 {
+    // Fish-start: расы бесплатны — SponsorOnly не ограничивает выбор
     /// <summary>
-    /// Доступен ли вид только спонсорам.
+    /// Исторический флаг спонсорской расы.
+    /// Не используется для ограничения выбора — все roundStart расы бесплатны.
     /// </summary>
     [DataField]
     public bool SponsorOnly { get; private set; }
+    // Fish-end
 
     /// <summary>
     /// Прототипы телосложения, доступные этому виду.
