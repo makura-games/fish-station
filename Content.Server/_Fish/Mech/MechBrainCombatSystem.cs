@@ -2,6 +2,7 @@ using Content.Shared.ActionBlocker;
 using Content.Shared.CombatMode;
 using Content.Shared.Interaction.Components;
 using Content.Shared.Mech.Components;
+using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Vehicle;
 using Content.Shared.Vehicle.Components;
@@ -32,10 +33,14 @@ public sealed partial class MechBrainCombatSystem : EntitySystem
         brainCombat.AddedBlockMovement = !hadBlockMovement;
         brainCombat.BlockInteraction = existingBlockMovement?.BlockInteraction ?? true;
         brainCombat.AddedCombatMode = !hadCombatMode;
+        brainCombat.AddedInputMover = !HasComp<InputMoverComponent>(uid);
 
         var blockMovement = existingBlockMovement ?? EnsureComp<BlockMovementComponent>(uid);
         blockMovement.BlockInteraction = false;
         Dirty(uid, blockMovement);
+
+        // Контроллер нужен для передачи WASD и согласования камеры с мехом.
+        EnsureComp<InputMoverComponent>(uid);
 
         // Компонент нужен для атак из меха, но установка мозга не включает боевой режим сама.
         var combatMode = EnsureComp<CombatModeComponent>(uid);
@@ -71,6 +76,9 @@ public sealed partial class MechBrainCombatSystem : EntitySystem
             blockMovement.BlockInteraction = brainCombat.BlockInteraction;
             Dirty(uid, blockMovement);
         }
+
+        if (brainCombat.AddedInputMover)
+            RemComp<InputMoverComponent>(uid);
 
         if (removeCombatComponent)
             RemComp<MechBrainCombatComponent>(uid);
