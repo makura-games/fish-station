@@ -35,6 +35,10 @@ public abstract partial class SharedDisposalHolderSystem : EntitySystem
     /// </summary>
     public static readonly Regex TagRegex = new("^[a-zA-Z0-9, ]*$", RegexOptions.Compiled);
 
+    // Sunrise added start - снимок держателей для Update, так как выход в автозагрузчик спавнит новый держатель
+    private readonly List<Entity<DisposalHolderComponent>> _sunriseHolders = new();
+    // Sunrise added end
+
     [SubscribeLocalEvent]
     private void OnComponentStartup(Entity<DisposalHolderComponent> ent, ref ComponentStartup args)
     {
@@ -259,9 +263,20 @@ public abstract partial class SharedDisposalHolderSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
-        var query = EntityQueryEnumerator<DisposalHolderComponent, TransformComponent>();
-        while (query.MoveNext(out var uid, out var holder, out var xform))
+        // Sunrise edit start - перебираем снимок, так как выход в автозагрузчик спавнит новый держатель
+        _sunriseHolders.Clear();
+        var query = EntityQueryEnumerator<DisposalHolderComponent>();
+        while (query.MoveNext(out var holderUid, out var holderComp))
         {
+            _sunriseHolders.Add((holderUid, holderComp));
+        }
+
+        foreach (var (uid, holder) in _sunriseHolders)
+        {
+            if (TerminatingOrDeleted(uid))
+                continue;
+        // Sunrise edit end
+
             // Remove any disposal holders that were somehow emptied
             if (holder.Container?.Count == 0)
             {

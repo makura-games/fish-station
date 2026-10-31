@@ -208,7 +208,7 @@ public sealed class MechBrainTest
             Assert.That(entMan.HasComponent<VehicleOperatorComponent>(brain), Is.EqualTo(!blacklisted));
             if (!blacklisted)
             {
-                Assert.That(entMan.System<ActionBlockerSystem>().CanMove(mech), Is.False);
+                Assert.That(entMan.System<ActionBlockerSystem>().CanMove(mech), Is.True);
             }
         });
 

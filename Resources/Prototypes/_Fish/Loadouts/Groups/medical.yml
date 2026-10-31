@@ -1,0 +1,29 @@
+# Копии групп врача для интерна: без берета и халата ведущего врача,
+# так как его гардероб открыт всем врачам кроме интерна
+
+- type: loadoutGroup
+  id: FishMedicalInternHead
+  name: loadout-group-medical-intern-head
+  minLimit: 0
+  loadouts:
+  - MedicalBeret
+  - MedicalHeadMirror
+  - BlueSurgeryCap
+  - GreenSurgeryCap
+  - PurpleSurgeryCap
+  - NurseHat
+  - SunriseHatRedsoft
+  - SunriseHatOrangesoft
+  - SunriseHatCyansoft
+
+- type: loadoutGroup
+  id: FishMedicalInternOuterClothing
+  name: loadout-group-medical-intern-outerclothing
+  minLimit: 0
+  loadouts:
+  - RegularLabCoat
+  - SunriseWinterColorWhite
+  - SunriseWinterColorRed
+  - SunriseWinterColorGreen
+  - SunriseWinterColorCyan
+  - MedicalDoctorWintercoat

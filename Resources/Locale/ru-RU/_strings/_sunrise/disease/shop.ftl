@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 shop-disease-currency = Очки эволюции
 listing-disease-cough-name = Кашель
 listing-disease-cough-description = Заражённые начинают кашлять.

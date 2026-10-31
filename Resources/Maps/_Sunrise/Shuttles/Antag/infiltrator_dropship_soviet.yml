@@ -1195,7 +1195,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 2.5,-2.5
     - type: Thruster
-      thrust: 1000
+      thrust: 1600000
 - proto: MagazineLightRifleBeltBox
   entities:
   - uid: 96

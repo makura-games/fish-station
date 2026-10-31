@@ -20,10 +20,10 @@
     tags:
     - Kangaroo
     - WhitelistChameleon
-  # Sunrise-Start
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.2
-  # Sunrise-End
+  # Fish-end
 
 - type: entity
   parent: ClothingHandsGlovesBoxingBase
@@ -191,8 +191,10 @@
   components:
   - type: Sprite
     sprite: Clothing/Hands/Gloves/nitrile.rsi
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.4
+  # Fish-end
   - type: Clothing
     sprite: Clothing/Hands/Gloves/nitrile.rsi
   - type: Fiber

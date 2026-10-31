@@ -1,7 +1,7 @@
 using Content.Shared._Sunrise.Animations;
 using Content.Shared.Chat;
 using Content.Shared.Chat.Prototypes;
-using Content.Shared.Climbing.Systems;
+using Content.Shared.Climbing.Components;
 using Content.Shared.Emoting;
 using Content.Shared.Gravity;
 using Content.Shared.Mobs.Systems;
@@ -39,7 +39,6 @@ public abstract partial class SharedJumpSystem : EntitySystem
     [Dependency] private StandingStateSystem _standingState = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private MovementSpeedModifierSystem _movementSpeedModifier = default!;
-    [Dependency] private ClimbSystem _climb = default!;
     [Dependency] private PullingSystem _pulling = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
@@ -205,7 +204,8 @@ public abstract partial class SharedJumpSystem : EntitySystem
         if (HasComp<ThrownItemComponent>(uid))
             return false;
 
-        if (_climb.IsClimbing(uid))
+        if (TryComp<ClimbingComponent>(uid, out var climbing) &&
+            (climbing.IsClimbing || climbing.NextTransition != null || climbing.DoAfter != null))
             return false;
 
         if (_buckle.IsBuckled(uid))

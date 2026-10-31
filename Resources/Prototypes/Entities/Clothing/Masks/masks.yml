@@ -4,9 +4,10 @@
   name: gas mask
   description: A face-covering mask that can be connected to an air supply.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.3
+  # Fish-end
   - type: Sprite
     sprite: Clothing/Mask/gas.rsi
   - type: Clothing
@@ -141,9 +142,10 @@
   name: medical mask
   description: A close-fitting sterile mask that can be connected to an air supply.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.5
+  # Fish-end
   - type: Item
     size: Tiny
   - type: Sprite
@@ -348,7 +350,7 @@
   components:
   - type: Sprite
     sprite: Clothing/Mask/sterile.rsi
-  # Fish-start - Защита от болезни 50%
+  # Fish-start: To remove - защита от болезни 50%
   - type: DiseaseImmuneClothing
     prob: 0.5
   # Fish-end
@@ -395,9 +397,10 @@
   name: plague doctor mask
   description: A bad omen.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.5
+  # Fish-end
   - type: Sprite
     sprite: Clothing/Mask/plaguedoctormask.rsi
   - type: Clothing
@@ -786,9 +789,10 @@
   name: ninja mask
   description: A close-fitting nano-enhanced mask that acts both as an air filter and a post-modern fashion statement.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.3
+  # Fish-end
   - type: Sprite
     sprite: Clothing/Mask/ninja.rsi
   - type: Clothing
