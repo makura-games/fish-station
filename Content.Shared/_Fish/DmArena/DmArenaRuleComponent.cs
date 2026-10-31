@@ -74,6 +74,8 @@ public sealed partial class DmArenaRuleComponent : Component
     // Пресет живёт до конца раунда
     public Dictionary<NetUserId, List<int>> Presets = new();
 
+    public Dictionary<NetUserId, List<int>> LastLoadouts = new();
+
     public TimeSpan NextCleanup;
 
     public Dictionary<NetUserId, TimeSpan> RespawnCooldowns = new();

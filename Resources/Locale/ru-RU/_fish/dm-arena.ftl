@@ -42,6 +42,8 @@ dm-arena-shop-cost = { $cost } оч.
 dm-arena-shop-clear = Сбросить
 dm-arena-shop-preset-save = Сохранить пресет
 dm-arena-shop-preset-load = Загрузить пресет
+dm-arena-shop-last = Прошлый заход
+dm-arena-replaces = Заменит: { $items }
 
 # Предметы и наборы
 dm-arena-item-spear = Урановое копьё

@@ -245,6 +245,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
             rule.Players.Clear();
             rule.Presets.Clear();
+            rule.LastLoadouts.Clear();
             rule.Active = false;
             BroadcastPlayerCount(rule);
         }
@@ -594,6 +595,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         }
 
         rule.Players.Add(GetNetEntity(mob));
+        rule.LastLoadouts[session.UserId] = new List<int>(items);
         _activeEuis.Remove(session);
         BroadcastPlayerCount(rule);
         return true;
@@ -974,7 +976,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     public DmArenaKitEuiState GetLoadoutState(EntityUid ruleEntity, NetUserId userId)
     {
         if (!TryComp<DmArenaRuleComponent>(ruleEntity, out var rule))
-            return new DmArenaKitEuiState(new List<DmArenaStoreOption>(), new List<DmArenaStoreSetOption>(), 0, 0, null, string.Empty);
+            return new DmArenaKitEuiState(new List<DmArenaStoreOption>(), new List<DmArenaStoreSetOption>(), 0, 0, null, null, string.Empty);
 
         var items = rule.ShopItems.Select((item, index) => BuildItemOption(item, index)).ToList();
         var sets = rule.Sets
@@ -983,7 +985,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
             .ToList();
 
         rule.Presets.TryGetValue(userId, out var preset);
-        return new DmArenaKitEuiState(items, sets, rule.Players.Count, rule.Budget, preset, rule.Gear);
+        rule.LastLoadouts.TryGetValue(userId, out var last);
+        return new DmArenaKitEuiState(items, sets, rule.Players.Count, rule.Budget, preset, last, rule.Gear);
     }
 
     private DmArenaStoreOption BuildItemOption(DmArenaStoreItem item, int index)

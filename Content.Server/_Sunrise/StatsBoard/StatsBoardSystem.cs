@@ -4,6 +4,7 @@ using Content.Server.GameTicking;
 using Content.Server.Mind;
 using Content.Server.Station.Systems;
 using Content.Server.Store.Systems;
+using Content.Shared._Fish.DmArena; // Fish-edit
 using Content.Shared._Sunrise.StatsBoard;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Cargo.Components;
@@ -75,7 +76,8 @@ public sealed partial class StatsBoardSystem : EntitySystem
 
     private void OnMindAdded(EntityUid uid, ActorComponent comp, MindAddedMessage ev)
     {
-        if (_statisticEntries.ContainsKey(uid) || ev.Mind.Comp.UserId == null || HasComp<GhostComponent>(uid))
+        if (_statisticEntries.ContainsKey(uid) || ev.Mind.Comp.UserId == null || HasComp<GhostComponent>(uid)
+            || HasComp<DmArenaFighterComponent>(uid)) // Fish-edit
             return;
 
         var value = new StatisticEntry(MetaData(uid).EntityName, ev.Mind.Comp.UserId.Value);

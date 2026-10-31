@@ -42,6 +42,8 @@ dm-arena-shop-cost = { $cost } pts
 dm-arena-shop-clear = Clear cart
 dm-arena-shop-preset-save = Save preset
 dm-arena-shop-preset-load = Load preset
+dm-arena-shop-last = Last run
+dm-arena-replaces = Replaces: { $items }
 
 # Предметы и наборы
 dm-arena-item-spear = Uranium spear
