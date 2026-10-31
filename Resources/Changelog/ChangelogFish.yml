@@ -1284,3 +1284,17 @@
     message: Удалены перчатки полярной звезды и тяжелая броня из конструктора арены.
   id: 129
   url: https://github.com/makura-games/fish-station/pull/585
+- author: KrytoiChuvaaak
+  time: '2026-10-31T22:38:50.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Ручная активация редспейс-импланта теперь засчитывает цель «выжить».
+  id: 130
+  url: https://github.com/makura-games/fish-station/pull/576
+- author: ВАШЕ_ИМЯ
+  time: '2026-10-31T22:39:36.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фикс РМ с ПИИ в мехах на шаттле
+  id: 131
+  url: https://github.com/makura-games/fish-station/pull/588
