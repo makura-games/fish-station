@@ -1,0 +1,53 @@
+- type: entity
+  name: ert assault sword
+  parent: [ BaseSword, BaseCommandContraband ]
+  id: SunriseERTSword
+  description: An assault sword utilized by Nanotrasen emergency response teams.
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Weapons/Melee/sunrise_ert_sword.rsi
+    state: icon
+  - type: Reflect
+    reflects:
+    - NonEnergy
+    reflectProb: 0.40
+    spread: 90
+  - type: Item
+    size: Ginormous
+  - type: DisarmMalus
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_Sunrise/Items/Handling/sabre_drop.ogg
+  - type: ItemSwitch
+    state: ap
+    states:
+      ap: !type:ItemSwitchState
+        verb: vibroblade-ap
+        sprite:
+          sprite: _Sunrise/Objects/Weapons/Melee/sunrise_ert_sword.rsi
+          state: icon-on
+        components:
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          angle: 0
+          animation: WeaponArcThrust
+          attackRate: 1
+          damage:
+            types:
+              Piercing: 25
+          resistanceBypass: true
+          soundHit:
+            path: /Audio/Weapons/bladeslice.ogg
+      cut: !type:ItemSwitchState
+        verb: vibroblade-cut
+        sprite:
+          sprite: _Sunrise/Objects/Weapons/Melee/sunrise_ert_sword.rsi
+          state: icon
+        components:
+        - type: MeleeWeapon
+          attackRate: 1
+          damage:
+            types:
+              Slash: 40
+          soundHit:
+            path: /Audio/Weapons/bladeslice.ogg
