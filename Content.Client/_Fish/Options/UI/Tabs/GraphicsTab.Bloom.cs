@@ -13,7 +13,7 @@ public sealed partial class GraphicsTab
     private void InitializeFishBloomOptions()
     {
         var enabled = Control.AddOptionCheckBox(FishBloomCVars.Enabled, FishBloomEnabledCheckBox);
-        var strength = Control.AddOptionPercentSlider(FishBloomCVars.Strength, FishBloomStrengthSlider, max: 0.5f);
+        var strength = Control.AddOptionPercentSlider(FishBloomCVars.Strength, FishBloomStrengthSlider);
         var quality = Control.AddOptionDropDown(
             FishBloomCVars.Quality,
             FishBloomQualityDropDown,
