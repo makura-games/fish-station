@@ -57,3 +57,14 @@
   cost: 10000
   category: cargoproduct-category-name-science
   group: market
+
+# Fish-edit — стартовый ящик ксенобиологии (не кладёт лабораторию на карту)
+- type: cargoProduct
+  id: FishXenobiologyLab
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: FishXenobiologyLabCrateFish
+  cost: 7500
+  category: cargoproduct-category-name-science
+  group: market
