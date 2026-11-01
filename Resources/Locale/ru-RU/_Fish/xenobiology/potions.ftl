@@ -13,7 +13,13 @@ fish-slime-potion-speed = Слайм перегревается и дрожит 
 fish-slime-potion-speed-hot = Слайм уже перегрет.
 fish-slime-potion-fireproof = Одежда покрыта огнезащитой.
 fish-slime-potion-oil-slick = Предмет становится опасно скользким.
-fish-slime-potion-not-implemented = Это зелье ещё не полностью перенесено.
+fish-slime-potion-sentience = Существо можно занять через призраков.
+fish-slime-potion-sentience-has-mind = У этой сущности уже есть разум.
+fish-slime-potion-sentience-role-desc = Вы можете стать {$name}.
+fish-slime-potion-transference = Сознание перескакивает в новое тело.
+fish-slime-potion-transference-no-mind = Для переноса нужен свой разум.
+fish-slime-potion-transference-invalid = Эта цель не может принять ваш разум.
+fish-slime-potion-transference-slime = Перенос — на животное, не на слайма напрямую.
 
 ent-FishSlimePotionStabilizerFish = стабилизатор слайма
     .desc = Снижает шанс мутации. На трупах и не-слаймах не работает.
