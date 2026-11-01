@@ -3,6 +3,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Robust.Shared.Random;
 
 namespace Content.Server._Fish.Xenobiology.Organs;
 
@@ -13,6 +14,16 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
 {
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private IRobustRandom _random = default!;
+
+    private static readonly string[] DefaultOrgans =
+    [
+        "FishXenoOrganRegenerativeFish",
+        "FishXenoOrganToxicFish",
+        "FishXenoOrganSinewFish",
+        "FishXenoOrganVigorFish",
+        "FishXenoOrganAntitoxinFish",
+    ];
 
     public override void Initialize()
     {
@@ -51,6 +62,9 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
         if (id.Contains("Carp", StringComparison.OrdinalIgnoreCase))
             return "FishXenoOrganSinewFish";
 
-        return "FishXenoOrganRegenerativeFish";
+        if (id.Contains("Monkey", StringComparison.OrdinalIgnoreCase))
+            return _random.Pick(DefaultOrgans);
+
+        return _random.Pick(DefaultOrgans);
     }
 }
