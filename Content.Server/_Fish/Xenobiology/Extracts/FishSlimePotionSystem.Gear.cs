@@ -1,3 +1,4 @@
+using Content.Shared._Sunrise.Modsuit;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Item;
@@ -38,7 +39,16 @@ public sealed partial class FishSlimePotionSystem
             return;
 
         if (HasComp<ClothingComponent>(target))
+        {
+            if (TryComp<ModsuitComponent>(target, out var mod) && mod.IsActivated)
+            {
+                args.Handled = true;
+                _popup.PopupEntity(Loc.GetString("fish-slime-potion-oil-slick-mod"), args.User, args.User);
+                return;
+            }
+
             return;
+        }
 
         args.Handled = true;
         EnsureComp<StepTriggerComponent>(target);
