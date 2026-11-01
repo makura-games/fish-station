@@ -1,11 +1,11 @@
 namespace Content.Server._Fish.Xenobiology.Extracts;
 
 /// <summary>
-/// Общий кап мобов от gold plasma crit (паритет SS220, точное число в оригинале не найдено).
+/// Общий кап мобов от gold extract (Paradise MAX_GOLD_CORE_MOBS = 45).
 /// </summary>
 public static class FishSlimeExtractGoldMobCap
 {
-    public const int MaxActive = 15;
+    public const int MaxActive = FishSlimeExtractGoldCritPools.MaxActive;
 
     public static int ActiveCount;
 
