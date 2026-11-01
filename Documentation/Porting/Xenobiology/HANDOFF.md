@@ -4,7 +4,7 @@
 
 Ветка: `feature/ss220-xenobiology` на `Pythagorius-cra/fish-station-mane`.
 Единственный PR: https://github.com/Pythagorius-cra/fish-station-mane/pull/6 (draft, base `master` форка). В `makura-games/fish-station` PR не открывать, пока об этом не попросят.
-Tip на момент хендоффа: `889e856a64`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
+Tip на момент хендоффа: `802a333ae8`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
 
 Не трогать чужие ветки: `feature/restore-original-music-player`, `feature/ss13-mining-system`, `feature/ss1984-crit-behavior`, `feature/clockwork-cult`, `fish/game-improvements-package`.
 
@@ -38,6 +38,7 @@ Tip на момент хендоффа: `889e856a64`. Upstream-база наре
 | `8d5b43fac0` | gold carp + crit-кап; sentience остывание; анализатор 3/тип; органы Vigor/Antitoxin | сборку/YAML не гоняли |
 | `1c5c57127e` | gold crit roster; oil slick vs активный MOD; tech disk с анализатора; импланты органов; таблица диссекции | сборку/YAML не гоняли |
 | `889e856a64` | regen_mesh; gold hostile roster расширен; HeatResist орган/импланты; диссекция DM-строки | сборку/YAML не гоняли |
+| `802a333ae8` | Paradise gold crit (кап 45, delay 5s, пулы); organ uniques EMP/adrenaline/slime skin | сборку/YAML не гоняли |
 
 Сборка и тест — только то, что в таблице. YAML-линтер после расширения `potions.yml` не запускался. В игре цикл не гонялся.
 
