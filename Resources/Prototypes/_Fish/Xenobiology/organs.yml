@@ -38,18 +38,26 @@
     state: heart
   - type: Item
   - type: FishXenoOrgan
+  - type: FishXenoOrganEffect
+    kind: Regenerative
 
 - type: entity
   parent: FishXenoOrganRegenerativeFish
   id: FishXenoOrganToxicFish
   name: toxic xenOrgan
   suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: Toxic
 
 - type: entity
   parent: FishXenoOrganRegenerativeFish
   id: FishXenoOrganSinewFish
   name: sinew xenOrgan
   suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: Sinew
 
 - type: entity
   parent: [ BaseMachinePowered, StructureHealthMachineWeak ]
