@@ -4,6 +4,7 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Robust.Shared.Timing;
 
@@ -20,6 +21,9 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedSolutionContainerSystem _solutions = default!;
+    [Dependency] private MovementSpeedModifierSystem _movement = default!;
+
+    private TimeSpan _nextRegenTick;
 
     public override void Initialize()
     {
@@ -45,13 +49,34 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        if (_timing.CurTime >= _nextRegenTick)
+        {
+            _nextRegenTick = _timing.CurTime + TimeSpan.FromSeconds(5);
+            TickRegenerativeBuffs();
+        }
+
         var query = EntityQueryEnumerator<FishXenoOrganBuffComponent>();
         while (query.MoveNext(out var uid, out var buff))
         {
             if (_timing.CurTime < buff.EndsAt)
                 continue;
 
+            if (buff.Kind == FishXenoOrganEffectKind.Vigor)
+                _movement.RefreshMovementSpeedModifiers(uid);
+
             RemComp<FishXenoOrganBuffComponent>(uid);
+        }
+    }
+
+    private void TickRegenerativeBuffs()
+    {
+        var query = EntityQueryEnumerator<FishXenoOrganBuffComponent>();
+        while (query.MoveNext(out var uid, out var buff))
+        {
+            if (_timing.CurTime >= buff.EndsAt || buff.Kind != FishXenoOrganEffectKind.Regenerative)
+                continue;
+
+            _damage.TryChangeDamage(uid, Heal("Blunt", 2));
         }
     }
 
@@ -73,6 +98,13 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
                 break;
             case FishXenoOrganEffectKind.Sinew:
                 _damage.TryChangeDamage(target, Heal("Slash", 4));
+                break;
+            case FishXenoOrganEffectKind.Vigor:
+                _movement.RefreshMovementSpeedModifiers(target);
+                break;
+            case FishXenoOrganEffectKind.Antitoxin:
+                if (_solutions.TryGetInjectableSolution(target, out var antSoln, out _))
+                    _solutions.TryAddReagent(antSoln, "Dylovene", FixedPoint2.New(8));
                 break;
         }
     }
