@@ -307,8 +307,13 @@ namespace Content.Server.Atmos.EntitySystems
             }
             else
             {
+                // Fish-start: синхронизируем OnFire с клиентом только при смене состояния
+                var wasOnFire = flammable.OnFire;
                 flammable.OnFire |= ignite;
                 UpdateAppearance(uid, flammable);
+                if (flammable.OnFire != wasOnFire)
+                    Dirty(uid, flammable);
+                // Fish-end
             }
         }
 
@@ -351,6 +356,7 @@ namespace Content.Server.Atmos.EntitySystems
             RaiseLocalEvent(ent, ref extinguished);
 
             UpdateAppearance(ent, ent.Comp);
+            Dirty(ent); // Fish-edit: клиент должен увидеть тушение
             return true;
         }
 
@@ -375,6 +381,7 @@ namespace Content.Server.Atmos.EntitySystems
 
                 var extinguished = new IgnitedEvent();
                 RaiseLocalEvent(uid, ref extinguished);
+                Dirty(uid, flammable); // Fish-edit: клиент должен увидеть поджог
             }
 
             UpdateAppearance(uid, flammable);

@@ -1,0 +1,22 @@
+# Fish-start: атропин — лечение сердечной недостаточности
+- type: reagent
+  id: FishAtropine
+  name: reagent-name-fish-atropine
+  group: Medicine
+  desc: reagent-desc-fish-atropine
+  physicalDesc: reagent-physical-desc-opaque
+  flavor: medicine
+  color: "#1a1a2e"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Asphyxiation: -1
+            Poison: -0.5
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectStunned
+        time: 1
+        type: Remove
+# Fish-end

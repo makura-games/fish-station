@@ -265,3 +265,7 @@
   - type: CritHeartbeat
   - type: PetOnInteract
   # Sunrise-End
+  # Fish-start: Crit + Character Reactions (боль/кровь/огонь/гранаты)
+  - type: FishComplexCrit
+  - type: FishCharacterReactions
+  # Fish-end
