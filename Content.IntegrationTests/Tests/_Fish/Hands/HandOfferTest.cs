@@ -82,6 +82,8 @@ public sealed class HandOfferTest : GameTest
 
             Assert.That(hands.TryDrop(giver, item));
             Assert.That(FindVerb(verbs, giver, receiver), Is.Null);
+            Assert.That(entMan.HasComponent<HandOfferComponent>(giver), Is.False,
+                "Предложение осталось после того, как предмет покинул руки");
         });
     }
 
