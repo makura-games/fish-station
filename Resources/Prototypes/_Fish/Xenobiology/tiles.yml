@@ -1,0 +1,10 @@
+# Fish-edit - плитка блюспейса для реакции экстракта (высокое трение — позже)
+- type: entity
+  parent: FloorTileItemSepia
+  id: FishXenobiologyBluespaceTileFish
+  name: bluespace floor tile
+  description: A floor tile with strange friction properties. Place it like sepia tiles.
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: "#4af"
