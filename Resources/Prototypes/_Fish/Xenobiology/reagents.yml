@@ -1,0 +1,12 @@
+- type: reagent
+  id: FishVirusGenesFish
+  name: reagent-name-fish-virus-genes
+  group: Biological
+  desc: reagent-desc-fish-virus-genes
+  physicalDesc: reagent-physical-desc-viscous
+  flavor: bitter
+  color: "#5a2a5a"
+  metabolisms:
+    Bloodstream:
+      metabolismRate: 0.1
+      effects: []
