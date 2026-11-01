@@ -28,6 +28,7 @@ public sealed partial class FishSlimePotionSystem : EntitySystem
         SubscribeLocalEvent<FishSlimeExtractComponent, InteractUsingEvent>(OnExtractInteractUsing);
         SubscribeLocalEvent<ClothingComponent, InteractUsingEvent>(OnClothingInteractUsing);
         SubscribeLocalEvent<ItemComponent, InteractUsingEvent>(OnItemInteractUsing);
+        SubscribeLocalEvent<SentienceTargetComponent, InteractUsingEvent>(OnSentienceTargetInteract);
     }
 
     private void OnSlimeInteractUsing(Entity<FishSlimeComponent> slime, ref InteractUsingEvent args)
@@ -59,8 +60,9 @@ public sealed partial class FishSlimePotionSystem : EntitySystem
             case FishSlimePotionKind.Speed:
                 return ApplySpeed(slime, user, potion);
             case FishSlimePotionKind.Sentience:
+                return ApplySentienceOnSlime(slime, user, potion);
             case FishSlimePotionKind.Transference:
-                _popup.PopupEntity(Loc.GetString("fish-slime-potion-not-implemented"), user, user);
+                _popup.PopupEntity(Loc.GetString("fish-slime-potion-transference-slime"), user, user);
                 return false;
             default:
                 return false;
