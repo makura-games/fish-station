@@ -10,6 +10,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Xenobiology.Extracts;
 
@@ -20,6 +21,7 @@ public sealed partial class FishSlimePotionSystem
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private ExplosionSystem _explosion = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private void OnSentienceTargetInteract(Entity<SentienceTargetComponent> target, ref InteractUsingEvent args)
     {
@@ -81,6 +83,7 @@ public sealed partial class FishSlimePotionSystem
     {
         var warm = EnsureComp<FishSlimeSentiencePotionComponent>(potion);
         warm.WarmStage++;
+        warm.LastWarmChange = _timing.CurTime;
         Dirty(potion, warm);
 
         if (warm.WarmStage >= 3)
