@@ -228,9 +228,10 @@ public sealed class FishBloomOverlayTest
     [TestCase(0f, 0f)]
     [TestCase(-1f, 0f)]
     [TestCase(float.NaN, 0f)]
-    [TestCase(0.4f, 1.4f)]
-    [TestCase(1f, 5f)]
-    [TestCase(2f, 5f)]
+    [TestCase(0.4f, 0.7f)]
+    [TestCase(0.8f, 1.8f)]
+    [TestCase(1f, 2.5f)]
+    [TestCase(2f, 2.5f)]
     public void BloomStrengthUsesPerceptualCurve(float configured, float expected)
     {
         Assert.That(FishBloomOverlay.GetBloomStrength(configured), Is.EqualTo(expected).Within(0.0001f));
