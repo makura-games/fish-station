@@ -47,6 +47,11 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
         "DrinkGlass", "DrinkWaterBottleFull", "DrinkColaCan", "DrinkSodaWaterCan",
     ];
 
+    private static readonly string[] CeruleanBlueprints =
+    [
+        "BlueprintFulton", "BlueprintSeismicCharge", "BlueprintDoubleEmergencyTank",
+    ];
+
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -161,7 +166,7 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
                 {
                     var coords = _transform.GetMapCoordinates(ent);
                     for (var i = 0; i < 5; i++)
-                        Spawn("MobSpiderAngryBase", coords);
+                        TagGoldCrit(Spawn("MobSpiderAngryBase", coords));
                 }))
                 FishSlimeExtractGoldMobCap.Release(5);
             else
@@ -252,13 +257,18 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     private void TryCeruleanBlood(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
     {
         _extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
-            SpawnNextToOrDrop("TechnologyDisk", ent));
+            SpawnNextToOrDrop(_random.Pick(CeruleanBlueprints), ent));
+    }
+
+    private void TagGoldCrit(EntityUid mob)
+    {
+        EnsureComp<FishSlimeExtractGoldCritComponent>(mob).CapWeight = 1;
     }
 
     private void TryBlackBlood(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
     {
         _extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
-            _solutions.TryAddReagent(soln, "Toxin", One));
+            _solutions.TryAddReagent(soln, "FishVirusGenesFish", One));
     }
 
     private void TryOilPlasma(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
