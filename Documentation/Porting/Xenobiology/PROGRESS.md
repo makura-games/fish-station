@@ -2,12 +2,14 @@
 
 ## Слаймы (секции 1–2)
 
-Последний SHA: `f34a11319c`.
+Последний SHA: `0fba437668` (паралич при T0C−40).
 
-Есть: 22 цвета, малыш/взрослый, голод и пороги роста, деление на 4 по таблице SS220, смерть взрослого (малыш + бешеный малыш), присасывание (не более одного слайма на жертву), плазма (5 листов), вода (`rand(10,15) * объём`), огонь лечит, холод замедляет, EMP сбрасывает заряд.
+Есть: 22 цвета, малыш/взрослый, голод и пороги роста, деление на 4 по таблице SS220, смерть взрослого (малыш + бешеный малыш), присасывание (один слайм на жертву), плазма (5 листов), вода (`rand(10,15) * объём`), огонь лечит, холод (замедление + паралич пока ≤ T0C−40), EMP сбрасывает заряд.
 
-Каркас экстракта в ветке (`be2c775c6f`), реакций пока нет — не мой шаг сегодня.
+Каркас экстракта в ветке (`be2c775c6f`), реакций нет.
 
-Сборка: `dotnet build Content.Server/Content.Server.csproj --configuration Debug --verbosity quiet --no-restore` — succeeded (после присоски).
+Сборка: `dotnet build Content.Server/Content.Server.csproj --configuration Debug --verbosity quiet --no-restore` — succeeded.
 
-Юнит: `dotnet test Content.Tests/Content.Tests.csproj --configuration Debug --filter FullyQualifiedName~FishSlimeMutationTest` — Passed 7, Failed 0. YAML-линтер не запускался. В игре не проверялось.
+Юнит: `dotnet test Content.Tests/Content.Tests.csproj --configuration Debug --filter FullyQualifiedName~FishSlimeMutationTest` — Passed 7, Failed 0.
+
+YAML: `dotnet run --project Content.YAMLLinter/Content.YAMLLinter.csproj --configuration Release --no-build` — No errors found (~54 с). В игре не проверялось.
