@@ -88,7 +88,7 @@ public sealed partial class FishSlimeSystem : EntitySystem
         var query = EntityQueryEnumerator<FishSlimeComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var slime, out _))
         {
-            if (slime.DeathHandled)
+            if (slime.DeathHandled || HasComp<FishSlimePenStoredComponent>(uid))
                 continue;
 
             if (slime.NextAi <= now)
