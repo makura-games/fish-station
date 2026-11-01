@@ -19,6 +19,7 @@ using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Speech.Components;
 using Content.Shared.Stacks;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Stunnable;
 using Content.Shared.Temperature;
 using Content.Shared.Verbs;
@@ -43,6 +44,8 @@ public sealed partial class FishSlimeSystem : EntitySystem
         "fish-slime-speech-blorble",
     ];
 
+    private static readonly TimeSpan FrozenParalyzeDuration = TimeSpan.FromSeconds(4);
+
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ChatSystem _chat = default!;
@@ -56,6 +59,7 @@ public sealed partial class FishSlimeSystem : EntitySystem
     [Dependency] private SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private SharedStunSystem _stun = default!;
+    [Dependency] private StatusEffectsSystem _status = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
@@ -262,14 +266,15 @@ public sealed partial class FishSlimeSystem : EntitySystem
         ent.Comp.AmbientTemperature = args.CurrentTemperature;
         var frozen = args.CurrentTemperature <= Atmospherics.T0C - 40f;
         if (frozen && !wasFrozen)
-        {
-            _stun.TryAddParalyzeDuration(ent, TimeSpan.FromSeconds(3));
             _popup.PopupEntity(Loc.GetString("fish-slime-frozen"), ent, ent);
-        }
         else if (!frozen && wasFrozen)
         {
+            _status.TryRemoveStatusEffect(ent, SharedStunSystem.StunId);
             _popup.PopupEntity(Loc.GetString("fish-slime-thawed"), ent, ent);
         }
+
+        if (frozen)
+            RefreshFrozenParalyze(ent);
 
         _movement.RefreshMovementSpeedModifiers(ent.Owner);
         Dirty(ent);
@@ -316,6 +321,9 @@ public sealed partial class FishSlimeSystem : EntitySystem
 
         var slime = ent.Comp;
         UpdateReagentSlow(ent);
+
+        if (slime.AmbientTemperature <= Atmospherics.T0C - 40f)
+            RefreshFrozenParalyze(ent);
 
         if (slime.AmbientTemperature <= Atmospherics.T0C - 50f)
             Hurt(ent, "Blunt", Math.Clamp((int) ((Atmospherics.T0C - 50f - slime.AmbientTemperature) / 10f), 1, 20));
@@ -687,6 +695,15 @@ public sealed partial class FishSlimeSystem : EntitySystem
         return SpeechKeys[idleIndex % SpeechKeys.Length];
     }
 
+    // Fish-edit: паралич держится, пока температура не выше T0C−40.
+    private void RefreshFrozenParalyze(Entity<FishSlimeComponent> ent)
+    {
+        if (!_mobState.IsAlive(ent))
+            return;
+
+        _stun.TryUpdateParalyzeDuration(ent, FrozenParalyzeDuration);
+    }
+
     private void Hurt(EntityUid uid, string type, FixedPoint2 amount)
     {
         if (amount == 0 || !StillThere(uid))
@@ -717,9 +734,10 @@ public sealed partial class FishSlimeSystem : EntitySystem
 
     private void Nudge(EntityUid uid, Vector2 delta)
     {
-        if (!StillThere(uid) || !TryComp<TransformComponent>(uid, out var xform))
+        if (!StillThere(uid))
             return;
 
+        var xform = Transform(uid);
         _transform.SetWorldPosition((uid, xform), _transform.GetWorldPosition(uid) + delta);
     }
 
