@@ -106,6 +106,8 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
                 if (_solutions.TryGetInjectableSolution(target, out var antSoln, out _))
                     _solutions.TryAddReagent(antSoln, "Dylovene", FixedPoint2.New(8));
                 break;
+            case FishXenoOrganEffectKind.HeatResist:
+                break;
         }
     }
 
