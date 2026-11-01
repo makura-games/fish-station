@@ -5,6 +5,7 @@ fish-slime-extract-enhanced = You apply the enhancer. The extract can be used on
 fish-slime-extract-enhance-full = You cannot enhance this extract further!
 fish-slime-extract-react = The solution begins to bubble.
 fish-slime-extract-spent = {CAPITALIZE(THE($extract))}'s power is consumed in the reaction.
+fish-slime-extract-gold-cap = Too many critters are already loose from gold extracts!
 
 ent-FishSlimeExtractBase = slime extract
     .desc = Goo extracted from a slime. Legends claim it has strange powers.
@@ -96,4 +97,8 @@ ent-FishSlimeExtractPyrite = pyrite slime extract
 
 ent-FishSlimeExtractRainbow = rainbow slime extract
     .desc = A rainbow slime core. Plasma births a random slime. Blood a transference potion.
+    .suffix = Fish
+
+ent-FishXenobiologyBluespaceTileFish = bluespace floor tile
+    .desc = A floor tile with strange friction properties. Place it like sepia tiles.
     .suffix = Fish
