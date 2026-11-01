@@ -155,6 +155,7 @@ public sealed partial class FishSlimePotionSystem : EntitySystem
     private void Finish(Entity<FishSlimeComponent> slime, EntityUid user, EntityUid potion, string locId)
     {
         _popup.PopupEntity(Loc.GetString(locId), slime, user);
-        QueueDel(potion);
+        if (potion != EntityUid.Invalid)
+            QueueDel(potion);
     }
 }
