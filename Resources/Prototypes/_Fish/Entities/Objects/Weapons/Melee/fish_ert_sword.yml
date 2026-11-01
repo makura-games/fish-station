@@ -1,11 +1,12 @@
 - type: entity
   name: ert assault sword
   parent: [ BaseSword, BaseCommandContraband ]
-  id: SunriseERTSword
+  id: FishERTSword
+  suffix: FISH
   description: An assault sword utilized by Nanotrasen emergency response teams.
   components:
   - type: Sprite
-    sprite: _Sunrise/Objects/Weapons/Melee/sunrise_ert_sword.rsi
+    sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
     state: icon
   - type: Reflect
     reflects:
@@ -24,7 +25,7 @@
       ap: !type:ItemSwitchState
         verb: vibroblade-ap
         sprite:
-          sprite: _Sunrise/Objects/Weapons/Melee/sunrise_ert_sword.rsi
+          sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
           state: icon-on
         components:
         - type: MeleeWeapon
@@ -41,7 +42,7 @@
       cut: !type:ItemSwitchState
         verb: vibroblade-cut
         sprite:
-          sprite: _Sunrise/Objects/Weapons/Melee/sunrise_ert_sword.rsi
+          sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
           state: icon
         components:
         - type: MeleeWeapon
