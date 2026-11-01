@@ -20,6 +20,9 @@ fish-slime-potion-transference = Your consciousness jumps into the new body.
 fish-slime-potion-transference-no-mind = You need a mind to transfer.
 fish-slime-potion-transference-invalid = That target cannot receive your mind.
 fish-slime-potion-transference-slime = Use transference on an animal, not directly on a slime.
+fish-slime-potion-sentience-raffle = Ghosts are being polled for ten seconds…
+fish-slime-potion-sentience-warm = The sentience potion heats up ({$stage}/3)…
+fish-slime-potion-sentience-boom = The overheated potion explodes!
 
 ent-FishSlimePotionStabilizerFish = slime stabilizer
     .desc = Lowers a slime's mutation chance. Useless on corpses and non-slimes.
