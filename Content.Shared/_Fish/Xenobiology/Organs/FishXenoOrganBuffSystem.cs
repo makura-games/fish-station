@@ -31,10 +31,29 @@ public sealed partial class FishXenoOrganBuffSystem : EntitySystem
 
     private void OnDamageModify(EntityUid uid, FishXenoOrganBuffComponent buff, DamageModifyEvent args)
     {
-        if (_timing.CurTime >= buff.EndsAt || buff.Kind != FishXenoOrganEffectKind.HeatResist)
+        if (_timing.CurTime >= buff.EndsAt)
             return;
 
-        if (args.Damage.DamageDict.TryGetValue("Heat", out var heat) && heat > FixedPoint2.Zero)
+        if (buff.Kind == FishXenoOrganEffectKind.HeatResist
+            && args.Damage.DamageDict.TryGetValue("Heat", out var heat)
+            && heat > FixedPoint2.Zero)
+        {
             args.Damage.DamageDict["Heat"] = heat * 0.5f;
+        }
+
+        if (buff.Kind == FishXenoOrganEffectKind.SlimeSkin)
+        {
+            ScaleDamageType(args.Damage, "Blunt", 0.75f);
+            ScaleDamageType(args.Damage, "Slash", 0.75f);
+            ScaleDamageType(args.Damage, "Piercing", 0.85f);
+        }
+    }
+
+    private static void ScaleDamageType(DamageSpecifier damage, string type, float scale)
+    {
+        if (!damage.DamageDict.TryGetValue(type, out var amount) || amount <= FixedPoint2.Zero)
+            return;
+
+        damage.DamageDict[type] = amount * scale;
     }
 }
