@@ -13,6 +13,7 @@ fish-slime-potion-speed = The slime overheats and jitters with energy.
 fish-slime-potion-speed-hot = The slime is already overheated.
 fish-slime-potion-fireproof = The clothing is coated against fire.
 fish-slime-potion-oil-slick = The item becomes dangerously slippery.
+fish-slime-potion-oil-slick-mod = You can't coat an active MOD suit with oil slick.
 fish-slime-potion-sentience = The creature can now be taken over by ghosts.
 fish-slime-potion-sentience-has-mind = That creature already has a mind.
 fish-slime-potion-sentience-role-desc = You could become {$name}.
