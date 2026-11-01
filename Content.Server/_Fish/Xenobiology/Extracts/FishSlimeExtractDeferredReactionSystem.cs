@@ -174,15 +174,11 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
         }
 
         if (_extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
-            {
-                var coords = _transform.GetMapCoordinates(ent);
-                for (var i = 0; i < 3; i++)
-                    Spawn("MobCarp", coords);
-            }))
+                SpawnGoldCritMob(ent, 3, "MobCarp")))
             return;
 
         _extracts.TryPerformReaction(ent, soln, solution, "Water", One, () =>
-            Spawn("MobCarp", _transform.GetMapCoordinates(ent)));
+            SpawnGoldCritMob(ent, 1, "MobCarp"));
     }
 
     private void TrySilver(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
@@ -258,6 +254,20 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     {
         _extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
             SpawnNextToOrDrop(_random.Pick(CeruleanBlueprints), ent));
+    }
+
+    private void SpawnGoldCritMob(Entity<FishSlimeExtractComponent> ent, int count, string proto)
+    {
+        if (!FishSlimeExtractGoldMobCap.TryReserve(count))
+        {
+            if (ent.Comp.LastInjector is { } user)
+                _popup.PopupEntity(Loc.GetString("fish-slime-extract-gold-cap"), ent, user);
+            return;
+        }
+
+        var coords = _transform.GetMapCoordinates(ent);
+        for (var i = 0; i < count; i++)
+            TagGoldCrit(Spawn(proto, coords));
     }
 
     private void TagGoldCrit(EntityUid mob)
