@@ -40,7 +40,7 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
             return;
 
         args.Handled = true;
-        ApplyBuff(args.User, effect.Kind);
+        ApplyOrganEffect(args.User, effect.Kind, BuffDuration);
         _popup.PopupEntity(Loc.GetString("fish-xeno-organ-used"), args.User, args.User);
         QueueDel(organ);
     }
@@ -80,11 +80,11 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
         }
     }
 
-    private void ApplyBuff(EntityUid target, FishXenoOrganEffectKind kind)
+    public void ApplyOrganEffect(EntityUid target, FishXenoOrganEffectKind kind, TimeSpan duration)
     {
         var buff = EnsureComp<FishXenoOrganBuffComponent>(target);
         buff.Kind = kind;
-        buff.EndsAt = _timing.CurTime + BuffDuration;
+        buff.EndsAt = _timing.CurTime + duration;
         Dirty(target, buff);
 
         switch (kind)
