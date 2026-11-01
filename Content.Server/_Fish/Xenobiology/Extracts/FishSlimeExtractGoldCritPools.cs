@@ -3,10 +3,17 @@ using Robust.Shared.Random;
 namespace Content.Server._Fish.Xenobiology.Extracts;
 
 /// <summary>
-/// Пул мобов gold crit (упрощённый roster SS220: враждебные / нейтральные / дружелюбный).
+/// Пулы gold crit — соответствие Paradise HOSTILE_SPAWN / lesser / FRIENDLY_SPAWN на прототипы SS14.
 /// </summary>
 public static class FishSlimeExtractGoldCritPools
 {
+    /// <summary>Paradise MAX_GOLD_CORE_MOBS.</summary>
+    public const int MaxActive = 45;
+
+    /// <summary>Paradise addtimer 50 deciseconds.</summary>
+    public static readonly TimeSpan SpawnDelay = TimeSpan.FromSeconds(5);
+
+    /// <summary>Plasma — «Gold Slime», 5× HOSTILE_SPAWN.</summary>
     public static readonly string[] HostilePlasma =
     [
         "MobSpiderAngryBase",
@@ -14,22 +21,39 @@ public static class FishSlimeExtractGoldCritPools
         "MobSpiderSpaceSalvage",
         "MobBearSpace",
         "MobBearSpaceSalvage",
+        "MobHivebot",
         "MobGoliath",
         "MobHivelord",
-        "MobHivebot",
         "MobWatcherLavaland",
         "MobWatcherIcewing",
         "MobWatcherMagmawing",
         "MobHellspawn",
         "MobFleshGolem",
         "MobAbomination",
+        "MobCarp",
     ];
 
-    public const string NeutralBlood = "FishXenoGoldCritNeutralCarpFish";
-    public const string FriendlyWater = "FishXenoGoldCritFriendlyCarpFish";
+    /// <summary>Blood — «Lesser Gold Slime», 3× (не агрессивны сразу).</summary>
+    public static readonly string[] LesserBlood =
+    [
+        "FishXenoGoldCritNeutralCarpFish",
+        "FishXenoGoldCritLesserMagicarpFish",
+        "FishXenoGoldCritLesserHolocarpFish",
+        "MobCarpMagic",
+        "MobCarpHolo",
+    ];
 
-    public static string PickHostile(IRobustRandom random)
-    {
-        return random.Pick(HostilePlasma);
-    }
+    /// <summary>Water — «Friendly Gold Slime», 1× FRIENDLY_SPAWN.</summary>
+    public static readonly string[] FriendlyWater =
+    [
+        "FishXenoGoldCritFriendlyCarpFish",
+        "FishXenoGoldCritFriendlyCatFish",
+        "FishXenoGoldCritFriendlyPenguinFish",
+    ];
+
+    public static string PickHostile(IRobustRandom random) => random.Pick(HostilePlasma);
+
+    public static string PickLesser(IRobustRandom random) => random.Pick(LesserBlood);
+
+    public static string PickFriendly(IRobustRandom random) => random.Pick(FriendlyWater);
 }
