@@ -1,0 +1,30 @@
+# Fish-edit — консоль ксенобиологии (без камерного глаза)
+- type: entity
+  parent: BaseComputerAiAccess
+  id: FishXenobiologyConsoleFish
+  name: xenobiology console
+  description: Stores slimes, ejects monkeys from cubes, and feeds loaded potions. Works in a radius around the console.
+  suffix: Fish
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: rdcomp
+    - map: ["computerLayerKeys"]
+      state: rd_key
+  - type: AccessReader
+    access: [["Research"]]
+  - type: ActivatableUI
+    key: enum.FishXenobiologyConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FishXenobiologyConsoleUiKey.Key:
+        type: FishXenobiologyConsoleBoundUserInterface
+  - type: FishXenobiologyConsole
