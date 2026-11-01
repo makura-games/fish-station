@@ -11,6 +11,7 @@ fish-xeno-analyzer-type-limit = This analyzer already scanned this organ type th
 fish-xeno-analyzer-busy = The analyzer is busy.
 fish-xeno-analyzer-start = Scanning xenOrgan…
 fish-xeno-analyzer-finished = Scan complete. {$points} research points added.
+fish-xeno-analyzer-tech-disk = The analyzer prints a technology disk.
 fish-xeno-organ-used = You feel the xenOrgan's effect.
 
 ent-FishXenoDissectorFish = xenobiology dissector
@@ -32,6 +33,21 @@ ent-FishXenoOrganVigorFish = vigor xenOrgan
     .suffix = Fish
 
 ent-FishXenoOrganAntitoxinFish = antitoxin xenOrgan
+    .suffix = Fish
+
+ent-FishXenoOrganImplantRegenerativeFish = regenerative xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantToxicFish = toxic xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantVigorFish = vigor xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoGoldCritNeutralCarpFish = neutral space carp
+    .suffix = Fish
+
+ent-FishXenoGoldCritFriendlyCarpFish = friendly space carp
     .suffix = Fish
 
 ent-FishXenobiologyOrganAnalyzerFish = xenOrgan analyzer
