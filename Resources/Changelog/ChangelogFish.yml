@@ -1284,3 +1284,33 @@
     message: Удалены перчатки полярной звезды и тяжелая броня из конструктора арены.
   id: 129
   url: https://github.com/makura-games/fish-station/pull/585
+- author: KrytoiChuvaaak
+  time: '2026-10-31T22:38:50.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Ручная активация редспейс-импланта теперь засчитывает цель «выжить».
+  id: 130
+  url: https://github.com/makura-games/fish-station/pull/576
+- author: ВАШЕ_ИМЯ
+  time: '2026-10-31T22:39:36.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фикс РМ с ПИИ в мехах на шаттле
+  id: 131
+  url: https://github.com/makura-games/fish-station/pull/588
+- author: dan4ikk3
+  time: '2026-10-31T22:50:22.0000000+00:00'
+  changes:
+  - type: Fix
+    message: За ГЦК теперь можно зайти(навреное?)
+  id: 132
+  url: https://github.com/makura-games/fish-station/pull/590
+- author: Pythagorius-cra
+  time: '2026-10-31T23:02:58.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Музыкальный автомат снова работает как оригинальный jukebox SS14, а не как пустой кассетник без кассет.
+  - type: Add
+    message: В jukebox добавлен большой список лицензированных треков SS13/SS14 и полный каталог A-Guy.
+  id: 133
+  url: https://github.com/makura-games/fish-station/pull/584
