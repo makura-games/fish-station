@@ -166,7 +166,7 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
                 {
                     var coords = _transform.GetMapCoordinates(ent);
                     for (var i = 0; i < 5; i++)
-                        TagGoldCrit(Spawn("MobSpiderAngryBase", coords));
+                        TagGoldCrit(Spawn(FishSlimeExtractGoldCritPools.PickHostile(_random), coords));
                 }))
                 FishSlimeExtractGoldMobCap.Release(5);
             else
@@ -174,11 +174,11 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
         }
 
         if (_extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
-                SpawnGoldCritMob(ent, 3, "MobCarp")))
+                SpawnGoldCritMob(ent, 3, FishSlimeExtractGoldCritPools.NeutralBlood)))
             return;
 
         _extracts.TryPerformReaction(ent, soln, solution, "Water", One, () =>
-            SpawnGoldCritMob(ent, 1, "MobCarp"));
+            SpawnGoldCritMob(ent, 1, FishSlimeExtractGoldCritPools.FriendlyWater));
     }
 
     private void TrySilver(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
