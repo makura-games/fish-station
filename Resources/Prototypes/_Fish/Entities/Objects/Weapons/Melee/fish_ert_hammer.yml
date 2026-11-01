@@ -11,6 +11,7 @@
   - type: Item
     size: Ginormous
   - type: MeleeWeapon
+    wideAnimationRotation: -120
     attackRate: 0.8
     range: 2
     damage:
@@ -31,6 +32,8 @@
     delay: 5
   - type: UseDelayOnMeleeHit
   - type: MeleeThrowOnHit
+    distance: 4
+    speed: 6
     stunTime: 0.5
   - type: Tool
     qualities:
@@ -46,3 +49,7 @@
     slots:
     - back
     - suitStorage
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+  - type: HeldSpeedModifier
