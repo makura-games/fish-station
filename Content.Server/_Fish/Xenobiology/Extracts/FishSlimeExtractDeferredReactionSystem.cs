@@ -37,6 +37,11 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
         "FoodBreadPlain", "FoodCookie", "FoodMeatCutlet", "FoodTacoShell", "FoodPlateSmall",
     ];
 
+    private static readonly string[] PyritePaints =
+    [
+        "SprayPainter", "SprayPainterAmmo", "CrayonRainbow",
+    ];
+
     private static readonly string[] BorkDrinks =
     [
         "DrinkGlass", "DrinkWaterBottleFull", "DrinkColaCan", "DrinkSodaWaterCan",
@@ -241,13 +246,13 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     private void TryPyrite(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
     {
         _extracts.TryPerformReaction(ent, soln, solution, "Plasma", One, () =>
-            SpawnNextToOrDrop("SprayPainter", ent));
+            SpawnNextToOrDrop(_random.Pick(PyritePaints), ent));
     }
 
     private void TryCeruleanBlood(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
     {
         _extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
-            SpawnNextToOrDrop("PaperOffice", ent));
+            SpawnNextToOrDrop("TechnologyDisk", ent));
     }
 
     private void TryBlackBlood(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
