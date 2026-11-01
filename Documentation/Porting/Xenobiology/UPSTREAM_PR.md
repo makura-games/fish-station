@@ -42,7 +42,7 @@
 - [x] Обезьяньи кубы — прототипы `2a1fdca7b8`; спавн 3× из серого экстракта (blood) `82090cc650`
 - [x] Ящик лаборатории — `f53815f8e7`; cargo-заказ `FishXenobiologyLab` — `72248fcbc9` (карту не трогаем)
 - [x] Органы / диссекция / анализатор — `43719fae99`; лимит 3/тип, tech disk, импланты порция 3, таблица диссекции — `1c5c57127e`
-- [x] Gold crit roster / oil slick MOD — `1c5c57127e` (`PARITY_REPORT.md`)
+- [x] Gold crit roster / oil slick MOD / regen_mesh — `889e856a64` (`PARITY_REPORT.md`)
 - [x] Консоль: verbs + multitool recycler — `72248fcbc9`
 - [ ] Сборка/YAML после `console.yml` / `organs.yml` — не перепроверялись в cloud VM
 - [x] Хендофф — `Documentation/Porting/Xenobiology/HANDOFF.md`
