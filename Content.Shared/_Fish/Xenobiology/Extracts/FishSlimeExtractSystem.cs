@@ -16,7 +16,11 @@ public sealed partial class FishSlimeExtractSystem : EntitySystem
 
         SubscribeLocalEvent<FishSlimeExtractComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<FishSlimeExtractComponent, InteractUsingEvent>(OnInteractUsing);
+
+        InitializeReactions();
     }
+
+    partial void InitializeReactions();
 
     public bool TryAddUse(Entity<FishSlimeExtractComponent> extract, EntityUid? user)
     {
