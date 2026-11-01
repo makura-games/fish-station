@@ -13,7 +13,13 @@ fish-slime-potion-speed = The slime overheats and jitters with energy.
 fish-slime-potion-speed-hot = The slime is already overheated.
 fish-slime-potion-fireproof = The clothing is coated against fire.
 fish-slime-potion-oil-slick = The item becomes dangerously slippery.
-fish-slime-potion-not-implemented = This potion is not fully ported yet.
+fish-slime-potion-sentience = The creature can now be taken over by ghosts.
+fish-slime-potion-sentience-has-mind = That creature already has a mind.
+fish-slime-potion-sentience-role-desc = You could become {$name}.
+fish-slime-potion-transference = Your consciousness jumps into the new body.
+fish-slime-potion-transference-no-mind = You need a mind to transfer.
+fish-slime-potion-transference-invalid = That target cannot receive your mind.
+fish-slime-potion-transference-slime = Use transference on an animal, not directly on a slime.
 
 ent-FishSlimePotionStabilizerFish = slime stabilizer
     .desc = Lowers a slime's mutation chance. Useless on corpses and non-slimes.
