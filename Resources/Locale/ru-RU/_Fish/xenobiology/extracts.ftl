@@ -5,6 +5,7 @@ fish-slime-extract-enhanced = Вы наносите усилитель. Ядро
 fish-slime-extract-enhance-full = Это ядро нельзя усилить сильнее!
 fish-slime-extract-react = Раствор начинает пузыриться.
 fish-slime-extract-spent = Сила {THE($extract)} уходит в реакцию.
+fish-slime-extract-gold-cap = От золотых экстрактов уже слишком много критов на станции!
 
 ent-FishSlimeExtractBase = экстракт слайма
     .desc = Слизь, добытая из слайма. Легенды приписывают ей странные силы.
@@ -96,4 +97,8 @@ ent-FishSlimeExtractPyrite = пиритовый экстракт слайма
 
 ent-FishSlimeExtractRainbow = радужный экстракт слайма
     .desc = Радужное ядро слайма. Плазма рождает случайного слайма. Кровь — зелье переноса.
+    .suffix = Fish
+
+ent-FishXenobiologyBluespaceTileFish = плитка блюспейс-пола
+    .desc = Плитка пола со странным трением. Укладывается как сепия.
     .suffix = Fish
