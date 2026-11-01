@@ -1,0 +1,7 @@
+# Fish-edit — розыгрыш ghost role для зелья sentience (~10 с SS220)
+- type: ghostRoleRaffleSettings
+  id: FishXenoSentienceRaffleFish
+  settings:
+    initialDuration: 10
+    joinExtendsDurationBy: 0
+    maxDuration: 10
