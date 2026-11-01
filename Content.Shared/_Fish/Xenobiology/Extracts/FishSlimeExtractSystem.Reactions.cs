@@ -33,8 +33,7 @@ public sealed partial class FishSlimeExtractSystem
         if (!_solutions.TryGetSolution(ent.Owner, ent.Comp.SolutionId, out var soln, out var solution))
             return;
 
-        if (ent.Comp.Color == "grey")
-            TryGreyReaction(ent, soln, solution);
+        TryColorReactions(ent, soln, solution);
     }
 
     private void TryGreyReaction(
