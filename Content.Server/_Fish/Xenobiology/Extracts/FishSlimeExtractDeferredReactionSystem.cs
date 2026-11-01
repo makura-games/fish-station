@@ -96,6 +96,15 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
                 case FishSlimeExtractPendingKind.DarkBlueFreeze:
                     TriggerDarkBlueFreeze(coords);
                     break;
+                case FishSlimeExtractPendingKind.GoldCritHostile:
+                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, FishSlimeExtractGoldCritPools.PickHostile);
+                    break;
+                case FishSlimeExtractPendingKind.GoldCritLesser:
+                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, FishSlimeExtractGoldCritPools.PickLesser);
+                    break;
+                case FishSlimeExtractPendingKind.GoldCritFriendly:
+                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, FishSlimeExtractGoldCritPools.PickFriendly);
+                    break;
             }
 
             RemCompDeferred<FishSlimeExtractPendingReactionComponent>(uid);
@@ -155,30 +164,56 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     {
         if (solution.GetTotalPrototypeQuantity("Plasma") >= One)
         {
-            if (!FishSlimeExtractGoldMobCap.TryReserve(5))
-            {
-                if (ent.Comp.LastInjector is { } user)
-                    _popup.PopupEntity(Loc.GetString("fish-slime-extract-gold-cap"), ent, user);
-                return;
-            }
-
-            if (!TryReactionPlasma(ent, soln, solution, () =>
-                {
-                    var coords = _transform.GetMapCoordinates(ent);
-                    for (var i = 0; i < 5; i++)
-                        TagGoldCrit(Spawn(FishSlimeExtractGoldCritPools.PickHostile(_random), coords));
-                }))
-                FishSlimeExtractGoldMobCap.Release(5);
-            else
+            if (TryScheduleGoldCrit(ent, soln, solution, "Plasma", FishSlimeExtractPendingKind.GoldCritHostile, 5))
                 return;
         }
 
-        if (_extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
-                SpawnGoldCritMob(ent, 3, FishSlimeExtractGoldCritPools.NeutralBlood)))
+        if (TryScheduleGoldCrit(ent, soln, solution, "Blood", FishSlimeExtractPendingKind.GoldCritLesser, 3))
             return;
 
-        _extracts.TryPerformReaction(ent, soln, solution, "Water", One, () =>
-            SpawnGoldCritMob(ent, 1, FishSlimeExtractGoldCritPools.FriendlyWater));
+        TryScheduleGoldCrit(ent, soln, solution, "Water", FishSlimeExtractPendingKind.GoldCritFriendly, 1);
+    }
+
+    private bool TryScheduleGoldCrit(
+        Entity<FishSlimeExtractComponent> ent,
+        Entity<SolutionComponent> soln,
+        Solution solution,
+        string reagent,
+        FishSlimeExtractPendingKind kind,
+        int count)
+    {
+        if (!FishSlimeExtractGoldMobCap.TryReserve(count))
+        {
+            if (ent.Comp.LastInjector is { } user)
+                _popup.PopupEntity(Loc.GetString("fish-slime-extract-gold-cap"), ent, user);
+            return false;
+        }
+
+        if (!_extracts.TryBeginReaction(ent, soln, solution, reagent, One))
+        {
+            FishSlimeExtractGoldMobCap.Release(count);
+            return false;
+        }
+
+        ScheduleGoldCritPending(ent, kind, count);
+        _popup.PopupEntity(Loc.GetString("fish-slime-extract-gold-pending"), ent, ent.Comp.LastInjector);
+        return true;
+    }
+
+    private void ScheduleGoldCritPending(Entity<FishSlimeExtractComponent> ent, FishSlimeExtractPendingKind kind, int count)
+    {
+        var pending = EnsureComp<FishSlimeExtractPendingReactionComponent>(ent);
+        pending.Kind = kind;
+        pending.GoldCritCount = count;
+        pending.TriggerAt = _timing.CurTime + FishSlimeExtractGoldCritPools.SpawnDelay;
+        pending.SourceUser = ent.Comp.LastInjector;
+        Dirty(ent, pending);
+    }
+
+    private void TriggerGoldCritSpawn(MapCoordinates coords, int count, Func<IRobustRandom, string> pick)
+    {
+        for (var i = 0; i < count; i++)
+            TagGoldCrit(Spawn(pick(_random), coords));
     }
 
     private void TrySilver(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
@@ -254,20 +289,6 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     {
         _extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
             SpawnNextToOrDrop(_random.Pick(CeruleanBlueprints), ent));
-    }
-
-    private void SpawnGoldCritMob(Entity<FishSlimeExtractComponent> ent, int count, string proto)
-    {
-        if (!FishSlimeExtractGoldMobCap.TryReserve(count))
-        {
-            if (ent.Comp.LastInjector is { } user)
-                _popup.PopupEntity(Loc.GetString("fish-slime-extract-gold-cap"), ent, user);
-            return;
-        }
-
-        var coords = _transform.GetMapCoordinates(ent);
-        for (var i = 0; i < count; i++)
-            TagGoldCrit(Spawn(proto, coords));
     }
 
     private void TagGoldCrit(EntityUid mob)
