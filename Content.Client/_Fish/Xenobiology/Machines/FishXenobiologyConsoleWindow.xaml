@@ -1,0 +1,17 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'fish-xeno-console-title'}"
+                      MinSize="360 320">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <Label Name="StatusLabel" Text="{Loc 'fish-xeno-console-status-idle'}" />
+        <Label Name="StoredLabel" />
+        <Label Name="CubesLabel" />
+        <Label Name="PotionLabel" />
+        <Button Name="CollectButton" Text="{Loc 'fish-xeno-console-btn-collect'}" />
+        <Button Name="ReleaseButton" Text="{Loc 'fish-xeno-console-btn-release'}" />
+        <Button Name="ScanButton" Text="{Loc 'fish-xeno-console-btn-scan'}" />
+        <Button Name="FeedButton" Text="{Loc 'fish-xeno-console-btn-feed'}" />
+        <Button Name="MonkeyButton" Text="{Loc 'fish-xeno-console-btn-monkey'}" />
+        <Button Name="RecycleButton" Text="{Loc 'fish-xeno-console-btn-recycle'}" />
+    </BoxContainer>
+</controls:FancyWindow>
