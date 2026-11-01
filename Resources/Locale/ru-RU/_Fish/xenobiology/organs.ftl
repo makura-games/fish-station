@@ -11,6 +11,7 @@ fish-xeno-analyzer-type-limit = Этот тип органа уже сканир
 fish-xeno-analyzer-busy = Анализатор занят.
 fish-xeno-analyzer-start = Сканирование ксено-органа…
 fish-xeno-analyzer-finished = Скан завершён. +{$points} очков исследований.
+fish-xeno-analyzer-tech-disk = Анализатор печатает technology disk.
 fish-xeno-organ-used = Вы чувствуете эффект ксено-органа.
 
 ent-FishXenoDissectorFish = диссектор ксенобиологии
@@ -33,6 +34,22 @@ ent-FishXenoOrganVigorFish = ксено-орган бодрости
 
 ent-FishXenoOrganAntitoxinFish = ксено-орган антитоксина
     .suffix = Fish
+
+ent-FishXenoOrganImplantRegenerativeFish = имплант регенеративного ксено-органа
+    .suffix = Fish
+
+ent-FishXenoOrganImplantToxicFish = имплант токсичного ксено-органа
+    .suffix = Fish
+
+ent-FishXenoOrganImplantVigorFish = имплант ксено-органа бодрости
+    .suffix = Fish
+
+ent-FishXenoGoldCritNeutralCarpFish = нейтральный космический карп
+    .suffix = Fish
+
+ent-FishXenoGoldCritFriendlyCarpFish = дружелюбный космический карп
+    .suffix = Fish
+
 
 
 ent-FishXenobiologyOrganAnalyzerFish = анализатор ксено-органов
