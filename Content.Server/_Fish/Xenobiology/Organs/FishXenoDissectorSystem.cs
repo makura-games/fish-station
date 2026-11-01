@@ -56,15 +56,33 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
     private string PickOrgan(EntityUid target)
     {
         var id = MetaData(target).EntityPrototype?.ID ?? "";
-        if (id.Contains("Spider", StringComparison.OrdinalIgnoreCase))
+
+        if (ContainsAny(id, "Spider", "Hivelord", "Watcher"))
             return "FishXenoOrganToxicFish";
 
-        if (id.Contains("Carp", StringComparison.OrdinalIgnoreCase))
+        if (ContainsAny(id, "Carp", "Goliath", "Bear", "Colossus", "Bubblegum"))
             return "FishXenoOrganSinewFish";
 
-        if (id.Contains("Monkey", StringComparison.OrdinalIgnoreCase))
+        if (ContainsAny(id, "Legion", "Herald", "Revenant"))
+            return "FishXenoOrganVigorFish";
+
+        if (ContainsAny(id, "Tomato", "Clown", "Morph"))
+            return "FishXenoOrganAntitoxinFish";
+
+        if (ContainsAny(id, "Monkey"))
             return _random.Pick(DefaultOrgans);
 
         return _random.Pick(DefaultOrgans);
+    }
+
+    private static bool ContainsAny(string id, params string[] parts)
+    {
+        foreach (var part in parts)
+        {
+            if (id.Contains(part, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
     }
 }
