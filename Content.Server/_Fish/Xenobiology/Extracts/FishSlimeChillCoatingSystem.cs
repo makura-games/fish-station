@@ -2,7 +2,6 @@ using Content.Shared._Fish.Xenobiology.Extracts;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
-using Content.Shared.Inventory;
 
 namespace Content.Server._Fish.Xenobiology.Extracts;
 
