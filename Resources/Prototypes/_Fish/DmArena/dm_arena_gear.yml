@@ -234,11 +234,6 @@
     outerClothing: ClothingOuterArmorCaptainCarapace
 
 - type: startingGear
-  id: FishDmArenaVestHeavy
-  equipment:
-    outerClothing: ClothingOuterArmorHeavy
-
-- type: startingGear
   id: FishDmArenaHelmRiot
   equipment:
     head: ClothingHeadHelmetRiot
@@ -512,11 +507,6 @@
   storage:
     back:
     - BikeHorn
-
-- type: startingGear
-  id: FishDmArenaGlovesPolar
-  equipment:
-    gloves: ClothingHandsGlovesNorthStar
 
 - type: startingGear
   id: FishDmArenaDeagle

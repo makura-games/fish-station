@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
+using Content.Server.EnergyDome;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
@@ -16,6 +17,7 @@ using Content.Shared.Administration;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Dataset;
+using Content.Shared.EnergyDome;
 using Content.Shared.Examine;
 using Content.Shared.Fluids.Components;
 using Content.Shared.GameTicking;
@@ -23,10 +25,12 @@ using Content.Shared.Ghost.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Pulling.Events;
 using Content.Shared.Physics;
@@ -66,6 +70,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     [Dependency] private IServerPreferencesManager _prefs = default!;
     [Dependency] private EuiManager _euiManager = default!;
     [Dependency] private GameTicker _ticker = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private MindSystem _mind = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SharedContainerSystem _container = default!;
@@ -86,6 +91,10 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private static readonly SoundPathSpecifier LeaveSound = new("/Audio/Effects/pop_high.ogg");
     private EntityUid? _ruleEntity;
     private bool _enabled = true;
+    private bool _openedManually;
+    private bool _wasOpen;
+    private TimeSpan _openAfter;
+    private TimeSpan _nextOpenCheck;
 
     private bool _refillOnKill;
 
@@ -97,6 +106,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaRefill, value => _refillOnKill = value, true);
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaEnabled, OnEnabledChanged, true);
+        Subs.CVar(_cfg, DmArenaConfigVars.DmArenaOpenDelay, value => _openAfter = TimeSpan.FromMinutes(value), true);
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundEnding);
         SubscribeLocalEvent<DmArenaRuleComponent, RuleLoadedGridsEvent>(OnGridsLoaded);
@@ -118,6 +128,10 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         SubscribeLocalEvent<DmArenaSweptComponent, EntGotInsertedIntoContainerMessage>(OnDespawnPickedUp);
         SubscribeLocalEvent<DmArenaDormantBodyComponent, ExaminedEvent>(OnOriginalBodyExamined);
         SubscribeLocalEvent<DmArenaFighterComponent, PlayerDetachedEvent>(OnPlayerDetached);
+        SubscribeLocalEvent<DmArenaFighterComponent, EntityTerminatingEvent>(OnFighterTerminating);
+        SubscribeLocalEvent<DmArenaFighterComponent, DamageDealtEvent>(OnFighterDamaged);
+        SubscribeLocalEvent<EnergyDomeComponent, DamageDealtEvent>(OnDomeDamaged);
+        SubscribeLocalEvent<DmArenaFighterComponent, IsUnequippingTargetAttemptEvent>(OnFighterUnequip);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
     }
@@ -134,18 +148,43 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         if (args.NewStatus != SessionStatus.InGame)
             return;
 
-        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CurrentRule?.Players.Count ?? 0, _enabled), args.Session.Channel);
+        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CurrentRule?.Players.Count ?? 0, IsOpen), args.Session.Channel);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
 
+        if (_timing.CurTime >= _nextOpenCheck)
+        {
+            _nextOpenCheck = _timing.CurTime + TimeSpan.FromSeconds(1);
+            RefreshOpenState();
+        }
+
         if (CurrentRule is not { Active: true } rule || _timing.CurTime < rule.NextCleanup)
             return;
 
         rule.NextCleanup = _timing.CurTime + rule.CleanupInterval;
         SweepLooseItems(rule);
+    }
+
+    private bool IsOpen => _enabled
+        && (_openedManually || _ticker.RunLevel == GameRunLevel.InRound && _ticker.RoundDuration() >= _openAfter);
+
+    public void OpenManually()
+    {
+        _openedManually = true;
+        RefreshOpenState();
+    }
+
+    private void RefreshOpenState()
+    {
+        var open = IsOpen;
+        if (open == _wasOpen)
+            return;
+
+        _wasOpen = open;
+        BroadcastPlayerCount();
     }
 
     private DmArenaRuleComponent? CurrentRule =>
@@ -193,6 +232,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private void OnRoundEnding(RoundRestartCleanupEvent ev)
     {
         CloseEuis();
+        _openedManually = false;
 
         if (CurrentRule is { } rule)
         {
@@ -316,7 +356,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private void ShieldEntity(EntityUid uid)
     {
-        if (!HasComp<MobStateComponent>(uid))
+        if (!HasComp<MobStateComponent>(uid) && !HasComp<EnergyDomeComponent>(uid))
             EnsureComp<DmArenaShieldedComponent>(uid);
     }
 
@@ -351,7 +391,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     public bool TryOpenLoadout(ICommonSession session)
     {
-        if (!_enabled)
+        if (!IsOpen)
         {
             // Клиент мог не знать, что арена выключена
             RaiseNetworkEvent(new DmArenaPlayerCountEvent(0, false), session.Channel);
@@ -442,14 +482,64 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private void OnLeaveRequest(DmArenaLeaveRequestEvent ev, EntitySessionEventArgs args)
     {
         if (args.SenderSession.AttachedEntity is { Valid: true } entity
-            && TryComp<DmArenaFighterComponent>(entity, out var fighter))
+            && TryComp<DmArenaFighterComponent>(entity, out var fighter)
+            && !IsInCombat((entity, fighter)))
             LeaveDmArena((entity, fighter));
+    }
+
+    private void OnFighterDamaged(Entity<DmArenaFighterComponent> ent, ref DamageDealtEvent args)
+    {
+        MarkCombat(ent, args.Origin);
+    }
+
+    private void OnDomeDamaged(Entity<EnergyDomeComponent> ent, ref DamageDealtEvent args)
+    {
+        if (ent.Comp.Generator is { } generator
+            && TryComp<EnergyDomeGeneratorComponent>(generator, out var generatorComp)
+            && generatorComp.DomeParentEntity is { } wearer
+            && TryComp<DmArenaFighterComponent>(wearer, out var fighter))
+            MarkCombat((wearer, fighter), args.Origin);
+    }
+
+    private void MarkCombat(Entity<DmArenaFighterComponent> victim, EntityUid? origin)
+    {
+        if (origin is not { } attacker || attacker == victim.Owner || !TryComp<DmArenaFighterComponent>(attacker, out var other))
+            return;
+
+        if (!_mobState.IsCritical(victim))
+            victim.Comp.LastCombat = _timing.CurTime;
+
+        if (!_mobState.IsCritical(attacker))
+            other.LastCombat = _timing.CurTime;
+    }
+
+    private void OnFighterUnequip(EntityUid uid, DmArenaFighterComponent component, IsUnequippingTargetAttemptEvent args)
+    {
+        if (args.User == uid || !TryGetFighterRule((uid, component), out var rule) || (args.SlotFlags & rule.LockedSlots) == 0)
+            return;
+
+        args.Reason = "dm-arena-strip-locked";
+        args.Cancel();
+    }
+
+    private bool IsInCombat(Entity<DmArenaFighterComponent> ent)
+    {
+        if (!TryGetFighterRule(ent, out var rule)
+            || _mobState.IsCritical(ent)
+            || _timing.CurTime >= ent.Comp.LastCombat + rule.CombatLock)
+            return false;
+
+        _popup.PopupEntity(Loc.GetString("dm-arena-in-combat"), ent.Owner, ent.Owner);
+        return true;
     }
 
     private void OnMobStateChanged(Entity<DmArenaFighterComponent> ent, ref MobStateChangedEvent args)
     {
         if (!TryGetFighterRule(ent, out var rule))
             return;
+
+        if (args.NewMobState == MobState.Critical)
+            ent.Comp.LastCombat = TimeSpan.Zero;
 
         switch (args.NewMobState)
         {
@@ -466,7 +556,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     public bool SpawnPlayer(ICommonSession session, EntityUid ruleEntity, List<int> items)
     {
-        if (!_enabled
+        if (!IsOpen
             || !TryComp<DmArenaRuleComponent>(ruleEntity, out var rule)
             || !rule.Active
             || session.AttachedEntity is not { Valid: true } ghost
@@ -640,6 +730,12 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         if (args.Victim != ent.Owner || !TryGetFighterRule(ent, out var rule))
             return;
 
+        if (IsInCombat(ent))
+        {
+            args.Handled = true;
+            return;
+        }
+
         StartRespawnCooldown(ent, rule);
         RewardKill(ent);
         RemoveFromArena(ent, rule);
@@ -652,6 +748,12 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
             || !TryComp<DmArenaFighterComponent>(entity, out var fighter)
             || !TryGetFighterRule((entity, fighter), out var rule))
             return;
+
+        if (IsInCombat((entity, fighter)))
+        {
+            args.Handled = true;
+            return;
+        }
 
         StartRespawnCooldown((entity, fighter), rule);
         RewardKill((entity, fighter));
@@ -685,7 +787,10 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private void OnRevivalAccept(DmArenaRevivalAcceptEvent ev, EntitySessionEventArgs args)
     {
-        if (args.SenderSession.AttachedEntity is { Valid: true } current && !TryReturnToBody(current))
+        if (args.SenderSession.AttachedEntity is not { Valid: true } current)
+            return;
+
+        if (!TryReturnToBody(current))
             Log.Warning($"DM arena return to body rejected for {args.SenderSession.Name}: {ToPrettyString(current)}");
     }
 
@@ -731,7 +836,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         var items = EntityQueryEnumerator<ItemComponent, TransformComponent>();
         while (items.MoveNext(out var uid, out _, out var xform))
         {
-            if (xform.MapID == map && !HasComp<DmArenaMapItemComponent>(uid))
+            if (xform.MapID == map && !HasComp<DmArenaMapItemComponent>(uid) && !HasComp<MobStateComponent>(uid))
                 MarkForDespawn(uid, rule.SweepDespawnTime, checkContainer: true);
         }
 
@@ -774,6 +879,16 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         rule.Players.Remove(GetNetEntity(ent));
         QueueDel(ent);
+        BroadcastPlayerCount(rule);
+    }
+
+    private void OnFighterTerminating(Entity<DmArenaFighterComponent> ent, ref EntityTerminatingEvent args)
+    {
+        if (!TryGetFighterRule(ent, out var rule) || !rule.Players.Remove(GetNetEntity(ent)))
+            return;
+
+        ClearOriginalBodyMarker(ent);
+        _mindSwap.TryRestoreAsGhost(ent);
         BroadcastPlayerCount(rule);
     }
 
@@ -853,7 +968,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
             eui.StateDirty();
         }
 
-        RaiseNetworkEvent(new DmArenaPlayerCountEvent(rule?.Players.Count ?? 0, _enabled), Filter.Broadcast());
+        RaiseNetworkEvent(new DmArenaPlayerCountEvent(rule?.Players.Count ?? 0, IsOpen), Filter.Broadcast());
     }
 
     public DmArenaKitEuiState GetLoadoutState(EntityUid ruleEntity, NetUserId userId)

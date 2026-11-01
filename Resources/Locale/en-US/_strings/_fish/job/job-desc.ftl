@@ -6,3 +6,4 @@ job-description-centcom-blueshield = Ваша главная задача - вы
 job-description-centcom-oversightofficer = Отвечает за справедливость и законность в интересах Nanotrasen.
 job-description-specopsofficer = Вы офицер специальных операций, отвечающий за стратегическую безопасность сектора.
 job-description-oversightofficer = Смотрите за соблюдением закона, тех кто смотрит за соблюдением закона
+job-description-centcom-maid = Специально подготовленная горничная для уборки объектов Центрального командования.

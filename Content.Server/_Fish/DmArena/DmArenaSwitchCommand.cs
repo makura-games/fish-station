@@ -8,6 +8,7 @@ using Content.Shared.Inventory;
 using Content.Shared._Fish.DmArena;
 using Robust.Shared.Configuration;
 using Robust.Shared.Console;
+using Robust.Shared.GameObjects;
 
 namespace Content.Server._Fish.DmArena;
 
@@ -20,6 +21,7 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IAdminManager _admin = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private IEntitySystemManager _systems = default!;
 
     public override string Command => "dmarena";
     public override string Description => LocalizationManager.GetString("cmd-dmarena-desc");
@@ -63,15 +65,22 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
 
     private void SetEnabled(IConsoleShell shell, bool current, bool value)
     {
+        var who = shell.Player?.Name ?? "server";
+
+        if (value)
+            _systems.GetEntitySystem<DmArenaMatchSystem>().OpenManually();
+
         if (value == current)
         {
+            if (value)
+                _adminLog.Add(LogType.AdminCommands, LogImpact.High, $"{who} opened the DM arena manually");
+
             WriteStatus(shell, current);
             return;
         }
 
         _cfg.SetCVar(DmArenaConfigVars.DmArenaEnabled, value);
 
-        var who = shell.Player?.Name ?? "server";
         _adminLog.Add(LogType.AdminCommands, LogImpact.High, $"{who} {(value ? "enabled" : "disabled")} the DM arena");
 
         shell.WriteLine(LocalizationManager.GetString(value ? "cmd-dmarena-enabled" : "cmd-dmarena-disabled"));

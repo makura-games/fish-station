@@ -105,9 +105,7 @@ dm-arena-desc-vest-refl = Отражает лазеры, от пуль слаб�
 dm-arena-item-vest-riot = Противоударный костюм
 dm-arena-desc-vest-riot = Хорош против ближнего боя, немного замедляет
 dm-arena-item-vest-carapace = Капитанский панцирь
-dm-arena-desc-vest-carapace = Держит и клинки, и пули, но слабее тяжёлой брони
-dm-arena-item-vest-heavy = Тяжёлый бронекостюм
-dm-arena-desc-vest-heavy = Лучшая защита на арене, но сильно замедляет
+dm-arena-desc-vest-carapace = Хорошо держит и клинки, и пули
 dm-arena-item-helm-riot = Лёгкий противоударный шлем
 dm-arena-desc-helm-riot = Шлем взамен обычного
 dm-arena-item-helm-swat = Шлем спецназа
@@ -250,7 +248,7 @@ dm-arena-leave-01 = { $user } исчезает, устав убивать.
 
 # Админ-команда
 cmd-dmarena-desc = Включает или выключает ДМ арену.
-cmd-dmarena-help = dmarena [on|off|status]. Без аргументов показывает состояние. При выключении все бойцы возвращаются призраками, а окна выбора закрываются.
+cmd-dmarena-help = dmarena [on|off|status]. Без аргументов показывает состояние. Первые 20 минут раунда арена закрыта, on открывает её раньше. При выключении все бойцы возвращаются призраками, а окна выбора закрываются.
 cmd-dmarena-no-access = Недостаточно прав для этой команды.
 cmd-dmarena-bad-argument = Допустимые значения: on, off, status.
 cmd-dmarena-hint = on, off или status
@@ -274,9 +272,9 @@ ent-FishWeaponPistolN1984 = { ent-WeaponPistolN1984 }
 # Неразрушимые вещи
 dm-arena-indestructible = Это не разобрать.
 dm-arena-respawn-cooldown = Тело ещё не остыло. Подождите { $seconds } с.
+dm-arena-in-combat = Вы в бою, уйти сейчас нельзя.
+dm-arena-strip-locked = Это снять не получится.
 
-dm-arena-item-gloves-polar = Перчатки «Полярная звезда»
-dm-arena-desc-gloves-polar = Быстрые удары кулаками, лучше всего в ближнем бою
 dm-arena-item-deagle = Пистолет «Дигл»
 dm-arena-desc-deagle = Мощный пистолет под магнум, два запасных магазина
 dm-arena-item-sawn = Обрез
@@ -321,13 +319,9 @@ dm-arena-set-cowboy = Ковбой
 dm-arena-set-desc-cowboy = Дигл, ковбойская шляпа и лёгкая защита. Каждый выстрел на счету
 dm-arena-set-guard = Страж
 dm-arena-set-desc-guard = Обрез, противопульный щит и броня против ударов. Подходи и стреляй в упор
-dm-arena-set-brawler = Кулачный боец
-dm-arena-set-desc-brawler = Перчатки «Полярная звезда», броня и инъекторы. Бей быстро и лечись на ходу
 dm-arena-set-lightbearer = Хранитель света
 dm-arena-set-desc-lightbearer = Энергощит отражает лучи, лазерный карабин отвечает. Против пуль слабоват
 dm-arena-set-elite = Элитный боец
 dm-arena-set-desc-elite = Элитный тактический жилет, Алтын и ПП. Прочно и без суеты
 dm-arena-set-dome = Купол
 dm-arena-set-desc-dome = Поясной генератор щита, «Кобра» и жилет. Купол гасит урон, пока хватает заряда
-dm-arena-set-tank = Танк
-dm-arena-set-desc-tank = Тяжёлая броня и двустволка. Медленный, но почти не убить

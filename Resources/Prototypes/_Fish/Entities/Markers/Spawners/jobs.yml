@@ -128,3 +128,16 @@
     layers:
       - state: green
       - state: jobicon
+
+- type: entity
+  id: SpawnPointCentCommMaid
+  parent: SpawnPointJobBase
+  name: central command maid
+  components:
+  - type: SpawnPoint
+    job_id: CentCommMaid
+  - type: Sprite
+    sprite: _Sunrise/Markers/jobs.rsi
+    layers:
+      - state: green
+      - state: jobicon

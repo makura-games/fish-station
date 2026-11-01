@@ -1233,3 +1233,54 @@
     message: Фикс цели на мутаген, добавление в нее еще двух баночек.
   id: 125
   url: https://github.com/makura-games/fish-station/pull/575
+- author: Kaiten
+  time: '2026-10-30T22:59:37.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим 30.10.2026
+  id: 126
+  url: https://github.com/makura-games/fish-station/pull/579
+- author: dan4ikk3
+  time: '2026-10-30T23:22:44.0000000+00:00'
+  changes:
+  - type: Add
+    message: НШЦК захотел завести себе персональную кошко-девочку и теперь рассматривает заявки на горничную центрального командования.
+  - type: Tweak
+    message: Теперь на сервисные и медецинские роли ЦК можно зайти без ВЛа.
+  id: 127
+  url: https://github.com/makura-games/fish-station/pull/498
+- author: NekutGit
+  time: '2026-10-31T09:40:49.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена боевая винтовка SCAR-H калибра .308 в раскраске Синдиката с биокодом.
+  - type: Add
+    message: Добавлены 20-зарядные и 30-зарядные магазины для SCAR-H.
+  - type: Add
+    message: Добавлен оружейный кейс наполненный винтовкой SCAR-H и комплектом из магазинов для него с патронами ПП.
+  id: 128
+  url: https://github.com/makura-games/fish-station/pull/578
+  media:
+  - url: https://github.com/user-attachments/assets/c4d2c988-3075-477c-b3c0-78467471b0dd
+    description: изображение
+- author: dan4ikk3
+  time: '2026-10-31T10:25:42.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Исправлен баг с удалением феленидов на арене.
+  - type: Fix
+    message: Исправлен баг с неправильным отоброжением игроков на арене.
+  - type: Fix
+    message: Исправлен баг с поясным щитом, теперь он разряжается при получении урона.
+  - type: Tweak
+    message: Теперь на арену можно попасть лишь после 20 минут раунда.
+  - type: Tweak
+    message: 'Во время боя нельзя прописать ghost 10 секунд при получении урона на дмарене.
+
+      Режимо боя сбивается при получении критического состояния или воскрешении основного тела.'
+  - type: Tweak
+    message: С критованого бойца нельзя снять вещи.
+  - type: Remove
+    message: Удалены перчатки полярной звезды и тяжелая броня из конструктора арены.
+  id: 129
+  url: https://github.com/makura-games/fish-station/pull/585

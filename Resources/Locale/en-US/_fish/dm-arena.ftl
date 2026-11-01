@@ -105,9 +105,7 @@ dm-arena-desc-vest-refl = Reflects lasers, weaker against bullets
 dm-arena-item-vest-riot = Riot suit
 dm-arena-desc-vest-riot = Strong against melee, slows you down a little
 dm-arena-item-vest-carapace = Captain's carapace
-dm-arena-desc-vest-carapace = Holds off blades and bullets, but weaker than heavy armor
-dm-arena-item-vest-heavy = Heavy armor suit
-dm-arena-desc-vest-heavy = The best protection on the arena, but slows you down a lot
+dm-arena-desc-vest-carapace = Holds off blades and bullets well
 dm-arena-item-helm-riot = Light riot helmet
 dm-arena-desc-helm-riot = A helmet instead of the basic one
 dm-arena-item-helm-swat = SWAT helmet
@@ -250,7 +248,7 @@ dm-arena-leave-01 = { $user } vanishes, tired of the killing.
 
 # Админ-команда
 cmd-dmarena-desc = Enables or disables the DM arena.
-cmd-dmarena-help = dmarena [on|off|status]. Shows the current state when called without arguments. Disabling returns every fighter as a ghost and closes the loadout windows.
+cmd-dmarena-help = dmarena [on|off|status]. Shows the current state when called without arguments. The arena is closed for the first 20 minutes of a round, on opens it earlier. Disabling returns every fighter as a ghost and closes the loadout windows.
 cmd-dmarena-no-access = You do not have permission to use this command.
 cmd-dmarena-bad-argument = Valid values: on, off, status.
 cmd-dmarena-hint = on, off or status
@@ -274,9 +272,9 @@ ent-FishWeaponPistolN1984 = { ent-WeaponPistolN1984 }
 # Неразрушимые вещи
 dm-arena-indestructible = This is indestructible.
 dm-arena-respawn-cooldown = Your body is not cold yet. Wait { $seconds } s.
+dm-arena-in-combat = You are in combat, you cannot leave right now.
+dm-arena-strip-locked = You cannot take that off.
 
-dm-arena-item-gloves-polar = North Star gloves
-dm-arena-desc-gloves-polar = Fast fist strikes, best in close combat
 dm-arena-item-deagle = Deagle pistol
 dm-arena-desc-deagle = A powerful magnum pistol, two spare magazines
 dm-arena-item-sawn = Sawed-off shotgun
@@ -321,13 +319,9 @@ dm-arena-set-cowboy = Cowboy
 dm-arena-set-desc-cowboy = A Deagle, a cowboy hat and light armor. Make every shot count
 dm-arena-set-guard = Guard
 dm-arena-set-desc-guard = A sawed-off, a bulletproof shield and anti-melee armor. Get close and fire
-dm-arena-set-brawler = Brawler
-dm-arena-set-desc-brawler = North Star gloves, armor and injectors. Hit fast and heal on the move
 dm-arena-set-lightbearer = Lightbearer
 dm-arena-set-desc-lightbearer = An energy shield reflects beams and a laser carbine answers back. Weak against bullets
 dm-arena-set-elite = Elite fighter
 dm-arena-set-desc-elite = An elite tactical vest, an Altyn and an SMG. Sturdy and calm
 dm-arena-set-dome = Dome
 dm-arena-set-desc-dome = A belt shield generator, a Cobra and a vest. The dome soaks damage while the charge lasts
-dm-arena-set-tank = Tank
-dm-arena-set-desc-tank = Heavy armor and a double-barrel. Slow, but hard to kill

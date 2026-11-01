@@ -1,3 +1,4 @@
+using Content.Shared.Inventory;
 using Content.Shared.Roles;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -97,4 +98,10 @@ public sealed partial class DmArenaRuleComponent : Component
 
     [DataField]
     public TimeSpan RespawnCooldown = TimeSpan.FromSeconds(20);
+
+    [DataField]
+    public TimeSpan CombatLock = TimeSpan.FromSeconds(10);
+
+    [DataField]
+    public SlotFlags LockedSlots = SlotFlags.OUTERCLOTHING | SlotFlags.HEAD | SlotFlags.BELT | SlotFlags.BACK | SlotFlags.SUITSTORAGE;
 }

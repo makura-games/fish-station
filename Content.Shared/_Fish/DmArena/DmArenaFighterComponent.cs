@@ -16,4 +16,7 @@ public sealed partial class DmArenaFighterComponent : Component
     /// </summary>
     [ViewVariables]
     public EntityUid? LastAttacker;
+
+    [ViewVariables]
+    public TimeSpan LastCombat;
 }

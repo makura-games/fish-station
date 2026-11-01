@@ -83,6 +83,7 @@
   - CentcommMedicalDoctor #Fish-edit
   - CentcommBartender #Fish-edit
   - BlueShieldEnsign # Fish-edit
+  - CentCommMaid # Fish-edit
   weight: 120
 
 - type: department

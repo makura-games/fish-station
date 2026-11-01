@@ -80,13 +80,6 @@
       sprite: CaptainSabre
       cost: 16
       inHand: true
-    - gear: FishDmArenaGlovesPolar
-      name: dm-arena-item-gloves-polar
-      description: dm-arena-desc-gloves-polar
-      category: dm-arena-category-weapons
-      group: dm-arena-group-melee
-      sprite: ClothingHandsGlovesNorthStar
-      cost: 18
     - gear: FishDmArenaEsword
       name: dm-arena-item-esword
       description: dm-arena-desc-esword
@@ -307,14 +300,6 @@
       group: dm-arena-group-suits
       sprite: ClothingOuterVestWebElite
       cost: 30
-    - gear: FishDmArenaVestHeavy
-      name: dm-arena-item-vest-heavy
-      description: dm-arena-desc-vest-heavy
-      category: dm-arena-category-armor
-      group: dm-arena-group-suits
-      sprite: ClothingOuterArmorHeavy
-      cost: 45
-      equipFirst: true
     - gear: FishDmArenaHelmRiot
       name: dm-arena-item-helm-riot
       description: dm-arena-desc-helm-riot
@@ -922,16 +907,6 @@
       - FishDmArenaHelmRiot
       - FishDmArenaKitBrute
       - FishDmArenaGauze
-    - name: dm-arena-set-brawler
-      description: dm-arena-set-desc-brawler
-      items:
-      - FishDmArenaGlovesPolar
-      - FishDmArenaVestRiot
-      - FishDmArenaHelmRiot
-      - FishDmArenaKitBrute
-      - FishDmArenaPenPyra
-      - FishDmArenaPenPunct
-      - FishDmArenaMinistim
     - name: dm-arena-set-lightbearer
       description: dm-arena-set-desc-lightbearer
       items:
@@ -956,13 +931,6 @@
       - FishDmArenaVestBp
       - FishDmArenaGauze
       - FishDmArenaBrutepack
-    - name: dm-arena-set-tank
-      description: dm-arena-set-desc-tank
-      items:
-      - FishDmArenaVestHeavy
-      - FishDmArenaDoublebarrel
-      - FishDmArenaHelmRiot
-      - FishDmArenaKitBasic
   - type: LoadMapRule
     mapPath: /Maps/_Fish/Nonstations/dm_arena.yml
   - type: RuleGrids

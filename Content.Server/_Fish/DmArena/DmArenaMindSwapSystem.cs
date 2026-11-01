@@ -91,6 +91,14 @@ public sealed partial class DmArenaMindSwapSystem : EntitySystem
         swap.OriginalMind = origMindId;
         swap.DisposableMind = newMind.Value;
 
+        if (!TerminatingOrDeleted(currentEntity))
+        {
+            if (origMind.OwnedEntity == currentEntity)
+                _mind.TransferTo(origMindId, null, createGhost: false, mind: origMind);
+
+            QueueDel(currentEntity);
+        }
+
         return true;
     }
 
@@ -105,10 +113,15 @@ public sealed partial class DmArenaMindSwapSystem : EntitySystem
         CleanupDisposableMind(temporaryBody, temp);
 
         var ghost = Spawn("MobObserver", coords);
-        _mind.Visit(temp.OriginalMind, ghost, origMind);
+
+        var hasBody = origMind.OwnedEntity is { } owner && Exists(owner);
+        if (hasBody)
+            _mind.Visit(temp.OriginalMind, ghost, origMind);
+        else
+            _mind.TransferTo(temp.OriginalMind, ghost, mind: origMind);
 
         if (TryComp<GhostComponent>(ghost, out var ghostComp))
-            _ghost.SetCanReturnToBody((ghost, ghostComp), origMind.OwnedEntity is { } owned && Exists(owned));
+            _ghost.SetCanReturnToBody((ghost, ghostComp), hasBody);
 
         if (GetGhostName(origMind) is { } name)
             _meta.SetEntityName(ghost, FormattedMessage.EscapeText(name));
@@ -155,6 +168,12 @@ public sealed partial class DmArenaMindSwapSystem : EntitySystem
 
         if (Exists(temp.DisposableMind))
         {
+            if (TryComp<MindComponent>(temp.DisposableMind, out var disposable)
+                && disposable.OwnedEntity is { } stray
+                && stray != temporaryBody
+                && HasComp<GhostComponent>(stray))
+                QueueDel(stray);
+
             _mind.WipeMind(temp.DisposableMind);
             QueueDel(temp.DisposableMind);
         }
