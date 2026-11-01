@@ -13,6 +13,7 @@ fish-slime-potion-speed = Слайм перегревается и дрожит 
 fish-slime-potion-speed-hot = Слайм уже перегрет.
 fish-slime-potion-fireproof = Одежда покрыта огнезащитой.
 fish-slime-potion-oil-slick = Предмет становится опасно скользким.
+fish-slime-potion-oil-slick-mod = Нельзя покрыть маслом активный MOD-костюм.
 fish-slime-potion-sentience = Существо можно занять через призраков.
 fish-slime-potion-sentience-has-mind = У этой сущности уже есть разум.
 fish-slime-potion-sentience-role-desc = Вы можете стать {$name}.
