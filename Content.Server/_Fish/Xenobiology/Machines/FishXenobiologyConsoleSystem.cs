@@ -44,7 +44,11 @@ public sealed partial class FishXenobiologyConsoleSystem : EntitySystem
         SubscribeLocalEvent<FishXenobiologyConsoleComponent, FishXenoConsoleScanStoredMessage>(OnScanStored);
         SubscribeLocalEvent<FishXenobiologyConsoleComponent, FishXenoConsoleFeedPotionMessage>(OnFeedPotion);
         SubscribeLocalEvent<FishXenobiologyConsoleComponent, FishXenoConsoleRecycleMonkeysMessage>(OnRecycleMonkeys);
+
+        InitializeVerbs();
     }
+
+    partial void InitializeVerbs();
 
     private void OnShutdown(Entity<FishXenobiologyConsoleComponent> ent, ref ComponentShutdown args)
     {
@@ -204,6 +208,8 @@ public sealed partial class FishXenobiologyConsoleSystem : EntitySystem
         var coords = _transform.GetMapCoordinates(ent);
         var recycled = 0;
 
+        var grind = GetRecycleGrind(ent);
+
         foreach (var uid in _lookup.GetEntitiesInRange(coords, ent.Comp.Radius))
         {
             if (!HasComp<MonkeyAccentComponent>(uid) || _mobState.IsAlive(uid))
@@ -213,15 +219,23 @@ public sealed partial class FishXenobiologyConsoleSystem : EntitySystem
             ent.Comp.RecycleProgress++;
             recycled++;
 
-            while (ent.Comp.RecycleProgress >= FishXenobiologyConsoleComponent.RecycleGrindRequired)
+            while (ent.Comp.RecycleProgress >= grind)
             {
-                ent.Comp.RecycleProgress -= FishXenobiologyConsoleComponent.RecycleGrindRequired;
+                ent.Comp.RecycleProgress -= grind;
                 ent.Comp.MonkeyCubeCount++;
             }
         }
 
         Dirty(ent);
         DirtyUi(ent, Loc.GetString("fish-xeno-console-recycled", ("count", recycled)));
+    }
+
+    private int GetRecycleGrind(Entity<FishXenobiologyConsoleComponent> console)
+    {
+        if (console.Comp.LinkedRecycler is { } rec && TryComp<FishMonkeyRecyclerComponent>(rec, out var rc))
+            return Math.Max(1, rc.RequiredGrind);
+
+        return FishXenobiologyConsoleComponent.RecycleGrindRequired;
     }
 
     private bool CanOperate(Entity<FishXenobiologyConsoleComponent> ent, EntityUid user)
