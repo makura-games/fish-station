@@ -14,6 +14,10 @@ fish-xeno-analyzer-finished = Scan complete. {$points} research points added.
 fish-xeno-analyzer-tech-disk = The analyzer prints a technology disk.
 fish-xeno-organ-used = You feel the xenOrgan's effect.
 
+fish-xeno-regen-mesh-unidentified = The organ must be identified before using mesh.
+fish-xeno-regen-mesh-already = This xenOrgan is already pristine.
+fish-xeno-regen-mesh-success = The mesh restores the xenOrgan to pristine quality.
+
 ent-FishXenoDissectorFish = xenobiology dissector
     .suffix = Fish
 
@@ -35,6 +39,12 @@ ent-FishXenoOrganVigorFish = vigor xenOrgan
 ent-FishXenoOrganAntitoxinFish = antitoxin xenOrgan
     .suffix = Fish
 
+ent-FishXenoOrganHeatResistFish = heat-resistant xenOrgan
+    .suffix = Fish
+
+ent-FishXenoRegenMeshFish = regenerative mesh
+    .suffix = Fish
+
 ent-FishXenoOrganImplantRegenerativeFish = regenerative xenOrgan implant
     .suffix = Fish
 
@@ -42,6 +52,15 @@ ent-FishXenoOrganImplantToxicFish = toxic xenOrgan implant
     .suffix = Fish
 
 ent-FishXenoOrganImplantVigorFish = vigor xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantSinewFish = sinew xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantAntitoxinFish = antitoxin xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantHeatResistFish = heat-resistant xenOrgan implant
     .suffix = Fish
 
 ent-FishXenoGoldCritNeutralCarpFish = neutral space carp
