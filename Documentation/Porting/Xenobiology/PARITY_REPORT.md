@@ -4,10 +4,11 @@
 
 ## Реакции экстракта
 
-| Цвет | Реагент | SS220 | Статус |
+| Цвет | Реагент | SS220 / Paradise | Статус |
 | --- | --- | --- | --- |
-| gold | plasma | 5 crit, кап 15 | пул враждебных (lavaland/asteroid/salvage roster) + crit-кап + release |
-| gold | blood / water | 3 нейтр. / 1 друж. | `FishXenoGoldCritNeutralCarpFish` ×3, `FishXenoGoldCritFriendlyCarpFish` ×1 + кап |
+| gold | plasma | 5 HOSTILE, задержка 5 с, кап 45 | **Paradise:** `MAX_GOLD_CORE_MOBS` 45, таймер 5 с, пул `FishSlimeExtractGoldCritPools.HostilePlasma` |
+| gold | blood | 3 lesser (neutral) | Пул `LesserBlood` + нейтральные прототипы |
+| gold | water | 1 friendly | Пул `FriendlyWater` |
 | black | blood | virus_genes | реагент `FishVirusGenesFish` (не полный virology SS220) |
 | cerulean | blood | territory blueprints | случайный `Blueprint*` из пула, не territory kit |
 | pyrite | plasma | random paint | пул красок |
@@ -37,8 +38,8 @@
 | SS220 | Статус |
 | --- | --- |
 | Конвейер | диссектор → масса → слайм → анализатор |
-| **regen_mesh** | `FishXenoRegenMeshFish` → качество **Pristine** (2× в анализаторе) |
-| Таблица диссекции | расширена под DM-список (flock/megacarp/… частично по id прототипа) |
-| Эффекты | UseInHand 60 с; **HeatResist** (−50% Heat); импланты порция 3–4 (6 типов) |
-| Анализатор | лимит 3 скана на тип; **tech disk** ~12% → `TechnologyDisk` |
-| Уникальные органы SS220 | ~1600 строк DM не портированы (дыхание дракона, flock spell, …) |
+| **regen_mesh** | `FishXenoRegenMeshFish` → **Pristine** |
+| Таблица диссекции | расширена (flock→EMP, dragon→adrenaline, colossus→slime skin, …) |
+| Эффекты | 9 видов UseInHand + **6 имплантов** + **3 spell-like** (EMP / adrenaline / slime skin) |
+| Анализатор | лимит 3/тип; tech disk ~12% |
+| Уникальные органы SS220 | flock spell, dragon breath, revenant… **не 1:1** (~1600 строк DM) |
