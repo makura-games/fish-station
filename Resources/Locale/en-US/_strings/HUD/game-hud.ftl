@@ -1,6 +1,8 @@
 game-hud-open-escape-menu-button-tooltip = Open escape menu.
 game-hud-open-guide-menu-button-tooltip = Open guidebook menu.
 game-hud-open-character-menu-button-tooltip = Open character menu.
+# Fish-edit
+game-hud-open-skills-menu-button-tooltip = Open skills menu.
 game-hud-open-emotes-menu-button-tooltip= Open emotes menu.
 game-hud-open-inventory-menu-button-tooltip = Open inventory menu.
 game-hud-open-crafting-menu-button-tooltip = Open crafting menu.

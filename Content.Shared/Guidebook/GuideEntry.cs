@@ -1,3 +1,4 @@
+using System.Globalization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -16,6 +17,32 @@ public partial class GuideEntry
     ///     The file containing the contents of this guide.
     /// </summary>
     [DataField(required: true)] public ResPath Text = default!;
+
+    // Fish-start - текст руководства по культуре; Text остаётся путём по умолчанию (en-US)
+    /// <summary>
+    /// Пути к тексту для конкретных культур. Ключ — имя культуры (<c>ru-RU</c>).
+    /// Если культуры нет в словаре, используется <see cref="Text"/>.
+    /// </summary>
+    [DataField]
+    public Dictionary<string, ResPath> LocalizedText = new();
+
+    /// <summary>
+    /// Возвращает файл руководства для культуры игрока.
+    /// </summary>
+    public ResPath ResolveText(CultureInfo? culture)
+    {
+        if (culture == null || LocalizedText.Count == 0)
+            return Text;
+
+        if (LocalizedText.TryGetValue(culture.Name, out var path))
+            return path;
+
+        if (LocalizedText.TryGetValue(culture.TwoLetterISOLanguageName, out path))
+            return path;
+
+        return Text;
+    }
+    // Fish-end
 
     /// <summary>
     ///     The unique id for this guide.

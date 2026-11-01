@@ -1,0 +1,10 @@
+# Fish-start - защита от выбора целью антагонистов (включена по умолчанию в профиле)
+- type: trait
+  id: FishAntagTargetProtection
+  name: trait-fish-antag-target-protection-name
+  description: trait-fish-antag-target-protection-desc
+  category: Quirks
+  cost: 0
+  components:
+  - type: AntagTargetingProtected
+# Fish-end

@@ -11,14 +11,14 @@ injector-toggle-verb-text = Переключить режим инъектора
 ## Entity
 
 injector-component-inject-mode-name = инъекция
-injector-component-draw-mode-name = отсос
+injector-component-draw-mode-name = забор
 injector-component-dynamic-mode-name = динамический
 injector-component-mode-changed-text = Теперь { $mode }
-injector-component-transfer-success-message = Вы перемещаете { $amount }ед. в { $target }.
+injector-component-transfer-success-message = Вы перемещаете { $amount } ед. в { $target }.
 injector-component-transfer-success-message-self = Вы переливаете { $amount } ед. в себя.
-injector-component-inject-success-message = Вы вводите { $amount }ед. в { $target }!
+injector-component-inject-success-message = Вы вводите { $amount } ед. в { $target }!
 injector-component-inject-success-message-self = Вы вводите { $amount } ед. в себя!
-injector-component-draw-success-message = Вы набираете { $amount }ед. из { $target }.
+injector-component-draw-success-message = Вы набираете { $amount } ед. из { $target }.
 injector-component-draw-success-message-self = Вы набираете { $amount } ед. из себя.
 
 ## Fail Messages

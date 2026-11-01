@@ -1,0 +1,20 @@
+# Слот медали на форме. Подключается к ClothingUniformBase одним родителем.
+- type: entity
+  abstract: true
+  id: FishClothingUniformMedalBase
+  suffix: Fish
+  components:
+  - type: ItemSlots
+    allowSmartEquip: false
+    slots:
+      medal:
+        name: fish-clothing-slot-medal
+        insertOnInteract: true
+        whitelist:
+          tags:
+          - Medal
+  # ContainerContainer нужен сразу: иначе ItemSlots создаёт ContainerManager при спавне и падает PrototypeSaveTest.
+  - type: ContainerContainer
+    containers:
+      medal: !type:ContainerSlot
+  - type: MedalHolder

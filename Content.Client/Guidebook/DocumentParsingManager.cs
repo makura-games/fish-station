@@ -5,6 +5,7 @@ using Content.Shared.Guidebook;
 using Pidgin;
 using Robust.Client.UserInterface;
 using Robust.Shared.ContentPack;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Reflection;
 using Robust.Shared.Sandboxing;
@@ -22,6 +23,7 @@ public sealed partial class DocumentParsingManager
     [Dependency] private IReflectionManager _reflectionManager = default!;
     [Dependency] private IResourceManager _resourceManager = default!;
     [Dependency] private ISandboxHelper _sandboxHelper = default!;
+    [Dependency] private ILocalizationManager _localization = default!;
 
     private readonly Dictionary<string, Parser<char, Control>> _tagControlParsers = new();
     private Parser<char, Control> _controlParser = default!;
@@ -56,13 +58,13 @@ public sealed partial class DocumentParsingManager
         if (!_prototype.Resolve(entryId, out var entry))
             return false;
 
-        using var file = _resourceManager.ContentFileReadText(entry.Text);
+        using var file = _resourceManager.ContentFileReadText(entry.ResolveText(_localization.DefaultCulture));
         return TryAddMarkup(control, file.ReadToEnd());
     }
 
     public bool TryAddMarkup(Control control, GuideEntry entry)
     {
-        using var file = _resourceManager.ContentFileReadText(entry.Text);
+        using var file = _resourceManager.ContentFileReadText(entry.ResolveText(_localization.DefaultCulture));
         return TryAddMarkup(control, file.ReadToEnd());
     }
 

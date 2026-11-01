@@ -1,0 +1,135 @@
+# Навыки Fish Station. Уровни 1–5; стоимость шагов: 2 / 3 / 5 / 8 (мастер с нуля = 18).
+# Книги обучают максимум до уровня 4 (опытный).
+- type: skill
+  id: FishSkillConstruction
+  name: skills-construction-name
+  description: skills-construction-desc
+  category: engineering
+  difficulty: 2
+  # defaultMax: потолок без явной записи в maxSkills бюджета роли (Trained).
+  defaultMax: 3
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
+
+- type: skill
+  id: FishSkillElectrical
+  name: skills-electrical-name
+  description: skills-electrical-desc
+  category: engineering
+  difficulty: 2
+  defaultMax: 3
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
+
+- type: skill
+  id: FishSkillAtmos
+  name: skills-atmos-name
+  description: skills-atmos-desc
+  category: engineering
+  difficulty: 2
+  defaultMax: 3
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
+
+- type: skill
+  id: FishSkillMedical
+  name: skills-medical-name
+  description: skills-medical-desc
+  category: medical
+  difficulty: 4
+  defaultMax: 3
+  delayFactor: 0.3
+  qualityFactor: 0.15
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
+  qualityMultipliers:
+    1: 0.75
+    2: 0.9
+    3: 1.0
+    4: 1.2
+    5: 1.35
+
+- type: skill
+  id: FishSkillAnatomy
+  name: skills-anatomy-name
+  description: skills-anatomy-desc
+  category: medical
+  difficulty: 4
+  defaultMax: 3
+  delayFactor: 0.3
+  qualityFactor: 0.15
+  prerequisites:
+    FishSkillMedical: 3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
+  qualityMultipliers:
+    1: 0.5
+    2: 0.8
+    3: 1.0
+    4: 1.25
+    5: 1.5
+
+- type: skill
+  id: FishSkillChemistry
+  name: skills-chemistry-name
+  description: skills-chemistry-desc
+  category: medical
+  difficulty: 4
+  defaultMax: 3
+  # Нет игровых потребителей — нейтральные факторы, чтобы UI не показывал ложные эффекты.
+  delayFactor: 0
+  qualityFactor: 0
+
+- type: skill
+  id: FishSkillWeapons
+  name: skills-weapons-name
+  description: skills-weapons-desc
+  category: security
+  difficulty: 2
+  defaultMax: 3
+  delayFactor: 0
+  qualityFactor: 0
+
+- type: skill
+  id: FishSkillComputer
+  name: skills-computer-name
+  description: skills-computer-desc
+  category: general
+  difficulty: 1
+  defaultMax: 3
+  delayFactor: 0
+  qualityFactor: 0
+
+- type: skill
+  id: FishSkillAthletics
+  name: skills-athletics-name
+  description: skills-athletics-desc
+  category: general
+  difficulty: 1
+  defaultMax: 3
+  delayFactor: 0
+  qualityFactor: 0
+

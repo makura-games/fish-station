@@ -96,7 +96,8 @@
     requireMaroon: true
 
 - type: entity
-  parent: [BaseTraitorObjective, BaseKillRandomObjective]
+  # Fish-edit - не BaseKillRandomObjective: иначе AlwaysPushInheritance оставляет защиту и штатные главы невыбираемы
+  parent: [BaseTraitorObjective, BaseKillObjective]
   id: KillRandomHeadObjective
   description: We need this head gone and you probably know why. Make sure they don't make it to CentComm, even if they're dead. Good luck, agent.
   components:
@@ -109,6 +110,20 @@
     title: objective-condition-kill-maroon-title
   - type: PickRandomPerson
     conditions:
+    # Fish-start - фильтры случайной цели без AntagTargetingProtectedCondition
+    - !type:AntagonistTagCondition # Only roll on-station targets.
+      tags:
+      - OnStation
+    - !type:AntagonistTagCondition # Don't roll unkillable targets.
+      inverted: true
+      tags:
+      - Unkillable
+    - !type:ObjectiveTargetCondition
+      inverted: true
+      whitelist:
+        components:
+        - KillPersonCondition
+    # Fish-end
     - !type:BodyWhitelistCondition
       whitelist:
         components:
@@ -140,21 +155,31 @@
 
 # social
 
+# Fish-start - keep-alive: любой незащищённый персонаж (не только другой агент)
 - type: entity
-  parent: [BaseTraitorSocialObjective, BaseKeepAliveObjective]
+  parent: [BaseTraitorObjective, BaseKeepAliveObjective]
   id: RandomTraitorAliveObjective
-  description: Identify yourself at your own risk. We just need them alive.
+  description: Keep them alive until the end of the shift. Identify yourself at your own risk.
   components:
   - type: Objective
     difficulty: 1.75
+    icon:
+      sprite: Objects/Misc/folders.rsi
+      state: folder-colormap
+  - type: ObjectiveBlacklistRequirement
+    blacklist:
+      components:
+      - KillPersonCondition
+  - type: SocialObjective
   - type: TargetObjective
-    title: objective-condition-other-traitor-alive-title
+    title: objective-condition-fish-keep-alive-title
   - type: PickRandomPerson
     conditions:
-    - !type:RoleCondition
-      whitelist:
-        components:
-        - TraitorRole
+    - !type:AntagonistTagCondition
+      tags:
+      - OnStation
+    - !type:AntagTargetingProtectedCondition
+      inverted: true
     # Can't have multiple objectives to help/save the same person
     - !type:ObjectiveTargetCondition
       inverted: true
@@ -162,6 +187,7 @@
         components:
         - HelpProgressCondition
         - KeepAliveCondition
+# Fish-end
 
 - type: entity
   parent: [BaseTraitorSocialObjective, BaseHelpProgressObjective]

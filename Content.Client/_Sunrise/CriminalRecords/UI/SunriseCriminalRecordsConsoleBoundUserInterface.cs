@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._Fish.CriminalRecords;
 using Content.Shared._Sunrise.CriminalRecords;
 using Content.Shared._Sunrise.Laws;
 using Content.Shared.Security;
@@ -78,4 +79,11 @@ public sealed class SunriseCriminalRecordsConsoleBoundUserInterface : BoundUserI
     {
         SendMessage(new SunriseCriminalRecordsChangeStatusMessage(status, reason));
     }
+
+    // Fish-start - быстрая печать документов
+    public void PrintQuickDocument(uint recordId, uint caseId, string templateId)
+    {
+        SendMessage(new FishCriminalRecordsPrintDocumentMessage(recordId, caseId, templateId));
+    }
+    // Fish-end
 }

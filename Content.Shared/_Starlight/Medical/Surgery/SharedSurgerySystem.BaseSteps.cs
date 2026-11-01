@@ -1,4 +1,4 @@
-using Content.Shared.Body;
+﻿using Content.Shared.Body;
 using Content.Shared.Buckle.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Interaction;
@@ -7,6 +7,7 @@ using Content.Shared.Item;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Popups;
 using Content.Shared._Fish.Achievements.Events;
+using Content.Shared._Fish.Skills;
 using Content.Shared.Starlight.Medical.Surgery.Effects.Step;
 using Content.Shared.Starlight.Medical.Surgery.Events;
 using Content.Shared.Starlight.Medical.Surgery.Steps;
@@ -45,6 +46,14 @@ public abstract partial class SharedSurgerySystem
             Dirty(ent);
             return;
         }
+
+        // Fish-start: повторная проверка анатомии на завершении DoAfter
+        if (_skills.TryDenyMissingSkill(args.User, "FishSkillAnatomy", SkillLevels.Basic, "skills-surgery-need-anatomy"))
+        {
+            Dirty(ent);
+            return;
+        }
+        // Fish-end
 
         if (!_random.Prob(args.SuccessRate))
         {
@@ -117,7 +126,7 @@ public abstract partial class SharedSurgerySystem
             AddComp(args.Part, progress);
         }
 
-        // Fish-Edit start: broadcast для achievements (без duplicate SurgeryStepComponent subscription)
+        // Fish-start: broadcast для achievements (без duplicate SurgeryStepComponent subscription)
         var fishAchEv = new FishSurgeryStepCompleteEvent(args.User, args.Body, args.Part)
         {
             StepProto = args.StepProto,
@@ -125,12 +134,12 @@ public abstract partial class SharedSurgerySystem
             IsFinal = args.IsFinal,
         };
         RaiseLocalEvent(ref fishAchEv);
-        // Fish-Edit end
+        // Fish-end
 
         if (args.IsFinal)
             progress.CompletedSurgeries.Add(args.SurgeryProto);
 
-        Dirty(args.Part, progress); // синхронизируем завершенный шаг с BUI
+        Dirty(args.Part, progress); // СЃРёРЅС…СЂРѕРЅРёР·РёСЂСѓРµРј Р·Р°РІРµСЂС€РµРЅРЅС‹Р№ С€Р°Рі СЃ BUI
     }
     private void OnStep(Entity<SurgeryStepComponent> ent, ref SurgeryStepEvent args)
     {
@@ -256,6 +265,11 @@ public abstract partial class SharedSurgerySystem
             return;
         }
 
+        // Fish-start: С…РёСЂСѓСЂРіРёСЏ С‚СЂРµР±СѓРµС‚ Р±Р°Р·РѕРІРѕР№ Р°РЅР°С‚РѕРјРёРё (РІРёРєРё: РЅР°РІС‹Рє В«РҐРёСЂСѓСЂРіРёСЏВ»)
+        if (_skills.TryDenyMissingSkill(user, "FishSkillAnatomy", SkillLevels.Basic, "skills-surgery-need-anatomy"))
+            return;
+        // Fish-end
+
         if (_net.IsServer && TryComp(step, out MetaDataComponent? meta))
         {
             var surgeonName = MetaData(user).EntityName;
@@ -274,6 +288,14 @@ public abstract partial class SharedSurgerySystem
                 if(toolComp.SuccessRate < SmallestSuccessRate)
                     SmallestSuccessRate = toolComp.SuccessRate;
             }
+
+        // Fish-start: СЃРєРѕСЂРѕСЃС‚СЊ Рё С€Р°РЅСЃ СѓСЃРїРµС…Р° С…РёСЂСѓСЂРіРёРё РѕС‚ Р°РЅР°С‚РѕРјРёРё
+        duration *= _skills.GetSkillDelayMultiplier(user, "FishSkillAnatomy");
+        SmallestSuccessRate = Math.Clamp(
+            SmallestSuccessRate * _skills.GetSkillQualityMultiplier(user, "FishSkillAnatomy"),
+            0.05f,
+            1f);
+        // Fish-end
 
         if (TryComp(body, out TransformComponent? xform))
             _rotateToFace.TryFaceCoordinates(user, _transform.GetMapCoordinates(body, xform).Position);

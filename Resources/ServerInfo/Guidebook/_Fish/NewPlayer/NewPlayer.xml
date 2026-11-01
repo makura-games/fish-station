@@ -1,0 +1,38 @@
+<Document>
+# Добро пожаловать на Fish Station!
+
+Вы начинаете смену на станции Nanotrasen. Задача экипажа — работать вместе, выжить и играть по ролям.
+
+[bold]Соблюдайте правила сервера.[/bold] Вопросы и жалобы — через [color=#EB2D3A][bold]admin help[/bold][/color] ([italic]клавиша [/italic][color=yellow][bold][keybind="OpenAHelp"/][/bold][/color]).
+
+Справочник открывается снова клавишей [color=yellow][bold][keybind="OpenGuidebook"][/bold][/color]. Подробные гайды по ролям — в разделе [textlink="станции и смены" link="SS14"].
+
+## Первые шаги
+1. Выберите понятную роль. Новичкам удобны сервис и ассистенты; в СБ начинайте с [textlink="кадета" link="SecurityCadet"].
+2. Проверьте ID, КПК, рацию, рюкзак и доступы.
+3. Слушайте канал отдела. Не спамьте общий.
+4. Не стесняйтесь спрашивать коллег или в LOOC.
+
+## Базовое управление
+- Движение: [color=yellow][bold][keybind="MoveUp"][keybind="MoveLeft"][keybind="MoveDown"][keybind="MoveRight"][/bold][/color], шаг — [color=yellow][bold][keybind="Walk"][/bold][/color]
+- Осмотр — [color=yellow][bold][keybind="ExamineEntity"][/bold][/color]
+- Взаимодействие — [color=yellow][bold][keybind="Use"][/bold][/color]
+- Контекстное меню — [color=yellow][bold][keybind="UseSecondary"][/bold][/color]
+- Смена рук / активация в руке — [color=yellow][bold][keybind="SwapHands"][/bold][/color] / [color=yellow][bold][keybind="ActivateItemInHand"][/bold][/color]
+
+Полный список: [textlink="управление" link="Controls"]. Создание персонажа: [textlink="здесь" link="CharacterCreation"].
+
+## Правила поведения
+- Не убивайте и не грабьте без роли антагониста и оснований.
+- Не ломайте станцию ради хаоса.
+- Эскалируйте конфликт по ролям: сначала слова, потом сила.
+- Читайте [textlink="правила Fish Station" link="FishRuleset"].
+
+## Частые ошибки
+- Выход без ID и без понимания доступа.
+- Игнор рации.
+- Тащить критических мимо медотсека.
+- В СБ — леталка и самосуд с первой минуты.
+
+Удачной смены. Если сомневаетесь — спросите, не ломайте.
+</Document>

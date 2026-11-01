@@ -1,0 +1,424 @@
+# Бюджеты Fish: роль стартует с minSkills, skillPoints — свободные очки сверх минимумов.
+# Стоимость уровней: 2/3/5/8. Мастер одного навыка почти съедает бюджет специалиста.
+# Dual-master на specialist-бюджете невозможен.
+
+- type: jobSkillBudget
+  id: FishPassenger
+  job: Passenger
+  skillPoints: 8
+  minSkills:
+    FishSkillAthletics: 1
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+    FishSkillAtmos: 2
+    FishSkillMedical: 2
+    FishSkillAnatomy: 2
+    FishSkillChemistry: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishClown
+  job: Clown
+  skillPoints: 8
+  minSkills:
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishMime
+  job: Mime
+  skillPoints: 8
+  minSkills:
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishMusician
+  job: Musician
+  skillPoints: 8
+  minSkills:
+    FishSkillAthletics: 1
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillMedical: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishServiceWorker
+  job: ServiceWorker
+  skillPoints: 8
+  minSkills:
+    FishSkillAthletics: 1
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillChemistry: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishBartender
+  job: Bartender
+  skillPoints: 10
+  minSkills:
+    FishSkillChemistry: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillMedical: 3
+    FishSkillChemistry: 3
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishChef
+  job: Chef
+  skillPoints: 10
+  minSkills:
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillMedical: 2
+    FishSkillChemistry: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishBotanist
+  job: Botanist
+  skillPoints: 10
+  minSkills:
+    FishSkillChemistry: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillMedical: 2
+    FishSkillChemistry: 3
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishJanitor
+  job: Janitor
+  skillPoints: 8
+  minSkills:
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+    FishSkillAtmos: 2
+    FishSkillMedical: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishCargoTechnician
+  job: CargoTechnician
+  skillPoints: 10
+  minSkills:
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishSalvageSpecialist
+  job: SalvageSpecialist
+  skillPoints: 12
+  minSkills:
+    FishSkillAthletics: 3
+    FishSkillConstruction: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 3
+    FishSkillAtmos: 2
+    FishSkillMedical: 3
+    FishSkillWeapons: 3
+    FishSkillComputer: 3
+    FishSkillAthletics: 5
+
+- type: jobSkillBudget
+  id: FishQuartermaster
+  job: Quartermaster
+  skillPoints: 12
+  minSkills:
+    FishSkillComputer: 2
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 3
+    FishSkillMedical: 3
+    FishSkillWeapons: 3
+    FishSkillComputer: 4
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishStationEngineer
+  job: StationEngineer
+  skillPoints: 14
+  minSkills:
+    FishSkillConstruction: 2
+    FishSkillElectrical: 2
+  maxSkills:
+    FishSkillConstruction: 5
+    FishSkillElectrical: 5
+    FishSkillAtmos: 4
+    FishSkillMedical: 2
+    FishSkillAnatomy: 2
+    FishSkillChemistry: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishAtmosphericTechnician
+  job: AtmosphericTechnician
+  skillPoints: 14
+  minSkills:
+    FishSkillAtmos: 3
+    FishSkillConstruction: 2
+  maxSkills:
+    FishSkillConstruction: 4
+    FishSkillElectrical: 4
+    FishSkillAtmos: 5
+    FishSkillMedical: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishChiefEngineer
+  job: ChiefEngineer
+  skillPoints: 16
+  minSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 3
+    FishSkillAtmos: 2
+  maxSkills:
+    FishSkillConstruction: 5
+    FishSkillElectrical: 5
+    FishSkillAtmos: 5
+    FishSkillMedical: 2
+    FishSkillAnatomy: 2
+    FishSkillChemistry: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 4
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishMedicalDoctor
+  job: MedicalDoctor
+  skillPoints: 14
+  minSkills:
+    FishSkillMedical: 3
+    FishSkillAnatomy: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillElectrical: 2
+    FishSkillAtmos: 2
+    FishSkillMedical: 5
+    FishSkillAnatomy: 5
+    FishSkillChemistry: 4
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishChemist
+  job: Chemist
+  skillPoints: 14
+  minSkills:
+    FishSkillChemistry: 3
+    FishSkillMedical: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillMedical: 4
+    FishSkillAnatomy: 3
+    FishSkillChemistry: 5
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishParamedic
+  job: Paramedic
+  skillPoints: 12
+  minSkills:
+    FishSkillMedical: 3
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillMedical: 5
+    FishSkillAnatomy: 3
+    FishSkillChemistry: 3
+    FishSkillWeapons: 2
+    FishSkillComputer: 3
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishChiefMedicalOfficer
+  job: ChiefMedicalOfficer
+  skillPoints: 16
+  minSkills:
+    FishSkillMedical: 3
+    FishSkillAnatomy: 3
+    FishSkillChemistry: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillMedical: 5
+    FishSkillAnatomy: 5
+    FishSkillChemistry: 5
+    FishSkillWeapons: 2
+    FishSkillComputer: 4
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishScientist
+  job: Scientist
+  skillPoints: 12
+  minSkills:
+    FishSkillComputer: 3
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 3
+    FishSkillAtmos: 2
+    FishSkillMedical: 2
+    FishSkillChemistry: 3
+    FishSkillWeapons: 2
+    FishSkillComputer: 5
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishResearchDirector
+  job: ResearchDirector
+  skillPoints: 14
+  minSkills:
+    FishSkillComputer: 3
+    FishSkillElectrical: 2
+  maxSkills:
+    FishSkillConstruction: 4
+    FishSkillElectrical: 3
+    FishSkillAtmos: 3
+    FishSkillMedical: 2
+    FishSkillChemistry: 3
+    FishSkillWeapons: 2
+    FishSkillComputer: 5
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishSecurityOfficer
+  job: SecurityOfficer
+  skillPoints: 12
+  minSkills:
+    FishSkillWeapons: 3
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillAnatomy: 2
+    FishSkillWeapons: 5
+    FishSkillComputer: 3
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishWarden
+  job: Warden
+  skillPoints: 12
+  minSkills:
+    FishSkillWeapons: 3
+    FishSkillComputer: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillWeapons: 5
+    FishSkillComputer: 3
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishDetective
+  job: Detective
+  skillPoints: 12
+  minSkills:
+    FishSkillWeapons: 2
+    FishSkillComputer: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillWeapons: 4
+    FishSkillComputer: 4
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishHeadOfSecurity
+  job: HeadOfSecurity
+  skillPoints: 14
+  minSkills:
+    FishSkillWeapons: 3
+    FishSkillAthletics: 2
+    FishSkillComputer: 2
+  maxSkills:
+    FishSkillConstruction: 2
+    FishSkillElectrical: 2
+    FishSkillMedical: 3
+    FishSkillAnatomy: 2
+    FishSkillWeapons: 5
+    FishSkillComputer: 4
+    FishSkillAthletics: 4
+
+- type: jobSkillBudget
+  id: FishHeadOfPersonnel
+  job: HeadOfPersonnel
+  skillPoints: 12
+  minSkills:
+    FishSkillComputer: 2
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+    FishSkillMedical: 2
+    FishSkillChemistry: 2
+    FishSkillWeapons: 2
+    FishSkillComputer: 4
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishCaptain
+  job: Captain
+  skillPoints: 14
+  minSkills:
+    FishSkillComputer: 2
+    FishSkillWeapons: 2
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 3
+    FishSkillElectrical: 3
+    FishSkillAtmos: 2
+    FishSkillMedical: 3
+    FishSkillAnatomy: 2
+    FishSkillChemistry: 2
+    FishSkillWeapons: 3
+    FishSkillComputer: 4
+    FishSkillAthletics: 3

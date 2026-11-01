@@ -1,0 +1,22 @@
+# Fish — дополнительные страницы справочника СБ и переопределение путей к текстам.
+# Сами id Security / CriminalRecords / NewPlayer правятся минимально в vanilla yml (Fish-edit).
+
+- type: guideEntry
+  id: SecurityCadet
+  name: guide-entry-security-cadet
+  text: "/ServerInfo/Guidebook/_Fish/Security/SecurityCadet.xml"
+
+- type: guideEntry
+  id: SecurityArrest
+  name: guide-entry-security-arrest
+  text: "/ServerInfo/Guidebook/_Fish/Security/SecurityArrest.xml"
+
+- type: guideEntry
+  id: SecurityWarden
+  name: guide-entry-security-warden
+  text: "/ServerInfo/Guidebook/_Fish/Security/SecurityWarden.xml"
+
+- type: guideEntry
+  id: SecurityHoS
+  name: guide-entry-security-hos
+  text: "/ServerInfo/Guidebook/_Fish/Security/SecurityHoS.xml"
