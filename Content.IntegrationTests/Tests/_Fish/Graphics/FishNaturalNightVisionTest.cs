@@ -138,12 +138,16 @@ public sealed class FishNaturalNightVisionTest
         var entities = server.EntMan;
         var map = await pair.CreateTestMap();
         EntityUid patient = default, head = default, scalpel = default, removeStep = default, action = default;
+        EntityUid originalEyes = default, replacementEyes = default;
         var cancelled = false;
         await server.WaitPost(() =>
         {
             patient = entities.SpawnEntity("MobTajaran", map.GridCoords);
-            head = entities.GetComponent<BodyComponent>(patient).Organs!.ContainedEntities.Single(uid =>
+            var organs = entities.GetComponent<BodyComponent>(patient).Organs!.ContainedEntities;
+            head = organs.Single(uid =>
                 entities.GetComponent<OrganComponent>(uid).Category?.Id == "Head");
+            originalEyes = organs.Single(uid =>
+                entities.GetComponent<OrganComponent>(uid).Category?.Id == "Eyes");
             scalpel = entities.SpawnEntity("Scalpel", map.GridCoords);
             removeStep = entities.SpawnEntity("SurgeryStepRemoveEyes", map.GridCoords);
             server.System<ServerNightVisionSystem>().SetEnabled(patient, true);
@@ -156,12 +160,15 @@ public sealed class FishNaturalNightVisionTest
             cancelled = remove.IsCancelled;
         });
         Assert.That(cancelled, Is.False);
+        await server.WaitAssertion(() => Assert.That(
+            entities.GetComponent<BodyComponent>(patient).Organs!.ContainedEntities,
+            Does.Not.Contain(originalEyes), "The extraction step must remove the original eyes from the body."));
         await CheckVision();
         await server.WaitPost(() =>
         {
-            var eyes = entities.SpawnEntity("OrganTajaranEyes", map.GridCoords);
+            replacementEyes = entities.SpawnEntity("OrganTajaranEyes", map.GridCoords);
             var insertStep = entities.SpawnEntity("SurgeryStepInsertEyes", map.GridCoords);
-            var insert = new SurgeryStepEvent(patient, patient, head, [eyes])
+            var insert = new SurgeryStepEvent(patient, patient, head, [replacementEyes])
             {
                 SurgeryProto = "SurgeryImplantEyes", StepProto = "SurgeryStepInsertEyes",
             };
@@ -170,6 +177,13 @@ public sealed class FishNaturalNightVisionTest
         });
         Assert.That(cancelled, Is.False);
         await pair.RunTicksSync(1);
+        await server.WaitAssertion(() =>
+        {
+            var eyes = entities.GetComponent<BodyComponent>(patient).Organs!.ContainedEntities.Where(uid =>
+                entities.GetComponent<OrganComponent>(uid).Category?.Id == "Eyes");
+            Assert.That(eyes, Is.EquivalentTo(new[] { replacementEyes }),
+                "The replacement eyes must be the only eyes installed in the body.");
+        });
         await CheckVision();
         await server.WaitPost(() => entities.DeleteEntity(map.MapUid));
         await pair.CleanReturnAsync();
