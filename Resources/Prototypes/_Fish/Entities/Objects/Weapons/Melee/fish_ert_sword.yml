@@ -6,6 +6,7 @@
   description: An assault sword utilized by Nanotrasen emergency response teams.
   components:
   - type: Sprite
+    scale: 0.6, 0.6
     sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
     state: icon
   - type: Clothing
