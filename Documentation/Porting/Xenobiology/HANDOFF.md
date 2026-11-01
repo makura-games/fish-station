@@ -4,7 +4,7 @@
 
 Ветка: `feature/ss220-xenobiology` на `Pythagorius-cra/fish-station-mane`.
 Единственный PR: https://github.com/Pythagorius-cra/fish-station-mane/pull/6 (draft, base `master` форка). В `makura-games/fish-station` PR не открывать, пока об этом не попросят.
-Tip на момент хендоффа: `5f9815d011`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
+Tip на момент хендоффа: `35c4f426b5`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
 
 Не трогать чужие ветки: `feature/restore-original-music-player`, `feature/ss13-mining-system`, `feature/ss1984-crit-behavior`, `feature/clockwork-cult`, `fish/game-improvements-package`.
 
@@ -23,8 +23,10 @@ Tip на момент хендоффа: `5f9815d011`. Upstream-база наре
 | `be2c775c6f` | каркас экстракта: 100 единиц, uses 1..5, память шприца, локали, прототип, спрайт | YAML-линтер ранее без ошибок. В клиент не заходили |
 | `82090cc650` | реакции **серого** экстракта: plasma → малыш, water 5 → epinephrine 3, blood → 3 куба; `ConsumeUse` | сборку/dotnet в этой сессии не гоняли |
 | `5f9815d011` | зелья stabilizer / mutator / steroid / docility: компонент, система, `potions.yml`, локали | в игре не смотрели |
+| `76fcb4bb9c` | реакции экстрактов: green…rainbow (простые reagent/spawn/зелья), red bloodlust; дыры — `PARITY_REPORT.md` | сборку/YAML не гоняли |
+| `35c4f426b5` | зелья enhancer / speed / fireproof / oil slick + предметы sentience & transference (заглушка); chill coating | в игре не смотрели |
 
-Сборка и тест — только то, что в таблице. YAML-линтер не запускался. В игре цикл не гонялся.
+Сборка и тест — только то, что в таблице. YAML-линтер после расширения `potions.yml` не запускался. В игре цикл не гонялся.
 
 Уже известные упрощения в коде слайма, не равные SS13: игрок на слайме сам не делится без глагола (глаголы есть). Огнетушитель trained не перенесён. Полная кривая холода ниже −50°C — частично.
 
@@ -36,15 +38,16 @@ Tip на момент хендоффа: `5f9815d011`. Upstream-база наре
 - `Content.Shared/_Fish/Xenobiology/Slimes/FishSlimeMutation.cs`
 - `Content.Server/_Fish/Xenobiology/Slimes/FishSlimeSystem.cs`
 - `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractComponent.cs`
-- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractSystem.cs` + `FishSlimeExtractSystem.Reactions.cs` — examine, шприц, `TryAddUse` / `ConsumeUse`, реакции серого экстракта.
-- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimePotionComponent.cs`
-- `Content.Server/_Fish/Xenobiology/Extracts/FishSlimePotionSystem.cs` — stabilizer, mutator, steroid, docility на живом слайме.
+- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractSystem.cs` + `FishSlimeExtractSystem.Reactions.cs` + `FishSlimeExtractReactions.Colors.cs` — реакции по color (серый и остальные простые; gold/silver/… см. `PARITY_REPORT.md`).
+- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimePotionComponent.cs`, `FishSlimeChillCoatingComponent.cs`
+- `Content.Server/_Fish/Xenobiology/Extracts/FishSlimePotionSystem.cs` (+ `Extract` / `Gear`) — зелья на слайм, экстракт, одежду, предмет.
 - `Content.Tests/_Fish/Xenobiology/FishSlimeMutationTest.cs`
 - `Resources/Prototypes/_Fish/Xenobiology/slimes.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/extracts.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/potions.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/cubes.yml`
 - `Resources/Locale/en-US/_Fish/xenobiology/` и `Resources/Locale/ru-RU/_Fish/xenobiology/` (`slimes.ftl`, `extracts.ftl`, `cubes.ftl`, `potions.ftl`)
+- `Documentation/Porting/Xenobiology/PARITY_REPORT.md` — нереализованные реакции и упрощения зелий.
 - `Resources/Textures/_Fish/Xenobiology/extracts/extracts.rsi/`
 
 Дальше, не смешивая с чужими папками:
@@ -204,11 +207,11 @@ Tip на момент хендоффа: `5f9815d011`. Upstream-база наре
 
 1. Не качать SS220. Открыть этот файл и `FEATURE_INVENTORY.md`.
 2. ~~Серый экстракт~~ — `82090cc650`.
-3. ~~Базовые зелья полей слайма (stabilizer, mutator, steroid, docility)~~ — `5f9815d011`. Остальные зелья (enhancer, speed, fireproof, sentience, transference, …) — отдельными коммитами.
-4. Остальные строки таблицы реакций экстрактов, пачками по цвету, с честным эффектом или явной дырой в `PARITY_REPORT.md`. Плитки сепии и блюспейса — friction существующего тайла, см. выше.
+3. ~~Базовые зелья полей слайма~~ — `5f9815d011`. ~~Enhancer / speed / fireproof / oil slick~~ — `35c4f426b5`; sentience & transference — предмет есть, логика нет (`PARITY_REPORT.md`).
+4. ~~Простые реакции экстрактов по цветам~~ — `76fcb4bb9c`; gold/silver/sepia/… — `PARITY_REPORT.md`. Дальше: отложенные взрывы/EMP/crit и плитки bluespace/sepia.
 5. Процессор мёртвого слайма: выход = `Cores` экстрактов цвета `ColorId`.
 6. Только после замкнутого цикла корм → рост → деление → процессор → реакция: консоль, ресайклер, ручной сканер, ящик лаборатории, потом органы.
-7. Один проход ревью по `_Fish/Xenobiology`: не-readonly `Dependency`, `partial`, маркеры Fish, id прототипов, локали en-US и ru-RU. YAML-линтер после правок `potions.yml`. В чеклист PR писать команду и результат. В игре не утверждать то, что не запускалось.
+7. YAML-линтер после `potions.yml`, сборка Shared/Server. Ревью `_Fish/Xenobiology`. В игре не утверждать то, что не запускалось.
 
 ## Уточнения из дампа слайма
 
@@ -229,4 +232,4 @@ Tip на момент хендоффа: `5f9815d011`. Upstream-база наре
 - Родители прототипа: `SimpleMobBase`, `MobCombat`, `NpcFactionMember` / `SimpleNeutral`, речь `Slime`, `FootstepSlime`, модификатор урона `Slime`, `VentCrawler`.
 - `RobustToolbox` в том чекауте не было. Его инициализировали локально на `36905986f6809420dbc78168fc494f91723d356b` и не коммитили. `dotnet` брали из `~/.dotnet` 10.0.403.
 
-Перед серым экстрактом (шаг 2 в списке выше): всё из блока «уточнения» по слайму сделано, включая YAML-линтер (`Content.YAMLLinter`, без ошибок). Серый экстракт и базовые зелья полей — `82090cc650`, `5f9815d011`. Следующий шаг — остальные реакции экстрактов (шаг 4). Сборку/YAML после `potions.yml` в этой сессии не гоняли. В игре не отмечать то, что не запускали.
+Реакции экстрактов (простые) и зелья enhancer/speed/chill/oil — `76fcb4bb9c`, `35c4f426b5`. Следующий шаг — **процессор** (шаг 5). YAML-линтер после расширения `potions.yml` не гоняли.
