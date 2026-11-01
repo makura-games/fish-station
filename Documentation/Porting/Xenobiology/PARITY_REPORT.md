@@ -6,7 +6,7 @@
 
 | Цвет | Реагент | SS220 | Статус |
 | --- | --- | --- | --- |
-| gold | plasma | 5 crit, кап 15 | пул враждебных (паук/медведь salvage) + crit-кап + release |
+| gold | plasma | 5 crit, кап 15 | пул враждебных (lavaland/asteroid/salvage roster) + crit-кап + release |
 | gold | blood / water | 3 нейтр. / 1 друж. | `FishXenoGoldCritNeutralCarpFish` ×3, `FishXenoGoldCritFriendlyCarpFish` ×1 + кап |
 | black | blood | virus_genes | реагент `FishVirusGenesFish` (не полный virology SS220) |
 | cerulean | blood | territory blueprints | случайный `Blueprint*` из пула, не territory kit |
@@ -37,6 +37,8 @@
 | SS220 | Статус |
 | --- | --- |
 | Конвейер | диссектор → масса → слайм → анализатор |
-| Таблица диссекции | расширена (паук/hivelord/watcher, goliath/bear/carp, …) — не полный DM-список |
-| Эффекты | UseInHand 60 с + **импланты порция 3** (Regenerative/Toxic/Vigor, 30 мин) |
+| **regen_mesh** | `FishXenoRegenMeshFish` → качество **Pristine** (2× в анализаторе) |
+| Таблица диссекции | расширена под DM-список (flock/megacarp/… частично по id прототипа) |
+| Эффекты | UseInHand 60 с; **HeatResist** (−50% Heat); импланты порция 3–4 (6 типов) |
 | Анализатор | лимит 3 скана на тип; **tech disk** ~12% → `TechnologyDisk` |
+| Уникальные органы SS220 | ~1600 строк DM не портированы (дыхание дракона, flock spell, …) |
