@@ -8,6 +8,9 @@ public enum FishSlimeExtractPendingKind : byte
     OilExplosion,
     OrangeFire,
     DarkBlueFreeze,
+    GoldCritHostile,
+    GoldCritLesser,
+    GoldCritFriendly,
 }
 
 /// <summary>
@@ -23,4 +26,10 @@ public sealed partial class FishSlimeExtractPendingReactionComponent : Component
     public TimeSpan TriggerAt;
 
     public EntityUid? SourceUser;
+
+    /// <summary>
+    /// Число мобов gold crit (Paradise: plasma 5 / blood 3 / water 1).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public int GoldCritCount;
 }
