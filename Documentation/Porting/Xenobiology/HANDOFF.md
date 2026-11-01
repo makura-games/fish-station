@@ -4,7 +4,7 @@
 
 Ветка: `feature/ss220-xenobiology` на `Pythagorius-cra/fish-station-mane`.
 Единственный PR: https://github.com/Pythagorius-cra/fish-station-mane/pull/6 (draft, base `master` форка). В `makura-games/fish-station` PR не открывать, пока об этом не попросят.
-Tip на момент хендоффа: `8d5b43fac0`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
+Tip на момент хендоффа: `1c5c57127e`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
 
 Не трогать чужие ветки: `feature/restore-original-music-player`, `feature/ss13-mining-system`, `feature/ss1984-crit-behavior`, `feature/clockwork-cult`, `fish/game-improvements-package`.
 
@@ -36,6 +36,7 @@ Tip на момент хендоффа: `8d5b43fac0`. Upstream-база наре
 | `870e8cfd3e` | chill заряды при Heat; pyrite/cerulean паритет | сборку не гоняли |
 | `72248fcbc9` | cargo `FishXenobiologyLab`, sentience raffle/warm, gold crit, virus_genes, cerulean blueprints, multitool recycler, console verbs, органы порция 1 | сборку/YAML не гоняли |
 | `8d5b43fac0` | gold carp + crit-кап; sentience остывание; анализатор 3/тип; органы Vigor/Antitoxin | сборку/YAML не гоняли |
+| `1c5c57127e` | gold crit roster; oil slick vs активный MOD; tech disk с анализатора; импланты органов; таблица диссекции | сборку/YAML не гоняли |
 
 Сборка и тест — только то, что в таблице. YAML-линтер после расширения `potions.yml` не запускался. В игре цикл не гонялся.
 
@@ -220,7 +221,7 @@ Tip на момент хендоффа: `8d5b43fac0`. Upstream-база наре
 4. ~~Простые реакции экстрактов по цветам~~ — `76fcb4bb9c`. ~~Отложенные gold/silver/sepia/…~~ — `b46c4c1fb1` (упрощения — `PARITY_REPORT.md`).
 5. ~~Процессор мёртвого слайма~~ — `c106c9f3f8` + `machines.yml` `9ccd6d6601`.
 6. ~~Консоль, ресайклер, сканер~~ — консоль `5926cea88a`, остальное ранее. ~~Ящик лаборатории~~ — `f53815f8e7`. ~~Органы (каркас)~~ — `43719fae99`.
-7. **Дальше:** `dotnet build` + YAMLLinter (локально), tech disk с анализатора, имплант-таблица органов SS220, oil slick MOD, полный gold crit roster. Карту — только по отдельному запросу.
+7. **Дальше:** `dotnet build` + YAMLLinter (локально), regen_mesh, оставшиеся органы/импланты SS220, полный DM-roster gold crit. Карту — только по отдельному запросу.
 
 ## Уточнения из дампа слайма
 
