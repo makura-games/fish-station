@@ -5,6 +5,8 @@ public enum FishXenoOrganEffectKind : byte
     Regenerative,
     Toxic,
     Sinew,
+    Vigor,
+    Antitoxin,
 }
 
 [RegisterComponent]
