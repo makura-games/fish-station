@@ -1,0 +1,58 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:research="clr-namespace:Content.Client._Fish.Research.UI"
+                      Title="{Loc 'fish-research-tree-title'}"
+                      MinSize="800 480"
+                      SetSize="1100 700">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="8" Margin="8">
+        <PanelContainer Name="HeaderPanel">
+            <BoxContainer Margin="10 8" SeparationOverride="12">
+                <BoxContainer Orientation="Vertical" MinWidth="155">
+                    <Label Name="PointsLabel" StyleClasses="LabelHeading"/>
+                    <Label Name="FreeChoiceHint" Text="{Loc 'fish-research-tree-free-choice'}" ClipText="True"/>
+                </BoxContainer>
+                <LineEdit Name="SearchEdit" PlaceHolder="{Loc 'fish-research-tree-search'}" HorizontalExpand="True" VerticalAlignment="Center"/>
+                <Button Name="ServerButton" Text="{Loc 'research-console-menu-server-selection-button'}" VerticalAlignment="Center"/>
+            </BoxContainer>
+        </PanelContainer>
+        <BoxContainer Name="TreeContent" Access="Public" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="8">
+            <PanelContainer Name="SidebarPanel" SetWidth="174" VerticalExpand="True">
+                <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Name="DisciplineList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8" Margin="8"/>
+                </ScrollContainer>
+            </PanelContainer>
+            <PanelContainer Name="GraphPanel" HorizontalExpand="True" VerticalExpand="True">
+                <research:FishResearchTreeControl Name="Graph" Access="Public" HorizontalExpand="True" VerticalExpand="True"/>
+            </PanelContainer>
+            <PanelContainer Name="DetailsPanel" SetWidth="266" VerticalExpand="True">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" SeparationOverride="8">
+                    <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Name="DetailsContent" Access="Public" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10"/>
+                    </ScrollContainer>
+                    <RichTextLabel Name="PurchaseStatusLabel" Access="Public" HorizontalExpand="True"/>
+                    <Button Name="ResearchButton" Access="Public" Text="{Loc 'fish-research-tree-research'}" Disabled="True" MinHeight="38" ClipText="True"/>
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+        <PanelContainer Name="FooterPanel">
+            <BoxContainer Orientation="Vertical" Margin="8 5" SeparationOverride="4">
+                <BoxContainer SeparationOverride="8">
+                    <Button Name="SidebarButton" Text="{Loc 'fish-research-tree-directions'}" ToggleMode="True" Pressed="True"/>
+                    <Label Name="ResultCountLabel" HorizontalExpand="True" ClipText="True"/>
+                    <Button Name="CenterButton" Text="{Loc 'fish-research-tree-center'}"/>
+                    <Button Name="ZoomOutButton" Text="−" MinWidth="30"/>
+                    <Label Name="ZoomLabel" MinWidth="46" Align="Center"/>
+                    <Button Name="ZoomInButton" Text="+" MinWidth="30"/>
+                    <Button Name="ResetButton" Text="{Loc 'fish-research-tree-reset'}"/>
+                </BoxContainer>
+                <BoxContainer SeparationOverride="10">
+                    <Label Name="ResearchedLegend" Text="{Loc 'fish-research-tree-legend-researched'}"/>
+                    <Label Name="AvailableLegend" Text="{Loc 'fish-research-tree-legend-available'}"/>
+                    <Label Name="LockedLegend" Text="{Loc 'fish-research-tree-legend-locked'}"/>
+                    <Control HorizontalExpand="True"/>
+                </BoxContainer>
+                <Label Name="NavigationHint" Text="{Loc 'fish-research-tree-navigation'}" ClipText="True"/>
+            </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

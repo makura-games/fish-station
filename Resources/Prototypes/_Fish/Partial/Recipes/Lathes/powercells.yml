@@ -1,0 +1,6 @@
+# Fish-edit: микрореакторная батарея требует обработанный уран вместо обычного.
+- type: !PartialOnly latheRecipe
+  id: PowerCellMicroreactor
+  materials:
+    Uranium: !Remove
+    FishProcessedUranium: 200

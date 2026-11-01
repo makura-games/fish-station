@@ -1,0 +1,8 @@
+# Fish-edit: планшет использует тот же каталог и доступ одобрения, что и основная консоль карго.
+- type: !PartialOnly entity
+  id: BoxFolderQmClipboard
+  components:
+  - type: FishCargoCatalog
+  - type: AccessReader
+    access: !Clear
+    - [Quartermaster]

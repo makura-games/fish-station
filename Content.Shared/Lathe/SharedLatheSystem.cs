@@ -91,7 +91,7 @@ public abstract partial class SharedLatheSystem : EntitySystem
 
         foreach (var (material, needed) in recipe.Materials)
         {
-            var adjustedAmount = AdjustMaterial(needed, recipe.ApplyMaterialDiscount, component.MaterialUseMultiplier);
+            var adjustedAmount = AdjustMaterial(ProtoMan.Index(material), needed, recipe.ApplyMaterialDiscount, component.MaterialUseMultiplier); // Fish-edit: проверяем расход целых единиц материала.
 
             if (_materialStorage.GetMaterialAmount(uid, material) < adjustedAmount * amount)
                 return false;

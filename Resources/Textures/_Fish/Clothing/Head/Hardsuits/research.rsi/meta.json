@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "AdventureTimeSS14/space_station_ADT at 7b10d762fbeaa0aab2780981b09d3cd6430d4c64, Resources/Textures/ADT/Clothing/Head/Modsuit/science.rsi. Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/97ec5ed1a0fc8263df5df5a5afbb653d4684992e & light version made by github:Morb0. Vox states made by Flareguy for SS14 Fish conversion: only normal humanoid helmet and lamp states retained; colors preserved. In-hand sprites: ParadiseSS13 contributors, generic space-helmet fallback s_helmet, from https://github.com/ParadiseSS13/Paradise/tree/d118a2ce60b712046ebb180834200fc8d25c91c8/icons/mob/inhands, original left/right states preserved. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon"
+    },
+    {
+      "name": "equipped-head",
+      "directions": 4
+    },
+    {
+      "name": "icon-unshaded"
+    },
+    {
+      "name": "light-overlay"
+    },
+    {
+      "name": "equipped-head-unshaded",
+      "directions": 4
+    },
+    {
+      "name": "equipped-head-light",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}

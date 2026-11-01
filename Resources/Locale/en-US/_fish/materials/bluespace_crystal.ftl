@@ -1,0 +1,34 @@
+ent-FishBluespaceCrystal1 = bluespace crystal
+    .desc = A fragile blue crystal with a faint shimmer deep inside.
+    .suffix = Fish
+
+materials-fish-bluespace-crystal = bluespace crystal
+    .suffix = Fish
+stack-fish-bluespace-crystal = bluespace crystal
+    .suffix = Fish
+materials-unit-fish-crystal = pcs.
+
+ent-FishBaseVeinBluespaceCrystal = bluespace vein
+    .desc = Blue crystals shimmer within the rock.
+    .suffix = Fish
+ent-FishAsteroidRockBluespaceCrystal = { ent-AsteroidRock }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishIronRockBluespaceCrystal = { ent-IronRock }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockBluespaceCrystal = { ent-WallRock }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockSnowBluespaceCrystal = { ent-WallRockSnow }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockSandBluespaceCrystal = { ent-WallRockSand }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockChromiteBluespaceCrystal = { ent-WallRockChromite }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockBasaltBluespaceCrystal = { ent-WallRockBasalt }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish

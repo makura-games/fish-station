@@ -1,0 +1,278 @@
+- type: entity
+  parent: BaseItem
+  id: FishXenoExtractBase
+  name: slime extract
+  description: A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+  suffix: Fish
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _Fish/Xenobiology/Objects/extract.rsi
+    state: core
+  - type: Item
+    size: Tiny
+    sprite: _Fish/Xenobiology/Objects/extract.rsi
+  - type: SolutionManager
+    solutions: [FishXenoExtractSolution]
+  - type: InjectableSolution
+    solution: extract
+  - type: RefillableSolution
+    solution: extract
+  - type: ExaminableSolution
+    solution: extract
+    exactVolume: true
+  - type: StaticPrice
+    price: 0
+
+- type: entity
+  parent: Solution
+  id: FishXenoExtractSolution
+  suffix: Fish
+  categories: [HideSpawnMenu]
+  components:
+  - type: Solution
+    id: extract
+    solution:
+      maxVol: 15
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractGrey
+  name: grey extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#9b9b9b'
+  - type: FishXenobiologyExtract
+    breed: FishGrey
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractBlue
+  name: blue extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#6a9ef0'
+  - type: FishXenobiologyExtract
+    breed: FishBlue
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractMetal
+  name: metal extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#939ca6'
+  - type: FishXenobiologyExtract
+    breed: FishMetal
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractOrange
+  name: orange extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#f39b45'
+  - type: FishXenobiologyExtract
+    breed: FishOrange
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractPurple
+  name: purple extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#a66bd5'
+  - type: FishXenobiologyExtract
+    breed: FishPurple
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractDarkBlue
+  name: dark blue extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#385ab5'
+  - type: FishXenobiologyExtract
+    breed: FishDarkBlue
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractDarkPurple
+  name: dark purple extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#6d368b'
+  - type: FishXenobiologyExtract
+    breed: FishDarkPurple
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractSilver
+  name: silver extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#c9d4db'
+  - type: FishXenobiologyExtract
+    breed: FishSilver
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractYellow
+  name: yellow extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#f1dc52'
+  - type: FishXenobiologyExtract
+    breed: FishYellow
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractRed
+  name: red extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#e35353'
+  - type: FishXenobiologyExtract
+    breed: FishRed
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractGreen
+  name: green extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#78c765'
+  - type: FishXenobiologyExtract
+    breed: FishGreen
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractPink
+  name: pink extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#ef9ac5'
+  - type: FishXenobiologyExtract
+    breed: FishPink
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractGold
+  name: gold extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#d6b145'
+  - type: FishXenobiologyExtract
+    breed: FishGold
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractCerulean
+  name: cerulean extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#64ccd5'
+  - type: FishXenobiologyExtract
+    breed: FishCerulean
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractPyrite
+  name: pyrite extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#e0cb76'
+  - type: FishXenobiologyExtract
+    breed: FishPyrite
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractBluespace
+  name: bluespace extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#4a7ffc'
+  - type: FishXenobiologyExtract
+    breed: FishBluespace
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractSepia
+  name: sepia extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#9e795c'
+  - type: FishXenobiologyExtract
+    breed: FishSepia
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractOil
+  name: oil extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#443d4e'
+  - type: FishXenobiologyExtract
+    breed: FishOil
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractBlack
+  name: black extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#55515c'
+  - type: FishXenobiologyExtract
+    breed: FishBlack
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractLightPink
+  name: light pink extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#f3bed7'
+  - type: FishXenobiologyExtract
+    breed: FishLightPink
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractAdamantine
+  name: adamantine extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#729c8d'
+  - type: FishXenobiologyExtract
+    breed: FishAdamantine
+
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoExtractRainbow
+  name: rainbow extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#ede2ff'
+  - type: FishXenobiologyExtract
+    breed: FishRainbow

@@ -1,0 +1,33 @@
+- type: fishCargoCatalog
+  id: FishStationCargoCatalog
+  suffix: Fish
+  defaultAccount: Cargo
+  categories:
+    cargoproduct-category-name-armory: Security
+    cargoproduct-category-name-security: Security
+    cargoproduct-category-name-engineering: Engineering
+    cargoproduct-category-name-atmospherics: Engineering
+    cargoproduct-category-name-medical: Medical
+    cargoproduct-category-name-science: Science
+    cargoproduct-category-name-service: Service
+    cargoproduct-category-name-food: Service
+    cargoproduct-category-name-hydroponics: Service
+    cargoproduct-category-name-janitorial: Service
+    cargoproduct-category-name-instruments: Service
+    cargoproduct-category-name-livestock: Service
+    cargoproduct-category-name-fun: Service
+    Fun: Service
+  products:
+    MedicalSupplies: Cargo
+    EmergencyBurnKit: Cargo
+    EmergencyToxinKit: Cargo
+    EmergencyO2Kit: Cargo
+    EmergencyBruteKit: Cargo
+    EmergencyAdvancedKit: Cargo
+    EmergencyRadiationKit: Cargo
+    EmergencyExplosive: Security
+    EmergencyFire: Engineering
+    EmergencyRadiation: Engineering
+    EmergencyBiosuit: Medical
+    SpaceGyroscope: Engineering
+    SpaceThruster: Engineering

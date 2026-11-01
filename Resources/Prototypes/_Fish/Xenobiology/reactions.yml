@@ -1,0 +1,255 @@
+- type: fishXenobiologyReaction
+  id: FishXenoReactionGreyNutrients
+  suffix: Fish
+  breed: FishGrey
+  name: fish-xeno-reaction-grey-nutrients
+  description: fish-xeno-reaction-grey-nutrients-desc
+  reagent: Water
+  amount: 5
+  reagents:
+    Nutriment: 10
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionGreyCulture
+  suffix: Fish
+  breed: FishGrey
+  name: fish-xeno-reaction-grey-culture
+  description: fish-xeno-reaction-grey-culture-desc
+  reagent: Blood
+  amount: 5
+  products:
+    FishXenoCultureGrey: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionBlueCoolant
+  suffix: Fish
+  breed: FishBlue
+  name: fish-xeno-reaction-blue-coolant
+  description: fish-xeno-reaction-blue-coolant-desc
+  reagent: Water
+  amount: 5
+  reagents:
+    Cryoxadone: 15
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionMetalMaterials
+  suffix: Fish
+  breed: FishMetal
+  name: fish-xeno-reaction-metal-materials
+  description: fish-xeno-reaction-metal-materials-desc
+  reagent: Water
+  amount: 5
+  products:
+    SheetSteel1: 1
+    SheetGlass1: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionOrangeFlares
+  suffix: Fish
+  breed: FishOrange
+  name: fish-xeno-reaction-orange-flares
+  description: fish-xeno-reaction-orange-flares-desc
+  reagent: Water
+  amount: 5
+  products:
+    Flare: 2
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionPurpleYield
+  suffix: Fish
+  breed: FishPurple
+  name: fish-xeno-reaction-purple-yield
+  description: fish-xeno-reaction-purple-yield-desc
+  reagent: Plasma
+  amount: 5
+  products:
+    FishXenoSerumYield: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionDarkBlueThermal
+  suffix: Fish
+  breed: FishDarkBlue
+  name: fish-xeno-reaction-dark-blue-thermal
+  description: fish-xeno-reaction-dark-blue-thermal-desc
+  reagent: Water
+  amount: 5
+  products:
+    FishXenoSerumThermal: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionDarkPurplePlasma
+  suffix: Fish
+  breed: FishDarkPurple
+  name: fish-xeno-reaction-dark-purple-plasma
+  description: fish-xeno-reaction-dark-purple-plasma-desc
+  reagent: Plasma
+  amount: 5
+  products:
+    SheetPlasma1: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionSilverCleaner
+  suffix: Fish
+  breed: FishSilver
+  name: fish-xeno-reaction-silver-cleaner
+  description: fish-xeno-reaction-silver-cleaner-desc
+  reagent: Water
+  amount: 5
+  reagents:
+    SpaceCleaner: 20
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionYellowCell
+  suffix: Fish
+  breed: FishYellow
+  name: fish-xeno-reaction-yellow-cell
+  description: fish-xeno-reaction-yellow-cell-desc
+  reagent: Water
+  amount: 5
+  products:
+    FishXenoPowerCell: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionRedMutation
+  suffix: Fish
+  breed: FishRed
+  name: fish-xeno-reaction-red-mutation
+  description: fish-xeno-reaction-red-mutation-desc
+  reagent: Plasma
+  amount: 5
+  products:
+    FishXenoSerumMutation: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionGreenFertility
+  suffix: Fish
+  breed: FishGreen
+  name: fish-xeno-reaction-green-fertility
+  description: fish-xeno-reaction-green-fertility-desc
+  reagent: Blood
+  amount: 5
+  products:
+    FishXenoSerumFertility: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionPinkDocility
+  suffix: Fish
+  breed: FishPink
+  name: fish-xeno-reaction-pink-docility
+  description: fish-xeno-reaction-pink-docility-desc
+  reagent: Water
+  amount: 5
+  products:
+    FishXenoSerumDocility: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionGoldMetal
+  suffix: Fish
+  breed: FishGold
+  name: fish-xeno-reaction-gold-metal
+  description: fish-xeno-reaction-gold-metal-desc
+  reagent: Plasma
+  amount: 5
+  products:
+    IngotGold1: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionCeruleanGrowth
+  suffix: Fish
+  breed: FishCerulean
+  name: fish-xeno-reaction-cerulean-growth
+  description: fish-xeno-reaction-cerulean-growth-desc
+  reagent: Blood
+  amount: 5
+  products:
+    FishXenoSerumGrowth: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionPyriteHarvest
+  suffix: Fish
+  breed: FishPyrite
+  name: fish-xeno-reaction-pyrite-harvest
+  description: fish-xeno-reaction-pyrite-harvest-desc
+  reagent: Water
+  amount: 5
+  reagents:
+    RobustHarvest: 15
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionBluespaceStimulant
+  suffix: Fish
+  breed: FishBluespace
+  name: fish-xeno-reaction-bluespace-stimulant
+  description: fish-xeno-reaction-bluespace-stimulant-desc
+  reagent: Water
+  amount: 5
+  reagents:
+    Synaptizine: 15
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionSepiaStability
+  suffix: Fish
+  breed: FishSepia
+  name: fish-xeno-reaction-sepia-stability
+  description: fish-xeno-reaction-sepia-stability-desc
+  reagent: Water
+  amount: 5
+  products:
+    FishXenoSerumStability: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionOilFuel
+  suffix: Fish
+  breed: FishOil
+  name: fish-xeno-reaction-oil-fuel
+  description: fish-xeno-reaction-oil-fuel-desc
+  reagent: Plasma
+  amount: 5
+  reagents:
+    WeldingFuel: 20
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionBlackMedicine
+  suffix: Fish
+  breed: FishBlack
+  name: fish-xeno-reaction-black-medicine
+  description: fish-xeno-reaction-black-medicine-desc
+  reagent: Blood
+  amount: 5
+  reagents:
+    Omnizine: 10
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionLightPinkDocility
+  suffix: Fish
+  breed: FishLightPink
+  name: fish-xeno-reaction-light-pink-docility
+  description: fish-xeno-reaction-light-pink-docility-desc
+  reagent: Water
+  amount: 5
+  products:
+    FishXenoSerumDocility: 2
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionAdamantineAlloy
+  suffix: Fish
+  breed: FishAdamantine
+  name: fish-xeno-reaction-adamantine-alloy
+  description: fish-xeno-reaction-adamantine-alloy-desc
+  reagent: Plasma
+  amount: 5
+  products:
+    SheetPlasteel1: 1
+
+- type: fishXenobiologyReaction
+  id: FishXenoReactionRainbowGenetics
+  suffix: Fish
+  breed: FishRainbow
+  name: fish-xeno-reaction-rainbow-genetics
+  description: fish-xeno-reaction-rainbow-genetics-desc
+  reagent: Plasma
+  amount: 5
+  products:
+    FishXenoSerumMutation: 1
+    FishXenoSerumGrowth: 1
+    FishXenoSerumThermal: 1

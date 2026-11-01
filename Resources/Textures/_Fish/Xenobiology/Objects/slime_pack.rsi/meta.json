@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Sprites by Dwasint. Source credits: https://github.com/Monkestation/Monkestation2.0/blob/79ab5130248e8610937a7b18d845a8efeeeb219d/monkestation/code/modules/slimecore/readme.md. Taken from Monkestation2.0 at https://github.com/Monkestation/Monkestation2.0/blob/79ab5130248e8610937a7b18d845a8efeeeb219d/monkestation/code/modules/slimecore/icons/equipment.dmi. Imported without pixel changes from Goob Station commit 7e962071658b3f59a14b54fefb3b376edee7bb3c, Resources/Textures/_Goobstation/Xenobiology/Specific/Xenobiology/slime_pack.rsi. Direct RSI source: https://github.com/Goob-Station/Goob-Station/tree/7e962071658b3f59a14b54fefb3b376edee7bb3c/Resources/Textures/_Goobstation/Xenobiology/Specific/Xenobiology/slime_pack.rsi. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon"
+    },
+    {
+      "name": "icon-filled"
+    },
+    {
+      "name": "equipped-SUITSTORAGE",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}

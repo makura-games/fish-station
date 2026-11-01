@@ -1,0 +1,40 @@
+- type: latheRecipePack
+  id: FishCargoHardsuits
+  recipes:
+  - FishHardsuitSpatio
+  - FishHardsuitSalvage
+  - FishHardsuitSpaceHazard
+  - FishHardsuitMining
+  - FishHardsuitAdvancedMining
+  - FishHardsuitExpedition
+
+- type: latheRecipePack
+  id: FishEngineeringHardsuits
+  recipes:
+  - FishHardsuitEngineering
+  - FishHardsuitAtmos
+  - FishHardsuitEngineeringCompact
+  - FishHardsuitEngineeringAdvanced
+
+- type: latheRecipePack
+  id: FishMedicalHardsuits
+  recipes:
+  - FishHardsuitParamedic
+  - FishHardsuitMedicalRescue
+
+- type: latheRecipePack
+  id: FishSecurityHardsuits
+  recipes:
+  - FishHardsuitSecurity
+  - FishHardsuitBrigmedic
+  - FishHardsuitSecurityAdvanced
+
+- type: latheRecipePack
+  id: FishResearchHardsuits
+  recipes:
+  - FishHardsuitResearch
+
+- type: latheRecipePack
+  id: FishServiceHardsuits
+  recipes:
+  - FishHardsuitCivilian

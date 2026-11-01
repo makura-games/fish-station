@@ -720,6 +720,7 @@ namespace Content.Server.Cargo.Systems
                 products.Add(product.ID);
             }
 
+            _fishCargoCatalog.FilterProducts(ent, products); // Fish-edit: консоль создаёт заявки только на товары своего отдела.
             return products;
         }
 

@@ -1,0 +1,40 @@
+# Fish-edit: обычная консоль запрашивает общие припасы, а одобрение требует доступ КМ.
+- type: !PartialOnly entity
+  id: ComputerCargoOrders
+  components:
+  - type: FishCargoCatalog
+  - type: AccessReader
+    access: !Clear
+    - [Quartermaster]
+
+# Fish-start: профильные консоли направляют заявки КМ с сохранением счёта отдела.
+- type: !PartialOnly entity
+  id: ComputerCargoOrdersEngineering
+  components:
+  - type: CargoOrderConsole
+    mode: SendToPrimary
+
+- type: !PartialOnly entity
+  id: ComputerCargoOrdersMedical
+  components:
+  - type: CargoOrderConsole
+    mode: SendToPrimary
+
+- type: !PartialOnly entity
+  id: ComputerCargoOrdersScience
+  components:
+  - type: CargoOrderConsole
+    mode: SendToPrimary
+
+- type: !PartialOnly entity
+  id: ComputerCargoOrdersSecurity
+  components:
+  - type: CargoOrderConsole
+    mode: SendToPrimary
+
+- type: !PartialOnly entity
+  id: ComputerCargoOrdersService
+  components:
+  - type: CargoOrderConsole
+    mode: SendToPrimary
+# Fish-end

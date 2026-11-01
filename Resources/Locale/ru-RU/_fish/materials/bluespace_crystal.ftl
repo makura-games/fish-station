@@ -1,0 +1,34 @@
+ent-FishBluespaceCrystal1 = блюспейс-кристалл
+    .desc = Хрупкий синий кристалл со слабым мерцанием в глубине.
+    .suffix = Fish
+
+materials-fish-bluespace-crystal = блюспейс-кристалл
+    .suffix = Fish
+stack-fish-bluespace-crystal = блюспейс-кристалл
+    .suffix = Fish
+materials-unit-fish-crystal = шт.
+
+ent-FishBaseVeinBluespaceCrystal = блюспейс-жила
+    .desc = В породе поблёскивают синие кристаллы.
+    .suffix = Fish
+ent-FishAsteroidRockBluespaceCrystal = { ent-AsteroidRock }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishIronRockBluespaceCrystal = { ent-IronRock }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockBluespaceCrystal = { ent-WallRock }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockSnowBluespaceCrystal = { ent-WallRockSnow }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockSandBluespaceCrystal = { ent-WallRockSand }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockChromiteBluespaceCrystal = { ent-WallRockChromite }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish
+ent-FishWallRockBasaltBluespaceCrystal = { ent-WallRockBasalt }
+    .desc = { ent-FishBaseVeinBluespaceCrystal.desc }
+    .suffix = Fish

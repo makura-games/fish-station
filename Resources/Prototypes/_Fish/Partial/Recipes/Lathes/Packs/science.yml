@@ -1,0 +1,14 @@
+# Fish-edit: обработка урана доступна на протолате после исследования технологии.
+- type: !PartialOnly latheRecipePack
+  id: ScienceEquipment
+  recipes:
+  - FishProcessedUranium
+  - FishXenoCarrier
+  - FishXenoCarrierAdvanced
+
+- type: !PartialOnly latheRecipePack
+  id: ScienceBoards
+  recipes:
+  - FishXenoProcessorBoard
+  - FishXenoConsoleBoard
+  - FishXenoThermostatBoard

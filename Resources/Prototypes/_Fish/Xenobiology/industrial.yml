@@ -1,0 +1,165 @@
+# Fish-edit: катализатор связывает промышленную индукцию с исследованием третьего уровня.
+- type: technology
+  id: FishIndustrialXenobiology
+  name: research-technology-fish-industrial-xenobiology
+  icon:
+    sprite: _Fish/Xenobiology/Objects/extract.rsi
+    state: core
+  discipline: Biochemical
+  tier: 3
+  cost: 15000
+  technologyPrerequisites:
+  - FishXenobiologyAdvanced
+  - IndustrialEngineering
+  recipeUnlocks:
+  - FishXenoIndustrialCatalyst
+
+- type: latheRecipe
+  id: FishXenoIndustrialCatalyst
+  result: FishXenoIndustrialCatalyst
+  categories: [Tools]
+  completetime: 5
+  materials:
+    Glass: 500
+    Gold: 300
+    Silver: 300
+    Plasma: 500
+
+- type: entity
+  parent: BaseItem
+  id: FishXenoIndustrialCatalyst
+  name: industrial induction catalyst
+  description: A sealed catalyst for industrial slime induction. Its label specifies one living adult laboratory slime and ten unused extracts of the same breed.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Chemistry/bottle.rsi
+    state: bottle-1
+    color: '#e5d785'
+  - type: Item
+    size: Tiny
+  - type: FishXenobiologyIndustrialCatalyst
+  - type: StaticPrice
+    price: 0
+
+# Fish-edit: промышленные предметы не наследуют одноразовый компонент обычных экстрактов.
+- type: entity
+  parent: FishXenoExtractBase
+  id: FishXenoIndustrialExtractBase
+  name: industrial slime extract
+  description: A dense industrial slime core. Its label specifies liquid plasma and uninterrupted operation on a floor outside containers.
+  suffix: Fish
+  abstract: true
+
+- type: entity
+  parent: FishXenoIndustrialExtractBase
+  id: FishXenoIndustrialExtractMetal
+  name: industrial metal extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#939ca6'
+  - type: FishXenobiologyIndustrial
+    recipe: FishXenoIndustrialMetal
+
+- type: entity
+  parent: FishXenoIndustrialExtractBase
+  id: FishXenoIndustrialExtractYellow
+  name: industrial yellow extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#f1dc52'
+  - type: FishXenobiologyIndustrial
+    recipe: FishXenoIndustrialYellow
+
+- type: entity
+  parent: FishXenoIndustrialExtractBase
+  id: FishXenoIndustrialExtractPurple
+  name: industrial purple extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#a66bd5'
+  - type: FishXenobiologyIndustrial
+    recipe: FishXenoIndustrialPurple
+
+- type: entity
+  parent: FishXenoIndustrialExtractBase
+  id: FishXenoIndustrialExtractSilver
+  name: industrial silver extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#c9d4db'
+  - type: FishXenobiologyIndustrial
+    recipe: FishXenoIndustrialSilver
+
+- type: entity
+  parent: FishXenoIndustrialExtractBase
+  id: FishXenoIndustrialExtractBlue
+  name: industrial blue extract
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#6a9ef0'
+  - type: FishXenobiologyIndustrial
+    recipe: FishXenoIndustrialBlue
+
+# Fish-edit: каждая небольшая партия расходует плазму и полный непрерывный цикл.
+- type: fishXenobiologyIndustrialRecipe
+  id: FishXenoIndustrialMetal
+  suffix: Fish
+  breed: FishMetal
+  extract: FishXenoIndustrialExtractMetal
+  requiredExtracts: 10
+  plasmaCost: 5
+  interval: 60
+  products:
+    SheetSteel1: 1
+    SheetGlass1: 1
+
+- type: fishXenobiologyIndustrialRecipe
+  id: FishXenoIndustrialYellow
+  suffix: Fish
+  breed: FishYellow
+  extract: FishXenoIndustrialExtractYellow
+  requiredExtracts: 10
+  plasmaCost: 5
+  interval: 60
+  products:
+    FishXenoPowerCell: 1
+
+- type: fishXenobiologyIndustrialRecipe
+  id: FishXenoIndustrialPurple
+  suffix: Fish
+  breed: FishPurple
+  extract: FishXenoIndustrialExtractPurple
+  requiredExtracts: 10
+  plasmaCost: 5
+  interval: 60
+  products:
+    Gauze1: 1
+    Ointment1: 1
+
+- type: fishXenobiologyIndustrialRecipe
+  id: FishXenoIndustrialSilver
+  suffix: Fish
+  breed: FishSilver
+  extract: FishXenoIndustrialExtractSilver
+  requiredExtracts: 10
+  plasmaCost: 5
+  interval: 60
+  products:
+    FoodBreadPlainSlice: 2
+
+- type: fishXenobiologyIndustrialRecipe
+  id: FishXenoIndustrialBlue
+  suffix: Fish
+  breed: FishBlue
+  extract: FishXenoIndustrialExtractBlue
+  requiredExtracts: 10
+  plasmaCost: 5
+  interval: 60
+  products:
+    FireExtinguisherMini: 1

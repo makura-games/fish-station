@@ -1,0 +1,260 @@
+# Fish-edit: Зависимости определяют порядок изучения технологий.
+
+- type: !PartialOnly technology
+  id: ConcentratedLaserWeaponry
+  technologyPrerequisites:
+  - WeaponizedLaserManipulation
+
+- type: !PartialOnly technology
+  id: WaveParticleHarnessing
+  technologyPrerequisites:
+  - ConcentratedLaserWeaponry
+
+- type: !PartialOnly technology
+  id: KineticModifications
+  technologyPrerequisites:
+  - SalvageWeapons
+
+- type: !PartialOnly technology
+  id: DualWieldingTechnology
+  technologyPrerequisites:
+  - BasicRobotics
+  - AdvancedRiotControl
+
+- type: !PartialOnly technology
+  id: ThermalWeaponry
+  technologyPrerequisites:
+  - WeaponizedLaserManipulation
+  - AtmosphericTech
+
+- type: !PartialOnly technology
+  id: EnergyBarriers
+  technologyPrerequisites:
+  - AdvancedRiotControl
+  - AdvancedPowercells
+
+- type: !PartialOnly technology
+  id: MiliraEquipment
+  technologyPrerequisites:
+  - CombatEquipment
+
+- type: !PartialOnly technology
+  id: AdvancedSecBorgsCombatModules
+  technologyPrerequisites:
+  - BasicRobotics
+  - AdvancedRiotControl
+
+- type: !PartialOnly technology
+  id: PortableMicrofusionWeaponry
+  technologyPrerequisites:
+  - ConcentratedLaserWeaponry
+  - AdvancedPowercells
+
+- type: !PartialOnly technology
+  id: ArmorPenetrationMunitions
+  technologyPrerequisites:
+  - SunriseFullMetalJacketAmmunition
+
+- type: !PartialOnly technology
+  id: DecloneTechnology
+  technologyPrerequisites:
+  - PortableMicrofusionWeaponry
+  - DnaInjectorTech
+
+- type: !PartialOnly technology
+  id: ScanGateTechnology
+  technologyPrerequisites:
+  - AdvancedCombatEquipment
+  - HandheldEmergencyCrewMonitorTech
+
+- type: !PartialOnly technology
+  id: FauxAstroTiles
+  technologyPrerequisites:
+  - Hydroponics
+  - MechanicalCompression
+
+- type: !PartialOnly technology
+  id: AdvancedCleaning
+  technologyPrerequisites:
+  - BasicRobotics
+  recipeUnlocks:
+  - !Remove TrashBagHolding
+
+- type: !PartialOnly technology
+  id: HONKMech
+  technologyPrerequisites:
+  - CritterMechs
+  - RipleyAPLU
+
+- type: !PartialOnly technology
+  id: HONKWeapons
+  technologyPrerequisites:
+  - HONKMech
+
+- type: !PartialOnly technology
+  id: AdvancedSpray
+  technologyPrerequisites:
+  - Hydroponics
+  - AtmosphericTech
+
+- type: !PartialOnly technology
+  id: BluespaceCargoTransport
+  technologyPrerequisites:
+  - BasicAnomalousResearch
+  - CargoBluespaceEquipment
+
+- type: !PartialOnly technology
+  id: PushHorn
+  technologyPrerequisites:
+  - AdvancedEntertainment
+
+- type: !PartialOnly technology
+  id: MechanizedTreatment
+  technologyPrerequisites:
+  - SurgeryTech
+  - BasicRobotics
+
+- type: !PartialOnly technology
+  id: QuantumFiberWeaving
+  technologyPrerequisites:
+  - BluespaceCargoTransport
+  - IndustrialEngineering
+
+- type: !PartialOnly technology
+  id: AbnormalArtifactManipulation
+  technologyPrerequisites:
+  - BasicXenoArcheology
+  - IndustrialEngineering
+
+- type: !PartialOnly technology
+  id: DeterrenceTechnologies
+  technologyPrerequisites:
+  - BasicAnomalousResearch
+  - AdvancedRiotControl
+
+- type: !PartialOnly technology
+  id: GravityManipulation
+  technologyPrerequisites:
+  - MagnetsTech
+  - SpaceScanning
+
+- type: !PartialOnly technology
+  id: QuantumLeaping
+  technologyPrerequisites:
+  - GravityManipulation
+  - BluespaceCargoTransport
+
+- type: !PartialOnly technology
+  id: BluespaceTimeManipulation
+  technologyPrerequisites:
+  - AdvancedAnomalyResearch
+
+- type: !PartialOnly technology
+  id: TeleSci
+  technologyPrerequisites:
+  - GravityManipulation
+  - BluespaceCargoTransport
+
+- type: !PartialOnly technology
+  id: Shuttlecraft
+  technologyPrerequisites:
+  - SpaceScanning
+
+- type: !PartialOnly technology
+  id: AdvancedToolsTechnology
+  technologyPrerequisites:
+  - IndustrialEngineering
+  - BasicRobotics
+
+- type: !PartialOnly technology
+  id: MassExcavation
+  technologyPrerequisites:
+  - SalvageEquipment
+  - SalvageWeapons
+  recipeUnlocks:
+  - !Remove OreBagOfHolding
+
+- type: !PartialOnly technology
+  id: BasicNVD
+  technologyPrerequisites:
+  - IndustrialEngineering
+
+- type: !PartialOnly technology
+  id: BluespaceStorage
+  discipline: Experimental
+  technologyPrerequisites:
+  - BluespaceCargoTransport
+  - MechanicalCompression
+  - FishBluespaceTheory
+  recipeUnlocks:
+  - OreBagOfHolding
+  - TrashBagHolding
+
+- type: !PartialOnly technology
+  id: Modsuits
+  technologyPrerequisites:
+  - AdvancedToolsTechnology
+  - BasicRobotics
+
+- type: !PartialOnly technology
+  id: ImplantExtractor
+  technologyPrerequisites:
+  - SurgeryTech
+  - CyberLimbsTech
+
+- type: !PartialOnly technology
+  id: BiochemicalStasis
+  technologyPrerequisites:
+  - SurgeryTech
+  - AtmosphericTech
+
+- type: !PartialOnly technology
+  id: MechanizedMedicalTreatment
+  technologyPrerequisites:
+  - SurgeryTech
+  - BasicRobotics
+
+- type: !PartialOnly technology
+  id: FishMedicalPouches
+  technologyPrerequisites:
+  - SurgeryTech
+
+- type: !PartialOnly technology
+  id: AutoMenders
+  technologyPrerequisites:
+  - MedicalAssembler
+
+- type: !PartialOnly technology
+  id: BluespaceChemistry
+  technologyPrerequisites:
+  - MedicalAssembler
+  - BluespaceCargoTransport
+
+- type: !PartialOnly technology
+  id: LauncherSyringe
+  technologyPrerequisites:
+  - MedicalAssembler
+  - NonlethalAmmunition
+
+- type: !PartialOnly technology
+  id: CloningSystems
+  technologyPrerequisites:
+  - DnaInjectorTech
+  - BiochemicalStasis
+
+- type: !PartialOnly technology
+  id: OptimizedMicrogalvanism
+  technologyPrerequisites:
+  - AdvancedToolsTechnology
+  recipeUnlocks:
+  - !Remove PowerCellMicroreactor
+
+- type: !PartialOnly technology
+  id: ExplosiveMechAmmunition
+  technologyPrerequisites:
+  - Gygax
+
+- type: !PartialOnly technology
+  id: HandheldEmergencyCrewMonitorTech
+  technologyPrerequisites:
+  - AudioVisualCommunication

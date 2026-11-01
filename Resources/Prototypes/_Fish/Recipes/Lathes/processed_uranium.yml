@@ -1,0 +1,10 @@
+- type: latheRecipe
+  id: FishProcessedUranium
+  result: FishSheetProcessedUranium1
+  completetime: 10
+  # Fish-edit: обработка сохраняет соотношение урана на станках со скидкой материалов.
+  applyMaterialDiscount: false
+  materials:
+    Uranium: 200
+  categories:
+  - Materials

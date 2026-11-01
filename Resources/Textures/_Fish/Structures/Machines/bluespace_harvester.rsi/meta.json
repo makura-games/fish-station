@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Harvester sprites by kugamo, ParadiseSS13 PR https://github.com/ParadiseSS13/Paradise/pull/21232. ParadiseSS13 contributors. Source: https://github.com/ParadiseSS13/Paradise/blob/d118a2ce60b712046ebb180834200fc8d25c91c8/icons/obj/machines/bluespace_tap.dmi . Fish DMI-to-RSI conversion of bluespace_tap, bluespace_tap3 and bluespace_tap5, original colors, pixels and 0.1s animation frames preserved. No source gameplay code imported. License: https://github.com/ParadiseSS13/Paradise/blob/d118a2ce60b712046ebb180834200fc8d25c91c8/README.md#licenses License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "x": 96,
+    "y": 96
+  },
+  "states": [
+    {
+      "name": "idle"
+    },
+    {
+      "name": "active",
+      "delays": [
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "unstable",
+      "delays": [
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ]
+      ]
+    }
+  ]
+}

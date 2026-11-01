@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Unmodified rock_bluespace_crystal state extracted from https://github.com/Goob-Station/Goob-Station/tree/38347df977cdecca5775c6a23c5c089406d25760/Resources/Textures/Structures/Walls/rock.rsi. Original metadata: https://github.com/Citadel-Station-13/Citadel-Station-13-RP/blob/817e7c1f225876b45891e3f06908e6d032f0a8bc/icons/turf/walls.dmi, rock_bananium made by brainfood1183 (github) for ss14, rock_snow, rock_asteroid, & rock_wall and co from https://github.com/tgstation/tgstation/tree/e929cf39cded5207d63df1fa8521f41f2816b383. ironrock taken from /vg/station at commit https://github.com/vgstation-coders/vgstation13/commit/02b9f6894af4419c9f7e699a22c402b086d8067e, sand rock made by TheShuEd for ss14, https://github.com/tgstation/tgstation/blob/5f3e12178e1fbe75ae4b1ff12e256f61b5bdddd5/icons/turf/mining.dmi, ironsandstone made by SeaWyrm (github Aearo-Deepwater) for SS14 Goob Station port by yglop: https://github.com/Goob-Station/Goob-Station/commit/13b24470bc1d53f9b390fa39423a2a864911fa32; the original upstream attributions above are retained. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "y": 32,
+    "x": 32
+  },
+  "states": [
+    {
+      "name": "rock_bluespace_crystal"
+    }
+  ]
+}

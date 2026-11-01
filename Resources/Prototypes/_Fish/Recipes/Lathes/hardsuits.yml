@@ -1,0 +1,204 @@
+- type: latheRecipe
+  id: FishHardsuitSpatio
+  result: ClothingOuterHardsuitSpatio
+  categories: [Clothing]
+  completetime: 20
+  materials:
+    Steel: 1500
+    Plastic: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: FishHardsuitSalvage
+  result: ClothingOuterHardsuitSalvage
+  categories: [Clothing]
+  completetime: 25
+  materials:
+    Steel: 2000
+    Durathread: 500
+    Plastic: 500
+    Glass: 400
+
+- type: latheRecipe
+  id: FishHardsuitSpaceHazard
+  result: ClothingOuterHardsuitSpaceHazard
+  categories: [Clothing]
+  completetime: 20
+  materials:
+    Steel: 1500
+    Plastic: 500
+    Glass: 300
+
+- type: latheRecipe
+  id: FishHardsuitMining
+  result: ClothingOuterHardsuitMining
+  categories: [Clothing]
+  completetime: 30
+  materials:
+    Steel: 2000
+    Plasteel: 1000
+    Durathread: 500
+    Plastic: 500
+    Glass: 400
+
+- type: latheRecipe
+  id: FishHardsuitAdvancedMining
+  result: ClothingOuterHardsuitAdvancedMining
+  categories: [Clothing]
+  completetime: 60
+  materials:
+    Steel: 3000
+    Plasteel: 2000
+    Durathread: 1000
+    Plastic: 1000
+    Glass: 500
+    Gold: 500
+    Plasma: 1000
+
+- type: latheRecipe
+  id: FishHardsuitExpedition
+  result: FishClothingOuterHardsuitExpedition
+  categories: [Clothing]
+  completetime: 45
+  materials:
+    Steel: 2500
+    Plasteel: 1500
+    Durathread: 1000
+    Plastic: 500
+    Glass: 500
+    Gold: 500
+
+- type: latheRecipe
+  id: FishHardsuitEngineering
+  result: ClothingOuterHardsuitEngineering
+  categories: [Clothing]
+  completetime: 25
+  materials:
+    Steel: 2000
+    Durathread: 500
+    Plastic: 500
+    Glass: 400
+
+- type: latheRecipe
+  id: FishHardsuitAtmos
+  result: ClothingOuterHardsuitAtmos
+  categories: [Clothing]
+  completetime: 30
+  materials:
+    Steel: 2000
+    Plasteel: 1000
+    Durathread: 500
+    Plastic: 500
+    Glass: 400
+
+- type: latheRecipe
+  id: FishHardsuitEngineeringCompact
+  result: ClothingOuterHardsuitEngineeringCompact
+  categories: [Clothing]
+  completetime: 35
+  materials:
+    Steel: 2000
+    Plasteel: 1000
+    Durathread: 1000
+    Plastic: 500
+    Glass: 400
+
+- type: latheRecipe
+  id: FishHardsuitEngineeringAdvanced
+  result: FishClothingOuterHardsuitEngineeringAdvanced
+  categories: [Clothing]
+  completetime: 50
+  materials:
+    Steel: 2500
+    Plasteel: 2000
+    Durathread: 1000
+    Plastic: 500
+    Glass: 500
+    Silver: 500
+
+- type: latheRecipe
+  id: FishHardsuitParamedic
+  result: ClothingOuterHardsuitVoidParamedFish
+  categories: [Clothing]
+  completetime: 30
+  materials:
+    Steel: 1500
+    Durathread: 1000
+    Plastic: 1000
+    Glass: 400
+    Silver: 300
+
+- type: latheRecipe
+  id: FishHardsuitMedicalRescue
+  result: FishClothingOuterHardsuitMedicalRescue
+  categories: [Clothing]
+  completetime: 45
+  materials:
+    Steel: 2000
+    Plasteel: 1500
+    Durathread: 1000
+    Plastic: 1000
+    Glass: 400
+    Silver: 500
+
+- type: latheRecipe
+  id: FishHardsuitSecurity
+  result: ClothingOuterHardsuitSecuritySunrise
+  categories: [Clothing]
+  completetime: 30
+  materials:
+    Steel: 2000
+    Plasteel: 1000
+    Durathread: 500
+    Plastic: 500
+    Glass: 400
+
+- type: latheRecipe
+  id: FishHardsuitBrigmedic
+  result: ClothingOuterHardsuitBrigmedicSunrise
+  categories: [Clothing]
+  completetime: 35
+  materials:
+    Steel: 2000
+    Plasteel: 1000
+    Durathread: 1000
+    Plastic: 500
+    Glass: 400
+
+- type: latheRecipe
+  id: FishHardsuitSecurityAdvanced
+  result: FishClothingOuterHardsuitSecurityAdvanced
+  categories: [Clothing]
+  completetime: 50
+  materials:
+    Steel: 2500
+    Plasteel: 2000
+    Durathread: 1000
+    Plastic: 500
+    Glass: 500
+    Gold: 500
+
+- type: latheRecipe
+  id: FishHardsuitResearch
+  result: FishClothingOuterHardsuitResearch
+  categories: [Clothing]
+  completetime: 45
+  materials:
+    Steel: 2000
+    Plasteel: 1500
+    Durathread: 1000
+    Plastic: 1000
+    Glass: 500
+    Silver: 500
+
+- type: latheRecipe
+  id: FishHardsuitCivilian
+  result: FishClothingOuterHardsuitCivilian
+  categories: [Clothing]
+  completetime: 30
+  materials:
+    Steel: 1500
+    Plasteel: 500
+    Durathread: 500
+    Plastic: 1500
+    Glass: 300

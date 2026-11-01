@@ -1,0 +1,44 @@
+- type: !PartialOnly weightedRandom
+  id: AsteroidOre
+  weights:
+    FishOreBluespaceCrystal: 0.015
+
+- type: !PartialOnly dungeonConfig
+  id: VGRoid
+  layers:
+  - !type:OreDunGen
+    replacement: IronRock
+    entity: FishIronRockBluespaceCrystal
+    count: 2
+    minGroupSize: 1
+    maxGroupSize: 1
+
+- type: !PartialOnly biomeTemplate
+  id: TerraPlanet
+  layers:
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorCave
+    threshold: 0.99
+    noise:
+      seed: 87421
+      noiseType: OpenSimplex2
+      fractalType: None
+      frequency: 0.15
+    entities:
+    - FishWallRockBluespaceCrystal
+
+- type: !PartialOnly biomeTemplate
+  id: GlacierPlanet
+  layers:
+  - !type:BiomeEntityLayer
+    allowedTiles:
+    - FloorSnow
+    threshold: 0.99
+    noise:
+      seed: 49261
+      noiseType: OpenSimplex2
+      fractalType: None
+      frequency: 0.15
+    entities:
+    - FishWallRockSnowBluespaceCrystal

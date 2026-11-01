@@ -1,0 +1,308 @@
+- type: fishXenobiologyBreed
+  id: FishGrey
+  suffix: Fish
+  name: fish-xeno-breed-grey
+  description: fish-xeno-breed-grey-description
+  color: "#9b9b9b"
+  tier: 0
+  mob: FishXenoSlimeGrey
+  extract: FishXenoExtractGrey
+  growthDuration: 180
+  mutations:
+    FishBlue: 1
+    FishMetal: 1
+    FishOrange: 1
+    FishPurple: 1
+
+- type: fishXenobiologyBreed
+  id: FishBlue
+  suffix: Fish
+  name: fish-xeno-breed-blue
+  description: fish-xeno-breed-blue-description
+  color: "#6a9ef0"
+  tier: 1
+  mob: FishXenoSlimeBlue
+  extract: FishXenoExtractBlue
+  growthDuration: 200
+  mutations:
+    FishDarkBlue: 1
+    FishPink: 2
+    FishSilver: 1
+
+- type: fishXenobiologyBreed
+  id: FishMetal
+  suffix: Fish
+  name: fish-xeno-breed-metal
+  description: fish-xeno-breed-metal-description
+  color: "#939ca6"
+  tier: 1
+  mob: FishXenoSlimeMetal
+  extract: FishXenoExtractMetal
+  growthDuration: 200
+  mutations:
+    FishGold: 2
+    FishSilver: 1
+    FishYellow: 1
+
+- type: fishXenobiologyBreed
+  id: FishOrange
+  suffix: Fish
+  name: fish-xeno-breed-orange
+  description: fish-xeno-breed-orange-description
+  color: "#f39b45"
+  tier: 1
+  mob: FishXenoSlimeOrange
+  extract: FishXenoExtractOrange
+  growthDuration: 200
+  mutations:
+    FishDarkPurple: 1
+    FishRed: 2
+    FishYellow: 1
+
+- type: fishXenobiologyBreed
+  id: FishPurple
+  suffix: Fish
+  name: fish-xeno-breed-purple
+  description: fish-xeno-breed-purple-description
+  color: "#a66bd5"
+  tier: 1
+  mob: FishXenoSlimePurple
+  extract: FishXenoExtractPurple
+  growthDuration: 200
+  mutations:
+    FishDarkBlue: 1
+    FishDarkPurple: 1
+    FishGreen: 2
+
+- type: fishXenobiologyBreed
+  id: FishDarkBlue
+  suffix: Fish
+  name: fish-xeno-breed-dark-blue
+  description: fish-xeno-breed-dark-blue-description
+  color: "#385ab5"
+  tier: 2
+  mob: FishXenoSlimeDarkBlue
+  extract: FishXenoExtractDarkBlue
+  growthDuration: 220
+  mutations:
+    FishBlue: 1
+    FishPurple: 1
+    FishCerulean: 2
+
+- type: fishXenobiologyBreed
+  id: FishDarkPurple
+  suffix: Fish
+  name: fish-xeno-breed-dark-purple
+  description: fish-xeno-breed-dark-purple-description
+  color: "#6d368b"
+  tier: 2
+  mob: FishXenoSlimeDarkPurple
+  extract: FishXenoExtractDarkPurple
+  growthDuration: 220
+  mutations:
+    FishOrange: 1
+    FishPurple: 1
+    FishSepia: 2
+
+- type: fishXenobiologyBreed
+  id: FishSilver
+  suffix: Fish
+  name: fish-xeno-breed-silver
+  description: fish-xeno-breed-silver-description
+  color: "#c9d4db"
+  tier: 2
+  mob: FishXenoSlimeSilver
+  extract: FishXenoExtractSilver
+  growthDuration: 220
+  mutations:
+    FishBlue: 1
+    FishMetal: 1
+    FishPyrite: 2
+
+- type: fishXenobiologyBreed
+  id: FishYellow
+  suffix: Fish
+  name: fish-xeno-breed-yellow
+  description: fish-xeno-breed-yellow-description
+  color: "#f1dc52"
+  tier: 2
+  mob: FishXenoSlimeYellow
+  extract: FishXenoExtractYellow
+  growthDuration: 220
+  mutations:
+    FishMetal: 1
+    FishOrange: 1
+    FishBluespace: 2
+
+- type: fishXenobiologyBreed
+  id: FishRed
+  suffix: Fish
+  name: fish-xeno-breed-red
+  description: fish-xeno-breed-red-description
+  color: "#e35353"
+  tier: 2
+  mob: FishXenoSlimeRed
+  extract: FishXenoExtractRed
+  growthDuration: 220
+  mutations:
+    FishRed: 1
+    FishOil: 1
+
+- type: fishXenobiologyBreed
+  id: FishGreen
+  suffix: Fish
+  name: fish-xeno-breed-green
+  description: fish-xeno-breed-green-description
+  color: "#78c765"
+  tier: 2
+  mob: FishXenoSlimeGreen
+  extract: FishXenoExtractGreen
+  growthDuration: 220
+  mutations:
+    FishGreen: 1
+    FishBlack: 1
+
+- type: fishXenobiologyBreed
+  id: FishPink
+  suffix: Fish
+  name: fish-xeno-breed-pink
+  description: fish-xeno-breed-pink-description
+  color: "#ef9ac5"
+  tier: 2
+  mob: FishXenoSlimePink
+  extract: FishXenoExtractPink
+  growthDuration: 220
+  mutations:
+    FishPink: 1
+    FishLightPink: 1
+
+- type: fishXenobiologyBreed
+  id: FishGold
+  suffix: Fish
+  name: fish-xeno-breed-gold
+  description: fish-xeno-breed-gold-description
+  color: "#d6b145"
+  tier: 2
+  mob: FishXenoSlimeGold
+  extract: FishXenoExtractGold
+  growthDuration: 220
+  mutations:
+    FishGold: 1
+    FishAdamantine: 1
+
+- type: fishXenobiologyBreed
+  id: FishCerulean
+  suffix: Fish
+  name: fish-xeno-breed-cerulean
+  description: fish-xeno-breed-cerulean-description
+  color: "#64ccd5"
+  tier: 3
+  mob: FishXenoSlimeCerulean
+  extract: FishXenoExtractCerulean
+  growthDuration: 240
+  mutations:
+    FishCerulean: 1
+
+- type: fishXenobiologyBreed
+  id: FishPyrite
+  suffix: Fish
+  name: fish-xeno-breed-pyrite
+  description: fish-xeno-breed-pyrite-description
+  color: "#e0cb76"
+  tier: 3
+  mob: FishXenoSlimePyrite
+  extract: FishXenoExtractPyrite
+  growthDuration: 240
+  mutations:
+    FishPyrite: 1
+
+- type: fishXenobiologyBreed
+  id: FishBluespace
+  suffix: Fish
+  name: fish-xeno-breed-bluespace
+  description: fish-xeno-breed-bluespace-description
+  color: "#4a7ffc"
+  tier: 3
+  mob: FishXenoSlimeBluespace
+  extract: FishXenoExtractBluespace
+  growthDuration: 240
+  mutations:
+    FishBluespace: 1
+
+- type: fishXenobiologyBreed
+  id: FishSepia
+  suffix: Fish
+  name: fish-xeno-breed-sepia
+  description: fish-xeno-breed-sepia-description
+  color: "#9e795c"
+  tier: 3
+  mob: FishXenoSlimeSepia
+  extract: FishXenoExtractSepia
+  growthDuration: 240
+  mutations:
+    FishSepia: 1
+
+- type: fishXenobiologyBreed
+  id: FishOil
+  suffix: Fish
+  name: fish-xeno-breed-oil
+  description: fish-xeno-breed-oil-description
+  color: "#443d4e"
+  tier: 3
+  mob: FishXenoSlimeOil
+  extract: FishXenoExtractOil
+  growthDuration: 240
+  mutations:
+    FishOil: 1
+
+- type: fishXenobiologyBreed
+  id: FishBlack
+  suffix: Fish
+  name: fish-xeno-breed-black
+  description: fish-xeno-breed-black-description
+  color: "#55515c"
+  tier: 3
+  mob: FishXenoSlimeBlack
+  extract: FishXenoExtractBlack
+  growthDuration: 240
+  mutations:
+    FishBlack: 1
+
+- type: fishXenobiologyBreed
+  id: FishLightPink
+  suffix: Fish
+  name: fish-xeno-breed-light-pink
+  description: fish-xeno-breed-light-pink-description
+  color: "#f3bed7"
+  tier: 3
+  mob: FishXenoSlimeLightPink
+  extract: FishXenoExtractLightPink
+  growthDuration: 240
+  mutations:
+    FishLightPink: 1
+
+- type: fishXenobiologyBreed
+  id: FishAdamantine
+  suffix: Fish
+  name: fish-xeno-breed-adamantine
+  description: fish-xeno-breed-adamantine-description
+  color: "#729c8d"
+  tier: 3
+  mob: FishXenoSlimeAdamantine
+  extract: FishXenoExtractAdamantine
+  growthDuration: 240
+  mutations:
+    FishAdamantine: 1
+
+- type: fishXenobiologyBreed
+  id: FishRainbow
+  suffix: Fish
+  name: fish-xeno-breed-rainbow
+  description: fish-xeno-breed-rainbow-description
+  color: "#ede2ff"
+  tier: 4
+  mob: FishXenoSlimeRainbow
+  extract: FishXenoExtractRainbow
+  growthDuration: 260
+  mutations:
+    FishRainbow: 1

@@ -1,0 +1,119 @@
+# Fish-edit: четыре дочерние сумки наследуют кристаллы и остальные материалы базового рецепта.
+- type: !PartialOnly latheRecipe
+  id: ClothingBackpackHolding
+  materials:
+    FishBluespaceCrystal: 200
+
+- type: !PartialOnly latheRecipe
+  id: TrashBagHolding
+  materials:
+    FishBluespaceCrystal: 200
+
+- type: !PartialOnly latheRecipe
+  id: BluespaceAirTank
+  materials:
+    FishBluespaceCrystal: 200
+
+- type: !PartialOnly latheRecipe
+  id: JugBluespace
+  materials:
+    FishBluespaceCrystal: 200
+
+- type: !PartialOnly latheRecipe
+  id: DeviceDesynchronizer
+  materials:
+    FishBluespaceCrystal: 200
+
+# Fish-edit: собственный materials заменяет наследование, поэтому сохраняем базовый состав трёх плат.
+- type: !PartialOnly latheRecipe
+  id: StationTeleporterMachineCircuitboard
+  materials:
+    Steel: 100
+    Glass: 500
+    Gold: 100
+    FishBluespaceCrystal: 200
+
+- type: !PartialOnly latheRecipe
+  id: CargoTelepadMachineCircuitboard
+  materials:
+    Steel: 100
+    Glass: 500
+    Gold: 100
+    FishBluespaceCrystal: 200
+
+- type: !PartialOnly latheRecipe
+  id: StationTeleportersControlCircuitboard
+  materials:
+    Steel: 100
+    Glass: 500
+    Gold: 100
+    FishBluespaceCrystal: 100
+
+# Fish-edit: собственный materials заменяет наследование, поэтому сохраняем базовый состав двух модулей.
+- type: !PartialOnly latheRecipe
+  id: BorgModuleAdvancedMining
+  materials:
+    Steel: 500
+    Glass: 500
+    Plastic: 250
+    Gold: 50
+    FishBluespaceCrystal: 200
+
+- type: !PartialOnly latheRecipe
+  id: BorgModuleAdvancedChemical
+  materials:
+    Steel: 500
+    Glass: 500
+    Plastic: 250
+    Gold: 50
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: SmallBluespaceAirTank
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: BluespaceBeaker
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: SyringeBluespace
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: VialBluespace
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: BluespacePillPatchCanister
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: FishPouchMedicalBluespace
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: BluespaceBox
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: FireExtinguisherBluespace
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: DeviceQuantumSpinInverter
+  materials:
+    FishBluespaceCrystal: 100
+
+- type: !PartialOnly latheRecipe
+  id: TeleporterChipBlank
+  materials:
+    FishBluespaceCrystal: 100

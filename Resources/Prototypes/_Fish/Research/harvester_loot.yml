@@ -1,0 +1,57 @@
+- type: fishBluespaceHarvesterLoot
+  id: FishHarvesterSteel
+  suffix: Fish
+  category: Materials
+  weight: 3
+  products:
+    SheetSteel1: 30
+
+- type: fishBluespaceHarvesterLoot
+  id: FishHarvesterGlass
+  suffix: Fish
+  category: Materials
+  weight: 2
+  products:
+    SheetGlass1: 30
+
+- type: fishBluespaceHarvesterLoot
+  id: FishHarvesterMetals
+  suffix: Fish
+  category: Materials
+  products:
+    SheetPlasteel1: 8
+    IngotGold1: 4
+    IngotSilver1: 4
+
+- type: fishBluespaceHarvesterLoot
+  id: FishHarvesterMedicalSupplies
+  suffix: Fish
+  category: Supplies
+  products:
+    Gauze1: 10
+    Ointment1: 10
+    EmergencyMedipen: 2
+
+- type: fishBluespaceHarvesterLoot
+  id: FishHarvesterFoodSupplies
+  suffix: Fish
+  category: Supplies
+  products:
+    FoodSnackNutribrick: 8
+
+- type: fishBluespaceHarvesterLoot
+  id: FishHarvesterLaboratorySupplies
+  suffix: Fish
+  category: Research
+  products:
+    MicroManipulatorStockPart: 8
+    Beaker: 2
+    Syringe: 2
+
+- type: fishBluespaceHarvesterLoot
+  id: FishHarvesterPowerSupplies
+  suffix: Fish
+  category: Research
+  products:
+    PowerCellHigh: 2
+    CableHVStack1: 30

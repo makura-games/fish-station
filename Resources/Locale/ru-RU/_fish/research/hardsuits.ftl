@@ -1,0 +1,12 @@
+research-technology-fish-advanced-cargo-suits = Продвинутые скафандры снабжения
+research-technology-fish-advanced-engineering-suits = Продвинутые инженерные скафандры
+research-technology-fish-advanced-medical-suits = Продвинутые медицинские скафандры
+research-technology-fish-advanced-security-suits = Продвинутые скафандры охраны
+research-technology-fish-advanced-research-suits = Лабораторные скафандры
+research-technology-fish-service-suits = Гражданские скафандры
+fish-research-technology-fish-advanced-cargo-suits-description = Усиленные экспедиционные комплекты и шахтёрские скафандры с реактивным ранцем для длительных утилизационных вылазок.
+fish-research-technology-fish-advanced-engineering-suits-description = Изолированные промышленные скафандры для работы с электричеством, высокими температурами и радиацией.
+fish-research-technology-fish-advanced-medical-suits-description = Лёгкие спасательные скафандры с химической защитой и встроенным медицинским дисплеем.
+fish-research-technology-fish-advanced-security-suits-description = Усиленные скафандры службы безопасности с противоударными пластинами для работы в вакууме.
+fish-research-technology-fish-advanced-research-suits-description = Герметичные лабораторные скафандры с радиационной защитой для работы с опасными исследовательскими материалами.
+fish-research-technology-fish-service-suits-description = Лёгкие гражданские скафандры с гибкими сочленениями и герметичными шлемами для технических работ в вакууме.

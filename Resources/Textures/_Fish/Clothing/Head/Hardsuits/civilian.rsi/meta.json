@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Civilian MOD sprites by SmArtKar, /tg/station PR https://github.com/tgstation/tgstation/pull/86108. TGstation contributors. Source: https://github.com/tgstation/tgstation/tree/bf6f771a1e221e06938978e36bbaf78543f85ebe/icons. Original civilian-*-sealed states from mob/clothing/modsuit/mod_clothing.dmi and obj/clothing/modsuit/mod_clothing.dmi. Fish DMI-to-RSI conversion: boots, chestplate and gauntlets composed into one outer-clothing layer; helmet separate, original pixels and colors preserved. Art only; native SS14 hardsuit mechanics. License: https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/README.md#license (CC-BY-SA-3.0). In-hand sprites: ParadiseSS13 contributors, generic space helmet s_helmet, from https://github.com/ParadiseSS13/Paradise/tree/d118a2ce60b712046ebb180834200fc8d25c91c8/icons/mob/inhands, original left/right states preserved. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon"
+    },
+    {
+      "name": "equipped-head",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+- type: entity
+  parent: [BaseMachinePowered, ConstructibleMachine, BaseConstructibleMachineDestructible]
+  id: FishXenoProcessor
+  name: slime processor
+  description: Extracts cores from adult laboratory slime corpses. Transfer a corpse with a slime carrier, then use the controls.
+  suffix: Fish
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _Fish/Xenobiology/Structures/slime_processor.rsi
+    state: processor
+  - type: ApcPowerReceiver
+    powerLoad: 1500
+  - type: Machine
+    board: FishXenoProcessorBoard
+  - type: FishXenobiologyProcessor
+  - type: ActivatableUI
+    key: enum.FishXenobiologyUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FishXenobiologyUiKey.Key:
+        type: FishXenobiologyProcessorBoundUserInterface
+
+- type: entity
+  parent: BaseComputer
+  id: FishXenoConsole
+  name: xenobiology console
+  description: Measures nearby laboratory slimes and contains a reference catalog of mutations and extract reactions.
+  suffix: Fish
+  components:
+  - type: Computer
+    board: FishXenoConsoleBoard
+  - type: Sprite
+    layers:
+    - map: [computerLayerBody]
+      state: computer
+    - map: [computerLayerKeyboard]
+      state: generic_keyboard
+    - map: [computerLayerScreen]
+      state: dna
+    - map: [computerLayerKeys]
+      state: med_key
+  - type: FishXenobiologyConsole
+  - type: ActivatableUI
+    key: enum.FishXenobiologyUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FishXenobiologyUiKey.Key:
+        type: FishXenobiologyBoundUserInterface
+
+- type: entity
+  parent: SpaceHeaterAnchored
+  id: FishXenoThermostat
+  name: laboratory thermostat
+  description: Heats or cools a containment pen's air. Slime body temperature changes gradually through heat exchange.
+  suffix: Fish
+  components:
+  - type: SpaceHeater
+    minTemperature: 263.15
+    maxTemperature: 333.15
+  - type: Machine
+    board: FishXenoThermostatBoard
+
+- type: entity
+  parent: BaseItem
+  id: FishXenoCarrier
+  name: slime carrier
+  description: Captures one laboratory slime when used on it. Use in hand to release it, or on a processor to transfer an adult corpse.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Xenobiology/Objects/slime_pack.rsi
+    state: icon
+  - type: Item
+    size: Large
+  - type: FishXenobiologyCarrier
+
+- type: entity
+  parent: FishXenoCarrier
+  id: FishXenoCarrierAdvanced
+  name: colony carrier
+  description: Holds three laboratory slimes. Releases or transfers the oldest captured specimen first.
+  suffix: Fish
+  components:
+  - type: FishXenobiologyCarrier
+    capacity: 3
+
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: FishXenoProcessorBoard
+  name: slime processor board
+  description: A machine circuit board for a slime processor.
+  suffix: Fish
+  components:
+  - type: MachineBoard
+    prototype: FishXenoProcessor
+    stackRequirements:
+      Manipulator: 2
+      Glass: 2
+      Cable: 2
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: FishXenoConsoleBoard
+  name: xenobiology console board
+  description: A circuit board for a xenobiology console.
+  suffix: Fish
+  components:
+  - type: ComputerBoard
+    prototype: FishXenoConsole
+
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: FishXenoThermostatBoard
+  name: laboratory thermostat board
+  description: A machine circuit board for a laboratory thermostat.
+  suffix: Fish
+  components:
+  - type: MachineBoard
+    prototype: FishXenoThermostat
+    stackRequirements:
+      Manipulator: 1
+      Cable: 2
+
+- type: entity
+  parent: CrateScienceSecure
+  id: FishXenoStarterCrate
+  name: xenobiology starter crate
+  description: Starter cultures, a carrier and a feeding kit for a xenobiology colony.
+  suffix: Fish
+  components:
+  - type: StorageFill
+    contents:
+    - id: FishXenoCultureGrey
+      amount: 3
+    - id: FishXenoCarrier
+    - id: Syringe
+      amount: 2
+    - id: DrinkWaterBottleFull
+    - id: FoodMeat
+      amount: 4
+
+- type: cargoProduct
+  id: FishXenoStarterPack
+  icon:
+    sprite: _Fish/Xenobiology/Objects/extract.rsi
+    state: core
+  product: FishXenoStarterCrate
+  cost: 2500
+  category: cargoproduct-category-name-science
+  group: market

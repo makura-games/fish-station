@@ -1,0 +1,89 @@
+- type: technology
+  id: FishAdvancedCargoSuits
+  name: research-technology-fish-advanced-cargo-suits
+  icon:
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/expedition.rsi
+    state: icon
+  discipline: Industrial
+  tier: 3
+  cost: 15000
+  technologyPrerequisites:
+  - MassExcavation
+  - AdvancedToolsTechnology
+  recipeUnlocks:
+  - FishHardsuitAdvancedMining
+  - FishHardsuitExpedition
+
+- type: technology
+  id: FishAdvancedEngineeringSuits
+  name: research-technology-fish-advanced-engineering-suits
+  icon:
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/engineering_advanced.rsi
+    state: icon
+  discipline: Industrial
+  tier: 3
+  cost: 12500
+  technologyPrerequisites:
+  - AdvancedAtmospherics
+  - AdvancedToolsTechnology
+  recipeUnlocks:
+  - FishHardsuitEngineeringAdvanced
+
+- type: technology
+  id: FishAdvancedMedicalSuits
+  name: research-technology-fish-advanced-medical-suits
+  icon:
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/medical_rescue.rsi
+    state: icon
+  discipline: Biochemical
+  tier: 3
+  cost: 12500
+  technologyPrerequisites:
+  - BiochemicalStasis
+  - MedicalAssembler
+  recipeUnlocks:
+  - FishHardsuitMedicalRescue
+
+- type: technology
+  id: FishAdvancedSecuritySuits
+  name: research-technology-fish-advanced-security-suits
+  icon:
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/security_advanced.rsi
+    state: icon
+  discipline: Arsenal
+  tier: 3
+  cost: 15000
+  technologyPrerequisites:
+  - AdvancedCombatEquipment
+  - IndustrialEngineering
+  recipeUnlocks:
+  - FishHardsuitSecurityAdvanced
+
+- type: technology
+  id: FishAdvancedResearchSuits
+  name: research-technology-fish-advanced-research-suits
+  icon:
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/research.rsi
+    state: icon
+  discipline: Experimental
+  tier: 3
+  cost: 12500
+  technologyPrerequisites:
+  - AnomalyCoreHarnessing
+  - AdvancedToolsTechnology
+  recipeUnlocks:
+  - FishHardsuitResearch
+
+- type: technology
+  id: FishServiceSuits
+  name: research-technology-fish-service-suits
+  icon:
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/civilian.rsi
+    state: icon
+  discipline: CivilianServices
+  tier: 2
+  cost: 7500
+  technologyPrerequisites:
+  - IndustrialEngineering
+  recipeUnlocks:
+  - FishHardsuitCivilian

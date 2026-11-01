@@ -1,0 +1,107 @@
+- type: entity
+  abstract: true
+  id: FishBaseVeinBluespaceCrystal
+  suffix: Fish
+  description: Blue crystals shimmer within the rock.
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: FishOreBluespaceCrystal
+  - type: Sprite
+    layers:
+    - state: rock_bluespace_crystal
+      sprite: _Fish/Structures/Walls/bluespace_ore.rsi
+      map: ["enum.MiningScannerVisualLayers.Overlay"]
+
+# Fish-edit: SmoothEdge требует отдельные слои основания и четырёх краёв.
+- type: entity
+  parent: [FishBaseVeinBluespaceCrystal, AsteroidRock]
+  id: FishAsteroidRockBluespaceCrystal
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Structures/Walls/rock.rsi
+    layers:
+    - state: rock_asteroid
+    - map: ["enum.EdgeLayer.South"]
+      state: rock_asteroid_south
+    - map: ["enum.EdgeLayer.East"]
+      state: rock_asteroid_east
+    - map: ["enum.EdgeLayer.North"]
+      state: rock_asteroid_north
+    - map: ["enum.EdgeLayer.West"]
+      state: rock_asteroid_west
+    - state: rock_bluespace_crystal
+      sprite: _Fish/Structures/Walls/bluespace_ore.rsi
+      map: ["enum.MiningScannerVisualLayers.Overlay"]
+
+- type: entity
+  parent: [FishBaseVeinBluespaceCrystal, IronRock]
+  id: FishIronRockBluespaceCrystal
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Structures/Walls/rock.rsi
+    layers:
+    - state: ironrock
+    - map: ["enum.EdgeLayer.South"]
+      state: ironrock_south
+    - map: ["enum.EdgeLayer.East"]
+      state: ironrock_east
+    - map: ["enum.EdgeLayer.North"]
+      state: ironrock_north
+    - map: ["enum.EdgeLayer.West"]
+      state: ironrock_west
+    - state: rock_bluespace_crystal
+      sprite: _Fish/Structures/Walls/bluespace_ore.rsi
+      map: ["enum.MiningScannerVisualLayers.Overlay"]
+
+- type: entity
+  parent: [FishBaseVeinBluespaceCrystal, WallRock]
+  id: FishWallRockBluespaceCrystal
+  suffix: Fish
+  components:
+  - type: EntityRemap
+    mask:
+      AsteroidRock: FishAsteroidRockBluespaceCrystal
+      IronRock: FishIronRockBluespaceCrystal
+      WallRockChromite: FishWallRockChromiteBluespaceCrystal
+      WallRockSand: FishWallRockSandBluespaceCrystal
+      WallRockSnow: FishWallRockSnowBluespaceCrystal
+      WallRockBasalt: FishWallRockBasaltBluespaceCrystal
+
+- type: entity
+  parent: [FishBaseVeinBluespaceCrystal, WallRockSnow]
+  id: FishWallRockSnowBluespaceCrystal
+  suffix: Fish
+
+- type: entity
+  parent: [FishBaseVeinBluespaceCrystal, WallRockSand]
+  id: FishWallRockSandBluespaceCrystal
+  suffix: Fish
+
+- type: entity
+  parent: [FishBaseVeinBluespaceCrystal, WallRockChromite]
+  id: FishWallRockChromiteBluespaceCrystal
+  suffix: Fish
+
+- type: entity
+  parent: [FishBaseVeinBluespaceCrystal, WallRockBasalt]
+  id: FishWallRockBasaltBluespaceCrystal
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Structures/Walls/rock.rsi
+    layers:
+    - state: rock_wall
+    - map: ["enum.EdgeLayer.South"]
+      state: rock_wall_south
+    - map: ["enum.EdgeLayer.East"]
+      state: rock_wall_east
+    - map: ["enum.EdgeLayer.North"]
+      state: rock_wall_north
+    - map: ["enum.EdgeLayer.West"]
+      state: rock_wall_west
+    - state: rock_bluespace_crystal
+      sprite: _Fish/Structures/Walls/bluespace_ore.rsi
+      map: ["enum.MiningScannerVisualLayers.Overlay"]

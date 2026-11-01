@@ -1,0 +1,69 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'fish-bluespace-window-title'}" MinSize="560 450" SetSize="640 720">
+    <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="8" HorizontalExpand="True" VerticalExpand="True">
+        <PanelContainer StyleClasses="PanelDark">
+            <BoxContainer Margin="8" SeparationOverride="10" HorizontalExpand="True">
+                <EntityPrototypeView Name="Portrait" SetSize="48 48"/>
+                <BoxContainer Orientation="Vertical" SeparationOverride="3" HorizontalExpand="True">
+                    <Label Name="DeviceName" StyleClasses="LabelSubText" ClipText="True"/>
+                    <Label Name="Status" StyleClasses="LabelHeadingBigger" ClipText="True"/>
+                </BoxContainer>
+                <Button Name="EnableButton" Text="{Loc 'fish-bluespace-enable'}" VerticalAlignment="Center" MinWidth="100"/>
+            </BoxContainer>
+        </PanelContainer>
+        <RichTextLabel Name="StatusHint" HorizontalExpand="True"/>
+        <ScrollContainer Name="DeviceScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" ReserveScrollbarSpace="True">
+            <BoxContainer Orientation="Vertical" SeparationOverride="8" HorizontalExpand="True">
+                <BoxContainer Name="Metrics" SeparationOverride="8" HorizontalExpand="True">
+                    <PanelContainer StyleClasses="PanelInsetDark" HorizontalExpand="True">
+                        <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="4" HorizontalExpand="True">
+                            <Label Text="{Loc 'fish-bluespace-power-label'}" StyleClasses="LabelSubText"/>
+                            <RichTextLabel Name="PowerText" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </PanelContainer>
+                    <PanelContainer StyleClasses="PanelInsetDark" HorizontalExpand="True">
+                        <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="4" HorizontalExpand="True">
+                            <Label Text="{Loc 'fish-bluespace-background-label'}" StyleClasses="LabelSubText"/>
+                            <ProgressBar Name="Background" MinValue="0" MaxValue="100" MinHeight="12" HorizontalExpand="True"/>
+                            <Label Name="BackgroundText"/>
+                        </BoxContainer>
+                    </PanelContainer>
+                </BoxContainer>
+                <PanelContainer Name="EffectPanel" StyleClasses="PanelDark" Visible="False">
+                    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6" HorizontalExpand="True">
+                        <Label Name="ResearchRate" Visible="False" StyleClasses="LabelHeading" ClipText="True"/>
+                        <RichTextLabel Name="EffectText" HorizontalExpand="True"/>
+                    </BoxContainer>
+                </PanelContainer>
+                <BoxContainer Name="HarvesterPanel" Orientation="Vertical" SeparationOverride="8" Visible="False">
+                    <PanelContainer StyleClasses="PanelDark">
+                        <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="5" HorizontalExpand="True">
+                            <Label Text="{Loc 'fish-bluespace-progress-label'}" StyleClasses="LabelSubText"/>
+                            <ProgressBar Name="Progress" MinValue="0" MaxValue="1" MinHeight="18" HorizontalExpand="True"/>
+                            <Label Name="ProgressText"/>
+                            <RichTextLabel Name="Eta" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </PanelContainer>
+                    <BoxContainer Name="Selectors" SeparationOverride="8" HorizontalExpand="True">
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True">
+                            <Label Text="{Loc 'fish-bluespace-mode-label'}" StyleClasses="LabelSubText"/>
+                            <OptionButton Name="PowerMode" HorizontalExpand="True"/>
+                        </BoxContainer>
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True">
+                            <Label Text="{Loc 'fish-bluespace-category-label'}" StyleClasses="LabelSubText"/>
+                            <OptionButton Name="LootCategory" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <Label Name="PreviewHeading" StyleClasses="LabelHeading"/>
+                    <RichTextLabel Text="{Loc 'fish-bluespace-preview-hint'}" HorizontalExpand="True"/>
+                    <BoxContainer Name="LootPreview" Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True"/>
+                </BoxContainer>
+                <BoxContainer Name="HelpPanel" Orientation="Vertical" SeparationOverride="6" Visible="False" HorizontalExpand="True">
+                    <RichTextLabel Name="Instructions" HorizontalExpand="True"/>
+                </BoxContainer>
+            </BoxContainer>
+        </ScrollContainer>
+        <Button Name="InstructionsButton" Text="{Loc 'fish-bluespace-help'}" ToggleMode="True" HorizontalExpand="True"/>
+    </BoxContainer>
+</controls:FancyWindow>

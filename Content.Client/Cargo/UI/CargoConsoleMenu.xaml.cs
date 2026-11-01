@@ -268,8 +268,8 @@ namespace Content.Client.Cargo.UI
 
                 row.Cancel.OnPressed += (args) => { OnOrderCanceled?.Invoke(order); };
 
-                // TODO: Disable based on access.
                 row.SetApproveVisible(orderConsole.Mode != CargoOrderConsoleMode.SendToPrimary);
+                SetFishApprovalAccess(row); // Fish-edit: одобрение доступно только с подходящей ID-картой.
                 row.Approve.OnPressed += (args) => { OnOrderApproved?.Invoke(order); };
                 Requests.AddChild(row);
             }
@@ -306,6 +306,7 @@ namespace Content.Client.Cargo.UI
         protected override void FrameUpdate(FrameEventArgs args)
         {
             base.FrameUpdate(args);
+            UpdateFishApprovalAccess(); // Fish-edit: смена ID обновляет права в открытом окне.
 
             if (!_bankQuery.TryComp(_station, out var bankAccount) ||
                 !_orderConsoleQuery.TryComp(_owner, out var orderConsole))

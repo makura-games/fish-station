@@ -1,0 +1,609 @@
+- type: entity
+  id: FishXenoSlimeBase
+  parent: [BaseSimpleMob, MobCombat]
+  abstract: true
+  save: true
+  suffix: Fish
+  name: laboratory slime
+  description: A gelatinous organism bred for its reactive extracts.
+  components:
+  - type: FishXenobiologySlime
+  - type: Sprite
+    sprite: _Fish/Xenobiology/Mobs/slimesBaby.rsi
+    layers:
+    - state: base
+      map: [enum.FishXenobiologyLayers.Body]
+  - type: GenericVisualizer
+    visuals:
+      enum.FishXenobiologyVisuals.Stage:
+        enum.FishXenobiologyLayers.Body:
+          Baby:
+            sprite: _Fish/Xenobiology/Mobs/slimesBaby.rsi
+            state: base
+          Adult:
+            sprite: _Fish/Xenobiology/Mobs/slimesAdult.rsi
+            state: base
+          DeadBaby:
+            sprite: _Fish/Xenobiology/Mobs/slimesBaby.rsi
+            state: dead
+          DeadAdult:
+            sprite: _Fish/Xenobiology/Mobs/slimesAdult.rsi
+            state: dead
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.3
+        density: 80
+        mask: [MobMask]
+        layer: [MobLayer]
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      60: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 1.5
+    baseSprintSpeed: 2.5
+  - type: Body
+  - type: EntityTableContainerFill
+    containers:
+      body_organs: !type:AllSelector
+        children:
+        - id: FishXenoSlimeStomach
+  - type: Satiation
+    satiations:
+      Hunger:
+        prototype: FishXenoSlimeHunger
+  - type: AtmosExposed
+  - type: Temperature
+    temperature: 293.15
+    heatCapacity: 20000
+    thermalConductivity: 200
+  - type: NpcFactionMember
+    factions: [FishXenoSlimeCalm]
+  - type: HTN
+    rootTask:
+      task: FishXenoSlimeCompound
+    blackboard:
+      VisionRadius: !type:Single
+        6
+      AggroVisionRadius: !type:Single
+        6
+      MeleeRange: !type:Single
+        1
+  - type: MeleeWeapon
+    hidden: true
+    angle: 0
+    animation: WeaponArcBite
+    soundHit:
+      collection: FootstepSlime
+    damage:
+      types:
+        Blunt: 3
+        Caustic: 2
+  - type: NameIdentifier
+    group: GenericNumber
+  - type: InteractionPopup
+    successChance: 1
+    interactSuccessString: petting-success-slimes
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepSlime
+  - type: Tag
+    tags: [FootstepSound, NoPaint]
+
+- type: entity
+  id: FishXenoSlimeStomach
+  parent: OrganAnimalStomach
+  name: slime stomach
+  description: An elastic digestive sac from a laboratory slime.
+  suffix: Fish
+
+- type: satiation
+  id: FishXenoSlimeHunger
+  parent: SimpleMobBaseHunger
+  baseChangeRate: -0.06
+  startingValueMinimum: 65
+  startingValueMaximum: 65
+
+- type: npcFaction
+  id: FishXenoSlimeCalm
+  friendly: [FishXenoSlimeHungry]
+
+- type: npcFaction
+  id: FishXenoSlimeHungry
+  friendly: [FishXenoSlimeCalm]
+  hostile: [NanoTrasen, Syndicate, PetsNT]
+
+- type: htnCompound
+  id: FishXenoSlimeCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      preconditions:
+      - !type:BaseSatiationPrecondition
+        satiationType: Hunger
+        below: Okay
+      operator: !type:UtilityOperator
+        proto: FishXenoSlimeFood
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: TargetCoordinates
+        pathfindKey: TargetPathfind
+        rangeKey: MeleeRange
+    - !type:HTNPrimitiveTask
+      preconditions:
+      - !type:KeyExistsPrecondition
+        key: Target
+      operator: !type:AltInteractOperator
+    - !type:HTNPrimitiveTask
+      operator: !type:WaitOperator
+        key: IdleTime
+  - tasks:
+    - !type:HTNCompoundTask
+      task: MeleeCombatCompound
+  - tasks:
+    - !type:HTNCompoundTask
+      task: IdleCompound
+
+- type: utilityQuery
+  id: FishXenoSlimeFood
+  query:
+  - !type:ComponentQuery
+    components:
+    - type: Edible
+  considerations:
+  - !type:TargetIsAliveCon
+    curve: !type:InverseBoolCurve
+  - !type:TargetDistanceCon
+    curve: !type:PresetCurve
+      preset: TargetDistance
+  - !type:FoodValueCon
+    hungerThreshold: Okay
+    curve: !type:QuadraticCurve
+      slope: 1.0
+      exponent: 0.4
+  - !type:TargetAccessibleCon
+    curve: !type:BoolCurve
+
+- type: entity
+  id: FishXenoSlimeGrey
+  parent: FishXenoSlimeBase
+  name: grey slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishGrey
+  - type: Sprite
+    color: "#9b9b9b"
+
+- type: entity
+  id: FishXenoSlimeGreyAdult
+  parent: FishXenoSlimeGrey
+  name: grey slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeBlue
+  parent: FishXenoSlimeBase
+  name: blue slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishBlue
+  - type: Sprite
+    color: "#6a9ef0"
+
+- type: entity
+  id: FishXenoSlimeBlueAdult
+  parent: FishXenoSlimeBlue
+  name: blue slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeMetal
+  parent: FishXenoSlimeBase
+  name: metal slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishMetal
+  - type: Sprite
+    color: "#939ca6"
+
+- type: entity
+  id: FishXenoSlimeMetalAdult
+  parent: FishXenoSlimeMetal
+  name: metal slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeOrange
+  parent: FishXenoSlimeBase
+  name: orange slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishOrange
+  - type: Sprite
+    color: "#f39b45"
+
+- type: entity
+  id: FishXenoSlimeOrangeAdult
+  parent: FishXenoSlimeOrange
+  name: orange slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimePurple
+  parent: FishXenoSlimeBase
+  name: purple slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishPurple
+  - type: Sprite
+    color: "#a66bd5"
+
+- type: entity
+  id: FishXenoSlimePurpleAdult
+  parent: FishXenoSlimePurple
+  name: purple slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeDarkBlue
+  parent: FishXenoSlimeBase
+  name: dark blue slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishDarkBlue
+  - type: Sprite
+    color: "#385ab5"
+
+- type: entity
+  id: FishXenoSlimeDarkBlueAdult
+  parent: FishXenoSlimeDarkBlue
+  name: dark blue slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeDarkPurple
+  parent: FishXenoSlimeBase
+  name: dark purple slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishDarkPurple
+  - type: Sprite
+    color: "#6d368b"
+
+- type: entity
+  id: FishXenoSlimeDarkPurpleAdult
+  parent: FishXenoSlimeDarkPurple
+  name: dark purple slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeSilver
+  parent: FishXenoSlimeBase
+  name: silver slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishSilver
+  - type: Sprite
+    color: "#c9d4db"
+
+- type: entity
+  id: FishXenoSlimeSilverAdult
+  parent: FishXenoSlimeSilver
+  name: silver slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeYellow
+  parent: FishXenoSlimeBase
+  name: yellow slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishYellow
+  - type: Sprite
+    color: "#f1dc52"
+
+- type: entity
+  id: FishXenoSlimeYellowAdult
+  parent: FishXenoSlimeYellow
+  name: yellow slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeRed
+  parent: FishXenoSlimeBase
+  name: red slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishRed
+  - type: Sprite
+    color: "#e35353"
+
+- type: entity
+  id: FishXenoSlimeRedAdult
+  parent: FishXenoSlimeRed
+  name: red slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeGreen
+  parent: FishXenoSlimeBase
+  name: green slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishGreen
+  - type: Sprite
+    color: "#78c765"
+
+- type: entity
+  id: FishXenoSlimeGreenAdult
+  parent: FishXenoSlimeGreen
+  name: green slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimePink
+  parent: FishXenoSlimeBase
+  name: pink slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishPink
+  - type: Sprite
+    color: "#ef9ac5"
+
+- type: entity
+  id: FishXenoSlimePinkAdult
+  parent: FishXenoSlimePink
+  name: pink slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeGold
+  parent: FishXenoSlimeBase
+  name: gold slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishGold
+  - type: Sprite
+    color: "#d6b145"
+
+- type: entity
+  id: FishXenoSlimeGoldAdult
+  parent: FishXenoSlimeGold
+  name: gold slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeCerulean
+  parent: FishXenoSlimeBase
+  name: cerulean slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishCerulean
+  - type: Sprite
+    color: "#64ccd5"
+
+- type: entity
+  id: FishXenoSlimeCeruleanAdult
+  parent: FishXenoSlimeCerulean
+  name: cerulean slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimePyrite
+  parent: FishXenoSlimeBase
+  name: pyrite slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishPyrite
+  - type: Sprite
+    color: "#e0cb76"
+
+- type: entity
+  id: FishXenoSlimePyriteAdult
+  parent: FishXenoSlimePyrite
+  name: pyrite slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeBluespace
+  parent: FishXenoSlimeBase
+  name: bluespace slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishBluespace
+  - type: Sprite
+    color: "#4a7ffc"
+
+- type: entity
+  id: FishXenoSlimeBluespaceAdult
+  parent: FishXenoSlimeBluespace
+  name: bluespace slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeSepia
+  parent: FishXenoSlimeBase
+  name: sepia slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishSepia
+  - type: Sprite
+    color: "#9e795c"
+
+- type: entity
+  id: FishXenoSlimeSepiaAdult
+  parent: FishXenoSlimeSepia
+  name: sepia slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeOil
+  parent: FishXenoSlimeBase
+  name: oil slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishOil
+  - type: Sprite
+    color: "#443d4e"
+
+- type: entity
+  id: FishXenoSlimeOilAdult
+  parent: FishXenoSlimeOil
+  name: oil slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeBlack
+  parent: FishXenoSlimeBase
+  name: black slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishBlack
+  - type: Sprite
+    color: "#55515c"
+
+- type: entity
+  id: FishXenoSlimeBlackAdult
+  parent: FishXenoSlimeBlack
+  name: black slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeLightPink
+  parent: FishXenoSlimeBase
+  name: light pink slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishLightPink
+  - type: Sprite
+    color: "#f3bed7"
+
+- type: entity
+  id: FishXenoSlimeLightPinkAdult
+  parent: FishXenoSlimeLightPink
+  name: light pink slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeAdamantine
+  parent: FishXenoSlimeBase
+  name: adamantine slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishAdamantine
+  - type: Sprite
+    color: "#729c8d"
+
+- type: entity
+  id: FishXenoSlimeAdamantineAdult
+  parent: FishXenoSlimeAdamantine
+  name: adamantine slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true
+
+- type: entity
+  id: FishXenoSlimeRainbow
+  parent: FishXenoSlimeBase
+  name: rainbow slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    breed: FishRainbow
+  - type: Sprite
+    color: "#ede2ff"
+
+- type: entity
+  id: FishXenoSlimeRainbowAdult
+  parent: FishXenoSlimeRainbow
+  name: rainbow slime
+  suffix: Fish
+  components:
+  - type: FishXenobiologySlime
+    adult: true

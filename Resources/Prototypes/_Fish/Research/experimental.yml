@@ -1,0 +1,30 @@
+- type: technology
+  id: FishBluespaceTheory
+  name: research-technology-fish-bluespace-theory
+  icon:
+    sprite: _Fish/Objects/Materials/bluespace_crystal.rsi
+    state: bluespace_crystal
+  discipline: Experimental
+  tier: 2
+  cost: 7500
+  technologyPrerequisites:
+  - BasicAnomalousResearch
+  - BasicXenoArcheology
+  genericUnlocks:
+  - unlockDescription: research-unlock-fish-bluespace-theory
+
+- type: technology
+  id: FishMicroreactors
+  name: research-technology-fish-microreactors
+  icon:
+    sprite: Objects/Power/power_cells.rsi
+    state: microreactor
+  discipline: Experimental
+  tier: 3
+  cost: 10000
+  technologyPrerequisites:
+  - AdvancedPowercells
+  - AdvancedToolsTechnology
+  - FishUraniumProcessing
+  recipeUnlocks:
+  - PowerCellMicroreactor

@@ -1646,4 +1646,5 @@ HighSecCommandLocked: AirlockCommandLocked
 HighSecCentralCommandLocked: AirlockCentralCommandLocked
 HighSecArmoryLocked: AirlockArmoryLocked
 HighSecCaptainLocked: AirlockCaptainLocked
+FishResearchScanner: null # Fish-edit: удалённый экспериментальный сканер.
 # region Fish-End

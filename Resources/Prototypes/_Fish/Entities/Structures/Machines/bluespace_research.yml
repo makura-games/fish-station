@@ -1,0 +1,198 @@
+- type: entity
+  abstract: true
+  parent: [BaseMachinePowered, ConstructibleMachine, BaseConstructibleMachineDestructible]
+  id: FishBluespaceFieldMachineBase
+  name: bluespace field device
+  suffix: Fish
+  components:
+  - type: Transform
+    anchored: true
+  - type: WiresPanel
+  - type: Appearance
+  - type: PowerState
+    idlePowerDraw: 0
+    isWorking: false
+  - type: ActivatableUI
+    key: enum.FishBluespaceDeviceUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FishBluespaceDeviceUiKey.Key:
+        type: FishBluespaceDeviceBoundUserInterface
+
+- type: entity
+  parent: FishBluespaceFieldMachineBase
+  id: FishBluespaceProber
+  name: bluespace research prober
+  description: Studies the local bluespace field to generate research points. Requires a linked research server and raises the station's bluespace background.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Structures/Machines/bluespace_field.rsi
+    layers:
+    - state: base
+    - state: prober
+    - state: powered
+      visible: false
+      shader: unshaded
+      map: [enum.FishBluespaceDeviceLayers.Status]
+  - type: GenericVisualizer
+    visuals:
+      enum.FishBluespaceDeviceVisuals.Working:
+        enum.FishBluespaceDeviceLayers.Status:
+          True: { visible: true }
+          False: { visible: false }
+  - type: ApcPowerReceiver
+    powerLoad: 0
+  - type: PowerState
+    workingPowerDraw: 25000
+  - type: Machine
+    board: FishBluespaceProberBoard
+  - type: ResearchClient
+  - type: FishBluespaceProber
+    enabled: false
+
+- type: entity
+  parent: FishBluespaceFieldMachineBase
+  id: FishBluespaceSuppressor
+  name: bluespace background suppressor
+  description: Uses power to stabilize the station's shared bluespace field. Remains usable during a critical background event.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Structures/Machines/bluespace_field.rsi
+    layers:
+    - state: base
+    - state: drain
+    - state: powered
+      visible: false
+      shader: unshaded
+      map: [enum.FishBluespaceDeviceLayers.Status]
+  - type: GenericVisualizer
+    visuals:
+      enum.FishBluespaceDeviceVisuals.Working:
+        enum.FishBluespaceDeviceLayers.Status:
+          True: { visible: true }
+          False: { visible: false }
+  - type: ApcPowerReceiver
+    powerLoad: 0
+  - type: PowerState
+    workingPowerDraw: 50000
+  - type: Machine
+    board: FishBluespaceSuppressorBoard
+  - type: FishBluespaceSuppressor
+    enabled: false
+
+- type: entity
+  parent: [BaseMachine, ConstructibleMachine, BaseConstructibleMachineDestructible]
+  id: FishBluespaceHarvester
+  name: bluespace harvester
+  description: A high-voltage installation which converts energy into recovered materials and supplies. Overdrive increases both power demand and bluespace instability.
+  suffix: Fish
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _Fish/Structures/Machines/bluespace_harvester.rsi
+    layers:
+    - state: idle
+      map: [enum.FishBluespaceDeviceLayers.Base]
+    - state: unstable
+      visible: false
+      map: [enum.FishBluespaceDeviceLayers.Status]
+  - type: WiresPanel
+  - type: PowerConsumer
+    voltage: High
+    drawRate: 0
+  - type: NodeContainer
+    examinable: true
+    nodes:
+      input: !type:CableDeviceNode
+        nodeGroupID: HVPower
+  - type: PowerState
+    ensureApc: false
+    idlePowerDraw: 0
+    workingPowerDraw: 250000
+    isWorking: false
+  - type: Machine
+    board: FishBluespaceHarvesterBoard
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.FishBluespaceDeviceVisuals.Working:
+        enum.FishBluespaceDeviceLayers.Base:
+          True: { state: active }
+          False: { state: idle }
+      enum.FishBluespaceDeviceVisuals.Unstable:
+        enum.FishBluespaceDeviceLayers.Status:
+          True: { visible: true }
+          False: { visible: false }
+  - type: FishBluespaceHarvester
+    enabled: false
+    normalPowerDraw: 250000
+    overdrivePowerDraw: 500000
+    energyPerReward: 15000000
+    backgroundPerMegajoule: 0.6
+  - type: ActivatableUI
+    key: enum.FishBluespaceDeviceUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FishBluespaceDeviceUiKey.Key:
+        type: FishBluespaceDeviceBoundUserInterface
+
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: FishBluespaceProberBoard
+  name: bluespace prober board
+  description: A machine circuit board for a bluespace research prober.
+  suffix: Fish
+  components:
+  - type: MachineBoard
+    prototype: FishBluespaceProber
+    stackRequirements:
+      Manipulator: 2
+      Glass: 2
+      Cable: 4
+      Steel: 5
+
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: FishBluespaceSuppressorBoard
+  name: bluespace suppressor board
+  description: A machine circuit board for a bluespace background suppressor.
+  suffix: Fish
+  components:
+  - type: MachineBoard
+    prototype: FishBluespaceSuppressor
+    stackRequirements:
+      Manipulator: 2
+      Plasteel: 5
+      Cable: 5
+
+- type: entity
+  parent: BaseMachineCircuitboard
+  id: FishBluespaceHarvesterBoard
+  name: bluespace harvester board
+  description: A machine circuit board for a high-voltage bluespace harvester.
+  suffix: Fish
+  components:
+  - type: MachineBoard
+    prototype: FishBluespaceHarvester
+    stackRequirements:
+      Manipulator: 4
+      Plasteel: 10
+      CableHV: 5
+      Gold: 5
+      FishProcessedUranium: 5
+
+- type: entity
+  id: FishBluespaceRift
+  name: bluespace rift
+  description: A short-lived breach in the local bluespace field.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Effects/portal.rsi
+    state: portal-artifact
+    drawdepth: Effects
+  - type: TimedDespawn
+    lifetime: 10
