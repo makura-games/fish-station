@@ -31,6 +31,16 @@ fish-xeno-console-fed = Potion fed to a slime.
 fish-xeno-console-feed-fail = Could not feed any stored slime.
 fish-xeno-console-recycled = Recycled {$count} monkey corpse(s).
 
+fish-xeno-link-console-selected = Console selected. Use multitool on the monkey recycler.
+fish-xeno-link-need-console = Select a xenobiology console with the multitool first.
+fish-xeno-link-done = Recycler linked to console.
+
+fish-xeno-verb-collect = (Xeno) Collect slime
+fish-xeno-verb-scan = (Xeno) Scan slime
+fish-xeno-verb-feed = (Xeno) Feed loaded potion
+fish-xeno-verb-recycle-monkey = (Xeno) Recycle monkey
+fish-xeno-verb-release = (Xeno) Release all slimes
+
 ent-FishXenobiologyConsoleFish = xenobiology console
     .desc = Stores slimes and monkey cubes; feeds potions in a radius around the console.
     .suffix = Fish
