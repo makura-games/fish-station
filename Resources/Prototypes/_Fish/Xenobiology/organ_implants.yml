@@ -1,0 +1,31 @@
+# Fish-start — ксено-органы как подкожные импланты (порция 3 SS220)
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantRegenerativeFish
+  name: regenerative xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: Regenerative
+    implantDuration: 00:30:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantToxicFish
+  name: toxic xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: Toxic
+    implantDuration: 00:30:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantVigorFish
+  name: vigor xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: Vigor
+    implantDuration: 00:30:00
+# Fish-end
