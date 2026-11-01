@@ -58,6 +58,12 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
     {
         var id = MetaData(target).EntityPrototype?.ID ?? "";
 
+        if (ContainsAny(id, "Flock"))
+            return "FishXenoOrganEmpPulseFish";
+
+        if (ContainsAny(id, "Dragon"))
+            return "FishXenoOrganAdrenalineFish";
+
         if (ContainsAny(id, "Tomato", "Clown"))
             return "FishXenoOrganAntitoxinFish";
 
@@ -67,8 +73,11 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
         if (ContainsAny(id, "Spider", "Hivelord", "Hivebot", "Flesh", "Abomination"))
             return "FishXenoOrganToxicFish";
 
-        if (ContainsAny(id, "Carp", "Goliath", "Bear", "Colossus", "Bubblegum", "Legion", "Megacarp"))
+        if (ContainsAny(id, "Carp", "Goliath", "Bear", "Legion", "Megacarp"))
             return "FishXenoOrganSinewFish";
+
+        if (ContainsAny(id, "Colossus", "Bubblegum", "Legionnaire"))
+            return "FishXenoOrganSlimeSkinFish";
 
         if (ContainsAny(id, "Herald", "Revenant", "Morph", "Hound", "Pandora", "Goldgrub"))
             return "FishXenoOrganVigorFish";
