@@ -8,4 +8,10 @@ public sealed partial class FishSlimeSentiencePotionComponent : Component
 {
     [DataField]
     public int WarmStage;
+
+    /// <summary>
+    /// Время последнего изменения WarmStage (для остывания −1 за 60 с).
+    /// </summary>
+    [DataField]
+    public TimeSpan LastWarmChange;
 }
