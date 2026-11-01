@@ -7,6 +7,7 @@ fish-xeno-organ-slime-start = The slime begins digesting the mass.
 fish-xeno-organ-slime-done = The slime expels a finished xenOrgan.
 fish-xeno-analyzer-unidentified = The organ must be identified first.
 fish-xeno-analyzer-done = This organ was already analyzed.
+fish-xeno-analyzer-type-limit = This analyzer already scanned this organ type three times.
 fish-xeno-analyzer-busy = The analyzer is busy.
 fish-xeno-analyzer-start = Scanning xenOrgan…
 fish-xeno-analyzer-finished = Scan complete. {$points} research points added.
