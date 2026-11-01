@@ -1,5 +1,7 @@
 namespace Content.Shared._Fish.Xenobiology.Organs;
 
+using Robust.Shared.Prototypes;
+
 [RegisterComponent]
 public sealed partial class FishXenobiologyOrganAnalyzerComponent : Component
 {
@@ -17,4 +19,13 @@ public sealed partial class FishXenobiologyOrganAnalyzerComponent : Component
 
     [DataField]
     public Dictionary<string, int> ScanCountsByPrototype = new();
+
+    /// <summary>
+    /// Шанс выпадения technology disk после успешного скана (SS220: редко).
+    /// </summary>
+    [DataField]
+    public float TechDiskChance = 0.12f;
+
+    [DataField]
+    public EntProtoId TechDiskPrototype = "TechnologyDisk";
 }
