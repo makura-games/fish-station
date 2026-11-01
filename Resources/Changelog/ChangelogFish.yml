@@ -1314,3 +1314,14 @@
     message: В jukebox добавлен большой список лицензированных треков SS13/SS14 и полный каталог A-Guy.
   id: 133
   url: https://github.com/makura-games/fish-station/pull/584
+- author: Aura-Bazara
+  time: '2026-11-01T19:41:12.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Прочность гермозатвора увеличена с 500 до 1500.
+  - type: Tweak
+    message: Прочность бронидвери увеличила до 400 с 300.
+  - type: Tweak
+    message: Резисты статичной пластали увелечины с 15 базы и 6 структурного до 20 базы и 10 струтурного
+  id: 134
+  url: https://github.com/makura-games/fish-station/pull/563
