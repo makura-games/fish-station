@@ -60,6 +60,24 @@
     kind: Sinew
 
 - type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganVigorFish
+  name: vigor xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: Vigor
+
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganAntitoxinFish
+  name: antitoxin xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: Antitoxin
+
+- type: entity
   parent: [ BaseMachinePowered, StructureHealthMachineWeak ]
   id: FishXenobiologyOrganAnalyzerFish
   name: xenOrgan analyzer
