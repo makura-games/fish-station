@@ -1,3 +1,4 @@
+using Content.Server.Emp;
 using Content.Shared._Fish.Xenobiology.Organs;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
@@ -6,6 +7,7 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Transform;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Xenobiology.Organs;
@@ -22,6 +24,8 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private EmpSystem _emp = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private TimeSpan _nextRegenTick;
 
@@ -107,6 +111,19 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
                     _solutions.TryAddReagent(antSoln, "Dylovene", FixedPoint2.New(8));
                 break;
             case FishXenoOrganEffectKind.HeatResist:
+                break;
+            case FishXenoOrganEffectKind.EmpPulse:
+                var empCoords = _transform.GetMapCoordinates(target);
+                _emp.EmpPulse(empCoords, 3f, 2000f, TimeSpan.FromSeconds(3));
+                break;
+            case FishXenoOrganEffectKind.Adrenaline:
+                if (_solutions.TryGetInjectableSolution(target, out var adrSoln, out _))
+                {
+                    _solutions.TryAddReagent(adrSoln, "Epinephrine", FixedPoint2.New(5));
+                    _solutions.TryAddReagent(adrSoln, "Omnizine", FixedPoint2.New(3));
+                }
+                break;
+            case FishXenoOrganEffectKind.SlimeSkin:
                 break;
         }
     }
