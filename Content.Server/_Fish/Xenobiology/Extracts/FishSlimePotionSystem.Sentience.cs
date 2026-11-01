@@ -1,18 +1,25 @@
+using Content.Server.Explosion.EntitySystems;
 using Content.Server.Ghost.Roles.Components;
+using Content.Server.Ghost.Roles.Raffles;
 using Content.Server.StationEvents.Components;
 using Content.Shared._Fish.Xenobiology.Extracts;
+using Content.Shared.Ghost.Roles.Raffles;
 using Content.Shared.Interaction;
 using Content.Shared.Mind;
-using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.Xenobiology.Extracts;
 
 public sealed partial class FishSlimePotionSystem
 {
-    [Dependency] private SharedMindSystem _mind = default!;
+    private static readonly ProtoId<GhostRoleRaffleSettingsPrototype> SentienceRaffle = "FishXenoSentienceRaffleFish";
+
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private ExplosionSystem _explosion = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private void OnSentienceTargetInteract(Entity<SentienceTargetComponent> target, ref InteractUsingEvent args)
     {
@@ -45,8 +52,15 @@ public sealed partial class FishSlimePotionSystem
     {
         if (_mind.TryGetMind(target, out _, out _))
         {
+            HeatSentiencePotion(potion, user);
             _popup.PopupEntity(Loc.GetString("fish-slime-potion-sentience-has-mind"), user, user);
             return false;
+        }
+
+        if (TryComp<FishSlimeSentiencePotionComponent>(potion, out var warm) && warm.WarmStage >= 2)
+        {
+            DetonateSentiencePotion(potion, user);
+            return true;
         }
 
         RemComp<SentienceTargetComponent>(target);
@@ -54,10 +68,33 @@ public sealed partial class FishSlimePotionSystem
         EnsureComp<GhostTakeoverAvailableComponent>(target);
         ghostRole.RoleName = MetaData(target).EntityName;
         ghostRole.RoleDescription = Loc.GetString("fish-slime-potion-sentience-role-desc", ("name", ghostRole.RoleName));
+        ghostRole.RoleRules = "ghost-role-component-default-rules";
+        var raffleSettings = _proto.Index(SentienceRaffle).Settings;
+        ghostRole.RaffleConfig = new GhostRoleRaffleConfig(raffleSettings);
 
-        _popup.PopupEntity(Loc.GetString("fish-slime-potion-sentience"), target, user);
+        _popup.PopupEntity(Loc.GetString("fish-slime-potion-sentience-raffle"), target, user);
         QueueDel(potion);
         return true;
+    }
+
+    private void HeatSentiencePotion(EntityUid potion, EntityUid user)
+    {
+        var warm = EnsureComp<FishSlimeSentiencePotionComponent>(potion);
+        warm.WarmStage++;
+        Dirty(potion, warm);
+
+        if (warm.WarmStage >= 3)
+            DetonateSentiencePotion(potion, user);
+        else
+            _popup.PopupEntity(Loc.GetString("fish-slime-potion-sentience-warm", ("stage", warm.WarmStage)), user, user);
+    }
+
+    private void DetonateSentiencePotion(EntityUid potion, EntityUid user)
+    {
+        var coords = _transform.GetMapCoordinates(potion);
+        _explosion.QueueExplosion(potion, "Default", 50f, 1f, 0.5f, canCreateVacuum: false, user: user);
+        QueueDel(potion);
+        _popup.PopupEntity(Loc.GetString("fish-slime-potion-sentience-boom"), user, user);
     }
 
     private bool TryTransference(EntityUid user, EntityUid target, EntityUid potion)
