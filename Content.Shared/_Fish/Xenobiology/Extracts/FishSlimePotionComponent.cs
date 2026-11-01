@@ -11,6 +11,12 @@ public enum FishSlimePotionKind : byte
     Mutator,
     Steroid,
     Docility,
+    Enhancer,
+    Speed,
+    Fireproof,
+    OilSlick,
+    Sentience,
+    Transference,
 }
 
 [RegisterComponent, NetworkedComponent]
