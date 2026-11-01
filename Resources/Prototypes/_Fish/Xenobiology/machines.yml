@@ -1,0 +1,70 @@
+# Fish-start — машины ксенобиологии (без консоли и плат)
+- type: entity
+  parent: [ BaseMachinePowered, StructureHealthMachineWeak ]
+  id: FishSlimeProcessorFish
+  name: slime processor
+  description: Grinds dead slimes into slime extracts equal to their core count.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/seed_extractor.rsi
+    snapCardinals: true
+    layers:
+    - state: seedextractor-off
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.4,0.25,0.4"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: FishSlimeProcessor
+
+- type: entity
+  parent: [ BaseMachinePowered, StructureHealthMachineWeak ]
+  id: FishMonkeyRecyclerFish
+  name: monkey recycler
+  description: Processes five dead monkeys into one monkey cube.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/seed_extractor.rsi
+    snapCardinals: true
+    layers:
+    - state: seedextractor-off
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.4,0.25,0.4"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: FishMonkeyRecycler
+    requiredGrind: 5
+
+- type: entity
+  parent: BaseItem
+  id: FishXenobiologySlimeScannerFish
+  name: slime scanner
+  description: Reads nutrition, growth, mutation, cores, and power of a slime.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/handheld_mass_scanner.rsi
+    state: icon
+  - type: Item
+    sprite: Objects/Tools/handheld_mass_scanner.rsi
+  - type: FishXenobiologySlimeScanner
+# Fish-end
