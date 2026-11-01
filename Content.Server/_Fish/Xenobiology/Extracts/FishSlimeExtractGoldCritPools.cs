@@ -11,9 +11,18 @@ public static class FishSlimeExtractGoldCritPools
     [
         "MobSpiderAngryBase",
         "MobSpiderSpace",
-        "MobBearSpace",
         "MobSpiderSpaceSalvage",
+        "MobBearSpace",
         "MobBearSpaceSalvage",
+        "MobGoliath",
+        "MobHivelord",
+        "MobHivebot",
+        "MobWatcherLavaland",
+        "MobWatcherIcewing",
+        "MobWatcherMagmawing",
+        "MobHellspawn",
+        "MobFleshGolem",
+        "MobAbomination",
     ];
 
     public const string NeutralBlood = "FishXenoGoldCritNeutralCarpFish";
