@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server.Chat.Systems;
+using Content.Shared.Chemistry;
 using Content.Shared._Fish.Xenobiology.Slimes;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
@@ -72,6 +73,7 @@ public sealed partial class FishSlimeSystem : EntitySystem
         SubscribeLocalEvent<FishSlimeComponent, TemperatureChangedEvent>(OnTemperature);
         SubscribeLocalEvent<FishSlimeComponent, EmpPulseEvent>(OnEmp);
         SubscribeLocalEvent<FishSlimeComponent, DamageModifyEvent>(OnDamageModify);
+        SubscribeLocalEvent<FishSlimeComponent, ReactionEntityEvent>(OnWaterReaction);
     }
 
     public override void Update(float frameTime)
@@ -288,6 +290,23 @@ public sealed partial class FishSlimeSystem : EntitySystem
         args.Damage.DamageDict["Heat"] = FixedPoint2.Zero;
         var blunt = args.Damage.DamageDict.GetValueOrDefault("Blunt");
         args.Damage.DamageDict["Blunt"] = blunt - heat;
+    }
+
+    private void OnWaterReaction(Entity<FishSlimeComponent> ent, ref ReactionEntityEvent args)
+    {
+        if (args.Method != ReactionMethod.Touch || args.Reagent.ID != "Water")
+            return;
+
+        var volume = args.ReagentQuantity.Quantity.Float();
+        if (volume <= 0f)
+            return;
+
+        // Fish-edit: как SS220 — rand(10,15) * объём реагента.
+        var damage = _random.Next(10, 16) * volume;
+        Hurt(ent, "Blunt", FixedPoint2.New(damage));
+
+        if (_random.Prob(0.25f))
+            _popup.PopupEntity(Loc.GetString("fish-slime-hurt-by-water"), ent, ent);
     }
 
     private void TickLife(Entity<FishSlimeComponent> ent)

@@ -56,18 +56,6 @@
     groups:
       Flammable: [ Touch ]
       Extinguish: [ Touch ]
-    reactions:
-    - reagents: [ Water ]
-      methods: [ Touch ]
-      effects:
-      - !type:HealthChange
-        damage:
-          types:
-            Blunt: 12
-      - !type:PopupMessage
-        type: Local
-        messages: [ "fish-slime-hurt-by-water" ]
-        probability: 0.25
   - type: InteractionPopup
     successChance: 0.5
     interactSuccessString: petting-success-slimes
