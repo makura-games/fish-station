@@ -59,7 +59,9 @@ public sealed class ClothingMedalsTest : GameTest
 
             Assert.That(containers.Remove(first, slot1!));
             Assert.That(containers.Remove(second, slot2!));
-            Assert.That(examine.GetExamineText(wearer, observer).ToMarkup(), Does.Not.Contain(entMan.GetComponent<MetaDataComponent>(first).EntityName));
+            var textAfterRemoval = examine.GetExamineText(wearer, observer).ToMarkup();
+            Assert.That(textAfterRemoval, Does.Not.Contain(entMan.GetComponent<MetaDataComponent>(first).EntityName));
+            Assert.That(textAfterRemoval, Does.Not.Contain(entMan.GetComponent<MetaDataComponent>(second).EntityName));
         });
     }
 }
