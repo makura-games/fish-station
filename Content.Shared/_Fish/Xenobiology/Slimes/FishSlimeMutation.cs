@@ -69,6 +69,12 @@ public static class FishSlimeMutation
         return adult ? $"FishSlime{name}AdultFish" : $"FishSlime{name}BabyFish";
     }
 
+    public static string ExtractPrototypeId(string color)
+    {
+        var name = Pascal.TryGetValue(color, out var pascal) ? pascal : "Grey";
+        return $"FishSlimeExtract{name}";
+    }
+
     public static string[] Slots(string parent)
     {
         return Table.TryGetValue(parent, out var slots) ? slots : [parent, parent, parent, parent];
