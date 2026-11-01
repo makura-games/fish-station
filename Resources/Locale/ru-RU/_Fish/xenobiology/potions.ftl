@@ -8,6 +8,12 @@ fish-slime-potion-steroid-baby = Стероид действует только 
 fish-slime-potion-steroid-max = У слайма уже максимум ядер.
 fish-slime-potion-docility = Слайм становится послушным и сытным.
 fish-slime-potion-docility-calm = Бешенство слайма спадает.
+fish-slime-potion-enhancer = Ядро можно использовать ещё раз.
+fish-slime-potion-speed = Слайм перегревается и дрожит от энергии.
+fish-slime-potion-speed-hot = Слайм уже перегрет.
+fish-slime-potion-fireproof = Одежда покрыта огнезащитой.
+fish-slime-potion-oil-slick = Предмет становится опасно скользким.
+fish-slime-potion-not-implemented = Это зелье ещё не полностью перенесено.
 
 ent-FishSlimePotionStabilizerFish = стабилизатор слайма
     .desc = Снижает шанс мутации. На трупах и не-слаймах не работает.
@@ -20,3 +26,21 @@ ent-FishSlimePotionSteroidFish = стероид слайма
 
 ent-FishSlimePotionDocilityFish = зелье послушания
     .desc = Успокаивает слайма или снимает бешенство без полного docile.
+
+ent-FishSlimePotionEnhancerFish = усилитель ядра
+    .desc = Добавляет одно использование экстракту, максимум пять.
+
+ent-FishSlimePotionSpeedFish = угощение скорости
+    .desc = Разогревает слайма для рывка скорости. Не стакается при перегреве.
+
+ent-FishSlimePotionFireproofFish = зелье chill
+    .desc = Даёт одежде огнезащиту на три заряда.
+
+ent-FishSlimePotionOilSlickFish = масляная плёнка
+    .desc = Делает предмет очень скользким.
+
+ent-FishSlimePotionSentienceFish = зелье разума
+    .desc = Даёт разум животным. Осторожно.
+
+ent-FishSlimePotionTransferenceFish = зелье переноса сознания
+    .desc = Переносит ваш разум в существо. Крайне опасно.
