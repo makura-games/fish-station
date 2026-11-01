@@ -28,6 +28,12 @@ ent-FishXenoOrganToxicFish = toxic xenOrgan
 ent-FishXenoOrganSinewFish = sinew xenOrgan
     .suffix = Fish
 
+ent-FishXenoOrganVigorFish = vigor xenOrgan
+    .suffix = Fish
+
+ent-FishXenoOrganAntitoxinFish = antitoxin xenOrgan
+    .suffix = Fish
+
 ent-FishXenobiologyOrganAnalyzerFish = xenOrgan analyzer
     .suffix = Fish
 
