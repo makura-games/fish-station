@@ -35,7 +35,7 @@ public sealed partial class FishXenobiologyOrganAnalyzerSystem : EntitySystem
             if (_timing.CurTime < scan.FinishAt)
                 continue;
 
-            CompleteScan(uid, scan, analyzer, xform);
+            CompleteScan(uid, scan, xform);
         }
     }
 
@@ -56,6 +56,16 @@ public sealed partial class FishXenobiologyOrganAnalyzerSystem : EntitySystem
             return;
         }
 
+        var protoId = MetaData(args.Used).EntityPrototype?.ID ?? "";
+        if (protoId.Length == 0)
+            return;
+
+        if (analyzer.Comp.ScanCountsByPrototype.GetValueOrDefault(protoId) >= analyzer.Comp.MaxScansPerOrganType)
+        {
+            _popup.PopupEntity(Loc.GetString("fish-xeno-analyzer-type-limit"), args.User, args.User);
+            return;
+        }
+
         if (HasComp<FishXenoOrganAnalyzerScanComponent>(analyzer))
         {
             _popup.PopupEntity(Loc.GetString("fish-xeno-analyzer-busy"), args.User, args.User);
@@ -73,10 +83,12 @@ public sealed partial class FishXenobiologyOrganAnalyzerSystem : EntitySystem
     private void CompleteScan(
         EntityUid analyzerUid,
         FishXenoOrganAnalyzerScanComponent scan,
-        FishXenobiologyOrganAnalyzerComponent analyzer,
         TransformComponent xform)
     {
         RemComp<FishXenoOrganAnalyzerScanComponent>(analyzerUid);
+
+        if (!TryComp<FishXenobiologyOrganAnalyzerComponent>(analyzerUid, out var analyzer))
+            return;
 
         if (!Exists(scan.Organ) || !TryComp<FishXenoOrganComponent>(scan.Organ, out var organ))
             return;
@@ -95,6 +107,14 @@ public sealed partial class FishXenobiologyOrganAnalyzerSystem : EntitySystem
         var coords = _transform.GetMapCoordinates(analyzerUid, xform);
         if (TryFindServer(coords) is { } server)
             _research.ModifyServerPoints(server, points);
+
+        var protoId = MetaData(scan.Organ).EntityPrototype?.ID ?? "";
+        if (protoId.Length != 0)
+        {
+            analyzer.ScanCountsByPrototype.TryGetValue(protoId, out var count);
+            analyzer.ScanCountsByPrototype[protoId] = count + 1;
+            Dirty(analyzerUid, analyzer);
+        }
 
         _popup.PopupEntity(Loc.GetString("fish-xeno-analyzer-finished", ("points", points)), analyzerUid);
     }
