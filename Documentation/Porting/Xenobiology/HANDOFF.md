@@ -4,7 +4,7 @@
 
 Ветка: `feature/ss220-xenobiology` на `Pythagorius-cra/fish-station-mane`.
 Единственный PR: https://github.com/Pythagorius-cra/fish-station-mane/pull/6 (draft, base `master` форка). В `makura-games/fish-station` PR не открывать, пока об этом не попросят.
-Tip на момент хендоффа: `be2c775c6f`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
+Tip на момент хендоффа: `5f9815d011`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
 
 Не трогать чужие ветки: `feature/restore-original-music-player`, `feature/ss13-mining-system`, `feature/ss1984-crit-behavior`, `feature/clockwork-cult`, `fish/game-improvements-package`.
 
@@ -17,10 +17,12 @@ Tip на момент хендоффа: `be2c775c6f`. Upstream-база наре
 | `0d15e6ded5` | `FEATURE_INVENTORY.md` | документ, не геймплей |
 | `dedccef720` | таблица мутаций, `FishSlimeComponent`, `FishSlimeMutationTest` | `dotnet test Content.Tests --filter FullyQualifiedName~FishSlimeMutationTest` — Passed 7, Failed 0 |
 | `8ae12641cf` | 22 цвета, baby/adult прототипы, локали, RSI | сборка сервера ниже |
-| `2a1fdca7b8` | прототипы кубов `FishXenobiologyMonkeyCube`, wrapped, box. Гидратация — ванильный `Rehydratable` / `MonkeyCube` | в игре не смотрели. Спавн из серого экстракта не сделан |
+| `2a1fdca7b8` | прототипы кубов `FishXenobiologyMonkeyCube`, wrapped, box. Гидратация — ванильный `Rehydratable` / `MonkeyCube` | в игре не смотрели. Спавн из серого экстракта (blood) — `82090cc650` |
 | `01f4d80af7` | голод, рост, деление на 4, охота, присасывание, смерть взрослого | `dotnet build Content.Server/Content.Server.csproj --configuration Debug --verbosity quiet --no-restore` — succeeded |
 | `5c35445a5e` | `PROGRESS.md` (устарел относительно коммитов ниже) | — |
-| `be2c775c6f` | каркас экстракта: 100 единиц, uses 1..5, память шприца, локали, прототип, спрайт | реакций нет. YAML-линтер не запускался. В клиент не заходили |
+| `be2c775c6f` | каркас экстракта: 100 единиц, uses 1..5, память шприца, локали, прототип, спрайт | YAML-линтер ранее без ошибок. В клиент не заходили |
+| `82090cc650` | реакции **серого** экстракта: plasma → малыш, water 5 → epinephrine 3, blood → 3 куба; `ConsumeUse` | сборку/dotnet в этой сессии не гоняли |
+| `5f9815d011` | зелья stabilizer / mutator / steroid / docility: компонент, система, `potions.yml`, локали | в игре не смотрели |
 
 Сборка и тест — только то, что в таблице. YAML-линтер не запускался. В игре цикл не гонялся.
 
@@ -34,12 +36,15 @@ Tip на момент хендоффа: `be2c775c6f`. Upstream-база наре
 - `Content.Shared/_Fish/Xenobiology/Slimes/FishSlimeMutation.cs`
 - `Content.Server/_Fish/Xenobiology/Slimes/FishSlimeSystem.cs`
 - `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractComponent.cs`
-- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractSystem.cs` — examine, шприц, `TryAddUse` / `ConsumeUse`. Реакций нет.
+- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractSystem.cs` + `FishSlimeExtractSystem.Reactions.cs` — examine, шприц, `TryAddUse` / `ConsumeUse`, реакции серого экстракта.
+- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimePotionComponent.cs`
+- `Content.Server/_Fish/Xenobiology/Extracts/FishSlimePotionSystem.cs` — stabilizer, mutator, steroid, docility на живом слайме.
 - `Content.Tests/_Fish/Xenobiology/FishSlimeMutationTest.cs`
 - `Resources/Prototypes/_Fish/Xenobiology/slimes.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/extracts.yml`
+- `Resources/Prototypes/_Fish/Xenobiology/potions.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/cubes.yml`
-- `Resources/Locale/en-US/_Fish/xenobiology/` и `Resources/Locale/ru-RU/_Fish/xenobiology/` (`slimes.ftl`, `extracts.ftl`, `cubes.ftl`)
+- `Resources/Locale/en-US/_Fish/xenobiology/` и `Resources/Locale/ru-RU/_Fish/xenobiology/` (`slimes.ftl`, `extracts.ftl`, `cubes.ftl`, `potions.ftl`)
 - `Resources/Textures/_Fish/Xenobiology/extracts/extracts.rsi/`
 
 Дальше, не смешивая с чужими папками:
@@ -47,7 +52,7 @@ Tip на момент хендоффа: `be2c775c6f`. Upstream-база наре
 - Реакции и зелья: `Content.Server/_Fish/Xenobiology/Extracts/` и прототипы `reactions.yml` / `potions.yml` рядом с уже существующими.
 - Машины (позже): `Content.Shared/_Fish/Xenobiology/Machines/`, `Content.Server/_Fish/Xenobiology/Machines/`, `Content.Client/_Fish/Xenobiology/Machines/`, `machines.yml`.
 - Органы (позже): `Content.Shared/_Fish/Xenobiology/Organs/`, `Content.Server/_Fish/Xenobiology/Organs/`.
-- Кубы уже в `Cubes` не выделены: прототипы в `cubes.yml`, система не нужна, пока серый экстракт не спавнит `FishXenobiologyMonkeyCube`.
+- Кубы уже в `Cubes` не выделены: прототипы в `cubes.yml`, система не нужна — серый экстракт (blood) спавнит `FishXenobiologyMonkeyCube`.
 
 Маркеры только `// Fish-edit` и `// Fish-start` / `// Fish-end`, пояснение по-русски. Новые прототипы: id с префикса `Fish` и `suffix: Fish`. `[Dependency]` не `readonly`. Системы `partial`. Строки игрока только через локали.
 
@@ -198,12 +203,12 @@ Tip на момент хендоффа: `be2c775c6f`. Upstream-база наре
 ## Следующие шаги, по порядку
 
 1. Не качать SS220. Открыть этот файл и `FEATURE_INVENTORY.md`.
-2. Реакции экстракта в `FishSlimeExtractSystem`: реагент тратится, `ConsumeUse`, продукт из таблицы. Первым коммитом замкнуть серый экстракт: plasma → серый малыш, water 5 → epinephrine 3, blood 1 → три `FishXenobiologyMonkeyCube`.
-3. Зелья, которые только меняют уже существующие поля слайма: stabilizer, mutator, steroid, docility. Каждое — свой маленький коммит.
-4. Остальные строки таблицы реакций, пачками по цвету, с честным эффектом или явной дырой в `PARITY_REPORT.md`. Плитки сепии и блюспейса — friction существующего тайла, см. выше.
+2. ~~Серый экстракт~~ — `82090cc650`.
+3. ~~Базовые зелья полей слайма (stabilizer, mutator, steroid, docility)~~ — `5f9815d011`. Остальные зелья (enhancer, speed, fireproof, sentience, transference, …) — отдельными коммитами.
+4. Остальные строки таблицы реакций экстрактов, пачками по цвету, с честным эффектом или явной дырой в `PARITY_REPORT.md`. Плитки сепии и блюспейса — friction существующего тайла, см. выше.
 5. Процессор мёртвого слайма: выход = `Cores` экстрактов цвета `ColorId`.
 6. Только после замкнутого цикла корм → рост → деление → процессор → реакция: консоль, ресайклер, ручной сканер, ящик лаборатории, потом органы.
-7. Один проход ревью по `_Fish/Xenobiology`: не-readonly `Dependency`, `partial`, маркеры Fish, id прототипов, локали en-US и ru-RU. YAML-линтер, если трогались прототипы. В чеклист PR писать команду и результат. В игре не утверждать то, что не запускалось.
+7. Один проход ревью по `_Fish/Xenobiology`: не-readonly `Dependency`, `partial`, маркеры Fish, id прототипов, локали en-US и ru-RU. YAML-линтер после правок `potions.yml`. В чеклист PR писать команду и результат. В игре не утверждать то, что не запускалось.
 
 ## Уточнения из дампа слайма
 
@@ -224,4 +229,4 @@ Tip на момент хендоффа: `be2c775c6f`. Upstream-база наре
 - Родители прототипа: `SimpleMobBase`, `MobCombat`, `NpcFactionMember` / `SimpleNeutral`, речь `Slime`, `FootstepSlime`, модификатор урона `Slime`, `VentCrawler`.
 - `RobustToolbox` в том чекауте не было. Его инициализировали локально на `36905986f6809420dbc78168fc494f91723d356b` и не коммитили. `dotnet` брали из `~/.dotnet` 10.0.403.
 
-Перед серым экстрактом (шаг 2 в списке выше): всё из блока «уточнения» по слайму сделано, включая YAML-линтер (`Content.YAMLLinter`, без ошибок). Дальше — реакции серого экстракта. В игре не отмечать то, что не запускали.
+Перед серым экстрактом (шаг 2 в списке выше): всё из блока «уточнения» по слайму сделано, включая YAML-линтер (`Content.YAMLLinter`, без ошибок). Серый экстракт и базовые зелья полей — `82090cc650`, `5f9815d011`. Следующий шаг — остальные реакции экстрактов (шаг 4). Сборку/YAML после `potions.yml` в этой сессии не гоняли. В игре не отмечать то, что не запускали.
