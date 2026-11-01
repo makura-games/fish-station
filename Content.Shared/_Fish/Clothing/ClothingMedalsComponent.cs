@@ -16,6 +16,6 @@ public sealed partial class ClothingMedalsComponent : Component
     /// <summary>
     ///     Прикреплённые медали от самой ранней к последней.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [AutoNetworkedField]
     public List<EntityUid> Order = new();
 }

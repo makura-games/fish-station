@@ -28,7 +28,7 @@
     - ClothMade
     - Recyclable
     - WhitelistChameleon
-  # Fish edit start - медали можно крепить к форме
+  # Fish-start - медали можно крепить к форме
   - type: ItemSlots
     slots:
       medal1:
@@ -73,7 +73,7 @@
       medal2: !type:ContainerSlot
       medal3: !type:ContainerSlot
       medal4: !type:ContainerSlot
-  # Fish edit end
+  # Fish-end
 
 - type: entity
   abstract: true
