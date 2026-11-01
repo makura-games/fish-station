@@ -9,6 +9,8 @@ using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
+using Robust.Shared.GameStates;
+using Robust.Shared.Network;
 using Robust.Shared.Utility;
 
 namespace Content.Shared._Fish.Clothing;
@@ -22,15 +24,12 @@ public sealed partial class ClothingMedalsSystem : EntitySystem
     [Dependency] private SharedItemSystem _item = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private INetManager _net = default!;
 
     private const int MedalSlotCount = 4;
     private const string MedalState = "equipped-NECK";
-
-    /// <summary>
-    ///     Порядок прикрепления медалей для каждой формы. На модели показываем последнюю,
-    ///     как обычный предмет в слоте шеи.
-    /// </summary>
-    private readonly Dictionary<EntityUid, List<EntityUid>> _attachmentOrder = new();
+    private const string UniformSlot = "jumpsuit";
 
     private static readonly VerbCategory MedalCategory =
         new("clothing-medal-category", "/Textures/Interface/VerbIcons/group.svg.192dpi.png");
@@ -55,29 +54,23 @@ public sealed partial class ClothingMedalsSystem : EntitySystem
 
         SubscribeLocalEvent<ClothingComponent, EntInsertedIntoContainerMessage>(OnMedalInserted);
         SubscribeLocalEvent<ClothingComponent, EntRemovedFromContainerMessage>(OnMedalRemoved);
-        SubscribeLocalEvent<ClothingComponent, ComponentShutdown>(OnClothingShutdown);
+        SubscribeLocalEvent<ClothingMedalsComponent, AfterAutoHandleStateEvent>(OnOrderStateHandled);
         SubscribeLocalEvent<ClothingComponent, InventoryRelayedEvent<GetVerbsEvent<EquipmentVerb>>>(OnGetEquipmentVerbs);
         SubscribeLocalEvent<ClothingComponent, ExaminedEvent>(OnExamined);
+        SubscribeLocalEvent<InventoryComponent, ExaminedEvent>(OnWearerExamined);
     }
 
-    private void OnClothingShutdown(Entity<ClothingComponent> ent, ref ComponentShutdown args)
+    private void OnOrderStateHandled(Entity<ClothingMedalsComponent> ent, ref AfterAutoHandleStateEvent args)
     {
-        _attachmentOrder.Remove(ent);
+        _item.VisualsChanged(ent);
     }
 
     private void OnExamined(Entity<ClothingComponent> ent, ref ExaminedEvent args)
     {
-        if (!args.IsInDetailsRange || !HasComp<ItemSlotsComponent>(ent))
+        if (!args.IsInDetailsRange)
             return;
 
-        var medals = new List<string>(MedalSlotCount);
-        foreach (var slotId in MedalSlotIds)
-        {
-            if (_itemSlots.TryGetSlot(ent.Owner, slotId, out var slot) &&
-                slot.Item is { } medal)
-                medals.Add(Name(medal));
-        }
-
+        var medals = GetMedalNames(ent);
         if (medals.Count == 0)
             return;
 
@@ -85,20 +78,54 @@ public sealed partial class ClothingMedalsSystem : EntitySystem
             ("medals", string.Join(", ", medals))));
     }
 
+    /// <summary>
+    ///     При осмотре персонажа (Shift) показывает медали, прикреплённые к его форме.
+    /// </summary>
+    private void OnWearerExamined(Entity<InventoryComponent> ent, ref ExaminedEvent args)
+    {
+        if (!args.IsInDetailsRange ||
+            !_inventory.TryGetSlotEntity(ent, UniformSlot, out var uniform))
+            return;
+
+        var medals = GetMedalNames(uniform.Value);
+        if (medals.Count == 0)
+            return;
+
+        args.PushMarkup(Loc.GetString("clothing-medal-examine-wearer",
+            ("medals", string.Join(", ", medals))));
+    }
+
+    private List<string> GetMedalNames(EntityUid uniform)
+    {
+        var medals = new List<string>(MedalSlotCount);
+        if (!HasComp<ItemSlotsComponent>(uniform))
+            return medals;
+
+        foreach (var slotId in MedalSlotIds)
+        {
+            if (_itemSlots.TryGetSlot(uniform, slotId, out var slot) &&
+                slot.Item is { } medal)
+                medals.Add(Name(medal));
+        }
+
+        return medals;
+    }
+
     private void OnMedalInserted(Entity<ClothingComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
         if (!IsMedalSlot(args.Container.ID))
             return;
 
-        if (!_attachmentOrder.TryGetValue(ent, out var order))
+        // Порядок ведёт только сервер, клиенты получают его вместе с состоянием компонента.
+        if (_net.IsServer)
         {
-            order = new List<EntityUid>(MedalSlotCount);
-            _attachmentOrder[ent] = order;
-        }
+            var medals = EnsureComp<ClothingMedalsComponent>(ent);
 
-        // Перемещаем медаль в конец списка, чтобы она считалась последней прикреплённой.
-        order.Remove(args.Entity);
-        order.Add(args.Entity);
+            // Перемещаем медаль в конец списка, чтобы она считалась последней прикреплённой.
+            medals.Order.Remove(args.Entity);
+            medals.Order.Add(args.Entity);
+            Dirty(ent, medals);
+        }
 
         _item.VisualsChanged(ent);
     }
@@ -108,11 +135,10 @@ public sealed partial class ClothingMedalsSystem : EntitySystem
         if (!IsMedalSlot(args.Container.ID))
             return;
 
-        if (_attachmentOrder.TryGetValue(ent, out var order))
+        if (_net.IsServer && TryComp<ClothingMedalsComponent>(ent, out var medals))
         {
-            order.Remove(args.Entity);
-            if (order.Count == 0)
-                _attachmentOrder.Remove(ent);
+            medals.Order.Remove(args.Entity);
+            Dirty(ent, medals);
         }
 
         _item.VisualsChanged(ent);
@@ -188,25 +214,20 @@ public sealed partial class ClothingMedalsSystem : EntitySystem
         if (!HasComp<ItemSlotsComponent>(uniform))
             return false;
 
-        if (_attachmentOrder.TryGetValue(uniform, out var order))
+        if (TryComp<ClothingMedalsComponent>(uniform, out var medals))
         {
-            for (var i = order.Count - 1; i >= 0; i--)
+            for (var i = medals.Order.Count - 1; i >= 0; i--)
             {
-                var candidate = order[i];
+                var candidate = medals.Order[i];
                 if (!IsAttachedMedal(uniform, candidate))
-                {
-                    order.RemoveAt(i);
                     continue;
-                }
 
                 medal = candidate;
                 return true;
             }
-
-            _attachmentOrder.Remove(uniform);
         }
 
-        // После переподключения порядок вставки неизвестен — берём последнюю заполненную ячейку.
+        // Порядок ещё не пришёл или не знает о медалях — берём последнюю заполненную ячейку.
         for (var i = MedalSlotCount - 1; i >= 0; i--)
         {
             if (_itemSlots.TryGetSlot(uniform, MedalSlotIds[i], out var slot) &&

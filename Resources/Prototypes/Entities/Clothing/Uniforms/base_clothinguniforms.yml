@@ -36,6 +36,7 @@
           tags:
           - Medal
         swap: false
+        disableEject: true
         insertSound: null
         ejectSound: null
         insertSuccessPopup: clothing-medal-attached
@@ -44,6 +45,7 @@
           tags:
           - Medal
         swap: false
+        disableEject: true
         insertSound: null
         ejectSound: null
         insertSuccessPopup: clothing-medal-attached
@@ -52,6 +54,7 @@
           tags:
           - Medal
         swap: false
+        disableEject: true
         insertSound: null
         ejectSound: null
         insertSuccessPopup: clothing-medal-attached
@@ -60,6 +63,7 @@
           tags:
           - Medal
         swap: false
+        disableEject: true
         insertSound: null
         ejectSound: null
         insertSuccessPopup: clothing-medal-attached

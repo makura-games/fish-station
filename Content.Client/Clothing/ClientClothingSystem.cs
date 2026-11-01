@@ -9,7 +9,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
-using Content.Shared._Fish.Clothing; // Fish-Edit - медали на форме
+using Content.Shared._Fish.Clothing; // FIsh edit - медали на форме
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -56,7 +56,7 @@ public sealed partial class ClientClothingSystem : ClothingSystem
     [Dependency] private DisplacementMapSystem _displacement = default!;
     [Dependency] private InventorySystem _inventorySystem = default!;
     [Dependency] private SpriteSystem _sprite = default!;
-    [Dependency] private ClothingMedalsSystem _clothingMedals = default!; // Fish-Edit - медали на форме
+    [Dependency] private ClothingMedalsSystem _clothingMedals = default!; // FIsh edit - медали на форме
 
     [Dependency] private EntityQuery<InventorySlotsComponent> _inventorySlotsQuery;
     [Dependency] private EntityQuery<SpriteComponent> _spriteQuery;
