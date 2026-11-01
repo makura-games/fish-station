@@ -11,7 +11,7 @@ namespace Content.Shared._Fish.Hands;
 ///     Передача предметов из рук в руки: Alt + ЛКМ с предметом в руке по другому персонажу протягивает ему предмет,
 ///     Alt + ЛКМ по протягивающему забирает предмет.
 /// </summary>
-public sealed class HandOfferSystem : EntitySystem
+public sealed partial class HandOfferSystem : EntitySystem
 {
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private MobStateSystem _mobState = default!;
