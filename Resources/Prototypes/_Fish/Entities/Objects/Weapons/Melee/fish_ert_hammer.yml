@@ -49,7 +49,6 @@
     slots:
     - back
     - suitStorage
-  - type: ClothingSpeedModifier
-    walkModifier: 0.9
-    sprintModifier: 0.9
   - type: HeldSpeedModifier
+    walkModifier: 0.8
+    sprintModifier: 0.8
