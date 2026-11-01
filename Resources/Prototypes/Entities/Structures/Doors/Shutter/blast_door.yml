@@ -1,5 +1,5 @@
 - type: entity
-  parent: [BaseShutter, StructureHealthDoorStrong]
+  parent: [BaseShutter, StructureHealthDoorStrong ]
   id: BlastDoor
   name: blast door
   description: Blast-retardant AND fire-retardant!
