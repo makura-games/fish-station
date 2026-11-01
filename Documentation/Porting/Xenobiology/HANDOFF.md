@@ -4,7 +4,7 @@
 
 Ветка: `feature/ss220-xenobiology` на `Pythagorius-cra/fish-station-mane`.
 Единственный PR: https://github.com/Pythagorius-cra/fish-station-mane/pull/6 (draft, base `master` форка). В `makura-games/fish-station` PR не открывать, пока об этом не попросят.
-Tip на момент хендоффа: `1d6c8a752a`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
+Tip на момент хендоффа: `8d5b43fac0`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
 
 Не трогать чужие ветки: `feature/restore-original-music-player`, `feature/ss13-mining-system`, `feature/ss1984-crit-behavior`, `feature/clockwork-cult`, `fish/game-improvements-package`.
 
@@ -34,6 +34,8 @@ Tip на момент хендоффа: `1d6c8a752a`. Upstream-база наре
 | `f53815f8e7` | ящик `FishXenobiologyLabCrateFish` | на карту не ставили |
 | `43719fae99` | диссектор / масса / слайм / анализатор (каркас) | в игре не смотрели |
 | `870e8cfd3e` | chill заряды при Heat; pyrite/cerulean паритет | сборку не гоняли |
+| `72248fcbc9` | cargo `FishXenobiologyLab`, sentience raffle/warm, gold crit, virus_genes, cerulean blueprints, multitool recycler, console verbs, органы порция 1 | сборку/YAML не гоняли |
+| `8d5b43fac0` | gold carp + crit-кап; sentience остывание; анализатор 3/тип; органы Vigor/Antitoxin | сборку/YAML не гоняли |
 
 Сборка и тест — только то, что в таблице. YAML-линтер после расширения `potions.yml` не запускался. В игре цикл не гонялся.
 
@@ -206,9 +208,9 @@ Tip на момент хендоффа: `1d6c8a752a`. Upstream-база наре
 
 ## Машины
 
-Консоль: `FishXenobiologyConsoleFish` — BUI, до 6 слаймов, счётчик кубов, зелье через клик, радиус 7. **Нет:** камерный глаз, shift/ctrl hotkey, линк мультитулом ресайклера, area xenobiology_compatible.
+Консоль: `FishXenobiologyConsoleFish` — BUI, до 6 слаймов, счётчик кубов, зелье через клик, радиус 7, **verbs** и **multitool→recycler**. **Нет:** камерный глаз, shift на пол, area xenobiology_compatible.
 
-Ресайклер / процессор / сканер: `machines.yml`. Ящик: `lab_crate.yml`. Органы: `organs.yml` + `Content.* / Organs/` — упрощённый конвейер, без таблицы SS220 и без gameplay-эффектов органов.
+Ресайклер / процессор / сканер: `machines.yml`. Cargo: `FishXenobiologyLab` в `cargo_science.yml`. Ящик: `lab_crate.yml`. Органы: `organs.yml` — диссектор/слайм/анализатор (лимит 3 скана на тип), эффекты UseInHand порция 1–2.
 
 ## Следующие шаги, по порядку
 
@@ -218,7 +220,7 @@ Tip на момент хендоффа: `1d6c8a752a`. Upstream-база наре
 4. ~~Простые реакции экстрактов по цветам~~ — `76fcb4bb9c`. ~~Отложенные gold/silver/sepia/…~~ — `b46c4c1fb1` (упрощения — `PARITY_REPORT.md`).
 5. ~~Процессор мёртвого слайма~~ — `c106c9f3f8` + `machines.yml` `9ccd6d6601`.
 6. ~~Консоль, ресайклер, сканер~~ — консоль `5926cea88a`, остальное ранее. ~~Ящик лаборатории~~ — `f53815f8e7`. ~~Органы (каркас)~~ — `43719fae99`.
-7. **Дальше:** cargo-заказ ящика (если нужен), `dotnet build` + YAMLLinter, имплант-эффекты органов, sentience poll, gold mob release, карта (только по отдельному запросу).
+7. **Дальше:** `dotnet build` + YAMLLinter (локально), tech disk с анализатора, имплант-таблица органов SS220, oil slick MOD, полный gold crit roster. Карту — только по отдельному запросу.
 
 ## Уточнения из дампа слайма
 
