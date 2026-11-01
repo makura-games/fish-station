@@ -10,6 +10,7 @@ fish-xeno-analyzer-done = This organ was already analyzed.
 fish-xeno-analyzer-busy = The analyzer is busy.
 fish-xeno-analyzer-start = Scanning xenOrgan…
 fish-xeno-analyzer-finished = Scan complete. {$points} research points added.
+fish-xeno-organ-used = You feel the xenOrgan's effect.
 
 ent-FishXenoDissectorFish = xenobiology dissector
     .suffix = Fish
