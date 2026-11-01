@@ -69,6 +69,24 @@ ent-FishXenoGoldCritNeutralCarpFish = neutral space carp
 ent-FishXenoGoldCritFriendlyCarpFish = friendly space carp
     .suffix = Fish
 
+ent-FishXenoOrganEmpPulseFish = electrostatic xenOrgan
+    .suffix = Fish
+
+ent-FishXenoOrganAdrenalineFish = hyper adrenal xenOrgan
+    .suffix = Fish
+
+ent-FishXenoOrganSlimeSkinFish = slime-skin xenOrgan
+    .suffix = Fish
+
+ent-FishXenoOrganImplantEmpPulseFish = electrostatic xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantAdrenalineFish = hyper adrenal xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantSlimeSkinFish = slime-skin xenOrgan implant
+    .suffix = Fish
+
 ent-FishXenobiologyOrganAnalyzerFish = xenOrgan analyzer
     .suffix = Fish
 
