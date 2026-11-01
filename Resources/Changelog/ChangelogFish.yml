@@ -1325,3 +1325,10 @@
     message: Резисты статичной пластали увелечины с 15 базы и 6 структурного до 20 базы и 10 струтурного
   id: 134
   url: https://github.com/makura-games/fish-station/pull/563
+- author: TiFeRi
+  time: '2026-11-01T19:45:50.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: коэффициент количества ДО на людей на сервере поднят с 15 на 1 человека до 25 на 1 человека. То бишь при 100 людях будет 4 ДОшнкика.
+  id: 135
+  url: https://github.com/makura-games/fish-station/pull/567
