@@ -93,6 +93,33 @@ public sealed partial class FishSlimeExtractSystem
         return true;
     }
 
+    /// <summary>
+    /// Для отложенных реакций на сервере: тратит реагент и use без немедленного apply.
+    /// </summary>
+    public bool TryBeginReaction(
+        Entity<FishSlimeExtractComponent> ent,
+        Entity<SolutionComponent> soln,
+        Solution solution,
+        string reagent,
+        FixedPoint2 cost)
+    {
+        if (ent.Comp.Uses <= 0 || solution.GetTotalPrototypeQuantity(reagent) < cost)
+            return false;
+
+        _solutions.RemoveReagent(soln, reagent, cost);
+        FinishReaction(ent);
+        return true;
+    }
+
+    public bool TryPerformReaction(
+        Entity<FishSlimeExtractComponent> ent,
+        Entity<SolutionComponent> soln,
+        Solution solution,
+        string reagent,
+        FixedPoint2 cost,
+        Action apply)
+        => TryReaction(ent, soln, solution, reagent, cost, apply);
+
     private void FinishReaction(Entity<FishSlimeExtractComponent> ent)
     {
         PopupReaction(ent, "fish-slime-extract-react");
