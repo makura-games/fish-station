@@ -28,4 +28,34 @@
   - type: FishXenoOrganImplant
     kind: Vigor
     implantDuration: 00:30:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantSinewFish
+  name: sinew xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: Sinew
+    implantDuration: 00:30:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantAntitoxinFish
+  name: antitoxin xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: Antitoxin
+    implantDuration: 00:30:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantHeatResistFish
+  name: heat-resistant xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: HeatResist
+    implantDuration: 00:30:00
 # Fish-end
