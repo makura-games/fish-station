@@ -8,33 +8,56 @@
   - type: Sprite
     sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
     state: icon
+  - type: Clothing
+    sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - Belt
   - type: Reflect
     reflects:
     - NonEnergy
     reflectProb: 0.40
     spread: 90
   - type: Item
-    size: Ginormous
+    size: Large
+  - type: UseDelay
+    delay: 3
   - type: DisarmMalus
   - type: EmitSoundOnLand
     sound:
       path: /Audio/_Sunrise/Items/Handling/sabre_drop.ogg
   - type: MeleeWeapon
-    wideAnimationRotation: -135
-    angle: 0
-    animation: WeaponArcThrust
+    wideAnimationRotation: -60
     attackRate: 1
     damage:
       types:
-        Piercing: 25
-    resistanceBypass: true
+        Slash: 40
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
   - type: ItemSwitch
-    state: ap
+    state: cut
     states:
+      cut: !type:ItemSwitchState
+        verb: vibroblade-cut
+        soundStateActivate:
+          path: /Audio/Weapons/ebladeoff.ogg
+        sprite:
+          sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
+          state: icon
+        components:
+        - type: MeleeWeapon
+          wideAnimationRotation: -60
+          attackRate: 1
+          damage:
+            types:
+              Slash: 40
+          soundHit:
+            path: /Audio/Weapons/bladeslice.ogg
       ap: !type:ItemSwitchState
         verb: vibroblade-ap
+        soundStateActivate:
+          path: /Audio/Weapons/ebladeon.ogg
         sprite:
           sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
           state: icon-on
@@ -48,18 +71,5 @@
             types:
               Piercing: 25
           resistanceBypass: true
-          soundHit:
-            path: /Audio/Weapons/bladeslice.ogg
-      cut: !type:ItemSwitchState
-        verb: vibroblade-cut
-        sprite:
-          sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
-          state: icon
-        components:
-        - type: MeleeWeapon
-          attackRate: 1
-          damage:
-            types:
-              Slash: 40
           soundHit:
             path: /Audio/Weapons/bladeslice.ogg
