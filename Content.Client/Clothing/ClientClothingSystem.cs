@@ -114,7 +114,12 @@ public sealed partial class ClientClothingSystem : ClothingSystem
         {
             // No generic data either. Attempt to generate defaults from the item's RSI & item-prefixes
             if (!TryGetDefaultVisuals(ent, args.Slot, inventory.SpeciesId, args.Equipee, out layers))
+            {
+                // Fish-start - медали рисуем, даже если у формы нет собственных визуалов
+                _clothingMedals.AppendMedalVisuals(ent.Owner, args.Layers);
+                // Fish-end
                 return;
+            }
         }
 
         // add each layer to the visuals
