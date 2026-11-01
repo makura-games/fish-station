@@ -1,0 +1,11 @@
+light_mode unshaded;
+
+#include "/Textures/_Fish/Shaders/Vision/natural_sampling.swsl"
+
+uniform sampler2D EXPOSURE_TEXTURE;
+uniform highp float lighting_strength;
+
+void fragment() {
+    highp float adaptation = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
+    COLOR = vec4(vec3(1.0), lighting_strength * adaptation * natural_light_fraction(UV));
+}

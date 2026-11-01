@@ -1284,3 +1284,69 @@
     message: Удалены перчатки полярной звезды и тяжелая броня из конструктора арены.
   id: 129
   url: https://github.com/makura-games/fish-station/pull/585
+- author: KrytoiChuvaaak
+  time: '2026-10-31T22:38:50.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Ручная активация редспейс-импланта теперь засчитывает цель «выжить».
+  id: 130
+  url: https://github.com/makura-games/fish-station/pull/576
+- author: ВАШЕ_ИМЯ
+  time: '2026-10-31T22:39:36.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фикс РМ с ПИИ в мехах на шаттле
+  id: 131
+  url: https://github.com/makura-games/fish-station/pull/588
+- author: dan4ikk3
+  time: '2026-10-31T22:50:22.0000000+00:00'
+  changes:
+  - type: Fix
+    message: За ГЦК теперь можно зайти(навреное?)
+  id: 132
+  url: https://github.com/makura-games/fish-station/pull/590
+- author: Pythagorius-cra
+  time: '2026-10-31T23:02:58.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Музыкальный автомат снова работает как оригинальный jukebox SS14, а не как пустой кассетник без кассет.
+  - type: Add
+    message: В jukebox добавлен большой список лицензированных треков SS13/SS14 и полный каталог A-Guy.
+  id: 133
+  url: https://github.com/makura-games/fish-station/pull/584
+- author: Aura-Bazara
+  time: '2026-11-01T19:41:12.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Прочность гермозатвора увеличена с 500 до 1500.
+  - type: Tweak
+    message: Прочность бронидвери увеличила до 400 с 300.
+  - type: Tweak
+    message: Резисты статичной пластали увелечины с 15 базы и 6 структурного до 20 базы и 10 струтурного
+  id: 134
+  url: https://github.com/makura-games/fish-station/pull/563
+- author: TiFeRi
+  time: '2026-11-01T19:45:50.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: коэффициент количества ДО на людей на сервере поднят с 15 на 1 человека до 25 на 1 человека. То бишь при 100 людях будет 4 ДОшнкика.
+  id: 135
+  url: https://github.com/makura-games/fish-station/pull/567
+- author: Endennsss
+  time: '2026-11-01T19:48:10.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Уменьшен максимум слайдера блума до 50%
+  id: 136
+  url: https://github.com/makura-games/fish-station/pull/589
+- author: Endennsss
+  time: '2026-11-01T19:52:18.0000000+00:00'
+  changes:
+  - type: Add
+    message: Новое расовое ПНВ
+  - type: Tweak
+    message: Уменьшен пересвет у ПНВ
+  - type: Fix
+    message: Пофикшены термалы и ПНВ
+  id: 137
+  url: https://github.com/makura-games/fish-station/pull/591

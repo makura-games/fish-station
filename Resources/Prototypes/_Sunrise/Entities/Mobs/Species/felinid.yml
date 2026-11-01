@@ -176,6 +176,7 @@
     action: ActionToggleNightVision
     prioritized: false
     lightingColor: '#FFFFFF15'
+  - type: FishNaturalNightVision # Fish-edit: Природное зрение с плавной адаптацией.
   - type: FlashModifier
     modifier: 2
   - type: FelinidLicking
