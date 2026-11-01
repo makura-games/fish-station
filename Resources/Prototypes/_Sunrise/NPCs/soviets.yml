@@ -160,7 +160,7 @@
   - type: Vocal
     emoteSounds: MaleHuman
   - type: GhostRole
-    prob: 0.05
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-soviet-name
     description: ghost-role-information-expedition-soviet-description

@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server._Fish.Salvage; // Fish-edit: система усиления обзора мобов экспедиции
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Parallax;
@@ -285,6 +286,12 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
                     throw new NotImplementedException();
             }
         }
+
+        // Fish-start: мобы экспедиции замечают игроков издалека, сразу атакуют и не бывают гост-ролями
+        var expeditionMobs = _entManager.System<ExpeditionMobSystem>();
+        expeditionMobs.BoostMobVision(mapUid);
+        expeditionMobs.RemoveGhostRoles(mapUid);
+        // Fish-end
 
         return true;
     }
