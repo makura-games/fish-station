@@ -13,8 +13,10 @@ public sealed partial class MechVulnerableToEMPComponent : Component
     [ViewVariables]
     public TimeSpan NextPulseTime;
 
-    [DataField]
-    public TimeSpan CooldownTime = TimeSpan.FromSeconds(6);
+    /// <summary> fish-edit start
+    /// [DataField]
+    /// public TimeSpan CooldownTime = TimeSpan.FromSeconds(6);
+    /// </summary> fish-edit end
 
     [DataField]
     public DamageSpecifier EmpDamage = new()
