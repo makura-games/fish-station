@@ -1,0 +1,80 @@
+# Fish-start — органы и оборудование (упрощённый конвейер SS220)
+- type: entity
+  parent: BaseItem
+  id: FishXenoDissectorFish
+  name: xenobiology dissector
+  description: Harvests xenobiological material from dead creatures.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/Surgery/scalpel.rsi
+    state: scalpel
+  - type: Item
+    sprite: Objects/Specific/Medical/Surgery/scalpel.rsi
+  - type: FishXenoDissector
+
+- type: entity
+  parent: BaseItem
+  id: FishXenoOrganMassFish
+  name: unidentified organic mass
+  description: A lump of tissue. A trained adult slime might process it.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Mobs/Animals/regalrat.rsi
+    state: icon
+  - type: Item
+  - type: FishXenoOrganMass
+
+- type: entity
+  parent: BaseItem
+  id: FishXenoOrganRegenerativeFish
+  name: regenerative xenOrgan
+  description: Identified xenobiology organ. Analyze it for research points.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Mobs/Species/Human/organs.rsi
+    state: heart
+  - type: Item
+  - type: FishXenoOrgan
+
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganToxicFish
+  name: toxic xenOrgan
+  suffix: Fish
+
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganSinewFish
+  name: sinew xenOrgan
+  suffix: Fish
+
+- type: entity
+  parent: [ BaseMachinePowered, StructureHealthMachineWeak ]
+  id: FishXenobiologyOrganAnalyzerFish
+  name: xenOrgan analyzer
+  description: Scans identified xenOrgans for research points.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/seed_extractor.rsi
+    snapCardinals: true
+    layers:
+    - state: seedextractor-off
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.4,0.25,0.4"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: FishXenobiologyOrganAnalyzer
+# Fish-end
