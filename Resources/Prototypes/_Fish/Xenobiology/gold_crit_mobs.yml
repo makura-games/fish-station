@@ -21,3 +21,55 @@
   - type: NpcFactionMember
     factions:
     - Passive
+
+- type: entity
+  parent: MobCarpMagic
+  id: FishXenoGoldCritLesserMagicarpFish
+  name: neutral magicarp
+  suffix: Fish, GoldCritLesser
+  components:
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+
+- type: entity
+  parent: MobCarpHolo
+  id: FishXenoGoldCritLesserHolocarpFish
+  name: neutral holocarp
+  suffix: Fish, GoldCritLesser
+  components:
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+
+- type: entity
+  parent: MobCat
+  id: FishXenoGoldCritFriendlyCatFish
+  name: friendly cat
+  suffix: Fish, GoldCritFriendly
+  components:
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: NpcFactionMember
+    factions:
+    - Passive
+
+- type: entity
+  parent: MobPenguin
+  id: FishXenoGoldCritFriendlyPenguinFish
+  name: friendly penguin
+  suffix: Fish, GoldCritFriendly
+  components:
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: NpcFactionMember
+    factions:
+    - Passive
