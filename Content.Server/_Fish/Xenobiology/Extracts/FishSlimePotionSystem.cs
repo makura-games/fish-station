@@ -1,6 +1,9 @@
+using Content.Server.Jittering;
 using Content.Shared._Fish.Xenobiology.Extracts;
 using Content.Shared._Fish.Xenobiology.Slimes;
+using Content.Shared.Clothing.Components;
 using Content.Shared.Interaction;
+using Content.Shared.Item;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
@@ -15,12 +18,16 @@ public sealed partial class FishSlimePotionSystem : EntitySystem
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private JitteringSystem _jitter = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<FishSlimeComponent, InteractUsingEvent>(OnSlimeInteractUsing);
+        SubscribeLocalEvent<FishSlimeExtractComponent, InteractUsingEvent>(OnExtractInteractUsing);
+        SubscribeLocalEvent<ClothingComponent, InteractUsingEvent>(OnClothingInteractUsing);
+        SubscribeLocalEvent<ItemComponent, InteractUsingEvent>(OnItemInteractUsing);
     }
 
     private void OnSlimeInteractUsing(Entity<FishSlimeComponent> slime, ref InteractUsingEvent args)
@@ -49,9 +56,30 @@ public sealed partial class FishSlimePotionSystem : EntitySystem
                 return ApplySteroid(slime, user, potion);
             case FishSlimePotionKind.Docility:
                 return ApplyDocility(slime, user, potion);
+            case FishSlimePotionKind.Speed:
+                return ApplySpeed(slime, user, potion);
+            case FishSlimePotionKind.Sentience:
+            case FishSlimePotionKind.Transference:
+                _popup.PopupEntity(Loc.GetString("fish-slime-potion-not-implemented"), user, user);
+                return false;
             default:
                 return false;
         }
+    }
+
+    private bool ApplySpeed(Entity<FishSlimeComponent> slime, EntityUid user, EntityUid potion)
+    {
+        if (slime.Comp.AmbientTemperature >= 550f)
+        {
+            _popup.PopupEntity(Loc.GetString("fish-slime-potion-speed-hot"), user, user);
+            return false;
+        }
+
+        slime.Comp.AmbientTemperature = 550f;
+        Dirty(slime);
+        _jitter.DoJitter(slime, TimeSpan.FromSeconds(15), refresh: true);
+        Finish(slime, user, potion, "fish-slime-potion-speed");
+        return true;
     }
 
     private bool ApplyStabilizer(Entity<FishSlimeComponent> slime, EntityUid user, EntityUid potion)
