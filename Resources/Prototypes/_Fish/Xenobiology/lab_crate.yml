@@ -21,3 +21,5 @@
       amount: 5
     - id: Syringe
     - id: JugBlood
+    - id: FishXenoRegenMeshFish
+      amount: 2
