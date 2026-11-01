@@ -14,42 +14,54 @@ public sealed partial class HandsSystem
     [Dependency] private IPrototypeManager _prototype = default!;
 
     /// <summary>
-    /// Fish: компенсирует смещение in-hand слоя (-0.25 по Y) для боргов Mk2.
+    /// Fish: компенсирует вертикальное смещение in-hand слоя для боргов Mk2.
     /// Вызывается после LayerSetData: у боргов со смещённым корнем спрайта
     /// (SpriteOffset у borgType) предметы в руках поднимаются вместе с телом
-    /// и оказываются чуть выше нужного. Результат <see cref="NeedsMk2HandOffsetCompensation"/>
+    /// и оказываются чуть выше нужного. Результат <see cref="GetMk2HandOffsetCompensation"/>
     /// вычисляется вызывающим один раз на UpdateHandVisuals вне цикла по слоям
     /// и передаётся сюда, чтобы не повторять TryComp/TryIndex для каждого слоя.
     /// </summary>
-    private void ApplyMk2HandOffsetCompensation(Entity<SpriteComponent> spriteEnt, int layerIndex, bool needsCompensation)
+    private void ApplyMk2HandOffsetCompensation(
+        Entity<SpriteComponent> spriteEnt,
+        int layerIndex,
+        Vector2? compensation)
     {
-        if (!needsCompensation)
+        if (compensation is not { } offset)
             return;
 
         if (spriteEnt.Comp[layerIndex] is not Layer layer)
             return;
 
-        _sprite.LayerSetOffset(layer, layer.Offset + new Vector2(0f, -0.25f));
+        _sprite.LayerSetOffset(layer, layer.Offset + offset);
     }
 
     /// <summary>
-    /// Fish: нужна ли компенсация смещения in-hand слоёв (-0.25 по Y): только для боргов,
-    /// чей выбранный borgType задаёт ненулевой <see cref="BorgTypePrototype.SpriteOffset"/>
-    /// (Mk2 со смещённым на 0,0.4 корнем спрайта). Сущности без BorgSwitchableTypeComponent
-    /// или с типом без SpriteOffset компенсация не применяется.
-    /// Компенсация задаётся в слойных единицах и масштабируется корневым Scale спрайта
-    /// вместе с руками тела — при SpriteScale 0.8 визуально становится -0.2.
+    /// Fish: вычисляет вертикальную компенсацию in-hand слоёв из геометрии выбранного borgType.
+    /// Берётся половина <see cref="BorgTypePrototype.SpriteOffset"/> по Y в мировых единицах
+    /// и переводится в единицы слоя через <see cref="BorgTypePrototype.SpriteScale"/>,
+    /// поскольку LayerSetOffset масштабируется корневым Scale спрайта.
+    /// Возвращает <c>null</c>, если у сущности нет BorgSwitchableTypeComponent,
+    /// выбранный тип отсутствует или не задаёт вертикальный SpriteOffset.
     /// </summary>
-    private bool NeedsMk2HandOffsetCompensation(EntityUid uid)
+    private Vector2? GetMk2HandOffsetCompensation(EntityUid uid)
     {
         if (!TryComp<BorgSwitchableTypeComponent>(uid, out var switchable))
-            return false;
+            return null;
 
         if (switchable.SelectedBorgType is not { } borgType)
-            return false;
+            return null;
 
-        return _prototype.TryIndex(borgType, out BorgTypePrototype? prototype)
-            && prototype.SpriteOffset is { } offset
-            && offset != Vector2.Zero;
+        if (!_prototype.TryIndex(borgType, out BorgTypePrototype? prototype)
+            || prototype.SpriteOffset is not { } offset
+            || offset.Y == 0f)
+        {
+            return null;
+        }
+
+        var scale = prototype.SpriteScale is { } spriteScale && spriteScale != 0f
+            ? spriteScale
+            : 1f;
+
+        return new Vector2(0f, -offset.Y / (2f * scale));
     }
 }
