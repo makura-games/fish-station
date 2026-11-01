@@ -1,0 +1,58 @@
+# Fish-start — уникальные ксено-органы (порция 5, упрощение SS220 spell-like)
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganEmpPulseFish
+  name: electrostatic xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: EmpPulse
+
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganAdrenalineFish
+  name: hyper adrenal xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: Adrenaline
+
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganSlimeSkinFish
+  name: slime-skin xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: SlimeSkin
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantEmpPulseFish
+  name: electrostatic xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: EmpPulse
+    implantDuration: 00:20:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantAdrenalineFish
+  name: hyper adrenal xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: Adrenaline
+    implantDuration: 00:20:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantSlimeSkinFish
+  name: slime-skin xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: SlimeSkin
+    implantDuration: 00:20:00
+# Fish-end
