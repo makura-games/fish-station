@@ -1,0 +1,57 @@
+# Fish-start: зелья ксенобиологии SS220 для прямого применения на слайма
+- type: entity
+  parent: BaseItem
+  id: FishSlimePotionBase
+  abstract: true
+  suffix: Fish
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: Objects/Specific/Chemistry/bottle.rsi
+    state: bottle-1
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionStabilizerFish
+  name: slime stabilizer
+  description: Lowers a slime's mutation chance. Useless on corpses and non-slimes.
+  components:
+  - type: Sprite
+    color: "#5b8fd4"
+  - type: FishSlimePotion
+    kind: Stabilizer
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionMutatorFish
+  name: slime mutator
+  description: Raises mutation chance once per slime.
+  components:
+  - type: Sprite
+    color: "#c44"
+  - type: FishSlimePotion
+    kind: Mutator
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionSteroidFish
+  name: slime steroid
+  description: Gives a baby slime an extra core when processed.
+  components:
+  - type: Sprite
+    color: "#9a6"
+  - type: FishSlimePotion
+    kind: Steroid
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionDocilityFish
+  name: docility potion
+  description: Calms a slime or removes rabies without full docility.
+  components:
+  - type: Sprite
+    color: "#f6a"
+  - type: FishSlimePotion
+    kind: Docility
+# Fish-end
