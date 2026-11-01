@@ -1,0 +1,23 @@
+# Fish-start — мобы gold crit (blood/water/plasma roster)
+- type: entity
+  parent: MobCarp
+  id: FishXenoGoldCritNeutralCarpFish
+  name: neutral space carp
+  suffix: Fish, GoldCritNeutral
+  components:
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+
+- type: entity
+  parent: FishXenoGoldCritNeutralCarpFish
+  id: FishXenoGoldCritFriendlyCarpFish
+  name: friendly space carp
+  suffix: Fish, GoldCritFriendly
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Passive
