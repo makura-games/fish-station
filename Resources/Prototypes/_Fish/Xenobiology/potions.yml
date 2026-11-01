@@ -54,4 +54,70 @@
     color: "#f6a"
   - type: FishSlimePotion
     kind: Docility
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionEnhancerFish
+  name: extract enhancer
+  description: Adds one use to a slime extract, up to five.
+  components:
+  - type: Sprite
+    color: "#6cf"
+  - type: FishSlimePotion
+    kind: Enhancer
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionSpeedFish
+  name: speed treat
+  description: Heats a slime for a burst of speed. Does not stack if already hot.
+  components:
+  - type: Sprite
+    color: "#f84"
+  - type: FishSlimePotion
+    kind: Speed
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionFireproofFish
+  name: chill potion
+  description: Fire-proofs a piece of clothing for three charges.
+  components:
+  - type: Sprite
+    color: "#8cf"
+  - type: FishSlimePotion
+    kind: Fireproof
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionOilSlickFish
+  name: oil slick potion
+  description: Makes an item extremely slippery.
+  components:
+  - type: Sprite
+    color: "#222"
+  - type: FishSlimePotion
+    kind: OilSlick
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionSentienceFish
+  name: sentience potion
+  description: Grants intelligence to animals. Handle with care.
+  components:
+  - type: Sprite
+    color: "#fcf"
+  - type: FishSlimePotion
+    kind: Sentience
+
+- type: entity
+  parent: FishSlimePotionBase
+  id: FishSlimePotionTransferenceFish
+  name: consciousness transference potion
+  description: Moves your mind into a creature. Extremely dangerous.
+  components:
+  - type: Sprite
+    color: "#c8f"
+  - type: FishSlimePotion
+    kind: Transference
 # Fish-end
