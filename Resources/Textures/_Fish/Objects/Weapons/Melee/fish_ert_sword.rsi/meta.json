@@ -11,7 +11,13 @@
       "name": "icon"
     },
     {
-      "name": "icon-on"
+      "name": "icon-on",
+      "delays": [
+        [
+          0.05,
+          0.05
+        ]
+      ]
     },
     {
       "name": "inhand-left",

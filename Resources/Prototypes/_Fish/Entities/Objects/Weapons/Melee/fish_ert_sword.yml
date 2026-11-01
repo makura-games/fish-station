@@ -29,7 +29,7 @@
     sound:
       path: /Audio/_Sunrise/Items/Handling/sabre_drop.ogg
   - type: MeleeWeapon
-    wideAnimationRotation: -60
+    wideAnimationRotation: -120
     attackRate: 1
     damage:
       types:
@@ -48,7 +48,7 @@
           state: icon
         components:
         - type: MeleeWeapon
-          wideAnimationRotation: -60
+          wideAnimationRotation: -120
           attackRate: 1
           damage:
             types:
