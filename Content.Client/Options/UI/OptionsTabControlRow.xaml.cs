@@ -53,9 +53,9 @@ public sealed partial class OptionsTabControlRow : Control
 
     private ValueList<BaseOption> _options;
 
-    // FIsh edit - уведомление табов после reset/default/initialize
+    // Fish-edit - уведомление табов после reset/default/initialize
     internal event Action? ValuesReset;
-    // FIsh edit end
+    // Fish-end
 
     public OptionsTabControlRow()
     {
@@ -189,9 +189,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.LoadValue();
         }
 
-        // FIsh edit
+        // Fish-edit
         ValuesReset?.Invoke();
-        // FIsh edit end
+        // Fish-end
         UpdateButtonState();
     }
 
@@ -258,9 +258,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.LoadValue();
         }
 
-        // FIsh edit
+        // Fish-edit
         ValuesReset?.Invoke();
-        // FIsh edit end
+        // Fish-end
         UpdateButtonState();
     }
 
@@ -271,9 +271,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.ResetToDefault();
         }
 
-        // FIsh edit
+        // Fish-edit
         ValuesReset?.Invoke();
-        // FIsh edit end
+        // Fish-end
         UpdateButtonState();
     }
 

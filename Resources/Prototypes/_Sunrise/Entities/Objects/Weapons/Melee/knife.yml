@@ -69,13 +69,13 @@
     attackRate: 1.17
     damage:
       types:
-        Slash: 18 #fish-start
+        Slash: 18 #Fish-start
         Structural: 5
   - type: DamageOtherOnHit
     damage:
       types:
         Slash: 25
-        Structural: 10 #fish-end
+        Structural: 10 #Fish-end
   - type: Tool
     qualities:
     - Prying

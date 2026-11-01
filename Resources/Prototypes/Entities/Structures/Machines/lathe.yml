@@ -149,7 +149,7 @@
     emagStaticPacks:
     - SecurityStaticSunrise # Sunrise-Add
     - SyndicateAmmoStatic
-    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish edit - убрано в техфаб СБ
+    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish-edit - убрано в техфаб СБ
   - type: BlueprintReceiver
     whitelist:
       tags:
@@ -229,8 +229,8 @@
     - NightVisionDevice
     # Sunrise-End
   - type: EmagLatheRecipes
-    # emagStaticPacks: # Fish edit
-    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish edit
+    # emagStaticPacks: # Fish-edit
+    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish-edit
     emagDynamicPacks:
     # - SecurityAmmo # Sunrise-edit
     - SecurityExplosives
@@ -350,6 +350,7 @@
     - MedicalCyberlimbDynamic
     - MedicalCyberOrgansDynamic
     # Sunrise-end
+    - FishBorgModules # Fish-edit: рецепт апгрейд-модуля борга до Mk2
   - type: MaterialStorage
     whitelist: *StandardMaterialWhitelist
   - type: OreSiloClient
@@ -591,7 +592,7 @@
     - Carpets
     - Bedsheets
     - UniformStaticSunrise # Sunrise-Add
-    - UniformStaticFish # FIsh edit - белый берет СИ в принтере униформы
+    - UniformStaticFish # Fish-edit - белый берет СИ в принтере униформы
   - type: EmagLatheRecipes
     emagStaticPacks:
     - ClothingCentComm
@@ -673,11 +674,11 @@
       whitelist:
         tags:
           - Ore
-    # Fish added start - добавлен магнит для сбора руды с пола
+    # Fish-start - добавлен магнит для сбора руды с пола
     - type: OreProcessorMagnet
       range: 3
       duration: 2
-    # Fish added end
+    # Fish-end
     - type: Lathe
       idleState: icon
       runningState: building

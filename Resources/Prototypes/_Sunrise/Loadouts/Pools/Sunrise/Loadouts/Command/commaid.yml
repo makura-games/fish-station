@@ -63,7 +63,7 @@
     back: ClothingBackpackSatchelLeather
 
 - type: loadout
-  id: FishComMaidDuffel # fish edit
+  id: FishComMaidDuffel # Fish-edit
   equipment:
     back: FishComMaidDuffel
 

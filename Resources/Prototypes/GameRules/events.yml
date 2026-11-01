@@ -70,6 +70,7 @@
       weight: 15
       children:
         - id: DerelictSyndicateAssaultCyborgSpawn
+        - id: FishDerelictSyndicateReaperCyborgSpawn # Fish-edit
         - id: DerelictSyndicateSaboteurCyborgSpawn
         - id: DerelictSyndicateMedicalCyborgSpawn
 #Sunrise-End

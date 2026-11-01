@@ -100,9 +100,9 @@ public sealed partial class ContainerFillSystem : EntitySystem
                 if (!_containerSystem.Insert(spawn, container, containerXform: xform))
                 {
                     var alreadyContained = container.ContainedEntities.Count > 0 ? string.Join("\n", container.ContainedEntities.Select(e => $"\t - {ToPrettyString(e)}")) : "< empty >";
-                    // FIsh edit start - Warning вместо Error: иначе Sawmill валит чужие integration tests (HappyHonk fill)
+                    // Fish-start - Warning вместо Error: иначе Sawmill валит чужие integration tests (HappyHonk fill)
                     Log.Warning($"Entity {ToPrettyString(ent)} with a {nameof(EntityTableContainerFillComponent)} failed to insert an entity: {ToPrettyString(spawn)}.\nCurrent contents:\n{alreadyContained}");
-                    // FIsh edit end
+                    // Fish-end
                     _transform.AttachToGridOrMap(spawn);
                     break;
                 }

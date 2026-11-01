@@ -1,4 +1,4 @@
-# Fish edit - Bluespace artillery loc
+# Fish-edit - Bluespace artillery loc
 bluespace-artillery-linked = Devices linked.
 bluespace-artillery-out-of-range = Target is out of range.
 bluespace-artillery-on-cooldown = Bluespace artillery is recharging.
@@ -18,12 +18,12 @@ bluespace-artillery-max-intensity = Max Intensity:
 bluespace-artillery-preview = Preview Explosion
 access-level-bsa-operator = BSA Operator
 
-# Fish edit - statuses
+# Fish-edit - statuses
 bluespace-artillery-status-no-link = Status: no link to cannon
 bluespace-artillery-status-charging = Status: charging...
 bluespace-artillery-status-cooldown = Status: cooling down...
 bluespace-artillery-status-ready = Status: ready to fire
 
-# Fish edit - ports
+# Fish-edit - ports
 signal-port-name-artillery = Artillery
 signal-port-description-artillery = Bluespace artillery control channel

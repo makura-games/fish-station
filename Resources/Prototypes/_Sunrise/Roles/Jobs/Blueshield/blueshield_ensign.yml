@@ -33,12 +33,12 @@
     outerClothing: ClothingOuterArmorBlueShield
     ears: ClothingHeadsetBlueShieldEnsign
     gloves: ClothingHandsGlovesCombat
-    pocket2: WeaponTaser # fish-add
+    pocket2: WeaponTaser # Fish-edit
   storage:
     back:
     - HandheldBSOCrewMonitor
     - RubberStampCommanderBlueShield
-    - FishUplinkNTERTBlueShield # Fish edit
+    - FishUplinkNTERTBlueShield # Fish-edit
 
 - type: chameleonOutfit
   id: BlueShieldEnsignChameleonOutfit

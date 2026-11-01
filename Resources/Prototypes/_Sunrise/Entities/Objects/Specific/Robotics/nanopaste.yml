@@ -27,7 +27,7 @@
         Blunt: -10
         Slash: -10
         Piercing: -10
-       # Mangleness: -10 # Fish-Edit: Removed Mangleness from the damage types
+       # Mangleness: -10 # Fish-edit: Removed Mangleness from the damage types
     healingBeginSound:
       path: "/Audio/Items/Medical/ointment_begin.ogg"
     healingEndSound:

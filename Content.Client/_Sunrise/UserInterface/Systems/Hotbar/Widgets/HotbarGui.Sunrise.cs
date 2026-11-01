@@ -57,10 +57,5 @@ public sealed partial class HotbarGui
         }
     }
 
-    private HandsContainer GetHandContainer(HandLocation location)
-    {
-        return location == HandLocation.Functional
-            ? FunctionalHandContainer
-            : HandContainer;
-    }
+    // Fish-edit: GetHandContainer реализован в _Fish/UserInterface/Systems/Hotbar/Widgets/HotbarGui.FunctionalRouting.cs.
 }

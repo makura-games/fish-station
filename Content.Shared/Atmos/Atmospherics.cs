@@ -225,8 +225,8 @@ namespace Content.Shared.Atmos
             [Gas.ChargedElectrovae] = Loc.GetString("gas-charged-electrovae-abbreviation"),
             [Gas.Electrovae] = Loc.GetString("gas-electrovae-abbreviation"),
             //Sunrise - End
-            //Fish - Start
-            [Gas.Zenthium] = Loc.GetString("gas-zenthium-abbreviation"), //Fish edit start
+            //Fish-start
+            [Gas.Zenthium] = Loc.GetString("gas-zenthium-abbreviation"), // Fish-edit
             [Gas.Krypium] = Loc.GetString("gas-krypium-abbreviation"),
             [Gas.Prallium] = Loc.GetString("gas-prallium-abbreviation"),
             [Gas.Chaoson] = Loc.GetString("gas-chaoson-abbreviation"),
@@ -243,7 +243,7 @@ namespace Content.Shared.Atmos
             [Gas.Permafrost] = Loc.GetString("gas-permafrost-abbreviation"),
             [Gas.Riminon] = Loc.GetString("gas-riminon-abbreviation"),
             [Gas.AxoNoblium] = Loc.GetString("gas-axonoblium-abbreviation"),
-            //Fish - End
+            //Fish-end
         };
 
         #region Excited Groups
@@ -472,7 +472,7 @@ namespace Content.Shared.Atmos
         Electrovae = 20,
         ChargedElectrovae = 21,
         //Sunrise - End
-        //Fish - Start
+        //Fish-start
         Zenthium = 22,
         Krypium = 23,
         Prallium = 24,
@@ -490,6 +490,6 @@ namespace Content.Shared.Atmos
         Permafrost = 36,
         Riminon = 37,
         AxoNoblium = 38
-        //Fish - End
+        //Fish-end
     }
 }

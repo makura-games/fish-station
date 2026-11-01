@@ -72,9 +72,9 @@ namespace Content.Server.Database
 
             ConfigureSunriseModel(modelBuilder); // Sunrise-Edit - конфигурация fork-сущностей БД
 
-            // ===== FISH EDIT START: ACHIEVEMENTS =====
+            // ===== Fish-start: ACHIEVEMENTS =====
             ConfigureFishModel(modelBuilder);
-            // ===== FISH EDIT END: ACHIEVEMENTS =====
+            // ===== Fish-end: ACHIEVEMENTS =====
 
             modelBuilder.Entity<ProfileRoleLoadout>()
                 .HasOne(e => e.Profile)

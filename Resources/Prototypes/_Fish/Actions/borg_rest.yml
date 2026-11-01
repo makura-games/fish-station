@@ -1,0 +1,21 @@
+# Fish: действие отдыха для боргов Mk2 (механика BorgRest).
+# Иконка — квадратная обрезка _Fish robot_tipped (исходный кадр 32x64 сплющивался
+# в квадратном TextureRect действия со StretchMode.Scale).
+- type: entity
+  parent: BaseAction
+  id: FishBorgRestAction
+  suffix: Fish
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    # Отдых переключается даже с заблокированными руками — сам DoAfter обрывает вход.
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Fish/Actions/borg_rest.rsi
+    layers:
+    - state: borg_rest
+  - type: InstantAction
+    event: !type:BorgRestActionEvent {}
+  # Единственное действие, разрешённое боргу в отдыхе — иначе он не сможет встать.
+  - type: BorgRestAllowedMarker

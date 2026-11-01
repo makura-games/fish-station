@@ -1185,7 +1185,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
-  # Fish edit start - modsuit stats
+  # Fish-start - modsuit stats
   - type: Armor
     modifiers:
       coefficients:
@@ -1198,7 +1198,7 @@
         Shock: 0.80
   - type: StaminaResistance
     damageCoefficient: 0.60
-  # Fish edit end
+  # Fish-end
   - type: ExplosionResistance
     damageCoefficient: 0.5
 

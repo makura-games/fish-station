@@ -117,7 +117,7 @@ public abstract partial class SharedSurgerySystem
             AddComp(args.Part, progress);
         }
 
-        // Fish-Edit start: broadcast для achievements (без duplicate SurgeryStepComponent subscription)
+        // Fish-start: broadcast для achievements (без duplicate SurgeryStepComponent subscription)
         var fishAchEv = new FishSurgeryStepCompleteEvent(args.User, args.Body, args.Part)
         {
             StepProto = args.StepProto,
@@ -125,7 +125,7 @@ public abstract partial class SharedSurgerySystem
             IsFinal = args.IsFinal,
         };
         RaiseLocalEvent(ref fishAchEv);
-        // Fish-Edit end
+        // Fish-end
 
         if (args.IsFinal)
             progress.CompletedSurgeries.Add(args.SurgeryProto);

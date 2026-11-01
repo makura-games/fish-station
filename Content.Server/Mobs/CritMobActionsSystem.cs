@@ -52,10 +52,10 @@ public sealed partial class CritMobActionsSystem : EntitySystem
         if (actor.PlayerSession.GetMind() is { } mindId)
             _ghostSystem.OpenAcceptEui(mindId, actor.PlayerSession);
 
-        // Fish-Edit start: broadcast для achievements
+        // Fish-start: broadcast для achievements
         var fishSuccumbEv = new FishCritSuccumbEvent(uid);
         RaiseLocalEvent(ref fishSuccumbEv);
-        // Fish-Edit end
+        // Fish-end
 
         args.Handled = true;
     }

@@ -11,7 +11,7 @@ namespace Content.Shared.Chemistry.Components;
 /// Passively increases a solution's quantity of a reagent.
 /// </summary>
 [RegisterComponent, AutoGenerateComponentPause, AutoGenerateComponentState, NetworkedComponent]
-[Access(typeof(SolutionRegenerationSystem), typeof(SharedSolutionRegenerationSwitcherSystem), typeof(SharedSyndicatePaiSystem))] // Sunrise-Edit // FIsh edit - Syndicate pAI reagent switching
+[Access(typeof(SolutionRegenerationSystem), typeof(SharedSolutionRegenerationSwitcherSystem), typeof(SharedSyndicatePaiSystem))] // Sunrise-Edit // Fish-edit - Syndicate pAI reagent switching
 public sealed partial class SolutionRegenerationComponent : Component
 {
     /// <summary>

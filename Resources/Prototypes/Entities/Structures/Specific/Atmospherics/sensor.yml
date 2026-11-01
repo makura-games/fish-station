@@ -39,7 +39,7 @@
       AntiNoblium: danger
       Electrovae: danger
       ChargedElectrovae: danger
-      #Fish - Start
+      #Fish-start
       Zenthium: danger
       Krypium: unwanted
       Prallium: unwanted
@@ -57,7 +57,7 @@
       Permafrost: danger
       Riminon: unwanted
       AxoNoblium: unwanted
-      #Fish - End
+      #Fish-end
   - type: Tag
     tags:
     - AirSensor

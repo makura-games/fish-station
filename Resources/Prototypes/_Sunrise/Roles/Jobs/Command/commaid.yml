@@ -25,11 +25,11 @@
   - Bar
   - Theatre
   - Maintenance
-# Fish-Start
+# Fish-start
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]
-# Fish-End
+# Fish-end
 
 - type: startingGear
   id: ComMaidGear

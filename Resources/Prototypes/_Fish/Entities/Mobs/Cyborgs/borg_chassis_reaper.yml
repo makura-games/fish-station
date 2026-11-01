@@ -1,0 +1,154 @@
+# Fish-варианты синди-риперов: шасси перенесено из _Sunrise в _Fish,
+# постоянные chassis-руки добавлены поверх base-Hands. showInHands включает
+# отображение предметов из этих рук на спрайте, модульные руки (Functional) не видны.
+- type: entity
+  id: FishBorgChassisSyndicateReaper
+  parent: BaseBorgChassisSyndicate
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Mobs/Silicon/chassis.rsi
+    layers:
+    - state: syndi_reaper
+    - state: syndi_reaper_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: syndi_reaper_l
+      shader: unshaded
+      map: ["light"]
+      visible: false
+    - map: ["jumpsuit"]
+    - map: ["belt"]
+    - map: ["id"]
+    - map: ["neck"]
+    - map: ["back"]
+    - map: ["head"]
+    - map: ["pocket1"]
+    - map: ["pocket2"]
+  - type: BorgChassis
+    maxModules: 4
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleSyndicate
+    hasMindState: syndi_reaper_e
+    noMindState: syndi_reaper_e_r
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Syndicate
+    - Binary
+  - type: ActiveRadio
+    channels:
+    - Syndicate
+    - Binary
+  - type: TTS
+    voice: Sentrybot
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Critical
+    - Dead
+  - type: NameIdentifier
+    group: SyndieReaperRobot
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: syndi_reaper
+      Critical:
+        Base: syndi_reaper_critical
+      Dead:
+        Base: syndi_reaper_dead
+  - type: PointLight
+    color: "#dd200b"
+    radius: 6
+    energy: 3
+  - type: Inventory
+    templateId: FishReaper
+  - type: InventorySlots
+  - type: Body
+  - type: Hands
+    startingHands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    showInHands: true
+    disableExplosionRecursion: true
+    canBeStripped: true
+  - type: Loadout
+    prototypes: [FishSyndiReaperHardsuitGear]
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: Footstep2CyborgLegs
+      params:
+        volume: -15
+  - type: Vocal
+    emoteSounds: Reaper
+  - type: RandomMetadata
+    nameSegments: [NamesBorg]
+  - type: InnateItem
+    entityTargetActions:
+    - AccessBreaker
+
+- type: entity
+  id: FishBorgChassisSyndicateReaperDerelict
+  parent: BaseBorgChassisSyndicateDerelict
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Mobs/Silicon/chassis.rsi
+    layers:
+    - state: syndi_reaper
+    - state: syndi_reaper_e_r
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: syndi_reaper_l
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: BorgTransponder
+    sprite:
+      sprite: _Sunrise/Mobs/Silicon/chassis.rsi
+      state: syndi_reaper
+    name: derelict syndicate reaper cyborg
+  - type: BorgChassis
+    maxModules: 4
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleSyndicate
+    hasMindState: syndi_reaper_e
+    noMindState: syndi_reaper_e_r
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Common
+    - Binary
+  - type: ActiveRadio
+    channels:
+    - Common
+    - Binary
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 5
+  - type: Hands
+    startingHands:
+      hand_right:
+        location: Right
+      hand_left:
+        location: Left
+    showInHands: true
+    disableExplosionRecursion: true
+    canBeStripped: false
+  - type: InnateItem
+    entityTargetActions:
+    - AccessBreaker
+  - type: Construction
+    node: derelictcyborg
+
+- type: startingGear
+  id: FishSyndiReaperHardsuitGear
+  equipment:
+    belt: ClothingBeltReaperWebbing

@@ -90,6 +90,9 @@
     laws: Crewsimov
   - type: Inventory
     templateId: borg
+  # Fish: базовая chassis не стрипается — у обычных боргов руки приходят от модулей
+  # (Functional, в Strip-UI не показываются). Статические chassis-руки Mk2/риперов
+  # включают canBeStripped: true в своих прототипах.
   - type: Hands
     showInHands: false
     disableExplosionRecursion: true

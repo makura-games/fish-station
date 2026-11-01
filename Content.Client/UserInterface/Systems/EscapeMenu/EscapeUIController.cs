@@ -95,13 +95,13 @@ public sealed partial class EscapeUIController : UIController, IOnStateEntered<G
             UIManager.GetUIController<RoadmapUIController>().ToggleRoadmap();
         };
 
-        // ===== FISH EDIT START: ACHIEVEMENTS =====
+        // ===== Fish-start: ACHIEVEMENTS =====
         _escapeWindow.AchievementsButton.OnPressed += _ =>
         {
             CloseEscapeWindow();
             UIManager.GetUIController<AchievementUIController>().ToggleWindow();
         };
-        // ===== FISH EDIT END: ACHIEVEMENTS =====
+        // ===== Fish-end: ACHIEVEMENTS =====
 
         var tutorialUi = UIManager.GetUIController<TutorialUIController>();
         UpdateQuitTutorialButtonVisibility();

@@ -7,7 +7,7 @@ using Robust.Shared.GameStates;
 namespace Content.Client._Starlight.Medical.Surgery;
 // Based on the RMC14.
 // https://github.com/RMC-14/RMC-14
-public sealed partial class SurgerySystem : SharedSurgerySystem // FIsh edit - событийная инвалидация Fish UI вынесена в partial
+public sealed partial class SurgerySystem : SharedSurgerySystem // Fish-edit - событийная инвалидация Fish UI вынесена в partial
 {
     [Dependency] private UserInterfaceSystem _ui = default!;
 
@@ -16,7 +16,7 @@ public sealed partial class SurgerySystem : SharedSurgerySystem // FIsh edit - �
         base.Initialize();
 
         SubscribeLocalEvent<SurgeryProgressComponent, AfterAutoHandleStateEvent>(OnProgressState);
-        InitializeFishUiInvalidation(); // FIsh edit
+        InitializeFishUiInvalidation(); // Fish-edit
     }
 
     private void OnProgressState(Entity<SurgeryProgressComponent> ent, ref AfterAutoHandleStateEvent args)
