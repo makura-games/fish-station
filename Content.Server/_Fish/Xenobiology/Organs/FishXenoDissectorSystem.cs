@@ -23,6 +23,7 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
         "FishXenoOrganSinewFish",
         "FishXenoOrganVigorFish",
         "FishXenoOrganAntitoxinFish",
+        "FishXenoOrganHeatResistFish",
     ];
 
     public override void Initialize()
@@ -57,17 +58,20 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
     {
         var id = MetaData(target).EntityPrototype?.ID ?? "";
 
-        if (ContainsAny(id, "Spider", "Hivelord", "Watcher"))
+        if (ContainsAny(id, "Tomato", "Clown"))
+            return "FishXenoOrganAntitoxinFish";
+
+        if (ContainsAny(id, "Watcher"))
+            return "FishXenoOrganHeatResistFish";
+
+        if (ContainsAny(id, "Spider", "Hivelord", "Hivebot", "Flesh", "Abomination"))
             return "FishXenoOrganToxicFish";
 
-        if (ContainsAny(id, "Carp", "Goliath", "Bear", "Colossus", "Bubblegum"))
+        if (ContainsAny(id, "Carp", "Goliath", "Bear", "Colossus", "Bubblegum", "Legion", "Megacarp"))
             return "FishXenoOrganSinewFish";
 
-        if (ContainsAny(id, "Legion", "Herald", "Revenant"))
+        if (ContainsAny(id, "Herald", "Revenant", "Morph", "Hound", "Pandora", "Goldgrub"))
             return "FishXenoOrganVigorFish";
-
-        if (ContainsAny(id, "Tomato", "Clown", "Morph"))
-            return "FishXenoOrganAntitoxinFish";
 
         if (ContainsAny(id, "Monkey"))
             return _random.Pick(DefaultOrgans);
