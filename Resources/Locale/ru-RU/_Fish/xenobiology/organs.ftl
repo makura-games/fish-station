@@ -28,6 +28,13 @@ ent-FishXenoOrganToxicFish = токсичный ксено-орган
 ent-FishXenoOrganSinewFish = ксено-орган сухожилия
     .suffix = Fish
 
+ent-FishXenoOrganVigorFish = ксено-орган бодрости
+    .suffix = Fish
+
+ent-FishXenoOrganAntitoxinFish = ксено-орган антитоксина
+    .suffix = Fish
+
+
 ent-FishXenobiologyOrganAnalyzerFish = анализатор ксено-органов
     .suffix = Fish
 
