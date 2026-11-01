@@ -1350,3 +1350,25 @@
     message: Пофикшены термалы и ПНВ
   id: 137
   url: https://github.com/makura-games/fish-station/pull/591
+- author: NekutGit
+  time: '2026-11-01T21:44:24.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлены варианты MK2 версии киборгов.
+  - type: Add
+    message: Добавлен модуль улучшения боргов до Mk2, его технология и крафт.
+  - type: Tweak
+    message: Из требований технологии "Промышленная робототехника" убрано требование к изучению технологии "Дюранд".
+  - type: Fix
+    message: Всем киборгам-жнецам включая Синдиката и Ксеноборгов снова доступны руки.
+  - type: Fix
+    message: Исправлено отображение рук и предметов модулей боргов и положение Mk2 при атаках.
+  id: 138
+  url: https://github.com/makura-games/fish-station/pull/493
+  media:
+  - url: https://github.com/user-attachments/assets/37805337-5cd3-4c49-ae20-ce831f88ed8d
+    description: Screenshot 2026-10-10 183126
+  - url: https://github.com/user-attachments/assets/ee363807-f7a2-4f8b-9c60-7d614553e77d
+    description: Screenshot 2026-10-09 230651
+  - url: https://github.com/user-attachments/assets/12717830-921f-414a-b30e-a113ad76eca8
+    description: Screenshot 2026-10-09 233031
