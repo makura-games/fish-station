@@ -31,6 +31,16 @@ fish-xeno-console-fed = Зелье скормлено слайму.
 fish-xeno-console-feed-fail = Ни одному слайму зелье не подошло.
 fish-xeno-console-recycled = Утилизировано трупов: {$count}.
 
+fish-xeno-link-console-selected = Консоль выбрана. Кликните мультитулом по ресайклеру.
+fish-xeno-link-need-console = Сначала выберите консоль мультитулом.
+fish-xeno-link-done = Ресайклер привязан к консоли.
+
+fish-xeno-verb-collect = (Ксенo) Забрать слайма
+fish-xeno-verb-scan = (Ксенo) Сканировать слайма
+fish-xeno-verb-feed = (Ксенo) Скормить зелье
+fish-xeno-verb-recycle-monkey = (Ксенo) Утилизировать обезьяну
+fish-xeno-verb-release = (Xeno) Выпустить всех слаймов
+
 ent-FishXenobiologyConsoleFish = консоль ксенобиологии
     .desc = Хранит слаймов и кубы; кормит зельем в радиусе вокруг консоли.
     .suffix = Fish
