@@ -8,6 +8,9 @@ public enum FishXenoOrganEffectKind : byte
     Vigor,
     Antitoxin,
     HeatResist,
+    EmpPulse,
+    Adrenaline,
+    SlimeSkin,
 }
 
 [RegisterComponent]
