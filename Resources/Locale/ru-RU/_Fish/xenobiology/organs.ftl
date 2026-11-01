@@ -7,6 +7,7 @@ fish-xeno-organ-slime-start = Слайм начинает перевариват
 fish-xeno-organ-slime-done = Слайм выплёвывает готовый ксено-орган.
 fish-xeno-analyzer-unidentified = Орган нужно сначала опознать.
 fish-xeno-analyzer-done = Этот орган уже анализировали.
+fish-xeno-analyzer-type-limit = Этот тип органа уже сканировали три раза на этом анализаторе.
 fish-xeno-analyzer-busy = Анализатор занят.
 fish-xeno-analyzer-start = Сканирование ксено-органа…
 fish-xeno-analyzer-finished = Скан завершён. +{$points} очков исследований.
