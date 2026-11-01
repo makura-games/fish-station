@@ -1,0 +1,38 @@
+light_mode unshaded;
+
+#include "/Textures/_Fish/Shaders/Vision/natural_sampling.swsl"
+
+uniform sampler2D SCREEN_TEXTURE;
+uniform sampler2D VISION_LIGHT_TEXTURE;
+uniform sampler2D EXPOSURE_TEXTURE;
+uniform sampler2D APPLIED_TEXTURE;
+uniform highp float lighting_strength;
+uniform highp float darkness_saturation;
+uniform highp float shadow_contrast;
+uniform highp float grain_strength;
+uniform highp vec2 viewport_size;
+uniform highp float noise_frame;
+uniform highp vec4 tint;
+
+void fragment() {
+    highp float adaptation = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
+    highp vec4 original = zTextureSpec(SCREEN_TEXTURE, UV);
+    highp vec3 light = zTextureSpec(VISION_LIGHT_TEXTURE, UV).rgb;
+    highp float applied = texture2D(APPLIED_TEXTURE, vec2(0.5)).r;
+    // Убираем собственную подсветку из оценки освещения, чтобы она не подавляла адаптацию.
+    highp float ambient = max(dot(light, vec3(0.2126, 0.7152, 0.0722)) -
+        lighting_strength * applied * natural_light_fraction(UV), 0.0);
+    highp float darkness = 1.0 - smoothstep(0.04, 0.4, ambient);
+    highp float gray = dot(original.rgb, vec3(0.2126, 0.7152, 0.0722));
+    highp vec3 natural = mix(vec3(gray), original.rgb, darkness_saturation);
+    // Усиливаем детали теней, сохраняя чёрный без свечения и яркие участки без пересвета.
+    natural *= 1.0 + (shadow_contrast - 1.0) * (vec3(1.0) - clamp(natural, vec3(0.0), vec3(1.0)));
+    natural *= mix(vec3(1.0), tint.rgb, tint.a);
+    if (grain_strength > 0.0 && darkness > 0.0) {
+        highp vec2 pixel = floor(UV * viewport_size * 0.5);
+        highp float grain = fract(sin(dot(pixel, vec2(12.9898, 78.233)) + noise_frame * 37.719) * 43758.5453);
+        // Зерно скрывает мелкие детали, не создавая светлую пелену на чёрном фоне.
+        natural *= 1.0 + (grain * 2.0 - 1.0) * grain_strength;
+    }
+    COLOR = vec4(mix(original.rgb, natural, darkness * adaptation), original.a);
+}

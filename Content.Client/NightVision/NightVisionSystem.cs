@@ -22,6 +22,7 @@ public sealed partial class NightVisionSystem : SharedNightVisionSystem
         base.Initialize();
 
         _overlay = new NightVisionOverlay();
+        InitializeFishNaturalVision(); // Fish-edit: Подготавливаем отдельное природное зрение.
     }
 
     [SubscribeLocalEvent]
@@ -105,6 +106,10 @@ public sealed partial class NightVisionSystem : SharedNightVisionSystem
             return;
         }
 
+        // Fish-start: Природное зрение использует выбранный источник и сохраняет приоритет экипировки.
+        if (TryUpdateFishNaturalVision(entity, nvision))
+            return;
+        // Fish-end
         _overlay.SetParameters(nvision.OverlayColor, nvision.LightingColor, nvision.NoiseAmount, nvision.NoiseMultiplier);
 
         if (!_overlayMan.HasOverlay<NightVisionOverlay>())
@@ -116,6 +121,7 @@ public sealed partial class NightVisionSystem : SharedNightVisionSystem
         if (ent != _player.LocalSession?.AttachedEntity)
             return;
 
+        DeactivateFishNaturalVision(); // Fish-edit: Сбрасываем адаптацию при отключении или смене персонажа.
         _overlayMan.RemoveOverlay(_overlay);
     }
 
@@ -125,7 +131,7 @@ public sealed partial class NightVisionSystem : SharedNightVisionSystem
         if (target != _player.LocalSession?.AttachedEntity)
             return;
 
-        // Fish-edit - подавление обычного ПНВ при активной оптике прибора FishVisionSystem
+        // Fish-edit: Подавление обычного ПНВ при активной оптике прибора FishVisionSystem.
         if (_fishVisionOverride)
         {
             Deactivate(target);
