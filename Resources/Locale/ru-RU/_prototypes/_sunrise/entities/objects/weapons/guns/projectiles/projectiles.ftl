@@ -67,7 +67,7 @@ ent-SunriseBulletDisposableSmokeRocket = дымовая ракета
 ent-SunriseBulletDisposableIncendiaryRocket = термобарическая ракета
     .desc = Компактная ракета с нестабильным химическим зарядом.
 
-# Fish edit start - Добавление локализации self-explode артиллерийских гранат
+# Fish-start - Добавление локализации self-explode артиллерийских гранат
 ent-BulletGrenadeFragArtillerySelfExplode = осколочная граната
     .desc = Сущность аварийного самоподрыва осколочной гранаты.
     .suffix = самоподрыв, СЕЙЧАС
@@ -75,4 +75,4 @@ ent-BulletGrenadeFragArtillerySelfExplode = осколочная граната
 ent-BulletGrenadeBlastArtillerySelfExplode = фугасная граната
     .desc = Сущность аварийного самоподрыва фугасной гранаты.
     .suffix = самоподрыв, СЕЙЧАС
-# Fish edit end
+# Fish-end

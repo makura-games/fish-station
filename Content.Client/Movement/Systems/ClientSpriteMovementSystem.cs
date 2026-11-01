@@ -1,4 +1,4 @@
-using Content.Shared._Fish.BorgRest; // Fish-Edit
+using Content.Shared._Fish.BorgRest; // Fish-edit
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Robust.Client.GameObjects;
@@ -25,7 +25,7 @@ public sealed partial class ClientSpriteMovementSystem : SharedSpriteMovementSys
         if (!_spriteQuery.TryGetComponent(ent, out var sprite))
             return;
 
-        // Fish-Edit: пока борг Mk2 отдыхает (BorgRest), BlockMovement уже запрещает движение,
+        // Fish-edit: пока борг Mk2 отдыхает (BorgRest), BlockMovement уже запрещает движение,
         // но ввод WASD всё равно взводит IsMoving (SharedMoverController.Input) и перекрывает
         // rest-кадр тела кадром ходьбы/стойки. Не применяем слои движения, пока идёт отдых.
         if (TryComp<BorgRestComponent>(ent.Owner, out var rest) && rest.IsResting)  // Fish-edit

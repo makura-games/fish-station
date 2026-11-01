@@ -12,7 +12,7 @@ using Robust.Shared.Containers;
 
 namespace Content.Client.DoAfter;
 
-// FIsh edit - расширение анимации вынесено в _Fish
+// Fish-edit - расширение анимации вынесено в _Fish
 public sealed partial class DoAfterOverlay : Overlay
 {
     private static readonly ProtoId<ShaderPrototype> UnshadedShader = "unshaded";

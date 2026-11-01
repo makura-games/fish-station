@@ -74,7 +74,7 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
         if (entity.Owner != _player.LocalEntity)
             return;
 
-        HandsGui?.UpdateFunctionalRouting(entity.Comp); // Fish-Edit
+        HandsGui?.UpdateFunctionalRouting(entity.Comp); // Fish-edit
 
         if (_handsSystem.TryGetHand((entity.Owner, entity.Comp), name, out var hand))
             AddHand(name, hand.Value);
@@ -89,7 +89,7 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
         if (entity.Owner != _player.LocalEntity)
             return;
 
-        HandsGui?.UpdateFunctionalRouting(entity.Comp, name); // Fish-Edit
+        HandsGui?.UpdateFunctionalRouting(entity.Comp, name); // Fish-edit
 
         RemoveHand(name);
     }
@@ -138,7 +138,7 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
         DebugTools.Assert(_playerHandsComponent == null);
         HandsGui?.Visible = true;
         HandsGui?.SetPlayerHandsComponent(handsComp); // Sunrise-Edit - передаем порядок рук обоим контейнерам
-        HandsGui?.UpdateFunctionalRouting(handsComp.Comp); // Fish-Edit - пересчёт роутинга до добавления кнопок
+        HandsGui?.UpdateFunctionalRouting(handsComp.Comp); // Fish-edit - пересчёт роутинга до добавления кнопок
         _playerHandsComponent = handsComp;
         foreach (var (name, hand) in handsComp.Comp.Hands)
         {

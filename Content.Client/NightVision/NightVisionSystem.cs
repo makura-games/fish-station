@@ -125,7 +125,7 @@ public sealed partial class NightVisionSystem : SharedNightVisionSystem
         if (target != _player.LocalSession?.AttachedEntity)
             return;
 
-        // Fish-Edit - подавление обычного ПНВ при активной оптике прибора FishVisionSystem
+        // Fish-edit - подавление обычного ПНВ при активной оптике прибора FishVisionSystem
         if (_fishVisionOverride)
         {
             Deactivate(target);

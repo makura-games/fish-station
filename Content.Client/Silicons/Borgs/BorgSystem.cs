@@ -51,8 +51,8 @@ public sealed partial class BorgSystem : SharedBorgSystem
             return;
 
         UpdateBorgAppearance((chassis.Owner, chassis.Comp, args.Component, args.Sprite));
-        UpdateBorgWreckAppearance(chassis, ref args); // Fish-Edit
-        UpdateBorgRestAppearance(chassis, ref args); // Fish-Edit — отдых Mk2 (после wreck: у wreck приоритет)
+        UpdateBorgWreckAppearance(chassis, ref args); // Fish-edit
+        UpdateBorgRestAppearance(chassis, ref args); // Fish-edit — отдых Mk2 (после wreck: у wreck приоритет)
     }
 
     protected override void OnInserted(Entity<BorgChassisComponent> chassis, ref EntInsertedIntoContainerMessage args)

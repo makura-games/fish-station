@@ -25,7 +25,7 @@ public sealed partial class MeleeWeaponSystem
 
         // Fish: база lunge (постоянное Offset спрайта) и приведение амплитуды к масштабу
         // тела — _Fish/Weapons/Melee/MeleeWeaponSystem.Mk2Lunge.cs.
-        var lunge = GetLungeAnimation(user, localPos); // Fish-Edit
+        var lunge = GetLungeAnimation(user, localPos); // Fish-edit
 
         // Stop any existing lunges on the user.
         _animation.Stop(user, MeleeLungeKey);
@@ -206,7 +206,7 @@ public sealed partial class MeleeWeaponSystem
 
     // Fish: GetLungeAnimation(Vector2) перенесён в _Fish/Weapons/Melee/MeleeWeaponSystem.Mk2Lunge.cs
     // Fish: новая сигнатура принимает базовое смещение спрайта и масштаб (см. DoLunge).
-    // Fish-Edit
+    // Fish-edit
 
     /// <summary>
     /// Updates the effect positions to follow the user

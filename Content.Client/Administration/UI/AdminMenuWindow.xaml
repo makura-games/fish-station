@@ -7,7 +7,7 @@
     xmlns:playerTab="clr-namespace:Content.Client.Administration.UI.Tabs.PlayerTab"
     xmlns:objectsTab="clr-namespace:Content.Client.Administration.UI.Tabs.ObjectsTab"
     xmlns:panic="clr-namespace:Content.Client.Administration.UI.Tabs.PanicBunkerTab"
-    xmlns:pg="clr-namespace:Content.Client._Fish.PerformanceGuardian"> <!-- FIsh edit - Performance Guardian xmlns -->
+    xmlns:pg="clr-namespace:Content.Client._Fish.PerformanceGuardian"> <!-- Fish-edit - Performance Guardian xmlns -->
     <TabContainer Name="MasterTabContainer">
         <adminTab:AdminTab />
         <adminbusTab:AdminbusTab />
@@ -17,8 +17,8 @@
         <panic:PanicBunkerTab Name="PanicBunkerControl" Access="Public" />
         <playerTab:PlayerTab Name="PlayerTabControl" Access="Public" />
         <objectsTab:ObjectsTab Name="ObjectsTabControl" Access="Public" />
-        <!-- FIsh edit - Performance Guardian launcher -->
+        <!-- Fish-edit - Performance Guardian launcher -->
         <pg:PerformanceGuardianLauncherTab />
-        <!-- FIsh edit end -->
+        <!-- Fish-end -->
     </TabContainer>
 </DefaultWindow>

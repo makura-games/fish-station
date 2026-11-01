@@ -1,4 +1,4 @@
-# Fish-edit-start
+# Fish-start
 # Formal accent - expands abbreviations to full meanings
 # This accent makes speech more formal by expanding common abbreviations
 
@@ -98,7 +98,7 @@ accent-formal-words-replace-147 = научного руководителя
 accent-formal-words-148 = нру
 accent-formal-words-replace-148 = научному руководителю
 
-# Fish-edit-end
+# Fish-end
 
 # Russian abbreviations moved from chatsanitize
 accent-formal-words-97 = рнд

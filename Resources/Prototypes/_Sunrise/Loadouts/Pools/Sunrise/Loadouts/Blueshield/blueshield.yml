@@ -1,5 +1,5 @@
 
-# Fish-edit start - время за все роли Синего Щита суммируется через департамент BlueShield, а не только за офицера
+# Fish-start - время за все роли Синего Щита суммируется через департамент BlueShield, а не только за офицера
 - type: loadoutEffectGroup
   id: MisterBlueShit20
   effects:
@@ -44,7 +44,7 @@
       !type:DepartmentTimeRequirement
       department: BlueShield
       time: 50h
-# Fish-edit end
+# Fish-end
 
 - type: loadout
   id: SunriseLoadoutClothingMaskGasBlueShieldHalf

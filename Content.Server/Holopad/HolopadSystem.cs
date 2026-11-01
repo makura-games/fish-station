@@ -107,10 +107,10 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
         if (!_remoteHolopad.CanCall(source.Owner, receiver)) // Fish-edit
             return;
 
-        if (!TryComp<TelephoneComponent>(receiver, out var receiverTelephone)) // Fish-Edit
+        if (!TryComp<TelephoneComponent>(receiver, out var receiverTelephone)) // Fish-edit
             return;
 
-        LinkHolopadToUser(source, args.Actor); // Fish-Edit
+        LinkHolopadToUser(source, args.Actor); // Fish-edit
         _telephoneSystem.CallTelephone((source, sourceTelephone), (receiver, receiverTelephone), args.Actor);
     }
 
@@ -153,7 +153,7 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
 
     private void OnHolopadEndCall(Entity<HolopadComponent> entity, ref HolopadEndCallMessage args)
     {
-        if (HasComp<RemoteHolopadReceiverComponent>(entity)) // Fish-Edit
+        if (HasComp<RemoteHolopadReceiverComponent>(entity)) // Fish-edit
             return;
 
         if (!TryComp<TelephoneComponent>(entity, out var entityTelephone))
@@ -181,7 +181,7 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
 
     private void OnHolopadStartBroadcast(Entity<HolopadComponent> source, ref HolopadStartBroadcastMessage args)
     {
-        if (HasComp<RemoteHolopadTransmitterComponent>(source) || HasComp<RemoteHolopadReceiverComponent>(source)) // Fish-Edit
+        if (HasComp<RemoteHolopadTransmitterComponent>(source) || HasComp<RemoteHolopadReceiverComponent>(source)) // Fish-edit
             return;
 
         if (IsHolopadControlLocked(source, args.Actor) || IsHolopadBroadcastOnCoolDown(source))
@@ -217,7 +217,7 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
 
     private void OnHolopadStationAiRequest(Entity<HolopadComponent> entity, ref HolopadStationAiRequestMessage args)
     {
-        if (HasComp<RemoteHolopadTransmitterComponent>(entity) || HasComp<RemoteHolopadReceiverComponent>(entity)) // Fish-Edit
+        if (HasComp<RemoteHolopadTransmitterComponent>(entity) || HasComp<RemoteHolopadReceiverComponent>(entity)) // Fish-edit
             return;
 
         if (IsHolopadControlLocked(entity, args.Actor))

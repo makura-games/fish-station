@@ -5,7 +5,7 @@
   color: "#FF5297"
   weight: 80
   roles:
-    - OversightOfficer # fish-add
+    - OversightOfficer # Fish-edit
     - Magistrat
     - IAA
     - Lawyer
@@ -21,9 +21,9 @@
     - BlueShieldOfficer
     - BlueShieldEnsign # Fish-edit
     - BlueShieldOperative # Fish-edit
-    - BlueShieldOfficerFish # Fish-add
-    - CentcommBlueShield # Fish-add
-    - RepresentativeBlueShield #Fish-add
+    - BlueShieldOfficerFish # Fish-edit
+    - CentcommBlueShield # Fish-edit
+    - RepresentativeBlueShield #Fish-edit
   primary: false
   weight: 50
 

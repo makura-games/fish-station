@@ -39,7 +39,7 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
         var group = new ButtonGroup();
         // Fish: фильтр скрытых типов (HideInMenu) и сортировка —
         // в _Fish/Silicons/Borgs/BorgSelectTypeMenu.Selection.cs.
-        foreach (var borgType in GetSelectableBorgTypes()) // Fish-Edit
+        foreach (var borgType in GetSelectableBorgTypes()) // Fish-edit
         {
             var button = new Button
             {
@@ -70,7 +70,7 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
         ConfirmTypeButton.Disabled = false;
 
         NameLabel.Text = PrototypeName(prototype);
-        DescriptionLabel.Text = GetBorgTypeDescription(prototype); // Fish-Edit
+        DescriptionLabel.Text = GetBorgTypeDescription(prototype); // Fish-edit
         ChassisView.SetPrototype(prototype.DummyPrototype);
     }
 
@@ -84,5 +84,5 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
 
     // Fish: PrototypeName (Fish-ключи локализации), фильтр HideInMenu и сортировка
     // перенесены в _Fish/Silicons/Borgs/BorgSelectTypeMenu.Selection.cs
-    // Fish-Edit
+    // Fish-edit
 }

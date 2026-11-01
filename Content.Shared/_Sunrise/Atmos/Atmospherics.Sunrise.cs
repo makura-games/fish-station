@@ -52,7 +52,7 @@ public static partial class Atmospherics
     ///     The maximum amount of pluoxium that can form per reaction tick.
     /// </summary>
     public const float PluoxiumMaxRate = 5f;
-    public const float FireH2EnergyReleased = 56000f; //Fish edit
+    public const float FireH2EnergyReleased = 56000f; //Fish-edit
     public const float H2OxygenFullBurn = 10f;
     public const float FireH2BurnRateDelta = 2f;
     public const float H2MinimumBurnTemperature = T0C + 100f;
@@ -61,7 +61,7 @@ public static partial class Atmospherics
     public const float NitriumDecompositionTempDivisor = (T0C + 100f) * 8f;
     public const float NitriumDecompositionEnergy = 30000f;
     public const float NitriumDecompositionMaxTemp = T0C + 70f;
-    public const float NobliumFormationEnergy = 2000000f; // Fish edit
+    public const float NobliumFormationEnergy = 2000000f; // Fish-edit
     public const float ReactionSuppressionThreshold = 5f;
     public const float ReactionSuppressionMinimumTemperature = 20f; // Sunrise
     public const float HalonFormationEnergy = 300f;

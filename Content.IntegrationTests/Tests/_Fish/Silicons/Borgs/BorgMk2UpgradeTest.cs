@@ -74,6 +74,7 @@ public sealed class BorgMk2UpgradeTest : GameTest
         var hadOldArmor = false;
         var result = false;
         var moduleConsumed = false;
+        object? templateBefore = null;
 
         await Server.WaitPost(() =>
         {
@@ -84,6 +85,7 @@ public sealed class BorgMk2UpgradeTest : GameTest
             inventorySystem = Server.System<InventorySystem>();
             upgradeSystem = Server.System<BorgSwitchableTypeSystem>();
 
+            templateBefore = inventory.TemplateId;
             hadOldArmor = inventorySystem.TryGetSlotEntity(borg, "armor", out oldArmor, inventory);
 
             SEntMan.AddComponent<BlockMk2ArmorInsertComponent>(borg);
@@ -107,6 +109,7 @@ public sealed class BorgMk2UpgradeTest : GameTest
                     "Неудачный апгрейд не должен расходовать предмет-модуль");
                 Assert.That(inventorySystem.TryGetSlotEntity(borg, "armor", out var armor, inventory), Is.True);
                 Assert.That(armor, Is.EqualTo(oldArmor), "Старая броня должна быть возвращена в слот");
+                Assert.That(inventory.TemplateId, Is.EqualTo(templateBefore), "Шаблон инвентаря не должен меняться при сбое апгрейда");
             });
         });
     }

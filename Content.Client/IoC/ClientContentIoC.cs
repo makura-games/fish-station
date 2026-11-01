@@ -85,7 +85,7 @@ namespace Content.Client.IoC
             collection.Register<CustomInteractionService, CustomInteractionService>(true);
             // Sunrise-End
 
-            // FIsh edit - CRT appearance для Fish UI
+            // Fish-edit - CRT appearance для Fish UI
             collection.Register<IFishCrtAppearanceManager, FishCrtAppearanceManager>();
         }
     }

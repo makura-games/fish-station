@@ -9,7 +9,7 @@ using Content.Shared.Station.Components;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Random; // Fish-add
+using Robust.Shared.Random; // Fish-edit
 
 namespace Content.Server._Sunrise.GridDock;
 
@@ -20,7 +20,7 @@ public sealed partial class GridDockSystem : EntitySystem
     [Dependency] private StationSystem _station = default!;
     [Dependency] private DockingSystem _dockSystem = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
-	[Dependency] private IRobustRandom _random = default!; // Fish-add
+	[Dependency] private IRobustRandom _random = default!; // Fish-edit
 
     public override void Initialize()
     {

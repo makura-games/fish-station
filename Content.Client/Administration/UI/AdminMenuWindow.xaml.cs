@@ -23,9 +23,9 @@ public sealed partial class AdminMenuWindow : DefaultWindow
         MasterTabContainer.SetTabTitle((int) TabIndex.PanicBunker, Loc.GetString("admin-menu-panic-bunker-tab"));
         MasterTabContainer.SetTabTitle((int) TabIndex.Players, Loc.GetString("admin-menu-players-tab"));
         MasterTabContainer.SetTabTitle((int) TabIndex.Objects, Loc.GetString("admin-menu-objects-tab"));
-        // FIsh edit - Performance Guardian launcher tab title
+        // Fish-edit - Performance Guardian launcher tab title
         MasterTabContainer.SetTabTitle((int) TabIndex.PerformanceGuardian, Loc.GetString("admin-menu-pg-tab"));
-        // FIsh edit end
+        // Fish-end
         MasterTabContainer.OnTabChanged += OnTabChanged;
     }
 
@@ -53,8 +53,8 @@ public sealed partial class AdminMenuWindow : DefaultWindow
         PanicBunker,
         Players,
         Objects,
-        // FIsh edit - Performance Guardian launcher
+        // Fish-edit - Performance Guardian launcher
         PerformanceGuardian,
-        // FIsh edit end
+        // Fish-end
     }
 }

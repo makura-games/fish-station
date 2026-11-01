@@ -4,10 +4,10 @@
     <BoxContainer Orientation="Vertical">
         <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
             <BoxContainer Orientation="Vertical" Margin="8">
-                <!-- FIsh edit - CRT theme / effects for Fish UI -->
+                <!-- Fish-edit - CRT theme / effects for Fish UI -->
                 <CheckBox Name="FishCrtThemeEnabledCheckBox" Text="{Loc 'fish-ui-options-crt-theme'}" />
                 <CheckBox Name="FishCrtEffectsEnabledCheckBox" Text="{Loc 'fish-ui-options-crt-effects'}" />
-                <!-- FIsh edit end -->
+                <!-- Fish-end -->
                 <Label Text="{Loc 'ui-options-accessibility-header-reduced-motion'}"
                        StyleClasses="LabelKeyText"/>
                 <CheckBox Name="ReducedMotionCheckBox"
@@ -43,7 +43,7 @@
                        StyleClasses="LabelKeyText"/>
                 <CheckBox Name="EnableColorNameCheckBox" Text="{Loc 'ui-options-enable-color-name'}" />
                 <CheckBox Name="ColorblindFriendlyCheckBox" Text="{Loc 'ui-options-colorblind-friendly'}" />
-                <ui:OptionSlider Name="ScreenShakeIntensitySlider" Title="{Loc 'ui-options-screen-shake-intensity'}" /> <!-- Fish-Edit -->
+                <ui:OptionSlider Name="ScreenShakeIntensitySlider" Title="{Loc 'ui-options-screen-shake-intensity'}" /> <!-- Fish-edit -->
                 <ui:OptionSlider Name="ChatWindowOpacitySlider" Title="{Loc 'ui-options-chat-window-opacity'}" />
                 <ui:OptionSlider Name="SpeechBubbleTextOpacitySlider" Title="{Loc 'ui-options-speech-bubble-text-opacity'}" />
                 <ui:OptionSlider Name="SpeechBubbleSpeakerOpacitySlider" Title="{Loc 'ui-options-speech-bubble-speaker-opacity'}" />

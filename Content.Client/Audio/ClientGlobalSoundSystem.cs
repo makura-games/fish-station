@@ -24,9 +24,9 @@ public sealed partial class ClientGlobalSoundSystem : SharedGlobalSoundSystem
     public override void Initialize()
     {
         base.Initialize();
-        // FIsh edit start - инициализация логики форка
+        // Fish-start - инициализация логики форка
         InitializeFishAudio();
-        // FIsh edit end
+        // Fish-end
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeNetworkEvent<AdminSoundEvent>(PlayAdminSound);
         Subs.CVar(_cfg, CCVars.AdminSoundsEnabled, ToggleAdminSound, true);
@@ -70,9 +70,9 @@ public sealed partial class ClientGlobalSoundSystem : SharedGlobalSoundSystem
         if(!_adminAudioEnabled) return;
 
         var stream = _audio.PlayGlobal(soundEvent.Specifier, Filter.Local(), false, soundEvent.AudioParams);
-        // FIsh edit start - очистка мёртвых/завершённых аудиопотоков
+        // Fish-start - очистка мёртвых/завершённых аудиопотоков
         CleanupAdminAudioStreams();
-        // FIsh edit end
+        // Fish-end
         _adminAudio.Add(stream?.Entity);
     }
 

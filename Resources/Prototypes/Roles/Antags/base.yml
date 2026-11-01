@@ -12,30 +12,30 @@
   - ERTJanitor
   - CBURN
   # Sunrise edit start - роли, ранее защищённые общим canBeAntag
-  - Adjutant # Fish edit
+  - Adjutant # Fish-edit
   - BlueShieldEnsign
   - BlueShieldOfficer
-  - BlueShieldOfficerFish # Fish edit
+  - BlueShieldOfficerFish # Fish-edit
   - BlueShieldOperative
   - Borg
   - Brigmedic
   - Captain
   - CBURNAgentEVA
   - CBURNLeader
-  - CentCommHead # Fish edit
-  - CentCommOfficer # Fish edit
+  - CentCommHead # Fish-edit
+  - CentCommOfficer # Fish-edit
   - CentCommOfficial
   - CentCommOperator
-  - CentcommBartender # Fish edit
-  - CentcommBlueShield # Fish edit
-  - CentcommChef # Fish edit
-  - CentcommMedicalDoctor # Fish edit
-  - CentcommSectoralJudge # Fish edit
-  - CentCommTrainee # Fish edit
-  - ChiefEngineer # Fish edit
-  - ChiefMedicalOfficer # Fish edit
+  - CentcommBartender # Fish-edit
+  - CentcommBlueShield # Fish-edit
+  - CentcommChef # Fish-edit
+  - CentcommMedicalDoctor # Fish-edit
+  - CentcommSectoralJudge # Fish-edit
+  - CentCommTrainee # Fish-edit
+  - ChiefEngineer # Fish-edit
+  - ChiefMedicalOfficer # Fish-edit
   - ClownBorg
-  - ComMaid # Fish edit
+  - ComMaid # Fish-edit
   - Detective
   - EngineerBorg
   - HeadOfPersonnel
@@ -52,7 +52,7 @@
   - NtrGuard
   - NtrLeader
   - NtrOfficer
-  - OversightOfficer # Fish edit
+  - OversightOfficer # Fish-edit
   - PeaceBorg
   - PlanetPrisoner
   - PrisonChef
@@ -63,17 +63,17 @@
   - PrisonScientist
   - PrisonTrainee
   - PrisonWorker
-  - Quartermaster # Fish edit
-  - RepresentativeBlueShield # Fish edit
+  - Quartermaster # Fish-edit
+  - RepresentativeBlueShield # Fish-edit
   - ResearchAssistant
-  - ResearchDirector # Fish edit
+  - ResearchDirector # Fish-edit
   - SecurityBorg
   - SecurityCadet
   - SecurityOfficer
   - SecurityPilot
   - SeniorOfficer
   - ServiceBorg
-  - SpecOpsOfficer # Fish edit
+  - SpecOpsOfficer # Fish-edit
   - StationAi
   - TechnicalAssistant
   - TSFMarine
@@ -88,7 +88,7 @@
   blacklist:
     components:
     - AntagImmune
-    - MindShield # Fish edit - сущности с имплантом щита разума не могут быть выбраны антагонистами
+    - MindShield # Fish-edit - сущности с имплантом щита разума не могут быть выбраны антагонистами
 
 # Command
 - type: antagSpecifier

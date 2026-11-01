@@ -54,7 +54,7 @@
   - Socks
   - Contributors
 
-# FIsh edit start
+# Fish-start
 # - type: roleLoadout
 #   id: JobCentCommOfficial
 #   groups:
@@ -67,9 +67,9 @@
 #   - Pants
 #   - Socks
 #   - Contributors
-# FIsh edit end
+# Fish-end
 
-# FIsh edit start
+# Fish-start
 # - type: roleLoadout
 #   id: JobCentCommOperator
 #   groups:
@@ -80,26 +80,26 @@
 #   - GroupSpeciesBreathTool
 #   - Bra
 #   - Pants
-#   - BlueShieldBra # fish-edit
-#   - BlueShieldPants # fish-edit
+#   - BlueShieldBra # Fish-edit
+#   - BlueShieldPants # Fish-edit
 #   - Socks
 #   - Contributors
-# FIsh edit end
+# Fish-end
 
 - type: roleLoadout
   id: JobBlueShieldEnsign
   groups:
   - BlueShieldHead
   - BlueShieldNeck
-  - BlueShieldOuterClothing # Fish-add
+  - BlueShieldOuterClothing # Fish-edit
   - BlueShieldJumpsuit
   - BlueShieldBackpack
   - BlueShieldBelt
-  # - BlueshieldGun # Fish-Edit
-  - Bra # Fish-Edit
-  - Pants # Fish-Edit
-# - BlueShieldBra # Fish-Edit
-# - BlueShieldPants # Fish-Edit
+  # - BlueshieldGun # Fish-edit
+  - Bra # Fish-edit
+  - Pants # Fish-edit
+# - BlueShieldBra # Fish-edit
+# - BlueShieldPants # Fish-edit
   - SunriseTrinkets
   - SunriseSurvivalSecurity
   - GroupSpeciesBreathTool
@@ -112,22 +112,22 @@
   - BlueShieldHead
   - SunriseLoadoutGroupBlueShieldMask
   - BlueShieldNeck
-  - BlueShieldOuterClothing # Fish-add
+  - BlueShieldOuterClothing # Fish-edit
   - BlueShieldJumpsuit
   - BlueShieldBackpack
   - BlueShieldBelt
-  # - BlueshieldGun # Fish-Edit
-  - Bra # Fish-Edit
-  - Pants # Fish-Edit
-# - BlueShieldBra # Fish-Edit
-# - BlueShieldPants # Fish-Edit
+  # - BlueshieldGun # Fish-edit
+  - Bra # Fish-edit
+  - Pants # Fish-edit
+# - BlueShieldBra # Fish-edit
+# - BlueShieldPants # Fish-edit
   - SunriseTrinkets
   - SunriseSurvivalSecurity
   - GroupSpeciesBreathTool
   - Socks
   - Contributors
 
-# fish-start
+# Fish-start
 - type: roleLoadout
   id: JobBlueShieldOperative
   groups:
@@ -138,7 +138,7 @@
   - BlueShieldNeck
   - BlueShieldOuterClothing
   - Trinkets
-  # - BlueshieldGun # Fish-Edit
+  # - BlueshieldGun # Fish-edit
   - SunriseTrinkets
   - SurvivalSecurity
   - GroupSpeciesBreathTool
@@ -147,7 +147,7 @@
 # - BlueShieldBra
 # - BlueShieldPants
   - Socks
-# fish-end
+# Fish-end
 
 - type: roleLoadout
   id: JobSeniorOfficer
@@ -473,10 +473,10 @@
   - AdjutantJumpsuit
   - AdjutantOuterClothing
   - AdjutantBackpack
-  - Bra # Fish-Edit
-  - Pants # Fish-Edit
-# - AdjutantBra # Fish-Edit
-# - AdjutantPants # Fish-Edit
+  - Bra # Fish-edit
+  - Pants # Fish-edit
+# - AdjutantBra # Fish-edit
+# - AdjutantPants # Fish-edit
   - SunriseSurvival
   - SunriseTrinkets
   - GroupSpeciesBreathTool

@@ -63,10 +63,10 @@ public sealed partial class SunriseLobbyGui : UIScreen
 
         LeaveButton.OnPressed += _ => _console.ExecuteCommand("disconnect");
         OptionsButton.OnPressed += _ => UserInterfaceManager.GetUIController<OptionsUIController>().ToggleWindow();
-        // ===== FISH EDIT START: ACHIEVEMENTS =====
+        // ===== Fish-start: ACHIEVEMENTS =====
         AchievementsButton.OnPressed += _ =>
             UserInterfaceManager.GetUIController<AchievementUIController>().ToggleWindow();
-        // ===== FISH EDIT END: ACHIEVEMENTS =====
+        // ===== Fish-end: ACHIEVEMENTS =====
 
         Offset = new Vector2(_random.Next(0, 1000), _random.Next(0, 1000));
         RectClipContent = true;

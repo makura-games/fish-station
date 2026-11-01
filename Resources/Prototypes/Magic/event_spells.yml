@@ -20,12 +20,12 @@
   parent: BaseAction
   id: ActionSummonGuns
   name: Summon Guns
-  description: AK47s for everyone! Places a random gun in front of everybody on your station or ship. # Fish-Edit
+  description: AK47s for everyone! Places a random gun in front of everybody on your station or ship. # Fish-edit
   components:
-  # Fish-Edit start: требование нахождения на гриде
+  # Fish-start: требование нахождения на гриде
   - type: Magic
     requiresGrid: true
-  # Fish-Edit end
+  # Fish-end
   - type: Action
     useDelay: 300
     itemIconStyle: BigAction
@@ -172,12 +172,12 @@
   parent: BaseAction
   id: ActionSummonMagic
   name: Summon Magic
-  description: Places a random magical item in front of everybody on your station or ship. Nothing could go wrong! # Fish-Edit
+  description: Places a random magical item in front of everybody on your station or ship. Nothing could go wrong! # Fish-edit
   components:
-  # Fish-Edit start: требование нахождения на гриде
+  # Fish-start: требование нахождения на гриде
   - type: Magic
     requiresGrid: true
-  # Fish-Edit end
+  # Fish-end
   - type: Action
     useDelay: 300
     itemIconStyle: BigAction
