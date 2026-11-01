@@ -7,7 +7,7 @@
 | Цвет | Реагент | SS220 | Статус |
 | --- | --- | --- | --- |
 | gold | plasma | 5 crit, кап 15 | кап + `FishSlimeExtractGoldCritComponent` release при смерти |
-| gold | blood / water | 3 / 1 carp | `MobCarp`, не полный SS220 crit |
+| gold | blood / water | 3 / 1 carp | `MobCarp` + crit-кап; не полный набор crit SS220 |
 | black | blood | virus_genes | реагент `FishVirusGenesFish` (не полный virology SS220) |
 | cerulean | blood | territory blueprints | случайный `Blueprint*` из пула, не territory kit |
 | pyrite | plasma | random paint | пул красок |
@@ -18,7 +18,7 @@
 
 | Зелье | SS220 | Статус |
 | --- | --- | --- |
-| Sentience | опрос 10 с, разогрев, взрыв | raffle `FishXenoSentienceRaffleFish`; разогрев/взрыв на неудачных применениях |
+| Sentience | опрос 10 с, разогрев, взрыв, остывание | raffle `FishXenoSentienceRaffleFish`; разогрев/взрыв; **−1 стадия / 60 с** |
 | Transference | подтверждение | `TransferTo` |
 | Fireproof | 3 заряда | Heat-урон снимает заряд |
 | Oil slick | MOD | MOD-тега в билде нет |
@@ -37,5 +37,5 @@
 | SS220 | Статус |
 | --- | --- |
 | Конвейер | диссектор → масса → слайм → анализатор |
-| Эффекты | **порция 1:** UseInHand 60 с Regenerative/Toxic/Sinew (не импланты) |
-| Анализатор | без лимита 3 типа / tech disk |
+| Эффекты | **порция 1–2:** UseInHand 60 с Regenerative/Toxic/Sinew/Vigor/Antitoxin (не импланты, ~1600 строк SS220 не портированы) |
+| Анализатор | **лимит 3 скана на тип** органа; без tech disk |
