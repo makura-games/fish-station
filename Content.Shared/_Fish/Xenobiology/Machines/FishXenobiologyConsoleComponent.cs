@@ -26,4 +26,7 @@ public sealed partial class FishXenobiologyConsoleComponent : Component
 
     [DataField, AutoNetworkedField]
     public int RecycleProgress;
+
+    [DataField, AutoNetworkedField]
+    public EntityUid? LinkedRecycler;
 }
