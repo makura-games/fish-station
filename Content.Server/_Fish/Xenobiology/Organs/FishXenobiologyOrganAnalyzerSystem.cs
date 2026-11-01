@@ -4,6 +4,8 @@ using Content.Shared._Fish.Xenobiology.Organs;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.Research.Components;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Xenobiology.Organs;
@@ -18,6 +20,7 @@ public sealed partial class FishXenobiologyOrganAnalyzerSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     public override void Initialize()
     {
@@ -117,6 +120,13 @@ public sealed partial class FishXenobiologyOrganAnalyzerSystem : EntitySystem
         }
 
         _popup.PopupEntity(Loc.GetString("fish-xeno-analyzer-finished", ("points", points)), analyzerUid);
+
+        if (analyzer.TechDiskChance > 0 && _random.Prob(analyzer.TechDiskChance))
+        {
+            var diskCoords = _transform.ToCoordinates(coords);
+            Spawn(analyzer.TechDiskPrototype, diskCoords);
+            _popup.PopupEntity(Loc.GetString("fish-xeno-analyzer-tech-disk"), analyzerUid);
+        }
     }
 
     private EntityUid? TryFindServer(MapCoordinates coords)
