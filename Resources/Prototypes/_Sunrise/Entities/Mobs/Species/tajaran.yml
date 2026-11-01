@@ -31,7 +31,7 @@
   id: BaseMobTajaran
   abstract: true
   components:
-  # Fish-start: Выдаём природное зрение при появлении, как у OrganTajaranEyes.
+  # Fish-start: Природное зрение принадлежит телу и сохраняется при замене глаз.
   - type: NightVision
     enabled: false
     action: ActionToggleNightVision

@@ -2,9 +2,12 @@ using System.Linq;
 using Content.Client._Fish.Graphics.Vision;
 using Content.Client.DoAfter;
 using Content.Client.Light;
+using Content.Shared.Actions.Components;
+using Content.Shared.Body;
 using Content.Shared.Inventory;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Overlays;
+using Content.Shared.Starlight.Medical.Surgery.Events;
 using Robust.Client.Graphics;
 using Robust.Shared.GameObjects;
 using ServerNightVisionSystem = Content.Server.NightVision.NightVisionSystem;
@@ -20,7 +23,6 @@ public sealed class FishNaturalNightVisionTest
     [TestCase("MobTajaran")]
     [TestCase("MobResomi")]
     [TestCase("MobArachnid")]
-    [TestCase("MobSkeletonPerson")]
     [TestCase("MobKitsunePlayerFox")]
     public async Task RacialVisionStartsOffAndUsesNaturalRenderingWhenToggled(string prototype)
     {
@@ -127,9 +129,65 @@ public sealed class FishNaturalNightVisionTest
         }
     }
 
+    /// <summary>Replacing Tajaran eyes preserves the body's enabled innate vision and its original action.</summary>
+    [Test]
+    public async Task TajaranEyeReplacementPreservesInnateNightVision()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.EntMan;
+        var map = await pair.CreateTestMap();
+        EntityUid patient = default, head = default, scalpel = default, removeStep = default, action = default;
+        var cancelled = false;
+        await server.WaitPost(() =>
+        {
+            patient = entities.SpawnEntity("MobTajaran", map.GridCoords);
+            head = entities.GetComponent<BodyComponent>(patient).Organs!.ContainedEntities.Single(uid =>
+                entities.GetComponent<OrganComponent>(uid).Category?.Id == "Head");
+            scalpel = entities.SpawnEntity("Scalpel", map.GridCoords);
+            removeStep = entities.SpawnEntity("SurgeryStepRemoveEyes", map.GridCoords);
+            server.System<ServerNightVisionSystem>().SetEnabled(patient, true);
+            action = entities.GetComponent<NightVisionComponent>(patient).ActionEntity!.Value;
+            var remove = new SurgeryStepEvent(patient, patient, head, [scalpel])
+            {
+                SurgeryProto = "SurgeryExtractEyes", StepProto = "SurgeryStepRemoveEyes",
+            };
+            entities.EventBus.RaiseLocalEvent(removeStep, ref remove);
+            cancelled = remove.IsCancelled;
+        });
+        Assert.That(cancelled, Is.False);
+        await CheckVision();
+        await server.WaitPost(() =>
+        {
+            var eyes = entities.SpawnEntity("OrganTajaranEyes", map.GridCoords);
+            var insertStep = entities.SpawnEntity("SurgeryStepInsertEyes", map.GridCoords);
+            var insert = new SurgeryStepEvent(patient, patient, head, [eyes])
+            {
+                SurgeryProto = "SurgeryImplantEyes", StepProto = "SurgeryStepInsertEyes",
+            };
+            entities.EventBus.RaiseLocalEvent(insertStep, ref insert);
+            cancelled = insert.IsCancelled;
+        });
+        Assert.That(cancelled, Is.False);
+        await pair.RunTicksSync(1);
+        await CheckVision();
+        await server.WaitPost(() => entities.DeleteEntity(map.MapUid));
+        await pair.CleanReturnAsync();
+
+        async Task CheckVision() => await server.WaitAssertion(() =>
+        {
+            Assert.That(entities.TryGetComponent<NightVisionComponent>(patient, out var vision), Is.True,
+                "Removing or replacing eyes must not remove the body's innate NightVision component.");
+            Assert.That(vision!.Enabled, Is.True);
+            Assert.That(vision.ActionEntity, Is.EqualTo(action));
+            Assert.That(entities.GetComponent<ActionsComponent>(patient).Actions, Does.Contain(action));
+        });
+    }
+
     [TestCase("MobHuman")]
     [TestCase("MacKitsune")]
-    public async Task DaylightBodiesDoNotGainAnInnateNightVisionAbility(string prototype)
+    [TestCase("MobSkeletonPerson")]
+    public async Task BodiesWithoutInnateVisionDoNotGainANightVisionAbility(string prototype)
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;

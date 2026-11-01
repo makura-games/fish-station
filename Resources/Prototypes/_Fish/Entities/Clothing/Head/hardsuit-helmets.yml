@@ -136,7 +136,6 @@
       map: [ light ]
   - type: Clothing
     sprite: _Fish/Clothing/Head/Hardsuits/centcom_officer_black.rsi
-    # Fish-edit - в этом RSI нет состояний equipped-head, используем родные имена спрайтов.
     clothingVisuals:
       head:
       - state: off-equipped-HELMET

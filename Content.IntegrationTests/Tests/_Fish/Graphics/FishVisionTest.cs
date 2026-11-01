@@ -1,5 +1,7 @@
 #nullable enable
+using System.Linq;
 using Content.Client._Fish.Graphics.Vision;
+using Content.Client.Graphics;
 using Content.Server.Body.Components;
 using Content.Server.Temperature.Systems;
 using Content.Shared._Fish.Vision;
@@ -263,7 +265,11 @@ public sealed class FishVisionTest
             var openUid = client.EntMan.GetEntity(openNet);
             var stealth = client.EntMan.GetComponent<StealthComponent>(hiddenUid);
             Assert.That(stealth.Enabled, Is.True);
-            Assert.That(vision.CanDrawThermalContact((hiddenUid, client.EntMan.GetComponent<SpriteComponent>(hiddenUid))),
+            var hiddenSprite = client.EntMan.GetComponent<SpriteComponent>(hiddenUid);
+            Assert.That(client.System<SpriteSystem>().GetPostShaders(hiddenSprite)
+                .Any(shader => shader.Id == ContentPostShaderIds.Stealth), Is.True,
+                "The Stealth post-shader must be active to verify that thermal contacts bypass it.");
+            Assert.That(vision.CanDrawThermalContact((hiddenUid, hiddenSprite)),
                 Is.True, "Cloaking hides the picture, not the heat: a cloaked body must stay a thermal contact.");
             Assert.That(vision.CanDrawThermalContact((openUid, client.EntMan.GetComponent<SpriteComponent>(openUid))),
                 Is.True);
