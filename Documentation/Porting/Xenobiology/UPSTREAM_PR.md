@@ -34,14 +34,15 @@
 - [x] Экстракт — каркас `be2c775c6f`, uses/шприц; реакции серого `82090cc650`
 - [x] Реакции экстрактов (простые) — `76fcb4bb9c`
 - [x] Реакции gold/silver/sepia/bluespace/… (отложенные) — `b46c4c1fb1`; упрощения — `PARITY_REPORT.md`
-- [x] Зелья — поля слайма `5f9815d011`; enhancer/speed/chill/oil `35c4f426b5`; sentience/transference — **упрощено** `537bc728bd`
+- [x] Зелья — поля слайма `5f9815d011`; enhancer/speed/chill/oil `35c4f426b5`; sentience/transference — raffle + warm/cool `8d5b43fac0` (`PARITY_REPORT.md`)
 - [x] Процессор мёртвого слайма → экстракты по `Cores` — `c106c9f3f8`, прототип `9ccd6d6601`
 - [x] Консоль ксенобиологии — `5926cea88a`, `0517102adf` (`PARITY_REPORT.md`)
 - [x] Ресайклер обезьян — `9782fda77e`, прототип `9ccd6d6601`
 - [x] Ручной сканер слайма — `2f450c802b`, прототип `9ccd6d6601`
 - [x] Обезьяньи кубы — прототипы `2a1fdca7b8`; спавн 3× из серого экстракта (blood) `82090cc650`
-- [x] Органы / диссекция / анализатор — каркас `43719fae99`
-- [x] Ящик лаборатории — `f53815f8e7` (карту не трогаем)
+- [x] Ящик лаборатории — `f53815f8e7`; cargo-заказ `FishXenobiologyLab` — `72248fcbc9` (карту не трогаем)
+- [x] Органы / диссекция / анализатор — `43719fae99`; лимит 3/тип и эффекты порция 2 — `8d5b43fac0`
+- [x] Консоль: verbs + multitool recycler — `72248fcbc9`
 - [ ] Сборка/YAML после `console.yml` / `organs.yml` — не перепроверялись в cloud VM
 - [x] Хендофф — `Documentation/Porting/Xenobiology/HANDOFF.md`
 
