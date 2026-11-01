@@ -3,7 +3,7 @@
   parent: [ BaseSword, BaseCommandContraband ]
   id: FishERTSword
   suffix: FISH
-  description: An assault sword utilized by Nanotrasen emergency response teams.
+  description: A Nanotrasen combat vibroblade for special forces. In passive mode it easily slices through enemies of the corporation, while in active mode it becomes a rapier that pierces armor like a knife through butter.
   components:
   - type: Sprite
     scale: 0.6, 0.6
@@ -21,7 +21,9 @@
     reflectProb: 0.40
     spread: 90
   - type: Item
-    size: Large
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: UseDelay
     delay: 3
   - type: DisarmMalus
