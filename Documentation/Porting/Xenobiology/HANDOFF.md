@@ -4,7 +4,7 @@
 
 Ветка: `feature/ss220-xenobiology` на `Pythagorius-cra/fish-station-mane`.
 Единственный PR: https://github.com/Pythagorius-cra/fish-station-mane/pull/6 (draft, base `master` форка). В `makura-games/fish-station` PR не открывать, пока об этом не попросят.
-Tip на момент хендоффа: `35c4f426b5`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
+Tip на момент хендоффа: `878e04c90f`. Upstream-база нарезки: `makura-games/fish-station` `master` `e98fb511c9`.
 
 Не трогать чужие ветки: `feature/restore-original-music-player`, `feature/ss13-mining-system`, `feature/ss1984-crit-behavior`, `feature/clockwork-cult`, `fish/game-improvements-package`.
 
@@ -25,6 +25,11 @@ Tip на момент хендоффа: `35c4f426b5`. Upstream-база наре
 | `5f9815d011` | зелья stabilizer / mutator / steroid / docility: компонент, система, `potions.yml`, локали | в игре не смотрели |
 | `76fcb4bb9c` | реакции экстрактов: green…rainbow (простые reagent/spawn/зелья), red bloodlust; дыры — `PARITY_REPORT.md` | сборку/YAML не гоняли |
 | `35c4f426b5` | зелья enhancer / speed / fireproof / oil slick + предметы sentience & transference (заглушка); chill coating | в игре не смотрели |
+| `b46c4c1fb1` | отложенные и «сложные» реакции экстрактов (gold…pyrite, oil/orange/darkblue delay) — `FishSlimeExtractDeferredReactionSystem` | сборку/YAML не гоняли |
+| `537bc728bd` | sentience / transference — GhostRole + `TransferTo` (без опроса 10 с SS220) | в игре не смотрели |
+| `c106c9f3f8` | процессор мёртвого слайма → `Cores` экстрактов; `machines.yml` | в игре не смотрели |
+| `9782fda77e` | ресайклер 5 мёртвых обезьян → 1 `FishXenobiologyMonkeyCube` | в игре не смотрели |
+| `2f450c802b` | ручной сканер (`FishXenobiologySlimeScannerFish`) | в игре не смотрели |
 
 Сборка и тест — только то, что в таблице. YAML-линтер после расширения `potions.yml` не запускался. В игре цикл не гонялся.
 
@@ -38,13 +43,15 @@ Tip на момент хендоффа: `35c4f426b5`. Upstream-база наре
 - `Content.Shared/_Fish/Xenobiology/Slimes/FishSlimeMutation.cs`
 - `Content.Server/_Fish/Xenobiology/Slimes/FishSlimeSystem.cs`
 - `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractComponent.cs`
-- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractSystem.cs` + `FishSlimeExtractSystem.Reactions.cs` + `FishSlimeExtractReactions.Colors.cs` — реакции по color (серый и остальные простые; gold/silver/… см. `PARITY_REPORT.md`).
+- `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimeExtractSystem.cs` + `FishSlimeExtractSystem.Reactions.cs` + `FishSlimeExtractReactions.Colors.cs` — реакции по color; gold/silver/… — `FishSlimeExtractDeferredReactionSystem` (Server).
+- `Content.Server/_Fish/Xenobiology/Extracts/FishSlimeExtractDeferredReactionSystem.cs`, `FishSlimeExtractGoldMobCap.cs`, `FishSlimeExtractPendingReactionComponent.cs`
 - `Content.Shared/_Fish/Xenobiology/Extracts/FishSlimePotionComponent.cs`, `FishSlimeChillCoatingComponent.cs`
-- `Content.Server/_Fish/Xenobiology/Extracts/FishSlimePotionSystem.cs` (+ `Extract` / `Gear`) — зелья на слайм, экстракт, одежду, предмет.
+- `Content.Server/_Fish/Xenobiology/Extracts/FishSlimePotionSystem.cs` (+ `Extract` / `Gear` / `Sentience` / `SentienceSlime`) — зелья на слайм, экстракт, одежду, предмет, животное.
 - `Content.Tests/_Fish/Xenobiology/FishSlimeMutationTest.cs`
 - `Resources/Prototypes/_Fish/Xenobiology/slimes.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/extracts.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/potions.yml`
+- `Resources/Prototypes/_Fish/Xenobiology/machines.yml`, `tiles.yml`
 - `Resources/Prototypes/_Fish/Xenobiology/cubes.yml`
 - `Resources/Locale/en-US/_Fish/xenobiology/` и `Resources/Locale/ru-RU/_Fish/xenobiology/` (`slimes.ftl`, `extracts.ftl`, `cubes.ftl`, `potions.ftl`)
 - `Documentation/Porting/Xenobiology/PARITY_REPORT.md` — нереализованные реакции и упрощения зелий.
@@ -53,7 +60,7 @@ Tip на момент хендоффа: `35c4f426b5`. Upstream-база наре
 Дальше, не смешивая с чужими папками:
 
 - Реакции и зелья: `Content.Server/_Fish/Xenobiology/Extracts/` и прототипы `reactions.yml` / `potions.yml` рядом с уже существующими.
-- Машины (позже): `Content.Shared/_Fish/Xenobiology/Machines/`, `Content.Server/_Fish/Xenobiology/Machines/`, `Content.Client/_Fish/Xenobiology/Machines/`, `machines.yml`.
+- Машины (консоль ещё нет): `Content.Shared/_Fish/Xenobiology/Machines/`, `Content.Server/_Fish/Xenobiology/Machines/`, `machines.yml`.
 - Органы (позже): `Content.Shared/_Fish/Xenobiology/Organs/`, `Content.Server/_Fish/Xenobiology/Organs/`.
 - Кубы уже в `Cubes` не выделены: прототипы в `cubes.yml`, система не нужна — серый экстракт (blood) спавнит `FishXenobiologyMonkeyCube`.
 
@@ -193,13 +200,11 @@ Tip на момент хендоффа: `35c4f426b5`. Upstream-база наре
 - Sentience: опрос призраков 10 с, причина обязательна. Уже с разумом, мёртвые и неорганика — отказ. Два холостых греют зелье, третье взрывается. Остывание −1 стадия за 60 с.
 - Transference: игрок подтверждает, разум уходит в животное, старое тело умирает. Роли сохраняются.
 
-## Машины, которые ещё не начаты
+## Машины
 
-Консоль: `code/modules/research/xenobiology/xenobio_camera.dm`, глаз `code/modules/mob/camera/eye/xenobio_eye.dm`. Положить всех хранимых; подобрать с тайла (лимит 6, с ckey нельзя); выпустить обезьяну; переработать мёртвую мелкую обезьяну (`cube_production / required_grind`); скан (nutrition, рост, мутация, ядра, сила, состояние); скормить загруженное зелье. Хоткеи: shift слайм — забрать, shift пол — выпустить всех, ctrl слайм — скан, alt слайм — зелье, ctrl обезьяна — ресайкл, ctrl пол — обезьяна. В консоль вставляют кубы и одно зелье. Мультитул линкует ресайклер. Определение `slime_scan()` в скачанных файлах нет — печать тех же полей.
+Консоль: **не начата** — нужен BUI, хранение слаймов/кубов/зелья, команды без камерного глаза (см. `FEATURE_INVENTORY.md`). Причина отложения: объём UI + контейнеры, не блокирует цикл «процессор → экстракт».
 
-Ресайклер: `monkeyrecycler.dm`. Мёртвая мелкая обезьяна. `required_grind` старт 5. Кубов за раз = рейтинг matter bin, в порте всегда 1. Мультитул по типам куба в оригинале крутит monkey, nian worme, farwa, wolpin, stok, neaera. В порте только тот куб, который уже есть.
-
-Сканер отдельным предметом в дереве SS220 нет (есть перевод и кнопка консоли). Ручной сканер — те же поля, что консоль.
+Ресайклер / процессор / сканер: `machines.yml` + системы InteractUsing / AfterInteract — `9782fda77e`…`9ccd6d6601`. Мультитул-линк ресайклера не портирован.
 
 Органы: `xenobiology_dissections.dm`, `xenobiology_organs.dm` (~1600 строк эффектов), `organ_analyzer.dm`, `regen_mesh`. Конвейер: диссектор по мёртвому мобу → неопознанная масса → обученный взрослый слайм без разума, 50 тиков → орган. Анализатор: не больше 3 сканов типа, 15 с, очки от цены и качества (pristine ×2, damaged ×0.5). Эффекты без аналога в SS14 не выдумывать под тем же именем.
 
@@ -208,10 +213,10 @@ Tip на момент хендоффа: `35c4f426b5`. Upstream-база наре
 1. Не качать SS220. Открыть этот файл и `FEATURE_INVENTORY.md`.
 2. ~~Серый экстракт~~ — `82090cc650`.
 3. ~~Базовые зелья полей слайма~~ — `5f9815d011`. ~~Enhancer / speed / fireproof / oil slick~~ — `35c4f426b5`; sentience & transference — предмет есть, логика нет (`PARITY_REPORT.md`).
-4. ~~Простые реакции экстрактов по цветам~~ — `76fcb4bb9c`; gold/silver/sepia/… — `PARITY_REPORT.md`. Дальше: отложенные взрывы/EMP/crit и плитки bluespace/sepia.
-5. Процессор мёртвого слайма: выход = `Cores` экстрактов цвета `ColorId`.
-6. Только после замкнутого цикла корм → рост → деление → процессор → реакция: консоль, ресайклер, ручной сканер, ящик лаборатории, потом органы.
-7. YAML-линтер после `potions.yml`, сборка Shared/Server. Ревью `_Fish/Xenobiology`. В игре не утверждать то, что не запускалось.
+4. ~~Простые реакции экстрактов по цветам~~ — `76fcb4bb9c`. ~~Отложенные gold/silver/sepia/…~~ — `b46c4c1fb1` (упрощения — `PARITY_REPORT.md`).
+5. ~~Процессор мёртвого слайма~~ — `c106c9f3f8` + `machines.yml` `9ccd6d6601`.
+6. ~~Ресайклер, ручной сканер~~ — `9782fda77e`, `2f450c802b`. **Дальше:** консоль ксенобиологии (BUI), ящик лаборатории, органы.
+7. YAML-линтер после `machines.yml` / `potions.yml`, сборка Shared/Server. Ревью `_Fish/Xenobiology`. В игре не утверждать то, что не запускалось.
 
 ## Уточнения из дампа слайма
 
@@ -232,4 +237,4 @@ Tip на момент хендоффа: `35c4f426b5`. Upstream-база наре
 - Родители прототипа: `SimpleMobBase`, `MobCombat`, `NpcFactionMember` / `SimpleNeutral`, речь `Slime`, `FootstepSlime`, модификатор урона `Slime`, `VentCrawler`.
 - `RobustToolbox` в том чекауте не было. Его инициализировали локально на `36905986f6809420dbc78168fc494f91723d356b` и не коммитили. `dotnet` брали из `~/.dotnet` 10.0.403.
 
-Реакции экстрактов (простые) и зелья enhancer/speed/chill/oil — `76fcb4bb9c`, `35c4f426b5`. Следующий шаг — **процессор** (шаг 5). YAML-линтер после расширения `potions.yml` не гоняли.
+Реакции экстрактов (простые + отложенные) — `76fcb4bb9c`, `b46c4c1fb1`. Sentience/transference — `537bc728bd`. Процессор/ресайклер/сканер — `9ccd6d6601`. **Следующий шаг — консоль**, затем ящик лаборатории и органы. YAML-линтер после `machines.yml` не гоняли.
