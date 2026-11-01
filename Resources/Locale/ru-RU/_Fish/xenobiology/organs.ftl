@@ -10,6 +10,7 @@ fish-xeno-analyzer-done = Этот орган уже анализировали.
 fish-xeno-analyzer-busy = Анализатор занят.
 fish-xeno-analyzer-start = Сканирование ксено-органа…
 fish-xeno-analyzer-finished = Скан завершён. +{$points} очков исследований.
+fish-xeno-organ-used = Вы чувствуете эффект ксено-органа.
 
 ent-FishXenoDissectorFish = диссектор ксенобиологии
     .suffix = Fish
