@@ -20,6 +20,9 @@ fish-slime-potion-transference = Сознание перескакивает в 
 fish-slime-potion-transference-no-mind = Для переноса нужен свой разум.
 fish-slime-potion-transference-invalid = Эта цель не может принять ваш разум.
 fish-slime-potion-transference-slime = Перенос — на животное, не на слайма напрямую.
+fish-slime-potion-sentience-raffle = Призраков опрашивают десять секунд…
+fish-slime-potion-sentience-warm = Зелье sentience нагревается ({$stage}/3)…
+fish-slime-potion-sentience-boom = Перегретое зелье взрывается!
 
 ent-FishSlimePotionStabilizerFish = стабилизатор слайма
     .desc = Снижает шанс мутации. На трупах и не-слаймах не работает.
