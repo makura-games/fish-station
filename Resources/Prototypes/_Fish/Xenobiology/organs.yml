@@ -78,6 +78,15 @@
     kind: Antitoxin
 
 - type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganHeatResistFish
+  name: heat-resistant xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: HeatResist
+
+- type: entity
   parent: [ BaseMachinePowered, StructureHealthMachineWeak ]
   id: FishXenobiologyOrganAnalyzerFish
   name: xenOrgan analyzer
