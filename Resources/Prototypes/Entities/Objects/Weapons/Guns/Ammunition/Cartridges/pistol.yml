@@ -29,6 +29,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#00c1b8"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceSP
+  # Fish-End
 
 - type: entity
   id: CartridgePistolSP
@@ -44,6 +49,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#3F47DB"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceSP
+  # Fish-End
 
 - type: entity
   id: CartridgePistolHP
@@ -59,6 +69,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#F5514C"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceHP
+  # Fish-End
 
 - type: entity
   id: CartridgePistolFMJ
@@ -74,6 +89,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#B68F0E"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceFMJ
+  # Fish-End
 
 - type: entity
   id: CartridgePistolAP
@@ -89,6 +109,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#540000"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceAP
+  # Fish-End
 
 - type: entity
   id: CartridgePistolPractice
@@ -105,6 +130,11 @@
        - state: tip
          map: [ "enum.AmmoVisualLayers.Tip" ]
          color: "#dbdbdb"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTracePractice
+  # Fish-End
 
 - type: entity
   id: CartridgePistolIncendiary
@@ -121,6 +151,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#ff6e52"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceSP
+  # Fish-End
 
 - type: entity
   id: CartridgePistolUranium
@@ -137,6 +172,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#65fe08"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceUranium
+  # Fish-End
 
 - type: entity
   id: CartridgePistolSpent

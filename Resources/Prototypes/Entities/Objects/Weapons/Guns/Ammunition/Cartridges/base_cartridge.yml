@@ -38,3 +38,7 @@
       types:
         Blunt: 0
   # Sunrise-End
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+  # Fish-End

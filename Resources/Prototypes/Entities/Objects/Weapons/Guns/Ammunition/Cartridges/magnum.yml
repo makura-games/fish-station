@@ -38,6 +38,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#00c1b8"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletPistolTraceSP
+  # Fish-End
 
 - type: entity
   id: CartridgeMagnumSP
@@ -54,6 +59,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#3F47DB"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletMagnumTraceSP
+  # Fish-End
 
 - type: entity
   id: CartridgeMagnumHP
@@ -70,6 +80,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#F5514C"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletMagnumTraceHP
+  # Fish-End
 
 - type: entity
   id: CartridgeMagnumFMJ
@@ -86,6 +101,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#B68F0E"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletMagnumTraceFMJ
+  # Fish-End
 
 - type: entity
   id: CartridgeMagnumAP
@@ -101,6 +121,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#540000"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletMagnumTraceAP
+  # Fish-End
 
 - type: entity
   id: CartridgeMagnumPractice
@@ -116,6 +141,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#dbdbdb"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletMagnumTracePractice
+  # Fish-End
 
 - type: entity
   id: CartridgeMagnumIncendiary
@@ -132,6 +162,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#ff6e52"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletMagnumTraceSP
+  # Fish-End
 
 - type: entity
   id: CartridgeMagnumUranium
@@ -148,3 +183,8 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#65fe08"
+  # Fish-Start
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: BulletMagnumTraceUranium
+  # Fish-End
