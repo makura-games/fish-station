@@ -1,0 +1,15 @@
+# Fish-start — regen mesh (качество органа → pristine)
+- type: entity
+  parent: BaseItem
+  id: FishXenoRegenMeshFish
+  name: regenerative mesh
+  description: Xenobiology mesh that restores a xenOrgan to pristine quality.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/healing.rsi
+    state: gauze
+  - type: Item
+    size: Small
+  - type: FishXenoRegenMesh
+# Fish-end
