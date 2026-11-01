@@ -8,6 +8,12 @@ fish-slime-potion-steroid-baby = Only baby slimes can take steroids.
 fish-slime-potion-steroid-max = This slime already has the maximum number of cores.
 fish-slime-potion-docility = The slime becomes docile and well-fed.
 fish-slime-potion-docility-calm = The slime's rabies fades away.
+fish-slime-potion-enhancer = The extract can be used once more.
+fish-slime-potion-speed = The slime overheats and jitters with energy.
+fish-slime-potion-speed-hot = The slime is already overheated.
+fish-slime-potion-fireproof = The clothing is coated against fire.
+fish-slime-potion-oil-slick = The item becomes dangerously slippery.
+fish-slime-potion-not-implemented = This potion is not fully ported yet.
 
 ent-FishSlimePotionStabilizerFish = slime stabilizer
     .desc = Lowers a slime's mutation chance. Useless on corpses and non-slimes.
@@ -20,3 +26,21 @@ ent-FishSlimePotionSteroidFish = slime steroid
 
 ent-FishSlimePotionDocilityFish = docility potion
     .desc = Calms a slime or removes rabies without full docility.
+
+ent-FishSlimePotionEnhancerFish = extract enhancer
+    .desc = Adds one use to a slime extract, up to five.
+
+ent-FishSlimePotionSpeedFish = speed treat
+    .desc = Heats a slime for a burst of speed. Does not stack if already hot.
+
+ent-FishSlimePotionFireproofFish = chill potion
+    .desc = Fire-proofs a piece of clothing for three charges.
+
+ent-FishSlimePotionOilSlickFish = oil slick potion
+    .desc = Makes an item extremely slippery.
+
+ent-FishSlimePotionSentienceFish = sentience potion
+    .desc = Grants intelligence to animals. Handle with care.
+
+ent-FishSlimePotionTransferenceFish = consciousness transference potion
+    .desc = Moves your mind into a creature. Extremely dangerous.
