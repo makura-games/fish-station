@@ -1,0 +1,23 @@
+# Fish-edit — ящик лаборатории ксенобиологии (не кладём на карту)
+- type: entity
+  parent: CrateScienceSecure
+  id: FishXenobiologyLabCrateFish
+  name: xenobiology lab crate
+  description: Console, machines, grey baby slime, cubes, and supplies. Requires Research access.
+  suffix: Fish
+  components:
+  - type: StorageFill
+    contents:
+    - id: FishXenobiologyConsoleFish
+    - id: FishSlimeProcessorFish
+    - id: FishMonkeyRecyclerFish
+    - id: FishXenobiologySlimeScannerFish
+    - id: FishXenobiologyOrganAnalyzerFish
+    - id: FishXenoDissectorFish
+    - id: FishSlimeGreyBabyFish
+    - id: FishXenobiologyMonkeyCube
+      amount: 3
+    - id: SheetPlasma1
+      amount: 5
+    - id: Syringe
+    - id: JugBlood
