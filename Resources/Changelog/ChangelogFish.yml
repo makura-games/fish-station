@@ -1339,3 +1339,14 @@
     message: Уменьшен максимум слайдера блума до 50%
   id: 136
   url: https://github.com/makura-games/fish-station/pull/589
+- author: Endennsss
+  time: '2026-11-01T19:52:18.0000000+00:00'
+  changes:
+  - type: Add
+    message: Новое расовое ПНВ
+  - type: Tweak
+    message: Уменьшен пересвет у ПНВ
+  - type: Fix
+    message: Пофикшены термалы и ПНВ
+  id: 137
+  url: https://github.com/makura-games/fish-station/pull/591
