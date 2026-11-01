@@ -36,14 +36,13 @@
 - [x] Реакции gold/silver/sepia/bluespace/… (отложенные) — `b46c4c1fb1`; упрощения — `PARITY_REPORT.md`
 - [x] Зелья — поля слайма `5f9815d011`; enhancer/speed/chill/oil `35c4f426b5`; sentience/transference — **упрощено** `537bc728bd`
 - [x] Процессор мёртвого слайма → экстракты по `Cores` — `c106c9f3f8`, прототип `9ccd6d6601`
-- [ ] Консоль ксенобиологии (BUI, хранение)
+- [x] Консоль ксенобиологии — `5926cea88a`, `0517102adf` (`PARITY_REPORT.md`)
 - [x] Ресайклер обезьян — `9782fda77e`, прототип `9ccd6d6601`
 - [x] Ручной сканер слайма — `2f450c802b`, прототип `9ccd6d6601`
 - [x] Обезьяньи кубы — прототипы `2a1fdca7b8`; спавн 3× из серого экстракта (blood) `82090cc650`
-- [ ] Органы, диссекция, анализатор
-- [ ] Лаборатория на карте (ящик, питание, без правок SunriseMapPool)
-- [x] Сборка — `dotnet build Content.Server/Content.Server.csproj --configuration Debug --verbosity quiet --no-restore` — succeeded (после изменений в ветке)
-- [x] YAML-линтер — `dotnet run --project Content.YAMLLinter/Content.YAMLLinter.csproj --configuration Release --no-build` — **No errors found** (~54 с; проверяет все прототипы, в т.ч. `Resources/Prototypes/_Fish/Xenobiology/slimes.yml`)
+- [x] Органы / диссекция / анализатор — каркас `43719fae99`
+- [x] Ящик лаборатории — `f53815f8e7` (карту не трогаем)
+- [ ] Сборка/YAML после `console.yml` / `organs.yml` — не перепроверялись в cloud VM
 - [x] Хендофф — `Documentation/Porting/Xenobiology/HANDOFF.md`
 
 ### Известные упрощения (не закрыты)
