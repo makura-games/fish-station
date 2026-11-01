@@ -14,6 +14,10 @@ fish-xeno-analyzer-finished = Скан завершён. +{$points} очков �
 fish-xeno-analyzer-tech-disk = Анализатор печатает technology disk.
 fish-xeno-organ-used = Вы чувствуете эффект ксено-органа.
 
+fish-xeno-regen-mesh-unidentified = Орган нужно сначала опознать.
+fish-xeno-regen-mesh-already = Ксено-орган уже в состоянии pristine.
+fish-xeno-regen-mesh-success = Сетка восстанавливает ксено-орган до pristine.
+
 ent-FishXenoDissectorFish = диссектор ксенобиологии
     .suffix = Fish
 
@@ -34,6 +38,22 @@ ent-FishXenoOrganVigorFish = ксено-орган бодрости
 
 ent-FishXenoOrganAntitoxinFish = ксено-орган антитоксина
     .suffix = Fish
+
+ent-FishXenoOrganHeatResistFish = ксено-орган термостойкости
+    .suffix = Fish
+
+ent-FishXenoRegenMeshFish = регенеративная сетка
+    .suffix = Fish
+
+ent-FishXenoOrganImplantSinewFish = имплант ксено-органа сухожилия
+    .suffix = Fish
+
+ent-FishXenoOrganImplantAntitoxinFish = имплант антитоксичного ксено-органа
+    .suffix = Fish
+
+ent-FishXenoOrganImplantHeatResistFish = имплант термостойкого ксено-органа
+    .suffix = Fish
+
 
 ent-FishXenoOrganImplantRegenerativeFish = имплант регенеративного ксено-органа
     .suffix = Fish
