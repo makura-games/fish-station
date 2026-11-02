@@ -1,104 +1,18 @@
 - type: entity
-  id: FishArenaCombatKnife
-  suffix: Fish
-  parent: CombatKnife
-  components:
-  - type: MeleeWeapon
-    attackRate: 1.25
-    damage:
-      types:
-        Slash: 9
-
-- type: entity
-  id: FishArenaButchCleaver
-  suffix: Fish
-  parent: ButchCleaver
-  components:
-  - type: MeleeWeapon
-    attackRate: 1.25
-    damage:
-      types:
-        Slash: 10
-
-- type: entity
-  id: FishArenaKatana
-  suffix: Fish
-  parent: Katana
-  components:
-  - type: MeleeWeapon
-    damage:
-      types:
-        Slash: 12
-
-- type: entity
-  id: FishArenaSpearUranium
-  suffix: Fish
-  parent: SpearUranium
-  components:
-  - type: MeleeWeapon
-    damage:
-      types:
-        Piercing: 8
-        Radiation: 3
-  - type: IncreaseDamageOnWield
-    damage:
-      types:
-        Piercing: 3
-
-- type: entity
-  id: FishArenaFireAxe
-  suffix: Fish
-  parent: FireAxe
-  components:
-  - type: MeleeWeapon
-    damage:
-      types:
-        Blunt: 4
-        Slash: 8
-  - type: IncreaseDamageOnWield
-    damage:
-      types:
-        Slash: 7
-
-- type: entity
-  id: FishArenaSledgehammer
-  suffix: Fish
-  parent: Sledgehammer
-  components:
-  - type: MeleeWeapon
-    damage:
-      types:
-        Blunt: 8
-  - type: IncreaseDamageOnWield
-    damage:
-      types:
-        Blunt: 7
-
-- type: entity
   id: FishArenaCaptainSabre
   suffix: Fish
   parent: CaptainSabre
   components:
-  - type: MeleeWeapon
-    attackRate: 1.25
-    damage:
-      types:
-        Slash: 13
   - type: Reflect
-    reflectProb: 0.15
+    reflectProb: 0.2
 
 - type: entity
   id: FishArenaEnergySword
   suffix: Fish
   parent: EnergySword
   components:
-  - type: ItemToggleMeleeWeapon
-    activatedDamage:
-      types:
-        Slash: 9
-        Heat: 9
   - type: Reflect
-    reflectProb: 0.1
+    reflectProb: 0.15
 
 - type: entity
   id: FishArenaRiotShield

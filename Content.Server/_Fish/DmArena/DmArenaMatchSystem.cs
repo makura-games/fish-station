@@ -537,10 +537,11 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         if (origin is not { } attacker || attacker == victim.Owner || !TryComp<DmArenaFighterComponent>(attacker, out var other))
             return;
 
-        victim.Comp.LastAttacker = attacker;
-
         if (!_mobState.IsCritical(victim))
+        {
+            victim.Comp.LastAttacker = attacker;
             victim.Comp.LastCombat = _timing.CurTime;
+        }
 
         if (!_mobState.IsCritical(attacker))
             other.LastCombat = _timing.CurTime;

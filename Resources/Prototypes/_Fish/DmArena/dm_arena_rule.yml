@@ -14,7 +14,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: CombatKnife
-      cost: 8
+      cost: 10
       inHand: true
     - gear: FishDmArenaCleaver
       name: dm-arena-item-cleaver
@@ -22,7 +22,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: ButchCleaver
-      cost: 9
+      cost: 11
       inHand: true
     - gear: FishDmArenaKatana
       name: dm-arena-item-katana
@@ -30,7 +30,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: Katana
-      cost: 11
+      cost: 12
       inHand: true
     - gear: FishDmArenaSpear
       name: dm-arena-item-spear
@@ -38,7 +38,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: SpearUranium
-      cost: 11
+      cost: 13
       inHand: true
     - gear: FishDmArenaFireaxe
       name: dm-arena-item-fireaxe
@@ -46,7 +46,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: FireAxe
-      cost: 13
+      cost: 14
       inHand: true
     - gear: FishDmArenaSledge
       name: dm-arena-item-sledge
@@ -54,7 +54,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: Sledgehammer
-      cost: 13
+      cost: 14
       inHand: true
     - gear: FishDmArenaSabre
       name: dm-arena-item-sabre
@@ -62,7 +62,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: CaptainSabre
-      cost: 14
+      cost: 16
       inHand: true
     - gear: FishDmArenaEsword
       name: dm-arena-item-esword
@@ -70,7 +70,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: EnergySword
-      cost: 22
+      cost: 27
     - gear: FishDmArenaInspector
       name: dm-arena-item-inspector
       description: dm-arena-desc-inspector
@@ -1031,7 +1031,7 @@
   parent: EnergyDomeGeneratorPersonalSyndie
   components:
   - type: EnergyDomeGenerator
-    damageEnergyDraw: 15
+    damageEnergyDraw: 10
   - type: ItemSlots
     slots:
       cell_slot:

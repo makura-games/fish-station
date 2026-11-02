@@ -19,32 +19,32 @@
 - type: startingGear
   id: FishDmArenaSpear
   inhand:
-  - FishArenaSpearUranium
+  - SpearUranium
 
 - type: startingGear
   id: FishDmArenaKnife
   inhand:
-  - FishArenaCombatKnife
+  - CombatKnife
 
 - type: startingGear
   id: FishDmArenaCleaver
   inhand:
-  - FishArenaButchCleaver
+  - ButchCleaver
 
 - type: startingGear
   id: FishDmArenaKatana
   inhand:
-  - FishArenaKatana
+  - Katana
 
 - type: startingGear
   id: FishDmArenaFireaxe
   inhand:
-  - FishArenaFireAxe
+  - FireAxe
 
 - type: startingGear
   id: FishDmArenaSledge
   inhand:
-  - FishArenaSledgehammer
+  - Sledgehammer
 
 - type: startingGear
   id: FishDmArenaSabre
