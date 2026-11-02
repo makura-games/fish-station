@@ -410,12 +410,10 @@
   - type: NpcFactionMember
     factions:
     - Syndicate
-  # Fish-start: расширенный доступ
   - type: Access
     tags:
     - NuclearOperative
     - SyndicateAgent
-  # Fish-end
   - type: AccessReader
     access: [["SyndicateAgent"], ["NuclearOperative"]]
   - type: SiliconLawProvider
@@ -513,12 +511,10 @@
   - type: NpcFactionMember # They're still syndicate even if they can't listen to the radio or see icons
     factions:
     - Syndicate
-  # Fish-start: расширенный доступ
   - type: Access
     tags:
     - NuclearOperative
     - SyndicateAgent
-  # Fish-end
   - type: AccessReader
     access: [ [ "SyndicateAgent" ], [ "NuclearOperative" ] ]
   - type: IntrinsicRadioTransmitter # Copy components from base SyndiBorg but without the stuff we don't want
@@ -636,11 +632,9 @@
     - Cyborgs
     - Robotics
     - Xenoborgs
-  # Fish-start: расширенный доступ
   - type: Access
     tags:
     - Xenoborg
-  # Fish-end
   - type: AccessReader
     access: [["Xenoborg"]]
   - type: ShowJobIcons # not sure if it is needed
