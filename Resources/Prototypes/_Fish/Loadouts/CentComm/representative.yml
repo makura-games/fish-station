@@ -33,11 +33,5 @@
 
 - type: loadout
   id: FishNTRepresentativeGloves
-  effects:
-  - !type:JobRequirementLoadoutEffect
-    requirement:
-      !type:RoleTimeRequirement
-      role: JobNanoTrasenRepresentative
-      time: 0
   equipment:
     gloves: FishClothingHandsGlovesNanoTrasenRepresentative
