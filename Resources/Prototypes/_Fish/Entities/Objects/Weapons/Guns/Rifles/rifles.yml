@@ -31,7 +31,7 @@
     maxAngle: 60
     angleIncrease: 1.5
     angleDecay: 15
-    fireRate: 5
+    fireRate: 4
     shotsPerBurst: 3
     selectedMode: Burst
     availableModes:

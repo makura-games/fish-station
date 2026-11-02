@@ -12,22 +12,21 @@
     - state: icon
   - type: Appearance
   - type: Item
-    size: Normal
-    shape:
-    - 0,0,1,1
+    size: Normal # внешний размер 2x2
   - type: Clothing
     quickEquip: false
     slots:
-    - pocket
+    - pocket # позволяет класть подсумок в обычный карман несмотря на размер
   - type: Storage
-    maxItemSize: Small
+    maxItemSize: Small # строго меньше Normal, иначе ремень не примет вложенную ёмкость
     grid:
-    - 0,0,4,1
+    - 0,0,4,1 # 5x2 = 10 слотов
     whitelist:
       tags:
-      - Bottle
+      - Bottle # используется общий тег флаконов, а не проверка содержащихся в них реагентов
+  # Защита распространяется на содержимое без передачи владельцу; Damageable самому подсумку не добавляется.
   - type: ExplosionResistance
-    damageCoefficient: 0.01
+    damageCoefficient: 0.01 # содержимому наносится 1% взрывного урона
     worn: false # защита не передаётся владельцу
 
 - type: entity
@@ -45,9 +44,6 @@
   name: Nanotrasen medical pouch
   description: A dark medical pouch for carrying medicine bottles. Made for professionals.
   components:
-  - type: Storage
-    grid:
-    - 0,0,5,1
   - type: Sprite
     sprite: _Fish/Objects/Clothing/Pouches/medical_nanotrasen.rsi
   - type: Tag
@@ -76,10 +72,10 @@
   - type: Item
     size: Small
     shape:
-    - 0,0,0,1
+    - 0,0,0,1 # внешний размер 1 столбец на 2 строки не зависит от размера кадра спрайта
   - type: Storage
     grid:
-    - 0,0,6,2
+    - 0,0,4,2 # внутреннее хранилище: 5 столбцов и 3 строки, 15 ячеек по горизонтали
   - type: Tag
     tags:
     - WhitelistChameleon
@@ -95,7 +91,7 @@
     sprite: _Fish/Objects/Clothing/Pouches/medical_syndicate.rsi
   - type: Storage
     grid:
-    - 0,0,7,1
+    - 0,0,7,1 # 8 столбцов и 2 строки = 16 ячеек, горизонтально
   - type: Tag
     tags:
     - WhitelistChameleon
