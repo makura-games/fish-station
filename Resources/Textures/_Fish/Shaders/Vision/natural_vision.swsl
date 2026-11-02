@@ -18,27 +18,28 @@ void fragment() {
     highp vec4 original = zTextureSpec(SCREEN_TEXTURE, UV);
     highp float fraction = natural_light_fraction(UV);
     // Шум и потеря цвета ограничены тем же кругом, что и подсветка.
+    // Не выходим из fragment: итоговый цвет записывает шаблон движка.
     if (fraction <= 0.0) {
         COLOR = original;
-        return;
+    } else {
+        highp float adaptation = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
+        highp vec3 light = zTextureSpec(VISION_LIGHT_TEXTURE, UV).rgb;
+        highp float applied = texture2D(APPLIED_TEXTURE, vec2(0.5)).r;
+        // Убираем собственную подсветку из оценки освещения, чтобы она не подавляла адаптацию.
+        highp float ambient = max(dot(light, vec3(0.2126, 0.7152, 0.0722)) -
+            lighting_strength * applied * fraction, 0.0);
+        highp float darkness = 1.0 - smoothstep(0.04, 0.4, ambient);
+        highp float gray = dot(original.rgb, vec3(0.2126, 0.7152, 0.0722));
+        highp vec3 natural = mix(vec3(gray), original.rgb, darkness_saturation);
+        // Усиливаем детали теней, сохраняя чёрный без свечения и яркие участки без пересвета.
+        natural *= 1.0 + (shadow_contrast - 1.0) * (vec3(1.0) - clamp(natural, vec3(0.0), vec3(1.0)));
+        natural *= mix(vec3(1.0), tint.rgb, tint.a);
+        if (grain_strength > 0.0 && darkness > 0.0) {
+            highp vec2 pixel = floor(UV * viewport_size * 0.5);
+            highp float grain = fract(sin(dot(pixel, vec2(12.9898, 78.233)) + noise_frame * 37.719) * 43758.5453);
+            // Зерно скрывает мелкие детали, не создавая светлую пелену на чёрном фоне.
+            natural *= 1.0 + (grain * 2.0 - 1.0) * grain_strength;
+        }
+        COLOR = vec4(mix(original.rgb, natural, darkness * adaptation * fraction), original.a);
     }
-    highp float adaptation = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
-    highp vec3 light = zTextureSpec(VISION_LIGHT_TEXTURE, UV).rgb;
-    highp float applied = texture2D(APPLIED_TEXTURE, vec2(0.5)).r;
-    // Убираем собственную подсветку из оценки освещения, чтобы она не подавляла адаптацию.
-    highp float ambient = max(dot(light, vec3(0.2126, 0.7152, 0.0722)) -
-        lighting_strength * applied * fraction, 0.0);
-    highp float darkness = 1.0 - smoothstep(0.04, 0.4, ambient);
-    highp float gray = dot(original.rgb, vec3(0.2126, 0.7152, 0.0722));
-    highp vec3 natural = mix(vec3(gray), original.rgb, darkness_saturation);
-    // Усиливаем детали теней, сохраняя чёрный без свечения и яркие участки без пересвета.
-    natural *= 1.0 + (shadow_contrast - 1.0) * (vec3(1.0) - clamp(natural, vec3(0.0), vec3(1.0)));
-    natural *= mix(vec3(1.0), tint.rgb, tint.a);
-    if (grain_strength > 0.0 && darkness > 0.0) {
-        highp vec2 pixel = floor(UV * viewport_size * 0.5);
-        highp float grain = fract(sin(dot(pixel, vec2(12.9898, 78.233)) + noise_frame * 37.719) * 43758.5453);
-        // Зерно скрывает мелкие детали, не создавая светлую пелену на чёрном фоне.
-        natural *= 1.0 + (grain * 2.0 - 1.0) * grain_strength;
-    }
-    COLOR = vec4(mix(original.rgb, natural, darkness * adaptation * fraction), original.a);
 }

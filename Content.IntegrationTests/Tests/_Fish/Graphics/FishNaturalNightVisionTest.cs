@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Client._Fish.Graphics.Vision;
 using Content.Client.DoAfter;
 using Content.Client.Light;
+using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Body;
 using Content.Shared.Inventory;
@@ -47,9 +48,18 @@ public sealed class FishNaturalNightVisionTest
         });
         await pair.RunTicksSync(NetworkTicks);
         await Check(false);
-        await server.WaitPost(() => server.System<ServerNightVisionSystem>().SetEnabled(wearer, true));
-        await pair.RunTicksSync(NetworkTicks);
-        await Check(true);
+        NetEntity toggleAction = default;
+        var actionDelay = 0f;
+        await server.WaitPost(() =>
+        {
+            var action = server.EntMan.GetComponent<NightVisionComponent>(wearer).ActionEntity!.Value;
+            toggleAction = server.EntMan.GetNetEntity(action);
+            actionDelay = (float) (server.EntMan.GetComponent<ActionComponent>(action).UseDelay?.TotalSeconds ?? 0);
+        });
+        await Toggle(true);
+        // Перед повторным нажатием ждём штатную задержку действия из прототипа.
+        await pair.RunSeconds(actionDelay);
+        await Toggle(false);
         await server.WaitPost(() =>
         {
             server.PlayerMan.SetAttachedEntity(session, previousEntity);
@@ -57,20 +67,35 @@ public sealed class FishNaturalNightVisionTest
         });
         await pair.CleanReturnAsync();
 
-        async Task Check(bool active) => await client.WaitAssertion(() =>
+        async Task Toggle(bool active)
         {
-            var overlays = client.ResolveDependency<IOverlayManager>();
-            var natural = overlays.AllOverlays.SingleOrDefault(o => o.GetType().Name == "FishNaturalNightVisionOverlay");
-            Assert.That(natural != null, Is.EqualTo(active),
-                "Racial vision must use its natural rendering rather than a device effect.");
-            if (natural == null)
-                return;
+            await client.WaitPost(() => client.EntMan.RaisePredictiveEvent(new RequestPerformActionEvent(toggleAction)));
+            await pair.RunTicksSync(NetworkTicks);
+            await Check(active);
+        }
 
-            Assert.That(natural.ZIndex ?? 0, Is.GreaterThan(AfterLightTargetOverlay.ContentZIndex),
-                "Ambient composition must finish before natural vision adds light to its target.");
-            Assert.That(natural.ZIndex ?? 0, Is.LessThan(overlays.GetOverlay<DoAfterOverlay>().ZIndex ?? 0),
-                "Natural vision must run before action indicators are rendered.");
-        });
+        async Task Check(bool active)
+        {
+            await server.WaitAssertion(() =>
+            {
+                var vision = server.EntMan.GetComponent<NightVisionComponent>(wearer);
+                Assert.That(vision.Enabled, Is.EqualTo(active));
+            });
+            await client.WaitAssertion(() =>
+            {
+                var overlays = client.ResolveDependency<IOverlayManager>();
+                var natural = overlays.AllOverlays.SingleOrDefault(o => o.GetType().Name == "FishNaturalNightVisionOverlay");
+                Assert.That(natural != null, Is.EqualTo(active),
+                    "Racial vision must use its natural rendering rather than a device effect.");
+                if (natural == null)
+                    return;
+
+                Assert.That(natural.ZIndex ?? 0, Is.GreaterThan(AfterLightTargetOverlay.ContentZIndex),
+                    "Ambient composition must finish before natural vision adds light to its target.");
+                Assert.That(natural.ZIndex ?? 0, Is.LessThan(overlays.GetOverlay<DoAfterOverlay>().ZIndex ?? 0),
+                    "Natural vision must run before action indicators are rendered.");
+            });
+        }
     }
 
     [Test]
