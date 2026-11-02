@@ -72,6 +72,27 @@ ent-FishXenoGoldCritFriendlyCarpFish = дружелюбный космическ
 
 
 
+ent-FishXenoOrganCryoBurstFish = криовсплеск ксено-органа
+    .suffix = Fish
+
+ent-FishXenoOrganEssenceFish = эссенция ксено-органа
+    .suffix = Fish
+
+ent-FishXenoOrganImplantCryoBurstFish = имплант криовсплеска
+    .suffix = Fish
+
+ent-FishXenoOrganImplantEssenceFish = имплант эссенции
+    .suffix = Fish
+
+ent-FishCeruleanTerritoryMarkerFish = cerulean-маркер territory blueprint
+    .suffix = Fish
+
+ent-FishChemistryBottleVirusGenesFish = бутылка (virus genes)
+    .suffix = Fish
+
+ent-FishChemistryBottleDiseaseStrainFish = бутылка (образец ксеноштамма)
+    .suffix = Fish
+
 ent-FishXenobiologyOrganAnalyzerFish = анализатор ксено-органов
     .suffix = Fish
 
