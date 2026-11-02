@@ -10,7 +10,7 @@
     neck: FishClothingNeckCloakNanoTrasenRepresentative
 
 - type: loadout
-  id: NTRepresentativeJumpsuit
+  id: FishNTRepresentativeJumpsuit
   effects:
   - !type:JobRequirementLoadoutEffect
     requirement:
@@ -21,7 +21,7 @@
     innerClothing: FishClothingUniformJumpsuitNanoTrasenRepresentative
 
 - type: loadout
-  id: NTRepresentativeJumpskirt
+  id: FishNTRepresentativeJumpskirt
   effects:
   - !type:JobRequirementLoadoutEffect
     requirement:
@@ -32,7 +32,7 @@
     innerClothing: FishClothingUniformJumpskirtNanoTrasenRepresentative
 
 - type: loadout
-  id: NTRepresentativeGloves
+  id: FishNTRepresentativeGloves
   effects:
   - !type:JobRequirementLoadoutEffect
     requirement:

@@ -165,8 +165,8 @@
   - NanoTrasenRepresentativeJumpsuit
   - NanoTrasenRepresentativeJumpskirt
   - NanoTrasenRepresentativeJumpsuitFormal
-  - NTRepresentativeJumpsuit # Fish-edit
-  - NTRepresentativeJumpskirt # Fish-edit
+  - FishNTRepresentativeJumpsuit # Fish-edit
+  - FishNTRepresentativeJumpskirt # Fish-edit
 
 - type: loadoutGroup
   id: NanoTrasenRepresentativeOuterClothing
@@ -199,12 +199,12 @@
 
 # Fish-start
 - type: loadoutGroup
-  id: NanoTrasenRepresentativeGloves
+  id: FishNanoTrasenRepresentativeGloves
   name: loadout-group-nanotrasenrepresentative-gloves
   minLimit: 0
   maxLimit: 1
   loadouts:
-  - NTRepresentativeGloves
+  - FishNTRepresentativeGloves
 # Fish-end
 
 - type: loadoutGroup
