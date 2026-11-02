@@ -1,9 +1,7 @@
-using Robust.Shared.Random;
-
 namespace Content.Server._Fish.Xenobiology.Extracts;
 
 /// <summary>
-/// Пулы gold crit — соответствие Paradise HOSTILE_SPAWN / lesser / FRIENDLY_SPAWN на прототипы SS14.
+/// Константы gold crit; legacy-пулы — fallback для <see cref="FishSlimeExtractGoldCritPoolSystem"/>.
 /// </summary>
 public static class FishSlimeExtractGoldCritPools
 {
@@ -13,8 +11,8 @@ public static class FishSlimeExtractGoldCritPools
     /// <summary>Paradise addtimer 50 deciseconds.</summary>
     public static readonly TimeSpan SpawnDelay = TimeSpan.FromSeconds(5);
 
-    /// <summary>Plasma — «Gold Slime», 5× HOSTILE_SPAWN.</summary>
-    public static readonly string[] HostilePlasma =
+    /// <summary>Fallback, если ни один прототип не помечен spawnable.</summary>
+    internal static readonly string[] LegacyHostilePlasma =
     [
         "MobSpiderAngryBase",
         "MobSpiderSpace",
@@ -33,8 +31,7 @@ public static class FishSlimeExtractGoldCritPools
         "MobCarp",
     ];
 
-    /// <summary>Blood — «Lesser Gold Slime», 3× (не агрессивны сразу).</summary>
-    public static readonly string[] LesserBlood =
+    internal static readonly string[] LegacyLesserBlood =
     [
         "FishXenoGoldCritNeutralCarpFish",
         "FishXenoGoldCritLesserMagicarpFish",
@@ -43,17 +40,10 @@ public static class FishSlimeExtractGoldCritPools
         "MobCarpHolo",
     ];
 
-    /// <summary>Water — «Friendly Gold Slime», 1× FRIENDLY_SPAWN.</summary>
-    public static readonly string[] FriendlyWater =
+    internal static readonly string[] LegacyFriendlyWater =
     [
         "FishXenoGoldCritFriendlyCarpFish",
         "FishXenoGoldCritFriendlyCatFish",
         "FishXenoGoldCritFriendlyPenguinFish",
     ];
-
-    public static string PickHostile(IRobustRandom random) => random.Pick(HostilePlasma);
-
-    public static string PickLesser(IRobustRandom random) => random.Pick(LesserBlood);
-
-    public static string PickFriendly(IRobustRandom random) => random.Pick(FriendlyWater);
 }
