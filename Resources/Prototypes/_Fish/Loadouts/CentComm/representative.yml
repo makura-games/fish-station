@@ -28,3 +28,13 @@
         time: 36000 # 10 hours
   equipment:
         innerClothing: FishClothingUniformJumpskirtNanoTrasenRepresentative
+- type: loadout
+  id: NTRepresentativeGloves
+  effects:
+   - !type:JobRequirementLoadoutEffect
+      requirement:
+       !type:RoleTimeRequirement
+        role: JobNanoTrasenRepresentative
+        time: 36000 # 10 hours
+  equipment:
+        innerClothing: ClothingHandsGlovesNanoTrasenRepresentative
