@@ -1,4 +1,4 @@
-// Fish edit - Vulpkanin PlanetWar Meme Mode
+// Fish-edit - Vulpkanin PlanetWar Meme Mode
 namespace Content.Server._Fish.PlanetWar;
 
 [RegisterComponent]

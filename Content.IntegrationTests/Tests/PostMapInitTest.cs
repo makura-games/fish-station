@@ -82,14 +82,14 @@ namespace Content.IntegrationTests.Tests
         {
             "/Maps/centcomm.yml",
             "/Maps/Shuttles/AdminSpawn/**", // admin gaming
-            // Fish - Start
+            // Fish-start
             "/Maps/_Fish/Station/centcomm.yml",
             "/Maps/_Fish/Shuttles/Antag/**",
             "/Maps/_Fish/Shuttles/DSO/**",
             "/Maps/_Fish/Shuttles/DSO/ERT/**",
             "/Maps/_Fish/Shuttles/DSO/CBURN/**",
             "/Maps/_Fish/Nonstations/**",
-            // Fish - End
+            // Fish-end
         };
 
         /// <summary>
@@ -400,7 +400,6 @@ namespace Content.IntegrationTests.Tests
             var pair = Pair;
             var server = pair.Server;
 
-            var mapManager = server.ResolveDependency<IMapManager>();
             var entManager = server.ResolveDependency<IEntityManager>();
             var mapLoader = entManager.System<MapLoaderSystem>();
             var mapSystem = entManager.System<SharedMapSystem>();
@@ -427,7 +426,7 @@ namespace Content.IntegrationTests.Tests
                 EntityUid? targetGrid = null;
                 var memberQuery = entManager.GetEntityQuery<StationMemberComponent>();
 
-                var grids = mapManager.GetAllGrids(mapId).ToList();
+                var grids = mapSystem.GetAllGrids(mapId).ToList();
                 var gridUids = grids.Select(o => o.Owner).ToList();
                 targetGrid = gridUids.First();
 

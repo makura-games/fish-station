@@ -12,7 +12,6 @@ namespace Content.Server.Audio.Jukebox;
 
 public sealed partial class JukeboxSystem : SharedJukeboxSystem
 {
-    [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private AppearanceSystem _appearanceSystem = default!;
 
     public override void Initialize()
@@ -130,14 +129,13 @@ public sealed partial class JukeboxSystem : SharedJukeboxSystem
         if (!Resolve(ent, ref ent.Comp))
             return;
 
-        if (!Audio.IsPlaying(ent.Comp.AudioStream))
-        {
-            ent.Comp.SelectedSongId = track;
-            DirectSetVisualState(ent, JukeboxVisualState.Select);
-            ent.Comp.Selecting = true;
-            ent.Comp.AudioStream = Audio.Stop(ent.Comp.AudioStream);
-            Dirty(ent);
-        }
+        // Fish-start: выбор во время воспроизведения больше не игнорируется — останавливаем текущий поток и записываем новый трек
+        ent.Comp.SelectedSongId = track;
+        DirectSetVisualState(ent, JukeboxVisualState.Select);
+        ent.Comp.Selecting = true;
+        ent.Comp.AudioStream = Audio.Stop(ent.Comp.AudioStream);
+        Dirty(ent);
+        // Fish-end
     }
 
     /// <summary>
@@ -156,7 +154,7 @@ public sealed partial class JukeboxSystem : SharedJukeboxSystem
         else
         {
             if (string.IsNullOrEmpty(ent.Comp.SelectedSongId) ||
-                !_protoManager.Resolve(ent.Comp.SelectedSongId, out var jukeboxProto))
+                !ProtoMan.Resolve(ent.Comp.SelectedSongId, out var jukeboxProto))
             {
                 return false;
             }

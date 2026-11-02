@@ -34,13 +34,13 @@ public sealed partial class MagicComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public bool RequiresSpeech;
 
-    // Fish-Edit start: требование нахождения на гриде
+    // Fish-start: требование нахождения на гриде
     /// <summary>
     ///     Требует ли это заклинание, чтобы пользователь находился на гриде?
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public bool RequiresGrid;
-    // Fish-Edit end
+    // Fish-end
 
     // TODO: FreeHand - should check if toggleable action
     //  Check which hand is free to toggle action in

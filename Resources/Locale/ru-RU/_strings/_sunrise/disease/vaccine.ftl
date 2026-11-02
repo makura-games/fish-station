@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 reagent-name-disease-blood = мутная кровь
 reagent-name-disease-blood-first = мутная кровь
 reagent-description-disease-blood-first = очень странная мутная жидкость. Напоминает кровь.

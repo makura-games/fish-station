@@ -4,6 +4,7 @@ using Content.Server.Players.PlayTimeTracking;
 using Content.Shared._Fish.Achievements;
 using Content.Shared.CCVar;
 using Content.Shared.Ghost;
+using Content.Shared.Ghost.Components;
 using Content.Shared.Mind;
 using Content.Shared.Players.PlayTimeTracking;
 using Robust.Shared.Configuration;

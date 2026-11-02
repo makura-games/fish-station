@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reaction;
@@ -6,7 +7,6 @@ using Robust.Shared.Audio.Components;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Robust.Shared.Prototypes;
 namespace Content.Shared.Chemistry.Components;
 
@@ -47,8 +47,8 @@ public sealed partial class VaccinatorComponent : Component
     /// <summary>
     /// What the machine will print
     /// </summary>
-    [DataField("machineOutput", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-    public string MachineOutput = "ForensicReportPaper";
+    [DataField("machineOutput")]
+    public EntProtoId MachineOutput = "ForensicReportPaper";
 
     /// <summary>
     /// When will the scanner be ready to print again?

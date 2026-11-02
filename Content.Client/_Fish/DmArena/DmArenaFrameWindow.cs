@@ -1,0 +1,148 @@
+using System.Numerics;
+using Content.Shared.Inventory;
+using Robust.Client.Graphics;
+using Robust.Client.UserInterface;
+using Robust.Client.UserInterface.Controls;
+using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.Input;
+using Robust.Shared.Maths;
+
+namespace Content.Client._Fish.DmArena;
+
+[Virtual]
+public class DmArenaFrameWindow : BaseWindow
+{
+    private const float TitleBarHeight = 36;
+    private const float BorderWidth = 2;
+    private const float DragMarginSize = 7;
+
+    private readonly PanelContainer _outerBorder;
+    private readonly PanelContainer _titleBar;
+    private readonly Label _titleLabel;
+    private readonly TextureButton _closeButton;
+    private readonly PanelContainer _bodyPanel;
+    private readonly BoxContainer _contentBox;
+
+    public string WindowTitle
+    {
+        get => _titleLabel.Text ?? string.Empty;
+        set => _titleLabel.Text = value;
+    }
+
+    public BoxContainer Contents => _contentBox;
+
+    public DmArenaFrameWindow()
+    {
+        MouseFilter = MouseFilterMode.Stop;
+        Resizable = true;
+
+        _outerBorder = new PanelContainer
+        {
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = DmArenaPalette.BodyBg,
+                BorderColor = DmArenaPalette.Border,
+                BorderThickness = new Thickness(BorderWidth),
+            },
+        };
+        AddChild(_outerBorder);
+
+        var outerVBox = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+        };
+        _outerBorder.AddChild(outerVBox);
+
+        outerVBox.AddChild(new PanelContainer
+        {
+            MinHeight = 3,
+            PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.Accent },
+        });
+
+        _titleBar = new PanelContainer
+        {
+            MinHeight = TitleBarHeight,
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = DmArenaPalette.TitleBarBg,
+                BorderColor = DmArenaPalette.Accent,
+                BorderThickness = new Thickness(0, 0, 0, 1),
+            },
+        };
+
+        var titleBarContent = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Horizontal,
+            Margin = new Thickness(10, 0),
+        };
+
+        var accentBar = new PanelContainer
+        {
+            MinWidth = 4,
+            MaxWidth = 4,
+            VerticalExpand = true,
+            Margin = new Thickness(0, 6, 8, 6),
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = DmArenaPalette.Accent,
+            },
+        };
+        titleBarContent.AddChild(accentBar);
+
+        _titleLabel = new Label
+        {
+            Text = string.Empty,
+            FontOverride = DmArenaPalette.GetFont(true, 17),
+            FontColorOverride = DmArenaPalette.ButtonText,
+            VerticalAlignment = VAlignment.Center,
+            HorizontalExpand = true,
+        };
+        titleBarContent.AddChild(_titleLabel);
+
+        _closeButton = new TextureButton
+        {
+            StyleClasses = { DefaultWindow.StyleClassWindowCloseButton },
+            VerticalAlignment = VAlignment.Center,
+        };
+        _closeButton.OnPressed += _ => Close();
+
+        titleBarContent.AddChild(_closeButton);
+        _titleBar.AddChild(titleBarContent);
+        outerVBox.AddChild(_titleBar);
+
+        _bodyPanel = new PanelContainer
+        {
+            VerticalExpand = true,
+            HorizontalExpand = true,
+        };
+
+        _contentBox = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+        };
+        _bodyPanel.AddChild(_contentBox);
+        outerVBox.AddChild(_bodyPanel);
+    }
+
+    protected override DragMode GetDragModeFor(Vector2 relativeMousePos)
+    {
+        if (Resizable)
+        {
+            if (relativeMousePos.Y < DragMarginSize)
+                return DragMode.Top;
+            if (relativeMousePos.Y > Size.Y - DragMarginSize)
+                return DragMode.Bottom;
+            if (relativeMousePos.X < DragMarginSize)
+                return DragMode.Left;
+            if (relativeMousePos.X > Size.X - DragMarginSize)
+                return DragMode.Right;
+        }
+
+        if (relativeMousePos.Y < TitleBarHeight + BorderWidth)
+            return DragMode.Move;
+
+        return DragMode.None;
+    }
+}
