@@ -321,7 +321,15 @@ public sealed class FishBluespaceInfrastructureTest
                 Assert.That(harvester.Comp.StoredEnergy, Is.Zero);
                 Assert.That(harvester.Comp.OutputBlocked, Is.False);
                 Assert.That(RewardItems(context), Is.InRange(1, 16));
-                Assert.That(RewardUnits(context), Is.InRange(16, 30));
+                var stacks = server.System<StackSystem>();
+                var products = GetRewardEntities(context)
+                    .GroupBy(uid => server.EntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype!.ID)
+                    .ToDictionary(group => group.Key, group => group.Sum(uid => stacks.GetCount(uid)));
+                Assert.That(server.ProtoMan.EnumeratePrototypes<FishBluespaceHarvesterLootPrototype>()
+                    .Where(reward => reward.Category == harvester.Comp.LootCategory)
+                    .Any(reward => reward.Products.Count == products.Count && reward.Products.All(product =>
+                        products.TryGetValue(product.Key.Id, out var count) && count == product.Value)), Is.True,
+                    "One charge must produce exactly one complete configured batch.");
                 Assert.That(GetRewardEntities(context).All(uid => !server.EntMan.TryGetComponent<StackComponent>(uid, out var stack) ||
                     stack.Count <= server.System<StackSystem>().GetMaxCount(stack)), Is.True);
             });

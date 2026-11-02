@@ -373,7 +373,7 @@ public sealed class FishResearchTreeUiTest
         });
     }
 
-    /// <summary>Selected connections retain their discipline color where inactive routes share segments and arrowheads.</summary>
+    /// <summary>Selected connections retain their source discipline color where inactive routes share segments and arrowheads.</summary>
     [TestCase("BasicRobotics")]
     [TestCase("IndustrialEngineering")]
     public async Task SelectedConnectionDrawsAfterOverlappingInactiveRoutes(string selectedId)
@@ -397,7 +397,7 @@ public sealed class FishResearchTreeUiTest
                 graph.SelectTechnology(selected);
                 graph.SetViewport(1.25f, new Vector2(17, 23));
                 incoming = graph.Edges.Where(edge => edge.To == IndustrialRobotic).ToArray();
-                activeColor = client.ProtoMan.Index(Experimental).Color;
+                activeColor = client.ProtoMan.Index(client.ProtoMan.Index(selected).Discipline).Color;
                 var points = incoming[0].Points;
                 commonFrom = Physical(points[^2]);
                 commonTo = Physical(points[^1]);

@@ -351,7 +351,7 @@ public sealed partial class FishResearchTreeControl : Control
             if (active != highlighted)
                 continue;
 
-            var color = active ? _nodes[edge.To].Color : Palettes.Slate.HoveredElement;
+            var color = active ? _nodes[edge.From].Color : Palettes.Slate.HoveredElement;
             DrawConnection(handle, edge.Points, color);
         }
     }
