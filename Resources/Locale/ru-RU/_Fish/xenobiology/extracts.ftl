@@ -7,6 +7,8 @@ fish-slime-extract-react = Раствор начинает пузыриться.
 fish-slime-extract-spent = Сила {THE($extract)} уходит в реакцию.
 fish-slime-extract-gold-cap = От золотых экстрактов уже слишком много критов на станции!
 fish-slime-extract-gold-pending = Экстракт начинает вибрировать — через несколько секунд что-то появится.
+fish-slime-extract-cerulean-territory-used = Эту зону cerulean blood уже помечал — попробуйте другое место.
+fish-chemistry-bottle-disease-strain-label = образец ксеноштамма
 
 ent-FishSlimeExtractBase = экстракт слайма
     .desc = Слизь, добытая из слайма. Легенды приписывают ей странные силы.
