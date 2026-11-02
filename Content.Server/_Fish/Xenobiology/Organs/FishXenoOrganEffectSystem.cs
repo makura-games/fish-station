@@ -26,6 +26,7 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
     [Dependency] private MovementSpeedModifierSystem _movement = default!;
     [Dependency] private EmpSystem _emp = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
 
     private TimeSpan _nextRegenTick;
 
@@ -125,6 +126,28 @@ public sealed partial class FishXenoOrganEffectSystem : EntitySystem
                 break;
             case FishXenoOrganEffectKind.SlimeSkin:
                 break;
+            case FishXenoOrganEffectKind.CryoBurst:
+                ApplyCryoBurst(target);
+                break;
+            case FishXenoOrganEffectKind.Essence:
+                _damage.TryChangeDamage(target, Heal("Blunt", 12));
+                _damage.TryChangeDamage(target, Heal("Slash", 8));
+                if (_solutions.TryGetInjectableSolution(target, out var essSoln, out _))
+                    _solutions.TryAddReagent(essSoln, "Omnizine", FixedPoint2.New(6));
+                break;
+        }
+    }
+
+    private void ApplyCryoBurst(EntityUid source)
+    {
+        var coords = _transform.GetMapCoordinates(source);
+        foreach (var uid in _lookup.GetEntitiesInRange(coords, 3f))
+        {
+            if (uid == source)
+                continue;
+
+            if (_solutions.TryGetInjectableSolution(uid, out var soln, out _))
+                _solutions.TryAddReagent(soln, "FrostOil", FixedPoint2.New(4));
         }
     }
 
