@@ -101,6 +101,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private bool _wasOpen;
     private TimeSpan _openAfter;
     private TimeSpan _nextOpenCheck;
+    private TimeSpan _nextCountSync;
 
     private bool _refillOnKill;
 
@@ -156,7 +157,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         if (args.NewStatus != SessionStatus.InGame)
             return;
 
-        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CurrentRule?.Players.Count ?? 0, IsOpen), args.Session.Channel);
+        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Session.Channel);
     }
 
     public override void Update(float frameTime)
@@ -167,6 +168,12 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         {
             _nextOpenCheck = _timing.CurTime + TimeSpan.FromSeconds(1);
             RefreshOpenState();
+        }
+
+        if (_timing.CurTime >= _nextCountSync)
+        {
+            _nextCountSync = _timing.CurTime + TimeSpan.FromSeconds(5);
+            SendPlayerCount();
         }
 
         if (CurrentRule is not { Active: true } rule || _timing.CurTime < rule.NextCleanup)
@@ -1010,14 +1017,33 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private void BroadcastPlayerCount(DmArenaRuleComponent? rule = null)
     {
-        rule ??= CurrentRule;
-
         foreach (var eui in _activeEuis.Values)
         {
             eui.StateDirty();
         }
 
-        RaiseNetworkEvent(new DmArenaPlayerCountEvent(rule?.Players.Count ?? 0, IsOpen), Filter.Broadcast());
+        SendPlayerCount();
+    }
+
+    private void SendPlayerCount()
+    {
+        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), Filter.Broadcast());
+    }
+
+    private int CountFighters()
+    {
+        if (CurrentRule is not { } rule)
+            return 0;
+
+        var count = 0;
+        var fighters = EntityQueryEnumerator<DmArenaFighterComponent>();
+        while (fighters.MoveNext(out var uid, out _))
+        {
+            if (!Terminating(uid) && rule.Players.Contains(GetNetEntity(uid)))
+                count++;
+        }
+
+        return count;
     }
 
     public DmArenaKitEuiState GetLoadoutState(EntityUid ruleEntity, NetUserId userId)
@@ -1033,7 +1059,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         rule.Presets.TryGetValue(userId, out var preset);
         rule.LastLoadouts.TryGetValue(userId, out var last);
-        return new DmArenaKitEuiState(items, sets, rule.Players.Count, rule.Budget, preset, last, rule.Gear);
+        return new DmArenaKitEuiState(items, sets, CountFighters(), rule.Budget, preset, last, rule.Gear);
     }
 
     private DmArenaStoreOption BuildItemOption(DmArenaStoreItem item, int index)
