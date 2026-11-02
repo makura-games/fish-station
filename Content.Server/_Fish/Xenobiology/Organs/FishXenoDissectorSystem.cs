@@ -79,7 +79,13 @@ public sealed partial class FishXenoDissectorSystem : EntitySystem
         if (ContainsAny(id, "Colossus", "Bubblegum", "Legionnaire"))
             return "FishXenoOrganSlimeSkinFish";
 
-        if (ContainsAny(id, "Herald", "Revenant", "Morph", "Hound", "Pandora", "Goldgrub"))
+        if (ContainsAny(id, "Herald"))
+            return "FishXenoOrganCryoBurstFish";
+
+        if (ContainsAny(id, "Revenant"))
+            return "FishXenoOrganEssenceFish";
+
+        if (ContainsAny(id, "Morph", "Hound", "Pandora", "Goldgrub"))
             return "FishXenoOrganVigorFish";
 
         if (ContainsAny(id, "Monkey"))
