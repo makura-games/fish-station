@@ -16,7 +16,7 @@
     requirement:
       !type:RoleTimeRequirement
       role: JobNanoTrasenRepresentative
-      time: 36000
+      time: 36000 # 10 hours
   equipment:
     jumpsuit: FishClothingUniformJumpsuitNanoTrasenRepresentative
 
@@ -27,7 +27,7 @@
     requirement:
       !type:RoleTimeRequirement
       role: JobNanoTrasenRepresentative
-      time: 36000
+      time: 36000 # 10 hours
   equipment:
     jumpsuit: FishClothingUniformJumpskirtNanoTrasenRepresentative
 
