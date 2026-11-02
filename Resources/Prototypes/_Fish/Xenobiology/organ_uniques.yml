@@ -55,4 +55,42 @@
   - type: FishXenoOrganImplant
     kind: SlimeSkin
     implantDuration: 00:20:00
+
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganCryoBurstFish
+  name: cryo burst xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: CryoBurst
+
+- type: entity
+  parent: FishXenoOrganRegenerativeFish
+  id: FishXenoOrganEssenceFish
+  name: essence xenOrgan
+  suffix: Fish
+  components:
+  - type: FishXenoOrganEffect
+    kind: Essence
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantCryoBurstFish
+  name: cryo burst xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: CryoBurst
+    implantDuration: 00:20:00
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: FishXenoOrganImplantEssenceFish
+  name: essence xenOrgan implant
+  suffix: Fish
+  components:
+  - type: FishXenoOrganImplant
+    kind: Essence
+    implantDuration: 00:20:00
 # Fish-end
