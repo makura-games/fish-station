@@ -19,4 +19,7 @@ public sealed partial class DmArenaFighterComponent : Component
 
     [ViewVariables]
     public TimeSpan LastCombat;
+
+    [ViewVariables]
+    public TimeSpan LastThrownHit;
 }

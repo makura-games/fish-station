@@ -53,6 +53,12 @@ public class DmArenaFrameWindow : BaseWindow
         };
         _outerBorder.AddChild(outerVBox);
 
+        outerVBox.AddChild(new PanelContainer
+        {
+            MinHeight = 3,
+            PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.Accent },
+        });
+
         _titleBar = new PanelContainer
         {
             MinHeight = TitleBarHeight,
@@ -78,6 +84,13 @@ public class DmArenaFrameWindow : BaseWindow
             VerticalAlignment = VAlignment.Center,
             HorizontalExpand = true,
         };
+        titleBarContent.AddChild(new PanelContainer
+        {
+            MinWidth = 4,
+            MaxWidth = 4,
+            Margin = new Thickness(0, 8, 8, 8),
+            PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.Accent },
+        });
         titleBarContent.AddChild(_titleLabel);
 
         _closeButton = new TextureButton

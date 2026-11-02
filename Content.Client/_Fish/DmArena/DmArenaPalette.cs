@@ -24,31 +24,33 @@ public static class DmArenaPalette
         return IoCManager.Resolve<IResourceCache>().NotoStack(bold ? "Bold" : "Regular", size);
     }
 
-    public static readonly Color BodyBg = Color.FromHex("#1A1C1E");
-    public static readonly Color SideBg = Color.FromHex("#151719");
-    public static readonly Color TitleBarBg = Color.FromHex("#1F2124");
-    public static readonly Color Divider = Color.FromHex("#2A2D31");
+    public static readonly Color BodyBg = Color.FromHex("#131C24");
+    public static readonly Color SideBg = Color.FromHex("#0F171E");
+    public static readonly Color TitleBarBg = Color.FromHex("#172633");
+    public static readonly Color Divider = Color.FromHex("#2A5568");
 
-    public static readonly Color CardBg = Color.FromHex("#232629");
-    public static readonly Color CardHoverBg = Color.FromHex("#2C3E50B3");
-    public static readonly Color CardSelectedBg = Color.FromHex("#2B3A4D");
-    public static readonly Color CardLockedBg = Color.FromHex("#262224");
+    public static readonly Color CardBg = Color.FromHex("#182A38");
+    public static readonly Color CardHoverBg = Color.FromHex("#2B5F78B3");
+    public static readonly Color CardSelectedBg = Color.FromHex("#1F4A47");
+    public static readonly Color CardLockedBg = Color.FromHex("#2A2227");
 
-    public static readonly Color Accent = Color.FromHex("#4A6984");
-    public static readonly Color AccentSoft = Color.FromHex("#8FA9C4");
+    public static readonly Color Accent = Color.FromHex("#5FB8AE");
+    public static readonly Color AccentDim = Color.FromHex("#2F6A68");
+    public static readonly Color CostPillBg = Color.FromHex("#1D4A52");
+    public static readonly Color AccentSoft = Color.FromHex("#9EDAD2");
 
-    public static readonly Color ButtonBg = Color.FromHex("#2B3A4A");
-    public static readonly Color ButtonHoverBg = Color.FromHex("#3D5A80");
-    public static readonly Color ButtonSelectedBg = Color.FromHex("#4A6984");
-    public static readonly Color ButtonDisabledBg = Color.FromHex("#26282B");
-    public static readonly Color ButtonDisabledFg = Color.FromHex("#6B7075");
+    public static readonly Color ButtonBg = Color.FromHex("#1F3D54");
+    public static readonly Color ButtonHoverBg = Color.FromHex("#2E6384");
+    public static readonly Color ButtonSelectedBg = Color.FromHex("#3A8480");
+    public static readonly Color ButtonDisabledBg = Color.FromHex("#1E2A33");
+    public static readonly Color ButtonDisabledFg = Color.FromHex("#6A808C");
     public static readonly Color ButtonText = Color.FromHex("#F2F2F2");
 
-    public static readonly Color PrimaryTop = Color.FromHex("#3D5A80");
-    public static readonly Color PrimaryBottom = Color.FromHex("#3A4A78");
+    public static readonly Color PrimaryTop = Color.FromHex("#3F8E8A");
+    public static readonly Color PrimaryBottom = Color.FromHex("#3A6FA0");
 
-    public static readonly Color TextMuted = Color.FromHex("#9AAAAA");
-    public static readonly Color Cost = Color.FromHex("#9AAAAA");
+    public static readonly Color TextMuted = Color.FromHex("#8FA9B8");
+    public static readonly Color Cost = Color.FromHex("#9EDAD2");
     public static readonly Color BalanceWarn = Color.FromHex("#E07A5F");
 
     public static Color Approach(Color from, Color to, float frameTime)

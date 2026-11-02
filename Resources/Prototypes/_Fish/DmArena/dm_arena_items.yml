@@ -1,0 +1,159 @@
+- type: entity
+  id: FishArenaCombatKnife
+  suffix: Fish
+  parent: CombatKnife
+  components:
+  - type: MeleeWeapon
+    attackRate: 1.25
+    damage:
+      types:
+        Slash: 9
+
+- type: entity
+  id: FishArenaButchCleaver
+  suffix: Fish
+  parent: ButchCleaver
+  components:
+  - type: MeleeWeapon
+    attackRate: 1.25
+    damage:
+      types:
+        Slash: 10
+
+- type: entity
+  id: FishArenaKatana
+  suffix: Fish
+  parent: Katana
+  components:
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 12
+
+- type: entity
+  id: FishArenaSpearUranium
+  suffix: Fish
+  parent: SpearUranium
+  components:
+  - type: MeleeWeapon
+    damage:
+      types:
+        Piercing: 8
+        Radiation: 3
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Piercing: 3
+
+- type: entity
+  id: FishArenaFireAxe
+  suffix: Fish
+  parent: FireAxe
+  components:
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 4
+        Slash: 8
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Slash: 7
+
+- type: entity
+  id: FishArenaSledgehammer
+  suffix: Fish
+  parent: Sledgehammer
+  components:
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 8
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Blunt: 7
+
+- type: entity
+  id: FishArenaCaptainSabre
+  suffix: Fish
+  parent: CaptainSabre
+  components:
+  - type: MeleeWeapon
+    attackRate: 1.25
+    damage:
+      types:
+        Slash: 13
+  - type: Reflect
+    reflectProb: 0.15
+
+- type: entity
+  id: FishArenaEnergySword
+  suffix: Fish
+  parent: EnergySword
+  components:
+  - type: ItemToggleMeleeWeapon
+    activatedDamage:
+      types:
+        Slash: 9
+        Heat: 9
+  - type: Reflect
+    reflectProb: 0.1
+
+- type: entity
+  id: FishArenaRiotShield
+  suffix: Fish
+  parent: RiotShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 6
+        Slash: 5
+        Piercing: 2
+        Heat: 2
+
+- type: entity
+  id: FishArenaRiotLaserShield
+  suffix: Fish
+  parent: RiotLaserShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 2
+        Slash: 3
+        Piercing: 2
+        Heat: 8
+  - type: Reflect
+    reflectProb: 0.1
+
+- type: entity
+  id: FishArenaEnergyShield
+  suffix: Fish
+  parent: EnergyShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 2
+        Slash: 2
+        Piercing: 4
+        Heat: 10
+      coefficients:
+        Heat: 0.75
+  - type: Reflect
+    reflectProb: 0.4
+
+- type: entity
+  id: FishArenaRiotBulletShield
+  suffix: Fish
+  parent: RiotBulletShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 3
+        Slash: 2
+        Piercing: 8
+        Heat: 2

@@ -60,11 +60,11 @@ public sealed class DmArenaItemCard : PanelContainer
 
         _accent = new PanelContainer
         {
-            MinWidth = 3,
-            MaxWidth = 3,
+            MinWidth = 4,
+            MaxWidth = 4,
             VerticalExpand = true,
             Margin = new Thickness(0, 4),
-            PanelOverride = new StyleBoxFlat { BackgroundColor = Color.Transparent },
+            PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.AccentDim },
         };
         hbox.AddChild(_accent);
 
@@ -132,10 +132,16 @@ public sealed class DmArenaItemCard : PanelContainer
             FontOverride = DmArenaPalette.GetFont(false, 12),
             FontColorOverride = DmArenaPalette.Cost,
             VerticalAlignment = VAlignment.Center,
-            MinWidth = 52,
-            Align = Label.AlignMode.Right,
+            MinWidth = 44,
+            Align = Label.AlignMode.Center,
         };
-        hbox.AddChild(_costLabel);
+        var costPill = new PanelContainer
+        {
+            PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.CostPillBg, 8, 2),
+            VerticalAlignment = VAlignment.Center,
+        };
+        costPill.AddChild(_costLabel);
+        hbox.AddChild(costPill);
 
         AddChild(hbox);
 
@@ -218,7 +224,7 @@ public sealed class DmArenaItemCard : PanelContainer
             : dim ? DmArenaPalette.CardLockedBg
             : _hovered ? DmArenaPalette.CardHoverBg : DmArenaPalette.CardBg;
 
-        ((StyleBoxFlat) _accent.PanelOverride!).BackgroundColor = selected ? DmArenaPalette.Accent : Color.Transparent;
+        ((StyleBoxFlat) _accent.PanelOverride!).BackgroundColor = selected ? DmArenaPalette.Accent : DmArenaPalette.AccentDim;
 
         _nameLabel.FontColorOverride = dim ? DmArenaPalette.ButtonDisabledFg : DmArenaPalette.ButtonText;
         _costLabel.FontColorOverride = dim ? DmArenaPalette.ButtonDisabledFg : DmArenaPalette.Cost;

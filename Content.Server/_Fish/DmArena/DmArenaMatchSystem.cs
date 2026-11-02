@@ -27,6 +27,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
+using Content.Shared.Medical.Healing;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -38,7 +39,9 @@ using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
+using Content.Shared.Stunnable;
 using Content.Shared.Tag;
+using Content.Shared.Throwing;
 using Content.Shared.Tools.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared._Fish.DmArena;
@@ -63,6 +66,8 @@ namespace Content.Server._Fish.DmArena;
 
 public sealed partial class DmArenaMatchSystem : EntitySystem
 {
+    private const float LightBoost = 1.15f;
+
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -83,6 +88,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedPointLightSystem _light = default!;
     [Dependency] private TagSystem _tags = default!;
 
     private static readonly EntProtoId RulePrototype = "FishDmArenaRule";
@@ -131,6 +137,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         SubscribeLocalEvent<DmArenaFighterComponent, EntityTerminatingEvent>(OnFighterTerminating);
         SubscribeLocalEvent<DmArenaFighterComponent, DamageDealtEvent>(OnFighterDamaged);
         SubscribeLocalEvent<EnergyDomeComponent, DamageDealtEvent>(OnDomeDamaged);
+        SubscribeLocalEvent<DmArenaFighterComponent, ThrowHitByEvent>(OnFighterThrownHit);
+        SubscribeLocalEvent<DmArenaFighterComponent, KnockDownAttemptEvent>(OnFighterKnockDown);
         SubscribeLocalEvent<DmArenaFighterComponent, IsUnequippingTargetAttemptEvent>(OnFighterUnequip);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
@@ -270,6 +278,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         ent.Comp.Active = true;
         ShieldArenaEntities(args.Map);
         MarkMapItems(args.Map);
+        BrightenLights(args.Map);
         BroadcastPlayerCount(ent.Comp);
     }
 
@@ -280,6 +289,16 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         {
             if (xform.MapID == map)
                 ShieldEntity(uid);
+        }
+    }
+
+    private void BrightenLights(MapId map)
+    {
+        var lights = EntityQueryEnumerator<PointLightComponent, TransformComponent>();
+        while (lights.MoveNext(out var uid, out var light, out var xform))
+        {
+            if (xform.MapID == map)
+                _light.SetEnergy(uid, light.Energy * LightBoost, light);
         }
     }
 
@@ -493,6 +512,17 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         MarkCombat(ent, args.Origin);
     }
 
+    private void OnFighterThrownHit(Entity<DmArenaFighterComponent> ent, ref ThrowHitByEvent args)
+    {
+        ent.Comp.LastThrownHit = _timing.CurTime;
+    }
+
+    private void OnFighterKnockDown(Entity<DmArenaFighterComponent> ent, ref KnockDownAttemptEvent args)
+    {
+        if (ent.Comp.LastThrownHit == _timing.CurTime)
+            args.Cancelled = true;
+    }
+
     private void OnDomeDamaged(Entity<EnergyDomeComponent> ent, ref DamageDealtEvent args)
     {
         if (ent.Comp.Generator is { } generator
@@ -506,6 +536,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     {
         if (origin is not { } attacker || attacker == victim.Owner || !TryComp<DmArenaFighterComponent>(attacker, out var other))
             return;
+
+        victim.Comp.LastAttacker = attacker;
 
         if (!_mobState.IsCritical(victim))
             victim.Comp.LastCombat = _timing.CurTime;
@@ -627,6 +659,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
                 RestoreDependentSlots(mob, kept);
             }
 
+            HalveHealingDelay(mob);
             return true;
         }
         catch (Exception e)
@@ -634,6 +667,19 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
             Log.Error($"Failed to equip DM arena loadout for {session.Name} on {ToPrettyString(mob)}: {e}");
             return false;
         }
+    }
+
+    private void HalveHealingDelay(EntityUid uid)
+    {
+        if (TryComp<HealingComponent>(uid, out var healing))
+        {
+            healing.Delay /= 2;
+            Dirty(uid, healing);
+        }
+
+        var children = Transform(uid).ChildEnumerator;
+        while (children.MoveNext(out var child))
+            HalveHealingDelay(child);
     }
 
     private List<(string Slot, EntityUid Item)> ClearReplacedSlots(EntityUid mob, ProtoId<StartingGearPrototype> gear)
