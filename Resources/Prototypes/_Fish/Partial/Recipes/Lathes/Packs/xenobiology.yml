@@ -1,0 +1,13 @@
+# Fish-edit: оборудование ксенобиологии печатается после соответствующих исследований.
+- type: !PartialOnly latheRecipePack
+  id: ScienceEquipment
+  recipes:
+  - FishXenoCarrier
+  - FishXenoCarrierAdvanced
+
+- type: !PartialOnly latheRecipePack
+  id: ScienceBoards
+  recipes:
+  - FishXenoProcessorBoard
+  - FishXenoConsoleBoard
+  - FishXenoThermostatBoard

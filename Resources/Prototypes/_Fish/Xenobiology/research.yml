@@ -1,0 +1,79 @@
+- type: technology
+  id: FishXenobiology
+  name: research-technology-fish-xenobiology
+  icon:
+    sprite: _Fish/Xenobiology/Mobs/slimesBaby.rsi
+    state: base
+  discipline: Biochemical
+  tier: 2
+  cost: 5000
+  technologyPrerequisites:
+  - BasicXenoArcheology
+  - SurgeryTech
+  recipeUnlocks:
+  - FishXenoProcessorBoard
+  - FishXenoConsoleBoard
+  - FishXenoCarrier
+
+- type: technology
+  id: FishXenobiologyAdvanced
+  name: research-technology-fish-colony-engineering
+  icon:
+    sprite: _Fish/Xenobiology/Mobs/slimesAdult.rsi
+    state: base
+  discipline: Biochemical
+  tier: 3
+  cost: 7500
+  technologyPrerequisites:
+  - FishXenobiology
+  - BiochemicalStasis
+  - AlternativeResearch
+  recipeUnlocks:
+  - FishXenoCarrierAdvanced
+  - FishXenoThermostatBoard
+
+- type: latheRecipe
+  id: FishXenoProcessorBoard
+  result: FishXenoProcessorBoard
+  categories: [Machines, Research]
+  completetime: 3
+  materials:
+    Glass: 500
+    Gold: 100
+
+- type: latheRecipe
+  id: FishXenoConsoleBoard
+  result: FishXenoConsoleBoard
+  categories: [Circuitry, Research]
+  completetime: 3
+  materials:
+    Glass: 500
+    Gold: 100
+
+- type: latheRecipe
+  id: FishXenoThermostatBoard
+  result: FishXenoThermostatBoard
+  categories: [Machines, Research]
+  completetime: 3
+  materials:
+    Glass: 500
+    Gold: 100
+
+- type: latheRecipe
+  id: FishXenoCarrier
+  result: FishXenoCarrier
+  categories: [Tools]
+  completetime: 4
+  materials:
+    Steel: 500
+    Plastic: 300
+
+- type: latheRecipe
+  id: FishXenoCarrierAdvanced
+  result: FishXenoCarrierAdvanced
+  categories: [Tools]
+  completetime: 5
+  materials:
+    Steel: 800
+    Plastic: 500
+    Silver: 200

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Grey slime sprites by MTandi, /tg/station PR https://github.com/tgstation/tgstation/pull/83891. Source: https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/icons/mob/simple/slimes.dmi. Fish DMI-to-RSI conversion: base = grey-baby, dead = grey-baby-dead; original 32x32 RGBA pixels and colors preserved, one direction, four base frames repacked in original order. DMI decisecond delays 10,2,4,2 converted to RSI seconds 1.0,0.2,0.4,0.2; dead state is static. Source license notice: https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/README.md#license. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "base",
+      "delays": [
+        [
+          1.0,
+          0.2,
+          0.4,
+          0.2
+        ]
+      ]
+    },
+    {
+      "name": "dead"
+    }
+  ]
+}

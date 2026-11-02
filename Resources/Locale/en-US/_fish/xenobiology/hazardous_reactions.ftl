@@ -1,0 +1,19 @@
+fish-xeno-reaction-warning = The extract is unstable! Reaction in { $seconds } s. Stand back!
+fish-xeno-reaction-summon-blocked = Summoning failed: the extract needs a floor and room within the creature limit.
+
+fish-xeno-reaction-orange-fire = ignition pulse
+fish-xeno-reaction-orange-fire-desc = After 3 seconds, ignites exposed flammable objects and creatures within 2 tiles. Walls block the pulse. Holding or storing the extract does not stop it.
+fish-xeno-reaction-dark-blue-cold = chilling pulse
+fish-xeno-reaction-dark-blue-cold-desc = After 3 seconds, cools exposed objects and creatures within 2 tiles by up to 100 K, never below -100 °C. Thermal protection reduces the effect and walls block it. Does not cool the entire room's atmosphere.
+fish-xeno-reaction-yellow-emp = electromagnetic pulse
+fish-xeno-reaction-yellow-emp-desc = After 3 seconds, emits an EMP within 3 tiles. Drains 1500 energy from susceptible devices and disables them for 5 seconds. Dangerous to electronics and synthetic life.
+fish-xeno-reaction-oil-explosion = explosive reaction
+fish-xeno-reaction-oil-explosion-desc = Explodes like a small grenade after 5 seconds. Damages creatures, equipment and floors, potentially causing decompression. Storing the extract does not stop the reaction.
+fish-xeno-reaction-gold-hostile = hostile fauna
+fish-xeno-reaction-gold-hostile-desc = After 5 seconds, summons two random space carps or hostile spiders. Requires a floor and room within the shared limit of 12 living summoned creatures per map, including pending summons.
+fish-xeno-reaction-gold-neutral = neutral fauna
+fish-xeno-reaction-gold-neutral-desc = After 5 seconds, summons one monkey or crab. Neutral creatures can defend themselves. Requires a floor and room within the shared limit of 12 summoned creatures per map.
+fish-xeno-reaction-gold-harmless = harmless fauna
+fish-xeno-reaction-gold-harmless-desc = After 5 seconds, summons one mouse or lizard. Requires a floor and room within the shared limit of 12 summoned creatures per map. Pending summons also occupy slots.
+fish-xeno-reaction-sepia-stasis = stasis pulse
+fish-xeno-reaction-sepia-stasis-desc = After 3 seconds, paralyzes reachable living creatures within 2 tiles for 3 seconds. The experimenter is also affected. Walls block the pulse.
