@@ -22,32 +22,50 @@ public sealed class HandOfferTest : GameTest
         var entMan = server.ResolveDependency<IEntityManager>();
         var testMap = await Pair.CreateTestMap();
 
-        await server.WaitAssertion(() =>
+        EntityUid giver = default;
+        EntityUid receiver = default;
+        EntityUid stranger = default;
+        EntityUid item = default;
+        AlternativeVerb? takeBeforeOffer = null;
+        AlternativeVerb? offer = null;
+        AlternativeVerb? strangerTake = null;
+        AlternativeVerb? take = null;
+
+        await server.WaitPost(() =>
         {
             var hands = entMan.System<SharedHandsSystem>();
             var verbs = entMan.System<SharedVerbSystem>();
 
-            var giver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
-            var receiver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
-            var stranger = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
-            var item = entMan.SpawnEntity(Item, testMap.GridCoords);
+            giver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
+            receiver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
+            stranger = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
+            item = entMan.SpawnEntity(Item, testMap.GridCoords);
 
-            Assert.That(hands.TryPickupAnyHand(giver, item));
+            hands.TryPickupAnyHand(giver, item);
 
             // Пока предмет не протянут, получателю нечего забирать.
-            Assert.That(FindVerb(verbs, giver, receiver), Is.Null);
+            takeBeforeOffer = FindVerb(verbs, giver, receiver);
 
-            var offer = FindVerb(verbs, receiver, giver);
-            Assert.That(offer, Is.Not.Null, "Нет действия «протянуть» для предмета в руке");
-            verbs.ExecuteVerb(offer!, giver, receiver);
-            Assert.That(entMan.HasComponent<HandOfferComponent>(giver));
+            offer = FindVerb(verbs, receiver, giver);
+            if (offer != null)
+                verbs.ExecuteVerb(offer, giver, receiver);
 
             // Третий персонаж забрать предмет не может.
-            Assert.That(FindVerb(verbs, giver, stranger), Is.Null);
+            strangerTake = FindVerb(verbs, giver, stranger);
 
-            var take = FindVerb(verbs, giver, receiver);
+            take = FindVerb(verbs, giver, receiver);
+            if (take != null)
+                verbs.ExecuteVerb(take, receiver, giver);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var hands = entMan.System<SharedHandsSystem>();
+
+            Assert.That(takeBeforeOffer, Is.Null);
+            Assert.That(offer, Is.Not.Null, "Нет действия «протянуть» для предмета в руке");
+            Assert.That(strangerTake, Is.Null);
             Assert.That(take, Is.Not.Null, "Нет действия «взять» у получателя");
-            verbs.ExecuteVerb(take!, receiver, giver);
 
             Assert.That(hands.IsHolding(receiver, item));
             Assert.That(hands.IsHolding(giver, item), Is.False);
@@ -65,22 +83,37 @@ public sealed class HandOfferTest : GameTest
         var entMan = server.ResolveDependency<IEntityManager>();
         var testMap = await Pair.CreateTestMap();
 
-        await server.WaitAssertion(() =>
+        EntityUid giver = default;
+        EntityUid receiver = default;
+        AlternativeVerb? offer = null;
+        var hasOfferAfterGive = false;
+
+        await server.WaitPost(() =>
         {
             var hands = entMan.System<SharedHandsSystem>();
             var verbs = entMan.System<SharedVerbSystem>();
 
-            var giver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
-            var receiver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
+            giver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
+            receiver = entMan.SpawnEntity("MobHuman", testMap.GridCoords);
             var item = entMan.SpawnEntity(Item, testMap.GridCoords);
 
-            Assert.That(hands.TryPickupAnyHand(giver, item));
+            hands.TryPickupAnyHand(giver, item);
 
-            var offer = FindVerb(verbs, receiver, giver);
+            offer = FindVerb(verbs, receiver, giver);
+            if (offer != null)
+                verbs.ExecuteVerb(offer, giver, receiver);
+
+            hasOfferAfterGive = entMan.HasComponent<HandOfferComponent>(giver);
+
+            hands.TryDrop(giver, item);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var verbs = entMan.System<SharedVerbSystem>();
+
             Assert.That(offer, Is.Not.Null);
-            verbs.ExecuteVerb(offer!, giver, receiver);
-
-            Assert.That(hands.TryDrop(giver, item));
+            Assert.That(hasOfferAfterGive, "Предложение не появилось после протягивания");
             Assert.That(FindVerb(verbs, giver, receiver), Is.Null);
             Assert.That(entMan.HasComponent<HandOfferComponent>(giver), Is.False,
                 "Предложение осталось после того, как предмет покинул руки");
@@ -92,10 +125,9 @@ public sealed class HandOfferTest : GameTest
     /// </summary>
     private static AlternativeVerb? FindVerb(SharedVerbSystem verbs, EntityUid target, EntityUid user)
     {
-        // Параметры идут в порядке (цель, кто кликает), как в GetLocalVerbs.
         foreach (var verb in verbs.GetLocalVerbs(target, user, typeof(AlternativeVerb)))
         {
-            if (verb is AlternativeVerb alt && alt.Priority == 10)
+            if (verb is AlternativeVerb alt && alt.Priority == HandOfferSystem.VerbPriority)
                 return alt;
         }
 

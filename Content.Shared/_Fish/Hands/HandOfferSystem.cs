@@ -2,6 +2,7 @@ using Content.Shared.Chat;
 using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.IdentityManagement;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Verbs;
 
@@ -17,7 +18,9 @@ public sealed partial class HandOfferSystem : EntitySystem
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedChatSystem _chat = default!;
 
-    // Выше остальных альтернативных действий, чтобы Alt + ЛКМ запускал именно передачу.
+    /// <summary>
+    ///     Приоритет действий передачи: выше остальных Alt-действий, чтобы Alt + ЛКМ запускал именно передачу.
+    /// </summary>
     public const int VerbPriority = 10;
 
     public override void Initialize()
@@ -28,6 +31,9 @@ public sealed partial class HandOfferSystem : EntitySystem
         SubscribeLocalEvent<HandOfferComponent, DidUnequipHandEvent>(OnUnequipped);
     }
 
+    /// <summary>
+    ///     Добавляет Alt-действие «протянуть» или «взять» в зависимости от того, кто кликает и что у него в руках.
+    /// </summary>
     private void OnGetVerbs(Entity<HandsComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
         if (!args.CanAccess || !args.CanInteract || args.User == ent.Owner)
@@ -60,19 +66,27 @@ public sealed partial class HandOfferSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    ///     Сбрасывает предложение, когда протягиваемый предмет покидает руки.
+    /// </summary>
     private void OnUnequipped(Entity<HandOfferComponent> ent, ref DidUnequipHandEvent args)
     {
-        // Предмет ушёл из рук — забирать больше нечего.
         if (args.Unequipped == ent.Comp.Item)
             RemComp<HandOfferComponent>(ent);
     }
 
-    private bool CanOffer(EntityUid user, EntityUid target, EntityUid item)
+    /// <summary>
+    ///     Можно ли <paramref name="user"/> протянуть <paramref name="item"/> персонажу <paramref name="target"/>.
+    /// </summary>
+    public bool CanOffer(EntityUid user, EntityUid target, EntityUid item)
     {
         return _hands.IsHolding(user, item) && !_mobState.IsIncapacitated(target);
     }
 
-    private bool TryOffer(EntityUid user, EntityUid target, EntityUid item)
+    /// <summary>
+    ///     Протягивает предмет, если это разрешено проверкой <see cref="CanOffer"/>.
+    /// </summary>
+    public bool TryOffer(EntityUid user, EntityUid target, EntityUid item)
     {
         if (!CanOffer(user, target, item))
             return false;
@@ -81,7 +95,10 @@ public sealed partial class HandOfferSystem : EntitySystem
         return true;
     }
 
-    private void DoOffer(EntityUid user, EntityUid target, EntityUid item)
+    /// <summary>
+    ///     Запоминает предложение и сообщает о нём эмоутом.
+    /// </summary>
+    public void DoOffer(EntityUid user, EntityUid target, EntityUid item)
     {
         var offer = EnsureComp<HandOfferComponent>(user);
         offer.Item = item;
@@ -89,12 +106,17 @@ public sealed partial class HandOfferSystem : EntitySystem
         Dirty(user, offer);
 
         _chat.TrySendInGameICMessage(user,
-            Loc.GetString("hand-offer-give-emote", ("item", item), ("target", target)),
+            Loc.GetString("hand-offer-give-emote",
+                ("item", item),
+                ("target", Identity.Entity(target, EntityManager))),
             InGameICChatType.Emote,
             ChatTransmitRange.Normal);
     }
 
-    private bool CanTake(EntityUid user, EntityUid giver, out EntityUid item)
+    /// <summary>
+    ///     Можно ли <paramref name="user"/> забрать предмет, который протягивает <paramref name="giver"/>.
+    /// </summary>
+    public bool CanTake(EntityUid user, EntityUid giver, out EntityUid item)
     {
         item = default;
 
@@ -108,7 +130,10 @@ public sealed partial class HandOfferSystem : EntitySystem
         return true;
     }
 
-    private bool TryTake(EntityUid user, EntityUid giver)
+    /// <summary>
+    ///     Забирает протянутый предмет, если это разрешено проверкой <see cref="CanTake"/>.
+    /// </summary>
+    public bool TryTake(EntityUid user, EntityUid giver)
     {
         if (!CanTake(user, giver, out var item))
             return false;
@@ -128,10 +153,15 @@ public sealed partial class HandOfferSystem : EntitySystem
         return true;
     }
 
-    private void DoTake(EntityUid user, EntityUid giver, EntityUid item)
+    /// <summary>
+    ///     Сообщает эмоутом, что предмет забрали.
+    /// </summary>
+    public void DoTake(EntityUid user, EntityUid giver, EntityUid item)
     {
         _chat.TrySendInGameICMessage(user,
-            Loc.GetString("hand-offer-take-emote", ("item", item), ("giver", giver)),
+            Loc.GetString("hand-offer-take-emote",
+                ("item", item),
+                ("giver", Identity.Entity(giver, EntityManager))),
             InGameICChatType.Emote,
             ChatTransmitRange.Normal);
     }
