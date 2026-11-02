@@ -18,7 +18,7 @@
       role: JobNanoTrasenRepresentative
       time: 36000
   equipment:
-    innerClothing: FishClothingUniformJumpsuitNanoTrasenRepresentative
+    jumpsuit: FishClothingUniformJumpsuitNanoTrasenRepresentative
 
 - type: loadout
   id: FishNTRepresentativeJumpskirt
@@ -29,7 +29,7 @@
       role: JobNanoTrasenRepresentative
       time: 36000
   equipment:
-    innerClothing: FishClothingUniformJumpskirtNanoTrasenRepresentative
+    jumpsuit: FishClothingUniformJumpskirtNanoTrasenRepresentative
 
 - type: loadout
   id: FishNTRepresentativeGloves
