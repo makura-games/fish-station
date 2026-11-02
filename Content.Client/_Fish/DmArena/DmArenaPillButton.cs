@@ -19,7 +19,6 @@ public sealed class DmArenaPillButton : PanelContainer
     private bool _primary;
     private bool _hovered;
     private bool _pressed;
-    private float _hoverAmount;
 
     public bool Disabled
     {
@@ -129,7 +128,7 @@ public sealed class DmArenaPillButton : PanelContainer
             return;
         }
 
-        var color = _primary ? DmArenaPalette.PrimaryTop
+        var color = _primary ? Color.InterpolateBetween(DmArenaPalette.PrimaryTop, Color.White, _hovered ? 0.1f : 0f)
             : _selected ? DmArenaPalette.ButtonSelectedBg
             : _hovered ? DmArenaPalette.ButtonHoverBg : DmArenaPalette.ButtonBg;
 
@@ -142,32 +141,5 @@ public sealed class DmArenaPillButton : PanelContainer
         base.FrameUpdate(args);
 
         _styleBox.Modulate = DmArenaPalette.Approach(_styleBox.Modulate, _targetColor, args.DeltaSeconds);
-
-        var hover = _hovered && !_disabled ? 1f : 0f;
-        _hoverAmount += (hover - _hoverAmount) * Math.Min(1f, args.DeltaSeconds * 14f);
-    }
-
-    protected override void Draw(DrawingHandleScreen handle)
-    {
-        base.Draw(handle);
-
-        if (!_primary || _disabled)
-            return;
-
-        var inset = 3 * UIScale;
-        var width = PixelSize.X - inset * 2;
-        var height = PixelSize.Y - inset * 2;
-        const int steps = 8;
-
-        for (var i = 0; i < steps; i++)
-        {
-            var color = Color.InterpolateBetween(DmArenaPalette.PrimaryTop, DmArenaPalette.PrimaryBottom, i / (float) (steps - 1));
-            color = Color.InterpolateBetween(color, Color.White, 0.08f * _hoverAmount);
-
-            if (_pressed)
-                color = Color.InterpolateBetween(color, Color.Black, 0.2f);
-
-            handle.DrawRect(new UIBox2(inset, inset + height * i / steps, inset + width, inset + height * (i + 1) / steps), color);
-        }
     }
 }

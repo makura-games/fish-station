@@ -247,7 +247,9 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         string? lastCategory = null;
         string? lastGroup = null;
 
-        foreach (var item in _state.Items)
+        var ordered = _state.Items.GroupBy(item => (item.Category, item.Group)).SelectMany(group => group.OrderBy(item => item.Cost));
+
+        foreach (var item in ordered)
         {
             var column = item.Category == _heldCategory ? _leftColumn : _rightColumn;
 
@@ -296,9 +298,11 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
 
         _leftColumn.AddHeader(Loc.GetString("dm-arena-tab-sets"));
 
-        for (var i = 0; i < _state.Sets.Count; i++)
+        var sets = _state.Sets.OrderBy(set => set.Cost).ToList();
+
+        for (var i = 0; i < sets.Count; i++)
         {
-            var set = _state.Sets[i];
+            var set = sets[i];
             var names = set.Items
                 .Where(_options.ContainsKey)
                 .GroupBy(index => index)
@@ -459,8 +463,6 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
 
         _balanceLabel.Text = Loc.GetString("dm-arena-shop-balance", ("left", _state.Budget - spent), ("total", _state.Budget));
 
-        var warn = Math.Clamp((spent / (float) Math.Max(1, _state.Budget) - 0.7f) / 0.3f, 0f, 1f);
-        _balanceLabel.FontColorOverride = Color.InterpolateBetween(DmArenaPalette.ButtonText, DmArenaPalette.BalanceWarn, warn);
 
         var empty = _selected.Count == 0;
         _confirmButton.Disabled = empty;

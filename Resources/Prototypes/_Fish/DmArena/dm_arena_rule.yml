@@ -181,7 +181,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-shotguns
       sprite: WeaponSubMachineGunP90
-      cost: 66
+      cost: 70
       ammoType: p90
     - gear: FishDmArenaSiar
       name: dm-arena-item-siar
@@ -197,7 +197,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-shotguns
       sprite: SunriseWeaponSubMachineGunUzi
-      cost: 72
+      cost: 70
       ammoType: uzi
     - gear: FishDmArenaMosin
       name: dm-arena-item-mosin
@@ -330,7 +330,7 @@
       category: dm-arena-category-armor
       group: dm-arena-group-extras
       sprite: EnergyShield
-      cost: 15
+      cost: 18
       inHand: true
     - gear: FishDmArenaShieldBullet
       name: dm-arena-item-shield-bullet
@@ -376,7 +376,7 @@
       ammoFor: shotgun
     - gear: FishDmArenaAmN1984
       name: dm-arena-item-am-n1984
-      description: dm-arena-desc-am-n1984
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazinePistol
@@ -403,7 +403,7 @@
       ammoFor: cobra
     - gear: FishDmArenaAmDeagle
       name: dm-arena-item-am-deagle
-      description: dm-arena-desc-am-deagle
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazineMagnum
@@ -448,7 +448,7 @@
       ammoFor: bulldog
     - gear: FishDmArenaAmDrozd
       name: dm-arena-item-am-drozd
-      description: dm-arena-desc-am-drozd
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazinePistolSubMachineGunSP
@@ -457,7 +457,7 @@
       ammoFor: drozd
     - gear: FishDmArenaAmUzi
       name: dm-arena-item-am-uzi
-      description: dm-arena-desc-am-uzi
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazinePistolSubMachineGun
@@ -466,7 +466,7 @@
       ammoFor: uzi
     - gear: FishDmArenaAmWt550
       name: dm-arena-item-am-wt550
-      description: dm-arena-desc-am-wt550
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazinePistolSubMachineGunTopMountedSP
@@ -492,7 +492,7 @@
       maxCount: 2
     - gear: FishDmArenaAmAkms
       name: dm-arena-item-am-akms
-      description: dm-arena-desc-am-akms
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazineLightRifleSP
@@ -510,7 +510,7 @@
       ammoFor: rifle
     - gear: FishDmArenaAmSiar
       name: dm-arena-item-am-siar
-      description: dm-arena-desc-am-siar
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazinePistolSubMachineGunCaselessExtended
@@ -519,7 +519,7 @@
       ammoFor: siar
     - gear: FishDmArenaAmVp78
       name: dm-arena-item-am-vp78
-      description: dm-arena-desc-am-vp78
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazinePistol40FMJ
@@ -528,7 +528,7 @@
       ammoFor: vp78
     - gear: FishDmArenaAmThompson
       name: dm-arena-item-am-thompson
-      description: dm-arena-desc-am-thompson
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: FishMagazinePistolSubMachineGunThompson
@@ -537,7 +537,7 @@
       ammoFor: thompson
     - gear: FishDmArenaAmP90
       name: dm-arena-item-am-p90
-      description: dm-arena-desc-am-p90
+      description: dm-arena-desc-ammo-two
       category: dm-arena-category-gear
       group: dm-arena-group-ammo
       sprite: MagazineP90

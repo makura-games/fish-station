@@ -87,9 +87,11 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedPointLightSystem _light = default!;
+    [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private TagSystem _tags = default!;
 
     private static readonly EntProtoId RulePrototype = "FishDmArenaRule";
+    private static readonly EntProtoId PigPrototype = "MobPig";
     private static readonly ProtoId<TagPrototype> CatwalkTag = "Catwalk";
     private static readonly ProtoId<LocalizedDatasetPrototype> DmArenaNameSuffixDataset = "NamesOperationPrefix";
     private static readonly SoundPathSpecifier LeaveSound = new("/Audio/Effects/pop_high.ogg");
@@ -102,6 +104,12 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private TimeSpan _nextCountSync;
 
     private bool _refillOnKill;
+
+    public bool DebugSpawnEnabled = true;
+    public bool DebugCombatLock = true;
+    public readonly HashSet<string> DebugDisabledItems = new();
+    public readonly HashSet<NetUserId> DebugNoCooldown = new();
+    public readonly HashSet<NetUserId> DebugRofls = new();
 
     private readonly Dictionary<ICommonSession, DmArenaKitEui> _activeEuis = new();
 
@@ -181,6 +189,17 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         SweepLooseItems(rule);
     }
 
+    public IEnumerable<string> ShopGearIds => CurrentRule?.ShopItems.Select(x => x.Gear.Id) ?? Enumerable.Empty<string>();
+
+    public void ResetDebug()
+    {
+        DebugSpawnEnabled = true;
+        DebugCombatLock = true;
+        DebugDisabledItems.Clear();
+        DebugNoCooldown.Clear();
+        DebugRofls.Clear();
+    }
+
     private bool IsOpen => _enabled
         && (_openedManually || _ticker.RunLevel == GameRunLevel.InRound && _ticker.RoundDuration() >= _openAfter);
 
@@ -214,7 +233,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         return uid is { Valid: true } ghost && HasComp<GhostComponent>(ghost) && !HasComp<DmArenaFighterComponent>(ghost);
     }
 
-    private void EnsureRule()
+    public void EnsureRule()
     {
         if (_ruleEntity is { } existing && !TerminatingOrDeleted(existing))
             return;
@@ -436,6 +455,14 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     {
         ruleUid = default;
 
+        if (!DebugSpawnEnabled)
+        {
+            if (session.AttachedEntity is { } ghost)
+                _popup.PopupEntity(Loc.GetString("dm-arena-debug-spawn-disabled"), ghost, ghost);
+
+            return false;
+        }
+
         if (_ruleEntity is not { } rule || CurrentRule is not { Active: true })
         {
             Log.Warning($"DM arena join rejected: rule {ToPrettyString(_ruleEntity)} is not active or the map is not loaded");
@@ -449,6 +476,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         }
 
         if (CurrentRule is { } current
+            && !DebugNoCooldown.Contains(session.UserId)
             && current.RespawnCooldowns.TryGetValue(session.UserId, out var until)
             && until > _timing.CurTime)
         {
@@ -563,7 +591,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private bool IsInCombat(Entity<DmArenaFighterComponent> ent)
     {
-        if (!TryGetFighterRule(ent, out var rule)
+        if (!DebugCombatLock
+            || !TryGetFighterRule(ent, out var rule)
             || _mobState.IsCritical(ent)
             || _timing.CurTime >= ent.Comp.LastCombat + rule.CombatLock)
             return false;
@@ -607,10 +636,21 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         var originalBody = mind.OwnedEntity != ghost ? mind.OwnedEntity : null;
         var ownerId = mind.UserId;
-        var mob = _stationSpawning.SpawnPlayerMob(spawnCoords, null, BuildArenaProfile(mind), null);
+        var profile = BuildArenaProfile(mind);
+        var rofls = DebugRofls.Contains(session.UserId);
+        var mob = rofls
+            ? Spawn(PigPrototype, spawnCoords)
+            : _stationSpawning.SpawnPlayerMob(spawnCoords, null, profile, null);
+
+        if (rofls)
+        {
+            _mind.MakeSentient(mob);
+            if (profile != null)
+                _meta.SetEntityName(mob, profile.Name);
+        }
 
         // Выдача могла упасть: удаляем тело без владельца
-        if (!TryEquipLoadout(mob, rule, chosen, session))
+        if (!rofls && !TryEquipLoadout(mob, rule, chosen, session))
         {
             QueueDel(mob);
             return false;
@@ -747,7 +787,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private void StartRespawnCooldown(Entity<DmArenaFighterComponent> ent, DmArenaRuleComponent rule)
     {
-        if (CompOrNull<ActorComponent>(ent)?.PlayerSession is { } session)
+        if (CompOrNull<ActorComponent>(ent)?.PlayerSession is { } session && !DebugNoCooldown.Contains(session.UserId))
             rule.RespawnCooldowns[session.UserId] = _timing.CurTime + rule.RespawnCooldown;
     }
 
@@ -1049,8 +1089,13 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         if (!TryComp<DmArenaRuleComponent>(ruleEntity, out var rule))
             return new DmArenaKitEuiState(new List<DmArenaStoreOption>(), new List<DmArenaStoreSetOption>(), 0, 0, null, null, string.Empty);
 
-        var items = rule.ShopItems.Select((item, index) => BuildItemOption(item, index)).ToList();
+        var items = rule.ShopItems
+            .Select((item, index) => (item, index))
+            .Where(x => !DebugDisabledItems.Contains(x.item.Gear.Id))
+            .Select(x => BuildItemOption(x.item, x.index))
+            .ToList();
         var sets = rule.Sets
+            .Where(set => !set.Items.Any(gear => DebugDisabledItems.Contains(gear.Id)))
             .Select(set => BuildSetOption(rule, set))
             .Where(option => option.Items.Count > 0 && option.Cost <= rule.Budget)
             .ToList();
@@ -1136,6 +1181,9 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         foreach (var (index, count) in counts)
         {
             var item = rule.ShopItems[index];
+            if (DebugDisabledItems.Contains(item.Gear.Id))
+                return false;
+
             var gear = _prototype.Index(item.Gear);
 
             var equipable = gear.Equipment.Count > 0 || gear.Inhand.Count > 0;

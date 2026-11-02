@@ -22,10 +22,10 @@
   - type: Blocking
     passiveBlockModifier:
       flatReductions:
-        Blunt: 6
-        Slash: 5
-        Piercing: 2
-        Heat: 2
+        Blunt: 7
+        Slash: 6
+        Piercing: 3
+        Heat: 3
 
 - type: entity
   id: FishArenaRiotLaserShield
@@ -35,10 +35,10 @@
   - type: Blocking
     passiveBlockModifier:
       flatReductions:
-        Blunt: 2
-        Slash: 3
-        Piercing: 2
-        Heat: 8
+        Blunt: 3
+        Slash: 4
+        Piercing: 3
+        Heat: 10
   - type: Reflect
     reflectProb: 0.1
 
@@ -52,12 +52,12 @@
       flatReductions:
         Blunt: 2
         Slash: 2
-        Piercing: 4
-        Heat: 10
+        Piercing: 5
+        Heat: 12
       coefficients:
-        Heat: 0.75
+        Heat: 0.7
   - type: Reflect
-    reflectProb: 0.4
+    reflectProb: 0.65
 
 - type: entity
   id: FishArenaRiotBulletShield
@@ -67,7 +67,7 @@
   - type: Blocking
     passiveBlockModifier:
       flatReductions:
-        Blunt: 3
-        Slash: 2
-        Piercing: 8
-        Heat: 2
+        Blunt: 4
+        Slash: 3
+        Piercing: 10
+        Heat: 3
