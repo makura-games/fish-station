@@ -76,7 +76,7 @@ public sealed class FishNaturalNightVisionTest
     [Test]
     public async Task EquipmentTemporarilyOverridesNaturalVisionAndDetachingClearsIt()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var server = pair.Server;
         var client = pair.Client;
         var map = await pair.CreateTestMap();
