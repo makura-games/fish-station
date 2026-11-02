@@ -8,3 +8,23 @@
       time: 36000 # 10 hours
   equipment:
     neck: FishClothingNeckCloakNanoTrasenRepresentative
+- type: loadout
+  id: NTRepresentativeJumpsuit
+  effects:
+   - !type:JobRequirementLoadoutEffect
+      requirement:
+       !type:RoleTimeRequirement
+        role: JobNanoTrasenRepresentative
+        time: 36000 # 10 hours
+  equipment:
+        innerClothing: FishClothingUniformJumpsuitNanoTrasenRepresentative
+- type: loadout
+  id: NTRepresentativeJumpskirt
+  effects:
+   - !type:JobRequirementLoadoutEffect
+      requirement:
+       !type:RoleTimeRequirement
+        role: JobNanoTrasenRepresentative
+        time: 36000 # 10 hours
+  equipment:
+        innerClothing: FishClothingUniformJumpskirtNanoTrasenRepresentative

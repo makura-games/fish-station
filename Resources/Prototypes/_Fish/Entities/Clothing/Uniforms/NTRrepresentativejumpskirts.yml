@@ -1,0 +1,13 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: FishClothingUniformJumpskirtNanoTrasenRepresentative
+  name: Black NT representative skirt
+  description: A skirt in a strict, regulation style, which is part of the official uniform for female representatives of NanoTwasen.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Uniforms/jumpskirt/ntr_black.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Fish/Clothing/Uniforms/jumpskirt/ntr_black.rsi
+    state: equipped-INNERCLOTHING

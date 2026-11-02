@@ -1,0 +1,13 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: FishClothingUniformJumpsuitNanoTrasenRepresentative
+  name: Black NT representative uniform
+  description: An exquisite outfit with gold-colored trim, created specifically for NanoTwasen representatives.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Uniforms/jumpsuit/ntr_black.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Fish/Clothing/Uniforms/jumpsuit/ntr_black.rsi
+    state: equipped-INNERCLOTHING
