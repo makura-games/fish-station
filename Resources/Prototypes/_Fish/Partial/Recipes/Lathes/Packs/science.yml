@@ -3,17 +3,8 @@
   id: ScienceEquipment
   recipes:
   - FishProcessedUranium
-  - FishXenoCarrier
-  - FishXenoCarrierAdvanced
 
 - type: !PartialOnly latheRecipePack
   id: ScienceWeapons
   recipes:
   - FishRadiationEmitter
-
-- type: !PartialOnly latheRecipePack
-  id: ScienceBoards
-  recipes:
-  - FishXenoProcessorBoard
-  - FishXenoConsoleBoard
-  - FishXenoThermostatBoard

@@ -1,5 +1,0 @@
-# Fish-edit: промышленный катализатор появляется в протолате после исследования.
-- type: !PartialOnly latheRecipePack
-  id: ScienceEquipment
-  recipes:
-  - FishXenoIndustrialCatalyst
