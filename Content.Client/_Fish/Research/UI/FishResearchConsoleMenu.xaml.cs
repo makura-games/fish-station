@@ -258,7 +258,7 @@ public sealed partial class FishResearchConsoleMenu : FancyWindow
         _disciplineButtons.Clear();
         _disciplineProgress.Clear();
         var allName = _loc.GetString("fish-research-tree-all");
-        _allDisciplinesButton = new Button { Text = allName, ToolTip = allName, ToggleMode = true, ClipText = true };
+        _allDisciplinesButton = new Button { Text = allName, ToolTip = allName, ToggleMode = true };
         StyleDisciplineButton(_allDisciplinesButton);
         _allDisciplinesButton.OnPressed += _ => SetDiscipline(null);
         DisciplineList.AddChild(_allDisciplinesButton);
@@ -272,7 +272,7 @@ public sealed partial class FishResearchConsoleMenu : FancyWindow
         {
             var group = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 3 };
             var name = _loc.GetString(discipline.Name);
-            var button = new Button { Text = name, ToolTip = name, ToggleMode = true, ClipText = true, HorizontalExpand = true };
+            var button = new Button { Text = name, ToolTip = name, ToggleMode = true, HorizontalExpand = true };
             StyleDisciplineButton(button);
             button.OnPressed += _ => SetDiscipline(id);
             var heading = new BoxContainer { SeparationOverride = 6, HorizontalExpand = true };
@@ -296,12 +296,13 @@ public sealed partial class FishResearchConsoleMenu : FancyWindow
         Graph.SetFilter(_filterDiscipline, SearchEdit.Text);
     }
 
-    private static void StyleDisciplineButton(Button button)
+    private void StyleDisciplineButton(Button button)
     {
-        button.TextAlign = Label.AlignMode.Left;
-        // Fish-edit: нативный класс Label принудительно центрирует текст поверх TextAlign.
-        button.Label.RemoveStyleClass(Button.StyleClassButton);
-        button.Label.AddStyleClass(StyleClass.FontSmall);
+        button.Label.Visible = false;
+        var caption = Text(button.Text ?? string.Empty);
+        caption.AddStyleClass(StyleClass.FontSmall);
+        caption.MouseFilter = MouseFilterMode.Ignore;
+        button.AddChild(caption);
     }
 
     private void SetDiscipline(ProtoId<TechDisciplinePrototype>? discipline)

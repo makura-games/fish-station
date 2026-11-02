@@ -5,6 +5,7 @@ using Content.Server._Fish.Xenobiology;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.Systems;
 using Content.Shared._Fish.Xenobiology;
+using Content.Shared._Sunrise.SunriseCCVars;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands.EntitySystems;
@@ -32,6 +33,7 @@ public sealed class FishXenobiologyLifecycleTest
         {
             var server = lab.Pair.Server;
             var originallyEnabled = false;
+            var originallySleepingWithoutPlayers = true;
             EntityUid food = default;
             try
             {
@@ -40,6 +42,11 @@ public sealed class FishXenobiologyLifecycleTest
                     var npc = server.System<NPCSystem>();
                     originallyEnabled = npc.Enabled;
                     npc.Enabled = true;
+                    // Fish-start: в тесте нет игроков, поэтому отключаем сон NPC и будим уже уснувшего слайма.
+                    originallySleepingWithoutPlayers = server.CfgMan.GetCVar(SunriseCCVars.NpcDisableWithoutPlayers);
+                    server.CfgMan.SetCVar(SunriseCCVars.NpcDisableWithoutPlayers, false);
+                    npc.WakeNPC(lab.Slime);
+                    // Fish-end
                     food = server.EntMan.SpawnEntity("FoodMeat",
                         new EntityCoordinates(lab.Coordinates.EntityId, 2.75f, 1.5f));
                     server.System<SatiationSystem>().SetValue((lab.Slime,
@@ -67,7 +74,11 @@ public sealed class FishXenobiologyLifecycleTest
             }
             finally
             {
-                await server.WaitPost(() => server.System<NPCSystem>().Enabled = originallyEnabled);
+                await server.WaitPost(() =>
+                {
+                    server.System<NPCSystem>().Enabled = originallyEnabled;
+                    server.CfgMan.SetCVar(SunriseCCVars.NpcDisableWithoutPlayers, originallySleepingWithoutPlayers);
+                });
             }
         });
     }

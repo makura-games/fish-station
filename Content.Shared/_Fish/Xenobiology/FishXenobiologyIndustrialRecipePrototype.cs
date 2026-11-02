@@ -24,7 +24,7 @@ public sealed partial class FishXenobiologyIndustrialRecipePrototype : IPrototyp
 
     /// <summary>The unused ordinary extracts consumed after the induction catalyst.</summary>
     [DataField]
-    public int RequiredExtracts = 10;
+    public int RequiredExtracts = 6;
 
     /// <summary>Liquid plasma consumed before spawning each batch.</summary>
     [DataField]

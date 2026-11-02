@@ -6,7 +6,7 @@ fish-xeno-serum-limit = This treatment cannot improve the slime any further.
 fish-xeno-serum-applied = The slime absorbs the genetic treatment.
 
 ent-FishXenoExtractGrey = grey extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureGrey = grey culture
@@ -14,7 +14,7 @@ ent-FishXenoCultureGrey = grey culture
     .suffix = Fish
 
 ent-FishXenoExtractBlue = blue extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureBlue = blue culture
@@ -22,7 +22,7 @@ ent-FishXenoCultureBlue = blue culture
     .suffix = Fish
 
 ent-FishXenoExtractMetal = metal extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureMetal = metal culture
@@ -30,7 +30,7 @@ ent-FishXenoCultureMetal = metal culture
     .suffix = Fish
 
 ent-FishXenoExtractOrange = orange extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureOrange = orange culture
@@ -38,7 +38,7 @@ ent-FishXenoCultureOrange = orange culture
     .suffix = Fish
 
 ent-FishXenoExtractPurple = purple extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCulturePurple = purple culture
@@ -46,7 +46,7 @@ ent-FishXenoCulturePurple = purple culture
     .suffix = Fish
 
 ent-FishXenoExtractDarkBlue = dark blue extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureDarkBlue = dark blue culture
@@ -54,7 +54,7 @@ ent-FishXenoCultureDarkBlue = dark blue culture
     .suffix = Fish
 
 ent-FishXenoExtractDarkPurple = dark purple extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureDarkPurple = dark purple culture
@@ -62,7 +62,7 @@ ent-FishXenoCultureDarkPurple = dark purple culture
     .suffix = Fish
 
 ent-FishXenoExtractSilver = silver extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureSilver = silver culture
@@ -70,7 +70,7 @@ ent-FishXenoCultureSilver = silver culture
     .suffix = Fish
 
 ent-FishXenoExtractYellow = yellow extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureYellow = yellow culture
@@ -78,7 +78,7 @@ ent-FishXenoCultureYellow = yellow culture
     .suffix = Fish
 
 ent-FishXenoExtractRed = red extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureRed = red culture
@@ -86,7 +86,7 @@ ent-FishXenoCultureRed = red culture
     .suffix = Fish
 
 ent-FishXenoExtractGreen = green extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureGreen = green culture
@@ -94,7 +94,7 @@ ent-FishXenoCultureGreen = green culture
     .suffix = Fish
 
 ent-FishXenoExtractPink = pink extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCulturePink = pink culture
@@ -102,7 +102,7 @@ ent-FishXenoCulturePink = pink culture
     .suffix = Fish
 
 ent-FishXenoExtractGold = gold extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureGold = gold culture
@@ -110,7 +110,7 @@ ent-FishXenoCultureGold = gold culture
     .suffix = Fish
 
 ent-FishXenoExtractCerulean = cerulean extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureCerulean = cerulean culture
@@ -118,7 +118,7 @@ ent-FishXenoCultureCerulean = cerulean culture
     .suffix = Fish
 
 ent-FishXenoExtractPyrite = pyrite extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCulturePyrite = pyrite culture
@@ -126,7 +126,7 @@ ent-FishXenoCulturePyrite = pyrite culture
     .suffix = Fish
 
 ent-FishXenoExtractBluespace = bluespace extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureBluespace = bluespace culture
@@ -134,7 +134,7 @@ ent-FishXenoCultureBluespace = bluespace culture
     .suffix = Fish
 
 ent-FishXenoExtractSepia = sepia extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureSepia = sepia culture
@@ -142,7 +142,7 @@ ent-FishXenoCultureSepia = sepia culture
     .suffix = Fish
 
 ent-FishXenoExtractOil = oil extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureOil = oil culture
@@ -150,7 +150,7 @@ ent-FishXenoCultureOil = oil culture
     .suffix = Fish
 
 ent-FishXenoExtractBlack = black extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureBlack = black culture
@@ -158,7 +158,7 @@ ent-FishXenoCultureBlack = black culture
     .suffix = Fish
 
 ent-FishXenoExtractLightPink = light pink extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureLightPink = light pink culture
@@ -166,7 +166,7 @@ ent-FishXenoCultureLightPink = light pink culture
     .suffix = Fish
 
 ent-FishXenoExtractAdamantine = adamantine extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureAdamantine = adamantine culture
@@ -174,7 +174,7 @@ ent-FishXenoCultureAdamantine = adamantine culture
     .suffix = Fish
 
 ent-FishXenoExtractRainbow = rainbow extract
-    .desc = A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+    .desc = A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
     .suffix = Fish
 
 ent-FishXenoCultureRainbow = rainbow culture
@@ -224,10 +224,10 @@ fish-xeno-reaction-grey-culture = replacement culture
 fish-xeno-reaction-grey-culture-desc = Produces one dormant grey culture; hydrate it with 5 units of water on the floor.
 
 fish-xeno-reaction-blue-coolant = cryogenic medicine
-fish-xeno-reaction-blue-coolant-desc = Produces 15 units of cryoxadone for cryogenic treatment.
+fish-xeno-reaction-blue-coolant-desc = Produces 20 units of cryoxadone for cryogenic treatment.
 
 fish-xeno-reaction-metal-materials = building materials
-fish-xeno-reaction-metal-materials-desc = Produces one sheet of steel and one sheet of glass.
+fish-xeno-reaction-metal-materials-desc = Produces stacks of 5 steel sheets and 3 glass sheets.
 
 fish-xeno-reaction-orange-flares = emergency lighting
 fish-xeno-reaction-orange-flares-desc = Produces two emergency flares.
@@ -239,10 +239,10 @@ fish-xeno-reaction-dark-blue-thermal = thermal genetics
 fish-xeno-reaction-dark-blue-thermal-desc = Produces one serum widening inherited thermal tolerance.
 
 fish-xeno-reaction-dark-purple-plasma = plasma crystallization
-fish-xeno-reaction-dark-purple-plasma-desc = Produces one sheet of solid plasma.
+fish-xeno-reaction-dark-purple-plasma-desc = Produces 2 sheets of solid plasma.
 
 fish-xeno-reaction-silver-cleaner = cleaning sample
-fish-xeno-reaction-silver-cleaner-desc = Produces 20 units of space cleaner.
+fish-xeno-reaction-silver-cleaner-desc = Produces 40 units of space cleaner.
 
 fish-xeno-reaction-yellow-cell = bioelectric cell
 fish-xeno-reaction-yellow-cell-desc = Produces a charged 720-joule ordinary power cell without self-charging.
@@ -256,14 +256,11 @@ fish-xeno-reaction-green-fertility-desc = Produces one serum increasing inherite
 fish-xeno-reaction-pink-docility = docility genetics
 fish-xeno-reaction-pink-docility-desc = Produces one serum increasing inherited docility.
 
-fish-xeno-reaction-gold-metal = gold precipitation
-fish-xeno-reaction-gold-metal-desc = Produces one gold ingot.
-
 fish-xeno-reaction-cerulean-growth = growth genetics
 fish-xeno-reaction-cerulean-growth-desc = Produces one serum increasing inherited growth speed.
 
 fish-xeno-reaction-pyrite-harvest = botanical fertilizer
-fish-xeno-reaction-pyrite-harvest-desc = Produces 15 units of robust harvest for hydroponics.
+fish-xeno-reaction-pyrite-harvest-desc = Produces 30 units of robust harvest for hydroponics.
 
 fish-xeno-reaction-bluespace-stimulant = neural stimulant
 fish-xeno-reaction-bluespace-stimulant-desc = Produces 15 units of synaptizine; it does not produce bluespace crystals.
@@ -281,7 +278,7 @@ fish-xeno-reaction-light-pink-docility = concentrated docility
 fish-xeno-reaction-light-pink-docility-desc = Produces two docility serums.
 
 fish-xeno-reaction-adamantine-alloy = reinforced alloy
-fish-xeno-reaction-adamantine-alloy-desc = Produces one sheet of plasteel.
+fish-xeno-reaction-adamantine-alloy-desc = Produces 5 sheets of plasteel.
 
 fish-xeno-reaction-rainbow-genetics = prismatic genetics
 fish-xeno-reaction-rainbow-genetics-desc = Produces mutation, growth and thermal tolerance serums, one of each.

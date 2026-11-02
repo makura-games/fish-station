@@ -2,7 +2,7 @@
   parent: BaseItem
   id: FishXenoExtractBase
   name: slime extract
-  description: A single-use slime core. Consult the xenobiology console before adding five units of catalyst.
+  description: A single-use slime core. Consult the xenobiology console for the catalyst, dose and hazards before use.
   suffix: Fish
   abstract: true
   components:

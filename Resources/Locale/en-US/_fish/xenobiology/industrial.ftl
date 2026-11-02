@@ -1,9 +1,9 @@
 research-technology-fish-industrial-xenobiology = Industrial xenobiology
     .suffix = Fish
-fish-research-technology-fish-industrial-xenobiology-description = Single-use induction catalysts for transforming an adult laboratory slime with ten unused same-breed extracts into a reusable, plasma-fueled industrial extract.
+fish-research-technology-fish-industrial-xenobiology-description = Single-use induction catalysts for transforming an adult laboratory slime with six unused same-breed extracts into a reusable, plasma-fueled industrial extract.
 
 ent-FishXenoIndustrialCatalyst = industrial induction catalyst
-    .desc = A sealed catalyst for industrial slime induction. Its label specifies one living adult laboratory slime and ten unused extracts of the same breed.
+    .desc = A sealed catalyst for industrial slime induction. Its label specifies one living adult laboratory slime and six unused extracts of the same breed.
     .suffix = Fish
 ent-FishXenoIndustrialExtractBase = industrial slime extract
     .desc = A dense industrial slime core. Its label specifies liquid plasma and uninterrupted operation on a floor outside containers.

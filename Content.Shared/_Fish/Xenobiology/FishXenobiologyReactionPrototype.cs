@@ -42,4 +42,39 @@ public sealed partial class FishXenobiologyReactionPrototype : IPrototype
     /// <summary>The reagents delivered in a separate sample bottle.</summary>
     [DataField]
     public Dictionary<ProtoId<ReagentPrototype>, FixedPoint2> Reagents = new();
+
+    /// <summary>Отложенный эффект, дополняющий выдачу предметов и реагентов.</summary>
+    [DataField]
+    public FishXenobiologyReactionEffect Effect;
+
+    [DataField]
+    public TimeSpan Delay = TimeSpan.FromSeconds(3);
+
+    [DataField]
+    public float Radius = 2f;
+
+    /// <summary>Стаки огня, понижение температуры в K, энергия ЭМИ или интенсивность взрыва.</summary>
+    [DataField]
+    public float Strength;
+
+    /// <summary>Длительность отключения ЭМИ или стазиса.</summary>
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(3);
+
+    [DataField]
+    public List<EntProtoId> Creatures = new();
+
+    [DataField]
+    public int SpawnCount = 1;
+}
+
+public enum FishXenobiologyReactionEffect : byte
+{
+    None,
+    Fire,
+    Cold,
+    Emp,
+    Explosion,
+    Spawn,
+    Stasis,
 }

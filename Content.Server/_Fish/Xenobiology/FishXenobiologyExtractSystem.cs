@@ -1,3 +1,4 @@
+using Content.Server.Stack;
 using Content.Shared._Fish.Xenobiology;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
@@ -29,6 +30,8 @@ public sealed partial class FishXenobiologyExtractSystem : EntitySystem
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private FishXenobiologySystem _xenobiology = default!;
+    [Dependency] private FishXenobiologyReactionSystem _reaction = default!;
+    [Dependency] private StackSystem _stack = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
 
     private static readonly EntProtoId SampleBottle = "FishXenoSampleBottle";
@@ -47,8 +50,11 @@ public sealed partial class FishXenobiologyExtractSystem : EntitySystem
 
     private void OnExtractSolutionChanged(Entity<FishXenobiologyExtractComponent> ent, ref SolutionChangedEvent args)
     {
-        if (args.Solution.Comp.Id == ent.Comp.Solution)
-            TryReact(ent);
+        if (args.Solution.Comp.Id != ent.Comp.Solution)
+            return;
+
+        _reaction.InvalidateTransfer(ent);
+        TryReact(ent);
     }
 
     private void OnExtractExamined(Entity<FishXenobiologyExtractComponent> ent, ref ExaminedEvent args)
@@ -78,7 +84,8 @@ public sealed partial class FishXenobiologyExtractSystem : EntitySystem
     /// <summary>Claims an unused extract before chemistry callbacks or output spawns can re-enter this system.</summary>
     public bool TryReact(Entity<FishXenobiologyExtractComponent> ent)
     {
-        if (!CanReact(ent, out var reaction, out var solution, out var coordinates))
+        if (!CanReact(ent, out var reaction, out var solution, out var coordinates) ||
+            !_reaction.TryStart(ent, reaction))
             return false;
 
         // Fish-edit: изменение раствора вызывает вложенный SolutionChangedEvent, поэтому сначала расходуем экстракт.
@@ -87,8 +94,7 @@ public sealed partial class FishXenobiologyExtractSystem : EntitySystem
 
         foreach (var (product, count) in reaction.Products)
         {
-            for (var i = 0; i < count; i++)
-                Spawn(product, coordinates);
+            _stack.SpawnMultipleAtPosition(product, count, coordinates);
         }
 
         if (reaction.Reagents.Count > 0)
@@ -104,9 +110,11 @@ public sealed partial class FishXenobiologyExtractSystem : EntitySystem
             }
         }
 
+        _reaction.ExpectTransfer(ent);
         _adminLog.Add(LogType.Action, LogImpact.Low,
             $"{ToPrettyString(ent)} reacted using xenobiology recipe {reaction.ID}.");
-        _popup.PopupEntity(Loc.GetString("fish-xeno-extract-reacted", ("result", Loc.GetString(reaction.Name))), ent);
+        if (reaction.Effect == FishXenobiologyReactionEffect.None)
+            _popup.PopupEntity(Loc.GetString("fish-xeno-extract-reacted", ("result", Loc.GetString(reaction.Name))), ent);
         return true;
     }
 
@@ -134,7 +142,7 @@ public sealed partial class FishXenobiologyExtractSystem : EntitySystem
                 reaction = candidate;
         }
 
-        if (reaction == null)
+        if (reaction == null || !_reaction.CanStart(ent, reaction))
             return false;
 
         solution = solutionEntity.Value;

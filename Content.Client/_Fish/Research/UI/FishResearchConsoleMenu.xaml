@@ -6,27 +6,27 @@
                       SetSize="1100 700">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="8" Margin="8">
         <PanelContainer Name="HeaderPanel">
-            <BoxContainer Margin="10 8" SeparationOverride="12">
-                <BoxContainer Orientation="Vertical" MinWidth="155">
+            <BoxContainer Orientation="Vertical" Margin="10 8" SeparationOverride="4">
+                <BoxContainer SeparationOverride="12">
                     <Label Name="PointsLabel" StyleClasses="LabelHeading"/>
-                    <Label Name="FreeChoiceHint" Text="{Loc 'fish-research-tree-free-choice'}" ClipText="True"/>
+                    <LineEdit Name="SearchEdit" PlaceHolder="{Loc 'fish-research-tree-search'}" HorizontalExpand="True" VerticalAlignment="Center"/>
+                    <Button Name="ServerButton" Text="{Loc 'research-console-menu-server-selection-button'}" VerticalAlignment="Center"/>
                 </BoxContainer>
-                <LineEdit Name="SearchEdit" PlaceHolder="{Loc 'fish-research-tree-search'}" HorizontalExpand="True" VerticalAlignment="Center"/>
-                <Button Name="ServerButton" Text="{Loc 'research-console-menu-server-selection-button'}" VerticalAlignment="Center"/>
+                <RichTextLabel Name="FreeChoiceHint" Text="{Loc 'fish-research-tree-free-choice'}" HorizontalExpand="True"/>
             </BoxContainer>
         </PanelContainer>
         <BoxContainer Name="TreeContent" Access="Public" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="8">
-            <PanelContainer Name="SidebarPanel" SetWidth="174" VerticalExpand="True">
-                <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="SidebarPanel" SetWidth="220" VerticalExpand="True">
+                <ScrollContainer HScrollEnabled="False" ReserveScrollbarSpace="True" HorizontalExpand="True" VerticalExpand="True">
                     <BoxContainer Name="DisciplineList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8" Margin="8"/>
                 </ScrollContainer>
             </PanelContainer>
             <PanelContainer Name="GraphPanel" HorizontalExpand="True" VerticalExpand="True">
                 <research:FishResearchTreeControl Name="Graph" Access="Public" HorizontalExpand="True" VerticalExpand="True"/>
             </PanelContainer>
-            <PanelContainer Name="DetailsPanel" SetWidth="266" VerticalExpand="True">
+            <PanelContainer Name="DetailsPanel" SetWidth="300" VerticalExpand="True">
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" SeparationOverride="8">
-                    <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                    <ScrollContainer HScrollEnabled="False" ReserveScrollbarSpace="True" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Name="DetailsContent" Access="Public" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10"/>
                     </ScrollContainer>
                     <RichTextLabel Name="PurchaseStatusLabel" Access="Public" HorizontalExpand="True"/>
@@ -51,7 +51,7 @@
                     <Label Name="LockedLegend" Text="{Loc 'fish-research-tree-legend-locked'}"/>
                     <Control HorizontalExpand="True"/>
                 </BoxContainer>
-                <Label Name="NavigationHint" Text="{Loc 'fish-research-tree-navigation'}" ClipText="True"/>
+                <RichTextLabel Name="NavigationHint" Text="{Loc 'fish-research-tree-navigation'}" HorizontalExpand="True"/>
             </BoxContainer>
         </PanelContainer>
     </BoxContainer>

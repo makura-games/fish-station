@@ -29,7 +29,7 @@
   reagent: Water
   amount: 5
   reagents:
-    Cryoxadone: 15
+    Cryoxadone: 20
 
 - type: fishXenobiologyReaction
   id: FishXenoReactionMetalMaterials
@@ -40,8 +40,8 @@
   reagent: Water
   amount: 5
   products:
-    SheetSteel1: 1
-    SheetGlass1: 1
+    SheetSteel1: 5
+    SheetGlass1: 3
 
 - type: fishXenobiologyReaction
   id: FishXenoReactionOrangeFlares
@@ -85,7 +85,7 @@
   reagent: Plasma
   amount: 5
   products:
-    SheetPlasma1: 1
+    SheetPlasma1: 2
 
 - type: fishXenobiologyReaction
   id: FishXenoReactionSilverCleaner
@@ -96,7 +96,7 @@
   reagent: Water
   amount: 5
   reagents:
-    SpaceCleaner: 20
+    SpaceCleaner: 40
 
 - type: fishXenobiologyReaction
   id: FishXenoReactionYellowCell
@@ -143,17 +143,6 @@
     FishXenoSerumDocility: 1
 
 - type: fishXenobiologyReaction
-  id: FishXenoReactionGoldMetal
-  suffix: Fish
-  breed: FishGold
-  name: fish-xeno-reaction-gold-metal
-  description: fish-xeno-reaction-gold-metal-desc
-  reagent: Plasma
-  amount: 5
-  products:
-    IngotGold1: 1
-
-- type: fishXenobiologyReaction
   id: FishXenoReactionCeruleanGrowth
   suffix: Fish
   breed: FishCerulean
@@ -173,7 +162,7 @@
   reagent: Water
   amount: 5
   reagents:
-    RobustHarvest: 15
+    RobustHarvest: 30
 
 - type: fishXenobiologyReaction
   id: FishXenoReactionBluespaceStimulant
@@ -203,7 +192,7 @@
   breed: FishOil
   name: fish-xeno-reaction-oil-fuel
   description: fish-xeno-reaction-oil-fuel-desc
-  reagent: Plasma
+  reagent: Water
   amount: 5
   reagents:
     WeldingFuel: 20
@@ -239,7 +228,7 @@
   reagent: Plasma
   amount: 5
   products:
-    SheetPlasteel1: 1
+    SheetPlasteel1: 5
 
 - type: fishXenobiologyReaction
   id: FishXenoReactionRainbowGenetics

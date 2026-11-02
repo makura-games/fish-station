@@ -127,6 +127,11 @@
   - IndustrialEngineering
 
 - type: !PartialOnly technology
+  id: AdvancedAnomalyResearch
+  recipeUnlocks:
+  - FishRadiationEmitter
+
+- type: !PartialOnly technology
   id: DeterrenceTechnologies
   technologyPrerequisites:
   - BasicAnomalousResearch

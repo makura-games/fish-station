@@ -36,6 +36,94 @@ public sealed class FishResearchTreeUiTest
     private static readonly ProtoId<TechnologyPrototype> IndustrialRobotic = "IndustrialRobotic";
     private static readonly ProtoId<TechDisciplinePrototype> Experimental = "Experimental";
 
+    /// <summary>Russian captions remain within their controls at normal and minimum window sizes.</summary>
+    [TestCase(1100, 700)]
+    [TestCase(800, 480)]
+    public async Task RussianWindowCaptionsFitWithoutClipping(int width, int height)
+    {
+        await WithOpenConsole(async context =>
+        {
+            var client = context.Pair.Client;
+            var window = context.Window;
+            await client.WaitPost(() =>
+            {
+                window.SelectTechnology("FishAdvancedEngineeringSuits");
+                window.UpdateInformationPanel(new ResearchConsoleBoundInterfaceState(int.MaxValue));
+                window.SetSize = new Vector2(width, height);
+            });
+            await context.Pair.RunTicksSync(2);
+            await client.WaitPost(() =>
+            {
+                window.Measure(new Vector2(width, height));
+                window.Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(width, height)));
+            });
+            await client.WaitAssertion(() =>
+            {
+                var ui = client.ResolveDependency<IUserInterfaceManager>();
+                var texture = client.System<SpriteSystem>().Frame0(client.ProtoMan.Index(IndustrialRobotic).Icon);
+                var handle = new Mock<DrawingHandleScreen>(texture) { CallBase = true }.Object;
+                var clipped = new List<string>();
+                foreach (var label in Descendants(window).OfType<Label>())
+                {
+                    if (!label.VisibleInTree || string.IsNullOrEmpty(label.Text))
+                        continue;
+                    var font = label.StylePropertyDefault(Label.StylePropertyFont, ui.ThemeDefaults.LabelFont);
+                    var textSize = handle.GetDimensions(font, label.Text.AsSpan(), label.UIScale);
+                    if (textSize.X > label.PixelWidth + 1 || textSize.Y > label.PixelHeight + 1)
+                        clipped.Add($"{label.Text}: text {textSize}, control {label.PixelSize}");
+                }
+                foreach (var label in Descendants(window).OfType<RichTextLabel>())
+                {
+                    if (!label.VisibleInTree)
+                        continue;
+                    if (label.DesiredSize.X > label.Width + 1 || label.DesiredSize.Y > label.Height + 1)
+                        clipped.Add($"{label.Text}: desired {label.DesiredSize}, control {label.Size}");
+                }
+                Assert.That(clipped, Is.Empty, $"Captions must fit at {width} x {height}.");
+            });
+        }, "ru-RU");
+    }
+
+    /// <summary>Card wrapping retains complete localized technology names at different graph zoom levels.</summary>
+    [Test]
+    public async Task RussianCardCaptionsPreserveFullTechnologyNames()
+    {
+        await WithOpenConsole(async context =>
+        {
+            var client = context.Pair.Client;
+            var captions = new List<(string Name, string Caption)>();
+            await client.WaitPost(() =>
+            {
+                var graph = context.Window.Graph;
+                var ui = client.ResolveDependency<IUserInterfaceManager>();
+                var loc = client.ResolveDependency<ILocalizationManager>();
+                var texture = client.System<SpriteSystem>().Frame0(client.ProtoMan.Index(IndustrialRobotic).Icon);
+                var handle = new Mock<DrawingHandleScreen>(texture) { CallBase = true }.Object;
+                var font = graph.StylePropertyDefault(Label.StylePropertyFont, ui.ThemeDefaults.LabelFont);
+                var wrap = typeof(FishResearchTreeControl).GetMethod("WrapCaption", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                foreach (var zoom in new[] { 0.44f, 0.8f, 1.6f })
+                {
+                    graph.SetViewport(zoom, Vector2.Zero);
+                    foreach (var id in graph.VisibleTechnologyIds)
+                    {
+                        var name = loc.GetString(client.ProtoMan.Index(id).Name);
+                        var caption = (string) wrap.Invoke(graph, new object[] { handle, font, name, 184f })!;
+                        captions.Add((name, caption));
+                    }
+                }
+            });
+            await client.WaitAssertion(() =>
+            {
+                foreach (var (name, caption) in captions)
+                {
+                    Assert.That(string.Concat(caption.Where(c => !char.IsWhiteSpace(c))),
+                        Is.EqualTo(string.Concat(name.Where(c => !char.IsWhiteSpace(c)))),
+                        $"Card caption must preserve the full name: {name}");
+                }
+            });
+        }, "ru-RU");
+    }
+
     [Test]
     public async Task ResearchConsoleOpensFishResearchTreeWindow()
     {

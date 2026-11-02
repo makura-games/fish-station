@@ -4,6 +4,10 @@
   name: xenobiology sample
   description: A reagent sample produced by a slime extract. Check its contents before use.
   suffix: Fish
+  components:
+  - type: Solution
+    solution:
+      maxVol: 50
 
 - type: entity
   parent: PowerCellMedium

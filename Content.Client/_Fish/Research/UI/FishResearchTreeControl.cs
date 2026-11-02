@@ -14,12 +14,15 @@ namespace Content.Client._Fish.Research.UI;
 /// </summary>
 public sealed partial class FishResearchTreeControl : Control
 {
-    private static readonly Vector2 NodeSize = new(252, 124);
+    private static readonly Vector2 NodeSize = new(252, 168);
     private static readonly Color ResearchedTextColor = Color.InterpolateBetween(Palettes.Green.Base, Color.White, 0.35f);
     private static readonly Color AvailableTextColor = Color.InterpolateBetween(Palettes.Navy.Base, Color.White, 0.55f);
     private static readonly Color LockedTextColor = Color.InterpolateBetween(Palettes.Slate.Base, Color.White, 0.45f);
     private const float ColumnSpacing = 308;
-    private const float RowSpacing = 146;
+    private const float RowSpacing = 190;
+    private const float CaptionTop = 14;
+    private const float MetadataTop = 116;
+    private const float StatusTop = 142;
     private readonly Dictionary<ProtoId<TechnologyPrototype>, Node> _nodes = new();
     private readonly Dictionary<ProtoId<TechnologyPrototype>, UIBox2> _nodeBounds = new();
     private readonly List<FishResearchTreeEdge> _edges = new();
@@ -286,8 +289,14 @@ public sealed partial class FishResearchTreeControl : Control
         var font = StylePropertyDefault(Label.StylePropertyFont, UserInterfaceManager.ThemeDefaults.LabelFont);
         if (_captionsDirty)
         {
+            var textScale = UIScale * Zoom;
+            var captionHeight = (MetadataTop - CaptionTop - 8) * textScale;
             foreach (var node in _nodes.Values)
+            {
                 node.Caption = WrapCaption(handle, font, node.Technology.Name, 184);
+                var height = handle.GetDimensions(font, node.Caption.AsSpan(), textScale).Y;
+                node.CaptionScale = height > 0 ? MathF.Min(1f, captionHeight / height) : 1f;
+            }
             _captionsDirty = false;
         }
 
@@ -318,10 +327,10 @@ public sealed partial class FishResearchTreeControl : Control
             _nodeBox.Draw(handle, rect, UIScale * Zoom);
             handle.DrawRect(ToPixels(node.Position, new Vector2(NodeSize.X, 4)), node.Color);
             handle.DrawTextureRect(node.Technology.Icon, ToPixels(node.Position + new Vector2(12, 16), new Vector2(32)), Color.White);
-            DrawText(handle, font, node.Position + new Vector2(54, 14), node.Caption, Color.White);
-            DrawText(handle, font, node.Position + new Vector2(12, 72), node.Technology.Metadata, Palettes.Gold.Base);
+            DrawText(handle, font, node.Position + new Vector2(54, CaptionTop), node.Caption, Color.White, node.CaptionScale);
+            DrawText(handle, font, node.Position + new Vector2(12, MetadataTop), node.Technology.Metadata, Palettes.Gold.Base);
             if (_stateNames.TryGetValue(state, out var stateName))
-                DrawText(handle, font, node.Position + new Vector2(12, 98), stateName, statusColor);
+                DrawText(handle, font, node.Position + new Vector2(12, StatusTop), stateName, statusColor);
         }
     }
 
@@ -361,33 +370,39 @@ public sealed partial class FishResearchTreeControl : Control
 
     private UIBox2 ToPixels(Vector2 position, Vector2 size) => UIBox2.FromDimensions(GraphToUi(position) * UIScale, size * Zoom * UIScale);
 
-    private void DrawText(DrawingHandleScreen handle, Font font, Vector2 position, string text, Color color)
+    private void DrawText(DrawingHandleScreen handle, Font font, Vector2 position, string text, Color color, float fontScale = 1f)
     {
-        handle.DrawString(font, GraphToUi(position) * UIScale, text.AsSpan(), UIScale * Zoom, color);
+        handle.DrawString(font, GraphToUi(position) * UIScale, text.AsSpan(), UIScale * Zoom * fontScale, color);
     }
 
     private string WrapCaption(DrawingHandleScreen handle, Font font, string text, float width)
     {
         var scale = UIScale * Zoom;
         var limit = width * scale;
-        if (handle.GetDimensions(font, text.AsSpan(), scale).X <= limit)
-            return text;
+        var lines = new List<string>();
+        var remaining = text;
+        while (remaining.Length > 0)
+        {
+            if (handle.GetDimensions(font, remaining.AsSpan(), scale).X <= limit)
+            {
+                lines.Add(remaining);
+                break;
+            }
 
-        var split = text.Length;
-        while (split > 0 && handle.GetDimensions(font, text.AsSpan(0, split), scale).X > limit)
-            split--;
-        var space = text.LastIndexOf(' ', Math.Max(0, split - 1), split);
-        if (space > 0)
-            split = space;
-        var first = text[..split].TrimEnd();
-        var rest = text[split..].TrimStart();
-        if (handle.GetDimensions(font, rest.AsSpan(), scale).X <= limit)
-            return first + "\n" + rest;
-        var end = rest.Length;
-        while (end > 0 && handle.GetDimensions(font, (rest[..end] + "…").AsSpan(), scale).X > limit)
-            end--;
-        var second = end == rest.Length ? rest : rest[..end].TrimEnd() + "…";
-        return first + "\n" + second;
+            var split = remaining.Length;
+            while (split > 0 && handle.GetDimensions(font, remaining.AsSpan(0, split), scale).X > limit)
+                split--;
+            if (split > 0 && split < remaining.Length && char.IsSurrogatePair(remaining, split - 1))
+                split--;
+            if (split == 0)
+                split = char.IsSurrogatePair(remaining, 0) ? 2 : 1;
+            var space = remaining.LastIndexOf(' ', split - 1, split);
+            if (space > 0)
+                split = space;
+            lines.Add(remaining[..split].TrimEnd());
+            remaining = remaining[split..].TrimStart();
+        }
+        return string.Join('\n', lines);
     }
 
     internal static Color StateColor(FishResearchNodeState state) => state switch
@@ -403,5 +418,6 @@ public sealed partial class FishResearchTreeControl : Control
         public readonly Vector2 Position = position;
         public readonly Color Color = color;
         public string Caption = string.Empty;
+        public float CaptionScale = 1f;
     }
 }

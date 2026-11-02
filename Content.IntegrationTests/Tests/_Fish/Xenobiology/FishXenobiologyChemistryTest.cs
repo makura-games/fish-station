@@ -3,6 +3,7 @@ using Content.Shared._Fish.Xenobiology;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Stacks;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 
@@ -11,6 +12,33 @@ namespace Content.IntegrationTests.Tests._Fish.Xenobiology;
 [TestFixture, NonParallelizable]
 public sealed class FishXenobiologyChemistryTest
 {
+    [TestCase("Silver", "SpaceCleaner", 40)]
+    [TestCase("Blue", "Cryoxadone", 20)]
+    [TestCase("Pyrite", "RobustHarvest", 30)]
+    public async Task LiquidOutputFitsSampleBottle(string breed, string reagent, int amount)
+    {
+        await FishXenobiologyTestLab.WithLab(async lab =>
+        {
+            var server = lab.Pair.Server;
+            var solutions = server.System<SharedSolutionContainerSystem>();
+            await server.WaitAssertion(() =>
+            {
+                var extract = server.EntMan.SpawnEntity($"FishXenoExtract{breed}", lab.Coordinates);
+                Assert.That(solutions.TryGetSolution(extract, "extract", out var solution, out _), Is.True);
+                Assert.That(solutions.TryAddReagent(solution!.Value, "Water", FixedPoint2.New(5)), Is.True);
+                Assert.That(lab.CountPrototype("FishXenoSampleBottle"), Is.EqualTo(1));
+                var query = server.EntMan.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+                while (query.MoveNext(out var uid, out var metadata, out var transform))
+                {
+                    if (transform.MapUid != lab.Map || metadata.EntityPrototype?.ID != "FishXenoSampleBottle")
+                        continue;
+                    Assert.That(solutions.TryGetSolution(uid, "drink", out _, out var output), Is.True);
+                    Assert.That(output!.GetTotalPrototypeQuantity(reagent), Is.EqualTo(FixedPoint2.New(amount)));
+                }
+            });
+        });
+    }
+
     /// <summary>Nested chemistry callbacks and excess catalyst cannot duplicate finite material outputs.</summary>
     [Test]
     public async Task ExtractReactsOnceWithFixedYieldThroughNativeSolutionEvents()
@@ -40,6 +68,16 @@ public sealed class FishXenobiologyChemistryTest
                 Assert.That(server.EntMan.GetComponent<FishXenobiologyExtractComponent>(extract).Used, Is.True);
                 Assert.That(lab.CountPrototype("SheetSteel1"), Is.EqualTo(1));
                 Assert.That(lab.CountPrototype("SheetGlass1"), Is.EqualTo(1));
+                var query = server.EntMan.EntityQueryEnumerator<StackComponent, MetaDataComponent, TransformComponent>();
+                while (query.MoveNext(out var stack, out var metadata, out var transform))
+                {
+                    if (transform.MapUid != lab.Map)
+                        continue;
+                    if (metadata.EntityPrototype?.ID == "SheetSteel1")
+                        Assert.That(stack.Count, Is.EqualTo(5));
+                    if (metadata.EntityPrototype?.ID == "SheetGlass1")
+                        Assert.That(stack.Count, Is.EqualTo(3));
+                }
             });
         });
     }

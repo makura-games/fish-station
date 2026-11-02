@@ -104,9 +104,9 @@ public sealed class FishXenobiologyIndustrialTest
         });
     }
 
-    /// <summary>Ten individually held inputs transform one adult exactly once, including repeated same-tick attempts.</summary>
+    /// <summary>Шесть экстрактов превращают взрослого слайма ровно один раз, включая повторные попытки за один тик.</summary>
     [Test]
-    public async Task TenUnusedExtractsTransformOneInducedAdultExactlyOnce()
+    public async Task SixUnusedExtractsTransformOneInducedAdultExactlyOnce()
     {
         await FishXenobiologyTestLab.WithLab(async lab =>
         {
@@ -132,7 +132,7 @@ public sealed class FishXenobiologyIndustrialTest
                 Assert.That(entMan.GetComponent<FishXenobiologyIndustrialInductionComponent>(slime).ExtractsFed, Is.Zero);
             });
             await server.WaitRunTicks(1);
-            for (var index = 0; index < 10; index++)
+            for (var index = 0; index < 6; index++)
             {
                 var fed = false;
                 await server.WaitPost(() =>
@@ -146,7 +146,7 @@ public sealed class FishXenobiologyIndustrialTest
                 {
                     Assert.That(held && fed, Is.True);
                     Assert.That(repeated, Is.False, "A consumed held extract cannot be counted twice before deletion.");
-                    Assert.That(lab.CountPrototype("FishXenoIndustrialExtractMetal"), Is.EqualTo(index == 9 ? 1 : 0));
+                    Assert.That(lab.CountPrototype("FishXenoIndustrialExtractMetal"), Is.EqualTo(index == 5 ? 1 : 0));
                 });
                 await server.WaitRunTicks(1);
             }
@@ -299,6 +299,16 @@ public sealed class FishXenobiologyIndustrialTest
                 Assert.That(early || repeated, Is.False);
                 Assert.That(lab.CountPrototype("SheetSteel1"), Is.EqualTo(1));
                 Assert.That(lab.CountPrototype("SheetGlass1"), Is.EqualTo(1));
+                var stacks = entMan.EntityQueryEnumerator<StackComponent, MetaDataComponent, TransformComponent>();
+                while (stacks.MoveNext(out var stack, out var metadata, out var transform))
+                {
+                    if (transform.MapUid != lab.Map)
+                        continue;
+                    if (metadata.EntityPrototype?.ID == "SheetSteel1")
+                        Assert.That(stack.Count, Is.EqualTo(3));
+                    if (metadata.EntityPrototype?.ID == "SheetGlass1")
+                        Assert.That(stack.Count, Is.EqualTo(2));
+                }
                 solutions.TryGetSolution(extract, "extract", out _, out var mixture);
                 Assert.That(mixture.GetTotalPrototypeQuantity("Plasma"), Is.EqualTo(FixedPoint2.New(10)));
                 Assert.That(entMan.HasComponent<FishXenobiologyExtractComponent>(extract), Is.False);

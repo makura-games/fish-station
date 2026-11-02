@@ -29,7 +29,7 @@
   parent: BaseItem
   id: FishXenoIndustrialCatalyst
   name: industrial induction catalyst
-  description: A sealed catalyst for industrial slime induction. Its label specifies one living adult laboratory slime and ten unused extracts of the same breed.
+  description: A sealed catalyst for industrial slime induction. Its label specifies one living adult laboratory slime and six unused extracts of the same breed.
   suffix: Fish
   components:
   - type: Sprite
@@ -112,20 +112,20 @@
   suffix: Fish
   breed: FishMetal
   extract: FishXenoIndustrialExtractMetal
-  requiredExtracts: 10
+  requiredExtracts: 6
   plasmaCost: 5
   interval: 60
   products:
-    SheetSteel1: 1
-    SheetGlass1: 1
+    SheetSteel1: 3
+    SheetGlass1: 2
 
 - type: fishXenobiologyIndustrialRecipe
   id: FishXenoIndustrialYellow
   suffix: Fish
   breed: FishYellow
   extract: FishXenoIndustrialExtractYellow
-  requiredExtracts: 10
-  plasmaCost: 5
+  requiredExtracts: 6
+  plasmaCost: 6
   interval: 60
   products:
     FishXenoPowerCell: 1
@@ -135,31 +135,31 @@
   suffix: Fish
   breed: FishPurple
   extract: FishXenoIndustrialExtractPurple
-  requiredExtracts: 10
+  requiredExtracts: 6
   plasmaCost: 5
   interval: 60
   products:
-    Gauze1: 1
-    Ointment1: 1
+    Gauze1: 3
+    Ointment1: 2
 
 - type: fishXenobiologyIndustrialRecipe
   id: FishXenoIndustrialSilver
   suffix: Fish
   breed: FishSilver
   extract: FishXenoIndustrialExtractSilver
-  requiredExtracts: 10
-  plasmaCost: 5
+  requiredExtracts: 6
+  plasmaCost: 3
   interval: 60
   products:
-    FoodBreadPlainSlice: 2
+    FoodBreadPlainSlice: 3
 
 - type: fishXenobiologyIndustrialRecipe
   id: FishXenoIndustrialBlue
   suffix: Fish
   breed: FishBlue
   extract: FishXenoIndustrialExtractBlue
-  requiredExtracts: 10
-  plasmaCost: 5
+  requiredExtracts: 6
+  plasmaCost: 4
   interval: 60
   products:
     FireExtinguisherMini: 1
