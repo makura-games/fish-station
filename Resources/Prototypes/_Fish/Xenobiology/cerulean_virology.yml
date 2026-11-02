@@ -1,0 +1,39 @@
+# Fish-start — cerulean territory kit + virology бутылки
+- type: entity
+  parent: BaseBlueprint
+  id: FishCeruleanTerritoryMarkerFish
+  name: cerulean territory marker blueprint
+  suffix: Fish, CeruleanTerritory
+  description: A cerulean-tinted autolathe blueprint from xenobiology territory reaction.
+  components:
+  - type: Sprite
+    color: "#4a90c2"
+  - type: Blueprint
+    providedRecipes:
+    - Fulton
+    - SheetSteel1
+    - SheetGlass1
+
+- type: entity
+  id: FishChemistryBottleVirusGenesFish
+  suffix: Fish, VirusGenes
+  parent: BaseChemistryBottleFilled
+  name: bottle (virus genes)
+  components:
+  - type: Label
+    currentLabel: reagent-name-fish-virus-genes
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: FishVirusGenesFish
+        Quantity: 30
+
+- type: entity
+  id: FishChemistryBottleDiseaseStrainFish
+  suffix: Fish, DiseaseStrainEmpty
+  parent: BaseChemistryEmptyBottle
+  name: bottle (empty strain vial)
+  components:
+  - type: Label
+    currentLabel: fish-chemistry-bottle-disease-strain-label
+# Fish-end
