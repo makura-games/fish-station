@@ -327,7 +327,7 @@
         whitelist:
           components:
           - Flash
-          - PowerCell  # Fish-edit
+          - PowerCell  # Fish-edit: слот Flash использует PowerCell вместо Battery
           - TileFrictionModifier
           - CablePlacer
           - BorgModule

@@ -34,6 +34,10 @@
     notifyChannels:
     - Binary
     - Science
+  # Fish-start: акцент станционных киборгов
+  - type: ReplacementAccent
+    accent: FishCyborg
+  # Fish-end
 
 - type: entity
   id: BorgChassisGeneric
@@ -190,8 +194,7 @@
     - type: FootstepModifier
       footstepSoundCollection:
         collection: FootstepHoverBorg
-        # params:  Fish-edit: звуков было почти не слышно
-        #   volume: -6  Fish-edit
+        # Fish-edit: params.volume: -6 удалён, потому что звук был почти не слышен
     # Sunrise-Start
     - type: TTS
       voice: Sentrybot
