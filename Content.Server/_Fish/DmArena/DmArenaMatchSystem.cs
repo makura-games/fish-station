@@ -43,6 +43,7 @@ using Content.Shared.Tools.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared._Fish.DmArena;
 using Robust.Server.Audio;
+using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Configuration;
