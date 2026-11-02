@@ -87,6 +87,27 @@ ent-FishXenoOrganImplantAdrenalineFish = hyper adrenal xenOrgan implant
 ent-FishXenoOrganImplantSlimeSkinFish = slime-skin xenOrgan implant
     .suffix = Fish
 
+ent-FishXenoOrganCryoBurstFish = cryo burst xenOrgan
+    .suffix = Fish
+
+ent-FishXenoOrganEssenceFish = essence xenOrgan
+    .suffix = Fish
+
+ent-FishXenoOrganImplantCryoBurstFish = cryo burst xenOrgan implant
+    .suffix = Fish
+
+ent-FishXenoOrganImplantEssenceFish = essence xenOrgan implant
+    .suffix = Fish
+
+ent-FishCeruleanTerritoryMarkerFish = cerulean territory marker blueprint
+    .suffix = Fish
+
+ent-FishChemistryBottleVirusGenesFish = bottle (virus genes)
+    .suffix = Fish
+
+ent-FishChemistryBottleDiseaseStrainFish = bottle (xenostrain sample)
+    .suffix = Fish
+
 ent-FishXenobiologyOrganAnalyzerFish = xenOrgan analyzer
     .suffix = Fish
 
