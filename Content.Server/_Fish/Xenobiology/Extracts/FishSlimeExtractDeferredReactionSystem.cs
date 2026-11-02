@@ -50,6 +50,13 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     private static readonly string[] CeruleanBlueprints =
     [
         "BlueprintFulton", "BlueprintSeismicCharge", "BlueprintDoubleEmergencyTank",
+        "BlueprintMagAsh12Basic", "BlueprintMagMagnumBasic", "BlueprintProtoAdrenalImplant",
+        "FishCeruleanTerritoryMarkerFish",
+    ];
+
+    private static readonly string[] DiseaseBloodStrains =
+    [
+        "DiseaseBloodFirst", "DiseaseBloodSecond", "DiseaseBloodThird",
     ];
 
     [Dependency] private IGameTiming _timing = default!;
@@ -66,6 +73,8 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     [Dependency] private SharedStunSystem _stun = default!;
     [Dependency] private TemperatureSystem _temperature = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
+    [Dependency] private FishSlimeExtractGoldCritPoolSystem _goldCritPools = default!;
+    [Dependency] private FishCeruleanTerritorySystem _ceruleanTerritory = default!;
 
     public override void Initialize()
     {
@@ -97,13 +106,13 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
                     TriggerDarkBlueFreeze(coords);
                     break;
                 case FishSlimeExtractPendingKind.GoldCritHostile:
-                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, FishSlimeExtractGoldCritPools.PickHostile);
+                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, _goldCritPools.PickHostile);
                     break;
                 case FishSlimeExtractPendingKind.GoldCritLesser:
-                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, FishSlimeExtractGoldCritPools.PickLesser);
+                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, _goldCritPools.PickLesser);
                     break;
                 case FishSlimeExtractPendingKind.GoldCritFriendly:
-                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, FishSlimeExtractGoldCritPools.PickFriendly);
+                    TriggerGoldCritSpawn(coords, pending.GoldCritCount, _goldCritPools.PickFriendly);
                     break;
             }
 
@@ -287,6 +296,13 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
 
     private void TryCeruleanBlood(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
     {
+        if (!_ceruleanTerritory.TryClaimTerritoryChunk(ent, ent.Comp.LastInjector))
+        {
+            if (ent.Comp.LastInjector is { } user)
+                _popup.PopupEntity(Loc.GetString("fish-slime-extract-cerulean-territory-used"), ent, user);
+            return;
+        }
+
         _extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
             SpawnNextToOrDrop(_random.Pick(CeruleanBlueprints), ent));
     }
@@ -299,7 +315,17 @@ public sealed partial class FishSlimeExtractDeferredReactionSystem : EntitySyste
     private void TryBlackBlood(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
     {
         _extracts.TryPerformReaction(ent, soln, solution, "Blood", One, () =>
-            _solutions.TryAddReagent(soln, "FishVirusGenesFish", One));
+        {
+            SpawnNextToOrDrop("FishChemistryBottleVirusGenesFish", ent);
+            if (!_random.Prob(0.35f))
+                return;
+
+            var strain = SpawnNextToOrDrop("FishChemistryBottleDiseaseStrainFish", ent);
+            if (!_solutions.TryGetSolution(strain, "drink", out var strainSoln, out _))
+                return;
+
+            _solutions.TryAddReagent(strainSoln, _random.Pick(DiseaseBloodStrains), FixedPoint2.New(15));
+        });
     }
 
     private void TryOilPlasma(Entity<FishSlimeExtractComponent> ent, Entity<SolutionComponent> soln, Solution solution)
