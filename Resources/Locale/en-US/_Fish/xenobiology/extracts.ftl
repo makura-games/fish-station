@@ -7,6 +7,8 @@ fish-slime-extract-react = The solution begins to bubble.
 fish-slime-extract-spent = {CAPITALIZE(THE($extract))}'s power is consumed in the reaction.
 fish-slime-extract-gold-cap = Too many critters are already loose from gold extracts!
 fish-slime-extract-gold-pending = The extract begins to thrum — something will emerge in a few seconds.
+fish-slime-extract-cerulean-territory-used = Cerulean blood already marked this area — try another zone.
+fish-chemistry-bottle-disease-strain-label = xenostrain sample
 
 ent-FishSlimeExtractBase = slime extract
     .desc = Goo extracted from a slime. Legends claim it has strange powers.
