@@ -372,7 +372,7 @@
     sprite:
       sprite: Effects/creampie.rsi
       state: creampie_vulpkanin
-# Fish-start:
+# Fish-start: Добавление ПНВ
   - type: NightVision
     enabled: false
     action: ActionToggleNightVision
