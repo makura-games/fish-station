@@ -1,0 +1,53 @@
+- type: guideEntry
+  id: FishResearch
+  name: guide-entry-fish-rnd-research
+  text: "/ServerInfo/Guidebook/_Fish/Research/Overview.xml"
+  children:
+  - FishResearchTree
+  - FishResearchMaterials
+  - FishResearchProbers
+  - FishResearchHarvester
+  - FishResearchBackground
+  - FishResearchEquipment
+  - FishResearchOrders
+  - FishResearchTroubleshooting
+
+- type: guideEntry
+  id: FishResearchTree
+  name: guide-entry-fish-rnd-tree
+  text: "/ServerInfo/Guidebook/_Fish/Research/Tree.xml"
+
+- type: guideEntry
+  id: FishResearchMaterials
+  name: guide-entry-fish-rnd-materials
+  text: "/ServerInfo/Guidebook/_Fish/Research/Materials.xml"
+
+- type: guideEntry
+  id: FishResearchProbers
+  name: guide-entry-fish-rnd-probers
+  text: "/ServerInfo/Guidebook/_Fish/Research/Probers.xml"
+
+- type: guideEntry
+  id: FishResearchHarvester
+  name: guide-entry-fish-rnd-harvester
+  text: "/ServerInfo/Guidebook/_Fish/Research/Harvester.xml"
+
+- type: guideEntry
+  id: FishResearchBackground
+  name: guide-entry-fish-rnd-background
+  text: "/ServerInfo/Guidebook/_Fish/Research/Background.xml"
+
+- type: guideEntry
+  id: FishResearchEquipment
+  name: guide-entry-fish-rnd-equipment
+  text: "/ServerInfo/Guidebook/_Fish/Research/Equipment.xml"
+
+- type: guideEntry
+  id: FishResearchOrders
+  name: guide-entry-fish-rnd-orders
+  text: "/ServerInfo/Guidebook/_Fish/Research/Orders.xml"
+
+- type: guideEntry
+  id: FishResearchTroubleshooting
+  name: guide-entry-fish-rnd-troubleshooting
+  text: "/ServerInfo/Guidebook/_Fish/Research/Troubleshooting.xml"

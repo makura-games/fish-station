@@ -1,9 +1,10 @@
 - type: guideEntry
   id: Science
   name: guide-entry-science
-  text: "/ServerInfo/Guidebook/Science/Science.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Research/Overview.xml" # Fish-edit: актуальные правила исследований и оборудования.
   children:
   - Technologies
+  - FishResearch # Fish-edit: практическое руководство по РНД.
   - AnomalousResearch
   - Xenoarchaeology
   - Robotics
@@ -11,7 +12,7 @@
 - type: guideEntry
   id: Technologies
   name: guide-entry-technologies
-  text: "/ServerInfo/Guidebook/_Sunrise/Science/Technologies.xml" # Sunrise-Edit
+  text: "/ServerInfo/Guidebook/_Fish/Research/Catalog.xml" # Fish-edit: сохраняем каталог без отменённых ограничений уровней.
   filterEnabled: True
 
 - type: guideEntry
