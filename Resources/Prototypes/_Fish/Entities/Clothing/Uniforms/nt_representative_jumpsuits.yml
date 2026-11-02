@@ -10,4 +10,4 @@
     state: icon
   - type: Clothing
     sprite: _Fish/Clothing/Uniforms/Jumpsuit/NanoTrasen_rep.rsi
-    state: equipped-INNERCLOTHING
+    equippedState: equipped-INNERCLOTHING
