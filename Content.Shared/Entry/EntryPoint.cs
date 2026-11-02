@@ -32,7 +32,6 @@ namespace Content.Shared.Entry
         {
             // Sunrise-Edit - применяем изолированные изменения прототипов Sunrise
             _prototypeManager.PartialDirectory(new ResPath("/Prototypes/_Sunrise/Partial"), 0);
-            _prototypeManager.PartialDirectory(new ResPath("/Prototypes/_Fish/Partial"), 1); // Fish-edit: применяем изолированные изменения Fish после Sunrise.
             IgnorePrototypes();
         }
 
