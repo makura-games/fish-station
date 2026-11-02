@@ -1,0 +1,13 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: FishClothingUniformJumpskirtNanoTrasenRepresentative
+  name: black representative skirt
+  description: A skirt in a strict official style, part of the uniform for NanoTrasen representatives.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Uniforms/Jumpskirt/NanoTrasen_rep.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Fish/Clothing/Uniforms/Jumpskirt/NanoTrasen_rep.rsi
+    state: equipped-INNERCLOTHING

@@ -1,0 +1,13 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: FishClothingUniformJumpsuitNanoTrasenRepresentative
+  name: black representative uniform
+  description: An elegant uniform with gold-colored trim, created specifically for NanoTrasen representatives.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Uniforms/Jumpsuit/NanoTrasen_rep.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Fish/Clothing/Uniforms/Jumpsuit/NanoTrasen_rep.rsi
+    state: equipped-INNERCLOTHING
