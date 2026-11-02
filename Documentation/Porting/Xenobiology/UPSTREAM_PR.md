@@ -43,6 +43,7 @@
 - [x] Ящик лаборатории — `f53815f8e7`; cargo-заказ `FishXenobiologyLab` — `72248fcbc9` (карту не трогаем)
 - [x] Органы / диссекция / анализатор — `43719fae99`; лимит 3/тип, tech disk, импланты порция 3, таблица диссекции — `1c5c57127e`
 - [x] Gold crit Paradise parity (кап 45, delay 5s, пулы) / organ uniques порция 5 — `802a333ae8` (`PARITY_REPORT.md`)
+- [x] Gold autopool `FishSlimeExtractGoldCoreSpawnable`; cerulean territory chunk + расширенные blueprint; black blood бутылки; органы cryo/essence — `3de8295a83` (`PARITY_REPORT.md`)
 - [x] Консоль: verbs + multitool recycler — `72248fcbc9`
 - [ ] Сборка/YAML после `console.yml` / `organs.yml` — не перепроверялись в cloud VM
 - [x] Хендофф — `Documentation/Porting/Xenobiology/HANDOFF.md`
