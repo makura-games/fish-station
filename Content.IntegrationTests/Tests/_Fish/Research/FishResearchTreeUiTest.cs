@@ -182,8 +182,7 @@ public sealed class FishResearchTreeUiTest
                 Assert.That(VisibleIds(context.Window), Is.EquivalentTo(PrerequisiteClosure(context.Pair, new[] { IndustrialRobotic })));
                 Assert.That(VisibleIds(context.Window), Is.SupersetOf(new[]
                 {
-                    "IndustrialRobotic", "BasicRobotics", "IndustrialEngineering", "Durand",
-                    "Gygax", "EnergyBarriers", "Ripley2", "RipleyAPLU",
+                    "IndustrialRobotic", "BasicRobotics", "IndustrialEngineering",
                 }));
             });
         });
@@ -229,7 +228,7 @@ public sealed class FishResearchTreeUiTest
                     .Select(technology => (ProtoId<TechnologyPrototype>) technology.ID);
                 Assert.That(VisibleIds(context.Window), Is.EquivalentTo(PrerequisiteClosure(context.Pair, roots)));
                 Assert.That(VisibleIds(context.Window), Is.SupersetOf(new[]
-                    { "IndustrialEngineering", "Durand", "Gygax", "EnergyBarriers", "Ripley2", "RipleyAPLU" }));
+                    { "IndustrialEngineering", "SalvageEquipment", "FishUraniumProcessing", "AdvancedPowercells" }));
             });
         });
     }
@@ -284,7 +283,7 @@ public sealed class FishResearchTreeUiTest
                 var loc = client.ResolveDependency<ILocalizationManager>();
                 var captions = DetailCaptions(context.Window);
                 Assert.That(captions, Does.Contain(loc.GetString("fish-research-tree-cost", ("cost", 15000))));
-                foreach (var prerequisite in new[] { "BasicRobotics", "IndustrialEngineering", "Durand" })
+                foreach (var prerequisite in new[] { "BasicRobotics", "IndustrialEngineering" })
                 {
                     var name = loc.GetString(client.ProtoMan.Index<TechnologyPrototype>(prerequisite).Name);
                     Assert.That(captions, Does.Contain(loc.GetString("fish-research-tree-prerequisite-missing", ("name", name))));
@@ -341,6 +340,8 @@ public sealed class FishResearchTreeUiTest
             await client.WaitAssertion(() =>
             {
                 Assert.That(graph.NodeBounds.Keys.Select(id => id.ToString()), Is.EquivalentTo(ExpectedTechnologyIds(context)));
+                Assert.That(graph.NodeBounds.Keys.Select(id => id.ToString()), Does.Contain("Gygax"));
+                Assert.That(graph.Edges.Any(edge => edge.From == "Ripley2" && edge.To == "Gygax"), Is.True);
                 AssertRoutesAvoidCards(graph, "full tree");
             });
             await client.WaitPost(() => graph.SetFilter(Experimental, string.Empty));
@@ -413,7 +414,7 @@ public sealed class FishResearchTreeUiTest
             await client.WaitAssertion(() =>
             {
                 Assert.That(incoming.Select(edge => edge.From.ToString()),
-                    Is.EquivalentTo(new[] { "BasicRobotics", "IndustrialEngineering", "Durand" }));
+                    Is.EquivalentTo(new[] { "BasicRobotics", "IndustrialEngineering" }));
                 Assert.That(incoming.Count(edge => edge.From == selected), Is.EqualTo(1));
                 foreach (var edge in incoming)
                 {
@@ -424,11 +425,11 @@ public sealed class FishResearchTreeUiTest
                 var sharedSegment = DrawsFor(commonFrom);
                 var upperArrow = DrawsFor(arrowFrom[0]);
                 var lowerArrow = DrawsFor(arrowFrom[1]);
-                Assert.That(sharedSegment, Has.Length.EqualTo(3));
+                Assert.That(sharedSegment, Has.Length.EqualTo(2));
                 Assert.That(sharedSegment.Count(draw => draw.Color == activeColor), Is.EqualTo(1));
-                Assert.That(sharedSegment.Count(draw => draw.Color == inactiveColor), Is.EqualTo(2));
-                Assert.That(upperArrow, Has.Length.EqualTo(3));
-                Assert.That(lowerArrow, Has.Length.EqualTo(3));
+                Assert.That(sharedSegment.Count(draw => draw.Color == inactiveColor), Is.EqualTo(1));
+                Assert.That(upperArrow, Has.Length.EqualTo(2));
+                Assert.That(lowerArrow, Has.Length.EqualTo(2));
                 var firstActive = draws.FindIndex(draw => draw.Color == activeColor);
                 Assert.That(firstActive, Is.GreaterThanOrEqualTo(0));
                 Assert.Multiple(() =>
@@ -903,9 +904,7 @@ public sealed class FishResearchTreeUiTest
 
     private static void AssertRoutesAvoidCards(FishResearchTreeControl graph, string view)
     {
-        Assert.That(graph.NodeBounds.Keys.Select(id => id.ToString()), Does.Contain("Gygax"), view);
         Assert.That(graph.Edges.Any(edge => edge.From == "IndustrialEngineering" && edge.To == "IndustrialRobotic"), Is.True, view);
-        Assert.That(graph.Edges.Any(edge => edge.From == "Ripley2" && edge.To == "Gygax"), Is.True, view);
         var intersections = new List<string>();
         foreach (var edge in graph.Edges)
         {

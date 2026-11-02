@@ -180,6 +180,8 @@ fish-research-technology-bluespace-time-manipulation-description = Устрой�
 
 fish-research-technology-industrial-robotics-description = Гиперконвекционный изготовитель экзокостюмов для промышленной робототехники.
 
+fish-research-technology-advanced-cyborg-chassis-description = Модули модернизации стандартных киборгов до шасси Mk2.
+
 fish-research-technology-quantum-leaping-description = Инвертор квантового спина для экспериментального перемещения.
 
 fish-research-technology-telesci-description = Стационарные телепортеры, управляющая консоль и программируемые чипы.

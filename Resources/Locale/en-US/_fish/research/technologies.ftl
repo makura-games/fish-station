@@ -9,3 +9,6 @@ research-technology-fish-uranium-processing = Uranium Processing
 
 research-technology-fish-microreactors = Microreactor Cells
     .suffix = Fish
+
+research-technology-advanced-cyborg-chassis = Advanced cyborg chassis
+    .suffix = Fish

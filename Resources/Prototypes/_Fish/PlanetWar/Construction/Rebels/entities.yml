@@ -1907,7 +1907,7 @@
   parent: GatewayArm
   id: GatewayArmJob
   components:
-  # Fish edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
+  # Fish-edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
   - type: PlanetWarGateway
     team: Arm
 

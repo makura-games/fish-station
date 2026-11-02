@@ -21,7 +21,7 @@
       sprite: _Sunrise/Clothing/Eyes/Glasses/kim.rsi
 
 - type: entity
-  parent: [ClothingEyesBase, ShowSecurityIcons, ShowMedicalIcons, BaseSecurityContraband] # Fish edit
+  parent: [ClothingEyesBase, ShowSecurityIcons, ShowMedicalIcons, BaseSecurityContraband] # Fish-edit
   id: ClothingEyesGlassesBlueShield
   name: blueshield's glasses
   description: The innovative blue lenses hide your eyes from light flashes and have a built-in visor.

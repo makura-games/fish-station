@@ -85,7 +85,7 @@
     title: comms-console-announcement-title-station-ai
     color: "#5ed7aa"
     announceVoice: PortalGlados # Sunrise-Edit
-    sound: /Audio/Announcements/announce.ogg # Fish-Edit
+    sound: /Audio/Announcements/announce.ogg # Fish-edit
     allowedAlertLevels: [] # Sunrise-Edit - ИИ не управляет кодами через встроенную консоль
   - type: ShowJobIcons
   - type: ShowCrewIcons
@@ -537,11 +537,11 @@
       shader: unshaded
       map: ["base"]
   - type: CameraActiveOnCollideCollider
-# Fish-Start
+# Fish-start
   - type: MovementSpeedModifier
     baseSprintSpeed: 12
     baseWalkSpeed: 30
-# Fish-End
+# Fish-end
 
 # The holographic representation of the AI that is projected from a holopad.
 - type: entity

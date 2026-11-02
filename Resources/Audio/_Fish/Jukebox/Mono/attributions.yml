@@ -1,0 +1,97 @@
+# Mono downmixes for the jukebox. Original stereo files stay in Audio/Lobby and Audio/StationEvents
+# so lobby music and nuke music keep their stereo mix. Positional PlayPvs requires one channel.
+
+- files: ["endless_space.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Endless Space by SolusLunes. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.newgrounds.com/audio/listen/67583"
+
+- files: ["absconditus.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Absconditus by ZhayTee. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://bandcamp.zhaytee.net/track/absconditus"
+
+- files: ["title2.ogg"]
+  license: "Custom"
+  copyright: "Originally composed by Jonathan Dunn for RoboCop (Game Boy) published by Ocean Software. Remixed by Eric Shumaker for his video Dilbert 3. Permission to use this remix has been granted by the creator. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.youtube.com/watch?v=4o6_8Unj2mQ"
+
+- files: ["atomicamnesiammx.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Atomic Amnesia MMX by Philip Dyer. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://soundcloud.com/3kliksphilip/atomic-amnesia-mmx-1"
+
+- files: ["singuloose.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Singuloose by Janis Schiedková. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://soundcloud.com/js_m/singuloose"
+
+- files: ["comet_haley.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Comet Halley by Stellardrone. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://stellardrone.bandcamp.com/track/comet-halley"
+
+- files: ["Spac_Stac.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Spac Stac by Hayabusa. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.youtube.com/watch?v=grUBe-SZgr0"
+
+- files: ["pwmur.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "phoron will make us rich by Sunbeamstress/Lauren Loveless. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://soundcloud.com/sunbeamstress/phoron-will-make-us-rich"
+
+- files: ["lasers_rip_apart_the_bulkhead.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "lasers rip apart the bulkhead by Sunbeamstress/Lauren Loveless. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://soundcloud.com/sunbeamstress/lasers-rip-apart-the-bulkhead"
+
+- files: ["every_light_is_blinking_at_once.ogg"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "every light is blinking at once by Sunbeamstress/Lauren Loveless. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://soundcloud.com/sunbeamstress/every-light-is-blinking-at-once"
+
+- files: ["space_asshole.ogg"]
+  license: "Custom"
+  copyright: "Space Asshole by Chris Remo is used with special permission from the author, under the condition that the project remains non-commercial and open source. The author also requested that a link to his bandcamp be included: https://chrisremo.bandcamp.com/ Downmixed to mono OGG for positional jukebox playback."
+  source: "https://idlethumbs.bandcamp.com/track/space-asshole"
+
+- files: ["the_wizard.ogg"]
+  license: "Custom"
+  copyright: "The Wizard by Chris Remo is used with special permission from the author, under the condition that the project remains non-commercial and open source. The author also requested that a link to his bandcamp be included: https://chrisremo.bandcamp.com/ Downmixed to mono OGG for positional jukebox playback."
+  source: "https://idlethumbs.bandcamp.com/track/the-wizard"
+
+- files: ["running_out.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Created by Bolgarich. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.youtube.com/watch?v=SzEp2nv6oZ4"
+
+- files: ["countdown.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Created by qwertyquerty. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://github.com/BeeStation/BeeStation-Hornet/commit/7f48971438492805af286023a72e7609a729234a"
+
+- files: ["sound_station_14.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Created by Donchan. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.youtube.com/watch?v=4nUpeYLKUns"
+
+- files: ["blatantly_nuclear.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Created by mrjajkes. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.youtube.com/watch?v=f5URIS00IIc"
+
+- files: ["clearly_nuclear.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Created by mrjajkes. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.youtube.com/watch?v=chix8uz-oUQ"
+
+- files: ["nukemass.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "Created by mrjajkes. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://www.youtube.com/watch?v=gLSyt7AaqQM"
+
+- files: ["sponsored-by-syndicate.ogg"]
+  license: "Custom"
+  copyright: "Sponsored By Syndicate by mrjajkes is licensed under the following terms: free use and modification with proper credit to the original creator, excluding usage by FulpStation, White Dream, and any ERP/sexually-oriented servers, or for commercial use unless granted permission by the author. For commercial use (Patreon is fine). please contact the author to discuss details. Downmixed to mono OGG for positional jukebox playback."
+  source: "https://youtu.be/vO_dMp4d3ew"

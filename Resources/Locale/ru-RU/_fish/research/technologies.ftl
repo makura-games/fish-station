@@ -9,3 +9,6 @@ research-technology-fish-uranium-processing = Обработка урана
 
 research-technology-fish-microreactors = Микрореакторные батареи
     .suffix = Fish
+
+research-technology-advanced-cyborg-chassis = Продвинутое шасси киборга
+    .suffix = Fish

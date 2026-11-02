@@ -59,7 +59,7 @@
     state: tritium
   color: '#13FF4B'
   reagent: Tritium
-  pricePerMole: 0.3 #Fish edit
+  pricePerMole: 0.3 #Fish-edit
   isFuel: true
 
 - type: gas
@@ -116,4 +116,4 @@
   gasMolesVisible: 0.6
   color: '#3a758c'
   reagent: Frezon
-  pricePerMole: 2.5 #Fish edit
+  pricePerMole: 2.5 #Fish-edit

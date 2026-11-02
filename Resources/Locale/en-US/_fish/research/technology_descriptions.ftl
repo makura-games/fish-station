@@ -180,6 +180,8 @@ fish-research-technology-bluespace-time-manipulation-description = A device for 
 
 fish-research-technology-industrial-robotics-description = A hyper-convection exosuit fabricator for industrial robotics.
 
+fish-research-technology-advanced-cyborg-chassis-description = Upgrade modules for converting standard cyborgs to Mk2 chassis.
+
 fish-research-technology-quantum-leaping-description = A quantum spin inverter for experimental transport.
 
 fish-research-technology-telesci-description = Stationary teleporters, a control console and programmable chips.
