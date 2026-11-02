@@ -372,12 +372,14 @@
     sprite:
       sprite: Effects/creampie.rsi
       state: creampie_vulpkanin
+# Fish-start:
   - type: NightVision
     enabled: false
     action: ActionToggleNightVision
     prioritized: false
     lightingColor: '#FFFFFF15'
   - type: FishNaturalNightVision
+# Fish-end
 
 - type: entity
   parent: OrganBaseOrganic
