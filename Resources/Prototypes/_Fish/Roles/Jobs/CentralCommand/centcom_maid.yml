@@ -1,8 +1,8 @@
 - type: job
-  id: CentCommMaid
+  id: BlueShieldEnsign
   name: job-name-centcom-maid
   description: job-description-centcom-maid
-  playTimeTracker: JobCentCommMaid
+  playTimeTracker: JobBlueShieldEnsign
   requirements:
   - !type:DiscordRoleRequirement
   # weight: 100
@@ -25,4 +25,4 @@
 
 - type: chameleonOutfit
   id: CentCommMaidChameleonOutfit
-  job: CentCommMaid
+  job: BlueShieldEnsign

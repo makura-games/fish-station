@@ -72,7 +72,12 @@ public abstract partial class SharedBorgSwitchableTypeSystem : EntitySystem
         if (ent.Comp.SelectedBorgType != null)
             return;
 
-        if (!ProtoMan.HasIndex(args.Prototype))
+        if (!ProtoMan.TryIndex(args.Prototype, out BorgTypePrototype? prototype))
+            return;
+
+        // Fish-edit: скрытые типы (Mk2) нельзя выбрать через сетевой BUI, даже если
+        // клиент подделал сообщение; в меню они уже отфильтрованы.
+        if (prototype.HideInMenu)
             return;
 
         SelectBorgModule(ent, args.Prototype);

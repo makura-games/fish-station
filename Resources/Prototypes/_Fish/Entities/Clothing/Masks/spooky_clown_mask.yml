@@ -1,4 +1,4 @@
-# Fish added start - Spooky clown mask
+# Fish-start - Spooky clown mask
 - type: entity
   parent: ClothingMaskClownBase
   id: FishClothingMaskClownSpooky
@@ -20,4 +20,4 @@
         Slash: 0.9
         Piercing: 0.9
         Heat: 0.9
-# Fish added end
+# Fish-end
