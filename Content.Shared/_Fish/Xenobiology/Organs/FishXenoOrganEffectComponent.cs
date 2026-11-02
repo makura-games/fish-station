@@ -11,6 +11,8 @@ public enum FishXenoOrganEffectKind : byte
     EmpPulse,
     Adrenaline,
     SlimeSkin,
+    CryoBurst,
+    Essence,
 }
 
 [RegisterComponent]
