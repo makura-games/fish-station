@@ -23,6 +23,7 @@ public sealed class FishNaturalNightVisionTest
     [TestCase("MobTajaran")]
     [TestCase("MobResomi")]
     [TestCase("MobArachnid")]
+    [TestCase("MobVulpkanin")]
     [TestCase("MobKitsunePlayerFox")]
     public async Task RacialVisionStartsOffAndUsesNaturalRenderingWhenToggled(string prototype)
     {

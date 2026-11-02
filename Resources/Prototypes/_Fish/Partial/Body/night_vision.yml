@@ -1,0 +1,10 @@
+# Fish-edit: Вульпы получают переключаемое природное зрение с обычным расовым радиусом.
+- type: !PartialOnly entity
+  id: MobVulpkanin
+  components:
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#FFFFFF15'
+  - type: FishNaturalNightVision

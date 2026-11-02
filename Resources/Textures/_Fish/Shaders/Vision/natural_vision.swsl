@@ -15,13 +15,19 @@ uniform highp float noise_frame;
 uniform highp vec4 tint;
 
 void fragment() {
-    highp float adaptation = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
     highp vec4 original = zTextureSpec(SCREEN_TEXTURE, UV);
+    highp float fraction = natural_light_fraction(UV);
+    // Шум и потеря цвета ограничены тем же кругом, что и подсветка.
+    if (fraction <= 0.0) {
+        COLOR = original;
+        return;
+    }
+    highp float adaptation = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
     highp vec3 light = zTextureSpec(VISION_LIGHT_TEXTURE, UV).rgb;
     highp float applied = texture2D(APPLIED_TEXTURE, vec2(0.5)).r;
     // Убираем собственную подсветку из оценки освещения, чтобы она не подавляла адаптацию.
     highp float ambient = max(dot(light, vec3(0.2126, 0.7152, 0.0722)) -
-        lighting_strength * applied * natural_light_fraction(UV), 0.0);
+        lighting_strength * applied * fraction, 0.0);
     highp float darkness = 1.0 - smoothstep(0.04, 0.4, ambient);
     highp float gray = dot(original.rgb, vec3(0.2126, 0.7152, 0.0722));
     highp vec3 natural = mix(vec3(gray), original.rgb, darkness_saturation);
@@ -34,5 +40,5 @@ void fragment() {
         // Зерно скрывает мелкие детали, не создавая светлую пелену на чёрном фоне.
         natural *= 1.0 + (grain * 2.0 - 1.0) * grain_strength;
     }
-    COLOR = vec4(mix(original.rgb, natural, darkness * adaptation), original.a);
+    COLOR = vec4(mix(original.rgb, natural, darkness * adaptation * fraction), original.a);
 }
