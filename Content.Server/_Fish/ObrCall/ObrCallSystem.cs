@@ -455,9 +455,9 @@ public sealed partial class ObrCallSystem : EntitySystem
                 return true;
             }
 
-            if (centcommComp.MapId != MapId.Nullspace && _mapManager.MapExists(centcommComp.MapId))
+            if (centcommComp.MapId != MapId.Nullspace && _mapSystem.MapExists(centcommComp.MapId))
             {
-                foreach (var grid in _mapManager.GetAllGrids(centcommComp.MapId))
+                foreach (var grid in _mapSystem.GetAllGrids(centcommComp.MapId))
                 {
                     if (grid.Owner.Valid && !Deleted(grid.Owner))
                     {

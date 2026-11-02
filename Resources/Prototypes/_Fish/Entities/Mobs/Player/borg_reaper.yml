@@ -1,0 +1,51 @@
+- type: entity
+  id: FishPlayerBorgSyndicateReaperBattery
+  parent: FishBorgChassisSyndicateReaper
+  suffix: Battery, Tools, Fish
+  components:
+  - type: NukeOperative
+  - type: GhostPanelAntagonistMarker
+    name: ghost-panel-antagonist-nukeops-name
+    description: ghost-panel-antagonist-nukeops-description
+    priority: 25
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Sofia
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellSyndicate
+
+- type: entity
+  parent: FishBorgChassisSyndicateReaperDerelict
+  id: FishPlayerSyndicateReaperBorgDerelict
+  suffix: Battery, Module
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+      - Sofia
+      borg_module:
+      - BorgModuleSyndicateGeneric
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellHyper
+  - type: RandomMetadata
+    nameSegments: [NamesDeathCommandoFirst, NamesDeathCommandoLast]
+
+- type: entity
+  parent: FishPlayerSyndicateReaperBorgDerelict
+  id: FishPlayerBorgSyndicateReaperDerelictGhostRole
+  suffix: Ghost role
+  components:
+  - type: GhostRole
+    name: ghost-role-information-fish-derelict-syndicate-reaper-cyborg-name
+    description: ghost-role-information-fish-derelict-syndicate-reaper-cyborg-description
+    rules: ghost-role-information-silicon-rules
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable

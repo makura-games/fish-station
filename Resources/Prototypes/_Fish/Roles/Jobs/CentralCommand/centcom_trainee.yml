@@ -5,7 +5,7 @@
   playTimeTracker: JobCentCommTrainee
   requirements:
     - !type:DiscordRoleRequirement
-  weight: 30
+  # weight: 30
   setPreference: true
   startingGear: CentCommTraineeGear
   icon: "JobIconNanotrasenTrainee"

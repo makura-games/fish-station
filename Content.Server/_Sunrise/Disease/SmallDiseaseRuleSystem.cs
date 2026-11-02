@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 using System.Linq;
 using Content.Server.Antag;
 using Content.Shared._Sunrise.Disease;

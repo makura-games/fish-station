@@ -83,7 +83,7 @@
         types:
           Heat: -0.4
     - type: MobThresholds
-      currentThresholdState : Alive
+# #   currentThresholdState : Alive
       thresholds:
         0: Alive
         500: Dead
@@ -206,7 +206,7 @@
       types:
         Heat: -0.4
   - type: MobThresholds
-    currentThresholdState : Alive
+#   currentThresholdState : Alive
     thresholds:
       0: Alive
       500: Dead
@@ -291,8 +291,10 @@
  #   requireInSpace: false
   - type: Blindable
     isBlind: false
-  - type: ToggleableNightVision
-    effect: EffectNightVisioCoreDron
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    lightingColor: "#0000e326"
   #- type: ShowJobIcons
   - type: SpawnOnTrigger
     proto: GrenadeFlashEffect
@@ -356,7 +358,7 @@
   - type: Injurable
     damageContainer: Inorganic
   - type: PlanetWarStunDrone
-  # FIsh edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
+  # Fish-edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container

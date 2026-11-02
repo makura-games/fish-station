@@ -41,7 +41,7 @@ Select the first line that matches the exact repository slug, the name of the ro
 | --- | --- | --- | --- | --- | --- |
 | `sunrise-station/space-station-14`, `makura-games/sunrise-station`, `sunrise-station`, `_Sunrise` | `Sunrise` | `_Sunrise` | `Sunrise-Edit` | `Sunrise edit start/end`, `Sunrise added start/end` | For new single placemarks, default to `Sunrise-Edit`. |
 | `fire-station/project-fire`, `project-fire`, `fire-station`, `_Scp` | `Fire` | `_Scp` | `Fire edit`, `Fire added` | `Fire edit start/end`, `Fire added start/end` | For Fire, single edit/add marks are different. |
-| `fish-station`, `_Fish` | `Fish` | `_Fish` | `FIsh edit` | Use local file style | Don't automatically normalize the legacy token case. |
+| `fish-station`, `_Fish` | `Fish` | `_Fish` | `Fish-edit` | `Fish-start` / `Fish-end` | Строго только эти два типа маркеров. Любые вариации запрещены. |
 | `lust-lustation`, `_Lust` | `Lust` | `_Lust` | `Lust edit` | Use local file style | If there is already a block-style nearby inside Lust, follow it. |
 
 ## 4. How to apply a marker in a specific file
@@ -64,3 +64,4 @@ Select the comment syntax to match the file language:
 2. Mark minimal hooks in vanilla files with the edit marker of the current fork.
 3. Don't put the Sunrise code in `_Scp` and don't use `Fire edit` in `_Sunrise`.
 4. If a project is already mixing historical marker variants within one fork, for new edits follow the closest local style of that fork, but do not switch to markers from another fork.
+5. In Fish fork, all newly created prototypes must start with the `Fish` prefix in their ID (`id: Fish...`) and have the `Fish` suffix (`suffix: Fish` in YAML and `.suffix = Fish` in localization).

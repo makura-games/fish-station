@@ -4,7 +4,7 @@
   id: BaseAnimalObjective
   components:
   - type: Objective
-    issuer: objective-issuer-animal
+    issuer: Animal
     difficulty: 1
   - type: AnimalRoleRequirement
 
@@ -102,7 +102,7 @@
   components:
   - type: Objective
     icon:
-      entity: DrinkWaterJug
+      entity: DrinkWaterBottleFull
   - type: NumberObjective
     title: animal-objective-drink-water-title
     description: animal-objective-drink-water-description

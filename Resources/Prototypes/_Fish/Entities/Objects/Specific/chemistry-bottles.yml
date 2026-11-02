@@ -5,7 +5,7 @@
   name: bottle (unknown pathogen)
   components:
   - type: Label
-    currentLabel: reagent-name-unknown-pathogen
+    localizedLabel: reagent-name-unknown-pathogen
   - type: Solution
     solution:
       reagents:

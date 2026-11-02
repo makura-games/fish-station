@@ -6,7 +6,8 @@ using Content.Client.UserInterface.Systems.Hotbar.Widgets;
 using Content.Shared.Hands.Components;
 using Content.Shared.Input;
 using Content.Shared.Inventory.VirtualItem;
-using Content.Shared.Timing;
+using Content.Shared.Timing.Components;
+using Content.Shared.Timing.Systems;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
@@ -64,18 +65,32 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
         _handsSystem.OnPlayerHandUnblocked -= HandUnblocked;
     }
 
+    /// <summary>
+    /// Fish: при добавлении руки пересчитывает роутинг Functional-рук до создания кнопки —
+    /// событие поднимается после вставки руки в компонент, поэтому новая рука уже учтена.
+    /// </summary>
     private void OnAddHand(Entity<HandsComponent> entity, string name, HandLocation location)
     {
         if (entity.Owner != _player.LocalEntity)
             return;
+
+        HandsGui?.UpdateFunctionalRouting(entity.Comp); // Fish-edit
+
         if (_handsSystem.TryGetHand((entity.Owner, entity.Comp), name, out var hand))
             AddHand(name, hand.Value);
     }
 
+    /// <summary>
+    /// Fish: при удалении руки пересчитывает роутинг Functional-рук; исходящая рука
+    /// исключается — событие поднимается до удаления руки из компонента.
+    /// </summary>
     private void OnRemoveHand(Entity<HandsComponent> entity, string name)
     {
         if (entity.Owner != _player.LocalEntity)
             return;
+
+        HandsGui?.UpdateFunctionalRouting(entity.Comp, name); // Fish-edit
+
         RemoveHand(name);
     }
 
@@ -123,6 +138,7 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
         DebugTools.Assert(_playerHandsComponent == null);
         HandsGui?.Visible = true;
         HandsGui?.SetPlayerHandsComponent(handsComp); // Sunrise-Edit - передаем порядок рук обоим контейнерам
+        HandsGui?.UpdateFunctionalRouting(handsComp.Comp); // Fish-edit - пересчёт роутинга до добавления кнопок
         _playerHandsComponent = handsComp;
         foreach (var (name, hand) in handsComp.Comp.Hands)
         {
@@ -280,6 +296,9 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
         return HandsGui?.GetHandButton(handName); // Sunrise-Edit - ищем обычные и функциональные руки
     }
 
+    /// <summary>
+    /// Fish: контейнер кнопки руки выбирает HotbarGui (FunctionalInMainRow), а не location.
+    /// </summary>
     private HandButton AddHand(string handName, Hand hand)
     {
         var button = new HandButton(handName, hand.Location);
@@ -373,7 +392,8 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
                 hand.CooldownDisplay.Visible = false;
                 continue;
             }
-            var delay = _useDelay.GetLastEndingDelay((hand.Entity.Value, useDelay));
+
+            _useDelay.GetLastActiveDelay((hand.Entity.Value, useDelay), out var delay);
 
             hand.CooldownDisplay.Visible = true;
             hand.CooldownDisplay.FromTime(delay.StartTime, delay.EndTime);
