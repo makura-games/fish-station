@@ -11,6 +11,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleNeutral
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Lesser
 
 - type: entity
   parent: FishXenoGoldCritNeutralCarpFish
@@ -21,6 +23,8 @@
   - type: NpcFactionMember
     factions:
     - Passive
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Friendly
 
 - type: entity
   parent: MobCarpMagic
@@ -34,6 +38,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleNeutral
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Lesser
 
 - type: entity
   parent: MobCarpHolo
@@ -47,6 +53,8 @@
   - type: NpcFactionMember
     factions:
     - SimpleNeutral
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Lesser
 
 - type: entity
   parent: MobCat
@@ -60,6 +68,8 @@
   - type: NpcFactionMember
     factions:
     - Passive
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Friendly
 
 - type: entity
   parent: MobPenguin
@@ -73,3 +83,5 @@
   - type: NpcFactionMember
     factions:
     - Passive
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Friendly
