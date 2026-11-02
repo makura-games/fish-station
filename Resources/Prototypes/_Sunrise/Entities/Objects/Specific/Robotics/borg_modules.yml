@@ -327,7 +327,7 @@
         whitelist:
           components:
           - Flash
-          - Battery
+          - PowerCell  # Fish-edit
           - TileFrictionModifier
           - CablePlacer
           - BorgModule

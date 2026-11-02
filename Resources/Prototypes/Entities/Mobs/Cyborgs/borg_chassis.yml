@@ -190,8 +190,8 @@
     - type: FootstepModifier
       footstepSoundCollection:
         collection: FootstepHoverBorg
-        params:
-          volume: -6
+        # params:  Fish-edit: звуков было почти не слышно
+        #   volume: -6  Fish-edit
     # Sunrise-Start
     - type: TTS
       voice: Sentrybot
