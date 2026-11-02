@@ -1,0 +1,121 @@
+# Fish-start — автопул gold_core_spawnable (hostile roster)
+- type: entity
+  parent: MobSpiderAngryBase
+  id: FishGoldCoreSpawnSpiderAngryFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobSpiderSpace
+  id: FishGoldCoreSpawnSpiderSpaceFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobSpiderSpaceSalvage
+  id: FishGoldCoreSpawnSpiderSpaceSalvageFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobBearSpace
+  id: FishGoldCoreSpawnBearSpaceFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobBearSpaceSalvage
+  id: FishGoldCoreSpawnBearSpaceSalvageFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobHivebot
+  id: FishGoldCoreSpawnHivebotFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobGoliath
+  id: FishGoldCoreSpawnGoliathFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobHivelord
+  id: FishGoldCoreSpawnHivelordFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobWatcherLavaland
+  id: FishGoldCoreSpawnWatcherLavalandFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobWatcherIcewing
+  id: FishGoldCoreSpawnWatcherIcewingFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobWatcherMagmawing
+  id: FishGoldCoreSpawnWatcherMagmawingFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobHellspawn
+  id: FishGoldCoreSpawnHellspawnFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobFleshGolem
+  id: FishGoldCoreSpawnFleshGolemFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobAbomination
+  id: FishGoldCoreSpawnAbominationFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+
+- type: entity
+  parent: MobCarp
+  id: FishGoldCoreSpawnMobCarpFish
+  suffix: Fish, GoldCoreSpawnable, Hostile
+  components:
+  - type: FishSlimeExtractGoldCoreSpawnable
+    tier: Hostile
+# Fish-end
