@@ -8,15 +8,17 @@ namespace Content.Client.Xenoarchaeology.Ui;
 public sealed class NodeScannerBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
 {
     [ViewVariables]
-    private NodeScannerDisplay? _scannerDisplay;
+    private AnalysisConsoleMenu? _scannerDisplay; // Fish-edit: сканер использует штатный граф и сведения об узлах.
 
     /// <inheritdoc />
     protected override void Open()
     {
         base.Open();
 
-        _scannerDisplay = this.CreateWindow<NodeScannerDisplay>();
-        _scannerDisplay.SetOwner(Owner);
+        // Fish-start: режим просмотра без извлечения очков и выбора сервера.
+        _scannerDisplay = this.CreateWindow<AnalysisConsoleMenu>();
+        _scannerDisplay.SetScannerOwner(Owner);
+        // Fish-end
     }
 
     /// <inheritdoc />

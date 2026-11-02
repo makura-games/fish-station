@@ -16,19 +16,11 @@
     - FishResearch
 
 - type: !PartialOnly entity
-  id: ComputerCargoOrders
+  id: NodeScanner
   components:
   - type: GuideHelp
     guides: !Clear
-    - FishResearchOrders
-    - FishResearch
-
-- type: !PartialOnly entity
-  id: BoxFolderQmClipboard
-  components:
-  - type: GuideHelp
-    guides: !Clear
-    - FishResearchOrders
+    - Xenoarchaeology
     - FishResearch
 
 - type: !PartialOnly entity

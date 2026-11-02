@@ -11,6 +11,13 @@ public sealed partial class FishBluespaceHarvesterStationComponent : Component
     /// <summary>Creatures which still occupy the station's bounded incursion budget.</summary>
     public HashSet<EntityUid> Incursions = new();
 
+    /// <summary>Earliest time at which a harvester may create another native anomaly.</summary>
+    [AutoPausedField]
+    public TimeSpan NextAnomaly;
+
+    /// <summary>Active harvester anomalies retained until they are neutralized or deleted.</summary>
+    public HashSet<EntityUid> Anomalies = new();
+
     /// <summary>Reserves the station budget during nested entity spawn callbacks.</summary>
     public bool Spawning;
 }

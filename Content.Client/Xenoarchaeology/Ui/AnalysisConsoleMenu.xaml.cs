@@ -130,6 +130,14 @@ public sealed partial class AnalysisConsoleMenu : FancyWindow
     {
         base.FrameUpdate(args);
 
+        // Fish-start: переносной сканер обновляется по собственной связи с артефактом.
+        if (_scannerOwner != null)
+        {
+            UpdateScannerFrame();
+            return;
+        }
+        // Fish-end
+
         if (_hideExtractInfoIn == null || _timing.CurTime + _meta.GetPauseTime(_owner) < _hideExtractInfoIn)
             return;
 
@@ -167,8 +175,9 @@ public sealed partial class AnalysisConsoleMenu : FancyWindow
 
     public void SetSelectedNode(Entity<XenoArtifactNodeComponent>? node)
     {
+        ValidateScannerSelection(ref node); // Fish-edit: устаревший выбор не переносится между артефактами.
         InfoContainer.Visible = node != null;
-        if (!_artifactAnalyzer.TryGetArtifactFromConsole(_owner, out var artifact))
+        if (!TryGetDisplayedArtifact(out var artifact)) // Fish-edit: общий вывод сведений для консоли и сканера.
             return;
 
         NoneSelectedLabel.Visible = node == null;

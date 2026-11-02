@@ -7,6 +7,7 @@ using Content.Server.Power.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Server.Stack;
 using Content.Shared._Fish.Research.Bluespace;
+using Content.Shared.AlertLevel;
 using Content.Shared.Power.Components;
 using Content.Shared.Research.Components;
 using Content.Shared.Station.Components;
@@ -22,8 +23,40 @@ namespace Content.IntegrationTests.Tests._Fish.Research;
 
 /// <summary>Exercises station ownership, controlled native power samples and bounded infrastructure output.</summary>
 [TestFixture, NonParallelizable]
-public sealed class FishBluespaceInfrastructureTest
+public sealed partial class FishBluespaceInfrastructureTest
 {
+    /// <summary>Crossing the incursion threshold raises Blue only on the affected station.</summary>
+    [Test]
+    public async Task IncursionThresholdRaisesBlueWithoutAutomaticDowngrade()
+    {
+        await WithStations(async context =>
+        {
+            var server = context.Pair.Server;
+            var background = server.System<FishBluespaceBackgroundSystem>();
+            await server.WaitPost(() =>
+            {
+                foreach (var station in new[] { context.FirstStation, context.SecondStation })
+                {
+                    var alerts = server.EntMan.AddComponent<AlertLevelComponent>(station);
+                    alerts.AvailableAlertLevels = ["Green", "Blue", "Red"];
+                    alerts.DelayedUntil = server.Timing.CurTime + TimeSpan.FromMinutes(1);
+                }
+                background.TryAdjustLevel(context.FirstGrid, 69f);
+            });
+            await server.WaitAssertion(() => Assert.That(
+                server.EntMan.GetComponent<AlertLevelComponent>(context.FirstStation).CurrentAlertLevel.Id, Is.EqualTo("Green")));
+            await server.WaitPost(() => background.TryAdjustLevel(context.FirstGrid, 1f));
+            await server.WaitAssertion(() =>
+            {
+                Assert.That(server.EntMan.GetComponent<AlertLevelComponent>(context.FirstStation).CurrentAlertLevel.Id, Is.EqualTo("Blue"));
+                Assert.That(server.EntMan.GetComponent<AlertLevelComponent>(context.SecondStation).CurrentAlertLevel.Id, Is.EqualTo("Green"));
+            });
+            await server.WaitPost(() => background.TryAdjustLevel(context.FirstGrid, -70f));
+            await server.WaitAssertion(() => Assert.That(
+                server.EntMan.GetComponent<AlertLevelComponent>(context.FirstStation).CurrentAlertLevel.Id, Is.EqualTo("Blue")));
+        });
+    }
+
     /// <summary>Independent station scopes clamp finite adjustments and retain the critical safety latch until recovery.</summary>
     [Test]
     public async Task BackgroundIsStationScopedFiniteAndUsesRecoveryHysteresis()
@@ -249,10 +282,10 @@ public sealed class FishBluespaceInfrastructureTest
             var switched = false;
             await server.WaitPost(() =>
             {
-                consumer.NetworkLoad.ReceivingPower = 125_000f;
+                consumer.NetworkLoad.ReceivingPower = 62_500f;
                 system.Update(1f);
             });
-            await server.WaitAssertion(() => Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(125_000d).Within(1d)));
+            await server.WaitAssertion(() => Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(62_500d).Within(1d)));
             await server.WaitPost(() =>
             {
                 consumer.NetworkLoad.ReceivingPower = 3_000_000f;
@@ -263,7 +296,7 @@ public sealed class FishBluespaceInfrastructureTest
             await server.WaitAssertion(() =>
             {
                 Assert.That(switched, Is.True);
-                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(375_000d).Within(1d),
+                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(187_500d).Within(1d),
                     "Changing demand must discard a stale sample from the previous power mode.");
             });
             await server.WaitPost(() =>
@@ -273,9 +306,9 @@ public sealed class FishBluespaceInfrastructureTest
             });
             await server.WaitAssertion(() =>
             {
-                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(875_000d).Within(1d),
-                    "Overdrive caps received power at five hundred kilowatts and a delayed frame at one second.");
-                Assert.That(consumer.DrawRate, Is.EqualTo(500_000f));
+                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(437_500d).Within(1d),
+                    "Overdrive caps received power at two hundred fifty kilowatts and a delayed frame at one second.");
+                Assert.That(consumer.DrawRate, Is.EqualTo(250_000f));
                 Assert.That(server.System<FishBluespaceBackgroundSystem>().GetLevel(harvester), Is.EqualTo(0.825f).Within(0.001f),
                     "Lower power must preserve the previous background generation per minute.");
                 Assert.That(server.System<FishBluespaceBackgroundSystem>().GetLevel(context.SecondGrid), Is.Zero);
@@ -304,7 +337,7 @@ public sealed class FishBluespaceInfrastructureTest
             {
                 Assert.That(produced, Is.False);
                 Assert.That(harvester.Comp.OutputBlocked, Is.True);
-                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(15_000_000d));
+                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(7_500_000d));
                 Assert.That(RewardItems(context), Is.Zero);
             });
             var repeated = true;
@@ -422,7 +455,7 @@ public sealed class FishBluespaceInfrastructureTest
             await server.WaitPost(() =>
             {
                 OpenOutput(context);
-                harvester.Comp.StoredEnergy = 15_000_000d;
+                harvester.Comp.StoredEnergy = 7_500_000d;
             });
             await server.WaitAssertion(() => Assert.That(system.CanProduceReward(harvester, out _), Is.True,
                 "The fixture must be capable of producing a reward before its prerequisite is removed."));
@@ -467,7 +500,7 @@ public sealed class FishBluespaceInfrastructureTest
             {
                 Assert.That(system.CanOperate(harvester), Is.False);
                 Assert.That(produced, Is.False);
-                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(15_000_000d));
+                Assert.That(harvester.Comp.StoredEnergy, Is.EqualTo(7_500_000d));
                 Assert.That(RewardItems(context), Is.Zero);
             });
         });
@@ -501,7 +534,7 @@ public sealed class FishBluespaceInfrastructureTest
         });
     }
 
-    /// <summary>The station owns both incursion cooldown and the two-creature budget, even after deadlines are due.</summary>
+    /// <summary>The station owns the wave cooldown and six-creature budget, including partial waves at the limit.</summary>
     [Test]
     public async Task IncursionsRespectCooldownAndStationCreatureBudget()
     {
@@ -524,9 +557,19 @@ public sealed class FishBluespaceInfrastructureTest
                 Assert.That(opened, Is.True);
                 Assert.That(repeated, Is.False);
                 var incidents = server.EntMan.GetComponent<FishBluespaceHarvesterStationComponent>(context.FirstStation);
-                Assert.That(incidents.NextIncident, Is.GreaterThanOrEqualTo(server.Timing.CurTime + TimeSpan.FromSeconds(60)));
-                Assert.That(incidents.Incursions, Has.Count.EqualTo(1));
+                Assert.That(incidents.NextIncident, Is.EqualTo(server.Timing.CurTime + TimeSpan.FromSeconds(40)));
+                Assert.That(incidents.Incursions, Has.Count.EqualTo(2));
             });
+            await server.WaitPost(() =>
+            {
+                var incidents = server.EntMan.GetComponent<FishBluespaceHarvesterStationComponent>(context.FirstStation);
+                server.System<FishBluespaceBackgroundSystem>().TryAdjustLevel(harvester, 15f);
+                incidents.NextIncident = server.Timing.CurTime;
+                opened = system.TryOpenIncursion(harvester);
+            });
+            await server.WaitAssertion(() => Assert.That(
+                server.EntMan.GetComponent<FishBluespaceHarvesterStationComponent>(context.FirstStation).Incursions,
+                Has.Count.EqualTo(5), "The severe wave adds three creatures."));
             await server.WaitPost(() =>
             {
                 var incidents = server.EntMan.GetComponent<FishBluespaceHarvesterStationComponent>(context.FirstStation);
@@ -540,7 +583,7 @@ public sealed class FishBluespaceInfrastructureTest
                 Assert.That(opened, Is.True);
                 Assert.That(repeated, Is.False);
                 Assert.That(server.EntMan.GetComponent<FishBluespaceHarvesterStationComponent>(context.FirstStation).Incursions,
-                    Has.Count.EqualTo(2));
+                    Has.Count.EqualTo(6), "A partial wave must never exceed the station limit.");
                 Assert.That(server.EntMan.HasComponent<FishBluespaceHarvesterStationComponent>(context.SecondStation), Is.False);
             });
         });

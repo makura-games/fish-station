@@ -1,5 +1,6 @@
 using Content.Server.Chat.Systems;
 using Content.Server.Station.Systems;
+using Content.Shared.AlertLevel;
 using Content.Shared.Station.Components;
 
 namespace Content.Server._Fish.Research.Bluespace;
@@ -9,6 +10,7 @@ public sealed partial class FishBluespaceBackgroundSystem : EntitySystem
 {
     [Dependency] private StationSystem _station = default!;
     [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!;
     [Dependency] private EntityQuery<FishBluespaceBackgroundComponent> _backgroundQuery = default!;
     [Dependency] private EntityQuery<TransformComponent> _transformQuery = default!;
     [Dependency] private EntityQuery<MetaDataComponent> _metaQuery = default!;
@@ -53,6 +55,21 @@ public sealed partial class FishBluespaceBackgroundSystem : EntitySystem
                FiniteLevel(background.Level, 0f) >= FiniteLevel(background.CriticalThreshold, 95f);
     }
 
+    /// <summary>Checks the station's shared hostile incursion and security escalation threshold.</summary>
+    public bool HasIncursionRisk(EntityUid device)
+    {
+        return TryGetScope(device, out var scope) && _backgroundQuery.TryComp(scope, out var background) &&
+               FiniteLevel(background.Level, 0f) >= FiniteLevel(background.IncursionThreshold, 70f);
+    }
+
+    /// <summary>Checks the threshold for larger hostile waves and native anomalies.</summary>
+    public bool HasAnomalyRisk(EntityUid device)
+    {
+        return TryGetScope(device, out var scope) && _backgroundQuery.TryComp(scope, out var background) &&
+               FiniteLevel(background.Level, 0f) >= Math.Max(FiniteLevel(background.IncursionThreshold, 70f),
+                   FiniteLevel(background.DangerThreshold, 85f));
+    }
+
     /// <summary>Adjusts an unpaused station's background, rejecting nonfinite input and missing ownership.</summary>
     public bool TryAdjustLevel(EntityUid device, float delta)
     {
@@ -60,7 +77,7 @@ public sealed partial class FishBluespaceBackgroundSystem : EntitySystem
             return false;
 
         var background = EnsureComp<FishBluespaceBackgroundComponent>(scope);
-        SetLevel(background, (double) FiniteLevel(background.Level, 0f) + delta);
+        SetLevel((scope, background), (double) FiniteLevel(background.Level, 0f) + delta);
         return true;
     }
 
@@ -90,13 +107,14 @@ public sealed partial class FishBluespaceBackgroundSystem : EntitySystem
             var decay = float.IsFinite(background.DecayPerSecond)
                 ? Math.Clamp(background.DecayPerSecond, 0f, 100f)
                 : 0f;
-            SetLevel(background, (double) FiniteLevel(background.Level, 0f) - decay * elapsed);
+            SetLevel((uid, background), (double) FiniteLevel(background.Level, 0f) - decay * elapsed);
             UpdateWarning((uid, background));
         }
     }
 
-    private static void SetLevel(FishBluespaceBackgroundComponent background, double level)
+    private void SetLevel(Entity<FishBluespaceBackgroundComponent> ent, double level)
     {
+        var background = ent.Comp;
         background.Level = double.IsFinite(level) ? (float) Math.Clamp(level, 0d, 100d) : 0f;
         var critical = FiniteLevel(background.CriticalThreshold, 95f);
         var recovery = Math.Min(FiniteLevel(background.RecoveryThreshold, 80f), critical);
@@ -109,6 +127,29 @@ public sealed partial class FishBluespaceBackgroundSystem : EntitySystem
         {
             background.Critical = true;
         }
+
+        UpdateSecurityAlert(ent);
+    }
+
+    private void UpdateSecurityAlert(Entity<FishBluespaceBackgroundComponent> ent)
+    {
+        var threshold = FiniteLevel(ent.Comp.IncursionThreshold, 70f);
+        var recovery = Math.Min(threshold, FiniteLevel(ent.Comp.WarningThreshold, 60f));
+        if (ent.Comp.Level < recovery)
+            ent.Comp.SecurityAlertHandled = false;
+
+        if (ent.Comp.Level < threshold || ent.Comp.SecurityAlertHandled ||
+            !TryComp<AlertLevelComponent>(ent, out var alert))
+            return;
+
+        // Fish-edit: повторное пересечение порога не спамит кодом; новое оповещение возможно после восстановления ниже 60.
+        ent.Comp.SecurityAlertHandled = true;
+        if (alert.CurrentAlertLevel != "Green" || !alert.AvailableAlertLevels.Contains("Blue") ||
+            !_alertLevel.IsSelectable((ent.Owner, alert)))
+            return;
+
+        // Fish-edit: аварийное повышение обходит только ручную задержку, блокировки проверены выше.
+        _alertLevel.SetLevel((ent.Owner, alert), "Blue", force: true);
     }
 
     private void UpdateWarning(Entity<FishBluespaceBackgroundComponent> ent)

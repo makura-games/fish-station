@@ -13,19 +13,19 @@ public sealed partial class FishBluespaceHarvesterComponent : Component
 
     /// <summary>Requested power in normal mode, in watts.</summary>
     [DataField]
-    public float NormalPowerDraw = 250_000f;
+    public float NormalPowerDraw = 125_000f;
 
     /// <summary>Requested power in overdrive mode, in watts.</summary>
     [DataField]
-    public float OverdrivePowerDraw = 500_000f;
+    public float OverdrivePowerDraw = 250_000f;
 
     /// <summary>Real received energy required for one reward, in joules.</summary>
     [DataField]
-    public float EnergyPerReward = 15_000_000f;
+    public float EnergyPerReward = 7_500_000f;
 
     /// <summary>Station background added per megajoule of actual consumption.</summary>
     [DataField]
-    public float BackgroundPerMegajoule = 0.6f;
+    public float BackgroundPerMegajoule = 1.2f;
 
     /// <summary>Additional background multiplier while using overdrive.</summary>
     [DataField]
@@ -39,17 +39,33 @@ public sealed partial class FishBluespaceHarvesterComponent : Component
     [DataField]
     public float RestartLevel = 80f;
 
-    /// <summary>Minimum background at which a local incursion can occur.</summary>
+    /// <summary>Station-wide incursion cooldown, never shorter than forty seconds.</summary>
     [DataField]
-    public float IncidentLevel = 70f;
+    public TimeSpan IncidentCooldown = TimeSpan.FromSeconds(40);
 
-    /// <summary>Station-wide incursion cooldown, never shorter than sixty seconds.</summary>
+    /// <summary>Maximum living incursion creatures per station, bounded to six.</summary>
     [DataField]
-    public TimeSpan IncidentCooldown = TimeSpan.FromSeconds(60);
+    public int MaxActiveIncursions = 6;
 
-    /// <summary>Maximum simultaneous incursions per station, bounded to two.</summary>
+    /// <summary>Creatures released in a wave above the station incursion threshold.</summary>
     [DataField]
-    public int MaxActiveIncursions = 2;
+    public int IncursionWaveSize = 2;
+
+    /// <summary>Creatures released in a wave above the station danger threshold.</summary>
+    [DataField]
+    public int DangerousWaveSize = 3;
+
+    /// <summary>Station-wide anomaly cooldown, never shorter than two minutes.</summary>
+    [DataField]
+    public TimeSpan AnomalyCooldown = TimeSpan.FromSeconds(120);
+
+    /// <summary>Maximum active harvester anomalies per station, bounded to two.</summary>
+    [DataField]
+    public int MaxActiveAnomalies = 2;
+
+    /// <summary>Native anomaly created above the station danger threshold.</summary>
+    [DataField]
+    public EntProtoId AnomalyPrototype = "AnomalyBluespace";
 
     /// <summary>Lifetime of an incursion creature, bounded to three minutes.</summary>
     [DataField]

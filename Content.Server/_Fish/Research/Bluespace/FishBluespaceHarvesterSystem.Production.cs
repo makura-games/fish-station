@@ -2,7 +2,6 @@ using Content.Shared._Fish.Research.Bluespace;
 using Content.Shared.Database;
 using Content.Shared.Physics;
 using Robust.Shared.Map;
-using Robust.Shared.Spawners;
 
 namespace Content.Server._Fish.Research.Bluespace;
 
@@ -69,71 +68,6 @@ public sealed partial class FishBluespaceHarvesterSystem
                GetTotalLootWeight(ent.Comp.LootCategory) > 0d && TryGetOutput(ent, out coordinates);
     }
 
-    /// <summary>Opens at most one short-lived local rift within the shared station cooldown and creature budget.</summary>
-    public bool TryOpenIncursion(Entity<FishBluespaceHarvesterComponent> ent)
-    {
-        if (!CanOpenIncursion(ent, out var station, out var coordinates))
-            return false;
-
-        var incidents = EnsureComp<FishBluespaceHarvesterStationComponent>(station);
-        incidents.Incursions.RemoveWhere(uid => TerminatingOrDeleted(uid));
-        incidents.Spawning = true;
-        incidents.NextIncident = _timing.CurTime + TimeSpan.FromSeconds(
-            Math.Clamp(ent.Comp.IncidentCooldown.TotalSeconds, 60d, 600d));
-        try
-        {
-            var rift = Spawn(ent.Comp.RiftPrototype, coordinates);
-            EnsureComp<TimedDespawnComponent>(rift).Lifetime = 10f;
-            _adminLog.Add(LogType.Action, LogImpact.High,
-                $"{ToPrettyString(ent)} opened {ToPrettyString(rift)} on {ToPrettyString(station)}.");
-            if (!CanOperate(ent) || !IsSafeOutput(ent, coordinates))
-                return true;
-
-            var creature = Spawn(ent.Comp.HostilePrototype, coordinates);
-            incidents.Incursions.Add(creature);
-            EnsureComp<TimedDespawnComponent>(creature).Lifetime = (float) Math.Clamp(
-                ent.Comp.IncursionLifetime.TotalSeconds, 1d, 180d);
-            _adminLog.Add(LogType.Action, LogImpact.High,
-                $"{ToPrettyString(ent)} opened a local bluespace incursion on {ToPrettyString(station)}, releasing {ToPrettyString(creature)}.");
-        }
-        finally
-        {
-            incidents.Spawning = false;
-        }
-
-        return true;
-    }
-
-    /// <summary>Checks local floor, configured prototypes and station-wide limits without reserving a spawn.</summary>
-    public bool CanOpenIncursion(Entity<FishBluespaceHarvesterComponent> ent,
-        out EntityUid station, out EntityCoordinates coordinates)
-    {
-        station = default;
-        coordinates = default;
-        if (!CanOperate(ent) || !float.IsFinite(ent.Comp.IncidentLevel) ||
-            _bluespaceBackground.GetLevel(ent) < Math.Clamp(ent.Comp.IncidentLevel, 0f, 100f) ||
-            !_bluespaceBackground.TryGetScope(ent, out station) ||
-            !_prototype.TryIndex(ent.Comp.RiftPrototype, out var rift) || rift.Abstract ||
-            !_prototype.TryIndex(ent.Comp.HostilePrototype, out var hostile) || hostile.Abstract ||
-            ent.Comp.MaxActiveIncursions <= 0)
-            return false;
-
-        if (TryComp<FishBluespaceHarvesterStationComponent>(station, out var incidents))
-        {
-            if (incidents.Spawning || _timing.CurTime < incidents.NextIncident)
-                return false;
-
-            var count = 0;
-            foreach (var creature in incidents.Incursions)
-            {
-                if (!TerminatingOrDeleted(creature) && ++count >= Math.Min(ent.Comp.MaxActiveIncursions, 2))
-                    return false;
-            }
-        }
-
-        return TryGetOutput(ent, out coordinates);
-    }
-
     private double GetTotalLootWeight(FishBluespaceLootCategory category)
     {
         var total = 0d;
@@ -195,7 +129,8 @@ public sealed partial class FishBluespaceHarvesterSystem
         return true;
     }
 
-    private bool TryGetOutput(Entity<FishBluespaceHarvesterComponent> ent, out EntityCoordinates coordinates)
+    private bool TryGetOutput(Entity<FishBluespaceHarvesterComponent> ent, out EntityCoordinates coordinates,
+        HashSet<EntityUid>? anomalies = null)
     {
         coordinates = default;
         if (!IsOnWorldFloor(ent) || !_transformQuery.TryComp(ent, out var xform) ||
@@ -206,7 +141,7 @@ public sealed partial class FishBluespaceHarvesterSystem
         foreach (var offset in OutputOffsets)
         {
             var candidate = _map.GridTileToLocal(grid, mapGrid, origin + offset);
-            if (!IsSafeOutput(ent, candidate))
+            if (!IsSafeOutput(ent, candidate) || IsAnomalyOutputOccupied(candidate, anomalies))
                 continue;
 
             coordinates = candidate;

@@ -13,6 +13,10 @@ public sealed partial class FishBluespaceBackgroundComponent : Component
     [DataField]
     public float WarningThreshold = 60f;
 
+    /// <summary>Shared threshold for hostile incursions and automatic Blue alert.</summary>
+    [DataField]
+    public float IncursionThreshold = 70f;
+
     /// <summary>Severe instability warning threshold.</summary>
     [DataField]
     public float DangerThreshold = 85f;
@@ -33,6 +37,7 @@ public sealed partial class FishBluespaceBackgroundComponent : Component
     internal float Level;
 
     internal bool Critical;
+    internal bool SecurityAlertHandled;
     internal float WarningCooldownRemaining;
     internal int LastWarningBand;
     internal int ActiveProbers;

@@ -136,6 +136,7 @@ public sealed partial class FishBluespaceHarvesterSystem : EntitySystem
                         TryProduceReward(ent);
 
                     TryOpenIncursion(ent);
+                    TrySpawnAnomaly(ent);
                 }
             }
 
@@ -254,6 +255,6 @@ public sealed partial class FishBluespaceHarvesterSystem : EntitySystem
     {
         _appearance.SetData(ent, FishBluespaceDeviceVisuals.Working, CanOperate(ent));
         _appearance.SetData(ent, FishBluespaceDeviceVisuals.Unstable,
-            ent.Comp.Critical || _bluespaceBackground.GetLevel(ent) >= ent.Comp.IncidentLevel);
+            ent.Comp.Critical || _bluespaceBackground.HasIncursionRisk(ent));
     }
 }

@@ -5,11 +5,11 @@
   children:
   - FishResearchTree
   - FishResearchMaterials
+  - FishResearchAnomalies
   - FishResearchProbers
   - FishResearchHarvester
   - FishResearchBackground
   - FishResearchEquipment
-  - FishResearchOrders
   - FishResearchTroubleshooting
 
 - type: guideEntry
@@ -21,6 +21,14 @@
   id: FishResearchMaterials
   name: guide-entry-fish-rnd-materials
   text: "/ServerInfo/Guidebook/_Fish/Research/Materials.xml"
+
+- type: guideEntry
+  id: FishResearchAnomalies
+  name: guide-entry-fish-rnd-anomalies
+  text: "/ServerInfo/Guidebook/_Fish/Research/Anomalies.xml"
+  children:
+  - APE
+  - ScannersAndVessels
 
 - type: guideEntry
   id: FishResearchProbers
@@ -41,11 +49,6 @@
   id: FishResearchEquipment
   name: guide-entry-fish-rnd-equipment
   text: "/ServerInfo/Guidebook/_Fish/Research/Equipment.xml"
-
-- type: guideEntry
-  id: FishResearchOrders
-  name: guide-entry-fish-rnd-orders
-  text: "/ServerInfo/Guidebook/_Fish/Research/Orders.xml"
 
 - type: guideEntry
   id: FishResearchTroubleshooting

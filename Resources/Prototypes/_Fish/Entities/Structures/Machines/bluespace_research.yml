@@ -44,7 +44,7 @@
   - type: ApcPowerReceiver
     powerLoad: 0
   - type: PowerState
-    workingPowerDraw: 25000
+    workingPowerDraw: 12500
   - type: Machine
     board: FishBluespaceProberBoard
   - type: ResearchClient
@@ -76,7 +76,7 @@
   - type: ApcPowerReceiver
     powerLoad: 0
   - type: PowerState
-    workingPowerDraw: 50000
+    workingPowerDraw: 25000
   - type: Machine
     board: FishBluespaceSuppressorBoard
   - type: FishBluespaceSuppressor
@@ -111,7 +111,7 @@
   - type: PowerState
     ensureApc: false
     idlePowerDraw: 0
-    workingPowerDraw: 250000
+    workingPowerDraw: 125000
     isWorking: false
   - type: Machine
     board: FishBluespaceHarvesterBoard
@@ -128,10 +128,10 @@
           False: { visible: false }
   - type: FishBluespaceHarvester
     enabled: false
-    normalPowerDraw: 250000
-    overdrivePowerDraw: 500000
-    energyPerReward: 15000000
-    backgroundPerMegajoule: 0.6
+    normalPowerDraw: 125000
+    overdrivePowerDraw: 250000
+    energyPerReward: 7500000
+    backgroundPerMegajoule: 1.2
   - type: ActivatableUI
     key: enum.FishBluespaceDeviceUiKey.Key
   - type: UserInterface
