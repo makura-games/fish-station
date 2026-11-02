@@ -236,8 +236,6 @@ dm-arena-revival-accept = Return to body
 dm-arena-revival-decline = Stay on the arena
 
 # Сообщения в чате
-dm-arena-join = { $player } stepped into the DM arena!
-dm-arena-leave = { $player } left the DM arena.
 dm-arena-leave-01 = { $user } vanishes, tired of the killing.
 
 # Админ-команда

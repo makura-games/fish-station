@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Content.Server.Administration;
-using Content.Server.Administration.Logs;
 using Content.Server.EnergyDome;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
@@ -13,7 +11,6 @@ using Content.Server.Popups;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Systems;
 using Content.Server.Weapons.Ranged.Systems;
-using Content.Shared.Administration;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Dataset;
@@ -262,7 +259,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
             rule.Presets.Clear();
             rule.LastLoadouts.Clear();
             rule.Active = false;
-            BroadcastPlayerCount(rule);
+            BroadcastPlayerCount();
         }
         else if (_ruleEntity == null)
         {
@@ -286,7 +283,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         ShieldArenaEntities(args.Map);
         MarkMapItems(args.Map);
         BrightenLights(args.Map);
-        BroadcastPlayerCount(ent.Comp);
+        BroadcastPlayerCount();
     }
 
     private void ShieldArenaEntities(MapId map)
@@ -637,7 +634,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         rule.Players.Add(GetNetEntity(mob));
         rule.LastLoadouts[session.UserId] = new List<int>(items);
         _activeEuis.Remove(session);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
         return true;
     }
 
@@ -778,7 +775,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         ClearOriginalBodyMarker(ent);
         _mindSwap.TryRestoreAsGhost(ent);
         QueueDel(ent);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
     }
 
     private void OnSuicideAttempt(Entity<DmArenaFighterComponent> ent, ref SuicideGhostEvent args)
@@ -858,7 +855,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         if (TryGetFighterRule((current, fighter), out var rule))
         {
             rule.Players.Remove(GetNetEntity(current));
-            BroadcastPlayerCount(rule);
+            BroadcastPlayerCount();
         }
 
         _mindSwap.TryRestoreToOriginalBody(current);
@@ -935,7 +932,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         rule.Players.Remove(GetNetEntity(ent));
         QueueDel(ent);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
     }
 
     private void OnFighterTerminating(Entity<DmArenaFighterComponent> ent, ref EntityTerminatingEvent args)
@@ -945,7 +942,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         ClearOriginalBodyMarker(ent);
         _mindSwap.TryRestoreAsGhost(ent);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
     }
 
     private void ClearOriginalBodyMarker(EntityUid tempBody)
@@ -1015,7 +1012,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         return points.Count > 0 ? _random.Pick(points) : null;
     }
 
-    private void BroadcastPlayerCount(DmArenaRuleComponent? rule = null)
+    private void BroadcastPlayerCount()
     {
         foreach (var eui in _activeEuis.Values)
         {

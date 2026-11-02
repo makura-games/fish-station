@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Numerics;
-using Content.Shared.Inventory;
 using Content.Shared._Fish.DmArena;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;

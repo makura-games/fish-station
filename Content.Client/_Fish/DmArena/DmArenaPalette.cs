@@ -1,6 +1,5 @@
 using Content.Client.Resources;
 using Content.Client.Stylesheets;
-using Content.Shared.Inventory;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Maths;
