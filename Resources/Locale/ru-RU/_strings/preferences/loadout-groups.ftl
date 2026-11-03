@@ -157,6 +157,7 @@ loadout-group-medical-doctor-outerclothing = { loadout-group-outer-clothing }
 loadout-group-medical-doctor-backpack = { loadout-group-back }
 loadout-group-medical-doctor-shoes = { loadout-group-shoes }
 loadout-group-medical-doctor-id = { loadout-group-id }
+
 loadout-group-medical-intern-jumpsuit = { loadout-group-jumpsuit }
 loadout-group-chemist-jumpsuit = { loadout-group-jumpsuit }
 loadout-group-chemist-outerclothing = { loadout-group-outer-clothing }
@@ -175,3 +176,8 @@ loadout-group-security-glasses = { loadout-group-eyes }
 loadout-group-medical-gloves = { loadout-group-gloves }
 loadout-group-boxer-jumpsuit = { loadout-group-jumpsuit }
 loadout-group-boxer-gloves = { loadout-group-gloves }
+loadout-group-assistive-items = Вспомогательные предметы
+loadout-group-tramdriver-jumpsuit = Комбинезон водителя трамвая
+loadout-group-tramdriver-outerclothing = Костюм водителя трамвая
+loadout-group-tramdriver-hat = Шапка водителя трамвая
+loadout-group-tramdriver-gloves = Перчатки водителя трамвая

@@ -4,6 +4,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
+using Content.Shared.Radiation.Components; // Fish-edit: RadiationImmunityComponent — иммунитет к облучению (газ Крипиум)
 using Content.Shared.Radiation.Events;
 using Content.Shared.Rejuvenate;
 using Robust.Shared.GameStates;
@@ -161,7 +162,7 @@ public sealed partial class DamageableSystem
     {
         _supportedTypesByContainer.Clear();
 
-        foreach (var proto in _prototypeManager.EnumeratePrototypes<DamageContainerPrototype>())
+        foreach (var proto in ProtoMan.EnumeratePrototypes<DamageContainerPrototype>())
         {
             var set = new HashSet<ProtoId<DamageTypePrototype>>();
             _supportedTypesByContainer[proto.ID] = set;
@@ -173,7 +174,7 @@ public sealed partial class DamageableSystem
 
             foreach (var groupId in proto.SupportedGroups)
             {
-                var group = _prototypeManager.Index(groupId);
+                var group = ProtoMan.Index(groupId);
                 foreach (var type in group.DamageTypes)
                 {
                     set.Add(type);
@@ -187,12 +188,18 @@ public sealed partial class DamageableSystem
     /// </summary>
     private void DamageableInit(Entity<DamageableComponent> ent, ref ComponentInit _)
     {
-        ent.Comp.Damage.GetDamagePerGroup(_prototypeManager, ent.Comp.DamagePerGroup);
+        ent.Comp.Damage.GetDamagePerGroup(ProtoMan, ent.Comp.DamagePerGroup);
         ent.Comp.TotalDamage = ent.Comp.Damage.GetTotal();
     }
 
     private void OnIrradiated(Entity<DamageableComponent> ent, ref OnIrradiatedEvent args)
     {
+        // Fish-start - иммунитет к облучению (газ Крипиум): новое облучение не накапливается,
+        // уже полученный радиационный урон при этом не лечится.
+        if (HasComp<RadiationImmunityComponent>(ent.Owner))
+            return;
+        // Fish-end
+
         var damageValue = FixedPoint2.New(args.TotalRads);
 
         // Radiation should really just be a damage group instead of a list of types.
@@ -217,7 +224,8 @@ public sealed partial class DamageableSystem
     {
         args.State = new DamageableComponentState(
             _netMan.IsServer ? ent.Comp.Damage : ent.Comp.Damage.Clone(),
-            ent.Comp.DamageModifierSetId
+            ent.Comp.DamageModifierSetId,
+            ent.Comp.Displacement
         );
     }
 
@@ -227,6 +235,7 @@ public sealed partial class DamageableSystem
             return;
 
         ent.Comp.DamageModifierSetId = state.ModifierSetId;
+        ent.Comp.Displacement = state.Displacement;
 
         // Has the damage actually changed?
         var newDamage = state.Damage.Clone();

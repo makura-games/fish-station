@@ -21,7 +21,7 @@ public sealed partial class CameraRecoilSystem : SharedCameraRecoilSystem
 
     private void OnCvarChanged(float value)
     {
-        _intensity = Math.Max(0.2f, value); // Fish-Edit
+        _intensity = Math.Max(0.2f, value); // Fish-edit
     }
 
     private void OnCameraKick(CameraKickEvent ev)
@@ -31,8 +31,8 @@ public sealed partial class CameraRecoilSystem : SharedCameraRecoilSystem
 
     public override void KickCamera(EntityUid uid, Vector2 recoil, CameraRecoilComponent? component = null)
     {
-        if (_intensity < 0.2f) // Fish-Edit
-            _intensity = 0.2f; // Fish-Edit
+        if (_intensity < 0.2f) // Fish-edit
+            _intensity = 0.2f; // Fish-edit
 
         if (!Resolve(uid, ref component, false))
             return;

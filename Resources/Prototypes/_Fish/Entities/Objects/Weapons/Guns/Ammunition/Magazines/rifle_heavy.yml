@@ -1,0 +1,99 @@
+- type: entity
+  id: FishMagazineScarH
+  name: "SCAR-H magazine (.308)"
+  parent: BaseMagazineRifleHeavy
+  suffix: Fish
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+      - FishMagazineScarH
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    whitelist:
+      tags:
+        - CartridgeHeavyRifle
+    capacity: 20
+  - type: Sprite
+    sprite: _Fish/Objects/Weapons/Guns/Ammunition/Magazines/scar_h/default.rsi
+
+- type: entity
+  id: FishMagazineScarHFMJ
+  name: "SCAR-H magazine (.308 FMJ)"
+  parent: FishMagazineScarH
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgeRifleHeavyFMJ
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      right:
+      - state: inhand-right-mag
+
+- type: entity
+  id: FishMagazineScarHEmpty
+  name: "SCAR-H magazine (.308 any)"
+  suffix: Fish, empty
+  parent: FishMagazineScarH
+  components:
+  - type: BallisticAmmoProvider
+    proto: null
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      right:
+      - state: inhand-right-mag
+
+- type: entity
+  id: FishMagazineLargeScarHFMJ
+  name: "SCAR-H large magazine (.308 FMJ)"
+  parent: FishMagazineScarH
+  components:
+  - type: BallisticAmmoProvider
+    capacity: 30
+    proto: CartridgeRifleHeavyFMJ
+  - type: Sprite
+    sprite: _Fish/Objects/Weapons/Guns/Ammunition/Magazines/scar_h/large.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      right:
+      - state: inhand-right-mag
+
+- type: entity
+  id: FishMagazineLargeScarHEmpty
+  name: "SCAR-H large magazine (.308 any)"
+  suffix: Fish, empty
+  parent: FishMagazineLargeScarHFMJ
+  components:
+  - type: BallisticAmmoProvider
+    proto: null
+
+- type: entity
+  id: FishMagazineScarHAP
+  name: "SCAR-H magazine (.308 AP)"
+  parent: FishMagazineScarH
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgeRifleHeavyAP
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: stripe
+      color: "#540000"
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      - state: inhand-left-stripe
+        color: "#540000"
+      right:
+      - state: inhand-right-mag
+      - state: inhand-right-stripe
+        color: "#540000"

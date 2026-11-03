@@ -1,7 +1,6 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Dictionary;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Content.Shared.Store;
 using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Serialization;
@@ -14,9 +13,9 @@ namespace Content.Shared._Sunrise.Disease;
 [AutoGenerateComponentState]
 public sealed partial class DiseaseRoleComponent : Component
 {
-    [DataField("actions", customTypeSerializer: typeof(PrototypeIdDictionarySerializer<int, EntityPrototype>))]
+    [DataField("actions")]
     [ViewVariables(VVAccess.ReadWrite)]
-    public Dictionary<string, int> Actions = new();
+    public Dictionary<EntProtoId, int> Actions = new();
 
     [DataField("infected")]
     [AutoNetworkedField]
@@ -29,8 +28,8 @@ public sealed partial class DiseaseRoleComponent : Component
     [DataField] public int FreeInfects = 3;
     [DataField] public int InfectCost = 10;
 
-    [DataField("currencyPrototype", customTypeSerializer: typeof(PrototypeIdSerializer<CurrencyPrototype>))]
-    public string CurrencyPrototype = "DiseasePoints";
+    [DataField("currencyPrototype")]
+    public ProtoId<CurrencyPrototype> CurrencyPrototype = "DiseasePoints";
 
 
     [DataField] public float BaseInfectChance = 0.6f;
@@ -45,8 +44,9 @@ public sealed partial class DiseaseRoleComponent : Component
     public List<string> NewBloodReagent = new();
 }
 
+[DataDefinition]
 [Serializable, NetSerializable]
-public struct SymptomData
+public partial struct SymptomData
 {
     [DataField("minLevel")]
     public int MinLevel;

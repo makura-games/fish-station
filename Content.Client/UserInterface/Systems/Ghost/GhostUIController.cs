@@ -1,8 +1,10 @@
-﻿using Content.Client.Gameplay;
+using Content.Client.Gameplay;
 using Content.Client.Ghost;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Client.UserInterface.Systems.Ghost.Widgets;
-using Content.Shared.Ghost;
+using Content.Shared._Fish.DmArena; // Fish-edit
+using Content.Shared.Ghost.Components;
+using Content.Shared.Ghost.Systems;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using Content.Client._Sunrise.ServersHub;
@@ -10,7 +12,7 @@ using Content.Shared._Sunrise.SunriseCCVars;
 using Content.Sunrise.Interfaces.Shared;
 using Robust.Shared.Configuration;
 using Content.Shared._Sunrise.NewLife;
-using GhostWarpsResponseEvent = Content.Shared.Ghost.SharedGhostSystem.GhostWarpsResponseEvent;
+using GhostWarpsResponseEvent = Content.Shared.Ghost.Systems.SharedGhostSystem.GhostWarpsResponseEvent; // Sunrise-Edit - используем расширенный ответ панели призрака
 
 namespace Content.Client.UserInterface.Systems.Ghost;
 
@@ -18,6 +20,7 @@ namespace Content.Client.UserInterface.Systems.Ghost;
 public sealed partial class GhostUIController : UIController, IOnSystemChanged<GhostSystem>
 {
     [Dependency] private IEntityNetworkManager _net = default!;
+    [Dependency] private IEntityManager _entManager = default!; // Fish-edit
     [Dependency] private ServersHubManager _serversHubManager = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     private ISharedSponsorsManager? _sponsorsManager; // Sunrise-Sponsors
@@ -35,6 +38,10 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
         gameplayStateLoad.OnScreenUnload += OnScreenUnload;
 
         IoCManager.Instance!.TryResolveType(out _sponsorsManager); // Sunrise-Sponsors
+
+        // Fish-start
+        _entManager.EventBus.SubscribeEvent<DmArenaPlayerCountEvent>(EventSource.Network, this, OnDmArenaPlayerCount);
+        // Fish-end
     }
 
     private void OnScreenLoad()
@@ -153,6 +160,18 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
         _net.SendSystemNetworkMessage(msg);
     }
 
+    private void OnWarpToRandomFollowedClicked()
+    {
+        var msg = new WarpToRandomFollowedRequestEvent();
+        _net.SendSystemNetworkMessage(msg);
+    }
+
+    private void OnWarpToRandomClicked()
+    {
+        var msg = new WarpToRandomRequestEvent();
+        _net.SendSystemNetworkMessage(msg);
+    }
+
     public void LoadGui()
     {
         if (Gui == null)
@@ -163,12 +182,14 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
         Gui.GhostRolesPressed += GhostRolesPressed;
         Gui.RespawnPressed += Respawn; // Sunrise-Sponsors
         Gui.ChangeServerPressed += ChangeServerPressed;
+        Gui.DmArenaPressed += DmArenaPressed; // Fish-edit
         Gui.TargetWindow.WarpClicked += OnWarpClicked;
-
-        // Sunrise edit - нету фичи
-        // Gui.TargetWindow.OnGhostnadoClicked += OnGhostnadoClicked;
+        Gui.TargetWindow.OnGhostnadoClicked += OnGhostnadoClicked;
+        Gui.TargetWindow.OnWarpToRandomFollowedClicked += OnWarpToRandomFollowedClicked;
+        Gui.TargetWindow.OnWarpToRandomClicked += OnWarpToRandomClicked;
 
         UpdateGui();
+        Gui.UpdateDmArena(_dmArenaCount, _dmArenaEnabled); // Fish-edit
     }
 
     public void UnloadGui()
@@ -181,10 +202,29 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
         Gui.GhostRolesPressed -= GhostRolesPressed;
         Gui.RespawnPressed -= Respawn; // Sunrise-Sponsors
         Gui.ChangeServerPressed -= ChangeServerPressed;
+        Gui.DmArenaPressed -= DmArenaPressed; // Fish-edit
         Gui.TargetWindow.WarpClicked -= OnWarpClicked;
 
         Gui.Hide();
     }
+
+    // Fish-start
+    // Состояние хранится, чтобы применить его после пересоздания GUI
+    private int _dmArenaCount;
+    private bool _dmArenaEnabled = true;
+
+    private void DmArenaPressed()
+    {
+        _net.SendSystemNetworkMessage(new DmArenaJoinRequestEvent());
+    }
+
+    private void OnDmArenaPlayerCount(DmArenaPlayerCountEvent ev)
+    {
+        _dmArenaCount = ev.Count;
+        _dmArenaEnabled = ev.Enabled;
+        Gui?.UpdateDmArena(ev.Count, ev.Enabled);
+    }
+    // Fish-end
 
     private void ReturnToBody()
     {
