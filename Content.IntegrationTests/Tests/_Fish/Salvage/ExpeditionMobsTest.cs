@@ -1,5 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
+using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._Fish.Salvage;
 using Content.Server._Sunrise.Misc.ShiftedAsciiTableAccent;
@@ -8,6 +9,7 @@ using Content.Server.NPC;
 using Content.Server.NPC.HTN;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.Salvage;
 
@@ -32,7 +34,7 @@ public sealed class ExpeditionMobsTest : GameTest
         "MobRogueSiliconBossGuardian",
         "MobRogueSiliconBossSkullHouse",
         "MobDragonDungeon",
-        "MobCarpRainbowDragonExpedition",
+        "FishMobCarpRainbowDragonExpedition",
     ];
 
     /// <summary>
@@ -118,6 +120,23 @@ public sealed class ExpeditionMobsTest : GameTest
 
         // Пара очищает только последнюю созданную карту, первую убираем сами, чтобы не мешать следующим тестам.
         await server.WaitPost(() => entMan.System<SharedMapSystem>().DeleteMap(testMap.MapId));
+    }
+
+    /// <summary>
+    /// В прототипах мобов экспедиций эффективный шанс гост-роли равен нулю, а не просто не выпал в этом запуске.
+    /// </summary>
+    [Test]
+    public void ExpeditionMobPrototypesHaveZeroGhostRoleProbability()
+    {
+        var protoMan = Server.ResolveDependency<IPrototypeManager>();
+        var factory = Server.ResolveDependency<IComponentFactory>();
+
+        foreach (var id in OtherBranches.Append(Pirate))
+        {
+            Assert.That(protoMan.Index<EntityPrototype>(id).TryGetComponent<GhostRoleComponent>(out var role, factory),
+                Is.True, $"{id} без GhostRole в прототипе");
+            Assert.That(role!.Probability, Is.EqualTo(0f), $"{id} имеет ненулевой шанс гост-роли");
+        }
     }
 
     /// <summary>

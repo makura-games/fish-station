@@ -1,8 +1,8 @@
 # Радужный карп экспедиций. Обычный MobCarpRainbowDragon нужен ивенту космического дракона, где он остаётся гост-ролью.
 - type: entity
   parent: MobCarpRainbowDragon
-  id: MobCarpRainbowDragonExpedition
-  suffix: Expedition
+  id: FishMobCarpRainbowDragonExpedition
+  suffix: Fish
   components:
   - type: GhostRole
     prob: 0
