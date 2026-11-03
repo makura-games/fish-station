@@ -21,6 +21,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolTraceRubber
   - type: Sprite
     layers:
@@ -29,11 +30,6 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#00c1b8"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTraceSP
-  # Fish-End
 
 - type: entity
   id: CartridgePistolSP
@@ -41,6 +37,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolTraceSP
   - type: Sprite
     layers:
@@ -49,11 +46,6 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#3F47DB"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTraceSP
-  # Fish-End
 
 - type: entity
   id: CartridgePistolHP
@@ -61,6 +53,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolTraceHP
   - type: Sprite
     layers:
@@ -69,11 +62,6 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#F5514C"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTraceHP
-  # Fish-End
 
 - type: entity
   id: CartridgePistolFMJ
@@ -81,6 +69,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolTraceFMJ
   - type: Sprite
     layers:
@@ -89,11 +78,6 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#B68F0E"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTraceFMJ
-  # Fish-End
 
 - type: entity
   id: CartridgePistolAP
@@ -101,6 +85,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolTraceAP
   - type: Sprite
     layers:
@@ -109,11 +94,6 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#540000"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTraceAP
-  # Fish-End
 
 - type: entity
   id: CartridgePistolPractice
@@ -122,6 +102,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolTracePractice
   -  type: Sprite
      layers:
@@ -130,11 +111,6 @@
        - state: tip
          map: [ "enum.AmmoVisualLayers.Tip" ]
          color: "#dbdbdb"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTracePractice
-  # Fish-End
 
 - type: entity
   id: CartridgePistolIncendiary
@@ -143,6 +119,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolIncendiary
   - type: Sprite
     layers:
@@ -151,11 +128,6 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#ff6e52"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTraceSP
-  # Fish-End
 
 - type: entity
   id: CartridgePistolUranium
@@ -164,6 +136,7 @@
   parent: BaseCartridgePistol
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletPistolTraceUranium
   - type: Sprite
     layers:
@@ -172,11 +145,6 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#65fe08"
-  # Fish-Start
-  - type: CartridgeAmmo
-    deleteOnSpawn: true
-    proto: BulletPistolTraceUranium
-  # Fish-End
 
 - type: entity
   id: CartridgePistolSpent

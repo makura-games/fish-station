@@ -38,7 +38,7 @@
   parent: BaseCartridgeLightRifleSP
   components:
   - type: CartridgeAmmo
-    deleteOnSpawn: true  # Fish-Edit
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletLightRifleTraceFMJ
   - type: Sprite
     layers:
@@ -54,7 +54,7 @@
   parent: BaseCartridgeLightRifleSP
   components:
   - type: CartridgeAmmo
-    deleteOnSpawn: true  # Fish-Edit
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletLightRifleTraceAP
   - type: Sprite
     layers:
@@ -70,7 +70,7 @@
   parent: BaseCartridgeLightRifleSP
   components:
   - type: CartridgeAmmo
-    deleteOnSpawn: true  # Fish-Edit
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletLightRifleTracePractice
   - type: Sprite
     layers:
@@ -86,7 +86,7 @@
   parent: BaseCartridgeLightRifleSP
   components:
   - type: CartridgeAmmo
-    deleteOnSpawn: true  # Fish-Edit
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletLightRifleIncendiary
   - type: Sprite
     layers:
@@ -102,7 +102,7 @@
   parent: BaseCartridgeLightRifleSP
   components:
   - type: CartridgeAmmo
-    deleteOnSpawn: true  # Fish-Edit
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletLightRifleTraceUranium
   - type: Sprite
     layers:

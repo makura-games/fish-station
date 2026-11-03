@@ -45,11 +45,11 @@
   - type: PhysicalComposition
     materialComposition:
       Steel: 10
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 # .308 cartridges
 - type: entity
@@ -66,11 +66,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#3F47DB"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeRifleHeavyFMJ
@@ -86,11 +86,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#B68F0E"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeRifleHeavyAP
@@ -106,11 +106,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#540000"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeRifleHeavyPractice
@@ -126,11 +126,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#dbdbdb"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeRifleHeavyIncendiary
@@ -146,11 +146,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#ff6e52"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeRifleHeavyUranium
@@ -166,11 +166,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#65fe08"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeRifleHeavy127mm
@@ -187,11 +187,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#977917"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 # 7.62mmR cartridges
 - type: entity
@@ -208,11 +208,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#3F47DB"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeHeavyRifleRFMJ
@@ -228,11 +228,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#B68F0E"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeHeavyRifleRAP
@@ -248,11 +248,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#540000"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeHeavyRifleRPractice
@@ -268,11 +268,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#dbdbdb"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeHeavyRifleRIncendiary
@@ -288,11 +288,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#ff6e52"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 - type: entity
   id: CartridgeHeavyRifleRUranium
@@ -308,11 +308,11 @@
       - state: tip
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#65fe08"
-  # Fish-Start
+  # Fish-start
   - type: CartridgeAmmo
     deleteOnSpawn: true
     proto: BulletHeavyRifleTrace
-  # Fish-End
+  # Fish-end
 
 # region speedloaders
 - type: entity

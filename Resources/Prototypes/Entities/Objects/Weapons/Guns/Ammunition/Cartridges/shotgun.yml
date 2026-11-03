@@ -38,7 +38,7 @@
   - type: CartridgeAmmo
     soundEject:
       collection: ShellEject
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     proto: PelletShotgunBeanbagTrace
 
 - type: entity
@@ -56,7 +56,7 @@
   - type: CartridgeAmmo
     soundEject:
       collection: ShellEject
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     proto: PelletShotgunSlugTrace
     # sunrise-start
   - type: Tag
@@ -84,7 +84,7 @@
         color: "#FFFF0B"
       - state: flare
   - type: CartridgeAmmo
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     proto: PelletShotgunFlare
     soundEject:
       collection: ShellEject
@@ -102,7 +102,7 @@
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#F4001F"
   - type: CartridgeAmmo
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     soundEject:
       collection: ShellEject
     proto: PelletShotgunSpreadTrace
@@ -121,7 +121,7 @@
         color: "#FFFF0B"
       - state: incendiary
   - type: CartridgeAmmo
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     proto: PelletShotgunIncendiarySpread
 
 - type: entity
@@ -137,7 +137,7 @@
         map: [ "enum.AmmoVisualLayers.Tip" ]
       - state: practice
   - type: CartridgeAmmo
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     soundEject:
       collection: ShellEject
     proto: PelletShotgunPracticeSpreadTrace
@@ -159,7 +159,7 @@
         map: [ "enum.AmmoVisualLayers.Tip" ]
         color: "#49CECE"
   - type: CartridgeAmmo
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     proto: PelletShotgunTranquilizer
   - type: ChemicalAmmo
   - type: Solution
@@ -212,5 +212,5 @@
   - type: CartridgeAmmo
     soundEject:
       collection: ShellEject
-    deleteOnSpawn: true
+    deleteOnSpawn: true  # Fish-edit
     proto: PelletShotgunUraniumSpreadTrace
