@@ -2,7 +2,6 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Lobby;
 using Content.Client.Station;
-using Content.Client.Stylesheets;
 using Content.Shared.Body;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -42,6 +41,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
     private readonly DmArenaPillButton _confirmButton;
     private readonly DmArenaPillButton _saveButton;
     private readonly DmArenaPillButton _loadButton;
+    private readonly DmArenaPillButton _lastButton;
     private readonly DmArenaPillButton _clearButton;
     private readonly DmArenaPillButton _builderTab;
     private readonly DmArenaPillButton _setsTab;
@@ -78,13 +78,13 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
             HorizontalExpand = true,
             VerticalExpand = true,
-            SeparationOverride = 12,
-            Margin = new Thickness(12, 10, 12, 12),
+            SeparationOverride = 16,
+            Margin = new Thickness(16, 12, 16, 16),
         };
 
         _leftColumn = MakeColumn(main);
         var center = MakeCenter(out _preview, out _balanceLabel, out _playerCountLabel,
-            out _confirmButton, out _saveButton, out _loadButton, out _clearButton);
+            out _confirmButton, out _saveButton, out _loadButton, out _lastButton, out _clearButton);
         main.AddChild(center);
         _rightColumn = MakeColumn(main);
 
@@ -92,7 +92,8 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
 
         _confirmButton.OnPressed += () => OnLoadoutConfirmed?.Invoke(Expand());
         _saveButton.OnPressed += () => OnPresetSaved?.Invoke(Expand());
-        _loadButton.OnPressed += LoadPreset;
+        _loadButton.OnPressed += () => LoadItems(_state?.Preset);
+        _lastButton.OnPressed += () => LoadItems(_state?.Last);
         _clearButton.OnPressed += () =>
         {
             _selected.Clear();
@@ -125,6 +126,22 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         return column;
     }
 
+    private static Control MakeHeader(string text)
+    {
+        var panel = new PanelContainer
+        {
+            Margin = new Thickness(0, 8, 0, 2),
+            PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.TitleBarBg, 10, 4),
+        };
+        panel.AddChild(new Label
+        {
+            Text = text,
+            FontOverride = DmArenaPalette.GetFont(true, 14),
+            FontColorOverride = DmArenaPalette.Accent,
+        });
+        return panel;
+    }
+
     private BoxContainer MakeCenter(
         out DmArenaDollFrame preview,
         out Label balance,
@@ -132,6 +149,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         out DmArenaPillButton confirm,
         out DmArenaPillButton save,
         out DmArenaPillButton load,
+        out DmArenaPillButton last,
         out DmArenaPillButton clear)
     {
         var center = new BoxContainer
@@ -139,7 +157,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
             VerticalExpand = true,
-            SeparationOverride = 6,
+            SeparationOverride = 10,
             MinWidth = 220,
             SizeFlagsStretchRatio = 0.7f,
         };
@@ -158,7 +176,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         balance = new Label
         {
             FontOverride = DmArenaPalette.GetFont(true, 18),
-            FontColorOverride = DmArenaPalette.Cost,
+            FontColorOverride = DmArenaPalette.ButtonText,
             HorizontalAlignment = HAlignment.Center,
         };
         center.AddChild(balance);
@@ -184,6 +202,9 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         presetRow.AddChild(load);
         presetRow.AddChild(clear);
         center.AddChild(presetRow);
+
+        last = new DmArenaPillButton { Text = Loc.GetString("dm-arena-shop-last"), MinHeight = 36 };
+        center.AddChild(last);
 
         confirm = new DmArenaPillButton
         {
@@ -231,6 +252,8 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             _selected.Remove(stale);
         }
 
+        PruneAmmo();
+
         _heldCategory = state.Items.Count > 0 ? state.Items[0].Category : null;
 
         BuildColumns();
@@ -260,7 +283,9 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         string? lastCategory = null;
         string? lastGroup = null;
 
-        foreach (var item in _state.Items)
+        var ordered = _state.Items.GroupBy(item => (item.Category, item.Group)).SelectMany(group => group.OrderBy(item => item.Cost));
+
+        foreach (var item in ordered)
         {
             var column = item.Category == _heldCategory ? _leftColumn : _rightColumn;
 
@@ -278,7 +303,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
                     Text = item.Group,
                     FontOverride = DmArenaPalette.GetFont(true, 11),
                     FontColorOverride = DmArenaPalette.TextMuted,
-                    Margin = new Thickness(8, 6, 0, 0),
+                    Margin = new Thickness(8, 8, 0, 0),
                 });
             }
 
@@ -309,9 +334,11 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
 
         _leftColumn.AddChild(MakeHeader(Loc.GetString("dm-arena-tab-sets")));
 
-        for (var i = 0; i < _state.Sets.Count; i++)
+        var sets = _state.Sets.OrderBy(set => set.Cost).ToList();
+
+        for (var i = 0; i < sets.Count; i++)
         {
-            var set = _state.Sets[i];
+            var set = sets[i];
             var names = set.Items
                 .Where(_options.ContainsKey)
                 .GroupBy(index => index)
@@ -336,22 +363,6 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         }
 
         SwitchTab(false);
-    }
-
-    private static Control MakeHeader(string text)
-    {
-        var panel = new PanelContainer
-        {
-            Margin = new Thickness(0, 8, 0, 2),
-            PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.TitleBarBg, 10, 4),
-        };
-        panel.AddChild(new Label
-        {
-            Text = text,
-            FontOverride = DmArenaPalette.GetFont(true, 14),
-            FontColorOverride = DmArenaPalette.Accent,
-        });
-        return panel;
     }
 
     private void OnCountChanged(DmArenaItemCard card, int delta)
@@ -443,13 +454,13 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         return result;
     }
 
-    private void LoadPreset()
+    private void LoadItems(List<int>? items)
     {
-        if (_state?.Preset is not { } preset)
+        if (items == null)
             return;
 
         _selected.Clear();
-        foreach (var index in preset.Where(_options.ContainsKey))
+        foreach (var index in items.Where(_options.ContainsKey))
         {
             _selected[index] = _selected.GetValueOrDefault(index) + 1;
         }
@@ -474,9 +485,10 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             var count = _selected.GetValueOrDefault(index);
 
             var needsWeapon = count == 0 && !AmmoAvailable(_options[index]);
+            var conflicts = count == 0 ? GetConflicts(index) : new List<int>();
             var locked = count > 0
                 ? spent + card.Cost > _state.Budget
-                : spent - RefundFor(GetConflicts(index)) + card.Cost > _state.Budget || needsWeapon;
+                : spent - RefundFor(conflicts) + card.Cost > _state.Budget || needsWeapon;
 
             card.SetState(count, locked, needsWeapon);
         }
@@ -487,6 +499,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         _confirmButton.Disabled = empty;
         _saveButton.Disabled = empty;
         _loadButton.Disabled = _state.Preset == null;
+        _lastButton.Disabled = _state.Last == null;
         _clearButton.Disabled = empty;
 
         RebuildPreview();
