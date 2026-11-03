@@ -75,7 +75,7 @@
   - type: Gun
     fireRate: 1.5
     projectileSpeed: 35 # Sunrise-Edit
-    pump: true
+    pump: false  # Fish-edit
   - type: BallisticAmmoProvider
     whitelist:
       tags:
