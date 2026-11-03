@@ -175,7 +175,6 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         {
             Text = Loc.GetString("dm-arena-loadout-confirm"),
             Disabled = true,
-            Primary = true,
             MinHeight = 50,
         };
         center.AddChild(confirm);
@@ -454,15 +453,10 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
                 ? spent + card.Cost > _state.Budget
                 : spent - RefundFor(conflicts) + card.Cost > _state.Budget || needsWeapon;
 
-            var replaces = conflicts.Count > 0 && !locked
-                ? Loc.GetString("dm-arena-replaces", ("items", string.Join(", ", conflicts.Select(conflict => _options[conflict].Name))))
-                : null;
-
-            card.SetState(count, locked, needsWeapon, replaces);
+            card.SetState(count, locked, needsWeapon);
         }
 
         _balanceLabel.Text = Loc.GetString("dm-arena-shop-balance", ("left", _state.Budget - spent), ("total", _state.Budget));
-
 
         var empty = _selected.Count == 0;
         _confirmButton.Disabled = empty;

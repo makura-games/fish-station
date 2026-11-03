@@ -43,7 +43,6 @@ dm-arena-shop-clear = Сбросить
 dm-arena-shop-preset-save = Сохранить пресет
 dm-arena-shop-preset-load = Загрузить пресет
 dm-arena-shop-last = Прошлый заход
-dm-arena-replaces = Заменит: { $items }
 
 # Предметы и наборы
 dm-arena-item-spear = Урановое копьё
@@ -352,13 +351,12 @@ cmd-dmarena-debug-hint = Подкоманда отладки
 cmd-dmarena-debug-item-hint = ID набора (true: в продаже, false: скрыт)
 cmd-dmarena-debug-player-hint = Игрок (true: кулдаун действует, false: без кулдауна)
 cmd-dmarena-debug-value-hint = true или false
-cmd-dmarena-debug-bad-argument = Использование: dmarena debug [status|items|reset|spawn <true|false>|combatlock <true|false>|refill <true|false>|item <gear> <true|false>|cooldown <ckey> <true|false>|rofls <ckey> <true|false>]
+cmd-dmarena-debug-bad-argument = Использование: dmarena debug [status|reset|combatlock <true|false>|refill <true|false>|item <gear> <true|false>|cooldown <ckey> <true|false>|rofls <ckey> <true|false>]
 cmd-dmarena-debug-unknown-item = Такого предмета в магазине нет. Список: dmarena debug items
 cmd-dmarena-debug-unknown-player = Нет игрока с таким сикеем в сети.
 cmd-dmarena-debug-flag = { $name }: { $value }
 cmd-dmarena-debug-disabled-items = Скрытые предметы: { $items }
 cmd-dmarena-debug-no-cooldown = Игроки без кулдауна возрождения: { $players }
 cmd-dmarena-debug-reset = Настройки отладки сброшены.
-dm-arena-debug-spawn-disabled = Вход на арену временно отключён.
 cmd-dmarena-debug-rofls-hint = Игрок (true: на арене станет свиньёй)
 cmd-dmarena-debug-rofls-players = Игроки-свиньи: { $players }

@@ -104,7 +104,6 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private bool _refillOnKill;
 
-    public bool DebugSpawnEnabled = true;
     public bool DebugCombatLock = true;
     public readonly HashSet<string> DebugDisabledItems = new();
     public readonly HashSet<NetUserId> DebugNoCooldown = new();
@@ -145,6 +144,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         SubscribeLocalEvent<DmArenaFighterComponent, EntityTerminatingEvent>(OnFighterTerminating);
         SubscribeLocalEvent<DmArenaFighterComponent, DamageDealtEvent>(OnFighterDamaged);
         SubscribeLocalEvent<EnergyDomeComponent, DamageDealtEvent>(OnDomeDamaged);
+        SubscribeLocalEvent<GhostComponent, PlayerAttachedEvent>(OnGhostAttached);
         SubscribeLocalEvent<DmArenaFighterComponent, ThrowHitByEvent>(OnFighterThrownHit);
         SubscribeLocalEvent<DmArenaFighterComponent, KnockDownAttemptEvent>(OnFighterKnockDown);
         SubscribeLocalEvent<DmArenaFighterComponent, IsUnequippingTargetAttemptEvent>(OnFighterUnequip);
@@ -174,6 +174,11 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Session.Channel);
     }
 
+    private void OnGhostAttached(Entity<GhostComponent> ent, ref PlayerAttachedEvent args)
+    {
+        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Player.Channel);
+    }
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -201,7 +206,6 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     public void ResetDebug()
     {
-        DebugSpawnEnabled = true;
         DebugCombatLock = true;
         DebugDisabledItems.Clear();
         DebugNoCooldown.Clear();
@@ -463,14 +467,6 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     public bool CanOpenLoadout(ICommonSession session, out EntityUid ruleUid)
     {
         ruleUid = default;
-
-        if (!DebugSpawnEnabled)
-        {
-            if (session.AttachedEntity is { } ghost)
-                _popup.PopupEntity(Loc.GetString("dm-arena-debug-spawn-disabled"), ghost, ghost);
-
-            return false;
-        }
 
         if (_ruleEntity is not { } rule || CurrentRule is not { Active: true })
         {
@@ -1064,12 +1060,16 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private void BroadcastPlayerCount()
     {
+        RefreshLoadouts();
+        SendPlayerCount();
+    }
+
+    public void RefreshLoadouts()
+    {
         foreach (var eui in _activeEuis.Values)
         {
             eui.StateDirty();
         }
-
-        SendPlayerCount();
     }
 
     private void SendPlayerCount()
@@ -1111,7 +1111,15 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         rule.Presets.TryGetValue(userId, out var preset);
         rule.LastLoadouts.TryGetValue(userId, out var last);
-        return new DmArenaKitEuiState(items, sets, CountFighters(), rule.Budget, preset, last, rule.Gear);
+        return new DmArenaKitEuiState(items, sets, CountFighters(), rule.Budget, Usable(rule, preset), Usable(rule, last), rule.Gear);
+    }
+
+    private List<int>? Usable(DmArenaRuleComponent rule, List<int>? indexes)
+    {
+        var usable = indexes != null && indexes.All(index =>
+            index >= 0 && index < rule.ShopItems.Count && !DebugDisabledItems.Contains(rule.ShopItems[index].Gear.Id));
+
+        return usable ? indexes : null;
     }
 
     private DmArenaStoreOption BuildItemOption(DmArenaStoreItem item, int index)

@@ -28,7 +28,6 @@ public sealed class DmArenaItemCard : PanelContainer
     private readonly PanelContainer _accent;
     private readonly Label _nameLabel;
     private readonly Label _costLabel;
-    private readonly Label _hintLabel;
     private readonly Label _countLabel;
     private readonly DmArenaPillButton _minusButton;
     private readonly DmArenaPillButton _plusButton;
@@ -88,14 +87,6 @@ public sealed class DmArenaItemCard : PanelContainer
             FontColorOverride = DmArenaPalette.ButtonText,
             ClipText = true,
         };
-        _hintLabel = new Label
-        {
-            FontOverride = DmArenaPalette.GetFont(false, 10),
-            FontColorOverride = DmArenaPalette.BalanceWarn,
-            ClipText = true,
-            Visible = false,
-        };
-
         var nameBox = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
@@ -104,7 +95,6 @@ public sealed class DmArenaItemCard : PanelContainer
             Margin = new Thickness(4, 0, 0, 0),
         };
         nameBox.AddChild(_nameLabel);
-        nameBox.AddChild(_hintLabel);
         hbox.AddChild(nameBox);
 
         _minusButton = MakeStepButton("−", -1);
@@ -203,10 +193,8 @@ public sealed class DmArenaItemCard : PanelContainer
         return button;
     }
 
-    public void SetState(int count, bool locked, bool needsWeapon, string? replaces)
+    public void SetState(int count, bool locked, bool needsWeapon)
     {
-        _hintLabel.Text = replaces;
-        _hintLabel.Visible = replaces != null;
         _count = count;
         _locked = locked;
         _needsWeapon = needsWeapon;

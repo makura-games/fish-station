@@ -43,7 +43,6 @@ dm-arena-shop-clear = Clear cart
 dm-arena-shop-preset-save = Save preset
 dm-arena-shop-preset-load = Load preset
 dm-arena-shop-last = Last run
-dm-arena-replaces = Replaces: { $items }
 
 # Предметы и наборы
 dm-arena-item-spear = Uranium spear
@@ -352,13 +351,12 @@ cmd-dmarena-debug-hint = Debug subcommand
 cmd-dmarena-debug-item-hint = Gear id (true: sold, false: hidden)
 cmd-dmarena-debug-player-hint = Player (true: cooldown applies, false: no cooldown)
 cmd-dmarena-debug-value-hint = true or false
-cmd-dmarena-debug-bad-argument = Usage: dmarena debug [status|items|reset|spawn <true|false>|combatlock <true|false>|refill <true|false>|item <gear> <true|false>|cooldown <ckey> <true|false>|rofls <ckey> <true|false>]
+cmd-dmarena-debug-bad-argument = Usage: dmarena debug [status|reset|combatlock <true|false>|refill <true|false>|item <gear> <true|false>|cooldown <ckey> <true|false>|rofls <ckey> <true|false>]
 cmd-dmarena-debug-unknown-item = No such shop item. List them with: dmarena debug items
 cmd-dmarena-debug-unknown-player = No online player with this ckey.
 cmd-dmarena-debug-flag = { $name }: { $value }
 cmd-dmarena-debug-disabled-items = Hidden items: { $items }
 cmd-dmarena-debug-no-cooldown = Players without respawn cooldown: { $players }
 cmd-dmarena-debug-reset = Debug settings are back to defaults.
-dm-arena-debug-spawn-disabled = Entering the arena is temporarily disabled.
 cmd-dmarena-debug-rofls-hint = Player (true: becomes a pig on the arena)
 cmd-dmarena-debug-rofls-players = Players turned into pigs: { $players }

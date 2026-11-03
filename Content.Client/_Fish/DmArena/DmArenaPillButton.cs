@@ -16,7 +16,6 @@ public sealed class DmArenaPillButton : PanelContainer
     private Color _targetColor;
     private bool _disabled;
     private bool _selected;
-    private bool _primary;
     private bool _hovered;
     private bool _pressed;
 
@@ -36,16 +35,6 @@ public sealed class DmArenaPillButton : PanelContainer
         set
         {
             _selected = value;
-            UpdateVisual();
-        }
-    }
-
-    public bool Primary
-    {
-        get => _primary;
-        set
-        {
-            _primary = value;
             UpdateVisual();
         }
     }
@@ -128,8 +117,7 @@ public sealed class DmArenaPillButton : PanelContainer
             return;
         }
 
-        var color = _primary ? Color.InterpolateBetween(DmArenaPalette.PrimaryTop, Color.White, _hovered ? 0.1f : 0f)
-            : _selected ? DmArenaPalette.ButtonSelectedBg
+        var color = _selected ? DmArenaPalette.ButtonSelectedBg
             : _hovered ? DmArenaPalette.ButtonHoverBg : DmArenaPalette.ButtonBg;
 
         _targetColor = _pressed ? Color.InterpolateBetween(color, Color.Black, 0.2f) : color;

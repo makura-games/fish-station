@@ -104,20 +104,15 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
         switch (sub)
         {
             case "status":
-                WriteFlag(shell, "spawn", arena.DebugSpawnEnabled);
                 WriteFlag(shell, "combatlock", arena.DebugCombatLock);
                 WriteFlag(shell, "refill", _cfg.GetCVar(DmArenaConfigVars.DmArenaRefill));
                 shell.WriteLine(LocalizationManager.GetString("cmd-dmarena-debug-disabled-items", ("items", string.Join(", ", arena.DebugDisabledItems))));
                 shell.WriteLine(LocalizationManager.GetString("cmd-dmarena-debug-no-cooldown", ("players", string.Join(", ", arena.DebugNoCooldown.Select(PlayerName)))));
                 shell.WriteLine(LocalizationManager.GetString("cmd-dmarena-debug-rofls-players", ("players", string.Join(", ", arena.DebugRofls.Select(PlayerName)))));
                 return;
-            case "items":
-                arena.EnsureRule();
-                foreach (var id in arena.ShopGearIds)
-                    WriteFlag(shell, id, !arena.DebugDisabledItems.Contains(id));
-                return;
             case "reset":
                 arena.ResetDebug();
+                arena.RefreshLoadouts();
                 _cfg.SetCVar(DmArenaConfigVars.DmArenaRefill, true);
                 LogDebug(shell, "reset");
                 shell.WriteLine(LocalizationManager.GetString("cmd-dmarena-debug-reset"));
@@ -132,9 +127,6 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
 
         switch (sub)
         {
-            case "spawn":
-                arena.DebugSpawnEnabled = value;
-                break;
             case "combatlock":
                 arena.DebugCombatLock = value;
                 break;
@@ -154,6 +146,7 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
                 else
                     arena.DebugDisabledItems.Add(args[1]);
 
+                arena.RefreshLoadouts();
                 break;
             case "cooldown" or "rofls":
                 if (!_players.TryGetSessionByUsername(args[1], out var session))
@@ -234,11 +227,9 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
         {
             return CompletionResult.FromHintOptions(new[]
             {
-                Flag("spawn", arena.DebugSpawnEnabled),
                 Flag("combatlock", arena.DebugCombatLock),
                 Flag("refill", _cfg.GetCVar(DmArenaConfigVars.DmArenaRefill)),
                 new CompletionOption("item"),
-                new CompletionOption("items"),
                 new CompletionOption("cooldown"),
                 new CompletionOption("rofls"),
                 new CompletionOption("status"),
@@ -270,7 +261,7 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
         }
 
         var valueIndex = sub is "item" or "cooldown" or "rofls" ? 4 : 3;
-        if (args.Length == valueIndex && sub is "spawn" or "combatlock" or "refill" or "item" or "cooldown" or "rofls")
+        if (args.Length == valueIndex && sub is "combatlock" or "refill" or "item" or "cooldown" or "rofls")
         {
             return CompletionResult.FromHintOptions(
                 new[] { new CompletionOption("true"), new CompletionOption("false") },
