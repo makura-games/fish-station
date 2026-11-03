@@ -916,7 +916,7 @@
     - name: dm-arena-set-guard
       description: dm-arena-set-desc-guard
       items:
-      - FishDmArenaEnforcer
+      - FishDmArenaInspector
       - FishDmArenaShieldBullet
       - FishDmArenaVestRiot
       - FishDmArenaHelmRiot

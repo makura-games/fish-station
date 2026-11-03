@@ -307,7 +307,7 @@ public sealed partial class StatsBoardSystem : EntitySystem
         while (statsQuery.MoveNext(out var ent, out var comp))
         {
             if (!_statisticEntries.TryGetValue(ent, out var value))
-                return;
+                continue; // Fish-edit
 
             if (TryComp(ent, out TransformComponent? transformComponent) &&
                 transformComponent.GridUid == null && HasComp<HumanoidProfileComponent>(ent))

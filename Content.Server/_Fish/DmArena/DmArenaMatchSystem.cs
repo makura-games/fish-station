@@ -81,6 +81,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     [Dependency] private DmArenaMindSwapSystem _mindSwap = default!;
     [Dependency] private GunSystem _gun = default!;
     [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
     [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedMapSystem _map = default!;
@@ -144,7 +145,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         SubscribeLocalEvent<DmArenaFighterComponent, EntityTerminatingEvent>(OnFighterTerminating);
         SubscribeLocalEvent<DmArenaFighterComponent, DamageDealtEvent>(OnFighterDamaged);
         SubscribeLocalEvent<EnergyDomeComponent, DamageDealtEvent>(OnDomeDamaged);
-        SubscribeLocalEvent<GhostComponent, PlayerAttachedEvent>(OnGhostAttached);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<DmArenaFighterComponent, ThrowHitByEvent>(OnFighterThrownHit);
         SubscribeLocalEvent<DmArenaFighterComponent, KnockDownAttemptEvent>(OnFighterKnockDown);
         SubscribeLocalEvent<DmArenaFighterComponent, IsUnequippingTargetAttemptEvent>(OnFighterUnequip);
@@ -174,9 +175,10 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Session.Channel);
     }
 
-    private void OnGhostAttached(Entity<GhostComponent> ent, ref PlayerAttachedEvent args)
+    private void OnPlayerAttached(PlayerAttachedEvent args)
     {
-        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Player.Channel);
+        if (HasComp<GhostComponent>(args.Entity))
+            RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Player.Channel);
     }
 
     public override void Update(float frameTime)
@@ -202,7 +204,17 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         SweepLooseItems(rule);
     }
 
-    public IEnumerable<string> ShopGearIds => CurrentRule?.ShopItems.Select(x => x.Gear.Id) ?? Enumerable.Empty<string>();
+    public IEnumerable<string> ShopGearIds
+    {
+        get
+        {
+            var items = CurrentRule?.ShopItems;
+            if (items == null && _prototype.Index(RulePrototype).TryGetComponent<DmArenaRuleComponent>(out var rule, _componentFactory))
+                items = rule.ShopItems;
+
+            return items?.Select(x => x.Gear.Id) ?? Enumerable.Empty<string>();
+        }
+    }
 
     public void ResetDebug()
     {
@@ -210,6 +222,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         DebugDisabledItems.Clear();
         DebugNoCooldown.Clear();
         DebugRofls.Clear();
+        _cfg.SetCVar(DmArenaConfigVars.DmArenaRefill, DmArenaConfigVars.DmArenaRefill.DefaultValue);
     }
 
     private bool IsOpen => _enabled
@@ -245,7 +258,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         return uid is { Valid: true } ghost && HasComp<GhostComponent>(ghost) && !HasComp<DmArenaFighterComponent>(ghost);
     }
 
-    public void EnsureRule()
+    private void EnsureRule()
     {
         if (_ruleEntity is { } existing && !TerminatingOrDeleted(existing))
             return;
@@ -557,7 +570,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private void OnFighterKnockDown(Entity<DmArenaFighterComponent> ent, ref KnockDownAttemptEvent args)
     {
-        if (ent.Comp.LastThrownHit == _timing.CurTime)
+        if (!args.Drop && ent.Comp.LastThrownHit == _timing.CurTime)
             args.Cancelled = true;
     }
 

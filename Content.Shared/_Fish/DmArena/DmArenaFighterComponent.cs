@@ -20,6 +20,9 @@ public sealed partial class DmArenaFighterComponent : Component
     [ViewVariables]
     public TimeSpan LastCombat;
 
-    [ViewVariables]
+    /// <summary>
+    /// Время последнего попадания брошенным предметом, нужно чтобы отменить нокдаун от броска.
+    /// </summary>
+    [ViewVariables, NonSerialized]
     public TimeSpan LastThrownHit;
 }

@@ -252,6 +252,8 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             _selected.Remove(stale);
         }
 
+        PruneAmmo();
+
         _heldCategory = state.Items.Count > 0 ? state.Items[0].Category : null;
 
         BuildColumns();

@@ -111,7 +111,6 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
             case "reset":
                 arena.ResetDebug();
                 arena.RefreshLoadouts();
-                _cfg.SetCVar(DmArenaConfigVars.DmArenaRefill, true);
                 LogDebug(shell, "reset");
                 shell.WriteLine(LocalizationManager.GetString("cmd-dmarena-debug-reset"));
                 return;
@@ -132,7 +131,6 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
                 _cfg.SetCVar(DmArenaConfigVars.DmArenaRefill, value);
                 break;
             case "item":
-                arena.EnsureRule();
                 if (!arena.ShopGearIds.Contains(args[1]))
                 {
                     shell.WriteError(LocalizationManager.GetString("cmd-dmarena-debug-unknown-item"));
@@ -172,11 +170,8 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
     private static bool TryParseFlag(string[] args, out bool value)
     {
         value = false;
-        if (args.Length < 2)
-            return false;
-
-        var needsTarget = args[0].ToLowerInvariant() is "item" or "cooldown" or "rofls";
-        if (needsTarget && args.Length < 3)
+        var length = args[0].ToLowerInvariant() is "item" or "cooldown" or "rofls" ? 3 : 2;
+        if (args.Length != length)
             return false;
 
         switch (args[^1].ToLowerInvariant())
