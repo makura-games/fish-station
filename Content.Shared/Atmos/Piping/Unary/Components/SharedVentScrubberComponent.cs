@@ -44,7 +44,7 @@ public sealed partial class GasVentScrubberData : BaseAtmosDeviceData
             Gas.Electrovae,
             Gas.ChargedElectrovae,
             //Sunrise - End
-            //Fish - Start
+            //Fish-start
             Gas.Zenthium,
             Gas.Krypium,
             Gas.Prallium,
@@ -62,7 +62,7 @@ public sealed partial class GasVentScrubberData : BaseAtmosDeviceData
             Gas.Permafrost,
             Gas.Riminon,
             Gas.AxoNoblium
-            //Fish - End
+            //Fish-end
         };
 
     // Presets for 'dumb' air alarm modes

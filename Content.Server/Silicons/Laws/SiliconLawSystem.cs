@@ -157,10 +157,10 @@ public sealed partial class SiliconLawSystem : SharedSiliconLawSystem
             if(_mind.TryGetMind(ent, out var mindId, out _))
                 EnsureSubvertedSiliconRole(mindId);
 
-            // Fish-Edit start: broadcast для achievements
+            // Fish-start: broadcast для achievements
             var fishLawEv = new FishAiLawChangedEvent(ent, "ion-storm");
             RaiseLocalEvent(ref fishLawEv);
-            // Fish-Edit end
+            // Fish-end
         }
     }
 
@@ -196,10 +196,10 @@ public sealed partial class SiliconLawSystem : SharedSiliconLawSystem
         OnRegularEmagLawsAdded(uid);
         // Sunrise added end
 
-        // Fish-Edit start: broadcast для achievements
+        // Fish-start: broadcast для achievements
         var fishLawEv = new FishAiLawChangedEvent(uid, "emag");
         RaiseLocalEvent(ref fishLawEv);
-        // Fish-Edit end
+        // Fish-end
     }
 
     protected override void EnsureSubvertedSiliconRole(EntityUid mindId)
@@ -344,10 +344,10 @@ public sealed partial class SiliconLawSystem : SharedSiliconLawSystem
                 Dirty(update, crewIconComp);
             }
             SetLaws(lawset.Laws, update, provider.LawUploadSound);
-            // Fish-Edit start: broadcast для achievements
+            // Fish-start: broadcast для achievements
             var fishLawEv = new FishAiLawChangedEvent(update, "law-upload");
             RaiseLocalEvent(ref fishLawEv);
-            // Fish-Edit end
+            // Fish-end
         }
     }
 

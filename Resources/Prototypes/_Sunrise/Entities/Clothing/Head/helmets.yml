@@ -76,14 +76,14 @@
   - type: Appearance
   - type: Foldable
     canFoldInsideContainer: true
-    # FIsh edit start - подписи действий забрала
+    # Fish-start - подписи действий забрала
     unfoldVerbText: visor-lower-verb
     foldVerbText: visor-raise-verb
-    # FIsh edit end
+    # Fish-end
   - type: FoldableClothing
     foldedEquippedPrefix: up
     foldedHeldPrefix: up
-  # FIsh edit start - забрало Алтына
+  # Fish-start - забрало Алтына
   - type: ItemToggle
     activated: true
     onUse: false
@@ -98,35 +98,35 @@
   - type: Visor
     closedDamageModifiers:
       coefficients:
-    # FIsh edit start - перемножение коэффициентов что бы давало ровно 20% резистов а не ~19.20
+    # Fish-start - перемножение коэффициентов что бы давало ровно 20% резистов а не ~19.20
         Blunt: 0.84210527
         Slash: 0.84210527
         Piercing: 0.84210527
         Heat: 0.84210527
     closedExplosionCoefficient: 0.84210527
-    # FIsh edit end
+    # Fish-end
     openingWidth: 0.84
     openingHeight: 0.62
     edgeSoftness: 0.055
     cornerRadius: 0.085
     darkness: 1.0
     fadeDuration: 0.18
-  # FIsh edit end
+  # Fish-end
   - type: Armor
-    showArmorOnExamine: false # FIsh edit - динамический вывод защиты забрала
+    showArmorOnExamine: false # Fish-edit - динамический вывод защиты забрала
     modifiers:
       coefficients:
         Blunt: 0.95
         Slash: 0.95
-        # FIsh edit start - 5% защиты с поднятым забралом
+        # Fish-start - 5% защиты с поднятым забралом
         Piercing: 0.95
         Heat: 0.95
-        # FIsh edit end
+        # Fish-end
   - type: ExplosionResistance
     damageCoefficient: 0.95
   - type: Tag
     tags:
-    # FIsh edit - металлический Алтын нельзя есть молям
+    # Fish-edit - металлический Алтын нельзя есть молям
     - FullCovered # INTERACTIONS
     - WhitelistChameleon
     - Helmet

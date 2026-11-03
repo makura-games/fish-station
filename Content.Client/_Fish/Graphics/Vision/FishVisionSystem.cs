@@ -1,6 +1,7 @@
 using Content.Shared._Fish.Vision;
 using Content.Shared._Sunrise.ThermalVision;
 using Content.Shared.Eye.Blinding.Components;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.Map.Components;
@@ -19,6 +20,8 @@ public sealed partial class FishVisionSystem : EntitySystem
     [Dependency] private ILightManager _light = default!;
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private EntityQuery<MapComponent> _mapQuery = default!;
+    [Dependency] private EntityQuery<ThermalVisionComponent> _legacyThermalQuery = default!;
+    [Dependency] private EntityQuery<EyeProtectionComponent> _eyeProtectionQuery = default!;
     [Dependency] private LegacyNightVisionSystem _nightVision = default!;
     [Dependency] private LegacyThermalVisionSystem _thermalVision = default!;
 
@@ -72,6 +75,11 @@ public sealed partial class FishVisionSystem : EntitySystem
         shader.SetParameter("VISION_LIGHT_TEXTURE", args.Viewport.LightRenderTarget.Texture);
     }
 
+    /// <summary>
+    /// Reports whether a sprite becomes a thermal contact; cloaked bodies keep emitting heat.
+    /// </summary>
+    internal bool CanDrawThermalContact(Entity<SpriteComponent> sprite) => _contacts.CanDraw(sprite);
+
     public override void FrameUpdate(float frameTime)
     {
         base.FrameUpdate(frameTime);
@@ -80,9 +88,10 @@ public sealed partial class FishVisionSystem : EntitySystem
         FishNightVisionComponent? night = null;
         if (viewer != null && !TerminatingOrDeleted(viewer))
         {
-            if (!HasComp<EyeProtectionComponent>(viewer))
-                TryComp(viewer, out thermal);
-            if (thermal == null && (HasComp<EyeProtectionComponent>(viewer) || !HasComp<ThermalVisionComponent>(viewer)))
+            // Защита глаз не мешает собственной оптике прибора: термальная маска или шлем сами могут её давать.
+            TryComp(viewer, out thermal);
+            if (thermal == null &&
+                (!_legacyThermalQuery.HasComp(viewer.Value) || _eyeProtectionQuery.HasComp(viewer.Value)))
                 TryComp(viewer, out night);
         }
 
