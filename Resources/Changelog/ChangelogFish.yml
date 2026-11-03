@@ -1372,3 +1372,30 @@
     description: Screenshot 2026-10-09 230651
   - url: https://github.com/user-attachments/assets/12717830-921f-414a-b30e-a113ad76eca8
     description: Screenshot 2026-10-09 233031
+- author: dan4ikk3
+  time: '2026-11-03T21:06:12.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен п90 и пп томпсон на дмарену
+  - type: Tweak
+    message: Улучшена UI составляющая
+  - type: Tweak
+    message: Изминен баланс ближнего оружия и щитов
+  - type: Tweak
+    message: Лечение на арене происходит в 2 раза быстрее обычного. Бинты, мази и другие.
+  - type: Add
+    message: 'Добавлены отладочные команды арены dmarena debug:
+
+      status показывает настройки, reset сбрасывает их,
+
+      combatlock включает блокировку боя,
+
+      refill включает пополнение боеприпасов,
+
+      item <id> <true|false> показывает или скрывает предмет в магазине,
+
+      cooldown <ckey> включает или снимает кулдаун возрождения,
+
+      rofls <ckey> превращает игрока в свинью.'
+  id: 139
+  url: https://github.com/makura-games/fish-station/pull/603
