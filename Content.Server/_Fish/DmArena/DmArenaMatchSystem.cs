@@ -161,6 +161,13 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     // Новый игрок не видел прошлых рассылок, отправляем ему текущее состояние
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
     {
+        if (args.NewStatus == SessionStatus.Disconnected)
+        {
+            DebugNoCooldown.Remove(args.Session.UserId);
+            DebugRofls.Remove(args.Session.UserId);
+            return;
+        }
+
         if (args.NewStatus != SessionStatus.InGame)
             return;
 
@@ -265,6 +272,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private void OnRoundEnding(RoundRestartCleanupEvent ev)
     {
         CloseEuis();
+        ResetDebug();
         _openedManually = false;
 
         if (CurrentRule is { } rule)
