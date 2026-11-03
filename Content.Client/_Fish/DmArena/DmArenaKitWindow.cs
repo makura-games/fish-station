@@ -2,7 +2,6 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Lobby;
 using Content.Client.Station;
-using Content.Client.Stylesheets;
 using Content.Shared.Body;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
