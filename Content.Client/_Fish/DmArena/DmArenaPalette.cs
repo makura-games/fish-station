@@ -24,7 +24,6 @@ public static class DmArenaPalette
     }
 
     public static readonly Color BodyBg = Color.FromHex("#04080D");
-    public static readonly Color SideBg = Color.FromHex("#03060A");
     public static readonly Color TitleBarBg = Color.FromHex("#08111A");
     public static readonly Color Divider = Color.FromHex("#17394D");
 

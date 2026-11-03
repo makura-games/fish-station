@@ -35,8 +35,8 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
 
     private readonly Label _playerCountLabel;
     private readonly Label _balanceLabel;
-    private readonly DmArenaColumn _leftColumn;
-    private readonly DmArenaColumn _rightColumn;
+    private readonly BoxContainer _leftColumn;
+    private readonly BoxContainer _rightColumn;
     private readonly DmArenaDollFrame _preview;
     private readonly DmArenaPillButton _confirmButton;
     private readonly DmArenaPillButton _saveButton;
@@ -82,13 +82,11 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             Margin = new Thickness(16, 12, 16, 16),
         };
 
-        _leftColumn = new DmArenaColumn(DmArenaPalette.BodyBg);
-        main.AddChild(_leftColumn);
+        _leftColumn = MakeColumn(main);
         var center = MakeCenter(out _preview, out _balanceLabel, out _playerCountLabel,
             out _confirmButton, out _saveButton, out _loadButton, out _lastButton, out _clearButton);
         main.AddChild(center);
-        _rightColumn = new DmArenaColumn(DmArenaPalette.SideBg);
-        main.AddChild(_rightColumn);
+        _rightColumn = MakeColumn(main);
 
         Contents.AddChild(main);
 
@@ -104,6 +102,44 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         _builderTab.OnPressed += () => SwitchTab(false);
         _setsTab.OnPressed += () => SwitchTab(true);
         UpdateTabs();
+    }
+
+    private static BoxContainer MakeColumn(BoxContainer parent)
+    {
+        var column = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            SeparationOverride = 4,
+            Margin = new Thickness(0, 0, 8, 0),
+        };
+        var scroll = new ScrollContainer
+        {
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            HScrollEnabled = false,
+            MinWidth = 250,
+            SizeFlagsStretchRatio = 1.5f,
+        };
+        scroll.AddChild(column);
+        parent.AddChild(scroll);
+        return column;
+    }
+
+    private static Control MakeHeader(string text)
+    {
+        var panel = new PanelContainer
+        {
+            Margin = new Thickness(0, 8, 0, 2),
+            PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.TitleBarBg, 10, 4),
+        };
+        panel.AddChild(new Label
+        {
+            Text = text,
+            FontOverride = DmArenaPalette.GetFont(true, 14),
+            FontColorOverride = DmArenaPalette.Accent,
+        });
+        return panel;
     }
 
     private BoxContainer MakeCenter(
@@ -227,8 +263,8 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
         if (_state == null)
             return;
 
-        _leftColumn.Clear();
-        _rightColumn.Clear();
+        _leftColumn.RemoveAllChildren();
+        _rightColumn.RemoveAllChildren();
         _cards.Clear();
 
         if (_setsOpen)
@@ -255,12 +291,12 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             {
                 lastCategory = item.Category;
                 lastGroup = null;
-                column.AddHeader(item.Category);
+                column.AddChild(MakeHeader(item.Category));
             }
 
             if (item.Group != lastGroup && !string.IsNullOrEmpty(item.Group))
             {
-                column.Items.AddChild(new Label
+                column.AddChild(new Label
                 {
                     Text = item.Group,
                     FontOverride = DmArenaPalette.GetFont(true, 11),
@@ -274,7 +310,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             var card = new DmArenaItemCard(item);
             card.OnCountChanged += OnCountChanged;
             _cards[item.Index] = card;
-            column.Items.AddChild(card);
+            column.AddChild(card);
         }
     }
 
@@ -285,7 +321,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
 
         if (_state.Sets.Count == 0)
         {
-            _leftColumn.Items.AddChild(new Label
+            _leftColumn.AddChild(new Label
             {
                 Text = Loc.GetString("dm-arena-set-empty"),
                 FontColorOverride = DmArenaPalette.TextMuted,
@@ -294,7 +330,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             return;
         }
 
-        _leftColumn.AddHeader(Loc.GetString("dm-arena-tab-sets"));
+        _leftColumn.AddChild(MakeHeader(Loc.GetString("dm-arena-tab-sets")));
 
         var sets = _state.Sets.OrderBy(set => set.Cost).ToList();
 
@@ -312,7 +348,7 @@ public sealed partial class DmArenaKitWindow : DmArenaFrameWindow
             var card = new DmArenaKitCard(set, names);
             card.OnChosen += OnSetChosen;
 
-            (i % 2 == 0 ? _leftColumn : _rightColumn).Items.AddChild(card);
+            (i % 2 == 0 ? _leftColumn : _rightColumn).AddChild(card);
         }
     }
 
