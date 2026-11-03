@@ -50,6 +50,11 @@ public sealed partial class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmCompon
 
         foreach (var entityUid in stations)
         {
+            // Fish-start: не выбираем ЦК целью метеоритного события.
+            if (IsOnCentcomm(entityUid))
+                continue;
+            // Fish-end
+
             if (HasComp<StationMeteorSwarmTargetComponent>(entityUid))
                 validStations.Add(entityUid);
         }
@@ -58,8 +63,10 @@ public sealed partial class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmCompon
             return;
 
         var station = RobustRandom.Pick(validStations); // Sunrise-Edit
-        if (_station.GetLargestGrid(station) is not { } grid)
+        // Fish-start: не запускаем событие на гриде карты ЦК.
+        if (_station.GetLargestGrid(station) is not { } grid || IsOnCentcomm(grid))
             return;
+        // Fish-end
 
         var mapId = Transform(grid).MapID;
         var playableArea = _physics.GetWorldAABB(grid);
