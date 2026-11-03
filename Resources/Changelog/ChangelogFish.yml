@@ -1430,3 +1430,12 @@
     message: Замена базового прототипа снаряда в пускателе жезла.
   id: 142
   url: https://github.com/makura-games/fish-station/pull/604
+- author: Fynex_x
+  time: '2026-11-03T22:15:47.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено ПНВ для расы вульп.
+  - type: Remove
+    message: Удален ПНВ у расы филинидов.
+  id: 143
+  url: https://github.com/makura-games/fish-station/pull/599
