@@ -1399,3 +1399,10 @@
       rofls <ckey> превращает игрока в свинью.'
   id: 139
   url: https://github.com/makura-games/fish-station/pull/603
+- author: KrytoiChuvaaak
+  time: '2026-11-03T21:27:56.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Мобы экспедиций больше не могут стать гост-ролью и замечают игроков с большего расстояния.
+  id: 140
+  url: https://github.com/makura-games/fish-station/pull/580
