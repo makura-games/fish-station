@@ -1406,3 +1406,27 @@
     message: Мобы экспедиций больше не могут стать гост-ролью и замечают игроков с большего расстояния.
   id: 140
   url: https://github.com/makura-games/fish-station/pull/580
+- author: NekutGit
+  time: '2026-11-03T21:40:18.0000000+00:00'
+  changes:
+  - type: Add
+    message: 'Для киборгов НаноТрейзен и Синдиката добавлен акцент речи: «я» заменяется на «юнит».'
+  - type: Add
+    message: Жнец-киборг Синдиката получил броню и базовый модуль.
+  - type: Tweak
+    message: Перевод жнец-киборгов теперь корректный.
+  - type: Tweak
+    message: 'Доступы киборгов станции были обновлены: доступен только «расширенный» доступ.'
+  - type: Fix
+    message: Модуль самопроизводства больше не могут носить лазерное оружие.
+  - type: Fix
+    message: Звуки передвижения для мед-киборга и жнец-киборга Синдиката снова слышно.
+  id: 141
+  url: https://github.com/makura-games/fish-station/pull/602
+- author: TiFeRi
+  time: '2026-11-03T21:40:48.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Замена базового прототипа снаряда в пускателе жезла.
+  id: 142
+  url: https://github.com/makura-games/fish-station/pull/604
