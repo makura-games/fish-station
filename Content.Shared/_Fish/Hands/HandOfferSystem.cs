@@ -135,9 +135,15 @@ public sealed partial class HandOfferSystem : EntitySystem
     /// </summary>
     public bool TryTake(EntityUid user, EntityUid giver)
     {
-        if (!CanTake(user, giver, out var item))
-            return false;
+        return CanTake(user, giver, out var item) && DoTake(user, giver, item);
+    }
 
+    /// <summary>
+    ///     Переносит предмет из рук отдающего в руки получателя и сообщает об этом эмоутом.
+    ///     Возвращает <c>false</c>, если предмет не удалось передать: тогда он остаётся у отдающего.
+    /// </summary>
+    public bool DoTake(EntityUid user, EntityUid giver, EntityUid item)
+    {
         // Отдающий должен иметь право выпустить предмет из рук.
         if (!_hands.TryDrop(giver, item, doDropInteraction: false))
             return false;
@@ -149,20 +155,12 @@ public sealed partial class HandOfferSystem : EntitySystem
             return false;
         }
 
-        DoTake(user, giver, item);
-        return true;
-    }
-
-    /// <summary>
-    ///     Сообщает эмоутом, что предмет забрали.
-    /// </summary>
-    public void DoTake(EntityUid user, EntityUid giver, EntityUid item)
-    {
         _chat.TrySendInGameICMessage(user,
             Loc.GetString("hand-offer-take-emote",
                 ("item", item),
                 ("giver", Identity.Entity(giver, EntityManager))),
             InGameICChatType.Emote,
             ChatTransmitRange.Normal);
+        return true;
     }
 }
