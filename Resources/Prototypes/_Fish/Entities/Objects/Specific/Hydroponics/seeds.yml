@@ -4,7 +4,7 @@
   id: MangoSeeds
   components:
     - type: Seed
-      seedId: Mango
+      plantId: Mango
     - type: Sprite
       sprite: _Fish/Objects/Specific/Hydroponics/mango.rsi
 
@@ -14,6 +14,6 @@
   id: OxygenMangoSeeds
   components:
     - type: Seed
-      seedId: OxygenMango
+      plantId: OxygenMango
     - type: Sprite
       sprite: _Fish/Objects/Specific/Hydroponics/oxygen_mango.rsi

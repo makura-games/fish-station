@@ -1,0 +1,367 @@
+# Upstream SS14 jukebox catalog
+- type: jukebox
+  id: FlipFlap
+  name: X-CEED - Flip Flap
+  path:
+    path: /Audio/Jukebox/flip-flap.ogg
+
+- type: jukebox
+  id: Tintin
+  name: Jeroen Tel / Cuboos - Tintin on the Moon
+  path:
+    path: /Audio/Jukebox/title3.ogg
+
+- type: jukebox
+  id: Thunderdome
+  name: MashedByMachines - Sector 11
+  path:
+    path: /Audio/Jukebox/sector11.ogg
+
+- type: jukebox
+  id: Constellations
+  name: Qwertyquerty - Constellations
+  path:
+    path: /Audio/Jukebox/constellations.ogg
+
+- type: jukebox
+  id: Drifting
+  name: Qwertyquerty - Drifting
+  path:
+    path: /Audio/Jukebox/drifting.ogg
+
+- type: jukebox
+  id: starlight
+  name: Qwertyquerty - Starlight
+  path:
+    path: /Audio/Jukebox/starlight.ogg
+
+# Classic SS13 title / lobby tracks (already licensed in-repo; safe for community hosted servers).
+# Stereo lobby and station-event files stay stereo for non-positional playback.
+# The jukebox points at mono copies under Audio/_Fish/Jukebox/Mono so PlayPvs can position them.
+# Commercial /tg/ live-server jukebox tracks (Queen, Bowie, etc.) are intentionally omitted.
+- type: jukebox
+  id: FishEndlessSpace
+  name: SolusLunes - Endless Space
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/endless_space.ogg
+
+- type: jukebox
+  id: FishAbsconditus
+  name: ZhayTee - Absconditus
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/absconditus.ogg
+
+- type: jukebox
+  id: FishRobocopTitle
+  name: Eric Shumaker - Dilbert 3 / RoboCop Title
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/title2.ogg
+
+- type: jukebox
+  id: FishAtomicAmnesia
+  name: Philip Dyer - Atomic Amnesia MMX
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/atomicamnesiammx.ogg
+
+- type: jukebox
+  id: FishSinguloose
+  name: Janis Schiedková - Singuloose
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/singuloose.ogg
+
+- type: jukebox
+  id: FishCometHaley
+  name: Stellardrone - Comet Halley
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/comet_haley.ogg
+
+- type: jukebox
+  id: FishSpacStac
+  name: Hayabusa - Spac Stac
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/Spac_Stac.ogg
+
+- type: jukebox
+  id: FishPhoronWillMakeUsRich
+  name: Sunbeamstress - phoron will make us rich
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/pwmur.ogg
+
+- type: jukebox
+  id: FishLasersRipApartTheBulkhead
+  name: Sunbeamstress - lasers rip apart the bulkhead
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/lasers_rip_apart_the_bulkhead.ogg
+
+- type: jukebox
+  id: FishEveryLightIsBlinkingAtOnce
+  name: Sunbeamstress - every light is blinking at once
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/every_light_is_blinking_at_once.ogg
+
+- type: jukebox
+  id: FishSpaceAsshole
+  name: Chris Remo - Space Asshole
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/space_asshole.ogg
+
+- type: jukebox
+  id: FishTheWizard
+  name: Chris Remo - The Wizard
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/the_wizard.ogg
+
+# Previously in upstream SS14 jukebox; still licensed CC-BY-SA-3.0 in Sunrise TapePlayer tracks.
+- type: jukebox
+  id: FishSunset
+  name: PigeonBeans - Sunset
+  path:
+    path: /Audio/_Sunrise/TapePlayer/Tracks/sunset.ogg
+
+# Fish-licensed lobby tracks (CC-BY-3.0)
+- type: jukebox
+  id: FishNeon
+  name: QAntum - Neon
+  path:
+    path: /Audio/_Fish/Lobby/neon.ogg
+
+- type: jukebox
+  id: FishDoubleU
+  name: QAntum - Double U
+  path:
+    path: /Audio/_Fish/Lobby/double-u.ogg
+
+# Explicit SS13/SS14 community soundtrack artists (licenses already recorded in-repo attributions).
+# Bolgarich — fanmade SS13/SS14 themes, CC-BY-4.0
+- type: jukebox
+  id: FishBolgarichBurnTheHive
+  name: Bolgarich - Burn The Hive
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_burn_the_hive.ogg
+
+- type: jukebox
+  id: FishBolgarichDestinyOfColonists
+  name: Bolgarich - Destiny of Colonists
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_destiny_of_colonists.ogg
+
+- type: jukebox
+  id: FishBolgarichDestroyed
+  name: Bolgarich - Destroyed
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_destroyed.ogg
+
+- type: jukebox
+  id: FishBolgarichHikingInTheFog
+  name: Bolgarich - Hiking in the Fog
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_hiking_in_the_fog.ogg
+
+- type: jukebox
+  id: FishBolgarichTangoWithBloodshed
+  name: Bolgarich - Tango With Bloodshed
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_tango_with_bloodshed.ogg
+
+- type: jukebox
+  id: FishBolgarichTearOfVeil
+  name: Bolgarich - Tear of Veil
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_tear_of_veil.ogg
+
+- type: jukebox
+  id: FishBolgarichTheirFinalShift
+  name: Bolgarich - Their Final Shift
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_their_final_shift.ogg
+
+- type: jukebox
+  id: FishBolgarichVendetta
+  name: Bolgarich - Vendetta
+  path:
+    path: /Audio/_Sunrise/Bolgarich/bolgarich_vendetta.ogg
+
+- type: jukebox
+  id: FishBolgarichRunningOut
+  name: Bolgarich - Running Out
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/running_out.ogg
+
+# qwertyquerty — BeeStation / SS14 soundtrack, CC-BY-SA-3.0 (Starlight/Constellations/Drifting already above)
+- type: jukebox
+  id: FishCountdown
+  name: Qwertyquerty - Countdown
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/countdown.ogg
+
+# Donchan — explicit Space Station 14 track, CC-BY-3.0
+- type: jukebox
+  id: FishSoundStation14
+  name: Donchan - Sound Station 14
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/sound_station_14.ogg
+
+# mrjajkes — SS13/SS14 event soundtrack, CC-BY-3.0 (+ one custom non-ERP community license)
+- type: jukebox
+  id: FishBlatantlyNuclear
+  name: mrjajkes - Blatantly Nuclear
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/blatantly_nuclear.ogg
+
+- type: jukebox
+  id: FishClearlyNuclear
+  name: mrjajkes - Clearly Nuclear
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/clearly_nuclear.ogg
+
+- type: jukebox
+  id: FishNukeMass
+  name: mrjajkes - Nuke Mass
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/nukemass.ogg
+
+- type: jukebox
+  id: FishLastCall
+  name: mrjajkes - Last Call
+  path:
+    path: /Audio/StationEvents/last_call.ogg
+
+- type: jukebox
+  id: FishSponsoredBySyndicate
+  name: mrjajkes - Sponsored By Syndicate
+  path:
+    path: /Audio/_Fish/Jukebox/Mono/sponsored-by-syndicate.ogg
+
+# A-Guy (A-Guy173/Music) — full catalog, CC0-1.0
+- type: jukebox
+  id: FishNuclearOpsFull
+  name: A-Guy - Nuclear Operations
+  path:
+    path: /Audio/_Fish/StationEvents/Music-main/0_nuclearoperations_remake_full.ogg
+
+- type: jukebox
+  id: FishNuclearOpsPrep
+  name: A-Guy - Nuclear Operations (Prep)
+  path:
+    path: /Audio/_Fish/StationEvents/Music-main/1_nuclearoperations_remake_prep.ogg
+
+- type: jukebox
+  id: FishNuclearOpsInfil
+  name: A-Guy - Nuclear Operations (Infil)
+  path:
+    path: /Audio/_Fish/StationEvents/Music-main/2_nuclearoperations_remake_infil.ogg
+
+- type: jukebox
+  id: FishNuclearOpsDef
+  name: A-Guy - Nuclear Operations (Defense)
+  path:
+    path: /Audio/_Fish/StationEvents/Music-main/3_nuclearoperations_remake_def.ogg
+
+- type: jukebox
+  id: FishRevolutionTheme
+  name: A-Guy - Revolution
+  path:
+    path: /Audio/_Fish/StationEvents/Music-main/revolution.ogg
+
+- type: jukebox
+  id: FishAGuyNuclearOperationsOriginal
+  name: A-Guy - Nuclear Operations (Original)
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/nuclear_operations.ogg
+
+- type: jukebox
+  id: FishAGuyChaosTheory
+  name: A-Guy - Chaos Theory
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/chaos_theory.ogg
+
+- type: jukebox
+  id: FishAGuyMainframeBitflip
+  name: A-Guy - Mainframe Bitflip
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/mainframe_bitflip.ogg
+
+- type: jukebox
+  id: FishAGuyManMachine
+  name: A-Guy - Man-Machine
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/man_machine.ogg
+
+- type: jukebox
+  id: FishAGuyNoKingsInOrbit
+  name: A-Guy - No Kings In Orbit
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/no_kings_in_orbit.ogg
+
+- type: jukebox
+  id: FishAGuyNothingWrongWithMegacorpos
+  name: A-Guy - Nothing Wrong With Megacorpos
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/nothing_wrong_with_megacorpos.ogg
+
+- type: jukebox
+  id: FishAGuyTomfooleryRequired
+  name: A-Guy - Tomfoolery Required
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/tomfoolery_required.ogg
+
+- type: jukebox
+  id: FishAGuyUndefinedTheory
+  name: A-Guy - Undefined Theory
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/undefined_theory.ogg
+
+- type: jukebox
+  id: FishAGuyGetItDone
+  name: A-Guy - Get It Done
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/get_it_done.ogg
+
+- type: jukebox
+  id: FishAGuyLavaland
+  name: A-Guy - Lavaland
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/lavaland.ogg
+
+- type: jukebox
+  id: FishAGuyLowfunk
+  name: A-Guy - Lowfunk
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/lowfunk.ogg
+
+- type: jukebox
+  id: FishAGuyMotive
+  name: A-Guy - Motive
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/motive.ogg
+
+- type: jukebox
+  id: FishAGuyRadify
+  name: A-Guy - Radify
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/radify.ogg
+
+- type: jukebox
+  id: FishAGuySeclusion
+  name: A-Guy - Seclusion
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/seclusion.ogg
+
+- type: jukebox
+  id: FishAGuyTheStation
+  name: A-Guy - The Station
+  path:
+    path: /Audio/_Fish/Jukebox/AGuy/the_station.ogg
+
+# boich9585 — written for SS14 (Мёртвый Космос), CC-BY-SA-4.0
+- type: jukebox
+  id: FishEnigma
+  name: boich9585 - Enigma
+  path:
+    path: /Audio/_Fish/StationEvents/enigma.ogg
+
+- type: jukebox
+  id: FishCodeSierra
+  name: boich9585 - Code Sierra
+  path:
+    path: /Audio/_Fish/StationEvents/Code-Sierra.ogg

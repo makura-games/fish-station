@@ -49,6 +49,9 @@ public sealed partial class KlemennonSynthesisReaction : IGasReactionEffect
         if (produce < 0.07f)
             return ReactionResult.NoReaction;
 
+        // Не даём реакции превратить весь объём за один тик.
+        produce = MathF.Min(produce, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         mixture.AdjustMoles(Gas.Garodin, -produce * 0.95f);
         mixture.AdjustMoles(Gas.NitrousOxide, -produce * n2oConsumptionFactor);
         mixture.AdjustMoles(Gas.Nitrium, -produce * 0.95f);

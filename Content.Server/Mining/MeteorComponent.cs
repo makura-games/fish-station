@@ -6,9 +6,9 @@ namespace Content.Server.Mining;
 /// <summary>
 /// This is used for meteors which hit objects, dealing damage to destroy/kill the object and dealing equal damage back to itself.
 /// </summary>
-// ===== FISH EDIT START: OBR DISTANT ARRIVAL =====
+// ===== Fish-start: OBR DISTANT ARRIVAL =====
 [RegisterComponent, Access(typeof(MeteorSystem), typeof(ObrCallSystem))]
-// ===== FISH EDIT END: OBR DISTANT ARRIVAL =====
+// ===== Fish-end: OBR DISTANT ARRIVAL =====
 public sealed partial class MeteorComponent : Component
 {
     /// <summary>

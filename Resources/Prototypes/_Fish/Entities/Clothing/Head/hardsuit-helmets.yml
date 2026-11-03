@@ -1,3 +1,57 @@
+# Fish-оптика для шлемов без собственного переключателя ПНВ.
+# Цвета совпадают с прежними вариантами Sunrise, чтобы не менять внешний вид.
+- type: entity
+  id: FishHardsuitHelmetNightVisionCyan
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#00FFFF"
+      lightingColor: "#00FFFF26"
+
+- type: entity
+  id: FishHardsuitHelmetNightVisionWhite
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#FFFFFF"
+      lightingColor: "#FFFFFF26"
+
+- type: entity
+  id: FishHardsuitHelmetNightVisionMint
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#ADFFEC"
+      lightingColor: "#ADFFEC26"
+
+- type: entity
+  id: FishHardsuitHelmetNightVisionPurple
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#CBADFF"
+      lightingColor: "#CBADFF26"
+
 - type: entity
   parent: ClothingHeadHelmetVoidParamed
   id: ClothingHeadHelmetVoidParamedFish
@@ -54,13 +108,49 @@
       path: /Audio/_Sunrise/Items/Goggles/deactivate.ogg
     soundFailToActivate:
       path: /Audio/Machines/button.ogg
+  - type: FishVisionDevice
   - type: ComponentToggler
     parent: true
     components:
-    - type: NightVision
-      effect: EffectNightVision
+    - type: FishNightVision
   - type: ToggleClothing
     action: NVDToggleAction
     mustEquip: true
     disableOnUnequip: true
     targetSlot: head
+
+- type: entity
+  parent: [ ClothingHeadHelmetHardsuitSecurityRed, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ]
+  id: FishClothingHeadHelmetHardsuitCentcomBlack
+  categories: [ HideSpawnMenu, DoNotMap ]
+  name: field hardsuit helmet
+  description: Designed for an elite special operations officer.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/centcom_officer_black.rsi
+    layers:
+    - state: icon
+    - state: icon-flash
+      visible: false
+      map: [ light ]
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/centcom_officer_black.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
+  - type: ToggleableVisuals
+    spriteLayer: light
+    clothingVisuals:
+      head:
+      - state: on-equipped-HELMET
+  - type: PointLight
+    color: '#4ac4ff'
+    radius: 6
+    energy: 2
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide

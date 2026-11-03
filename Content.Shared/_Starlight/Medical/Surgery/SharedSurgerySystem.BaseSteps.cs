@@ -117,7 +117,7 @@ public abstract partial class SharedSurgerySystem
             AddComp(args.Part, progress);
         }
 
-        // Fish-Edit start: broadcast для achievements (без duplicate SurgeryStepComponent subscription)
+        // Fish-start: broadcast для achievements (без duplicate SurgeryStepComponent subscription)
         var fishAchEv = new FishSurgeryStepCompleteEvent(args.User, args.Body, args.Part)
         {
             StepProto = args.StepProto,
@@ -125,18 +125,18 @@ public abstract partial class SharedSurgerySystem
             IsFinal = args.IsFinal,
         };
         RaiseLocalEvent(ref fishAchEv);
-        // Fish-Edit end
+        // Fish-end
 
         if (args.IsFinal)
             progress.CompletedSurgeries.Add(args.SurgeryProto);
 
-        Dirty(args.Part, progress); // Sunrise-Edit - синхронизируем завершенный шаг с BUI
+        Dirty(args.Part, progress); // синхронизируем завершенный шаг с BUI
     }
     private void OnStep(Entity<SurgeryStepComponent> ent, ref SurgeryStepEvent args)
     {
         foreach (var reg in (ent.Comp.Tools ?? []).Values)
         {
-            var tool = args.Tools.FirstOrDefault(x => MatchesSurgeryRequirement(x, reg.Component.GetType())); // Sunrise-Edit
+            var tool = args.Tools.FirstOrDefault(x => MatchesSurgeryRequirement(x, reg.Component.GetType()));
             if (tool == default) return;
 
             if (_net.IsServer && TryComp(tool, out SurgeryToolComponent? toolComp) && toolComp.EndSound != null)

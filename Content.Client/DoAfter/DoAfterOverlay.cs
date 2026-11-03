@@ -12,7 +12,7 @@ using Robust.Shared.Containers;
 
 namespace Content.Client.DoAfter;
 
-// FIsh edit - расширение анимации вынесено в _Fish
+// Fish-edit - расширение анимации вынесено в _Fish
 public sealed partial class DoAfterOverlay : Overlay
 {
     private static readonly ProtoId<ShaderPrototype> UnshadedShader = "unshaded";
@@ -37,6 +37,15 @@ public sealed partial class DoAfterOverlay : Overlay
     // Hardcoded width of the progress bar because it doesn't match the texture.
     private const float StartX = 2;
     private const float EndX = 22f;
+
+    // Time after which the doafter will lerp to max alpha.
+    private static readonly TimeSpan MaxAlphaTime = TimeSpan.FromSeconds(0.3f);
+
+    // After finishing, how long it takes to fade out to 0 alpha
+    private static readonly TimeSpan FadeoutAlphaTime = TimeSpan.FromSeconds(0.2f);
+
+    // Time after which the doafter will lerp to its final y offset.
+    private static readonly TimeSpan MaxYPosTime = TimeSpan.FromSeconds(0.5f);
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowFOV;
 
@@ -68,7 +77,6 @@ public sealed partial class DoAfterOverlay : Overlay
         var rotationMatrix = Matrix3Helpers.CreateRotation(-rotation);
 
         var curTime = _timing.CurTime;
-        BeginEntranceFrame(); // FIsh edit - отслеживаем появление DoAfter на клиенте
 
         var bounds = args.WorldAABB.Enlarged(5f);
         var localEnt = _player.LocalSession?.AttachedEntity;
@@ -77,8 +85,6 @@ public sealed partial class DoAfterOverlay : Overlay
         var enumerator = _entManager.AllEntityQueryEnumerator<ActiveDoAfterComponent, DoAfterComponent, SpriteComponent, TransformComponent>();
         while (enumerator.MoveNext(out var uid, out _, out var comp, out var sprite, out var xform))
         {
-            TrackActiveDoAfters(comp); // FIsh edit - сохраняем активные индикаторы для очистки кеша
-
             if (xform.MapID != args.MapId)
                 continue;
 
@@ -114,32 +120,37 @@ public sealed partial class DoAfterOverlay : Overlay
             foreach (var doAfter in comp.DoAfters.Values)
             {
                 // Hide some DoAfters from other players for stealthy actions (ie: thieving gloves)
-                var hidden = doAfter.Args.Hidden || isInContainer;
-                if (hidden && uid != localEnt)
-                    continue;
-
-                var entranceProgress = GetEntranceProgress(doAfter.Id, time); // FIsh edit - проявление с момента получения клиентом
-                var alpha = entranceProgress; // FIsh edit - учитываем плавное проявление
-                if (hidden)
+                var maxAlpha = 1f;
+                if (doAfter.Args.Hidden || isInContainer)
                 {
+                    if (uid != localEnt)
+                        continue;
+
                     // Hints to the local player that this do-after is not visible to other players.
-                    alpha *= 0.5f; // FIsh edit - сохраняем прозрачность скрытого действия
+                    maxAlpha = 0.5f;
                 }
+
+                var elapsed = time - doAfter.StartTime;
+
+                var alpha = MathHelper.Lerp(0f, maxAlpha, (float)Math.Clamp(elapsed / MaxAlphaTime, 0.0, 1.0));
+                // fade out if doafter finished
+                if (elapsed >= doAfter.Args.Delay)
+                    alpha = MathHelper.Lerp(maxAlpha, 0f, (float)Math.Clamp((elapsed - doAfter.Args.Delay) / FadeoutAlphaTime, 0.0, 1.0));
 
                 // Use the sprite itself if we know its bounds. This means short or tall sprites don't get overlapped
                 // by the bar.
-                var yOffset = _sprite.GetLocalBounds((uid, sprite)).Height / 2f + 0.05f;
+                var spriteBounds = _sprite.GetLocalBounds((uid, sprite));
+                var yFinished = spriteBounds.Height / 2f + 0.05f;
+                var yStart = yFinished / 6f;
+                var yOffset = MathHelper.Lerp(yStart, yFinished, Easings.OutSine((float)Math.Clamp(elapsed / MaxYPosTime, 0.0, 1.0)));
 
                 // Position above the entity (we've already applied the matrix transform to the entity itself)
                 // Offset by the texture size for every do_after we have.
                 var position = new Vector2(-_barTexture.Width / 2f / EyeManager.PixelsPerMeter,
                     yOffset / scale + offset / EyeManager.PixelsPerMeter * scale);
 
-                // FIsh edit - начинаем ниже конечной позиции
-                position = GetEntrancePosition(position, entranceProgress);
-
                 // Draw the underlying bar texture
-                handle.DrawTexture(_barTexture, position, Color.White.WithAlpha(entranceProgress)); // FIsh edit
+                handle.DrawTexture(_barTexture, position, Color.White.WithAlpha(alpha));
 
                 Color color;
                 float elapsedRatio;
@@ -147,7 +158,7 @@ public sealed partial class DoAfterOverlay : Overlay
                 // if we're cancelled then flick red / off.
                 if (doAfter.CancelledTime != null)
                 {
-                    var elapsed = doAfter.CancelledTime.Value - doAfter.StartTime;
+                    elapsed = doAfter.CancelledTime.Value - doAfter.StartTime;
                     elapsedRatio = (float)Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
                     var cancelElapsed = (time - doAfter.CancelledTime.Value).TotalSeconds;
                     var flash = Math.Floor(cancelElapsed / FlashTime) % 2 == 0;
@@ -155,7 +166,6 @@ public sealed partial class DoAfterOverlay : Overlay
                 }
                 else
                 {
-                    var elapsed = time - doAfter.StartTime;
                     elapsedRatio = (float)Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
                     color = GetProgressColor(elapsedRatio, alpha);
                 }
@@ -168,7 +178,6 @@ public sealed partial class DoAfterOverlay : Overlay
             }
         }
 
-        EndEntranceFrame(); // FIsh edit - удаляем завершённые DoAfter из кеша анимации
         handle.UseShader(null);
         handle.SetTransform(Matrix3x2.Identity);
     }

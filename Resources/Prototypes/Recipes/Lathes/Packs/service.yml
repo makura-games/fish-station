@@ -10,7 +10,7 @@
   - DrinkGlass
   - DrinkShotGlass
   - DrinkGlassCoupeShaped
-  - FishDrinkWaterBottleEmpty # FIsh edit - пустая пластиковая бутылка в автолате
+  - FishDrinkWaterBottleEmpty # Fish-edit - пустая пластиковая бутылка в автолате
   - CustomDrinkJug
   - FoodPlate
   - FoodPlateSmall
@@ -59,6 +59,7 @@
   - WeaponSprayNozzle
   - ClothingBackpackWaterTank
   - MegaSprayBottle
+  - TrashBagHolding
 
 - type: latheRecipePack
   id: Instruments

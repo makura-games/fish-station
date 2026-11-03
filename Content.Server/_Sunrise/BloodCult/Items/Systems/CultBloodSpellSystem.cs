@@ -1,12 +1,11 @@
 using System.Linq;
 using Content.Server._Sunrise.BloodCult.Items.Components;
-using Content.Server.Body.Components;
-using Content.Server.Body.Systems;
 using Content.Server.Hands.Systems;
 using Content.Server.Popups;
 using Content.Shared._Sunrise.BloodCult.Components;
 using Content.Shared._Sunrise.BloodCult.Items;
 using Content.Shared.Body.Components;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
@@ -22,7 +21,8 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
-using Content.Shared.Timing;
+using Content.Shared.Timing.Components;
+using Content.Shared.Timing.Systems;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -43,7 +43,6 @@ public sealed partial class CultBloodSpellSystem : EntitySystem
     [Dependency] private HandsSystem _handsSystem = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private PopupSystem _popupSystem = default!;
-    [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private SharedSolutionContainerSystem _solutionSystem = default!;
     [Dependency] private TransformSystem _transformSystem = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
@@ -300,7 +299,7 @@ public sealed partial class CultBloodSpellSystem : EntitySystem
 
                 var blood = new Solution();
                 blood.AddReagent(puddleSolutionContent.Reagent, amount);
-                absorbBlood.AddSolution(blood, _prototypeManager);
+                absorbBlood.AddSolution(blood, ProtoMan);
                 Spawn("CultTileSpawnEffect", Transform(puddle).Coordinates);
             }
         }
@@ -391,7 +390,7 @@ public sealed partial class CultBloodSpellSystem : EntitySystem
                 if (!bloodSpell.HealingGroups.Contains(damageGroup))
                     continue;
 
-                var damageGroupSpecifier = _prototypeManager.Index<DamageGroupPrototype>(damageGroup);
+                var damageGroupSpecifier = ProtoMan.Index<DamageGroupPrototype>(damageGroup);
 
                 var totalDamageInGroup = FixedPoint2.Zero;
 

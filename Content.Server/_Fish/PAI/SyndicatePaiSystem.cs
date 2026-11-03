@@ -18,6 +18,7 @@ using Content.Shared.Popups;
 using Content.Shared.Station;
 using Content.Shared.Station.Components;
 using Content.Shared.StationRecords;
+using Content.Shared.StationRecords.Components;
 using Content.Shared.Store;
 using Content.Shared.Verbs;
 using Robust.Shared.Containers;

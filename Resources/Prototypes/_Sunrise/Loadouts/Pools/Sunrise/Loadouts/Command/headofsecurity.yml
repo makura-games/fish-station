@@ -46,14 +46,6 @@
     proto: MasterHoS50h
 
 - type: loadout
-  id: HeadofSecurityWeapon1984h
-  equipment:
-    pocket1: DeagleGoldBox
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: MasterHoS1984h
-
-- type: loadout
   id: HeadofSecurityJumpsuitHoSOld
   sponsorOnly: false
   equipment:

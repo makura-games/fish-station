@@ -16,17 +16,23 @@ public sealed partial class PdaMenu
             ? stationAlertLevels
             : Array.Empty<PdaAlertLevelInfo>();
 
+        if (activeAlertLevels.Count == 0 && state.StationAlertLevel is { } primaryLevel)
+            activeAlertLevels = [new PdaAlertLevelInfo(primaryLevel, state.StationAlertColor)];
+
         if (activeAlertLevels.Count == 0)
-            activeAlertLevels = [new PdaAlertLevelInfo(state.StationAlertLevel ?? "unknown", state.StationAlertColor)];
+        {
+            (_alertLevel, _, _instructions) = _alert.AlertLevelData((string?) null);
+            return;
+        }
 
         var localizedAlertLevels = new List<string>(activeAlertLevels.Count);
         var instructions = new List<string>(activeAlertLevels.Count);
         foreach (var activeAlertLevel in activeAlertLevels)
         {
-            var key = $"alert-level-{activeAlertLevel.Level}";
-            var localizedLevel = FormattedMessage.EscapeText(Loc.GetString(key));
+            var (name, _, instruction) = _alert.AlertLevelData(activeAlertLevel.Level);
+            var localizedLevel = FormattedMessage.EscapeText(name);
             localizedAlertLevels.Add($"[color={activeAlertLevel.Color.ToHex()}]{localizedLevel}[/color]");
-            instructions.Add(Loc.GetString($"{key}-instructions"));
+            instructions.Add(instruction);
         }
 
         _alertLevel = string.Join(", ", localizedAlertLevels);
