@@ -12,6 +12,8 @@
     containers:
       borg_brain:
       - Sofia
+      borg_module:
+      - BorgModuleSyndicateGeneric
   - type: ItemSlots
     slots:
       cell_slot:
