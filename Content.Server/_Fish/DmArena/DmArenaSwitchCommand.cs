@@ -190,10 +190,10 @@ public sealed partial class DmArenaSwitchCommand : LocalizedCommands
 
         switch (args[^1].ToLowerInvariant())
         {
-            case "true" or "on":
+            case "true":
                 value = true;
                 return true;
-            case "false" or "off":
+            case "false":
                 return true;
             default:
                 return false;

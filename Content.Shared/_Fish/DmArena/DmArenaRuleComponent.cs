@@ -105,5 +105,14 @@ public sealed partial class DmArenaRuleComponent : Component
     public TimeSpan CombatLock = TimeSpan.FromSeconds(10);
 
     [DataField]
+    public float LightMultiplier = 1.15f;
+
+    [DataField]
+    public float HealingDelayMultiplier = 0.5f;
+
+    [DataField]
+    public EntProtoId RoflsPrototype = "MobPig";
+
+    [DataField]
     public SlotFlags LockedSlots = SlotFlags.OUTERCLOTHING | SlotFlags.HEAD | SlotFlags.BELT | SlotFlags.BACK | SlotFlags.SUITSTORAGE;
 }

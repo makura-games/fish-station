@@ -64,8 +64,6 @@ namespace Content.Server._Fish.DmArena;
 
 public sealed partial class DmArenaMatchSystem : EntitySystem
 {
-    private const float LightBoost = 1.15f;
-
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -91,7 +89,6 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     [Dependency] private TagSystem _tags = default!;
 
     private static readonly EntProtoId RulePrototype = "FishDmArenaRule";
-    private static readonly EntProtoId PigPrototype = "MobPig";
     private static readonly ProtoId<TagPrototype> CatwalkTag = "Catwalk";
     private static readonly ProtoId<LocalizedDatasetPrototype> DmArenaNameSuffixDataset = "NamesOperationPrefix";
     private static readonly SoundPathSpecifier LeaveSound = new("/Audio/Effects/pop_high.ogg");
@@ -102,6 +99,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private TimeSpan _openAfter;
     private TimeSpan _nextOpenCheck;
     private TimeSpan _nextCountSync;
+    private TimeSpan _openCheckInterval;
+    private TimeSpan _countSyncInterval;
 
     private bool _refillOnKill;
 
@@ -119,6 +118,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaRefill, value => _refillOnKill = value, true);
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaEnabled, OnEnabledChanged, true);
+        Subs.CVar(_cfg, DmArenaConfigVars.DmArenaOpenCheckInterval, value => _openCheckInterval = TimeSpan.FromSeconds(value), true);
+        Subs.CVar(_cfg, DmArenaConfigVars.DmArenaCountSyncInterval, value => _countSyncInterval = TimeSpan.FromSeconds(value), true);
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaOpenDelay, value => _openAfter = TimeSpan.FromMinutes(value), true);
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundEnding);
@@ -172,13 +173,13 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         if (_timing.CurTime >= _nextOpenCheck)
         {
-            _nextOpenCheck = _timing.CurTime + TimeSpan.FromSeconds(1);
+            _nextOpenCheck = _timing.CurTime + _openCheckInterval;
             RefreshOpenState();
         }
 
         if (_timing.CurTime >= _nextCountSync)
         {
-            _nextCountSync = _timing.CurTime + TimeSpan.FromSeconds(5);
+            _nextCountSync = _timing.CurTime + _countSyncInterval;
             SendPlayerCount();
         }
 
@@ -302,7 +303,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         ent.Comp.Active = true;
         ShieldArenaEntities(args.Map);
         MarkMapItems(args.Map);
-        BrightenLights(args.Map);
+        BrightenLights(args.Map, ent.Comp.LightMultiplier);
         BroadcastPlayerCount();
     }
 
@@ -316,13 +317,13 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         }
     }
 
-    private void BrightenLights(MapId map)
+    private void BrightenLights(MapId map, float multiplier)
     {
         var lights = EntityQueryEnumerator<PointLightComponent, TransformComponent>();
         while (lights.MoveNext(out var uid, out var light, out var xform))
         {
             if (xform.MapID == map)
-                _light.SetEnergy(uid, light.Energy * LightBoost, light);
+                _light.SetEnergy(uid, light.Energy * multiplier, light);
         }
     }
 
@@ -639,7 +640,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         var profile = BuildArenaProfile(mind);
         var rofls = DebugRofls.Contains(session.UserId);
         var mob = rofls
-            ? Spawn(PigPrototype, spawnCoords)
+            ? Spawn(rule.RoflsPrototype, spawnCoords)
             : _stationSpawning.SpawnPlayerMob(spawnCoords, null, profile, null);
 
         if (rofls)
@@ -705,7 +706,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
                 RestoreDependentSlots(mob, kept);
             }
 
-            HalveHealingDelay(mob);
+            ScaleHealingDelay(mob, rule.HealingDelayMultiplier);
             return true;
         }
         catch (Exception e)
@@ -715,17 +716,17 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         }
     }
 
-    private void HalveHealingDelay(EntityUid uid)
+    private void ScaleHealingDelay(EntityUid uid, float multiplier)
     {
         if (TryComp<HealingComponent>(uid, out var healing))
         {
-            healing.Delay /= 2;
+            healing.Delay *= multiplier;
             Dirty(uid, healing);
         }
 
         var children = Transform(uid).ChildEnumerator;
         while (children.MoveNext(out var child))
-            HalveHealingDelay(child);
+            ScaleHealingDelay(child, multiplier);
     }
 
     private List<(string Slot, EntityUid Item)> ClearReplacedSlots(EntityUid mob, ProtoId<StartingGearPrototype> gear)
