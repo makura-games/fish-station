@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Numerics;
-using Content.Shared.Inventory;
 using Content.Shared._Fish.DmArena;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
@@ -8,6 +7,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Input;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.DmArena;
 
@@ -23,6 +23,7 @@ public sealed class DmArenaItemCard : PanelContainer
     private bool _locked;
     private bool _needsWeapon;
     private bool _hovered;
+    private Color _targetColor;
     private readonly StyleBoxTexture _styleBox;
     private readonly PanelContainer _accent;
     private readonly Label _nameLabel;
@@ -41,18 +42,18 @@ public sealed class DmArenaItemCard : PanelContainer
         if (!string.IsNullOrEmpty(option.Description) || !string.IsNullOrEmpty(option.AmmoFor))
             TooltipSupplier = _ => BuildTooltip(option);
 
-        _styleBox = DmArenaPalette.Rounded(DmArenaPalette.CardBg, 10, 5);
+        _styleBox = DmArenaPalette.Rounded(DmArenaPalette.CardBg, 12, 6);
         PanelOverride = _styleBox;
 
         HorizontalExpand = true;
-        MinHeight = 54;
+        MinHeight = 56;
 
         var hbox = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
             HorizontalExpand = true,
             VerticalExpand = true,
-            SeparationOverride = 6,
+            SeparationOverride = 8,
         };
 
         _accent = new PanelContainer
@@ -60,7 +61,7 @@ public sealed class DmArenaItemCard : PanelContainer
             MinWidth = 4,
             MaxWidth = 4,
             VerticalExpand = true,
-            Margin = new Thickness(0, 2),
+            Margin = new Thickness(0, 4),
             PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.AccentDim },
         };
         hbox.AddChild(_accent);
@@ -84,19 +85,24 @@ public sealed class DmArenaItemCard : PanelContainer
             Text = option.Name,
             FontOverride = DmArenaPalette.GetFont(true, 13),
             FontColorOverride = DmArenaPalette.ButtonText,
+            ClipText = true,
+        };
+        var nameBox = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
             VerticalAlignment = VAlignment.Center,
             HorizontalExpand = true,
-            ClipText = true,
             Margin = new Thickness(4, 0, 0, 0),
         };
-        hbox.AddChild(_nameLabel);
+        nameBox.AddChild(_nameLabel);
+        hbox.AddChild(nameBox);
 
         _minusButton = MakeStepButton("−", -1);
         _plusButton = MakeStepButton("+", 1);
         _countLabel = new Label
         {
             FontOverride = DmArenaPalette.GetFont(true, 13),
-            FontColorOverride = DmArenaPalette.Accent,
+            FontColorOverride = DmArenaPalette.AccentSoft,
             VerticalAlignment = VAlignment.Center,
             MinWidth = 26,
             Align = Label.AlignMode.Center,
@@ -112,15 +118,16 @@ public sealed class DmArenaItemCard : PanelContainer
         _costLabel = new Label
         {
             Text = Loc.GetString("dm-arena-shop-cost", ("cost", option.Cost)),
-            FontOverride = DmArenaPalette.GetFont(true, 12),
+            FontOverride = DmArenaPalette.GetFont(false, 12),
             FontColorOverride = DmArenaPalette.Cost,
+            VerticalAlignment = VAlignment.Center,
+            MinWidth = 44,
+            Align = Label.AlignMode.Center,
         };
-
         var costPill = new PanelContainer
         {
+            PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.CostPillBg, 8, 2),
             VerticalAlignment = VAlignment.Center,
-            MinWidth = 56,
-            PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.TitleBarBg, 8, 2),
         };
         costPill.AddChild(_costLabel);
         hbox.AddChild(costPill);
@@ -132,11 +139,18 @@ public sealed class DmArenaItemCard : PanelContainer
         OnMouseExited += _ => SetHovered(false);
 
         UpdateVisual();
+        _styleBox.Modulate = _targetColor;
+    }
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+        _styleBox.Modulate = DmArenaPalette.Approach(_styleBox.Modulate, _targetColor, args.DeltaSeconds);
     }
 
     private Control BuildTooltip(DmArenaStoreOption option)
     {
-        var panel = new PanelContainer { PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.TitleBarBg, 10, 5) };
+        var panel = new PanelContainer { PanelOverride = DmArenaPalette.Rounded(DmArenaPalette.TitleBarBg, 12, 6) };
         panel.AddChild(new Label
         {
             Text = _needsWeapon ? Loc.GetString("dm-arena-ammo-locked") : option.Description,
@@ -192,14 +206,12 @@ public sealed class DmArenaItemCard : PanelContainer
         var selected = _count > 0;
         var dim = _locked && !selected;
 
-        _styleBox.Modulate = selected
+        _targetColor = selected
             ? DmArenaPalette.CardSelectedBg
             : dim ? DmArenaPalette.CardLockedBg
             : _hovered ? DmArenaPalette.CardHoverBg : DmArenaPalette.CardBg;
 
-        ((StyleBoxFlat) _accent.PanelOverride!).BackgroundColor = selected
-            ? DmArenaPalette.Accent
-            : dim ? DmArenaPalette.ButtonDisabledFg : DmArenaPalette.AccentDim;
+        ((StyleBoxFlat) _accent.PanelOverride!).BackgroundColor = selected ? DmArenaPalette.Accent : DmArenaPalette.AccentDim;
 
         _nameLabel.FontColorOverride = dim ? DmArenaPalette.ButtonDisabledFg : DmArenaPalette.ButtonText;
         _costLabel.FontColorOverride = dim ? DmArenaPalette.ButtonDisabledFg : DmArenaPalette.Cost;

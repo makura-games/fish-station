@@ -1372,3 +1372,70 @@
     description: Screenshot 2026-10-09 230651
   - url: https://github.com/user-attachments/assets/12717830-921f-414a-b30e-a113ad76eca8
     description: Screenshot 2026-10-09 233031
+- author: dan4ikk3
+  time: '2026-11-03T21:06:12.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен п90 и пп томпсон на дмарену
+  - type: Tweak
+    message: Улучшена UI составляющая
+  - type: Tweak
+    message: Изминен баланс ближнего оружия и щитов
+  - type: Tweak
+    message: Лечение на арене происходит в 2 раза быстрее обычного. Бинты, мази и другие.
+  - type: Add
+    message: 'Добавлены отладочные команды арены dmarena debug:
+
+      status показывает настройки, reset сбрасывает их,
+
+      combatlock включает блокировку боя,
+
+      refill включает пополнение боеприпасов,
+
+      item <id> <true|false> показывает или скрывает предмет в магазине,
+
+      cooldown <ckey> включает или снимает кулдаун возрождения,
+
+      rofls <ckey> превращает игрока в свинью.'
+  id: 139
+  url: https://github.com/makura-games/fish-station/pull/603
+- author: KrytoiChuvaaak
+  time: '2026-11-03T21:27:56.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Мобы экспедиций больше не могут стать гост-ролью и замечают игроков с большего расстояния.
+  id: 140
+  url: https://github.com/makura-games/fish-station/pull/580
+- author: NekutGit
+  time: '2026-11-03T21:40:18.0000000+00:00'
+  changes:
+  - type: Add
+    message: 'Для киборгов НаноТрейзен и Синдиката добавлен акцент речи: «я» заменяется на «юнит».'
+  - type: Add
+    message: Жнец-киборг Синдиката получил броню и базовый модуль.
+  - type: Tweak
+    message: Перевод жнец-киборгов теперь корректный.
+  - type: Tweak
+    message: 'Доступы киборгов станции были обновлены: доступен только «расширенный» доступ.'
+  - type: Fix
+    message: Модуль самопроизводства больше не могут носить лазерное оружие.
+  - type: Fix
+    message: Звуки передвижения для мед-киборга и жнец-киборга Синдиката снова слышно.
+  id: 141
+  url: https://github.com/makura-games/fish-station/pull/602
+- author: TiFeRi
+  time: '2026-11-03T21:40:48.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Замена базового прототипа снаряда в пускателе жезла.
+  id: 142
+  url: https://github.com/makura-games/fish-station/pull/604
+- author: Fynex_x
+  time: '2026-11-03T22:15:47.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено ПНВ для расы вульп.
+  - type: Remove
+    message: Удален ПНВ у расы филинидов.
+  id: 143
+  url: https://github.com/makura-games/fish-station/pull/599
