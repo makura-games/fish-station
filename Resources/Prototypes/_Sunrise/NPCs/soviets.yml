@@ -1735,6 +1735,7 @@
     pvsIncrease: 1.5
   # Ghost role stuff
   - type: GhostRole
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     allowMovement: true
     name: ghost-role-information-mercenary-captain-dungeon-name
     description: ghost-role-information-mercenary-captain-dungeon-description
