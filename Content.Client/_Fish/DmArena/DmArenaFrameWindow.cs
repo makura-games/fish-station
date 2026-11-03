@@ -1,5 +1,4 @@
 using System.Numerics;
-using Content.Shared.Inventory;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -13,7 +12,7 @@ namespace Content.Client._Fish.DmArena;
 public class DmArenaFrameWindow : BaseWindow
 {
     private const float TitleBarHeight = 36;
-    private const float BorderWidth = 2;
+    private const float BorderWidth = 1;
     private const float DragMarginSize = 7;
 
     private readonly PanelContainer _outerBorder;
@@ -41,7 +40,7 @@ public class DmArenaFrameWindow : BaseWindow
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = DmArenaPalette.BodyBg,
-                BorderColor = DmArenaPalette.Border,
+                BorderColor = DmArenaPalette.Divider,
                 BorderThickness = new Thickness(BorderWidth),
             },
         };
@@ -65,7 +64,7 @@ public class DmArenaFrameWindow : BaseWindow
             PanelOverride = new StyleBoxFlat
             {
                 BackgroundColor = DmArenaPalette.TitleBarBg,
-                BorderColor = DmArenaPalette.Accent,
+                BorderColor = DmArenaPalette.Divider,
                 BorderThickness = new Thickness(0, 0, 0, 1),
             },
         };
@@ -76,27 +75,21 @@ public class DmArenaFrameWindow : BaseWindow
             Margin = new Thickness(10, 0),
         };
 
-        var accentBar = new PanelContainer
-        {
-            MinWidth = 4,
-            MaxWidth = 4,
-            VerticalExpand = true,
-            Margin = new Thickness(0, 6, 8, 6),
-            PanelOverride = new StyleBoxFlat
-            {
-                BackgroundColor = DmArenaPalette.Accent,
-            },
-        };
-        titleBarContent.AddChild(accentBar);
-
         _titleLabel = new Label
         {
             Text = string.Empty,
-            FontOverride = DmArenaPalette.GetFont(true, 17),
+            FontOverride = DmArenaPalette.GetFont(true, 16),
             FontColorOverride = DmArenaPalette.ButtonText,
             VerticalAlignment = VAlignment.Center,
             HorizontalExpand = true,
         };
+        titleBarContent.AddChild(new PanelContainer
+        {
+            MinWidth = 4,
+            MaxWidth = 4,
+            Margin = new Thickness(0, 8, 8, 8),
+            PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.Accent },
+        });
         titleBarContent.AddChild(_titleLabel);
 
         _closeButton = new TextureButton
