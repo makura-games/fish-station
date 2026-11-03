@@ -319,6 +319,7 @@ public sealed class CentCommStationFilterTest
             await server.WaitIdleAsync();
             HashSet<EntityUid> existing = new();
             MapId centcommMapId = MapId.Nullspace;
+            MapId ordinaryMapId = MapId.Nullspace;
             EntityUid rule = EntityUid.Invalid;
             await server.WaitAssertion(() =>
             {
@@ -335,6 +336,7 @@ public sealed class CentCommStationFilterTest
                 var stationData = entityManager.GetComponent<StationDataComponent>(ordinaryStation);
                 var ordinaryGrid = stationData.Grids.First(grid =>
                     entityManager.GetComponent<TransformComponent>(grid).MapID != centcommMapId);
+                ordinaryMapId = entityManager.GetComponent<TransformComponent>(ordinaryGrid).MapID;
                 var ordinaryGridComponent = entityManager.GetComponent<MapGridComponent>(ordinaryGrid);
                 foreach (var tile in mapSystem.GetAllTiles(ordinaryGrid, ordinaryGridComponent).ToArray())
                 {
@@ -361,6 +363,7 @@ public sealed class CentCommStationFilterTest
             await server.WaitAssertion(() =>
             {
                 Assert.That(CountNewEntities(entityManager, existing, centcommMapId), Is.Zero);
+                Assert.That(CountNewEntities(entityManager, existing, ordinaryMapId, "MeteorSpaceDust"), Is.Zero);
                 Assert.That(entityManager.GetComponent<MeteorSwarmComponent>(rule).WaveCounter, Is.Zero);
                 Assert.That(entityManager.HasComponent<ActiveGameRuleComponent>(rule), Is.False);
                 Assert.That(entityManager.HasComponent<EndedGameRuleComponent>(rule), Is.True);
