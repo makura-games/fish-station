@@ -67,7 +67,13 @@ public sealed partial class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmCompon
         }
 
         if (validStations.Count == 0)
+        {
+            // Fish-start: без пригодных целей метеоритное событие завершается, а не ждёт бесконечно.
+            component.WaveCounter = 0;
+            ForceEndSelf(uid, gameRule);
+            // Fish-end
             return;
+        }
 
         var (_, grid) = RobustRandom.Pick(validStations); // Sunrise-Edit
 

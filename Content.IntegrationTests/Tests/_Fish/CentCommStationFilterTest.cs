@@ -319,6 +319,7 @@ public sealed class CentCommStationFilterTest
             await server.WaitIdleAsync();
             HashSet<EntityUid> existing = new();
             MapId centcommMapId = MapId.Nullspace;
+            EntityUid rule = EntityUid.Invalid;
             await server.WaitAssertion(() =>
             {
                 var (_, ordinaryStation, centcommGrid, _, mapId) = GetStations(entityManager, stationSystem);
@@ -351,14 +352,68 @@ public sealed class CentCommStationFilterTest
                     "The test station must select the CentComm grid as its largest grid.");
 
                 existing = GetEntityIds(entityManager);
-                var rule = ticker.AddGameRule(MeteorSwarmRule);
-                ticker.StartGameRule(rule);
+                rule = ticker.AddGameRule(MeteorSwarmRule);
+                Assert.That(ticker.StartGameRule(rule), Is.True);
             });
 
             await pair.RunTicksSync(3);
 
             await server.WaitAssertion(() =>
-                Assert.That(CountNewEntities(entityManager, existing, centcommMapId), Is.Zero));
+            {
+                Assert.That(CountNewEntities(entityManager, existing, centcommMapId), Is.Zero);
+                Assert.That(entityManager.GetComponent<MeteorSwarmComponent>(rule).WaveCounter, Is.Zero);
+                Assert.That(entityManager.HasComponent<ActiveGameRuleComponent>(rule), Is.False);
+                Assert.That(entityManager.HasComponent<EndedGameRuleComponent>(rule), Is.True);
+            });
+        }
+        finally
+        {
+            await pair.CleanReturnAsync();
+        }
+    }
+
+    [Test]
+    public async Task MeteorSwarmSpawnsOnOrdinaryStationGrid()
+    {
+        await using var pair = await PoolManager.GetServerClient(CreatePoolSettings());
+        var server = pair.Server;
+        var entityManager = server.ResolveDependency<IEntityManager>();
+        var ticker = server.System<GameTicker>();
+        var stationSystem = server.System<StationSystem>();
+
+        try
+        {
+            await server.WaitIdleAsync();
+            HashSet<EntityUid> existing = new();
+            MapId stationMapId = MapId.Nullspace;
+            await server.WaitAssertion(() =>
+            {
+                var (_, ordinaryStation, _, _, centcommMapId) = GetStations(entityManager, stationSystem);
+
+                foreach (var station in stationSystem.GetStations().ToArray())
+                {
+                    if (entityManager.HasComponent<StationMeteorSwarmTargetComponent>(station))
+                        entityManager.RemoveComponent<StationMeteorSwarmTargetComponent>(station);
+                }
+
+                entityManager.EnsureComponent<StationMeteorSwarmTargetComponent>(ordinaryStation);
+
+                var targetGrid = stationSystem.GetLargestGrid(ordinaryStation)
+                    ?? throw new InvalidOperationException("The ordinary station must have a largest grid.");
+
+                stationMapId = entityManager.GetComponent<TransformComponent>(targetGrid).MapID;
+                Assert.That(stationMapId, Is.Not.EqualTo(centcommMapId));
+                Assert.That(server.System<StationCentCommSystem>().IsOnCentcomm(targetGrid), Is.False);
+
+                existing = GetEntityIds(entityManager);
+                var rule = ticker.AddGameRule(MeteorSwarmRule);
+                Assert.That(ticker.StartGameRule(rule), Is.True);
+            });
+
+            await pair.RunTicksSync(3);
+
+            await server.WaitAssertion(() =>
+                Assert.That(CountNewEntities(entityManager, existing, stationMapId, "MeteorSpaceDust"), Is.GreaterThan(0)));
         }
         finally
         {
