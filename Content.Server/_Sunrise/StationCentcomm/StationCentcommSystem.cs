@@ -59,7 +59,7 @@ public sealed partial class StationCentCommSystem : EntitySystem
             var allGridsOnCentcommMap = true;
             foreach (var grid in stationData.Grids)
             {
-                if (TryComp<TransformComponent>(grid, out var gridTransform)
+                if (TryComp(grid, out TransformComponent? gridTransform)
                     && gridTransform.MapID == centcomm.MapId)
                     continue;
 

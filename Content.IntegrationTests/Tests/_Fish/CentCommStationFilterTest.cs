@@ -469,7 +469,7 @@ public sealed class CentCommStationFilterTest
         IEntityManager entityManager,
         HashSet<EntityUid> existing,
         MapId? mapId = null,
-        string? prototype = null)
+        string prototype = null)
     {
         var count = 0;
         foreach (var metadata in entityManager.EntityQuery<MetaDataComponent>())

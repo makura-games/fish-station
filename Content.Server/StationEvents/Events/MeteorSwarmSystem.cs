@@ -46,7 +46,7 @@ public sealed partial class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmCompon
 
         var stations = _station.GetStations();
 
-        var validStations = new List<EntityUid>();
+        var validStations = new List<(EntityUid Station, EntityUid Grid)>();
 
         foreach (var entityUid in stations)
         {
@@ -55,18 +55,21 @@ public sealed partial class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmCompon
                 continue;
             // Fish-end
 
-            if (HasComp<StationMeteorSwarmTargetComponent>(entityUid))
-                validStations.Add(entityUid);
+            if (!HasComp<StationMeteorSwarmTargetComponent>(entityUid))
+                continue;
+
+            // Fish-start: исключаем станции без грида и с крупнейшим гридом на карте ЦК до случайного выбора.
+            if (_station.GetLargestGrid(entityUid) is not { } targetGrid || IsOnCentcomm(targetGrid))
+                continue;
+            // Fish-end
+
+            validStations.Add((entityUid, targetGrid));
         }
 
         if (validStations.Count == 0)
             return;
 
-        var station = RobustRandom.Pick(validStations); // Sunrise-Edit
-        // Fish-start: не запускаем событие на гриде карты ЦК.
-        if (_station.GetLargestGrid(station) is not { } grid || IsOnCentcomm(grid))
-            return;
-        // Fish-end
+        var (_, grid) = RobustRandom.Pick(validStations); // Sunrise-Edit
 
         var mapId = Transform(grid).MapID;
         var playableArea = _physics.GetWorldAABB(grid);
