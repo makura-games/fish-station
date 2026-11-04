@@ -7,6 +7,10 @@
   - type: Tag
     tags:
     - CartridgeLightRifle
+# Fish-start
+  - type: CartridgeAmmo
+    proto: BulletLightRifleTraceSP
+# Fish-end
   - type: Sprite
     sprite: _Sunrise/Objects/Weapons/Guns/Ammunition/Casings/7.62x39.rsi # Sunrise-Edit
     scale: 0.60, 0.60 # Sunrise-Added
