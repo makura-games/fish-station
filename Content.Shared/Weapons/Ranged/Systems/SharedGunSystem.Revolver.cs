@@ -403,7 +403,7 @@ public partial class SharedGunSystem
                 {
                     ent.Comp.AmmoSlots[index] = null;
                     ent.Comp.Chambers[index] = null;
-                    // Fish-start очистка ammoEnt гильз у контейнера
+                    // Fish-start: очистка ammoEnt гильз у контейнера
                     if (!_netManager.IsClient)
                         QueueDel(ammoEnt.Value);
                     // Fish-end
