@@ -109,7 +109,7 @@ public sealed class BorgMk2VisualsTest : GameTest
     }
 
     /// <summary>
-    /// Сдвиг 0,0.5 задан в YAML chassis. Тип без собственного <c>spriteOffset</c> не должен
+    /// Сдвиг 0,0.4 задан в YAML chassis. Тип без собственного <c>spriteOffset</c> не должен
     /// затирать его нулём: сброс ломает визуал холста _Fish (борг висит ниже).
     /// </summary>
     [Test]
@@ -120,7 +120,7 @@ public sealed class BorgMk2VisualsTest : GameTest
             var borg = CSpawn("FishTestBorgChassisNoOffset");
             var sprite = CComp<SpriteComponent>(borg);
 
-            Assert.That(sprite.Offset, Is.EqualTo(new Vector2(0f, 0.5f)),
+            Assert.That(sprite.Offset, Is.EqualTo(new Vector2(0f, 0.4f)),
                 "Тип с null SpriteOffset не должен сбрасывать сдвиг корня спрайта");
         });
     }
@@ -271,7 +271,7 @@ public sealed class BorgMk2VisualsTest : GameTest
             Assert.That(method, Is.Not.Null, "GetBaseSpriteOffset должен существовать");
 
             var offset = (Vector2) method!.Invoke(melee, new object[] { borg })!;
-            Assert.That(offset, Is.EqualTo(new Vector2(0f, 0.5f)),
+            Assert.That(offset, Is.EqualTo(new Vector2(0f, 0.4f)),
                 "Lunge-анимация должна сохранять offset chassis при null SpriteOffset типа");
         });
     }

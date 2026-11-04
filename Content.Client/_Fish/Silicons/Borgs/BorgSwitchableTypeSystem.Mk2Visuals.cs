@@ -11,7 +11,7 @@ public sealed partial class BorgSwitchableTypeSystem
 {
     /// <summary>
     /// Fish: применяет к спрайту визуал выбранного типа — RSI, состояния слоёв,
-    /// корневое смещение (SpriteOffset, например 0,0.5 у Mk2).
+    /// корневое смещение (SpriteOffset, например 0,0.4 у Mk2).
     /// </summary>
     /// <remarks>
     /// Вызывается из UpdateEntityAppearance строго до LayerSetRsiState.

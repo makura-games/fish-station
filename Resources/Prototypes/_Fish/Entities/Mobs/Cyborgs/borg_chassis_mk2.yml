@@ -1,12 +1,20 @@
 - type: entity
+  id: FishBorgChassisMk2Base
+  abstract: true
+  components:
+  - type: StatusIcon
+    bounds: -0.5,-0.5,0.5,0.5
+
+- type: entity
   id: FishBorgChassisGenericMk2
-  parent: BorgChassisGeneric
+  parent: [BorgChassisGeneric, FishBorgChassisMk2Base]
   name: generic cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: robot
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -59,13 +67,14 @@
 
 - type: entity
   id: FishBorgChassisEngineerMk2
-  parent: BorgChassisEngineer
+  parent: [BorgChassisEngineer, FishBorgChassisMk2Base]
   name: engineer cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: engineer
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -118,13 +127,14 @@
 
 - type: entity
   id: FishBorgChassisMiningMk2
-  parent: BorgChassisMining
+  parent: [BorgChassisMining, FishBorgChassisMk2Base]
   name: salvage cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: miner
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -177,13 +187,14 @@
 
 - type: entity
   id: FishBorgChassisJanitorMk2
-  parent: BorgChassisJanitor
+  parent: [BorgChassisJanitor, FishBorgChassisMk2Base]
   name: janitor cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: janitor
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -236,13 +247,14 @@
 
 - type: entity
   id: FishBorgChassisMedicalMk2
-  parent: BorgChassisMedical
+  parent: [BorgChassisMedical, FishBorgChassisMk2Base]
   name: medical cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: medical
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -430,13 +442,14 @@
 
 - type: entity
   id: FishBorgChassisServiceMk2
-  parent: BorgChassisService
+  parent: [BorgChassisService, FishBorgChassisMk2Base]
   name: service cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: service
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -489,13 +502,14 @@
 
 - type: entity
   id: FishBorgChassisPeaceMk2
-  parent: BorgChassisPeace
+  parent: [BorgChassisPeace, FishBorgChassisMk2Base]
   name: peace cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: peace
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -548,13 +562,14 @@
 
 - type: entity
   id: FishBorgChassisClownMk2
-  parent: BorgChassisClown
+  parent: [BorgChassisClown, FishBorgChassisMk2Base]
   name: clown cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: clown
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -607,13 +622,14 @@
 
 - type: entity
   id: FishBorgChassisSecurityMk2
-  parent: BorgChassisSecurity
+  parent: [BorgChassisSecurity, FishBorgChassisMk2Base]
   name: security cyborg Mk2
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.5
+    offset: 0,0.4
+    scale: 0.8,0.8
     layers:
     - state: sec_mk2
       map: ["enum.BorgVisualLayers.Body", "movement"]

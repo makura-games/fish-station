@@ -22,10 +22,11 @@
   inventoryTemplateId: FishBorgShortMk2
   footstepCollection:
     collection: FootstepBorg
-  # Mk2 рисуется с холста _Fish вместо Mobs/Silicon/chassis.rsi в натуральном
-  # масштабе 1; смещение 0,0.5 совпадает с низом кадра 32×64.
+  # Mk2 рисуется с холста _Fish вместо Mobs/Silicon/chassis.rsi с масштабом 0.8;
+  # смещение 0,0.4 (= 0,0.5 × scale) совпадает с низом кадра 32×64.
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: robot_wreck
   spriteRestingState: robot_rest
 
@@ -39,7 +40,8 @@
   footstepCollection:
     collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: engineer_wreck
   spriteRestingState: engineer_rest
 
@@ -56,7 +58,8 @@
   # чтобы не ловить State not found при движении.
   spriteBodyMovementState: miner
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: miner_wreck
   spriteRestingState: miner_rest
 
@@ -71,7 +74,8 @@
     collection: FootstepBorg
   spriteBodyMovementState: janitor
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: janitor_wreck
   spriteRestingState: janitor_rest
 
@@ -87,7 +91,8 @@
     collection: FootstepBorg
   spriteBodyMovementState: medical
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: medical_wreck
   spriteRestingState: medical_rest
 
@@ -101,7 +106,8 @@
   footstepCollection:
     collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: service_wreck
   spriteRestingState: service_rest
 
@@ -115,7 +121,8 @@
   footstepCollection:
     collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: peace_wreck
   spriteRestingState: peace_rest
 
@@ -129,7 +136,8 @@
   footstepCollection:
     collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: clown_wreck
   spriteRestingState: clown_rest
 
@@ -147,6 +155,7 @@
   spriteNoMindState: sec_mk2_e_r
   spriteToggleLightState: sec_mk2_l
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
-  spriteOffset: 0,0.5
+  spriteOffset: 0,0.4
+  spriteScale: 0.8
   spriteWreckState: sec_mk2_wreck
   spriteRestingState: sec_mk2_rest
