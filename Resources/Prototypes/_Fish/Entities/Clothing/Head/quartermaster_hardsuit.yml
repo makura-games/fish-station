@@ -8,7 +8,6 @@
     sprite: _Fish/Clothing/Head/Hardsuits/quartermasterhelm.rsi
   - type: Clothing
     sprite: _Fish/Clothing/Head/Hardsuits/quartermasterhelm.rsi
-  - type: HandheldLight
   - type: PointLight
     radius: 10
   - type: PressureProtection
