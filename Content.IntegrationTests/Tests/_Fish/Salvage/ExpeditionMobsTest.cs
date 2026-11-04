@@ -34,7 +34,6 @@ public sealed class ExpeditionMobsTest : GameTest
         "MobRogueSiliconBossGuardian",
         "MobRogueSiliconBossSkullHouse",
         "MobDragonDungeon",
-        "FishMobCarpRainbowDragonExpedition",
     ];
 
     /// <summary>
@@ -140,7 +139,7 @@ public sealed class ExpeditionMobsTest : GameTest
     }
 
     /// <summary>
-    /// Радужный карп дракона из ивента остаётся гост-ролью: для экспедиций сделан отдельный вариант без неё.
+    /// Карп дракона из ивента остаётся гост-ролью: мобы экспедиций не должны влиять на ивент дракона.
     /// </summary>
     [Test]
     public async Task DragonEventCarpKeepsGhostRole()
@@ -152,7 +151,7 @@ public sealed class ExpeditionMobsTest : GameTest
 
         await server.WaitPost(() =>
         {
-            carp = entMan.SpawnEntity("MobCarpRainbowDragon", testMap.GridCoords);
+            carp = entMan.SpawnEntity("MobCarpDragon", testMap.GridCoords);
         });
 
         await server.WaitRunTicks(2);
