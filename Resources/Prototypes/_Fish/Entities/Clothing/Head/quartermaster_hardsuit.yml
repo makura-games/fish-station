@@ -15,8 +15,7 @@
     highPressureMultiplier: 0.09
     lowPressureMultiplier: 1000
   - type: TemperatureProtection
-    heatingCoefficient: 0.09
-    coolingCoefficient: 0.09
+    coefficient: 0.09
   - type: Armor
     modifiers:
       coefficients:
