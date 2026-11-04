@@ -1,4 +1,3 @@
-using Content.Server.Administration.Logs;
 using Content.Server.EUI;
 using Content.Shared.Eui;
 using Content.Shared._Fish.DmArena;

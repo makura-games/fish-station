@@ -83,9 +83,7 @@
     footstepSoundCollection:
       collection: Footstep2CyborgLegs
       params:
-        volume: -15
-  - type: Vocal
-    emoteSounds: Reaper
+        volume: -3
   - type: RandomMetadata
     nameSegments: [NamesBorg]
   - type: InnateItem
@@ -150,5 +148,6 @@
 
 - type: startingGear
   id: FishSyndiReaperHardsuitGear
+  parent: BorgArmorSiliconLoadoutMk2
   equipment:
     belt: ClothingBeltReaperWebbing

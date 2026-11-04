@@ -1,0 +1,4 @@
+- type: accent
+  id: FishCyborg
+  wordReplacements:
+    accent-fish-cyborg-words-1: accent-fish-cyborg-words-replace-1

@@ -375,31 +375,14 @@
   - type: NpcFactionMember
     factions:
     - NanoTrasen
+  # Fish-start: расширенный доступ вместо AllAccess
   - type: Access
     groups:
-    - AllAccess
+    - FishBorgExtended
     tags:
     - Borg
     - EmergencyShuttleRepealAll
-    - Command
-    - Lawyer
-    - Engineering
-    - Medical
-    - Salvage
-    - Cargo
-    - Research
-    - Service
-    - Maintenance
-    - External
-    - Janitor
-    - Theatre
-    - Bar
-    - Chemistry
-    - Kitchen
-    - Chapel
-    - Hydroponics
-    - Atmospherics
-    # Sunrise-End
+  # Fish-end
   - type: AccessReader
     access: [["Command"], ["Research"]]
   - type: ShowJobIcons
@@ -452,6 +435,10 @@
     - Laugh
   - type: Vocal
     emoteSounds: UnisexSiliconSyndicate
+  # Fish-start: акцент киборгов
+  - type: ReplacementAccent
+    accent: FishCyborg
+  # Fish-end
   - type: PointLight
     # Sunrise-Start
     color: "#f51e0f"
@@ -494,9 +481,11 @@
   - type: NpcFactionMember
     factions:
     - NanoTrasen #The seemingly best fit. It was a regular NT cyborg once, after all.
+  # Fish-start: расширенный доступ
   - type: Access
     groups:
-    - AllAccess #Randomized access would be fun. AllAccess is the best i can think of right now that does make it too hard for it to enter the station or navigate it..
+    - FishBorgExtended
+  # Fish-end
   - type: AccessReader
     access: [["Command"], ["Research"]]
   - type: StartIonStormed

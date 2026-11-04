@@ -73,13 +73,13 @@ ent-FishBorgChassisSecurityMk2Battery = { ent-FishBorgChassisSecurityMk2 }
     .suffix = Рыба, Батарея
     .desc = { ent-FishBorgChassisSecurityMk2.desc }
 
-## Синди-риперы: Fish-вариант с постоянными chassis-руками. Шасси перенесено
+## Синди-жнецы: Fish-вариант с постоянными chassis-руками. Шасси перенесено
 ## из _Sunrise в _Fish и больше не зависит от удалённых upstream-прототипов.
-ent-FishBorgChassisSyndicateReaper = рипер-киборг Синдиката
+ent-FishBorgChassisSyndicateReaper = жнец-киборг Синдиката
     .suffix = Рыба
     .desc = Скрытная диверсионная единица, созданная для саботажа и убийств.
 
-ent-FishBorgChassisSyndicateReaperDerelict = заброшенный рипер-киборг Синдиката
+ent-FishBorgChassisSyndicateReaperDerelict = заброшенный жнец-киборг Синдиката
     .suffix = Рыба
     .desc = Скрытная диверсионная единица, созданная для саботажа и убийств. Этот экземпляр явно знавал лучшие времена.
 

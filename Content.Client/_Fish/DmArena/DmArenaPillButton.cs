@@ -3,6 +3,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Input;
 using Robust.Shared.Maths;
+using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.DmArena;
 
@@ -12,9 +13,11 @@ public sealed class DmArenaPillButton : PanelContainer
 
     private readonly StyleBoxTexture _styleBox;
     private readonly Label _label;
+    private Color _targetColor;
     private bool _disabled;
     private bool _selected;
     private bool _hovered;
+    private bool _pressed;
 
     public bool Disabled
     {
@@ -63,10 +66,20 @@ public sealed class DmArenaPillButton : PanelContainer
         AddChild(_label);
 
         OnKeyBindDown += OnClicked;
+        OnKeyBindUp += args =>
+        {
+            if (args.Function == EngineKeyFunctions.UIClick)
+                SetPressed(false);
+        };
         OnMouseEntered += _ => SetHovered(true);
-        OnMouseExited += _ => SetHovered(false);
+        OnMouseExited += _ =>
+        {
+            SetHovered(false);
+            SetPressed(false);
+        };
 
         UpdateVisual();
+        _styleBox.Modulate = _targetColor;
     }
 
     private void OnClicked(GUIBoundKeyEventArgs args)
@@ -75,7 +88,10 @@ public sealed class DmArenaPillButton : PanelContainer
             return;
 
         if (!_disabled)
+        {
+            SetPressed(true);
             OnPressed?.Invoke();
+        }
 
         args.Handle();
     }
@@ -86,18 +102,32 @@ public sealed class DmArenaPillButton : PanelContainer
         UpdateVisual();
     }
 
+    private void SetPressed(bool pressed)
+    {
+        _pressed = pressed;
+        UpdateVisual();
+    }
+
     private void UpdateVisual()
     {
         if (_disabled)
         {
-            _styleBox.Modulate = DmArenaPalette.ButtonDisabledBg;
+            _targetColor = DmArenaPalette.ButtonDisabledBg;
             _label.FontColorOverride = DmArenaPalette.ButtonDisabledFg;
             return;
         }
 
-        _styleBox.Modulate = _selected
-            ? DmArenaPalette.ButtonSelectedBg
+        var color = _selected ? DmArenaPalette.ButtonSelectedBg
             : _hovered ? DmArenaPalette.ButtonHoverBg : DmArenaPalette.ButtonBg;
+
+        _targetColor = _pressed ? Color.InterpolateBetween(color, Color.Black, 0.2f) : color;
         _label.FontColorOverride = DmArenaPalette.ButtonText;
+    }
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        _styleBox.Modulate = DmArenaPalette.Approach(_styleBox.Modulate, _targetColor, args.DeltaSeconds);
     }
 }

@@ -19,7 +19,7 @@ public sealed class FishNaturalNightVisionTest
 {
     private const int NetworkTicks = 20;
 
-    [TestCase("MobFelinid")]
+    [TestCase("MobVulpkanin")]
     [TestCase("MobTajaran")]
     [TestCase("MobResomi")]
     [TestCase("MobArachnid")]
@@ -87,7 +87,7 @@ public sealed class FishNaturalNightVisionTest
         var activated = false;
         await server.WaitPost(() =>
         {
-            wearer = server.EntMan.SpawnEntity("MobFelinid", map.GridCoords);
+            wearer = server.EntMan.SpawnEntity("MobVulpkanin", map.GridCoords);
             server.PlayerMan.SetAttachedEntity(session, wearer);
             server.System<ServerNightVisionSystem>().SetEnabled(wearer, true);
         });
