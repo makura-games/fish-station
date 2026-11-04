@@ -7,7 +7,7 @@ ent-ClothingOuterHardsuitDeathsquadFish = { ent-ClothingOuterHardsuitDeathsquad 
     .suffix = Fish
 
 ent-ClothingOuterHardsuitQuartermaster = quartermaster hardsuit
-    .desc = An upgraded version of the salvage hardsuit, made specifically for quartermasters. Protects against the threats of space, but, sadly, not against Central Command inspections.
+    .desc = An upgraded version of the salvage hardsuit, made specifically for quartermasters. Protects against the threats of space.
     .suffix = Fish
 
 ent-ClothingOuterRobesSectoralJudgeFish = Sectoral Court robe
