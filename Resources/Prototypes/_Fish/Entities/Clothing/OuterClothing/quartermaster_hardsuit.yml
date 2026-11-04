@@ -1,0 +1,33 @@
+- type: entity
+  parent: ClothingOuterHardsuitBase
+  id: ClothingOuterHardsuitQuartermaster
+  name: quartermaster hardsuit
+  description: A reinforced hardsuit customized for the quartermaster's cargo operations.
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/quartermaster.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/quartermaster.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.7
+    lowPressureMultiplier: 1000
+  - type: TemperatureProtection
+    heatingCoefficient: 0.009
+    coolingCoefficient: 0.009
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.80
+        Piercing: 0.80
+        Shock: 0.70
+        Heat: 0.80
+        Caustic: 0.40
+        Radiation: 0.20
+  - type: ClothingSpeedModifier
+    walkModifier: 0.75
+    sprintModifier: 0.75
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHelmetHardsuitQuartermaster

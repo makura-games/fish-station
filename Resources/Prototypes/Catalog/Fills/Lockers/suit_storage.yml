@@ -224,6 +224,21 @@
   - type: AccessReader
     access: [ [ "ChiefMedicalOfficer" ] ]
 
+# Fish-start
+#Quartermaster hardsuit
+- type: entity
+  id: SuitStorageQM
+  parent: SuitStorageBase
+  suffix: Quartermaster
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: FillQuarterMasterHardsuit
+  - type: AccessReader
+    access: [["Quartermaster"]]
+# Fish-end
+
 #RD's hardsuit
 - type: entity
   id: SuitStorageRD

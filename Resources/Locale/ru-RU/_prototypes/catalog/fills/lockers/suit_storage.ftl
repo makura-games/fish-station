@@ -37,6 +37,11 @@ ent-SuitStorageCMO = { ent-SuitStorageBase }
 ent-SuitStorageRD = { ent-SuitStorageBase }
     .suffix = Научный руководитель
     .desc = { ent-SuitStorageBase.desc }
+# Fish-start
+ent-SuitStorageQM = { ent-SuitStorageBase }
+    .suffix = Квартирмейстер
+    .desc = { ent-SuitStorageBase.desc }
+# Fish-end
 ent-SuitStorageHOS = { ent-SuitStorageBase }
     .suffix = Глава службы безопасности
     .desc = { ent-SuitStorageBase.desc }
