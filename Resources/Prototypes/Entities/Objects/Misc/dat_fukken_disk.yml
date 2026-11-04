@@ -8,6 +8,7 @@
   - type: ArtifactFunnyTarget
   # Sunrise added end
   - type: NukeDisk
+  - type: DiskLeaveNuke # Fish-edit
   - type: SpecialRespawn
     prototype: NukeDisk
   - type: Sprite
