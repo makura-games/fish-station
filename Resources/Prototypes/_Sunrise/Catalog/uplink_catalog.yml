@@ -3580,7 +3580,7 @@
   discountDownTo:
     Telecrystal: 5
   cost:
-    Telecrystal: 7
+    Telecrystal: 9 # Fish-edit: было 7
   categories:
   - UplinkWeaponry
 
