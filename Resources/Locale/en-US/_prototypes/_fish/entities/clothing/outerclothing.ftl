@@ -6,7 +6,7 @@ ent-ClothingOuterHardsuitDeathsquadFish = { ent-ClothingOuterHardsuitDeathsquad 
     .desc = { ent-ClothingOuterHardsuitDeathsquad.desc }
     .suffix = Fish
 
-ent-ClothingOuterHardsuitQuartermaster = quartermaster hardsuit
+ent-FishClothingOuterHardsuitQuartermaster = quartermaster hardsuit
     .desc = An upgraded version of the salvage hardsuit, made specifically for quartermasters. Protects against the threats of space.
     .suffix = Fish
 

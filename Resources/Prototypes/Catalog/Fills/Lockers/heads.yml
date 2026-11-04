@@ -39,7 +39,7 @@
   table: !type:AllSelector
     children:
     - id: ClothingMaskBreath
-    - id: ClothingOuterHardsuitQuartermaster
+    - id: FishClothingOuterHardsuitQuartermaster
     - id: OxygenTankFilled
 
 # No hardsuit + Hardsuit locker

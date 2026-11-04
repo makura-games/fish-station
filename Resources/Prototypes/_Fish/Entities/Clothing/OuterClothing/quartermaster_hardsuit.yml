@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingOuterHardsuitBase
-  id: ClothingOuterHardsuitQuartermaster
+  id: FishClothingOuterHardsuitQuartermaster
   name: quartermaster hardsuit
   description: A reinforced hardsuit customized for the quartermaster's cargo operations.
   components:

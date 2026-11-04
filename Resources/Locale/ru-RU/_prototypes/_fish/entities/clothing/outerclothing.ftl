@@ -6,7 +6,7 @@ ent-ClothingOuterHardsuitDeathsquadFish = { ent-ClothingOuterHardsuitDeathsquad 
     .desc = { ent-ClothingOuterHardsuitDeathsquad.desc }
     .suffix = Fish
 
-ent-ClothingOuterHardsuitQuartermaster = скафандр квартирмейстера
+ent-FishClothingOuterHardsuitQuartermaster = скафандр квартирмейстера
     .desc = Улучшенная версия утилизаторского скафандра, созданная специально для квартирмейстеров. Защищает от космических угроз, а вот от проверок ЦК, увы, не спасает.
     .suffix = Fish
 
