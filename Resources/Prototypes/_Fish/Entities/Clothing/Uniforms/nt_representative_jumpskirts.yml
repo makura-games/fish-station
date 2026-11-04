@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingUniformBase
+  parent: ClothingUniformSkirtBase
   id: FishClothingUniformJumpskirtNanoTrasenRepresentative
   name: black representative skirt
   description: A skirt in a strict official style, part of the uniform for NanoTrasen representatives.
