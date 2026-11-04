@@ -1,7 +1,7 @@
-# Fish-ксеноборг-рипер (id и содержимое перенесены из _Sunrise/Entities/Mobs/Cyborgs/xenoborgs.yml
-# без изменений, чтобы Fish-контент жил в _Fish; путь/владение лежали в _Sunrise исторически).
+# Fish-ксеноборг-рипер (id перенесён из _Sunrise/Entities/Mobs/Cyborgs/xenoborgs.yml,
+# чтобы Fish-контент жил в _Fish; путь/владение лежали в _Sunrise исторически).
 - type: entity
-  parent: [ BaseXenoborgChassis, BaseXenoborgTransponder ]
+  parent: [ BaseXenoborgChassis, BaseXenoborgTransponder, BaseXenoborgDestructible ]
   id: FishXenoReaper
   name: reaper xenoborg
   suffix: with brain, FISH
@@ -24,6 +24,15 @@
       shader: unshaded
       map: ["light"]
       visible: false
+    - map: ["belt"]
+    - map: ["id"]
+    - map: ["outerClothing"]
+    - map: ["back"]
+    - map: ["neck"]
+    - map: ["suitstorage"]
+    - map: ["head"]
+    - map: ["pocket1"]
+    - map: ["pocket2"]
   - type: BorgChassis
     maxModules: 4
     hasMindState: xeno_reaper_e
@@ -40,7 +49,7 @@
       borg_module:
       - XenoborgModuleBasic
   - type: Inventory
-    templateId: FishXenoborgReaper
+    templateId: FishReaper
   - type: InventorySlots
   - type: Body
   # Fish: постоянные chassis-руки рипера; showInHands включает отображение
@@ -52,6 +61,7 @@
       hand_left:
         location: Left
     showInHands: true
+    disableExplosionRecursion: true
     canBeStripped: true
   - type: DamageStateVisuals
     states:

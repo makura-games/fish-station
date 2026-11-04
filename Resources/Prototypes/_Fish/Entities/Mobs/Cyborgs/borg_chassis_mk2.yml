@@ -6,8 +6,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: robot
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -66,8 +65,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: engineer
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -126,8 +124,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: miner
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -186,8 +183,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: janitor
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -246,8 +242,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: medical
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -441,8 +436,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: service
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -501,8 +495,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: peace
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -561,8 +554,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: clown
       map: ["enum.BorgVisualLayers.Body", "movement"]
@@ -621,8 +613,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Silicon/chassis.rsi
-    offset: 0,0.4
-    scale: 0.8,0.8
+    offset: 0,0.5
     layers:
     - state: sec_mk2
       map: ["enum.BorgVisualLayers.Body", "movement"]

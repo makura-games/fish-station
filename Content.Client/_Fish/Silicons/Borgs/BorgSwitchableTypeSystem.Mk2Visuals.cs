@@ -11,7 +11,7 @@ public sealed partial class BorgSwitchableTypeSystem
 {
     /// <summary>
     /// Fish: применяет к спрайту визуал выбранного типа — RSI, состояния слоёв,
-    /// корневое смещение (SpriteOffset, например 0,0.4 у Mk2) и масштаб (SpriteScale, 0.8).
+    /// корневое смещение (SpriteOffset, например 0,0.5 у Mk2).
     /// </summary>
     /// <remarks>
     /// Вызывается из UpdateEntityAppearance строго до LayerSetRsiState.
@@ -38,9 +38,9 @@ public sealed partial class BorgSwitchableTypeSystem
         if (prototype.SpriteOffset is { } spriteOffset)
             _sprite.SetOffset((entity.Owner, sprite), spriteOffset);
 
-        // Fish: масштаб корня спрайта (Mk2 — 0.8): применяется ко всему дереву
-        // слоёв, включая in-hand предметы и одежду. Безусловный сброс в 1 —
-        // как у Offset, чтобы возврат к vanilla-типу вернул исходный размер.
+        // Fish: опциональный масштаб корня спрайта; применяется ко всему дереву
+        // слоёв, включая in-hand предметы и одежду. У Mk2 не задан, поэтому масштаб 1.
+        // Безусловный сброс в 1 — как у Offset, чтобы возврат к vanilla-типу вернул исходный размер.
         var scale = prototype.SpriteScale is { } spriteScale ? new Vector2(spriteScale, spriteScale) : Vector2.One;
         _sprite.SetScale((entity.Owner, sprite), scale);
     }

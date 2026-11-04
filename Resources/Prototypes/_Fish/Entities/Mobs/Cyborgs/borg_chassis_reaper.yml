@@ -21,8 +21,10 @@
     - map: ["jumpsuit"]
     - map: ["belt"]
     - map: ["id"]
-    - map: ["neck"]
+    - map: ["outerClothing"]
     - map: ["back"]
+    - map: ["neck"]
+    - map: ["suitstorage"]
     - map: ["head"]
     - map: ["pocket1"]
     - map: ["pocket2"]
@@ -148,6 +150,5 @@
 
 - type: startingGear
   id: FishSyndiReaperHardsuitGear
-  parent: BorgArmorSiliconLoadoutMk2
   equipment:
     belt: ClothingBeltReaperWebbing
