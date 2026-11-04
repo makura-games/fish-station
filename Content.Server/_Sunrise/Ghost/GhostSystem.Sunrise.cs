@@ -4,12 +4,12 @@ using Content.Shared.Ghost.Components;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Roles;
-using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.SSDIndicator;
 using Content.Shared.Warps;
 using Robust.Shared.Prototypes;
+using Content.Shared.Silicons.Borgs;  // Fish-edit
 
 // Не менять
 namespace Content.Server.Ghost;
@@ -53,8 +53,8 @@ public sealed partial class GhostSystem
                 continue;
 
             var playerMind = mind.Mind ?? mind.LastMindStored;
-            if (!TryGetPlayerJobInfo(playerMind, out var playerJobId, out var playerDepartmentId))
-                TryGetBorgJobInfo(uid, out playerJobId, out playerDepartmentId);
+            if (!TryGetPlayerJobInfo(playerMind, out var playerJobId, out var playerDepartmentId))  // Fish-edit
+                TryGetBorgJobInfo(uid, out playerJobId, out playerDepartmentId);  // Fish-edit
 
             var hasAnyMind = playerMind != null;
 
@@ -99,6 +99,7 @@ public sealed partial class GhostSystem
         return true;
     }
 
+    // Fish-start
     /// <summary>
     /// Определяет работу борга по выбранному borgType, если у его разума нет JobRole.
     /// </summary>
@@ -122,6 +123,7 @@ public sealed partial class GhostSystem
 
         return true;
     }
+    // Fish-end
 
     /// <summary>
     /// Создает список всех игроков с ролью антагониста для отображения в панели призрака

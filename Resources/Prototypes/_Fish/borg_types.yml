@@ -21,7 +21,7 @@
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgShortMk2
   footstepCollection:
-    collection: FootstepCyborgSpider
+    collection: FootstepBorg
   # Mk2 рисуется с холста _Fish вместо Mobs/Silicon/chassis.rsi в натуральном
   # масштабе 1; смещение 0,0.5 совпадает с низом кадра 32×64.
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
@@ -37,7 +37,7 @@
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgShortMk2
   footstepCollection:
-    collection: FootstepCyborgSpider
+    collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
   spriteOffset: 0,0.5
   spriteWreckState: engineer_wreck
@@ -51,7 +51,7 @@
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgTallMk2
   footstepCollection:
-    collection: FootstepCyborgSpider
+    collection: FootstepBorg
   # miner_moving в _Fish отсутствует — кадр ходьбы откатываем на корпус,
   # чтобы не ловить State not found при движении.
   spriteBodyMovementState: miner
@@ -68,7 +68,7 @@
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgShortMk2
   footstepCollection:
-    collection: FootstepJanitorBorg
+    collection: FootstepBorg
   spriteBodyMovementState: janitor
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
   spriteOffset: 0,0.5
@@ -84,7 +84,7 @@
   inventoryTemplateId: FishBorgDutchMk2
   # Как у инженерного МК2, вместо hover-звука обычного медицинского борга.
   footstepCollection:
-    collection: FootstepCyborgSpider
+    collection: FootstepBorg
   spriteBodyMovementState: medical
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
   spriteOffset: 0,0.5
@@ -98,6 +98,8 @@
   dummyPrototype: FishBorgChassisServiceMk2
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgTallMk2
+  footstepCollection:
+    collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
   spriteOffset: 0,0.5
   spriteWreckState: service_wreck
@@ -111,7 +113,7 @@
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgTallMk2
   footstepCollection:
-    collection: FootstepCyborgSpider
+    collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
   spriteOffset: 0,0.5
   spriteWreckState: peace_wreck
@@ -124,6 +126,8 @@
   dummyPrototype: FishBorgChassisClownMk2
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgTallMk2
+  footstepCollection:
+    collection: FootstepBorg
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
   spriteOffset: 0,0.5
   spriteWreckState: clown_wreck
@@ -137,7 +141,7 @@
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgTallMk2
   footstepCollection:
-    collection: FootstepCyborgSpider
+    collection: FootstepBorg
   spriteBodyState: sec_mk2
   spriteHasMindState: sec_mk2_e
   spriteNoMindState: sec_mk2_e_r

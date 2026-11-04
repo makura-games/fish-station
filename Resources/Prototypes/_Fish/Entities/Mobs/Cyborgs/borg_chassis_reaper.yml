@@ -6,6 +6,18 @@
   parent: BaseBorgChassisSyndicate
   suffix: Fish
   components:
+  - type: MeleeWeapon
+    altDisarm: false
+    soundHit:
+      collection: MetalThud
+    angle: 30
+    animation: WeaponArcFist
+    wideAnimation: WeaponArcFist
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 8
+        Structural: 10
   - type: Sprite
     sprite: _Sunrise/Mobs/Silicon/chassis.rsi
     layers:
@@ -91,11 +103,26 @@
   - type: InnateItem
     entityTargetActions:
     - AccessBreaker
+  - type: Pierceable
+    level: Metal
+  - type: Damageable
+    damageModifierSet: BorgReaper
 
 - type: entity
   id: FishBorgChassisSyndicateReaperDerelict
   parent: BaseBorgChassisSyndicateDerelict
   components:
+  - type: MeleeWeapon
+    altDisarm: false
+    soundHit:
+      collection: Punch
+    angle: 30
+    animation: WeaponArcFist
+    wideAnimation: WeaponArcFist
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 8
   - type: Sprite
     sprite: _Sunrise/Mobs/Silicon/chassis.rsi
     layers:

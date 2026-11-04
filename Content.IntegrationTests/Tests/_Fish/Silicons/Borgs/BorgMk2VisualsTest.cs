@@ -79,18 +79,16 @@ public sealed class BorgMk2VisualsTest : GameTest
 
     /// <summary>
     /// У всех МК2 шаги звучат в нормальной громкости, не наследуя ослабленный
-    /// <c>footstepCollection</c> родительского типа. Медицинский МК2 использует
-    /// коллекцию инженерного борга вместо hover-звука.
     /// </summary>
-    [TestCase("FishGenericMk2", "FootstepCyborgSpider")]
-    [TestCase("FishEngineeringMk2", "FootstepCyborgSpider")]
-    [TestCase("FishMiningMk2", "FootstepCyborgSpider")]
-    [TestCase("FishJanitorMk2", "FootstepJanitorBorg")]
-    [TestCase("FishMedicalMk2", "FootstepCyborgSpider")]
+    [TestCase("FishGenericMk2", "FootstepBorg")]
+    [TestCase("FishEngineeringMk2", "FootstepBorg")]
+    [TestCase("FishMiningMk2", "FootstepBorg")]
+    [TestCase("FishJanitorMk2", "FootstepBorg")]
+    [TestCase("FishMedicalMk2", "FootstepBorg")]
     [TestCase("FishServiceMk2", "FootstepBorg")]
-    [TestCase("FishPeaceMk2", "FootstepCyborgSpider")]
-    [TestCase("FishClownMk2", "FootstepClown")]
-    [TestCase("FishSecurityMk2", "FootstepCyborgSpider")]
+    [TestCase("FishPeaceMk2", "FootstepBorg")]
+    [TestCase("FishClownMk2", "FootstepBorg")]
+    [TestCase("FishSecurityMk2", "FootstepBorg")]
     public void Mk2FootstepsUseNormalVolume(string borgType, string expectedCollection)
     {
         var prototypes = Pair.Server.ResolveDependency<IPrototypeManager>();
