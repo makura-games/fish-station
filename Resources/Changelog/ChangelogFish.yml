@@ -1439,3 +1439,10 @@
     message: Удален ПНВ у расы филинидов.
   id: 143
   url: https://github.com/makura-games/fish-station/pull/599
+- author: Kaiten
+  time: '2026-11-04T21:07:01.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим санрайз
+  id: 144
+  url: https://github.com/makura-games/fish-station/pull/607
