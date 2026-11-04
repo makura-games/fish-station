@@ -1,6 +1,6 @@
 - type: entity
   parent: [ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase]
-  id: ClothingHeadHelmetHardsuitQuartermaster
+  id: FishClothingHeadHelmetHardsuitQuartermaster
   name: quartermaster hardsuit helmet
   description: A sturdy helmet with an integrated lamp and reinforced visor.
   components:

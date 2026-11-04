@@ -6,7 +6,7 @@ ent-ClothingHeadHelmetHardsuitDeathsquadFish = { ent-ClothingHeadHelmetHardsuitD
     .desc = { ent-ClothingHeadHelmetHardsuitDeathsquad.desc }
     .suffix = Fish
 
-ent-ClothingHeadHelmetHardsuitQuartermaster = quartermaster hardsuit helmet
+ent-FishClothingHeadHelmetHardsuitQuartermaster = quartermaster hardsuit helmet
     .desc = A sealed helmet with an integrated lamp and reinforced visor.
     .suffix = Fish
 

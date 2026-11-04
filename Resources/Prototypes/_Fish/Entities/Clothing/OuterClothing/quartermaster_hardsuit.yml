@@ -29,4 +29,4 @@
     walkModifier: 0.75
     sprintModifier: 0.75
   - type: ToggleableClothing
-    clothingPrototype: ClothingHeadHelmetHardsuitQuartermaster
+    clothingPrototype: FishClothingHeadHelmetHardsuitQuartermaster
