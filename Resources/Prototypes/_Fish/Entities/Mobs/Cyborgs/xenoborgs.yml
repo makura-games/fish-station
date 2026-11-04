@@ -16,7 +16,7 @@
     damage:
       types:
         Blunt: 8
-        Structural: 10
+        Structural: 5
   - type: BorgTransponder
     name: reaper xenoborg
     sprite:
