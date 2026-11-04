@@ -30,10 +30,7 @@ public sealed partial class HolidayGiveawaySystem : EntitySystem
     {
         base.Initialize();
 
-        // Fish-start: инициализируем значение cvar сразу
         Subs.CVar(_configuration, CCVars.HolidaysEnabled, OnHolidaysEnableChange, true);
-        // Subs.CVar(_configuration, CCVars.HolidaysEnabled, OnHolidaysEnableChange);
-        // Fish-end
 
         SubscribeLocalEvent<GameRunLevelChangedEvent>(CacheGiveaways);
         SubscribeLocalEvent<RoundStartedEvent>(CacheGiveaways);

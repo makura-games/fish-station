@@ -24,10 +24,7 @@ namespace Content.Server.Holiday
 
         public override void Initialize()
         {
-            // Fish-start: инициализируем значение cvar сразу
-            Subs.CVar(_configManager, CCVars.HolidaysEnabled, OnHolidaysEnableChange, true);
-            // Subs.CVar(_configManager, CCVars.HolidaysEnabled, OnHolidaysEnableChange);
-            // Fish-end
+            Subs.CVar(_configManager, CCVars.HolidaysEnabled, OnHolidaysEnableChange, true); // Sunrise-Edit
             SubscribeLocalEvent<GameRunLevelChangedEvent>(OnRunLevelChanged);
             SubscribeLocalEvent<HolidayVisualsComponent, ComponentInit>(OnVisualsInit);
             SubscribeLocalEvent<PointLightComponent, MapInitEvent>(OnLightMapInit);
