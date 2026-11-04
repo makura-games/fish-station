@@ -8,6 +8,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Systems;
 using Content.Server.Chat.Systems;
 using Content.Server.Cuffs;
+using Content.Server.Destructible;
 using Content.Server.DoAfter;
 using Content.Server.Emp;
 using Content.Server.EUI;
@@ -17,11 +18,13 @@ using Content.Server.Hands.Systems;
 using Content.Server.Mind;
 using Content.Server.Pinpointer;
 using Content.Server.Popups;
+using Content.Server.Storage.EntitySystems; // Fish-edit
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Sunrise.BloodCult.Systems;
 using Content.Shared.Actions;
 using Content.Shared.Alert;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
@@ -29,6 +32,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Gibbing;
 using Content.Shared.Inventory;
 using Content.Shared.Maps;
+using Content.Shared.Mindshield;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Roles;
 using Content.Shared.Speech.EntitySystems;
@@ -57,6 +61,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         [Dependency] private ContainerSystem _containerSystem = default!;
         [Dependency] private CuffableSystem _cuffable = default!;
         [Dependency] private DamageableSystem _damageableSystem = default!;
+        [Dependency] private DestructibleSystem _destructible = default!;
         [Dependency] private SharedMapSystem _map = default!;
         [Dependency] private DoAfterSystem _doAfterSystem = default!;
         [Dependency] private EmpSystem _empSystem = default!;
@@ -70,17 +75,16 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         [Dependency] private InventorySystem _inventorySystem = default!;
         [Dependency] private SharedPointLightSystem _lightSystem = default!;
         [Dependency] private EntityLookupSystem _lookup = default!;
-        [Dependency] private IMapManager _mapMan = default!;
         [Dependency] private MetaDataSystem _metaDataSystem = default!;
         [Dependency] private MindSystem _mindSystem = default!;
         [Dependency] private PopupSystem _popupSystem = default!;
-        [Dependency] private IPrototypeManager _prototypeManager = default!;
         [Dependency] private IRobustRandom _random = default!;
         [Dependency] private SharedRoleSystem _roleSystem = default!;
         [Dependency] private ItemSlotsSystem _slotsSystem = default!;
+        [Dependency] private StorageSystem _storageSystem = default!; // Fish-edit
         [Dependency] private StatusEffectsSystem _statusEffectsSystem = default!;
         [Dependency] private SharedStunSystem _stunSystem = default!;
-        [Dependency] private SharedStutteringSystem _stuttering = default!;
+        [Dependency] private StutteringSystem _stuttering = default!;
         [Dependency] private ITileDefinitionManager _tileDefinition = default!;
         [Dependency] private TileSystem _tileSystem = default!;
         [Dependency] private TransformSystem _transformSystem = default!;
@@ -89,6 +93,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         [Dependency] private SharedTransformSystem _xform = default!;
         [Dependency] private SharedAppearanceSystem _appearanceSystem = default!;
         [Dependency] private NavMapSystem _navMap = default!;
+        [Dependency] private MindShieldSystem _mindShield = default!;
         [Dependency] private PullingSystem _pulling = default!;
         [Dependency] private KillCultistTargetsConditionSystem _cultistTargetsConditionSystem = default!;
         [Dependency] private EntityQuery<TransformComponent> _xformQuery = default!;
@@ -97,14 +102,11 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         [Dependency] private Content.Server.Station.Systems.StationSystem _station = default!;
         // Fish-end
 
-        [ValidatePrototypeId<StackPrototype>]
-        private static string SteelStackPrototypeId = "Steel";
+        private static readonly ProtoId<StackPrototype> SteelStackPrototypeId = "Steel";
 
-        [ValidatePrototypeId<StackPrototype>]
-        private static string PlasteelStackPrototypeId = "Plasteel";
+        private static readonly ProtoId<StackPrototype> PlasteelStackPrototypeId = "Plasteel";
 
-        [ValidatePrototypeId<ContentTileDefinition>]
-        private static string CultTilePrototypeId = "CultFloor";
+        private static readonly ProtoId<ContentTileDefinition> CultTilePrototypeId = "CultFloor";
 
         private static EntProtoId AirlockGlassCultPrototypeId = "AirlockGlassCult";
         private static EntProtoId ConstructShellPrototypeId = "ConstructShell";

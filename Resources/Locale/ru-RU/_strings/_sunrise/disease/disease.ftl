@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 mob-name-disease = Разумная болезнь
 mob-description-disease = plague inc 2.0
 ghostrole-disease-name = разумная болезнь

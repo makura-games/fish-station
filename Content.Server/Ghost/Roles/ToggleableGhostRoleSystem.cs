@@ -39,10 +39,10 @@ public sealed partial class ToggleableGhostRoleSystem : EntitySystem
         {
             if (!_biocodeSystem.CanUse(args.User, biocodedComponent.Factions))
             {
-                // FIsh edit start - понятный отказ при активации Z без фракции
+                // Fish-start - понятный отказ при активации Z без фракции
                 _popup.PopupEntity(Loc.GetString("item-biocode-refused"), uid, args.User);
                 args.Handled = true;
-                // FIsh edit end
+                // Fish-end
                 return;
             }
         }

@@ -6,7 +6,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Mind.Components;
 using Content.Shared.Pinpointer;
 using Content.Shared.StatusEffectNew;
-using Content.Server.Station.Components;
+using Content.Shared.Station.Components;
 using Content.Shared.Warps;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;

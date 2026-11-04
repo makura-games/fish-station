@@ -1,0 +1,93 @@
+- type: entity
+  name: dark SCAR-H
+  parent: [BaseWeaponRifle, BaseSyndicateContraband]
+  id: FishWeaponRifleDarkScarH
+  suffix: Fish
+  description: A good old battle rifle, redesigned for the needs of the syndicate. It fires .308-caliber rounds that won’t leave your enemies a chance.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Weapons/Guns/Rifles/scarh/Syndicate/big.rsi
+    scale: 0.8, 0.8
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: base-unshaded
+      map: ["enum.GunVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: mag-unshaded-0
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: Clothing
+    sprite: _Fish/Objects/Weapons/Guns/Rifles/scarh/Syndicate/tiny.rsi
+  - type: Item
+    sprite: _Fish/Objects/Weapons/Guns/Rifles/scarh/Syndicate/tiny.rsi
+  - type: GunWieldBonus
+    minAngle: -27
+    maxAngle: -54
+  - type: Gun
+    minAngle: 28
+    maxAngle: 60
+    angleIncrease: 1.5
+    angleDecay: 15
+    fireRate: 4
+    shotsPerBurst: 3
+    selectedMode: Burst
+    availableModes:
+    - FullAuto
+    - Burst
+    - SemiAuto
+    burstFireRate: 9
+    soundGunshot:
+      path: /Audio/_Fish/Weapons/Guns/Rifles/scarh/scarh_shot.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/_Sunrise/Weapons/Guns/Rifles/skm24/skm_cocked.ogg
+    autoEject: true
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: FishMagazineScarHAP
+        insertSound: /Audio/_Sunrise/Weapons/Guns/Rifles/skm24/skm_reload.ogg
+        ejectSound: /Audio/_Sunrise/Weapons/Guns/Rifles/m28/m28_unload.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - FishMagazineScarH
+      gun_chamber:
+        name: Chamber
+        priority: 1
+        whitelist:
+          tags:
+            - CartridgeHeavyRifle
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 4
+    zeroVisible: true
+  - type: Appearance
+  - type: Wieldable
+  - type: UseDelay
+    delay: 0.4
+  - type: CursorOffsetRequiresWield
+  - type: EyeCursorOffset
+    maxOffset: 4
+    pvsIncrease: 0.4
+  - type: SpeedModifiedOnWield
+    walkModifier: 1
+    sprintModifier: 0.85
+
+- type: entity
+  parent: FishWeaponRifleDarkScarH
+  id: FishWeaponRifleDarkScarHBiocode
+  suffix: Fish, Biocode
+  components:
+  - type: FactionWeaponBlocker
+    factions:
+    - Syndicate
+    - Pirate

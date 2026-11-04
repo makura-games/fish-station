@@ -14,7 +14,7 @@ public sealed partial class ObrCallSystem
     public static readonly ProtoId<ObrCallSettingsPrototype> DefaultSettingsId = "DefaultObrCallSettings";
 
     [Dependency] private EntityLookupSystem _lookup = default!;
-    [Dependency] private IMapManager _mapManager = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
@@ -161,7 +161,7 @@ public sealed partial class ObrCallSystem
     {
         // Другие сетки (станция, астероиды, шаттлы) — пересечение запрещено.
         var grids = new List<Entity<MapGridComponent>>();
-        _mapManager.FindGridsIntersecting(mapId, worldBox, ref grids, includeMap: false);
+        _mapSystem.FindGridsIntersecting(mapId, worldBox, ref grids, includeMap: false);
         foreach (var grid in grids)
         {
             if (grid.Owner == shuttleUid)

@@ -1,6 +1,7 @@
 // Fish-start
 using Content.Shared.Mind;
 using Content.Shared.Ghost;
+using Content.Shared.Ghost.Components;
 // Fish-end
 using System.Linq;
 using System.Numerics;
@@ -8,7 +9,6 @@ using Content.Server._Sunrise.BloodCult.GameRule;
 using Content.Server._Sunrise.BloodCult.Objectives.Components;
 using Content.Server._Sunrise.BloodCult.Runes.Comps;
 using Content.Server.Atmos.Components;
-using Content.Server.Bible.Components;
 using Content.Server.Body.Components;
 using Content.Server.Chat.Systems;
 using Content.Server.Chemistry.Components;
@@ -22,6 +22,7 @@ using Content.Shared._Sunrise.BloodCult.Items;
 using Content.Shared._Sunrise.BloodCult.Runes;
 using Content.Shared._Sunrise.BloodCult.UI;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Bible.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chat;
 using Content.Shared.Chemistry.Components;
@@ -37,7 +38,6 @@ using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Maps;
 using Content.Shared.Mind.Components;
-using Content.Shared.Mindshield.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Pulling.Components;
@@ -373,7 +373,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             };
 
             if (component.InvokersMinCount > 1 || component.GatherInvokers)
+            {
                 cultists = GatherCultists(uid, component.CultistGatheringRange);
+                cultists.Add(args.User); // Fish-edit: инициатор всегда включен в число вызывающих
+            }
 
             if (cultists.Count < component.InvokersMinCount)
             {
@@ -469,7 +472,8 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
                 var hasMind = _mindSystem.TryGetMind(victim.Value, out var mindId, out var mind);
 
-                var canConvert = !HasComp<MindShieldComponent>(victim.Value)
+                _mindShield.GetMindshieldStatus(victim.Value, out var mindshielded, out _);
+                var canConvert = !mindshielded
                                       && !HasComp<BibleUserComponent>(victim.Value);
 
                 if (hasMind && canConvert )
@@ -586,6 +590,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             }
 
             _bloodCultRuleSystem.MakeCultist(target, rule, giveStartingItems: false);
+            // Fish-start - При конвертации новому культисту выдаётся кинжал и локатор культа
+            GiveConvertedCultistItems(target, rule);
+            // Fish-end
             _stunSystem.TryAddParalyzeDuration(target, TimeSpan.FromSeconds(2f));
             HealCultist(target);
 
@@ -804,7 +811,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
             var ev = new SummonNarsieDoAfterEvent();
 
-            var argsDoAfterEvent = new DoAfterArgs(_entityManager, user, TimeSpan.FromSeconds(170), ev, user) //fish-edit
+            var argsDoAfterEvent = new DoAfterArgs(_entityManager, user, TimeSpan.FromSeconds(170), ev, user) //Fish-edit
             {
                 BreakOnMove = true,
                 MovementThreshold = 3f, // ритуал призыва Бога: до 3 тайлов
@@ -825,7 +832,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             var stream = _audio.PlayGlobal(_narsie40Sec,
                 Filter.Broadcast(),
                 false,
-                AudioParams.Default.WithLoop(false).WithVolume(0.1f)); //fish-edit
+                AudioParams.Default.WithLoop(false).WithVolume(0.1f)); //Fish-edit
 
             _playingStream = stream?.Entity;
 
@@ -854,7 +861,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 return;
 
             if (component.CultType == null ||
-                !_prototypeManager.TryIndex<BloodCultPrototype>($"{component.CultType.Value.ToString()}Cult", out var cultPrototype))
+                !ProtoMan.TryIndex<BloodCultPrototype>($"{component.CultType.Value.ToString()}Cult", out var cultPrototype))
                 return;
 
             _entityManager.SpawnEntity(cultPrototype.GodProto, transform.Value);
@@ -1257,9 +1264,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         {
             var mapPos = coords.ToMap(EntityManager, _xform);
 
-            var spawnCoords = _mapMan.TryFindGridAt(mapPos, out var gridUid, out _)
+            var spawnCoords = _map.TryFindGridAt(mapPos, out var gridUid, out _)
                 ? coords.WithEntityId(gridUid, EntityManager)
-                : new(_mapMan.GetMapEntityId(mapPos.MapId), mapPos.Position);
+                : new(_map.GetMapOrInvalid(mapPos.MapId), mapPos.Position);
 
             var ent = Spawn(component.ProjectilePrototype, spawnCoords);
             var direction = targetCoords.ToMapPos(EntityManager, _xform) - mapPos.Position;
@@ -1347,16 +1354,16 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 // ыыыы
             }
 
-            var damageSpecifier = new DamageSpecifier(_prototypeManager.Index(SlashDamageType), 10);
+            var damageSpecifier = new DamageSpecifier(ProtoMan.Index(SlashDamageType), 10);
             _damageableSystem.TryChangeDamage(uid, damageSpecifier, true, false);
 
             _entityManager.SpawnEntity(rune, coords);
         }
 
-        // Fish-start
+        // Fish-start - спавн камня души при жертвоприношении
         /// <summary>
-        /// Attempts to create a soul shard from the sacrifice target, transferring the victim's mind into it.
-        /// Returns false if the target has no mind or the mind is already in another living body.
+        /// Creates a soul shard from the sacrifice target, transferring the victim's mind into it if valid,
+        /// and gibs the target.
         /// </summary>
         private bool SpawnShard(EntityUid target)
         {
@@ -1371,11 +1378,8 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             if (_entityManager.TryGetComponent<MindContainerComponent>(target, out var mindComponent) && mindComponent.HasMind)
             {
                 targetMindId = mindComponent.Mind;
-                if (targetMindId.HasValue) targetMind = _entityManager.GetComponent<MindComponent>(targetMindId.Value);
-            }
-            else
-            {
-                return false;
+                if (targetMindId.HasValue)
+                    targetMind = _entityManager.GetComponent<MindComponent>(targetMindId.Value);
             }
 
             if (targetMindId != null && targetMind != null)
@@ -1386,13 +1390,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 {
                     if (_entityManager.HasComponent<MobStateComponent>(currentEntity) && !_entityManager.HasComponent<GhostComponent>(currentEntity))
                     {
-                        return false;
+                        targetMindId = null;
+                        targetMind = null;
                     }
                 }
-            }
-            else
-            {
-                return false;
             }
         // Fish-end
 
@@ -1433,10 +1434,32 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             return true;
         }
 
+        // Fish-start - Выдача кинжала и локатора при конвертации
+        private void GiveConvertedCultistItems(EntityUid cultist, BloodCultRuleComponent rule)
+        {
+            if (rule.CultType == null ||
+                !ProtoMan.TryIndex<BloodCultPrototype>($"{rule.CultType.Value.ToString()}Cult", out var cultPrototype))
+                return;
+
+            var coords = Transform(cultist).Coordinates;
+            _inventorySystem.TryGetSlotEntity(cultist, "back", out var backPack);
+
+            var itemsToGive = new[] { cultPrototype.DaggerProto, (EntProtoId)"BloodCultPinpointer" };
+            foreach (var itemProto in itemsToGive)
+            {
+                var item = Spawn(itemProto, coords);
+                if (backPack != null && _storageSystem.Insert(backPack.Value, item, out _))
+                    continue;
+                if (_handsSystem.TryPickupAnyHand(cultist, item))
+                    continue;
+            }
+        }
+        // Fish-end
+
         private void HealCultist(EntityUid player)
         {
-            var damageSpecifier = _prototypeManager.Index(BruteDamageGroup);
-            var damageSpecifier2 = _prototypeManager.Index(BurnDamageGroup);
+            var damageSpecifier = ProtoMan.Index(BruteDamageGroup);
+            var damageSpecifier2 = ProtoMan.Index(BurnDamageGroup);
 
             _damageableSystem.TryChangeDamage(player, new DamageSpecifier(damageSpecifier, -40));
             _damageableSystem.TryChangeDamage(player, new DamageSpecifier(damageSpecifier2, -40));

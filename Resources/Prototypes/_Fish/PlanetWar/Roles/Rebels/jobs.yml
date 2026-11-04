@@ -4,7 +4,7 @@
   description: job-description-armbase
   playTimeTracker: OverAllArmBase
   setPreference: true
-  weight: 2
+# weight: 2
   jobEntity: MobHumanArmP0WMF5
   startingGear: ArmGearP0
   icon: "IconArmBase"
@@ -20,7 +20,7 @@
   description: job-description-armpc0i5
   playTimeTracker: OverAllArmPC0I5
   setPreference: true
-  weight: 5
+# weight: 5
   jobEntity: MobHumanArmPC0I5WMF5
   startingGear: ArmGearPC0I5
   icon: "IconArmPC0I5"
@@ -39,7 +39,7 @@
   description: job-description-armpm1
   playTimeTracker: OverAllArmPM1
   setPreference: true
-  weight: 3
+# weight: 3
   jobEntity: MobHumanArmPM1WMF5
   startingGear: ArmGearPM1
   icon: "IconArmPM1"
@@ -56,7 +56,7 @@
   description: job-description-armpe1
   playTimeTracker: OverAllArmPE1
   setPreference: true
-  weight: 4
+# weight: 4
   jobEntity: MobHumanArmPE1WMF5
   startingGear: ArmGearPE1
   icon: "IconArmPE1"

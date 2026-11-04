@@ -179,6 +179,9 @@
   - SpecOpsHatsFish
   - SpecOpsShoesFish
   - SpecOpsGlovesFish
+  - SpecOpsOuterClothingFish
+  - FishSpecOpsBack
+  - FishSpecOpsWeapons
   - Trinkets
   - Survival
   - GroupSpeciesBreathTool
@@ -197,3 +200,20 @@
   - Bra
   - Pants
   - Socks #socks
+
+- type: roleLoadout
+  id: JobBlueShieldEnsign
+  groups:
+  - ComMaidHead
+  - ComMaidNeck
+  - ComMaidJumpsuit
+  - ComMaidGloves
+  - ComMaidShoes
+  - ComMaidBackpack
+  - SunriseSurvival
+  - GroupSpeciesBreathTool
+  - Bra
+  - Pants
+  - Socks
+  - SunriseTrinkets
+  - Contributors

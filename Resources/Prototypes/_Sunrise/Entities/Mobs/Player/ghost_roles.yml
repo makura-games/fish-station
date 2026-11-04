@@ -471,7 +471,7 @@
     - BoxCleanerGrenades
     - CrowbarRed
     - ClothingHandsPowerGlovesUplinkNTERTRed
-#fish-start
+#Fish-start
 - type: entity
   id: RandomHumanoidSpawnerCBURNLeader
   name: CBURN Leader
@@ -516,4 +516,4 @@
       - NamesMilitaryFirstLeader
       - NamesMilitaryLast
       nameFormat: name-format-ert
-#fish-end
+#Fish-end

@@ -1,5 +1,5 @@
-using Content.Server.AlertLevel;
 using Content.Server.Light.Components;
+using Content.Shared.AlertLevel;
 using Content.Shared.Light;
 using Content.Shared.Light.Components;
 using Content.Shared.Station.Components;
@@ -14,16 +14,14 @@ public sealed partial class EmergencyLightSystem
      * Emergency-light updates for the highest-priority active alert level.
      */
 
-    [Dependency] private AlertLevelSystem _alertLevel = default!;
-
-    private void OnAdditionalAlertLevelChanged(AdditionalAlertLevelChangedEvent ev)
+    private void OnAdditionalAlertLevelChanged(ref AdditionalAlertLevelChangedEvent ev)
     {
         UpdateStationLights(ev.Station);
     }
 
     private void UpdateStationLights(EntityUid station)
     {
-        if (!_alertLevel.TryGetVisualAlertLevel((station, null), out _, out var details))
+        if (!_alert.TryGetVisualAlertLevel((station, null), out _, out var details))
             return;
 
         var query = EntityQueryEnumerator<EmergencyLightComponent, PointLightComponent, AppearanceComponent, TransformComponent>();
