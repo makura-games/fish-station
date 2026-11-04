@@ -31,7 +31,10 @@ public sealed partial class StationCentCommSystem : EntitySystem
     // Fish-start: определяет принадлежность по карте, так как компонент также есть у обычной станции.
     public bool IsOnCentcomm(EntityUid uid)
     {
-        var entityMapId = Transform(uid).MapID;
+        if (!TryComp<TransformComponent>(uid, out var xform))
+    return false;
+
+var entityMapId = xform.MapID;
         StationDataComponent? stationData = null;
         if (entityMapId == MapId.Nullspace)
             TryComp(uid, out stationData);
