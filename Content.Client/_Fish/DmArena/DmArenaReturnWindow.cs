@@ -28,7 +28,7 @@ public sealed class DmArenaReturnWindow : DmArenaFrameWindow
         {
             MinHeight = 1,
             Margin = new Thickness(14, 0),
-            PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.AccentDim },
+            PanelOverride = new StyleBoxFlat { BackgroundColor = DmArenaPalette.Divider },
         });
 
 

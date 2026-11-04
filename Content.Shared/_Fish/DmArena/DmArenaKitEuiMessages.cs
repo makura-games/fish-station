@@ -10,10 +10,11 @@ public sealed class DmArenaKitEuiState : EuiStateBase
     public int PlayerCount { get; }
     public int Budget { get; }
     public List<int>? Preset { get; }
+    public List<int>? Last { get; }
     public string BaseGear { get; }
     public List<DmArenaStoreSetOption> Sets { get; }
 
-    public DmArenaKitEuiState(List<DmArenaStoreOption> items, List<DmArenaStoreSetOption> sets, int playerCount, int budget, List<int>? preset, string baseGear)
+    public DmArenaKitEuiState(List<DmArenaStoreOption> items, List<DmArenaStoreSetOption> sets, int playerCount, int budget, List<int>? preset, List<int>? last, string baseGear)
     {
         Sets = sets;
         BaseGear = baseGear;
@@ -21,6 +22,7 @@ public sealed class DmArenaKitEuiState : EuiStateBase
         PlayerCount = playerCount;
         Budget = budget;
         Preset = preset;
+        Last = last;
     }
 }
 

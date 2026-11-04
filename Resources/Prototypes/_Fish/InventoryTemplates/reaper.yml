@@ -22,6 +22,12 @@
         - WeldingMask
         - NightVisionDevice
         - NVDHandcrafted
+    - name: armor
+      slotTexture: suit
+      slotFlags: OUTERCLOTHING
+      uiWindowPos: 1,1
+      strippingWindowPos: 1,1
+      displayName: Armor
     - name: pocket1
       slotTexture: pocket
       slotFlags: POCKET
