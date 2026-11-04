@@ -1,5 +1,3 @@
-# Fish-ксеноборг-рипер (id перенесён из _Sunrise/Entities/Mobs/Cyborgs/xenoborgs.yml,
-# чтобы Fish-контент жил в _Fish; путь/владение лежали в _Sunrise исторически).
 - type: entity
   parent: [ BaseXenoborgChassis, BaseXenoborgTransponder, BaseXenoborgDestructible ]
   id: FishXenoReaper
@@ -96,7 +94,7 @@
   - type: Pierceable
     level: Metal
   - type: Damageable
-    damageModifierSet: BorgReaper
+    damageModifierSet: FishBorgReaper
 
 - type: entity
   parent: FishXenoReaper

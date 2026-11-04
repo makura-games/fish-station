@@ -9,7 +9,7 @@ using Content.Shared.Silicons.StationAi;
 using Content.Shared.SSDIndicator;
 using Content.Shared.Warps;
 using Robust.Shared.Prototypes;
-using Content.Shared.Silicons.Borgs;  // Fish-edit
+using Content.Shared.Silicons.Borgs;  // Fish-edit: нужен BorgTypePrototype для работы борга
 
 // Не менять
 namespace Content.Server.Ghost;
@@ -53,8 +53,8 @@ public sealed partial class GhostSystem
                 continue;
 
             var playerMind = mind.Mind ?? mind.LastMindStored;
-            if (!TryGetPlayerJobInfo(playerMind, out var playerJobId, out var playerDepartmentId))  // Fish-edit
-                TryGetBorgJobInfo(uid, out playerJobId, out playerDepartmentId);  // Fish-edit
+            if (!TryGetPlayerJobInfo(playerMind, out var playerJobId, out var playerDepartmentId))  // Fish-edit: сначала пробуем обычную JobRole
+                TryGetBorgJobInfo(uid, out playerJobId, out playerDepartmentId);  // Fish-edit: для борга берём работу из borgType
 
             var hasAnyMind = playerMind != null;
 

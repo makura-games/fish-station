@@ -7,7 +7,7 @@
     Piercing: 1.2
 
 - type: damageModifierSet
-  id: BorgReaper
+  id: FishBorgReaper
   coefficients:
     Blunt: 1
     Slash: 0.9
