@@ -6,6 +6,12 @@
   components:
   - type: Sprite
     sprite: _Fish/Clothing/Head/Hardsuits/quartermasterhelm.rsi
+    layers:
+    - state: icon
+    - state: icon-flash
+      shader: unshaded
+      visible: false
+      map: [ "light" ]
   - type: Clothing
     sprite: _Fish/Clothing/Head/Hardsuits/quartermasterhelm.rsi
   - type: PointLight
