@@ -51,12 +51,10 @@
         whitelist:
           tags:
             - LightRifleHeavy
-# Fish-start
-#  - type: Biocode # delete after port
-#    factions:
-#    - NanoTrasen
-#  - type: FactionClothingBlocker
-# Fish-end
+  - type: Biocode # delete after port
+    factions:
+    - NanoTrasen
+  - type: FactionClothingBlocker
 
 - type: entity
   name: M492 "Incinerator"
