@@ -97,3 +97,57 @@
       - state: inhand-right-mag
       - state: inhand-right-stripe
         color: "#540000"
+
+- type: entity
+  id: FishMagazineScarHSP
+  name: "SCAR-H magazine (.308)"
+  parent: FishMagazineScarH
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgeRifleHeavySP
+  - type: Sprite
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: stripe
+      color: "#575EF5"
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      - state: inhand-left-stripe
+        color: "#575EF5"
+      right:
+      - state: inhand-right-mag
+      - state: inhand-right-stripe
+        color: "#575EF5"
+
+- type: entity
+  id: FishMagazineLargeScarHSP
+  name: "SCAR-H large magazine (.308 SP)"
+  parent: FishMagazineScarH
+  components:
+  - type: BallisticAmmoProvider
+    capacity: 30
+    proto: CartridgeRifleHeavySP
+  - type: Sprite
+    sprite: _Fish/Objects/Weapons/Guns/Ammunition/Magazines/scar_h/large.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+    - state: stripe
+      color: "#575EF5"
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      - state: inhand-left-stripe
+        color: "#575EF5"
+      right:
+      - state: inhand-right-mag
+      - state: inhand-right-stripe
+        color: "#575EF5"
