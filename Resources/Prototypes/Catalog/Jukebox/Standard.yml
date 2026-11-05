@@ -245,11 +245,11 @@
   id: FishEnigma
   name: boich9585 - Enigma
   path:
-    path: /Audio/_Fish/StationEvents/enigma.ogg
+    path: /Audio/_Fish/StationEvents/Delta-Singoloose.ogg
 
 - type: jukebox
   id: FishCodeSierra
   name: boich9585 - Code Sierra
   path:
-    path: /Audio/_Fish/StationEvents/Code-Sierra.ogg
+    path: /Audio/_Fish/StationEvents/Sierra-Code.ogg
 # Fish-end
