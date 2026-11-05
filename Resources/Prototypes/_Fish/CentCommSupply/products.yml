@@ -1,0 +1,51 @@
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedicalBundle
+  name: centcomm-supply-product-medical-bundle-name
+  description: centcomm-supply-product-medical-bundle-desc
+  category: centcomm-supply-category-medical
+  icon:
+    sprite: _Sunrise/Clothing/Back/Duffels/nanotrasen.rsi
+    state: icon
+  maxQuantity: 4
+  sortOrder: 10
+  contents:
+  - id: ClothingBackpackDuffelNanotrasenMedicalBundleFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyAsh12Duffel
+  name: centcomm-supply-product-ash12-duffel-name
+  description: centcomm-supply-product-ash12-duffel-desc
+  category: centcomm-supply-category-weapons
+  icon:
+    sprite: _Sunrise/Clothing/Back/Duffels/military.rsi
+    state: icon
+  maxQuantity: 2
+  sortOrder: 20
+  contents:
+  - id: FishClothingBackpackDuffelWeaponAsh12BlueShield
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyAsh12Slug
+  name: centcomm-supply-product-ash12-slug-name
+  description: centcomm-supply-product-ash12-slug-desc
+  category: centcomm-supply-category-ammo
+  icon:
+    sprite: _Sunrise/Objects/Weapons/Guns/Ammunition/Magazines/ash12.rsi
+    state: base
+  maxQuantity: 10
+  sortOrder: 30
+  contents:
+  - id: MagazineAsh12Slug
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyAsh12Blueprint
+  name: centcomm-supply-product-ash12-blueprint-name
+  description: centcomm-supply-product-ash12-blueprint-desc
+  category: centcomm-supply-category-blueprints
+  icon:
+    sprite: _Sunrise/Objects/Tools/blueprints.rsi
+    state: icon-base
+  maxQuantity: 2
+  sortOrder: 40
+  contents:
+  - id: BlueprintMagAsh12Basic

@@ -1,0 +1,16 @@
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: FishCentCommSupplyComputerCircuitboard
+  name: CentComm supply console board
+  suffix: Fish
+  description: A computer circuit board for a CentComm supply console.
+  components:
+  - type: Sprite
+    state: cpu_command
+  - type: ComputerBoard
+    prototype: FishCentCommSupplyConsole
+  - type: StaticPrice
+    price: 5000
+  - type: Tag
+    tags:
+    - HighRiskItem

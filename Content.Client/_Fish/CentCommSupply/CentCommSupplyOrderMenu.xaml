@@ -1,0 +1,36 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               Title="{Loc 'centcomm-supply-order-window-title'}"
+               MinSize="460 220">
+    <BoxContainer Orientation="Vertical">
+        <GridContainer Columns="2">
+            <Label Text="{Loc 'centcomm-supply-order-window-product'}"
+                   StyleClasses="LabelKeyText"/>
+
+            <Label Name="ProductName"
+                   Access="Public"/>
+
+            <Label Text="{Loc 'centcomm-supply-order-window-description'}"
+                   StyleClasses="LabelKeyText"/>
+
+            <RichTextLabel Name="Description"
+                           Access="Public"
+                           HorizontalExpand="True"
+                           MaxWidth="460"/>
+
+            <Label Text="{Loc 'centcomm-supply-order-window-amount'}"
+                   StyleClasses="LabelKeyText"/>
+
+            <SpinBox Name="Amount"
+                     Access="Public"
+                     HorizontalExpand="True"
+                     Value="1"/>
+        </GridContainer>
+
+        <Control VerticalExpand="True"/>
+        <PanelContainer StyleClasses="LowDivider" Margin="0 6 0 2"/>
+        <Button Name="SubmitButton"
+                Access="Public"
+                Text="{Loc 'centcomm-supply-order-window-add'}"
+                VerticalAlignment="Bottom"/>
+    </BoxContainer>
+</DefaultWindow>

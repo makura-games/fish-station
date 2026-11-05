@@ -1,0 +1,52 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                HorizontalExpand="True"
+                StyleClasses="BackgroundPanel">
+    <BoxContainer Orientation="Vertical"
+                  HorizontalExpand="True"
+                  SeparationOverride="6"
+                  Margin="-14 -2">
+        <BoxContainer Orientation="Vertical">
+            <Control>
+                <PanelContainer StyleClasses="WindowHeadingBackground"/>
+                <BoxContainer Margin="6">
+                    <Label Name="Title"
+                           Access="Public"
+                           MaxHeight="28"
+                           StyleClasses="LabelKeyText"/>
+                </BoxContainer>
+            </Control>
+
+            <PanelContainer StyleClasses="LowDivider"/>
+        </BoxContainer>
+
+        <BoxContainer>
+            <TextureRect Name="Icon"
+                         Access="Public"
+                         MinSize="32 32"
+                         Margin="4"
+                         Stretch="KeepAspectCentered"
+                         RectClipContent="True"
+                         VerticalAlignment="Center"/>
+
+            <PanelContainer StyleClasses="LowDivider" Margin="4 0"/>
+
+            <Label Name="Description"
+                   Access="Public"
+                   HorizontalExpand="True"
+                   VerticalExpand="True"
+                   StyleClasses="LabelSubText"
+                   ClipText="True"/>
+        </BoxContainer>
+
+        <BoxContainer Orientation="Vertical">
+            <PanelContainer StyleClasses="LowDivider"/>
+
+            <BoxContainer Margin="6">
+                <Button Name="Remove"
+                        Access="Public"
+                        Text="{Loc 'centcomm-supply-order-row-remove'}"
+                        HorizontalExpand="True"/>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</PanelContainer>
