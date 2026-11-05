@@ -47,14 +47,12 @@
         - Reconnaissance
         - Saboteurs
         - Crew
-        - CleaningUp
         - HumanitarianAid
         - PersonnelRecovery
         - CrewEducation
         - SampleCollection
         - Examination
         - StationGoalPolymorph
-        - VirusFlesh
       - type: StationJobs
         availableJobs:
           #command
