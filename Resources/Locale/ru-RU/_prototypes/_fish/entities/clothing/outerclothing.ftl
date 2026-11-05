@@ -8,6 +8,7 @@ ent-ClothingOuterHardsuitDeathsquadFish = { ent-ClothingOuterHardsuitDeathsquad 
 
 ent-FishClothingOuterHardsuitQuartermaster = скафандр квартирмейстера
     .desc = Улучшенная версия утилизаторского скафандра, созданная специально для квартирмейстеров для защиты от космических угроз.
+    .suffix = Fish
 
 ent-ClothingOuterRobesSectoralJudgeFish = Мантия Секторального Суда
     .desc = Мантия Секторального Суда. Она придаёт огромный авторитет своему владельцу.
