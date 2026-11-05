@@ -29,7 +29,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTAmberLeader
     belt:
     - Handcuffs
@@ -68,7 +68,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTRedLeader
     belt:
     - Handcuffs
@@ -94,7 +94,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: PouchAmmoLarge
+    pocket2: PouchAmmoFilledPistol40
   inhand:
   - WeaponPistolM1911
   - WeaponRifleLecterXL8
@@ -108,11 +108,7 @@
     - HoloprojectorField
     - WeaponAdvancedTaser
     - DoorRemoteOmni
-    - BluespaceArtilleryDesignator
-    - MagazineMagnumFMJ
-    - MagazineMagnum
-    - MagazineMagnum
-    - MagazineMagnum
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTGammaLeader
     belt:
     - Handcuffs
