@@ -238,7 +238,7 @@
   id: FishRevolutionTheme
   name: A-Guy - Revolution
   path:
-    path: /Audio/_Fish/StationEvents/Music-main/revolution.ogg
+    path: /Audio/_Fish/StationEvents/A-Guy/revolution.ogg
 
 # boich9585 — written for SS14 (Мёртвый Космос), CC-BY-SA-4.0
 - type: jukebox
