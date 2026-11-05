@@ -3,6 +3,7 @@
   parent: [BaseClothingBeltSounds, ClothingBeltStorageBase, ContentsExplosionResistanceBase]
   id: FishPouchMedical
   name: medical pouch
+  suffix: Fish
   description: A pouch for carrying medicine bottles.
   components:
   - type: Sprite
