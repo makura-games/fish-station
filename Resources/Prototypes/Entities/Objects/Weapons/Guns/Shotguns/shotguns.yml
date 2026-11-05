@@ -75,7 +75,7 @@
   - type: Gun
     fireRate: 1.5
     projectileSpeed: 35 # Sunrise-Edit
-    pump: false  # Fish-edit
+    pump: false # Fish-edit: отключена механика pump после изменения обработки гильз
   - type: BallisticAmmoProvider
     whitelist:
       tags:
