@@ -1446,3 +1446,24 @@
     message: Апстрим санрайз
   id: 144
   url: https://github.com/makura-games/fish-station/pull/607
+- author: TiFeRi
+  time: '2026-11-05T21:51:35.0000000+00:00'
+  changes:
+  - type: Add
+    message: Дополнительные слова в борговый акцент.
+  id: 145
+  url: https://github.com/makura-games/fish-station/pull/619
+- author: TiFeRi
+  time: '2026-11-05T21:51:03.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фиксы шаттлов обр.
+  id: 146
+  url: https://github.com/makura-games/fish-station/pull/620
+- author: TiFeRi
+  time: '2026-11-06T12:26:58.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Актуализация целей станций
+  id: 147
+  url: https://github.com/makura-games/fish-station/pull/618
