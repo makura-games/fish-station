@@ -42,7 +42,8 @@ public sealed class ObrTeamPrototypeTests : ContentUnitTest
   stationAvailable: true
   sortOrder: 10
   cryoRoleSpawners:
-  - TestFishObrRuleAmber
+  - spawner: TestFishObrRuleAmber
+    roleKey: Leader
 
 - type: obrTeam
   id: ObrRed
@@ -53,7 +54,8 @@ public sealed class ObrTeamPrototypeTests : ContentUnitTest
   stationAvailable: true
   sortOrder: 20
   cryoRoleSpawners:
-  - TestFishObrRuleRed
+  - spawner: TestFishObrRuleRed
+    roleKey: Leader
 
 - type: obrTeam
   id: ObrGamma
@@ -63,7 +65,8 @@ public sealed class ObrTeamPrototypeTests : ContentUnitTest
   stationAvailable: false
   sortOrder: 30
   cryoRoleSpawners:
-  - TestFishObrRuleGamma
+  - spawner: TestFishObrRuleGamma
+    roleKey: Leader
 
 - type: obrTeam
   id: ObrCburn
@@ -74,7 +77,8 @@ public sealed class ObrTeamPrototypeTests : ContentUnitTest
   stationAvailable: true
   sortOrder: 40
   cryoRoleSpawners:
-  - TestFishObrRuleCburn
+  - spawner: TestFishObrRuleCburn
+    roleKey: CBURN
 ";
 
     [OneTimeSetUp]
@@ -125,8 +129,10 @@ public sealed class ObrTeamPrototypeTests : ContentUnitTest
         var protoMan = IoCManager.Resolve<IPrototypeManager>();
 
         Assert.That(protoMan.Index(AmberId).CryoRoleSpawners, Has.Count.EqualTo(1));
+        Assert.That(protoMan.Index(AmberId).CryoRoleSpawners[0].RoleKey, Is.EqualTo("Leader"));
         Assert.That(protoMan.Index(RedId).CryoRoleSpawners, Has.Count.EqualTo(1));
         Assert.That(protoMan.Index(GammaId).CryoRoleSpawners, Has.Count.EqualTo(1));
         Assert.That(protoMan.Index(CburnId).CryoRoleSpawners, Has.Count.EqualTo(1));
+        Assert.That(protoMan.Index(CburnId).CryoRoleSpawners[0].RoleKey, Is.EqualTo("CBURN"));
     }
 }

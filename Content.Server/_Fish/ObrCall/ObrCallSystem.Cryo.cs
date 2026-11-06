@@ -42,27 +42,20 @@ public sealed partial class ObrCallSystem
         }
 
         var spawned = new List<EntityUid>();
-        foreach (var spawnerProto in team.CryoRoleSpawners)
+        foreach (var entry in team.CryoRoleSpawners)
         {
-            var roleKey = TryGetCryoRoleKey(spawnerProto.Id);
-            if (roleKey == null)
+            if (!pointsByRole.TryGetValue(entry.RoleKey, out var points) || points.Count == 0)
             {
-                _sawmill.Warning($"OBR cryo: cannot resolve role key for {spawnerProto}");
-                continue;
-            }
-
-            if (!pointsByRole.TryGetValue(roleKey, out var points) || points.Count == 0)
-            {
-                _sawmill.Warning($"OBR cryo: no free CentComm spawn point for role {roleKey} ({spawnerProto})");
+                _sawmill.Warning($"OBR cryo: no free CentComm spawn point for role {entry.RoleKey} ({entry.Spawner})");
                 continue;
             }
 
             var point = points[0];
             points.RemoveAt(0);
 
-            if (!TrySpawnCryoMember(spawnerProto, Transform(point).Coordinates, mission, out var member))
+            if (!TrySpawnCryoMember(entry.Spawner, Transform(point).Coordinates, mission, out var member))
             {
-                _sawmill.Warning($"OBR cryo: failed to spawn {spawnerProto} at {ToPrettyString(point)}");
+                _sawmill.Warning($"OBR cryo: failed to spawn {entry.Spawner} at {ToPrettyString(point)}");
                 continue;
             }
 
@@ -105,6 +98,7 @@ public sealed partial class ObrCallSystem
 
     private Dictionary<string, List<EntityUid>> CollectCryoSpawnPoints(EntityUid centcommGrid)
     {
+        var roleBySpawner = BuildCryoRoleLookup();
         var result = new Dictionary<string, List<EntityUid>>();
         var query = EntityQueryEnumerator<SpawnOnTriggerComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var spawn, out var xform))
@@ -112,8 +106,7 @@ public sealed partial class ObrCallSystem
             if (xform.GridUid != centcommGrid)
                 continue;
 
-            var roleKey = TryGetCryoRoleKey(spawn.Proto.Id);
-            if (roleKey == null)
+            if (!roleBySpawner.TryGetValue(spawn.Proto.Id, out var roleKey))
                 continue;
 
             if (!result.TryGetValue(roleKey, out var list))
@@ -131,31 +124,28 @@ public sealed partial class ObrCallSystem
         return result;
     }
 
-    private static string? TryGetCryoRoleKey(string protoId)
+    /// <summary>
+    /// Строит protoId спавнера → RoleKey из всех obrTeam (единственный источник правды).
+    /// </summary>
+    private Dictionary<string, string> BuildCryoRoleLookup()
     {
-        if (protoId.Contains("DeathSquad", StringComparison.OrdinalIgnoreCase))
-            return null;
+        var map = new Dictionary<string, string>();
+        foreach (var team in _prototypes.EnumeratePrototypes<ObrTeamPrototype>())
+        {
+            foreach (var entry in team.CryoRoleSpawners)
+            {
+                var id = entry.Spawner.Id;
+                if (map.TryGetValue(id, out var existing) && existing != entry.RoleKey)
+                {
+                    _sawmill.Warning($"OBR cryo: spawner {id} mapped to both {existing} and {entry.RoleKey}");
+                    continue;
+                }
 
-        if (protoId.Contains("CBURN", StringComparison.OrdinalIgnoreCase))
-            return "CBURN";
+                map[id] = entry.RoleKey;
+            }
+        }
 
-        if (!protoId.Contains("ERT", StringComparison.OrdinalIgnoreCase))
-            return null;
-
-        if (protoId.Contains("Leader", StringComparison.OrdinalIgnoreCase))
-            return "Leader";
-        if (protoId.Contains("Engineer", StringComparison.OrdinalIgnoreCase))
-            return "Engineer";
-        if (protoId.Contains("Medical", StringComparison.OrdinalIgnoreCase))
-            return "Medical";
-        if (protoId.Contains("Chaplain", StringComparison.OrdinalIgnoreCase))
-            return "Chaplain";
-        if (protoId.Contains("Security", StringComparison.OrdinalIgnoreCase))
-            return "Security";
-        if (protoId.Contains("Janitor", StringComparison.OrdinalIgnoreCase))
-            return "Janitor";
-
-        return null;
+        return map;
     }
 
     private bool TrySpawnCryoMember(

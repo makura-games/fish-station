@@ -1,4 +1,5 @@
 # Цены и доступность вызова ОБР. Не хардкодить суммы в C#.
+# cryoRoleSpawners.roleKey сопоставляет спавнер с SpawnOnTrigger-точками на ЦК.
 
 - type: obrTeam
   id: ObrAmber
@@ -13,13 +14,20 @@
   sortOrder: 10
   # Состав как у первой кнопки «вызов ОБР» на ЦК.
   cryoRoleSpawners:
-  - RandomHumanoidSpawnerERTLeaderAmber
-  - RandomHumanoidSpawnerERTEngineerAmber
-  - RandomHumanoidSpawnerERTMedicalAmber
-  - RandomHumanoidSpawnerERTChaplainAmber
-  - RandomHumanoidSpawnerERTSecurityAmber
-  - RandomHumanoidSpawnerERTSecurityAmber
-  - RandomHumanoidSpawnerERTSecurityAmber
+  - spawner: RandomHumanoidSpawnerERTLeaderAmber
+    roleKey: Leader
+  - spawner: RandomHumanoidSpawnerERTEngineerAmber
+    roleKey: Engineer
+  - spawner: RandomHumanoidSpawnerERTMedicalAmber
+    roleKey: Medical
+  - spawner: RandomHumanoidSpawnerERTChaplainAmber
+    roleKey: Chaplain
+  - spawner: RandomHumanoidSpawnerERTSecurityAmber
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityAmber
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityAmber
+    roleKey: Security
 
 - type: obrTeam
   id: ObrRed
@@ -34,13 +42,20 @@
   sortOrder: 20
   # Red-шаттл: Leader/Security Red, Eng/Med/Chaplain как на карте Red.
   cryoRoleSpawners:
-  - RandomHumanoidSpawnerERTLeaderRed
-  - RandomHumanoidSpawnerERTEngineerGamma
-  - RandomHumanoidSpawnerERTMedicalGamma
-  - RandomHumanoidSpawnerERTChaplainEVA
-  - RandomHumanoidSpawnerERTSecurityRed
-  - RandomHumanoidSpawnerERTSecurityRed
-  - RandomHumanoidSpawnerERTSecurityRed
+  - spawner: RandomHumanoidSpawnerERTLeaderRed
+    roleKey: Leader
+  - spawner: RandomHumanoidSpawnerERTEngineerGamma
+    roleKey: Engineer
+  - spawner: RandomHumanoidSpawnerERTMedicalGamma
+    roleKey: Medical
+  - spawner: RandomHumanoidSpawnerERTChaplainEVA
+    roleKey: Chaplain
+  - spawner: RandomHumanoidSpawnerERTSecurityRed
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityRed
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityRed
+    roleKey: Security
 
 - type: obrTeam
   id: ObrGamma
@@ -53,13 +68,20 @@
   priorityTag: DockFishERT
   sortOrder: 30
   cryoRoleSpawners:
-  - RandomHumanoidSpawnerERTLeaderGamma
-  - RandomHumanoidSpawnerERTEngineerGamma
-  - RandomHumanoidSpawnerERTMedicalGamma
-  - RandomHumanoidSpawnerERTChaplainGamma
-  - RandomHumanoidSpawnerERTSecurityGamma
-  - RandomHumanoidSpawnerERTSecurityGamma
-  - RandomHumanoidSpawnerERTSecurityGamma
+  - spawner: RandomHumanoidSpawnerERTLeaderGamma
+    roleKey: Leader
+  - spawner: RandomHumanoidSpawnerERTEngineerGamma
+    roleKey: Engineer
+  - spawner: RandomHumanoidSpawnerERTMedicalGamma
+    roleKey: Medical
+  - spawner: RandomHumanoidSpawnerERTChaplainGamma
+    roleKey: Chaplain
+  - spawner: RandomHumanoidSpawnerERTSecurityGamma
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityGamma
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityGamma
+    roleKey: Security
 
 - type: obrTeam
   id: ObrCburn
@@ -74,14 +96,25 @@
   sortOrder: 40
   # 11 точек РХБЗЗ на centcomm.yml (кнопка вызова РХБЗЗ).
   cryoRoleSpawners:
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
-  - RandomHumanoidSpawnerCBURNUnit
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN

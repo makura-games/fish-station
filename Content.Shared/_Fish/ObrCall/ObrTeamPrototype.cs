@@ -68,8 +68,8 @@ public sealed partial class ObrTeamPrototype : IPrototype
 
     /// <summary>
     /// Спавнеры ролей для развёртывания в криокапсулах ЦК (как по кнопкам мапперов).
-    /// Сопоставление с точками SpawnOnTrigger по роли (Leader/Engineer/...).
+    /// RoleKey сопоставляет спавнер с SpawnOnTrigger-точками на карте.
     /// </summary>
     [DataField]
-    public List<EntProtoId> CryoRoleSpawners = new();
+    public List<ObrCryoRoleSpawner> CryoRoleSpawners = new();
 }
