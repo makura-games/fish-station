@@ -95,7 +95,7 @@ public sealed partial class ObrNadzorSystem
 
         // Сначала блэкаут и объява, затем перевод mind.
         BeginStationBlackout(station, ent.Comp.BlackoutDuration);
-        AnnounceNadzor(station);
+        AnnounceNadzor(station, ent.Comp);
         PlayNadzorSound(station, ent.Comp.AnnouncementSound);
 
         StopObserving(ent, actor, deleteEye: true);
@@ -155,7 +155,7 @@ public sealed partial class ObrNadzorSystem
         RefreshUiState(ent);
     }
 
-    private void AnnounceNadzor(EntityUid station)
+    private void AnnounceNadzor(EntityUid station, ObrNadzorConsoleComponent console)
     {
         _chat.DispatchStationAnnouncement(
             station,
@@ -164,12 +164,12 @@ public sealed partial class ObrNadzorSystem
             playDefault: false,
             playTts: false,
             playDefaultSound: false,
-            colorOverride: Color.FromHex("#c22532"));
+            colorOverride: console.AnnouncementColor);
     }
 
     private void PlayNadzorSound(EntityUid station, SoundSpecifier sound)
     {
         var filter = _station.GetInOwningStation(station);
-        _audio.PlayGlobal(sound, filter, true, AudioParams.Default.WithVolume(1f));
+        _audio.PlayGlobal(sound, filter, true);
     }
 }

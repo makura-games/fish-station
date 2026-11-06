@@ -1,3 +1,4 @@
+using System.Threading;
 using Content.Server.Power.Components;
 using Content.Shared.Station.Components;
 using Timer = Robust.Shared.Timing.Timer;
@@ -6,6 +7,8 @@ namespace Content.Server._Fish.ObrNadzor;
 
 public sealed partial class ObrNadzorSystem
 {
+    private readonly List<CancellationTokenSource> _blackoutTokens = new();
+
     private void BeginStationBlackout(EntityUid station, TimeSpan duration)
     {
         var largestGrid = _station.GetLargestGrid(station);
@@ -32,7 +35,13 @@ public sealed partial class ObrNadzorSystem
         if (disabled.Count == 0)
             return;
 
-        Timer.Spawn(duration, () => RestoreBlackout(disabled));
+        var cts = new CancellationTokenSource();
+        _blackoutTokens.Add(cts);
+        Timer.Spawn(duration, () =>
+        {
+            _blackoutTokens.Remove(cts);
+            RestoreBlackout(disabled);
+        }, cts.Token);
     }
 
     private void RestoreBlackout(List<EntityUid> disabled)
@@ -51,5 +60,16 @@ public sealed partial class ObrNadzorSystem
 
             _apc.ApcToggleBreaker(apcUid, apc);
         }
+    }
+
+    private void CancelPendingBlackouts()
+    {
+        foreach (var cts in _blackoutTokens)
+        {
+            cts.Cancel();
+            cts.Dispose();
+        }
+
+        _blackoutTokens.Clear();
     }
 }

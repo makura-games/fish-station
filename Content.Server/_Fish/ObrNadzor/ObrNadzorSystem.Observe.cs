@@ -145,8 +145,6 @@ public sealed partial class ObrNadzorSystem
 
     private void AddObserveActions(EntityUid actor, Entity<ObrNadzorConsoleComponent> console)
     {
-        // храним action entity uid на консоли через temporary components на акторе не обязательно —
-        // AddAction с ref на поля консоли неудобен; используем Ensure на акторе через marker.
         var marker = EnsureComp<ObrNadzorObserverComponent>(actor);
         marker.Console = console.Owner;
         _actions.AddAction(actor, ref marker.StopObserveAction, _stopObserveAction);

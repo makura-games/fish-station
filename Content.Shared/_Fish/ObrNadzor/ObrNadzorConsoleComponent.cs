@@ -25,6 +25,15 @@ public sealed partial class ObrNadzorConsoleComponent : Component
     [DataField]
     public SoundPathSpecifier AnnouncementSound = new("/Audio/_Fish/Announcements/nadzor.ogg");
 
+    [DataField]
+    public Color AnnouncementColor = Color.FromHex("#c22532");
+
+    /// <summary>
+    /// Прототипы станций, доступных для надзора (как у abductor console).
+    /// </summary>
+    [DataField]
+    public HashSet<EntProtoId> StationWhitelist = new() { "StandardNanotrasenStation" };
+
     [DataField, AutoNetworkedField]
     public NetEntity? RemoteEntity;
 

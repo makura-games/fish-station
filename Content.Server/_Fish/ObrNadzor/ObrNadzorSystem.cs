@@ -11,6 +11,7 @@ using Content.Shared.Mind;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Pinpointer;
 using Content.Shared.Popups;
+using Content.Shared.GameTicking;
 using Content.Shared.Station;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
@@ -36,7 +37,6 @@ public sealed partial class ObrNadzorSystem : EntitySystem
     [Dependency] private UserInterfaceSystem _ui = default!;
     [Dependency] private MetaDataSystem _meta = default!;
 
-    private static readonly EntProtoId _nanoStation = "StandardNanotrasenStation";
     private static readonly EntProtoId _stopObserveAction = "ActionFishObrNadzorStopObserve";
     private static readonly EntProtoId _releaseAction = "ActionFishObrNadzorRelease";
 
@@ -60,6 +60,13 @@ public sealed partial class ObrNadzorSystem : EntitySystem
 
         SubscribeLocalEvent<ObrNadzorSessionComponent, ComponentShutdown>(OnSessionShutdown);
         SubscribeLocalEvent<ObrNadzorSessionComponent, EntityTerminatingEvent>(OnSessionTerminating);
+
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        CancelPendingBlackouts();
     }
 
     private void OnUiOpenAttempt(Entity<ObrNadzorConsoleComponent> ent, ref ActivatableUIOpenAttemptEvent args)
@@ -92,7 +99,7 @@ public sealed partial class ObrNadzorSystem : EntitySystem
             if (!TryComp(station, out MetaDataComponent? meta) || meta.EntityPrototype == null)
                 continue;
 
-            if (meta.EntityPrototype.ID != _nanoStation)
+            if (!ent.Comp.StationWhitelist.Contains(meta.EntityPrototype.ID))
                 continue;
 
             if (_station.GetLargestGrid(station) is not { } grid)
