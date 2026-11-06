@@ -1,0 +1,31 @@
+- type: constructionGraph
+  id: Water
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: waterCatwalk
+      completed:
+      - !type:SnapToGrid
+        southRotation: true
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 2
+
+  - node: waterCatwalk
+    entity: FloorWaterCatwalkEntity
+    edges:
+    - to: water
+      completed:
+      - !type:SpawnPrototype
+        prototype: PartRodMetal
+        amount: 1
+      steps:
+      - tool: Anchoring
+        doAfter: 1
+      - tool: Screwing
+        doAfter: 1
+
+  - node: water
+    entity: FloorWaterEntity
