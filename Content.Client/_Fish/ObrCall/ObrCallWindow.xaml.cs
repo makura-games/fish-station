@@ -41,7 +41,7 @@ public sealed partial class ObrCallWindow : FancyWindow
             StatusLabel.Visible = false;
         }
 
-        TeamsContainer.DisposeAllChildren();
+        TeamsContainer.RemoveAllChildren();
 
         foreach (var team in state.Teams)
         {

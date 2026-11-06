@@ -75,7 +75,7 @@ public sealed partial class ObrCallSystem
             return false;
         }
 
-        var deployment = EntityManager.SpawnEntity(null, new MapCoordinates(default, MapId.Nullspace));
+        var deployment = Spawn(null, new MapCoordinates(default, MapId.Nullspace));
         var cryo = EnsureComp<ObrCryoDeploymentComponent>(deployment);
         cryo.TeamId = team.ID;
         cryo.Mission = mission;
@@ -99,14 +99,7 @@ public sealed partial class ObrCallSystem
             UpdateUi(console, purchaseMode: false, actor, success);
         }
 
-        foreach (var member in spawned)
-        {
-            if (!TryComp<ActorComponent>(member, out var actorComp))
-                continue;
-
-            ApplyMissionToEntity(member, actorComp.PlayerSession, mission);
-        }
-
+        // Миссия на ghost-role подтянется через ObrMissionTarget + MindAddedMessage.
         return true;
     }
 
