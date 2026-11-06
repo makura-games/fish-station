@@ -9,6 +9,7 @@ public sealed partial class NightVisionSystem
 
     public override void Shutdown()
     {
+        ShutdownFishNaturalVision(); // Fish-edit: Освобождаем ресурсы природного зрения.
         _overlayMan.RemoveOverlay(_overlay);
         _overlay.Dispose();
         base.Shutdown();

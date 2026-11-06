@@ -224,8 +224,6 @@ public sealed partial class MessengerCartridgeSystem
             return;
         }
 
-        Sawmill.Debug($"Found active server address: {serverAddress}");
-
         if (component.ServerAddress != serverAddress)
         {
             component.ServerAddress = serverAddress;
@@ -236,7 +234,6 @@ public sealed partial class MessengerCartridgeSystem
 
         if (component.IsRegistered && component.ServerAddress == serverAddress)
         {
-            Sawmill.Debug($"Already registered, updating UI state");
             UpdateUiState(uid, loaderUid, component);
             return;
         }
@@ -249,7 +246,7 @@ public sealed partial class MessengerCartridgeSystem
             }
             else
             {
-                Sawmill.Debug($"PDA {ToPrettyString(pdaUid)} has no owner, skipping automatic registration");
+                // КПК без владельца проверяется периодически, поэтому здесь не логируем, чтобы не спамить
                 UpdateUiState(uid, loaderUid, component);
             }
         }

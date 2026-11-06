@@ -4,6 +4,7 @@ using System.Linq;
 using Content.Server.Antag.Components;
 using Content.Shared._Fish.Ipc;
 using Content.Server.GameTicking.Rules.Components;
+using Content.Shared._Fish.DmArena; // Fish-edit
 using Content.Shared.Antag;
 using Content.Shared.Database;
 using Content.Shared.Ghost.Components;
@@ -196,6 +197,11 @@ public sealed partial class AntagSelectionSystem
         // No ghosts!!!
         if (HasComp<GhostComponent>(uid))
             return false;
+
+        // Fish-start
+        if (HasComp<DmArenaFighterComponent>(uid))
+            return false;
+        // Fish-end
 
         if (!def.AllowNonHumans && !HasComp<HumanoidProfileComponent>(uid))
             return false;

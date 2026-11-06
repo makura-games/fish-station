@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: BaseGameRule
   id: RevolutionarySmugglerStashSpawn
   components:
@@ -10,6 +10,7 @@
   - type: RandomSpawnRule
     prototype: RevolutionarySmugglerStash
 
+# Fish-start: To remove - функционал разумной болезни
 - type: entity
   parent: BaseGameRule
   id: DiseaseSpawn
@@ -24,6 +25,7 @@
     duration: null
   - type: LateJoinSpawnRule
     prototype: MobDisease
+# Fish-end
 
 - type: entity
   id: VentbullMigration

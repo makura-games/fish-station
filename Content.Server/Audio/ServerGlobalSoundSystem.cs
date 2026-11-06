@@ -15,9 +15,9 @@ public sealed partial class ServerGlobalSoundSystem : SharedGlobalSoundSystem
 
     public override void Shutdown()
     {
-        // FIsh edit start - остановка звуков при выключении системы
+        // Fish-start - остановка звуков при выключении системы
         ShutdownFishAdminSounds();
-        // FIsh edit end
+        // Fish-end
         base.Shutdown();
         _conHost.UnregisterCommand("playglobalsound");
     }

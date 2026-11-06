@@ -275,6 +275,12 @@
     action: ActionToggleNightVision
     prioritized: false
     lightingColor: '#FFFFFF15'
+  # Fish-start: Резоми быстрее привыкают к темноте.
+  - type: FishNaturalNightVision
+    darkAdaptationSeconds: 1
+    darknessSaturation: 0.25
+    shadowContrast: 1.1
+  # Fish-end
   - type: FlashModifier
     modifier: 2
   - type: Vocal

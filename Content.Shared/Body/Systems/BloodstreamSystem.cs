@@ -594,12 +594,22 @@ public sealed partial class BloodstreamSystem : EntitySystem
             currentVolume += bloodSolution.RemoveReagent(reagent.Reagent, quantity: bloodSolution.Volume, ignoreReagentData: true);
         }
 
+        // Fish-start: сохранять MaxVolume при масштабировании нового состава крови, чтобы не обнулять BloodReferenceSolution
+        var maxVolume = ent.Comp.BloodReferenceSolution.MaxVolume > 0
+            ? ent.Comp.BloodReferenceSolution.MaxVolume
+            : ent.Comp.BloodReferenceSolution.Volume;
+
         // Scale the solution to the volume of the blood.
         var newReagentsSolution = reagents.Clone();
-        newReagentsSolution.ScaleTo(ent.Comp.BloodReferenceSolution.MaxVolume);
+        if (maxVolume > 0)
+        {
+            newReagentsSolution.ScaleTo(maxVolume);
+            newReagentsSolution.MaxVolume = maxVolume;
+        }
 
         // Set the scaled solution as the new blood reference.
         ent.Comp.BloodReferenceSolution = newReagentsSolution;
+        // Fish-end
         DirtyField(ent, ent.Comp, nameof(BloodstreamComponent.BloodReferenceSolution));
 
         if (currentVolume == FixedPoint2.Zero)
