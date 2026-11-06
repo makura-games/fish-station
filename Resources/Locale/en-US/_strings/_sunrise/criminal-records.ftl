@@ -33,6 +33,7 @@ sunrise-records-person-job = Job:
 sunrise-records-breakdown-base-sum = Base sum (Cat 1-4): {$sum} min.
 sunrise-records-breakdown-cap = Cap (1.5x Cat {$cat}): {$cap} min.
 sunrise-records-breakdown-perma-sum = Base (Cat 5): {$sum} min.
+sunrise-records-breakdown-perma-threshold = [color=red]Permanent threshold: {$from} → {$to} min.[/color]
 sunrise-records-breakdown-warning = [color=yellow]{$id}: Warning (first violation)[/color]
 sunrise-records-breakdown-recidivism = [color=orange]{$id}: Recidivism {$percent}%[/color]
 sunrise-records-breakdown-escape-penalty = [color=red]Escape Penalty: +{$penalty} min.[/color]

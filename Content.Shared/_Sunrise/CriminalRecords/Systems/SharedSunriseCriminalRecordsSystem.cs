@@ -120,19 +120,35 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
         float globalModifierPercent = 0f;
         // Fish-start: абсолютные минуты обстоятельств (сопротивление при аресте)
         float absoluteModifierMinutes = 0f;
+        var hasNonViolentResistance = false;
+        var hasViolentResistance = false;
+        var dropsCharges = false;
         // Fish-end
         foreach (var circId in @case.Circumstances)
         {
             if (!circumstances.Contains(circId)) continue;
             if (ProtoMan.TryIndex<CorporateLawPrototype>(circId, out var law))
             {
+                // Fish-start: крайняя необходимость / угроза заключённому — снятие обвинения
+                if (law.SentenceMultiplier == 0f)
+                {
+                    dropsCharges = true;
+                    @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", "-100")));
+                    continue;
+                }
+                // Fish-end
+
                 float p = (law.SentenceMultiplier - 1.0f) * 100f;
                 globalModifierPercent += p;
                 if (p != 0f)
                     @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", p.ToString("+0;-0"))));
 
-                // Fish-start: фиксированная надбавка/скидка в минутах
-                if (law.SentenceModifierMinutes != 0)
+                // Fish-start: фиксированная надбавка/скидка в минутах; насильственное сопротивление перекрывает ненасильственное
+                if (law.ID == "CircFishViolentResistance")
+                    hasViolentResistance = true;
+                else if (law.ID == "CircFishNonViolentResistance")
+                    hasNonViolentResistance = true;
+                else if (law.SentenceModifierMinutes != 0)
                 {
                     absoluteModifierMinutes += law.SentenceModifierMinutes;
                     @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier-minutes", ("id", Loc.GetString(law.Title)), ("minutes", law.SentenceModifierMinutes.ToString("+0;-0"))));
@@ -140,6 +156,26 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
                 // Fish-end
             }
         }
+
+        // Fish-start: снятие обвинения до надбавок и минимума в 1 минуту
+        if (dropsCharges)
+            return 0;
+        // Fish-end
+
+        // Fish-start: только одна надбавка за сопротивление
+        if (hasViolentResistance)
+        {
+            absoluteModifierMinutes += 10;
+            if (ProtoMan.TryIndex<CorporateLawPrototype>("CircFishViolentResistance", out var violentLaw))
+                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier-minutes", ("id", Loc.GetString(violentLaw.Title)), ("minutes", "+10")));
+        }
+        else if (hasNonViolentResistance)
+        {
+            absoluteModifierMinutes += 5;
+            if (ProtoMan.TryIndex<CorporateLawPrototype>("CircFishNonViolentResistance", out var nonViolentLaw))
+                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier-minutes", ("id", Loc.GetString(nonViolentLaw.Title)), ("minutes", "+5")));
+        }
+        // Fish-end
 
         var pastLaws = allCases
             .Where(c => c.Id != @case.Id && (c.Status == CriminalCaseStatus.Finished || c.Status == CriminalCaseStatus.Incarcerated || c.Status == CriminalCaseStatus.Closed))
@@ -157,16 +193,24 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
                 @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-recidivism", ("id", lawName), ("percent", lawRecidivismPercent.ToString("+0;-0"))));
             }
 
-            float totalLawPercent = globalModifierPercent + lawRecidivismPercent;
-            totalModifierDelta += law.BaseSentence * (totalLawPercent / 100f);
+            // Fish-edit: смягчение/отягчение применяем к сроку уже с учётом рецидива
+            var afterRecidivismFactor = 1f + lawRecidivismPercent / 100f;
+            var afterGlobalFactor = 1f + globalModifierPercent / 100f;
+            totalModifierDelta += law.BaseSentence * (afterRecidivismFactor * afterGlobalFactor - 1f);
         }
 
         float finalMinutes = totalBase + totalModifierDelta + absoluteModifierMinutes; // Fish-edit: + абсолютные минуты
 
 
-        // Fish-edit: при статьях 5xx срок не ниже порога пермы
-        if (permaCharges.Count > 0)
-            finalMinutes = Math.Max(finalMinutes, threshold);
+        // Fish-edit: при статьях 5xx срок не ниже порога пермы (только если набор законов доступен)
+        if (permaCharges.Count > 0 && threshold > 0)
+        {
+            if (finalMinutes < threshold)
+            {
+                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-perma-threshold", ("from", (int)Math.Round(finalMinutes)), ("to", threshold)));
+                finalMinutes = threshold;
+            }
+        }
 
         if (finalMinutes < 1 && finalEffectiveCharges.Count > 0)
             finalMinutes = 1;

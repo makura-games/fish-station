@@ -474,7 +474,7 @@
   title: corplaw-fish-circ-nonviolentresistance-title
   description: corplaw-fish-circ-nonviolentresistance-desc
   sentenceMultiplier: 1.0
-  sentenceModifierMinutes: 5 # Fish: вики — фиксированные +5 мин
+  sentenceModifierMinutes: 5 # Fish-edit: вики — фиксированные +5 мин
 
 - type: corporateLaw
   id: CircFishViolentResistance
@@ -482,7 +482,7 @@
   title: corplaw-fish-circ-violentresistance-title
   description: corplaw-fish-circ-violentresistance-desc
   sentenceMultiplier: 1.0
-  sentenceModifierMinutes: 10 # Fish: вики — фиксированные +10 мин
+  sentenceModifierMinutes: 10 # Fish-edit: вики — фиксированные +10 мин
 
 - type: corporateLaw
   id: CircFishAidAndAbetting
@@ -504,6 +504,15 @@
   title: corplaw-fish-circ-threat-title
   description: corplaw-fish-circ-threat-desc
   sentenceMultiplier: 0.25
+
+# Fish-start: справочная запись рецидива для КПК (расчёт автоматический, без ручного множителя)
+- type: corporateLaw
+  id: CircFishRecidivism
+  category: Aggravating
+  title: corplaw-fish-circ-recidivism-title
+  description: corplaw-fish-circ-recidivism-desc
+  sentenceMultiplier: 1.0
+# Fish-end
 
 # Sections
 - type: corporateLawSection
@@ -600,7 +609,7 @@
 # Lawset
 - type: corporateLawset
   id: FishCorporateLaw
-  permanentSentenceThreshold: 60 # Fish: вики — перма при 5xx или суммарно ≥60 мин
+  permanentSentenceThreshold: 60 # Fish-edit: вики — перма при 5xx или суммарно ≥60 мин
   provisions:
   - ProvisionFishOPRS
   - ProvisionFishSentences
@@ -618,6 +627,7 @@
   - CircFishAidAndAbetting
   - CircFishAttempt
   - CircFishThreat
+  - CircFishRecidivism # Fish-edit: справочник КПК; на расчёт не влияет (x1.0)
   articles:
   - SectionFishGeneral
   - SectionFish1xx
