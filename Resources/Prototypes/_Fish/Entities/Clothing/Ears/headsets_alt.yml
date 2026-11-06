@@ -14,3 +14,6 @@
     sprite: Clothing/Ears/Headsets/centcom.rsi
   - type: Clothing
     sprite: Clothing/Ears/Headsets/centcom.rsi
+  # Fish-edit: EMP-устойчивость Fish alt-гарнитуры ЦК (паттерн ClothingHeadsetNinja)
+  - type: EmpResistance
+    strengthMultiplier: 0
