@@ -1467,3 +1467,10 @@
     message: Актуализация целей станций
   id: 147
   url: https://github.com/makura-games/fish-station/pull/618
+- author: Kaiten
+  time: '2026-11-06T21:57:45.0000000+00:00'
+  changes:
+  - type: Fix
+    message: 28 набегов за месяц. Вы действовали наверняка, да?
+  id: 148
+  url: https://github.com/makura-games/fish-station/pull/623
