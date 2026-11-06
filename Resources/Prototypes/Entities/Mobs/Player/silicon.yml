@@ -48,8 +48,10 @@
       - Biden
       - Trump
     # Sunrise-AIVoice-Edit-End
-  - type: TTS # Fish-Edit
-    voice: Sentrybot # Fish-Edit
+# Fish-Start
+  - type: TTS
+    voice: Sentrybot
+# Fish-End
   - type: UserInterface
     interfaces:
       enum.RadarConsoleUiKey.Key:
