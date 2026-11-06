@@ -49,15 +49,12 @@ public sealed partial class OSay : LocalizedCommands
             return;
         }
 
-        // Fish-start: безопасный парсинг типа чата и проверка рейтов вызывающего игрока
+        // Fish-start: безопасный парсинг типа чата
         if (!Enum.TryParse<InGameICChatType>(args[1], true, out var chatType))
         {
             shell.WriteLine(Loc.GetString("osay-command-error-args"));
             return;
         }
-
-        if (shell.Player is { } player && _chatManager.HandleRateLimit(player) != RateLimitStatus.Allowed)
-            return;
         // var chatType = (InGameICChatType) Enum.Parse(typeof(InGameICChatType), args[1]);
         // Fish-end
 
@@ -71,10 +68,13 @@ public sealed partial class OSay : LocalizedCommands
         if (string.IsNullOrEmpty(message))
             return;
 
-        // Fish-start: проверка максимального размера сообщения чата
-        if (shell.Player is { } playerSession)
+        // Fish-start: проверка лимита частоты сообщений и максимального размера сообщения чата
+        if (shell.Player is { } player)
         {
-            if (_chatManager.MessageCharacterLimit(playerSession, message))
+            if (_chatManager.HandleRateLimit(player) != RateLimitStatus.Allowed)
+                return;
+
+            if (_chatManager.MessageCharacterLimit(player, message))
                 return;
         }
         else if (message.Length > 1000)

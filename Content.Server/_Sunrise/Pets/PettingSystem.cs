@@ -26,7 +26,9 @@ using Robust.Server.Player;
 using Robust.Shared.Console;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
+using Robust.Shared.Network; // Fish-edit: для NetUserId в кулдауне попапа
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing; // Fish-edit: для IGameTiming в кулдауне попапа
 using Robust.Shared.Utility;
 
 namespace Content.Server._Sunrise.Pets;
@@ -49,6 +51,12 @@ public sealed partial class PettingSystem : SharedPettingSystem
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private IChatManager _chat = default!;
     [Dependency] private IAdminManager _adminManager = default!;
+    // Fish-start: тайминг и кулдаун для ограничения частоты попапа роли призрака
+    [Dependency] private IGameTiming _timing = default!;
+
+    private static readonly TimeSpan GhostRolePopupCooldown = TimeSpan.FromSeconds(3);
+    private readonly Dictionary<NetUserId, TimeSpan> _lastGhostRolePopup = new();
+    // Fish-end
 
     private const int MaxPetNameLenght = 30;
 
@@ -109,20 +117,26 @@ public sealed partial class PettingSystem : SharedPettingSystem
         if (!TryValidate(ev, args))
             return;
 
-        // Fish-start: настройка роли призрака для питомцев доступна только администраторам
-        if (!_adminManager.HasAdminFlag(args.SenderSession, AdminFlags.Admin))
-        {
-            if (args.SenderSession.AttachedEntity is { } user)
-                _popup.PopupEntity(Loc.GetString("pet-admin-only-ghost-role"), user, user);
-            return;
-        }
-        // Fish-end
-
         var pet = GetEntity(ev.Entity);
 
         // В зависимости того, включаем или отключаем разумность делаем всякое.
         if (ev.Enable)
         {
+            // Fish-start: ограничение создания роли призрака только для администраторов с кулдауном попапа
+            if (!_adminManager.HasAdminFlag(args.SenderSession, AdminFlags.Admin))
+            {
+                var user = args.SenderSession.UserId;
+                var now = _timing.CurTime;
+                if (!_lastGhostRolePopup.TryGetValue(user, out var last) || now - last >= GhostRolePopupCooldown)
+                {
+                    _lastGhostRolePopup[user] = now;
+                    if (args.SenderSession.AttachedEntity is { } entity)
+                        _popup.PopupEntity(Loc.GetString("pet-admin-only-ghost-role"), entity, entity);
+                }
+                return;
+            }
+            // Fish-end
+
             if (!TryComp<PettableOnInteractComponent>(pet, out var petComponent))
                 return;
 
@@ -136,7 +150,6 @@ public sealed partial class PettingSystem : SharedPettingSystem
                 return;
 
             // Открываем окно для настройки гостроли питомца.
-            // TODO: Фикс, что это можно делать только с админкой лол
             _ghostRole.OpenMakeGhostRoleEui(masterSession, pet);
         }
         else
