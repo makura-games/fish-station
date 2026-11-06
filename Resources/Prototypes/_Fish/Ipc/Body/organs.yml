@@ -23,10 +23,14 @@
 - type: entity
   parent: [ OrganBaseTorsoSexed, OrganBaseTorso, OrganIpcExternal ]
   id: OrganIpcTorso
+  name: torso
+  description: A metal torso for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseHead, OrganIpcExternal ]
   id: OrganIpcHead
+  name: head
+  description: A metal head for an integrated positronic chassis.
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Species/Ipc/parts.rsi
@@ -35,34 +39,50 @@
 - type: entity
   parent: [ OrganBaseArmLeft, OrganIpcExternal ]
   id: OrganIpcArmLeft
+  name: left arm
+  description: A left arm for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseArmRight, OrganIpcExternal ]
   id: OrganIpcArmRight
+  name: right arm
+  description: A right arm for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseHandLeft, OrganIpcExternal ]
   id: OrganIpcHandLeft
+  name: left hand
+  description: A left hand for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseHandRight, OrganIpcExternal ]
   id: OrganIpcHandRight
+  name: right hand
+  description: A right hand for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseLegLeft, OrganIpcExternal ]
   id: OrganIpcLegLeft
+  name: left leg
+  description: A left leg for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseLegRight, OrganIpcExternal ]
   id: OrganIpcLegRight
+  name: right leg
+  description: A right leg for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseFootLeft, OrganIpcExternal ]
   id: OrganIpcFootLeft
+  name: left foot
+  description: A left foot for an integrated positronic chassis.
 
 - type: entity
   parent: [ OrganBaseFootRight, OrganIpcExternal ]
   id: OrganIpcFootRight
+  name: right foot
+  description: A right foot for an integrated positronic chassis.
 
 # Внутренние компоненты (Paradise: posibrain, optical sensor, microphone, cell)
 - type: entity
@@ -81,7 +101,7 @@
   parent: [ OrganBaseEyes, OrganIpc ]
   id: OrganIpcEyes
   name: optical sensors
-  description: Robotic optical sensors. Weld-proof.
+  description: Robotic optical sensors. They are not damaged by welding.
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Species/Ipc/organs.rsi
@@ -110,7 +130,7 @@
   parent: [ OrganBaseTongue, OrganIpc ]
   id: OrganIpcTongue
   name: vocal modulator
-  description: Produces speech for positronic chassis.
+  description: Produces speech for a positronic chassis.
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Species/Ipc/organs.rsi
@@ -120,7 +140,7 @@
   parent: [ OrganBaseHeart, OrganIpc ]
   id: OrganIpcCell
   name: microbattery
-  description: A small, powerful cell for fully prosthetic bodies.
+  description: A small, powerful cell for a fully prosthetic body.
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Species/Ipc/organs.rsi
