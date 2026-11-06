@@ -70,4 +70,10 @@ public sealed partial class FishIpcComponent : Component
     /// </summary>
     [DataField]
     public bool AllowSleep;
+
+    /// <summary>
+    /// Дробный остаток crit-brute между тиками (FixedPoint2 иначе теряет урон).
+    /// </summary>
+    [ViewVariables]
+    public float CritBruteRemainder;
 }

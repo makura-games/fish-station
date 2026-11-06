@@ -23,6 +23,10 @@ public sealed partial class FishEmitBuzzWhileDamagedSystem : EntitySystem
         var query = EntityQueryEnumerator<FishEmitBuzzWhileDamagedComponent, DamageableComponent>();
         while (query.MoveNext(out var uid, out var buzz, out _))
         {
+            // Мёртвое шасси не жужжит и не спамит crit-popup.
+            if (_mobState.IsDead(uid))
+                continue;
+
             if (!_mobState.IsCritical(uid) && _damageable.GetTotalDamage(uid) < 40)
                 continue;
 

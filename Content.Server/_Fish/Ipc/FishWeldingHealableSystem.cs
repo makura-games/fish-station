@@ -53,7 +53,15 @@ public sealed partial class FishWeldingHealableSystem : EntitySystem
         _damageable.TryChangeDamage(uid, healing.Damage, true, false, origin: args.User);
         _popup.PopupEntity(Loc.GetString("comp-repairable-repair", ("target", uid), ("tool", used)), uid, args.User);
 
-        args.Handled = _tool.UseTool(used, args.User, uid, 3f, healing.QualityNeeded, new FishSiliconRepairDoAfterEvent());
+        // Следующий цикл саморемонта тоже со штрафом SelfHealPenalty (не хардкод 3f).
+        if (!HasDamage(uid, healing))
+            return;
+
+        var nextDelay = args.User == uid
+            ? healing.DoAfterDelay * healing.SelfHealPenalty
+            : healing.DoAfterDelay;
+
+        args.Handled = _tool.UseTool(used, args.User, uid, nextDelay, healing.QualityNeeded, new FishSiliconRepairDoAfterEvent());
     }
 
     private void OnInteract(EntityUid uid, FishWeldingHealableComponent _, InteractUsingEvent args)

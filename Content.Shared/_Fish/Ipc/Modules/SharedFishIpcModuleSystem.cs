@@ -43,9 +43,12 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         if (TryComp<WiresPanelComponent>(host, out var panel) && !panel.Open)
             return;
 
+        if (host.Comp.ModuleContainer is not { } container)
+            return;
+
         var user = args.User;
         var priority = 0;
-        foreach (var moduleUid in host.Comp.ModuleContainer.ContainedEntities)
+        foreach (var moduleUid in container.ContainedEntities)
         {
             var module = moduleUid;
             args.Verbs.Add(new AlternativeVerb
@@ -55,7 +58,7 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
                 Priority = priority--,
                 Act = () =>
                 {
-                    if (!_container.Remove(module, host.Comp.ModuleContainer))
+                    if (!_container.Remove(module, container))
                         return;
 
                     _hands.PickupOrDrop(user, module);
@@ -92,7 +95,10 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         if (!CanInsertModule(host, (args.Used, module), args.User))
             return;
 
-        if (!_container.Insert(args.Used, host.Comp.ModuleContainer))
+        if (host.Comp.ModuleContainer is not { } insertContainer)
+            return;
+
+        if (!_container.Insert(args.Used, insertContainer))
             return;
 
         args.Handled = true;
@@ -122,7 +128,10 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
 
     public bool CanInsertModule(Entity<FishIpcModuleHostComponent> host, Entity<FishIpcModuleComponent> module, EntityUid? user = null)
     {
-        if (host.Comp.ModuleContainer.ContainedEntities.Count >= host.Comp.MaxModules)
+        if (host.Comp.ModuleContainer is not { } container)
+            return false;
+
+        if (container.ContainedEntities.Count >= host.Comp.MaxModules)
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-too-many", ("max", host.Comp.MaxModules)), host, user);
             return false;
@@ -136,7 +145,7 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
 
         if (!string.IsNullOrEmpty(module.Comp.ExclusionGroup))
         {
-            foreach (var other in host.Comp.ModuleContainer.ContainedEntities)
+            foreach (var other in container.ContainedEntities)
             {
                 if (!TryComp<FishIpcModuleComponent>(other, out var otherMod))
                     continue;

@@ -1,5 +1,6 @@
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.PowerCell;
 using Content.Shared.Power.EntitySystems;
 
@@ -12,6 +13,7 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
 {
     [Dependency] private PowerCellSystem _powerCell = default!;
     [Dependency] private SharedBatterySystem _battery = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
 
     public override void Update(float frameTime)
     {
@@ -20,7 +22,11 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
         var query = EntityQueryEnumerator<FishIpcModuleHostComponent, FishIpcComponent>();
         while (query.MoveNext(out var hostUid, out var host, out var ipc))
         {
-            if (TerminatingOrDeleted(hostUid) || ipc.PowerDown)
+            if (TerminatingOrDeleted(hostUid) || ipc.PowerDown || _mobState.IsDead(hostUid))
+                continue;
+
+            // Контейнер мог ещё не инициализироваться на первом тике.
+            if (host.ModuleContainer is not { Owner: var owner } || owner != hostUid)
                 continue;
 
             var chargeFraction = GetHostChargeFraction(hostUid);
