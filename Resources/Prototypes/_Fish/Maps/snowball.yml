@@ -19,25 +19,13 @@
           emergencyShuttlePath: /Maps/_Fish/Shuttles/emergency_Case.yml
         - type: StationGoal
           goals:
-          - Shuttle
-          - Singularity
           - SolarPanels
           - Artifacts
-          - Bank
           - Zoo
-          - MiningOutpost
-          - Tesla
-          - XenobiologyRepair
-          - VirusologyAmbusol
-          - Containment
           - WeaponsSecurity
           - MaintsRepair
           - DormsBuild
-          - BattleShuttle
           - Transit
-          - NukeRoom
-          - Permabrig
-          - Farm
           - Delegates
           - Cyborgs
           - Testing
@@ -51,7 +39,6 @@
           - HumanitarianAid
           - PersonnelRecovery
           - CrewEducation
-          - Virology
           - SampleCollection
           - Examination
           - StationGoalPolymorph

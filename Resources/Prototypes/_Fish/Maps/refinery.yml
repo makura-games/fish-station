@@ -52,6 +52,7 @@
         - SampleCollection
         - Examination
         - StationGoalPolymorph
+        - VirusFlesh
       - type: StationJobs
         availableJobs:
             #command
