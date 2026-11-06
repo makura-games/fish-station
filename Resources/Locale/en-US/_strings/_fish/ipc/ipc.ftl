@@ -1,3 +1,12 @@
+ent-MobIpc = Urist McPositronic
+    .desc = A positronic brain in a metal body.
+ent-MobIpcDummy = Urist McPositronic
+    .desc = A dummy IPC for character setup.
+    .suffix = Dummy
+ent-AppearanceIpc = ipc appearance
+    .desc = Appearance data for an integrated positronic chassis.
+    .suffix = IPC
+
 fish-ipc-overheating = You feel your circuits overheating!
 fish-ipc-crit = Structural integrity critical!
 fish-ipc-power-low = Power low!
