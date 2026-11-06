@@ -111,16 +111,39 @@
       cell_slot:
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellMedium
+        locked: true
         whitelist:
           tags:
           - PowerCell
   - type: ContainerContainer
     containers:
       cell_slot: !type:ContainerSlot
+      key_slots: !type:Container
   - type: Lock
     locked: true
     lockOnClick: false
     unlockOnClick: false
+  - type: AccessReader
+    access: [["Command"], ["Research"]]
+  - type: WiresPanel
+    openingTool: Prying
+    openDelay: 3
+  - type: LockedWiresPanel
+  - type: ItemSlotsLock
+    slots:
+    - cell_slot
+  - type: IntrinsicRadioReceiver
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - Binary
+    - Common
+  - type: ActiveRadio
+    channels:
+    - Binary
+    - Common
+  - type: EncryptionKeyHolder
+    keySlots: 4
+  - type: RevolutionaryImmune
   - type: Satiation
     satiations:
       Hunger:
@@ -147,7 +170,7 @@
       3: 1
       2: 0.8
       1: 0.45
-      0: 0
+      0: 0.25
   - type: FishBatteryDrinker
   - type: FishWeldingHealable # Fish-edit: сварка чинит burn (Paradise welder); brute — кабелем
   - type: FishDeadStartupButton
@@ -185,6 +208,19 @@
   - type: GuideHelp
     guides:
     - FishIpc
+  - type: ActionGrant
+    actions:
+    - ActionChangeBorgVoice
+  - type: BorgVoice
+    voiceEffect: robot
+  - type: UserInterface
+    interfaces:
+      enum.HumanoidMarkingModifierKey.Key:
+        type: HumanoidMarkingModifierBoundUserInterface
+      enum.StrippingUiKey.Key:
+        type: StrippableBoundUserInterface
+      enum.BorgVoiceUiKey.Key:
+        type: BorgVoiceBoundUserInterface
 
 - type: entity
   parent: AppearanceIpc

@@ -62,7 +62,7 @@ public sealed partial class FishIpcComponent : Component
         [3] = 1f,
         [2] = 0.8f,
         [1] = 0.45f,
-        [0] = 0f,
+        [0] = 0.25f,
     };
 
     /// <summary>

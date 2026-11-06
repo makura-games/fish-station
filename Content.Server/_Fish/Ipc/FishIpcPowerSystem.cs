@@ -1,6 +1,5 @@
 using Content.Shared._Fish.Ipc;
 using Content.Shared.Alert;
-using Content.Shared.Bed.Sleep;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
@@ -8,7 +7,6 @@ using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.PowerCell;
 using Content.Shared.PowerCell.Components;
-using Content.Shared.StatusEffectNew;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
 
@@ -16,7 +14,7 @@ namespace Content.Server._Fish.Ipc;
 
 /// <summary>
 /// Серверная логика КПБ: расход через <see cref="PowerCellSystem.TryUseCharge"/>,
-/// отключение при нуле, восстановление при зарядке.
+/// замедление и отключение рации при нуле, восстановление при зарядке.
 /// </summary>
 public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
 {
@@ -24,10 +22,9 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
     [Dependency] private MovementSpeedModifierSystem _moveMod = default!;
     [Dependency] private PowerCellSystem _powerCell = default!;
     [Dependency] private SharedBatterySystem _battery = default!;
-    [Dependency] private SleepingSystem _sleep = default!;
-    [Dependency] private StatusEffectsSystem _statusEffects = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private AlertsSystem _alerts = default!;
+    [Dependency] private FishIpcRadioSystem _ipcRadio = default!;
     [Dependency] private IGameTiming _timing = default!;
 
     private TimeSpan _nextWarn;
@@ -38,16 +35,6 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
 
         SubscribeLocalEvent<FishIpcComponent, PowerCellSlotEmptyEvent>(OnPowerCellEmpty);
         SubscribeLocalEvent<FishIpcComponent, EntInsertedIntoContainerMessage>(OnCellInserted);
-        SubscribeLocalEvent<FishIpcComponent, EntityTerminatingEvent>(OnTerminating);
-    }
-
-    private void OnTerminating(Entity<FishIpcComponent> ent, ref EntityTerminatingEvent args)
-    {
-        if (!ent.Comp.PowerDown)
-            return;
-
-        ent.Comp.PowerDown = false;
-        _statusEffects.TryRemoveStatusEffect(ent.Owner, SleepingSystem.StatusEffectForcedSleeping);
     }
 
     public override void Update(float frameTime)
@@ -57,8 +44,7 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
         var query = EntityQueryEnumerator<FishIpcComponent, PowerCellSlotComponent>();
         while (query.MoveNext(out var uid, out var ipc, out var slot))
         {
-            // Cell removal during RecursiveDeleteEntity raises empty/slot events and would
-            // EnsureComp StatusEffectContainer on a terminating MobIpc.
+            // Снятие ячейки при удалении сущности не должно трогать заряд и рацию.
             if (TerminatingOrDeleted(uid) || _mobState.IsDead(uid) || !ipc.BatteryPowered)
                 continue;
 
@@ -149,10 +135,8 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
 
         ipc.PowerDown = true;
         Dirty(uid, ipc);
-
-        // Постоянный forced sleep до появления заряда.
-        _statusEffects.TrySetStatusEffectDuration(uid, SleepingSystem.StatusEffectForcedSleeping, duration: null);
-        _sleep.TrySleeping(uid);
+        _ipcRadio.SetRadioEnabled((uid, ipc), false);
+        _moveMod.RefreshMovementSpeedModifiers(uid);
         _popup.PopupEntity(Loc.GetString("silicon-power-low"), uid, uid);
     }
 
@@ -163,7 +147,7 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
 
         ipc.PowerDown = false;
         Dirty(uid, ipc);
-        _statusEffects.TryRemoveStatusEffect(uid, SleepingSystem.StatusEffectForcedSleeping);
-        _sleep.TryWaking(uid, true);
+        _ipcRadio.SetRadioEnabled((uid, ipc), true);
+        _moveMod.RefreshMovementSpeedModifiers(uid);
     }
 }

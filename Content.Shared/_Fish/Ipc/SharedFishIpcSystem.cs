@@ -81,7 +81,7 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
 
     private void OnTryingToSleep(Entity<FishIpcComponent> ent, ref TryingToSleepEvent args)
     {
-        if (!ent.Comp.AllowSleep && !ent.Comp.PowerDown)
+        if (!ent.Comp.AllowSleep)
             args.Cancelled = true;
     }
 }
