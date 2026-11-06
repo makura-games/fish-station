@@ -48,6 +48,8 @@
     netsync: false
     maxCharge: 50000
     startingCharge: 0
+  - type: FishBatteryDrinkerSource # Fish-edit: источник зарядки КПБ (power cord / APC)
+    maxAmount: 5000
   - type: ExaminableBattery
   - type: NodeContainer
     examinable: true

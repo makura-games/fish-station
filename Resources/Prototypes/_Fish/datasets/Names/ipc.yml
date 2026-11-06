@@ -1,0 +1,12 @@
+# Имена КПБ в стиле First-Last (модели / серийные номера)
+- type: localizedDataset
+  id: NamesIpcFirst
+  values:
+    prefix: names-ipc-first-dataset-
+    count: 40
+
+- type: localizedDataset
+  id: NamesIpcLast
+  values:
+    prefix: names-ipc-last-dataset-
+    count: 40

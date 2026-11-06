@@ -1,0 +1,31 @@
+# Fish-start: голос и эмоции КПБ
+- type: emoteSounds
+  id: UnisexIpc
+  params:
+    variation: 0.05
+  sounds:
+    Scream:
+      path: /Audio/_Fish/Voice/Ipc/robot-scream.ogg
+    Laugh:
+      path: /Audio/_Fish/Voice/Ipc/robot-laugh_3.ogg
+    Beep:
+      path: /Audio/_Fish/Voice/Ipc/beep_500.ogg
+    Chime:
+      path: /Audio/_Fish/Voice/Ipc/beep_2000.ogg
+    Buzz:
+      path: /Audio/_Fish/Voice/Ipc/whirr1.ogg
+    Honk:
+      path: /Audio/_Fish/Voice/Ipc/pai_whistle.ogg
+    Whistle:
+      path: /Audio/_Fish/Voice/Ipc/pai_whistle.ogg
+    Crying:
+      path: /Audio/_Fish/Voice/Ipc/cry_robot_1.ogg
+
+- type: soundCollection
+  id: FishIpcBuzzes
+  files:
+  - /Audio/_Fish/Voice/Ipc/whirr1.ogg
+  - /Audio/_Fish/Voice/Ipc/whirr2.ogg
+  - /Audio/_Fish/Voice/Ipc/whirr3.ogg
+  - /Audio/_Fish/Voice/Ipc/beep_500.ogg
+# Fish-end

@@ -1,0 +1,16 @@
+# Fish-start: модификаторы урона КПБ (Paradise tox=0, heat/shock↑)
+- type: damageModifierSet
+  id: Ipc
+  coefficients:
+    Blunt: 1
+    Slash: 1
+    Piercing: 1
+    Shock: 2.5
+    Cold: 0.2
+    Heat: 2
+    Poison: 0
+    Radiation: 0
+    Asphyxiation: 0
+    Bloodloss: 0
+    Cellular: 0
+# Fish-end

@@ -1,0 +1,10 @@
+# Fish-start: Synth-like container with Burn group for damage overlays on MobIpc
+- type: damageContainer
+  id: Ipc
+  supportedGroups:
+  - Brute
+  - Burn
+  supportedTypes:
+  - Structural
+  - Mangleness
+# Fish-end

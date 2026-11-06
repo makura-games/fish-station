@@ -1,0 +1,110 @@
+# Fish-start: actions модулей КПБ
+- type: entity
+  parent: BaseAction
+  id: FishActionIpcDefib
+  name: Chassis defibrillator pads
+  description: Deploy integrated defibrillator pads into both hands. Huge battery cost per zap.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Objects/Specific/Medical/defib.rsi
+    state: icon
+  - type: InstantAction
+    event: !type:FishIpcDefibActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: FishActionIpcJumpstarter
+  name: Jumpstarter pulse
+  description: Dump capacitor charge to claw out of critical condition.
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: NoItem
+    # Jumpstarter должен работать в crit.
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: InstantAction
+    event: !type:FishIpcJumpstarterActionEvent
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionIpcToggleRepair
+  name: Toggle chassis repair
+  description: Enable or disable the installed repair module.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: InstantAction
+    event: !type:FishIpcModuleToggleActionEvent
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionIpcToggleVision
+  name: Toggle chassis optics
+  description: Enable or disable the installed vision module.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Clothing/Eyes/Hud/med.rsi
+    state: icon
+  - type: InstantAction
+    event: !type:FishIpcModuleToggleActionEvent
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionIpcToggleMagneticJoints
+  name: Toggle magnetic joints
+  description: Enable or disable magnetic amputation resistance.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: InstantAction
+    event: !type:FishIpcModuleToggleActionEvent
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionIpcToggleSealedJoints
+  name: Toggle sealed joints
+  description: Enable or disable sealed amputation lock.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: InstantAction
+    event: !type:FishIpcModuleToggleActionEvent
+
+- type: entity
+  parent: BaseItem
+  id: FishIpcDefibPads
+  name: chassis defibrillator pads
+  description: Integrated shock paddles projected from an IPC chassis module.
+  categories: [ HideSpawnMenu ]
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/defib.rsi
+    state: icon
+  - type: Item
+    size: Huge
+  - type: MultiHandedItem
+  - type: FishIpcDefibPads
+# Fish-end

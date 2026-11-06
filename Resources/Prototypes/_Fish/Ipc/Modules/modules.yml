@@ -1,0 +1,258 @@
+# Fish-start: модули КПБ v1 (без anti-drop)
+
+# --- T3 ---
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleWireInterface
+  name: IPC wire interface module
+  description: A diagnostic interface that highlights chassis wiring. Barely draws power, but occupies a module slot.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.05
+  - type: FishIpcWireInterfaceModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleApcAdapter
+  name: IPC APC adapter module
+  description: Accelerates chassis charging from APCs and compatible sources. Still finite.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.1
+  - type: FishIpcApcAdapterModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleVocalMod
+  name: IPC vocal modulator module
+  description: Keeps built-in radio online even when the chassis is power-starved.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.15
+  - type: FishIpcVocalModModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleToolHand
+  name: IPC tool-hand module
+  description: Mounts a single integrated crowbar into a free hand. Not a full toolset.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.2
+  - type: FishIpcToolHandModule
+    toolPrototype: Crowbar
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleMedHud
+  name: IPC medical optics module
+  description: Built-in medical HUD. Occupies the vision module slot.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.35
+    exclusionGroup: vision
+  - type: FishIpcVisionModule
+    kind: Medical
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleSecHud
+  name: IPC security optics module
+  description: Built-in security HUD. Occupies the vision module slot.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.35
+    exclusionGroup: vision
+  - type: FishIpcVisionModule
+    kind: Security
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleMeson
+  name: IPC meson optics module
+  description: Built-in welding eye protection. Occupies the vision module slot.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.25
+    exclusionGroup: vision
+  - type: FishIpcVisionModule
+    kind: Meson
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleNightVision
+  name: IPC night vision module
+  description: Low-light optics for the chassis. Occupies the vision module slot.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.55
+    exclusionGroup: vision
+  - type: FishIpcVisionModule
+    kind: NightVision
+
+# --- T4 ---
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleNanoRepair
+  name: IPC nanorepair module
+  description: Microscopic repair drones slowly mend chassis damage while hungrily draining the battery.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 1.2
+    exclusionGroup: repair
+    minChargeFraction: 0.1
+  - type: FishIpcPassiveHealModule
+    healPerSecond:
+      types:
+        Blunt: -0.15
+        Slash: -0.15
+        Piercing: -0.15
+        Heat: -0.2
+        Shock: -0.2
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleReactiveRepair
+  name: IPC reactive repair module
+  description: Faster micro-repairs than nanorepair, still hungry. Mutually exclusive with nanorepair.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 1.6
+    exclusionGroup: repair
+    minChargeFraction: 0.12
+  - type: FishIpcPassiveHealModule
+    # Чуть сильнее наноремонта; накопитель в системе чинит FixedPoint2-обнуление.
+    healPerSecond:
+      types:
+        Blunt: -0.35
+        Slash: -0.35
+        Piercing: -0.35
+        Heat: -0.4
+        Shock: -0.4
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleEmpScreen
+  name: IPC EMP screen module
+  description: Partial EMP shielding for the chassis. Not full immunity.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.45
+  - type: FishIpcEmpScreenModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleMagneticJoints
+  name: IPC magnetic joints module
+  description: Magnetic couplings resist limb amputation. EMP temporarily disables the effect.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.4
+    exclusionGroup: joints
+  - type: FishIpcMagneticJointsModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleSealedJoints
+  name: IPC sealed joints module
+  description: Sealed couplings block amputation. EMP locks the chassis hard. Mutually exclusive with magnetic joints.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.5
+    exclusionGroup: joints
+  - type: FishIpcSealedJointsModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleJumpstarter
+  name: IPC jumpstarter module
+  description: Capacitor dump that can claw a chassis out of critical — not death. Long cooldown.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.2
+  - type: FishIpcJumpstarterModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleDefib
+  name: IPC defibrillator module
+  description: Integrated defibrillator pads. Consumes a huge slice of the battery per zap.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.25
+  - type: FishIpcDefibModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleRadFilter
+  name: IPC radiation filter module
+  description: Cuts radiation and related cellular damage at the cost of constant drain.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.6
+  - type: FishIpcRadFilterModule
+# Fish-end

@@ -80,6 +80,7 @@
   - EmergencyNitrogen
   - EmergencyOxygen
   - LoadoutSpeciesVoxNitrogen
+  - EmergencyFishIpc # Fish-edit: аварийный ремкомплект КПБ
 
 # nitrogen or oxygen tank, depending on what your species needs
 - type: loadoutGroup
