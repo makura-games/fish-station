@@ -65,4 +65,11 @@ public sealed partial class ObrTeamPrototype : IPrototype
     /// </summary>
     [DataField]
     public int SortOrder = 100;
+
+    /// <summary>
+    /// Спавнеры ролей для развёртывания в криокапсулах ЦК (как по кнопкам мапперов).
+    /// Сопоставление с точками SpawnOnTrigger по роли (Leader/Engineer/...).
+    /// </summary>
+    [DataField]
+    public List<EntProtoId> CryoRoleSpawners = new();
 }

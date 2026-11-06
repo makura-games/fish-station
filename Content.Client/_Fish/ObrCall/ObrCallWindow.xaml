@@ -23,6 +23,10 @@
                   VerticalExpand="False"
                   HorizontalExpand="True"/>
 
+        <CheckBox Name="CryoCheckBox"
+                  Text="{Loc 'obr-call-window-cryo'}"
+                  Visible="False"/>
+
         <Label Text="{Loc 'obr-call-window-teams'}" StyleClasses="LabelHeading"/>
         <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
             <BoxContainer Name="TeamsContainer" Orientation="Vertical" SeparationOverride="8"/>

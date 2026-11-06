@@ -11,6 +11,15 @@
   account: Cargo
   priorityTag: DockFishERT
   sortOrder: 10
+  # Состав как у первой кнопки «вызов ОБР» на ЦК.
+  cryoRoleSpawners:
+  - RandomHumanoidSpawnerERTLeaderAmber
+  - RandomHumanoidSpawnerERTEngineerAmber
+  - RandomHumanoidSpawnerERTMedicalAmber
+  - RandomHumanoidSpawnerERTChaplainAmber
+  - RandomHumanoidSpawnerERTSecurityAmber
+  - RandomHumanoidSpawnerERTSecurityAmber
+  - RandomHumanoidSpawnerERTSecurityAmber
 
 - type: obrTeam
   id: ObrRed
@@ -23,6 +32,15 @@
   account: Cargo
   priorityTag: DockFishERT
   sortOrder: 20
+  # Red-шаттл: Leader/Security Red, Eng/Med/Chaplain как на карте Red.
+  cryoRoleSpawners:
+  - RandomHumanoidSpawnerERTLeaderRed
+  - RandomHumanoidSpawnerERTEngineerGamma
+  - RandomHumanoidSpawnerERTMedicalGamma
+  - RandomHumanoidSpawnerERTChaplainEVA
+  - RandomHumanoidSpawnerERTSecurityRed
+  - RandomHumanoidSpawnerERTSecurityRed
+  - RandomHumanoidSpawnerERTSecurityRed
 
 - type: obrTeam
   id: ObrGamma
@@ -34,6 +52,14 @@
   stationAvailable: false
   priorityTag: DockFishERT
   sortOrder: 30
+  cryoRoleSpawners:
+  - RandomHumanoidSpawnerERTLeaderGamma
+  - RandomHumanoidSpawnerERTEngineerGamma
+  - RandomHumanoidSpawnerERTMedicalGamma
+  - RandomHumanoidSpawnerERTChaplainGamma
+  - RandomHumanoidSpawnerERTSecurityGamma
+  - RandomHumanoidSpawnerERTSecurityGamma
+  - RandomHumanoidSpawnerERTSecurityGamma
 
 - type: obrTeam
   id: ObrCburn
@@ -46,3 +72,16 @@
   account: Cargo
   priorityTag: DockFishCBURN
   sortOrder: 40
+  # 11 точек РХБЗЗ на centcomm.yml (кнопка вызова РХБЗЗ).
+  cryoRoleSpawners:
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
+  - RandomHumanoidSpawnerCBURNUnit
