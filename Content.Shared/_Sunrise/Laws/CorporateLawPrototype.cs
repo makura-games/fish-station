@@ -64,5 +64,17 @@ public sealed partial class CorporateLawPrototype : IPrototype
     /// </summary>
     [DataField("sentenceModifierMinutes")]
     public int SentenceModifierMinutes = 0;
+
+    /// <summary>
+    ///     Обстоятельства с одной группой взаимоисключающи; побеждает больший <see cref="ExclusivePriority"/>.
+    /// </summary>
+    [DataField]
+    public string? ExclusiveGroup;
+
+    /// <summary>
+    ///     Приоритет внутри <see cref="ExclusiveGroup"/> (больше = сильнее).
+    /// </summary>
+    [DataField]
+    public int ExclusivePriority;
     // Fish-end
 }

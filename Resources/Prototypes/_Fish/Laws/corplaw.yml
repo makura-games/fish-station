@@ -475,6 +475,8 @@
   description: corplaw-fish-circ-nonviolentresistance-desc
   sentenceMultiplier: 1.0
   sentenceModifierMinutes: 5 # Fish-edit: вики — фиксированные +5 мин
+  exclusiveGroup: fish-resistance
+  exclusivePriority: 1
 
 - type: corporateLaw
   id: CircFishViolentResistance
@@ -483,6 +485,8 @@
   description: corplaw-fish-circ-violentresistance-desc
   sentenceMultiplier: 1.0
   sentenceModifierMinutes: 10 # Fish-edit: вики — фиксированные +10 мин
+  exclusiveGroup: fish-resistance
+  exclusivePriority: 2
 
 - type: corporateLaw
   id: CircFishAidAndAbetting
