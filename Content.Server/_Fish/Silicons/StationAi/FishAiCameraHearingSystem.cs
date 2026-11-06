@@ -23,8 +23,8 @@ public sealed partial class FishAiCameraHearingSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedChatSystem _chat = default!;
     [Dependency] private SharedStationAiSystem _stationAi = default!;
-    [Dependency] private SharedPowerReceiverSystem _power = default!;
-    [Dependency] private SharedTransformSystem _xforms = default!;
+    [Dependency] private SharedPowerReceiverSystem _powerReceiver = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private ExamineSystemShared _examine = default!;
 
     private const float HearRange = 5f;
@@ -64,7 +64,7 @@ public sealed partial class FishAiCameraHearingSystem : EntitySystem
                 held == ev.Source)
                 continue;
 
-            if (_xforms.InRange((held.Value, Transform(held.Value)), (ev.Source, sourceXform), directRange))
+            if (_transform.InRange((held.Value, Transform(held.Value)), (ev.Source, sourceXform), directRange))
                 continue;
 
             SendToAi(ev.Source, message, whisper, actor.PlayerSession);
@@ -73,17 +73,17 @@ public sealed partial class FishAiCameraHearingSystem : EntitySystem
 
     private float? GetDistanceToNearestCamera(TransformComponent sourceXform)
     {
-        var sourcePos = _xforms.GetWorldPosition(sourceXform);
-        var sourceCoords = _xforms.GetMapCoordinates(sourceXform);
+        var sourcePos = _transform.GetWorldPosition(sourceXform);
+        var sourceCoords = _transform.GetMapCoordinates(sourceXform);
         float? nearest = null;
 
         var query = EntityQueryEnumerator<SurveillanceCameraComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var camera, out var xform))
         {
-            if (!camera.Active || xform.MapID != sourceXform.MapID || !_power.IsPowered(uid))
+            if (!camera.Active || xform.MapID != sourceXform.MapID || !_powerReceiver.IsPowered(uid))
                 continue;
 
-            var distance = (_xforms.GetWorldPosition(xform) - sourcePos).Length();
+            var distance = (_transform.GetWorldPosition(xform) - sourcePos).Length();
 
             if (distance > HearRange || nearest != null && distance >= nearest)
                 continue;
@@ -99,11 +99,11 @@ public sealed partial class FishAiCameraHearingSystem : EntitySystem
 
     private bool IsBlockedByWall(EntityUid camera, TransformComponent cameraXform, MapCoordinates source)
     {
-        var origin = _xforms.GetMapCoordinates(cameraXform);
+        var origin = _transform.GetMapCoordinates(cameraXform);
 
         if (TryComp<WallMountComponent>(camera, out var mount))
         {
-            var front = (_xforms.GetWorldRotation(cameraXform) + mount.Direction).RotateVec(new Vector2(0f, -1f));
+            var front = (_transform.GetWorldRotation(cameraXform) + mount.Direction).RotateVec(new Vector2(0f, -1f));
             origin = origin.Offset(front * WallMountFrontOffset);
         }
 
