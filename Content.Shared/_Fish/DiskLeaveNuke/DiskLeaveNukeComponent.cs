@@ -4,7 +4,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Fish.DiskLeaveNuke;
 
-[RegisterComponent]
+[RegisterComponent, AutoGenerateComponentPause]
 public sealed partial class DiskLeaveNukeComponent : Component
 {
     [DataField]
@@ -46,7 +46,9 @@ public sealed partial class DiskLeaveNukeComponent : Component
     [DataField]
     public bool CanCreateVacuum = true;
 
+    [AutoPausedField]
     public TimeSpan NextCheck;
 
+    [AutoPausedField]
     public TimeSpan? StrikeTime;
 }

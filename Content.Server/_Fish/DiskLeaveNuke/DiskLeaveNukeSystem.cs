@@ -26,6 +26,20 @@ public sealed partial class DiskLeaveNukeSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private IGameTiming _timing = default!;
 
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<DiskLeaveNukeComponent, GridUidChangedEvent>(OnGridChanged);
+    }
+
+    // Возврат между проверками сбрасывает отсчёт, чтобы старый срок не перешёл на новый выход.
+    private void OnGridChanged(Entity<DiskLeaveNukeComponent> ent, ref GridUidChangedEvent args)
+    {
+        if (ent.Comp.StrikeTime != null && !IsOutside(ent))
+            ent.Comp.StrikeTime = null;
+    }
+
     public override void Update(float frameTime)
     {
         var query = EntityQueryEnumerator<DiskLeaveNukeComponent>();
@@ -42,15 +56,20 @@ public sealed partial class DiskLeaveNukeSystem : EntitySystem
                 continue;
             }
 
-            if (comp.StrikeTime == null)
+            if (comp.StrikeTime is not { } strikeTime)
             {
-                comp.StrikeTime = _timing.CurTime + comp.Delay;
+                strikeTime = _timing.CurTime + comp.Delay;
+                comp.StrikeTime = strikeTime;
                 Say((uid, comp), Format(uid, comp, comp.WarningMessage, comp.WarningNoHolder));
+            }
+            else if (_timing.CurTime >= strikeTime)
+            {
+                Strike((uid, comp));
                 continue;
             }
 
-            if (_timing.CurTime >= comp.StrikeTime)
-                Strike((uid, comp));
+            if (comp.NextCheck > strikeTime)
+                comp.NextCheck = strikeTime;
         }
     }
 
@@ -80,7 +99,7 @@ public sealed partial class DiskLeaveNukeSystem : EntitySystem
 
     private string Format(EntityUid uid, DiskLeaveNukeComponent comp, LocId withHolder, LocId noHolder)
     {
-        var minutes = (int) comp.Delay.TotalMinutes;
+        var minutes = comp.Delay.TotalMinutes;
         return GetHolderName(uid) is { } holder
             ? Loc.GetString(withHolder, ("holder", holder), ("minutes", minutes))
             : Loc.GetString(noHolder, ("minutes", minutes));
