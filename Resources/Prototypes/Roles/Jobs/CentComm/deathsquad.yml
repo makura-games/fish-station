@@ -29,7 +29,7 @@
     mask: ClothingMaskGasDeathSquad
     eyes: ClothingEyesHudSecurity
     ears: ClothingHeadsetAltDeathSquad # Sunrise-edit
-    # gloves: ClothingHandsGlovesCombat # Sunrise-edit
+    gloves: ClothingHandsPowerGlovesUplinkNTERTEpsilon # Fish-edit
     outerClothing: ClothingOuterHardsuitDeathsquad
     shoes: ClothingShoesBootsMagAdv
     id: DeathsquadPDA
@@ -55,8 +55,7 @@
     - SpeedLoaderMagnumAP
     - BoxErtBaseKit
     # Sunrise-end
-  inhand:
-  - ClothingHandsPowerGlovesUplinkNTERTEpsilon # Sunrise-edit
+  inhand: [] # Fish-edit - Перчатки надеваются в слот рук
 
 - type: chameleonOutfit
   id: DeathSquadChameleonOutfit
