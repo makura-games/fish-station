@@ -515,6 +515,11 @@ public sealed partial class InjectorSystem : EntitySystem
         else
             _solutionContainer.Refill(target, targetSolution, removedSolution);
 
+        // Fish-start: подтверждение завершённого переноса позволяет записать инициатора реакции.
+        var transferred = new SolutionTransferredEvent(injector.Owner, target, user, realTransferAmount);
+        RaiseLocalEvent(target, ref transferred);
+        // Fish-end
+
         LocId msgSuccess = target == user ? "injector-component-inject-success-message-self" : "injector-component-inject-success-message";
 
         if (selfEv.OverrideMessage != null)
