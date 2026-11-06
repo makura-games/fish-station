@@ -215,6 +215,7 @@
     - DoorBumpOpener
     - AnomalyHost
     - Synth
+    - SiliconEmotes # робо-эмоуты (beep/buzz), не человеческие
   - type: FootprintEmitter
   - type: GuideHelp
     guides:

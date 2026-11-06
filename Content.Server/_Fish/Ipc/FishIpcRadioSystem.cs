@@ -5,6 +5,7 @@ using Content.Shared.Chat;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
 using Content.Shared.Speech;
+using Content.Shared.Starlight.Medical.Surgery;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.Ipc;
@@ -29,6 +30,9 @@ public sealed partial class FishIpcRadioSystem : EntitySystem
 
     private void OnMapInit(Entity<FishIpcComponent> ent, ref MapInitEvent args)
     {
+        // Приказ: хирургия на КПБ выключена, модули остаются.
+        RemCompDeferred<SurgeryTargetComponent>(ent.Owner);
+
         SetRadioEnabled(ent, !ent.Comp.PowerDown);
     }
 

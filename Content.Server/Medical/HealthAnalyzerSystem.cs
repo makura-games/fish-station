@@ -93,6 +93,14 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (args.Target == null || !args.CanReach || !HasComp<MobStateComponent>(args.Target) || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
 
+        // Fish-start: обычный медсканер не сканирует КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("fish-ipc-health-analyzer-refuse"), args.Target.Value, args.User, PopupType.SmallCaution);
+            return;
+        }
+        // Fish-end
+
         _audio.PlayPvs(uid.Comp.ScanningBeginSound, uid);
 
         var doAfterCancelled = !_doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, uid.Comp.ScanDelay, new HealthAnalyzerDoAfterEvent(), uid, target: args.Target, used: uid)
@@ -112,6 +120,11 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     {
         if (args.Handled || args.Cancelled || args.Target == null || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
+
+        // Fish-start: обычный медсканер не сканирует КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value))
+            return;
+        // Fish-end
 
         if (!uid.Comp.Silent)
             _audio.PlayPvs(uid.Comp.ScanningEndSound, uid);

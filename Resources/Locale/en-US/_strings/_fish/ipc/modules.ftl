@@ -66,11 +66,27 @@ ent-FishIpcModuleRadFilter = IPC radiation filter module
     .desc = Cuts radiation and related cellular damage at the cost of constant drain.
     .suffix = Fish
 
-ent-FishActionIpcDefib = Chassis defibrillator
-    .desc = Discharge the chassis capacitors into a patient. Huge battery cost.
+ent-FishActionIpcDefib = Chassis defibrillator pads
+    .desc = Deploy integrated defibrillator pads into both hands. Huge battery cost per zap.
 
 ent-FishActionIpcJumpstarter = Jumpstarter pulse
     .desc = Dump capacitor charge to claw out of critical condition.
+
+ent-FishActionIpcToggleRepair = Toggle chassis repair
+    .desc = Enable or disable the installed repair module.
+
+ent-FishActionIpcToggleVision = Toggle chassis optics
+    .desc = Enable or disable the installed vision module.
+
+ent-FishActionIpcToggleMagneticJoints = Toggle magnetic joints
+    .desc = Enable or disable magnetic amputation resistance.
+
+ent-FishActionIpcToggleSealedJoints = Toggle sealed joints
+    .desc = Enable or disable sealed amputation lock.
+
+ent-FishIpcDefibPads = chassis defibrillator pads
+    .desc = Integrated shock paddles from an IPC chassis module.
+    .suffix = Fish
 
 fish-ipc-module-panel-closed = Open the chassis panel first.
 fish-ipc-module-locked = The chassis is locked.
@@ -95,6 +111,7 @@ fish-ipc-module-joints-magnetic-resist = Magnetic couplings snap the limb back i
 fish-ipc-module-joints-emp-magnetic = EMP knocks magnetic joints offline!
 fish-ipc-module-joints-emp-sealed = EMP locks sealed joints — chassis seize!
 fish-ipc-emp-hit-screened = EMP hits the chassis, but the screen bleeds off most of it.
+fish-ipc-health-analyzer-refuse = A normal health analyzer cannot read an IPC chassis.
 
 research-technology-fish-ipc-wire-interface = IPC Wire Interface
 research-technology-fish-ipc-apc-adapter = IPC APC Adapter

@@ -57,7 +57,7 @@ public sealed partial class FishIpcJointsSystem : EntitySystem
 
     private void OnSealedAmputation(Entity<FishIpcSealedJointsHostComponent> ent, ref FishIpcAmputationAttemptEvent args)
     {
-        if (args.Cancelled || ent.Comp.EmpDisabled)
+        if (args.Cancelled || ent.Comp.EmpDisabled || !ent.Comp.ModuleEnabled)
             return;
 
         args.Cancelled = true;
@@ -66,7 +66,7 @@ public sealed partial class FishIpcJointsSystem : EntitySystem
 
     private void OnMagneticAmputation(Entity<FishIpcMagneticJointsHostComponent> ent, ref FishIpcAmputationAttemptEvent args)
     {
-        if (args.Cancelled || ent.Comp.EmpDisabled)
+        if (args.Cancelled || ent.Comp.EmpDisabled || !ent.Comp.ModuleEnabled)
             return;
 
         if (!_random.Prob(ent.Comp.ResistChance))

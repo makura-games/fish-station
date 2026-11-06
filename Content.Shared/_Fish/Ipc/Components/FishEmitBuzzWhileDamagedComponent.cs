@@ -13,8 +13,9 @@ public sealed partial class FishEmitBuzzWhileDamagedComponent : Component
     [ViewVariables]
     public TimeSpan LastBuzzPopupTime;
 
+    /// <summary>Интервал жужжания в крите/при сильных повреждениях (сек).</summary>
     [DataField]
-    public float CycleDelay = 2f;
+    public float CycleDelay = 6f;
 
     public float AccumulatedFrametime;
 

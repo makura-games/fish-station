@@ -1,4 +1,6 @@
 using Content.Shared.Damage;
+using Content.Shared.FixedPoint;
+using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
@@ -39,6 +41,10 @@ public sealed partial class FishIpcMagneticJointsHostComponent : Component
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
     public TimeSpan EmpDisabledUntil;
+
+    /// <summary>Выключено action-тогглом модуля.</summary>
+    [DataField, AutoNetworkedField]
+    public bool ModuleEnabled = true;
 }
 
 /// <summary>Маркер хоста: герметичные суставы (блокируют ампутацию, EMP = долгий стан).</summary>
@@ -53,21 +59,18 @@ public sealed partial class FishIpcSealedJointsHostComponent : Component
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
     public TimeSpan EmpDisabledUntil;
+
+    [DataField, AutoNetworkedField]
+    public bool ModuleEnabled = true;
 }
 
 /// <summary>Маркер хоста: ускоренная зарядка от ЛКП.</summary>
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FishIpcApcAdapterHostComponent : Component
 {
-    [DataField]
-    public float DrinkMultiplierBonus = 2f;
-
+    /// <summary>Ускорение do-after (множитель времени).</summary>
     [DataField]
     public float DrinkSpeedFactor = 0.55f;
-
-    /// <summary>Сохранённый DrinkMultiplier до установки адаптера.</summary>
-    [ViewVariables]
-    public float? StoredDrinkMultiplier;
 
     [ViewVariables]
     public float? StoredDrinkSpeed;
@@ -91,19 +94,41 @@ public sealed partial class FishIpcVocalModHostComponent : Component;
 public sealed partial class FishIpcWireInterfaceHostComponent : Component;
 
 /// <summary>Модуль пассивного хила (наноремонт / реактивный).</summary>
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class FishIpcPassiveHealModuleComponent : Component
 {
     [DataField(required: true)]
     public DamageSpecifier HealPerSecond = new();
+
+    [DataField]
+    public EntProtoId ToggleAction = "FishActionIpcToggleRepair";
+
+    [DataField, AutoNetworkedField]
+    public bool Enabled = true;
+
+    [ViewVariables]
+    public EntityUid? ToggleActionEntity;
+
+    /// <summary>Накопитель дробного хила между тиками FixedPoint2.</summary>
+    [ViewVariables]
+    public Dictionary<string, FixedPoint2> Accumulator = new();
 }
 
 /// <summary>Модуль: выдаёт HUD/зрение на хост при установке.</summary>
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class FishIpcVisionModuleComponent : Component
 {
     [DataField(required: true)]
     public FishIpcVisionKind Kind;
+
+    [DataField]
+    public EntProtoId ToggleAction = "FishActionIpcToggleVision";
+
+    [DataField, AutoNetworkedField]
+    public bool Enabled = true;
+
+    [ViewVariables]
+    public EntityUid? ToggleActionEntity;
 }
 
 /// <summary>Модуль встроенного дефибриллятора.</summary>
@@ -128,8 +153,37 @@ public sealed partial class FishIpcDefibModuleComponent : Component
         DamageDict = { ["Asphyxiation"] = -40 }
     };
 
+    [DataField]
+    public SoundSpecifier? ChargeSound = new SoundPathSpecifier("/Audio/Items/Defib/defib_charge.ogg");
+
+    [DataField]
+    public SoundSpecifier? ZapSound = new SoundPathSpecifier("/Audio/Items/Defib/defib_zap.ogg");
+
+    [DataField]
+    public SoundSpecifier? SuccessSound = new SoundPathSpecifier("/Audio/Items/Defib/defib_success.ogg");
+
+    [DataField]
+    public SoundSpecifier? FailureSound = new SoundPathSpecifier("/Audio/Items/Defib/defib_failed.ogg");
+
+    [DataField]
+    public EntProtoId PadsPrototype = "FishIpcDefibPads";
+
     [ViewVariables]
     public EntityUid? ActionEntity;
+
+    [ViewVariables]
+    public EntityUid? PadsEntity;
+
+    [ViewVariables]
+    public bool PadsActive;
+}
+
+/// <summary>Виртуальные/реальные накладки дефиба в руках КПБ.</summary>
+[RegisterComponent, NetworkedComponent]
+public sealed partial class FishIpcDefibPadsComponent : Component
+{
+    [DataField]
+    public EntityUid? Module;
 }
 
 /// <summary>Модуль jumpstarter — выход из crit.</summary>
@@ -176,11 +230,31 @@ public sealed partial class FishIpcToolHandModuleComponent : Component
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FishIpcEmpScreenModuleComponent : Component;
 
-[RegisterComponent, NetworkedComponent]
-public sealed partial class FishIpcMagneticJointsModuleComponent : Component;
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+public sealed partial class FishIpcMagneticJointsModuleComponent : Component
+{
+    [DataField]
+    public EntProtoId ToggleAction = "FishActionIpcToggleMagneticJoints";
 
-[RegisterComponent, NetworkedComponent]
-public sealed partial class FishIpcSealedJointsModuleComponent : Component;
+    [DataField, AutoNetworkedField]
+    public bool Enabled = true;
+
+    [ViewVariables]
+    public EntityUid? ToggleActionEntity;
+}
+
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+public sealed partial class FishIpcSealedJointsModuleComponent : Component
+{
+    [DataField]
+    public EntProtoId ToggleAction = "FishActionIpcToggleSealedJoints";
+
+    [DataField, AutoNetworkedField]
+    public bool Enabled = true;
+
+    [ViewVariables]
+    public EntityUid? ToggleActionEntity;
+}
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FishIpcApcAdapterModuleComponent : Component;

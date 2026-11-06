@@ -140,11 +140,11 @@
   - type: FishIpcPassiveHealModule
     healPerSecond:
       types:
-        Blunt: -0.022
-        Slash: -0.022
-        Piercing: -0.023
-        Heat: -0.033
-        Shock: -0.034
+        Blunt: -0.15
+        Slash: -0.15
+        Piercing: -0.15
+        Heat: -0.2
+        Shock: -0.2
 
 - type: entity
   parent: FishBaseIpcModule
@@ -161,13 +161,14 @@
     exclusionGroup: repair
     minChargeFraction: 0.12
   - type: FishIpcPassiveHealModule
+    # Чуть сильнее наноремонта; накопитель в системе чинит FixedPoint2-обнуление.
     healPerSecond:
       types:
-        Blunt: -0.04
-        Slash: -0.04
-        Piercing: -0.04
-        Heat: -0.05
-        Shock: -0.05
+        Blunt: -0.35
+        Slash: -0.35
+        Piercing: -0.35
+        Heat: -0.4
+        Shock: -0.4
 
 - type: entity
   parent: FishBaseIpcModule

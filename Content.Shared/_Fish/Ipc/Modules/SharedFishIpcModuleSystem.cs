@@ -84,7 +84,9 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
             var module = moduleUid;
             args.Verbs.Add(new AlternativeVerb
             {
-                Text = Loc.GetString("fish-ipc-module-eject", ("module", module)),
+                Text = Name(module),
+                // Как «Извлечь» — один выпадающий список, а не отдельный verb на каждый модуль.
+                Category = VerbCategory.Eject,
                 Icon = new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/VerbIcons/eject.svg.192dpi.png")),
                 Priority = priority--,
                 Act = () =>

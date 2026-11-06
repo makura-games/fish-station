@@ -1,9 +1,13 @@
+using System.Net;
 using Content.Shared.Actions;
+using Content.Shared.CCVar;
 using Content.Shared.Hands;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Popups;
+using Robust.Shared.Configuration;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 
 namespace Content.Shared._Fish.Ghost;
 
@@ -16,6 +20,8 @@ public sealed partial class AdminGhostSystem : EntitySystem
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private INetManager _net = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private ISharedPlayerManager _player = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -39,10 +45,29 @@ public sealed partial class AdminGhostSystem : EntitySystem
     /// </summary>
     private void OnMapInit(Entity<AdminGhostComponent> ent, ref MapInitEvent args)
     {
+        ent.Comp.InteractionRestricted = ResolveDefaultInteractionRestricted(ent.Owner);
+
         _actions.AddAction(ent.Owner, ref ent.Comp.InteractionToggleActionEntity, ent.Comp.InteractionToggleAction);
-        // Самозапрет по умолчанию включён, поэтому сразу показываем кнопку в активном состоянии.
         _actions.SetToggled(ent.Comp.InteractionToggleActionEntity, ent.Comp.InteractionRestricted);
         Dirty(ent.Owner, ent.Comp);
+    }
+
+    /// <summary>
+    /// На проде самозапрет включён; на loopback (локалка) — выключен, если CVar разрешает.
+    /// </summary>
+    private bool ResolveDefaultInteractionRestricted(EntityUid uid)
+    {
+        if (!_cfg.GetCVar(FishCVars.AghostDefaultInteractionRestricted))
+            return false;
+
+        if (!_cfg.GetCVar(FishCVars.AghostUnrestrictOnLocalhost))
+            return true;
+
+        if (_player.TryGetSessionByEntity(uid, out var session) &&
+            IPAddress.IsLoopback(session.Channel.RemoteEndPoint.Address))
+            return false;
+
+        return true;
     }
 
     /// <summary>

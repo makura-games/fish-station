@@ -1,6 +1,7 @@
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared._Fish.Vision;
+using Content.Shared.Actions;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Examine;
@@ -10,11 +11,12 @@ using Content.Shared.Overlays;
 namespace Content.Server._Fish.Ipc.Modules;
 
 /// <summary>
-/// Установка/снятие маркеров хоста для пассивных модулей (HUD, фильтры, адаптер, вокал, провода).
+/// Установка/снятие маркеров хоста и toggle-actions пассивных модулей.
 /// </summary>
 public sealed partial class FishIpcModuleGrantSystem : EntitySystem
 {
     [Dependency] private FishIpcRadioSystem _radio = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
 
     public override void Initialize()
     {
@@ -44,9 +46,13 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         SubscribeLocalEvent<FishIpcVisionModuleComponent, FishIpcModuleInstalledEvent>(OnVisionInstall);
         SubscribeLocalEvent<FishIpcVisionModuleComponent, FishIpcModuleUninstalledEvent>(OnVisionUninstall);
 
+        SubscribeLocalEvent<FishIpcPassiveHealModuleComponent, FishIpcModuleInstalledEvent>(OnHealInstall);
+        SubscribeLocalEvent<FishIpcPassiveHealModuleComponent, FishIpcModuleUninstalledEvent>(OnHealUninstall);
+
+        SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcModuleToggleActionEvent>(OnModuleToggle);
+
         SubscribeLocalEvent<FishIpcRadFilterHostComponent, DamageModifyEvent>(OnRadModify);
         SubscribeLocalEvent<FishIpcWireInterfaceHostComponent, ExaminedEvent>(OnWireExamineHost);
-        // Examine панелей — Fish-edit в SharedWiresSystem (одна подписка Comp+Event на весь процесс).
     }
 
     private void OnEmpScreenInstall(Entity<FishIpcEmpScreenModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
@@ -55,17 +61,39 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
     private void OnEmpScreenUninstall(Entity<FishIpcEmpScreenModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
         RemComp<FishIpcEmpScreenHostComponent>(args.Host);
 
-    private void OnMagInstall(Entity<FishIpcMagneticJointsModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
-        EnsureComp<FishIpcMagneticJointsHostComponent>(args.Host);
+    private void OnMagInstall(Entity<FishIpcMagneticJointsModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
+    {
+        var host = EnsureComp<FishIpcMagneticJointsHostComponent>(args.Host);
+        host.ModuleEnabled = ent.Comp.Enabled;
+        Dirty(args.Host, host);
+        _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
+        if (ent.Comp.ToggleActionEntity is { } action)
+            _actions.SetToggled(action, ent.Comp.Enabled);
+    }
 
-    private void OnMagUninstall(Entity<FishIpcMagneticJointsModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
+    private void OnMagUninstall(Entity<FishIpcMagneticJointsModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
+    {
+        _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
+        ent.Comp.ToggleActionEntity = null;
         RemComp<FishIpcMagneticJointsHostComponent>(args.Host);
+    }
 
-    private void OnSealInstall(Entity<FishIpcSealedJointsModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
-        EnsureComp<FishIpcSealedJointsHostComponent>(args.Host);
+    private void OnSealInstall(Entity<FishIpcSealedJointsModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
+    {
+        var host = EnsureComp<FishIpcSealedJointsHostComponent>(args.Host);
+        host.ModuleEnabled = ent.Comp.Enabled;
+        Dirty(args.Host, host);
+        _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
+        if (ent.Comp.ToggleActionEntity is { } action)
+            _actions.SetToggled(action, ent.Comp.Enabled);
+    }
 
-    private void OnSealUninstall(Entity<FishIpcSealedJointsModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
+    private void OnSealUninstall(Entity<FishIpcSealedJointsModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
+    {
+        _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
+        ent.Comp.ToggleActionEntity = null;
         RemComp<FishIpcSealedJointsHostComponent>(args.Host);
+    }
 
     private void OnApcInstall(Entity<FishIpcApcAdapterModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
     {
@@ -73,9 +101,8 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         if (!TryComp<FishBatteryDrinkerComponent>(args.Host, out var drinker))
             return;
 
-        host.StoredDrinkMultiplier ??= drinker.DrinkMultiplier;
+        // Адаптер ускоряет do-after, порция остаётся 5% за цикл.
         host.StoredDrinkSpeed ??= drinker.DrinkSpeed;
-        drinker.DrinkMultiplier = host.StoredDrinkMultiplier.Value * host.DrinkMultiplierBonus;
         drinker.DrinkSpeed = host.StoredDrinkSpeed.Value * host.DrinkSpeedFactor;
         Dirty(args.Host, drinker);
     }
@@ -85,8 +112,6 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         if (TryComp<FishIpcApcAdapterHostComponent>(args.Host, out var host) &&
             TryComp<FishBatteryDrinkerComponent>(args.Host, out var drinker))
         {
-            if (host.StoredDrinkMultiplier is { } mult)
-                drinker.DrinkMultiplier = mult;
             if (host.StoredDrinkSpeed is { } speed)
                 drinker.DrinkSpeed = speed;
             Dirty(args.Host, drinker);
@@ -104,7 +129,6 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
     private void OnVocalInstall(Entity<FishIpcVocalModModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
     {
         EnsureComp<FishIpcVocalModHostComponent>(args.Host);
-        // Если шасси уже в power-down — сразу поднять рацию через SetRadioEnabled.
         if (TryComp<FishIpcComponent>(args.Host, out var ipc))
             _radio.SetRadioEnabled((args.Host, ipc), !ipc.PowerDown);
     }
@@ -122,11 +146,101 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
     private void OnWireUninstall(Entity<FishIpcWireInterfaceModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
         RemComp<FishIpcWireInterfaceHostComponent>(args.Host);
 
-    private void OnVisionInstall(Entity<FishIpcVisionModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
-        ApplyVision(args.Host, ent.Comp.Kind, add: true);
+    private void OnVisionInstall(Entity<FishIpcVisionModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
+    {
+        if (ent.Comp.Enabled)
+            ApplyVision(args.Host, ent.Comp.Kind, add: true);
 
-    private void OnVisionUninstall(Entity<FishIpcVisionModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
-        ApplyVision(args.Host, ent.Comp.Kind, add: false);
+        _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
+        if (ent.Comp.ToggleActionEntity is { } action)
+            _actions.SetToggled(action, ent.Comp.Enabled);
+    }
+
+    private void OnVisionUninstall(Entity<FishIpcVisionModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
+    {
+        if (ent.Comp.Enabled)
+            ApplyVision(args.Host, ent.Comp.Kind, add: false);
+
+        _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
+        ent.Comp.ToggleActionEntity = null;
+    }
+
+    private void OnHealInstall(Entity<FishIpcPassiveHealModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
+    {
+        _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
+        if (ent.Comp.ToggleActionEntity is { } action)
+            _actions.SetToggled(action, ent.Comp.Enabled);
+    }
+
+    private void OnHealUninstall(Entity<FishIpcPassiveHealModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
+    {
+        _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
+        ent.Comp.ToggleActionEntity = null;
+    }
+
+    private void OnModuleToggle(Entity<FishIpcModuleHostComponent> host, ref FishIpcModuleToggleActionEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        var action = args.Action.Owner;
+
+        foreach (var uid in host.Comp.ModuleContainer.ContainedEntities)
+        {
+            if (TryComp<FishIpcPassiveHealModuleComponent>(uid, out var heal) &&
+                heal.ToggleActionEntity == action)
+            {
+                heal.Enabled = !heal.Enabled;
+                Dirty(uid, heal);
+                _actions.SetToggled(action, heal.Enabled);
+                args.Handled = true;
+                return;
+            }
+
+            if (TryComp<FishIpcVisionModuleComponent>(uid, out var vision) &&
+                vision.ToggleActionEntity == action)
+            {
+                vision.Enabled = !vision.Enabled;
+                Dirty(uid, vision);
+                ApplyVision(host.Owner, vision.Kind, vision.Enabled);
+                _actions.SetToggled(action, vision.Enabled);
+                args.Handled = true;
+                return;
+            }
+
+            if (TryComp<FishIpcMagneticJointsModuleComponent>(uid, out var mag) &&
+                mag.ToggleActionEntity == action)
+            {
+                mag.Enabled = !mag.Enabled;
+                Dirty(uid, mag);
+                if (TryComp<FishIpcMagneticJointsHostComponent>(host.Owner, out var magHost))
+                {
+                    magHost.ModuleEnabled = mag.Enabled;
+                    Dirty(host.Owner, magHost);
+                }
+
+                _actions.SetToggled(action, mag.Enabled);
+                args.Handled = true;
+                return;
+            }
+
+            if (TryComp<FishIpcSealedJointsModuleComponent>(uid, out var seal) &&
+                seal.ToggleActionEntity == action)
+            {
+                seal.Enabled = !seal.Enabled;
+                Dirty(uid, seal);
+                if (TryComp<FishIpcSealedJointsHostComponent>(host.Owner, out var sealHost))
+                {
+                    sealHost.ModuleEnabled = seal.Enabled;
+                    Dirty(host.Owner, sealHost);
+                }
+
+                _actions.SetToggled(action, seal.Enabled);
+                args.Handled = true;
+                return;
+            }
+        }
+    }
 
     private void ApplyVision(EntityUid host, FishIpcVisionKind kind, bool add)
     {
@@ -145,7 +259,6 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 ToggleComp<EyeProtectionComponent>(host, add);
                 break;
             case FishIpcVisionKind.NightVision:
-                // Fish-оптика: без toggle-action и с клиентским FishVisionSystem.
                 if (add)
                 {
                     var nv = EnsureComp<FishNightVisionComponent>(host);

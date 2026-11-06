@@ -8,15 +8,20 @@ using Content.Shared.Chat;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Electrocution;
+using Content.Shared.Hands;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Interaction;
 using Content.Shared.Interaction.Components;
+using Content.Shared.Inventory.VirtualItem;
+using Content.Shared.Item;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Traits.Assorted;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 
 namespace Content.Server._Fish.Ipc.Modules;
@@ -41,6 +46,8 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
     [Dependency] private SharedRottingSystem _rotting = default!;
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedVirtualItemSystem _virtualItem = default!;
 
     public override void Initialize()
     {
@@ -50,9 +57,12 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         SubscribeLocalEvent<FishIpcDefibModuleComponent, FishIpcModuleUninstalledEvent>(OnDefibUninstall);
         SubscribeLocalEvent<FishIpcDefibModuleComponent, FishIpcDefibDoAfterEvent>(OnDefibDoAfter);
 
-        // Action живёт на хосте, не на сущности модуля.
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcDefibActionEvent>(OnDefibAction);
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcJumpstarterActionEvent>(OnJumpAction);
+
+        SubscribeLocalEvent<FishIpcDefibPadsComponent, AfterInteractEvent>(OnPadsInteract);
+        SubscribeLocalEvent<FishIpcDefibPadsComponent, ComponentShutdown>(OnPadsShutdown);
+        SubscribeLocalEvent<FishIpcDefibPadsComponent, VirtualItemDeletedEvent>(OnPadsVirtualDeleted);
 
         SubscribeLocalEvent<FishIpcJumpstarterModuleComponent, FishIpcModuleInstalledEvent>(OnJumpInstall);
         SubscribeLocalEvent<FishIpcJumpstarterModuleComponent, FishIpcModuleUninstalledEvent>(OnJumpUninstall);
@@ -64,10 +74,13 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
     private void OnDefibInstall(Entity<FishIpcDefibModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
     {
         _actions.AddAction(args.Host, ref ent.Comp.ActionEntity, ent.Comp.Action);
+        if (ent.Comp.ActionEntity is { } action)
+            _actions.SetToggled(action, false);
     }
 
     private void OnDefibUninstall(Entity<FishIpcDefibModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
     {
+        DeactivatePads(ent);
         _actions.RemoveAction(args.Host, ent.Comp.ActionEntity);
         ent.Comp.ActionEntity = null;
     }
@@ -80,21 +93,109 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         if (!TryGetInstalledModule<FishIpcDefibModuleComponent>(host.Owner, out var module))
             return;
 
-        var target = args.Target;
-        if (target == host.Owner)
+        args.Handled = true;
+
+        if (module.Comp.PadsActive)
+        {
+            DeactivatePads(module);
+            if (module.Comp.ActionEntity is { } actionOff)
+                _actions.SetToggled(actionOff, false);
+            return;
+        }
+
+        if (!ActivatePads(host.Owner, module))
+            return;
+
+        if (module.Comp.ActionEntity is { } actionOn)
+            _actions.SetToggled(actionOn, true);
+    }
+
+    private bool ActivatePads(EntityUid host, Entity<FishIpcDefibModuleComponent> module)
+    {
+        if (module.Comp.PadsEntity is { } existing && !TerminatingOrDeleted(existing))
+            return true;
+
+        var pads = Spawn(module.Comp.PadsPrototype, Transform(host).Coordinates);
+        var padsComp = EnsureComp<FishIpcDefibPadsComponent>(pads);
+        padsComp.Module = module.Owner;
+
+        EnsureComp<UnremoveableComponent>(pads);
+        EnsureComp<MultiHandedItemComponent>(pads);
+
+        if (!_hands.TryPickupAnyHand(host, pads, checkActionBlocker: false))
+        {
+            QueueDel(pads);
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-tool-no-hand"), host, host);
+            return false;
+        }
+
+        module.Comp.PadsEntity = pads;
+        module.Comp.PadsActive = true;
+        return true;
+    }
+
+    private void DeactivatePads(Entity<FishIpcDefibModuleComponent> module)
+    {
+        module.Comp.PadsActive = false;
+        if (module.Comp.PadsEntity is not { } pads)
+            return;
+
+        module.Comp.PadsEntity = null;
+        if (!TerminatingOrDeleted(pads))
+            QueueDel(pads);
+    }
+
+    private void OnPadsShutdown(Entity<FishIpcDefibPadsComponent> pads, ref ComponentShutdown args)
+    {
+        if (pads.Comp.Module is not { } moduleUid ||
+            !TryComp<FishIpcDefibModuleComponent>(moduleUid, out var module))
+            return;
+
+        module.PadsActive = false;
+        module.PadsEntity = null;
+        if (module.ActionEntity is { } action)
+            _actions.SetToggled(action, false);
+    }
+
+    private void OnPadsVirtualDeleted(Entity<FishIpcDefibPadsComponent> pads, ref VirtualItemDeletedEvent args)
+    {
+        // Накладки Unremoveable — если виртуалка слетела, сразу вернуть вторую руку.
+        if (TerminatingOrDeleted(pads.Owner))
+            return;
+
+        if (!_hands.IsHolding(args.User, pads.Owner))
+            return;
+
+        _virtualItem.TrySpawnVirtualItemInHand(pads.Owner, args.User);
+    }
+
+    private void OnPadsInteract(Entity<FishIpcDefibPadsComponent> pads, ref AfterInteractEvent args)
+    {
+        if (args.Handled || !args.CanReach || args.Target is not { } target)
+            return;
+
+        if (pads.Comp.Module is not { } moduleUid ||
+            !TryComp<FishIpcDefibModuleComponent>(moduleUid, out var moduleComp) ||
+            !TryComp<FishIpcModuleComponent>(moduleUid, out var mod) ||
+            !mod.Installed ||
+            mod.InstalledEntity is not { } host)
+            return;
+
+        if (target == host)
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-defib-self"), host, host);
             return;
         }
 
-        if (!HasEnoughCharge(host.Owner, module.Comp.ChargeFraction))
+        if (!HasEnoughCharge(host, moduleComp.ChargeFraction))
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-need-charge"), host, host, PopupType.SmallCaution);
             return;
         }
 
         args.Handled = true;
-        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, host.Owner, module.Comp.DoAfter, new FishIpcDefibDoAfterEvent(), module.Owner, target)
+        _audio.PlayPvs(moduleComp.ChargeSound, host);
+        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, host, moduleComp.DoAfter, new FishIpcDefibDoAfterEvent(), moduleUid, target)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
@@ -124,10 +225,13 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         if (ent.Comp.ActionEntity is { } action)
             _actions.SetCooldown(action, ent.Comp.Cooldown);
 
+        _audio.PlayPvs(ent.Comp.ZapSound, host);
+
         if (_rotting.IsRotten(target) || HasComp<UnrevivableComponent>(target))
         {
             _chat.TrySendInGameICMessage(host, Loc.GetString("defibrillator-rotten"), InGameICChatType.Speak, true);
             _electrocution.TryDoElectrocution(target, host, 5, TimeSpan.FromSeconds(2), true, ignoreInsulation: true);
+            _audio.PlayPvs(ent.Comp.FailureSound, host);
             return;
         }
 
@@ -152,6 +256,7 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         }
 
         _electrocution.TryDoElectrocution(target, host, 5, TimeSpan.FromSeconds(3), true, ignoreInsulation: true);
+        _audio.PlayPvs(failed ? ent.Comp.FailureSound : ent.Comp.SuccessSound, host);
         _popup.PopupEntity(
             Loc.GetString(failed ? "fish-ipc-module-defib-fail" : "fish-ipc-module-defib-success",
                 ("target", Identity.Entity(target, EntityManager))),
@@ -219,7 +324,6 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         EnsureComp<UnremoveableComponent>(tool);
         if (!_hands.TryPickupAnyHand(args.Host, tool, checkActionBlocker: false))
         {
-            // Не оставляем Unremoveable-тул на полу — иначе его нельзя нормально убрать.
             QueueDel(tool);
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-tool-no-hand"), args.Host, args.Host);
             ent.Comp.SpawnedTool = null;

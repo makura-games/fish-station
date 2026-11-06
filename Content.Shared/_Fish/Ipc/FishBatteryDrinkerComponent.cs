@@ -14,10 +14,22 @@ public sealed partial class FishBatteryDrinkerComponent : Component
     public float DrinkSpeed = 1f;
 
     /// <summary>
-    /// Множитель к базовым 1000 Дж за тик зарядки.
+    /// Доля максимального заряда шасси за один цикл подсоса с ЛКП (0.05 = 5%).
     /// </summary>
     [DataField]
-    public float DrinkMultiplier = 5f;
+    public float DrinkPercent = 0.05f;
+
+    /// <summary>
+    /// Устарело: раньше множитель к 1000 Дж. Оставлено для совместимости YAML/адаптера.
+    /// </summary>
+    [DataField]
+    public float DrinkMultiplier = 1f;
+
+    /// <summary>
+    /// Доля заряда КПБ, при которой и выше подсос с ЛКП запрещён (1.0 = полностью заряжен).
+    /// </summary>
+    [DataField]
+    public float MaxSelfChargeFraction = 1f;
 
     [DataField]
     public bool DrinkAll;

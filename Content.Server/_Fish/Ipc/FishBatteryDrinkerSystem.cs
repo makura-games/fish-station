@@ -37,7 +37,11 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
 
         if (!TryComp<FishBatteryDrinkerComponent>(args.User, out var drinker) ||
             !TestDrinkable(uid, drinker) ||
-            !_powerCell.TryGetBatteryFromSlot(args.User, out _))
+            !_powerCell.TryGetBatteryFromSlot(args.User, out var drinkerBattery))
+            return;
+
+        // На полной батарее verb не даём — иначе спам звуком/попапами.
+        if (IsSelfFull(drinkerBattery.Value.Owner, drinker))
             return;
 
         args.Verbs.Add(new AlternativeVerb
@@ -53,8 +57,24 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
         return drinker.DrinkAll || HasComp<FishBatteryDrinkerSourceComponent>(target);
     }
 
+    private bool IsSelfFull(EntityUid battery, FishBatteryDrinkerComponent drinker)
+    {
+        var (charge, max) = _battery.GetCharge(battery);
+        if (max <= 0f)
+            return true;
+
+        return charge / max >= drinker.MaxSelfChargeFraction - 0.001f;
+    }
+
     private void StartDrink(EntityUid target, EntityUid user, FishBatteryDrinkerComponent drinker)
     {
+        if (!_powerCell.TryGetBatteryFromSlot(user, out var drinkerBattery) ||
+            IsSelfFull(drinkerBattery.Value.Owner, drinker))
+        {
+            _popup.PopupEntity(Loc.GetString("robot-drain-charge-full"), user, user);
+            return;
+        }
+
         var time = drinker.DrinkSpeed;
         if (TryComp<FishBatteryDrinkerSourceComponent>(target, out var source))
             time *= source.DrinkSpeedMulti;
@@ -76,51 +96,60 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
         if (args.Cancelled || args.Target is not { } source)
             return;
 
-        // Повторная проверка: цель всё ещё допустимый источник.
         if (!TestDrinkable(source, ent.Comp) ||
             !TryComp<BatteryComponent>(source, out _) ||
             !_powerCell.TryGetBatteryFromSlot(ent.Owner, out var drinkerBattery))
             return;
 
-        // Нельзя питать себя из собственной ячейки.
         if (source == drinkerBattery.Value.Owner)
             return;
 
         TryComp<FishBatteryDrinkerSourceComponent>(source, out var sourceComp);
 
-        var amount = ent.Comp.DrinkMultiplier * 1000f;
         var (sourceCharge, _) = _battery.GetCharge(source);
         var (drinkerCharge, drinkerMax) = _battery.GetCharge(drinkerBattery.Value.Owner);
 
-        if (drinkerCharge >= drinkerMax - 0.01f)
+        if (drinkerMax <= 0f || drinkerCharge / drinkerMax >= ent.Comp.MaxSelfChargeFraction - 0.001f)
         {
             _popup.PopupEntity(Loc.GetString("robot-drain-charge-full"), ent.Owner, ent.Owner);
             return;
         }
 
+        // 5% от ёмкости шасси за один цикл (адаптер ускоряет do-after, не размер порции).
+        var amount = drinkerMax * ent.Comp.DrinkPercent;
+        if (ent.Comp.DrinkMultiplier > 0f && Math.Abs(ent.Comp.DrinkMultiplier - 1f) > 0.001f)
+            amount *= ent.Comp.DrinkMultiplier;
+
+        var targetCharge = drinkerMax * ent.Comp.MaxSelfChargeFraction;
         amount = MathF.Min(amount, sourceCharge);
-        amount = MathF.Min(amount, drinkerMax - drinkerCharge);
+        amount = MathF.Min(amount, targetCharge - drinkerCharge);
 
         if (sourceComp is { MaxAmount: > 0 })
             amount = MathF.Min(amount, sourceComp.MaxAmount);
 
         if (amount <= 0)
         {
-            _popup.PopupEntity(Loc.GetString("robot-drain-charge-empty", ("battery", source)), ent.Owner, ent.Owner);
+            _popup.PopupEntity(Loc.GetString("robot-drain-charge-full"), ent.Owner, ent.Owner);
             return;
         }
 
-        if (_battery.TryUseCharge(source, amount))
+        if (!_battery.TryUseCharge(source, amount))
+            return;
+
+        _battery.SetCharge(drinkerBattery.Value.AsNullable(), drinkerCharge + amount);
+        _popup.PopupEntity(Loc.GetString("robot-drain-charge-success", ("battery", source)), ent.Owner, ent.Owner, PopupType.Small);
+
+        Spawn("EffectSparks", Transform(source).Coordinates);
+        if (sourceComp?.DrinkSound != null)
+            _audio.PlayPvs(sourceComp.DrinkSound, source);
+
+        // Полный — стоп цикла, без повторного do-after (иначе спам sparks).
+        if (IsSelfFull(drinkerBattery.Value.Owner, ent.Comp))
         {
-            _battery.SetCharge(drinkerBattery.Value.AsNullable(), drinkerCharge + amount);
-            _popup.PopupEntity(Loc.GetString("robot-drain-charge-success", ("battery", source)), ent.Owner, ent.Owner, PopupType.Small);
-
-            Spawn("EffectSparks", Transform(source).Coordinates);
-            if (sourceComp?.DrinkSound != null)
-                _audio.PlayPvs(sourceComp.DrinkSound, source);
-
-            // Повторная зарядка, пока не полный / источник не пуст (как цикл Paradise).
-            StartDrink(source, ent.Owner, ent.Comp);
+            _popup.PopupEntity(Loc.GetString("robot-drain-charge-full"), ent.Owner, ent.Owner);
+            return;
         }
+
+        StartDrink(source, ent.Owner, ent.Comp);
     }
 }

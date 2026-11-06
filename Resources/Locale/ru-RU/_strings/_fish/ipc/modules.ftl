@@ -66,11 +66,27 @@ ent-FishIpcModuleRadFilter = модуль радфильтра КПБ
     .desc = Режет радиацию и связанный клеточный урон ценой постоянного расхода.
     .suffix = Fish
 
-ent-FishActionIpcDefib = дефибриллятор шасси
-    .desc = Разрядить конденсаторы шасси в пациента. Огромный расход батареи.
+ent-FishActionIpcDefib = накладки дефибриллятора шасси
+    .desc = Выпустить встроенные накладки дефиба в обе руки. Каждый разряд жрёт батарею.
 
 ent-FishActionIpcJumpstarter = импульс jumpstarter
     .desc = Сбросить заряд конденсаторов, чтобы вырваться из критического состояния.
+
+ent-FishActionIpcToggleRepair = переключить ремонт шасси
+    .desc = Включить или выключить установленный модуль ремонта.
+
+ent-FishActionIpcToggleVision = переключить оптику шасси
+    .desc = Включить или выключить установленный модуль зрения.
+
+ent-FishActionIpcToggleMagneticJoints = переключить магнитные суставы
+    .desc = Включить или выключить сопротивление ампутации.
+
+ent-FishActionIpcToggleSealedJoints = переключить герметичные суставы
+    .desc = Включить или выключить блокировку ампутации.
+
+ent-FishIpcDefibPads = накладки дефибриллятора шасси
+    .desc = Встроенные шоковые накладки модуля КПБ.
+    .suffix = Fish
 
 fish-ipc-module-panel-closed = Сначала откройте панель шасси.
 fish-ipc-module-locked = Корпус заблокирован.
@@ -95,6 +111,7 @@ fish-ipc-module-joints-magnetic-resist = Магнитные крепления �
 fish-ipc-module-joints-emp-magnetic = EMP выбивает магнитные суставы!
 fish-ipc-module-joints-emp-sealed = EMP стопорит герметичные суставы — шасси клинит!
 fish-ipc-emp-hit-screened = EMP бьёт по шасси, но экран снимает большую часть удара.
+fish-ipc-health-analyzer-refuse = Обычный медсканер не читает шасси КПБ.
 
 research-technology-fish-ipc-wire-interface = Интерфейс проводов КПБ
 research-technology-fish-ipc-apc-adapter = Адаптер ЛКП КПБ
