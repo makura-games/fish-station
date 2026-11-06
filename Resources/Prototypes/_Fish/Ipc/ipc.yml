@@ -124,7 +124,8 @@
     lockOnClick: false
     unlockOnClick: false
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    # Командование / РнД / робототехник — не «кто угодно с отвёрткой».
+    access: [["Command"], ["Research"], ["Robotics"]]
   - type: WiresPanel
     openingTool: Prying
     openDelay: 3
