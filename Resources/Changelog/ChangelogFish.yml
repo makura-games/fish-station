@@ -1460,3 +1460,10 @@
     message: Фиксы шаттлов обр.
   id: 146
   url: https://github.com/makura-games/fish-station/pull/620
+- author: TiFeRi
+  time: '2026-11-06T12:26:58.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Актуализация целей станций
+  id: 147
+  url: https://github.com/makura-games/fish-station/pull/618
