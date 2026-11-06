@@ -1474,3 +1474,15 @@
     message: 28 набегов за месяц. Вы действовали наверняка, да?
   id: 148
   url: https://github.com/makura-games/fish-station/pull/623
+- author: Aura-Bazara
+  time: '2026-11-06T23:33:20.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен новый костюм/юбка/перчатки для ПНТ
+  id: 149
+  url: https://github.com/makura-games/fish-station/pull/601
+  media:
+  - url: https://github.com/user-attachments/assets/e751a789-ac2e-4ed5-bb83-0b7cee64113a
+    description: изображение
+  - url: https://github.com/user-attachments/assets/44576a1c-503a-4821-b99d-c9eca0268946
+    description: изображение
