@@ -38,6 +38,9 @@ public sealed partial class FishBatteryDrinkerSourceComponent : Component
     [DataField]
     public float MaxAmount;
 
+    /// <summary>
+    /// Тот же набор искр, что у ниндзи при сливе питания с подстанции.
+    /// </summary>
     [DataField]
-    public SoundSpecifier? DrinkSound = new SoundPathSpecifier("/Audio/Effects/Lightning/lightningshock.ogg");
+    public SoundSpecifier? DrinkSound = new SoundCollectionSpecifier("sparks");
 }

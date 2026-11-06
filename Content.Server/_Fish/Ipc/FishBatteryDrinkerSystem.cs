@@ -107,8 +107,9 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
         if (_battery.TryUseCharge(source, amount))
         {
             _battery.SetCharge(drinkerBattery.Value.AsNullable(), drinkerCharge + amount);
-            _popup.PopupEntity(Loc.GetString("robot-drain-charge-success", ("battery", source)), ent.Owner, ent.Owner, PopupType.SmallCaution);
+            _popup.PopupEntity(Loc.GetString("robot-drain-charge-success", ("battery", source)), ent.Owner, ent.Owner, PopupType.Small);
 
+            Spawn("EffectSparks", Transform(source).Coordinates);
             if (sourceComp?.DrinkSound != null)
                 _audio.PlayPvs(sourceComp.DrinkSound, source);
 
