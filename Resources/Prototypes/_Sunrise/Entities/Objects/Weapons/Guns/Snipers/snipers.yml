@@ -98,7 +98,7 @@
     minAngle: -23
     maxAngle: -43
   - type: Gun
-    pump: true
+    pump: false # Fish-edit: отключена механика pump после изменения обработки гильз
     projectileSpeed: 40
     selectedMode: SemiAuto
     availableModes:
@@ -273,7 +273,7 @@
   - type: StaticPrice
     price: 850
   - type: Gun
-    pump: true
+    pump: false # Fish-edit: отключена механика pump после изменения обработки гильз
     fireRate: 3
     selectedMode: SemiAuto
     availableModes:
@@ -343,7 +343,7 @@
     minAngle: -23
     maxAngle: -43
   - type: Gun
-    pump: true
+    pump: false # Fish-edit: отключена механика pump после изменения обработки гильз
     projectileSpeed: 40
     selectedMode: SemiAuto
     availableModes:
