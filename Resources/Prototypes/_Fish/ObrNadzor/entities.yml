@@ -1,0 +1,50 @@
+- type: entity
+  parent:
+  - Incorporeal
+  - BaseMob
+  id: FishObrNadzorConsoleEye
+  name: DSO surveillance eye
+  description: Remote observation eye of the Special Operations Department.
+  categories: [ HideSpawnMenu ]
+  suffix: Fish, DO NOT MAP
+  components:
+  - type: NoFTL
+  - type: WarpPoint
+    follow: true
+  - type: Eye
+    pvsScale: 1.5
+  - type: Visibility
+    layer: 2
+  - type: Sprite
+    sprite: Mobs/Silicon/station_ai.rsi
+    layers:
+    - state: ai_camera
+      shader: unshaded
+  - type: Tag
+    tags:
+    - CantInteract
+
+- type: entity
+  id: FishObrNadzorAiCore
+  parent: PlayerStationAiEmpty
+  name: DSO surveillance core
+  description: Temporary Special Operations remote control core.
+  suffix: Fish, DO NOT MAP
+  categories: [ HideSpawnMenu, DoNotMap ]
+  components:
+  - type: StationAiCore
+  - type: MetaData
+    name: DSO surveillance core
+
+- type: entity
+  id: FishObrNadzorAiBrain
+  parent: StationAiBrain
+  name: DSO surveillance AI
+  description: Special Operations remote station control entity.
+  categories: [ HideSpawnMenu, DoNotMap ]
+  suffix: Fish
+  components:
+  - type: SiliconLawProvider
+    laws: FishObrNadzorLawset
+  - type: MetaData
+    name: DSO Surveillance

@@ -1,0 +1,22 @@
+- type: siliconLaw
+  id: FishObrNadzorLaw1
+  order: 1
+  lawString: law-fish-obr-nadzor-1
+
+- type: siliconLaw
+  id: FishObrNadzorLaw2
+  order: 2
+  lawString: law-fish-obr-nadzor-2
+
+- type: siliconLaw
+  id: FishObrNadzorLaw3
+  order: 3
+  lawString: law-fish-obr-nadzor-3
+
+- type: siliconLawset
+  id: FishObrNadzorLawset
+  laws:
+  - FishObrNadzorLaw1
+  - FishObrNadzorLaw2
+  - FishObrNadzorLaw3
+  obeysTo: laws-owner-centcomm
