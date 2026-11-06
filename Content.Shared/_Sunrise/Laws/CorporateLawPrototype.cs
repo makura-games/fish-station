@@ -67,6 +67,7 @@ public sealed partial class CorporateLawPrototype : IPrototype
 
     /// <summary>
     ///     Обстоятельства с одной группой взаимоисключающи; побеждает больший <see cref="ExclusivePriority"/>.
+    ///     Проигравший не даёт ни процента <see cref="SentenceMultiplier"/>, ни минут.
     /// </summary>
     [DataField]
     public string? ExclusiveGroup;

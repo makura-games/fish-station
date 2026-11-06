@@ -424,6 +424,8 @@
   title: corplaw-fish-circ-selfsurrender-title
   description: corplaw-fish-circ-selfsurrender-desc
   sentenceMultiplier: 0.5
+  exclusiveGroup: fish-surrender # Fish-edit: вики — признание вины не суммируется с явкой
+  exclusivePriority: 2
 
 - type: corporateLaw
   id: CircFishCooperation
@@ -438,6 +440,8 @@
   title: corplaw-fish-circ-admission-title
   description: corplaw-fish-circ-admission-desc
   sentenceMultiplier: 0.75
+  exclusiveGroup: fish-surrender # Fish-edit: вики — не суммируется с явкой с повинной
+  exclusivePriority: 1
 
 - type: corporateLaw
   id: CircFishNoIntent

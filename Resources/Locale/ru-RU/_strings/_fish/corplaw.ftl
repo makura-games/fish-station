@@ -207,7 +207,7 @@ corplaw-fish-circ-cooperation-title = Сделка со следствием
 corplaw-fish-circ-cooperation-desc = Полное раскрытие информации, сдача подельников, помощь в розыске. -50% наказания.
 
 corplaw-fish-circ-admission-title = Признание вины
-corplaw-fish-circ-admission-desc = Добровольное признание до или на первом допросе (не для должностных). -25% наказания.
+corplaw-fish-circ-admission-desc = Добровольное признание до или на первом допросе (не для должностных). -25% наказания. Не суммируется с явкой с повинной.
 
 corplaw-fish-circ-nointent-title = Отсутствие умысла
 corplaw-fish-circ-nointent-desc = Неумышленное преступление. -75% наказания.

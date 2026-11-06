@@ -121,16 +121,34 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
 
         // Modifiers (additive percentages applied to original BaseSentence)
         float globalModifierPercent = 0f;
-        // Fish-start: абсолютные минуты + взаимоисключающие группы обстоятельств
+        // Fish-start: абсолютные минуты + взаимоисключающие группы (процент и минуты)
         float absoluteModifierMinutes = 0f;
         var dropsCharges = false;
-        var exclusiveMinutes = new Dictionary<string, (CorporateLawPrototype Law, int Priority, int Minutes)>();
+        var exclusiveWinners = new Dictionary<string, CorporateLawPrototype>();
+        foreach (var circId in @case.Circumstances)
+        {
+            if (!circumstances.Contains(circId))
+                continue;
+            if (!ProtoMan.TryIndex<CorporateLawPrototype>(circId, out var grouped))
+                continue;
+            if (grouped.ExclusiveGroup is not { } group)
+                continue;
+            if (!exclusiveWinners.TryGetValue(group, out var existing) || grouped.ExclusivePriority > existing.ExclusivePriority)
+                exclusiveWinners[group] = grouped;
+        }
+
+        var exclusiveMinutes = new Dictionary<string, (CorporateLawPrototype Law, int Minutes)>();
         // Fish-end
         foreach (var circId in @case.Circumstances)
         {
             if (!circumstances.Contains(circId)) continue;
             if (ProtoMan.TryIndex<CorporateLawPrototype>(circId, out var law))
             {
+                // Fish-start: проигравший в ExclusiveGroup не даёт ни процента, ни минут
+                if (law.ExclusiveGroup is { } group && exclusiveWinners[group].ID != law.ID)
+                    continue;
+                // Fish-end
+
                 // Fish-start: крайняя необходимость / угроза заключённому — снятие обвинения
                 if (law.SentenceMultiplier == 0f)
                 {
@@ -145,14 +163,13 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
                 if (p != 0f)
                     @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", p.ToString("+0;-0"))));
 
-                // Fish-start: минуты из прототипа; ExclusiveGroup — только победитель по Priority
+                // Fish-start: минуты из прототипа; в ExclusiveGroup — только уже выбранный победитель
                 if (law.SentenceModifierMinutes == 0)
                     continue;
 
-                if (law.ExclusiveGroup is { } group)
+                if (law.ExclusiveGroup is { } minuteGroup)
                 {
-                    if (!exclusiveMinutes.TryGetValue(group, out var existing) || law.ExclusivePriority > existing.Priority)
-                        exclusiveMinutes[group] = (law, law.ExclusivePriority, law.SentenceModifierMinutes);
+                    exclusiveMinutes[minuteGroup] = (law, law.SentenceModifierMinutes);
                     continue;
                 }
 
