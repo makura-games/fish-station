@@ -10,12 +10,16 @@ using Content.Shared.Interaction.Components;
 using Content.Shared.Light.Components;
 using Content.Shared.Mech.Components;
 using Content.Shared.Movement.Components;
+using Content.Shared.NPC.Components;
+using Content.Shared.NPC.Prototypes;
+using Content.Shared.NPC.Systems;
 using Content.Shared.Vehicle.Components;
 using Content.Shared.Vehicle.Systems;
 using Content.Shared.Verbs;
 using Content.Shared.Whitelist;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Fish.Mech;
@@ -23,6 +27,8 @@ namespace Content.IntegrationTests.Tests._Fish.Mech;
 [TestFixture, NonParallelizable]
 public sealed class MechBrainTest
 {
+    private static readonly ProtoId<NpcFactionPrototype> NanotrasenFaction = "NanoTrasen";
+
     [TestCase("MechHamtrBattery", "PositronicBrain")]
     [TestCase("MechHamtrBattery", "PersonalAI")]
     [TestCase("MechHamtrBattery", "MMI")]
@@ -213,6 +219,69 @@ public sealed class MechBrainTest
         });
 
         await server.WaitPost(() => entMan.System<MechSystem>().TryEject(mech));
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase("PersonalAI")]
+    [TestCase("PositronicBrain")]
+    [TestCase("MMI")]
+    public async Task CancelledEjectionPreservesBrainControlAndFaction(string prototype)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        EntityUid mech = default;
+        EntityUid brain = default;
+        var inserted = false;
+        var initialInputMover = false;
+        var initialBlockInteraction = false;
+
+        await server.WaitPost(() =>
+        {
+            mech = entMan.SpawnEntity("MechRipleyBattery", map.GridCoords);
+            brain = entMan.SpawnEntity(prototype, map.GridCoords);
+            initialInputMover = entMan.HasComponent<InputMoverComponent>(brain);
+            initialBlockInteraction = entMan.GetComponent<BlockMovementComponent>(brain).BlockInteraction;
+            inserted = entMan.System<MechSystem>().TryInsert(mech, brain);
+            entMan.System<NpcFactionSystem>().AddFaction(mech, NanotrasenFaction);
+            entMan.EnsureComponent<UnremoveableComponent>(brain);
+            entMan.System<SharedCombatModeSystem>().SetInCombatMode(brain, true);
+        });
+        await server.WaitAssertion(() => Assert.That(inserted, Is.True));
+
+        var ejected = false;
+        await server.WaitPost(() => ejected = entMan.System<MechSystem>().TryEject(mech));
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(ejected, Is.False);
+            Assert.That(entMan.System<VehicleSystem>().GetOperatorOrNull(mech), Is.EqualTo(brain));
+            Assert.That(entMan.GetComponent<VehicleOperatorComponent>(brain).Vehicle, Is.EqualTo(mech));
+            Assert.That(entMan.GetComponent<RelayInputMoverComponent>(brain).RelayEntity, Is.EqualTo(mech));
+            Assert.That(entMan.HasComponent<InputMoverComponent>(brain), Is.True);
+            Assert.That(entMan.GetComponent<CombatModeComponent>(brain).IsInCombatMode, Is.True);
+            Assert.That(entMan.GetComponent<BlockMovementComponent>(brain).BlockInteraction, Is.False);
+            Assert.That(entMan.System<NpcFactionSystem>().IsMember(mech, NanotrasenFaction), Is.True);
+        });
+
+        await server.WaitPost(() =>
+        {
+            entMan.RemoveComponent<UnremoveableComponent>(brain);
+            ejected = entMan.System<MechSystem>().TryEject(mech);
+        });
+        await pair.RunTicksSync(1);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(ejected, Is.True);
+            Assert.That(entMan.System<VehicleSystem>().GetOperatorOrNull(mech), Is.Null);
+            Assert.That(entMan.HasComponent<VehicleOperatorComponent>(brain), Is.False);
+            Assert.That(entMan.HasComponent<RelayInputMoverComponent>(brain), Is.False);
+            Assert.That(entMan.HasComponent<InputMoverComponent>(brain), Is.EqualTo(initialInputMover));
+            Assert.That(entMan.HasComponent<NpcFactionMemberComponent>(mech), Is.False);
+            Assert.That(entMan.GetComponent<BlockMovementComponent>(brain).BlockInteraction, Is.EqualTo(initialBlockInteraction));
+            Assert.That(entMan.System<ActionBlockerSystem>().CanMove(brain), Is.False);
+        });
+
         await pair.CleanReturnAsync();
     }
 

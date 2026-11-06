@@ -191,7 +191,7 @@
       - BlueShield
 
 # region Р›Р°Р·РµСЂС‹
-# Fish edit start - СѓР±СЂР°РЅС‹ РїСѓР»СЊСЃРѕРІРѕРµ РѕСЂСѓР¶РёРµ, РґРѕР±Р°РІР»РµРЅС‹ СЌРЅРµСЂРіРѕРґСЂРѕР±РѕРІРёРє, РіРёР±СЂРёРґРЅС‹Р№ С‚Р°Р·РµСЂ, Р”РѕРјРёРЅР°С‚РѕСЂ
+# Fish-start - СѓР±СЂР°РЅС‹ РїСѓР»СЊСЃРѕРІРѕРµ РѕСЂСѓР¶РёРµ, РґРѕР±Р°РІР»РµРЅС‹ СЌРЅРµСЂРіРѕРґСЂРѕР±РѕРІРёРє, РіРёР±СЂРёРґРЅС‹Р№ С‚Р°Р·РµСЂ, Р”РѕРјРёРЅР°С‚РѕСЂ
 - type: listing
   id: FishERTUplinkWeaponEnergyShotgunBlueShield
   productEntity: WeaponEnergyShotgun
@@ -289,7 +289,7 @@
     whitelist:
       tags:
       - BlueShield
-# Fish edit end
+# Fish-end
 
 
 # region РџРёСЃС‚РѕР»РµС‚С‹
@@ -341,7 +341,7 @@
       tags:
       - BlueShield
 
-# Fish edit start - РєР°С‚РµРіРѕСЂРёРё РІР·СЂС‹РІС‡Р°С‚РєРё РёР·РјРµРЅРµРЅС‹ РЅР° РѕР±С‰СѓСЋ NTexplosive
+# Fish-start - РєР°С‚РµРіРѕСЂРёРё РІР·СЂС‹РІС‡Р°С‚РєРё РёР·РјРµРЅРµРЅС‹ РЅР° РѕР±С‰СѓСЋ NTexplosive
 # region Р’Р·СЂС‹РІС‡Р°С‚РєР° (1 BC)
 - type: listing
   id: FishERTUplinkGrenadeShrapnel
@@ -374,9 +374,9 @@
     whitelist:
       tags:
       - BlueShield
-# Fish edit end
+# Fish-end
 
-# Fish edit start - Р±РѕРµРїСЂРёРїР°СЃС‹ РїРµСЂРµРІРµРґРµРЅС‹ РІ NTAmmo СЃ РєРѕРЅРєСЂРµС‚РЅС‹РјРё РЅР°Р·РІР°РЅРёСЏРјРё РєР°Р»РёР±СЂРѕРІ
+# Fish-start - Р±РѕРµРїСЂРёРїР°СЃС‹ РїРµСЂРµРІРµРґРµРЅС‹ РІ NTAmmo СЃ РєРѕРЅРєСЂРµС‚РЅС‹РјРё РЅР°Р·РІР°РЅРёСЏРјРё РєР°Р»РёР±СЂРѕРІ
 # region Р‘РѕРµРїСЂРёРїР°СЃС‹ .20 Rifle (Lecter, Leikha)
 - type: listing
   id: FishERTUplinkMagazineBoxRifleSP
@@ -1029,9 +1029,9 @@
     whitelist:
       tags:
       - BlueShield
-# Fish edit end
+# Fish-end
 
-# Fish edit start - РјРµРґРёС†РёРЅР° РїРµСЂРµРІРµРґРµРЅР° РІ NTMedicine, С†РµРЅР° automender СЃРЅРёР¶РµРЅР° РґРѕ 8C
+# Fish-start - РјРµРґРёС†РёРЅР° РїРµСЂРµРІРµРґРµРЅР° РІ NTMedicine, С†РµРЅР° automender СЃРЅРёР¶РµРЅР° РґРѕ 8C
 # region РњРµРґРёС†РёРЅР°
 - type: listing
   id: FishERTUplinkAutoMenderBruteFilledBlueShield

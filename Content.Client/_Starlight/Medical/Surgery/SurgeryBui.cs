@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Content.Client._Fish.Medical.Surgery; // FIsh edit - окно со схемой тела
+using Content.Client._Fish.Medical.Surgery; // Fish-edit - окно со схемой тела
 using Content.Client._Starlight;
 using Content.Client.Administration.UI.CustomControls;
 using Content.Client.Hands.Systems;
@@ -21,7 +21,7 @@ namespace Content.Client._Starlight.Medical.Surgery;
 // https://github.com/RMC-14/RMC-14
 
 [UsedImplicitly]
-public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - выбор частей тела
+public sealed partial class SurgeryBui : BoundUserInterface // Fish-edit - выбор частей тела
 {
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IPlayerManager _player = default!;
@@ -33,7 +33,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
     private readonly HandsSystem _hands;
 
     [ViewVariables]
-    private FishSurgeryWindow? _window; // FIsh edit
+    private FishSurgeryWindow? _window; // Fish-edit
 
     private EntityUid? _part;
     private (EntityUid Ent, EntProtoId Proto)? _surgery;
@@ -46,7 +46,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
         _entitySystem = _entities.System<StarlightEntitySystem>();
 
         _hands.OnPlayerItemAdded += OnPlayerHeldItemChanged;
-        _hands.OnPlayerItemRemoved += OnPlayerHeldItemChanged; // FIsh edit - обновляем доступность при смене инструмента
+        _hands.OnPlayerItemRemoved += OnPlayerHeldItemChanged; // Fish-edit - обновляем доступность при смене инструмента
     }
 
     private void OnPlayerHeldItemChanged(string handId, EntityUid item)
@@ -57,14 +57,14 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
     protected override void Open()
     {
         base.Open();
-        ResetFishSessionState(); // FIsh edit - локальное состояние прошлого открытия не переносится в новую сессию
+        ResetFishSessionState(); // Fish-edit - локальное состояние прошлого открытия не переносится в новую сессию
         UpdateState(State);
     }
 
     protected override void UpdateState(BoundUserInterfaceState? state)
     {
         if (state is SurgeryBuiState s)
-            ApplyFishState(s); // FIsh edit - обновление без сброса текущего раздела
+            ApplyFishState(s); // Fish-edit - обновление без сброса текущего раздела
     }
 
     public override void Update()
@@ -140,7 +140,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
     private void TryInitWindow()
     {
         if (_window != null) return;
-        _window = CreateFishWindow(); // FIsh edit - проектное окно через единую точку совместимости
+        _window = CreateFishWindow(); // Fish-edit - проектное окно через единую точку совместимости
         _window.OnClose += Close;
         _window.Title = _loc.GetString("surgery-window-name");
         _window.PartsButton.Text = _loc.GetString("surgery-window-partsbutton-name");
@@ -166,7 +166,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
                 return;
             }
 
-            OnPartPressed(netPart.Value, GetFishChoices(s, netPart.Value)); // FIsh edit - область без операций допустима
+            OnPartPressed(netPart.Value, GetFishChoices(s, netPart.Value)); // Fish-edit - область без операций допустима
         };
 
         _window.StepsButton.OnPressed += _ =>
@@ -202,7 +202,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
         stepName.AddText(_entities.GetComponent<MetaDataComponent>(step).EntityName);
 
         var stepButton = new SurgeryStepButton { Step = step };
-        InitializeFishStep(stepButton, netPart, surgeryId, stepId); // FIsh edit - проектная настройка этапа
+        InitializeFishStep(stepButton, netPart, surgeryId, stepId); // Fish-edit - проектная настройка этапа
 
         _window.Steps.AddChild(stepButton);
     }
@@ -216,7 +216,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
         _surgery = (surgery, surgeryId);
 
         _window.DismissConfirmation();
-        PrepareFishStepsForOperation(); // FIsh edit - сброс проектного состояния этапов
+        PrepareFishStepsForOperation(); // Fish-edit - сброс проектного состояния этапов
 
         _window.Steps.DisposeAllChildren();
 
@@ -231,7 +231,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
                     && _system.IsSurgeryValid(body, part, requirementId, surgeryId, out _, out _, out _))
                 {
                     var label = new ChoiceControl();
-                    InitializeFishRequirement(label); // FIsh edit - проектное оформление предварительных операций
+                    InitializeFishRequirement(label); // Fish-edit - проектное оформление предварительных операций
                     label.Button.OnPressed += _ =>
                     {
                         _previousSurgeries.Add(surgeryId);
@@ -267,7 +267,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
 
         _part = _entities.GetEntity(netPart);
 
-        RememberFishChoices(surgeryIds); // FIsh edit - запоминаем состав списка, а не пересоздаём его на каждом снимке
+        RememberFishChoices(surgeryIds); // Fish-edit - запоминаем состав списка, а не пересоздаём его на каждом снимке
 
         _window.Surgeries.DisposeAllChildren();
 
@@ -299,7 +299,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
             var surgeryButton = new ChoiceControl();
 
             surgeryButton.Set(Name, texture);
-            InitializeFishOperation(surgeryButton, Id, IsCompleted); // FIsh edit - оформление и отслеживание операции
+            InitializeFishOperation(surgeryButton, Id, IsCompleted); // Fish-edit - оформление и отслеживание операции
             surgeryButton.Button.OnPressed += _ => OnSurgeryPressed(Ent, netPart, Id);
             _window.Surgeries.AddChild(surgeryButton);
         }
@@ -314,7 +314,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
             !_entities.HasComponent<SurgeryComponent>(_surgery?.Ent) ||
             !_entities.TryGetComponent(_part, out OrganComponent? part))
         {
-            RefreshFishAreaCard(); // FIsh edit - сброс текущего этапа при потере области или операции
+            RefreshFishAreaCard(); // Fish-edit - сброс текущего этапа при потере области или операции
             return;
         }
 
@@ -343,7 +343,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
                 status = StepStatus.Complete;
             }
 
-            if (!PrepareFishStepPresentation(stepButton, ref status)) // FIsh edit - стабильное проектное представление
+            if (!PrepareFishStepPresentation(stepButton, ref status)) // Fish-edit - стабильное проектное представление
             {
                 i++;
                 continue;
@@ -388,10 +388,10 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
             }
 
             var texture = _entities.GetComponentOrNull<SpriteComponent>(stepButton.Step)?.Icon?.Default;
-            ApplyFishStepPresentation(stepButton, stepName, status, i, texture); // FIsh edit - проектное представление этапа
+            ApplyFishStepPresentation(stepButton, stepName, status, i, texture); // Fish-edit - проектное представление этапа
             i++;
         }
-        RefreshFishAreaCard(); // FIsh edit - текущий этап и причина недоступности обновляются вместе со списком
+        RefreshFishAreaCard(); // Fish-edit - текущий этап и причина недоступности обновляются вместе со списком
     }
 
     private void View(ViewType type)
@@ -411,7 +411,7 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
         _window.StepsButton.Disabled = type != ViewType.Steps || _previousSurgeries.Count == 0;
 
         var partName = GetSelectedPartName();
-        ApplyFishView(type); // FIsh edit - схема и состояние выбранной области
+        ApplyFishView(type); // Fish-edit - схема и состояние выбранной области
 
         if (partName != null &&
             _entities.TryGetComponent(_surgery?.Ent, out MetaDataComponent? surgeryMeta))
@@ -490,6 +490,6 @@ public sealed partial class SurgeryBui : BoundUserInterface // FIsh edit - вы�
         if (disposing)
             _window?.Dispose();
         _hands.OnPlayerItemAdded -= OnPlayerHeldItemChanged;
-        _hands.OnPlayerItemRemoved -= OnPlayerHeldItemChanged; // FIsh edit
+        _hands.OnPlayerItemRemoved -= OnPlayerHeldItemChanged; // Fish-edit
     }
 }

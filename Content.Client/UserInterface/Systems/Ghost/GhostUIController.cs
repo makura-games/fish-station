@@ -211,7 +211,7 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
     // Fish-start
     // Состояние хранится, чтобы применить его после пересоздания GUI
     private int _dmArenaCount;
-    private bool _dmArenaEnabled = true;
+    private bool _dmArenaEnabled;
 
     private void DmArenaPressed()
     {

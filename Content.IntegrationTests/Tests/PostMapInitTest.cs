@@ -82,14 +82,14 @@ namespace Content.IntegrationTests.Tests
         {
             "/Maps/centcomm.yml",
             "/Maps/Shuttles/AdminSpawn/**", // admin gaming
-            // Fish - Start
+            // Fish-start
             "/Maps/_Fish/Station/centcomm.yml",
             "/Maps/_Fish/Shuttles/Antag/**",
             "/Maps/_Fish/Shuttles/DSO/**",
             "/Maps/_Fish/Shuttles/DSO/ERT/**",
             "/Maps/_Fish/Shuttles/DSO/CBURN/**",
             "/Maps/_Fish/Nonstations/**",
-            // Fish - End
+            // Fish-end
         };
 
         /// <summary>

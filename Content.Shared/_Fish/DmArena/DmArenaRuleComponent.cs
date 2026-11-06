@@ -1,3 +1,4 @@
+using Content.Shared.Inventory;
 using Content.Shared.Roles;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -73,6 +74,12 @@ public sealed partial class DmArenaRuleComponent : Component
     // Пресет живёт до конца раунда
     public Dictionary<NetUserId, List<int>> Presets = new();
 
+    /// <summary>
+    /// Последний выбранный комплект игрока, живёт до конца раунда.
+    /// </summary>
+    [NonSerialized]
+    public Dictionary<NetUserId, List<int>> LastLoadouts = new();
+
     public TimeSpan NextCleanup;
 
     public Dictionary<NetUserId, TimeSpan> RespawnCooldowns = new();
@@ -97,4 +104,28 @@ public sealed partial class DmArenaRuleComponent : Component
 
     [DataField]
     public TimeSpan RespawnCooldown = TimeSpan.FromSeconds(20);
+
+    [DataField]
+    public TimeSpan CombatLock = TimeSpan.FromSeconds(10);
+
+    /// <summary>
+    /// Множитель яркости света на арене.
+    /// </summary>
+    [DataField]
+    public float LightMultiplier = 1.15f;
+
+    /// <summary>
+    /// Множитель задержки лечения на арене.
+    /// </summary>
+    [DataField]
+    public float HealingDelayMultiplier = 0.5f;
+
+    /// <summary>
+    /// Существо, в которое превращается игрок при включённом режиме rofls.
+    /// </summary>
+    [DataField]
+    public EntProtoId RoflsPrototype = "MobPig";
+
+    [DataField]
+    public SlotFlags LockedSlots = SlotFlags.OUTERCLOTHING | SlotFlags.HEAD | SlotFlags.BELT | SlotFlags.BACK | SlotFlags.SUITSTORAGE;
 }

@@ -89,10 +89,10 @@ public sealed partial class SRLateJoinGui : FancyWindow
         var departments = new List<DepartmentPrototype>();
         foreach (var department in _prototypeManager.EnumeratePrototypes<DepartmentPrototype>())
         {
-            // Fish edit start - разрешаем отделы в LateJoin, даже если они скрыты в лобби через EditorHidden (например, PlanetWar)
+            // Fish-start - разрешаем отделы в LateJoin, даже если они скрыты в лобби через EditorHidden (например, PlanetWar)
             // if (department.EditorHidden)
             //     continue;
-            // Fish edit end
+            // Fish-end
 
             departments.Add(department);
         }
