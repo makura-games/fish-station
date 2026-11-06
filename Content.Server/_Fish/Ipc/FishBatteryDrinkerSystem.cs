@@ -76,8 +76,14 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
         if (args.Cancelled || args.Target is not { } source)
             return;
 
-        if (!TryComp<BatteryComponent>(source, out _) ||
+        // Повторная проверка: цель всё ещё допустимый источник.
+        if (!TestDrinkable(source, ent.Comp) ||
+            !TryComp<BatteryComponent>(source, out _) ||
             !_powerCell.TryGetBatteryFromSlot(ent.Owner, out var drinkerBattery))
+            return;
+
+        // Нельзя питать себя из собственной ячейки.
+        if (source == drinkerBattery.Value.Owner)
             return;
 
         TryComp<FishBatteryDrinkerSourceComponent>(source, out var sourceComp);
@@ -85,6 +91,12 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
         var amount = ent.Comp.DrinkMultiplier * 1000f;
         var (sourceCharge, _) = _battery.GetCharge(source);
         var (drinkerCharge, drinkerMax) = _battery.GetCharge(drinkerBattery.Value.Owner);
+
+        if (drinkerCharge >= drinkerMax - 0.01f)
+        {
+            _popup.PopupEntity(Loc.GetString("robot-drain-charge-full"), ent.Owner, ent.Owner);
+            return;
+        }
 
         amount = MathF.Min(amount, sourceCharge);
         amount = MathF.Min(amount, drinkerMax - drinkerCharge);
@@ -95,12 +107,6 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
         if (amount <= 0)
         {
             _popup.PopupEntity(Loc.GetString("robot-drain-charge-empty", ("battery", source)), ent.Owner, ent.Owner);
-            return;
-        }
-
-        if (drinkerCharge >= drinkerMax - 0.01f)
-        {
-            _popup.PopupEntity(Loc.GetString("robot-drain-charge-full"), ent.Owner, ent.Owner);
             return;
         }
 

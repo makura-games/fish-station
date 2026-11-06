@@ -1,0 +1,25 @@
+# Fish-start: базовые модули шасси КПБ
+- type: entity
+  id: FishBaseIpcModule
+  parent: BaseItem
+  name: IPC chassis module
+  description: An upgrade module for an integrated positronic chassis.
+  abstract: true
+  suffix: Fish
+  components:
+  - type: Item
+    size: Small
+    storedRotation: -90
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+  - type: StaticPrice
+    price: 500
+  - type: Tag
+    tags:
+    - FishIpcModule
+  - type: GuideHelp
+    guides:
+    - FishIpc
+# Fish-end

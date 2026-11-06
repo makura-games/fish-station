@@ -1,6 +1,7 @@
 # Fish-start: органы КПБ
+# OrganBase без edible/meat — шасси не еда.
 - type: entity
-  parent: OrganBaseOrganic
+  parent: OrganBase
   id: OrganIpc
   abstract: true
   suffix: IPC

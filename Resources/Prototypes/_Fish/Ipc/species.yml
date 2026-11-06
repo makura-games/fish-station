@@ -100,7 +100,7 @@
       required: false
     enum.HumanoidVisualLayers.HeadSide:
       limit: 1
-      required: false
+      required: true
       default: [ ScreenStatic ]
     enum.HumanoidVisualLayers.HeadTop:
       limit: 1

@@ -27,7 +27,8 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
     [Dependency] private FishIpcRadioSystem _ipcRadio = default!;
     [Dependency] private IGameTiming _timing = default!;
 
-    private TimeSpan _nextWarn;
+    /// <summary>Следующее предупреждение о критическом заряде по каждому КПБ.</summary>
+    private readonly Dictionary<EntityUid, TimeSpan> _nextWarn = new();
 
     public override void Initialize()
     {
@@ -35,6 +36,12 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
 
         SubscribeLocalEvent<FishIpcComponent, PowerCellSlotEmptyEvent>(OnPowerCellEmpty);
         SubscribeLocalEvent<FishIpcComponent, EntInsertedIntoContainerMessage>(OnCellInserted);
+        SubscribeLocalEvent<FishIpcComponent, ComponentShutdown>(OnShutdown);
+    }
+
+    private void OnShutdown(Entity<FishIpcComponent> ent, ref ComponentShutdown args)
+    {
+        _nextWarn.Remove(ent.Owner);
     }
 
     public override void Update(float frameTime)
@@ -80,10 +87,14 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
                 _alerts.ShowAlert(uid, ipc.BatteryAlert, chargePercent);
             }
 
-            if (level <= ipc.ChargeThresholdCritical && level > 0f && _timing.CurTime >= _nextWarn)
+            if (level <= ipc.ChargeThresholdCritical && level > 0f)
             {
-                _nextWarn = _timing.CurTime + TimeSpan.FromSeconds(20);
-                _popup.PopupEntity(Loc.GetString("robot-charge-low-percent", ("percent", (int)(level * 100))), uid, uid);
+                var now = _timing.CurTime;
+                if (!_nextWarn.TryGetValue(uid, out var next) || now >= next)
+                {
+                    _nextWarn[uid] = now + TimeSpan.FromSeconds(20);
+                    _popup.PopupEntity(Loc.GetString("robot-charge-low-percent", ("percent", (int)(level * 100))), uid, uid);
+                }
             }
         }
     }

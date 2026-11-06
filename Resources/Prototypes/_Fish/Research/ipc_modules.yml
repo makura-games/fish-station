@@ -1,0 +1,29 @@
+# Fish-start: отдельные T3/T4 технологии модулей КПБ
+- type: technology
+  id: FishTechIpcWireInterface
+  name: research-technology-fish-ipc-wire-interface
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 3
+  cost: 14000
+  recipeUnlocks:
+  - FishIpcModuleWireInterface
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcNanoRepair
+  name: research-technology-fish-ipc-nano-repair
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 4
+  cost: 24000
+  recipeUnlocks:
+  - FishIpcModuleNanoRepair
+  technologyPrerequisites:
+  - BasicRobotics
+# Fish-end

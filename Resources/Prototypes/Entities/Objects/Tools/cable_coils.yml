@@ -212,12 +212,16 @@
     - Silicon
     - Xenoborg
     - Mech
+    - Ipc # Fish-edit: HealingSystem принимает кабель для MobIpc
     damage:
       types:
-        # Fish-start: кабель чинит brute у КПБ (Paradise cable coil), не burn
+        # Fish-start: кабель чинит brute у КПБ; burn/shock/caustic — для Synth/Silicon/Mech
         Blunt: -6
         Slash: -6
         Piercing: -6
+        Heat: -6
+        Shock: -6
+        Caustic: -6
         # Fish-end
         Mangleness: -1
     # Sunrise end

@@ -1,0 +1,7 @@
+# Fish-start: dynamic pack модулей КПБ (не автолат)
+- type: latheRecipePack
+  id: FishIpcModulesDynamic
+  recipes:
+  - FishIpcModuleWireInterface
+  - FishIpcModuleNanoRepair
+# Fish-end

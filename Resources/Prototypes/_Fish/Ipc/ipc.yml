@@ -115,10 +115,15 @@
         whitelist:
           tags:
           - PowerCell
+        # Fish-edit: без самозаряжающихся ячеек (микрореакторка)
+        blacklist:
+          components:
+          - BatterySelfRecharger
   - type: ContainerContainer
     containers:
       cell_slot: !type:ContainerSlot
       key_slots: !type:Container
+      ipc_module: !type:Container
   - type: Lock
     locked: true
     lockOnClick: false
@@ -172,6 +177,11 @@
       2: 0.8
       1: 0.45
       0: 0.25
+  - type: FishIpcModuleHost
+    maxModules: 3
+    moduleWhitelist:
+      tags:
+      - FishIpcModule
   - type: FishBatteryDrinker
   - type: FishWeldingHealable # Fish-edit: сварка чинит burn (Paradise welder); brute — кабелем
   - type: FishDeadStartupButton

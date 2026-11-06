@@ -1,0 +1,24 @@
+# Fish-start: дорогие рецепты модулей КПБ
+- type: latheRecipe
+  id: FishIpcModuleWireInterface
+  result: FishIpcModuleWireInterface
+  completetime: 25
+  materials:
+    Steel: 1200
+    Glass: 800
+    Plastic: 600
+    Silver: 200
+    Gold: 100
+
+- type: latheRecipe
+  id: FishIpcModuleNanoRepair
+  result: FishIpcModuleNanoRepair
+  completetime: 55
+  materials:
+    Steel: 2000
+    Glass: 1200
+    Plasma: 800
+    Silver: 400
+    Gold: 300
+    Uranium: 200
+# Fish-end

@@ -21,3 +21,6 @@
 
 - type: Tag
   id: Synth # КПБ / IPC — ремонт кабелем/нанопастой, экипировка
+
+- type: Tag
+  id: FishIpcModule # модули апгрейда шасси КПБ

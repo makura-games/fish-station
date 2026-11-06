@@ -1,0 +1,38 @@
+# Fish-start: модули КПБ v1 (T3/T4)
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleWireInterface
+  name: IPC wire interface module
+  description: A diagnostic interface that highlights chassis wiring. Barely draws power, but occupies a module slot.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.05
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleNanoRepair
+  name: IPC nanorepair module
+  description: Microscopic repair drones slowly mend chassis damage while hungrily draining the battery.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    # ~1.2 Дж/с ≈ 50% PowerCellMedium (720) за ~5 минут при ~20 урона
+    passiveDrainPerSecond: 1.2
+    exclusionGroup: repair
+    minChargeFraction: 0.1
+  - type: FishIpcNanoRepairModule
+    healPerSecond:
+      types:
+        Blunt: -0.022
+        Slash: -0.022
+        Piercing: -0.023
+        Heat: -0.033
+        Shock: -0.034
+# Fish-end

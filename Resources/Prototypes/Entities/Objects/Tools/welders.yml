@@ -107,6 +107,7 @@
     - Silicon
     - Xenoborg
     - Mech
+    - Ipc
     damage:
       types:
         Heat: -10

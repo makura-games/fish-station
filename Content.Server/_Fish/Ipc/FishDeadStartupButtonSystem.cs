@@ -1,12 +1,16 @@
+using Content.Server.EUI;
+using Content.Server.Ghost;
 using Content.Shared._Fish.Ipc;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
+using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Player;
 using Robust.Shared.Utility;
 
 namespace Content.Server._Fish.Ipc;
@@ -20,6 +24,9 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private ISharedPlayerManager _player = default!;
+    [Dependency] private EuiManager _eui = default!;
 
     public override void Initialize()
     {
@@ -62,7 +69,17 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
             return;
 
         if (_damageable.GetTotalDamage(uid) < criticalThreshold)
+        {
             _mobState.ChangeMobState(uid, MobState.Alive, mobState);
+
+            // Как у дефиба: предложить призраку вернуться в тело.
+            if (_mind.TryGetMind(uid, out _, out var mindComp) &&
+                _player.TryGetSessionById(mindComp.UserId, out var playerSession) &&
+                mindComp.CurrentEntity != uid)
+            {
+                _eui.OpenEui(new ReturnToBodyEui(mindComp, _mind, _player), playerSession);
+            }
+        }
         else
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-startup-failed", ("target", uid)), uid);
