@@ -173,29 +173,31 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
         }
         // Fish-end
 
+        // Fish-start: рецидив только по делам с реальным сроком (снятые / предупреждения с 0 не считаются)
         var pastLaws = allCases
-            .Where(c => c.Id != @case.Id && (c.Status == CriminalCaseStatus.Finished || c.Status == CriminalCaseStatus.Incarcerated || c.Status == CriminalCaseStatus.Closed))
+            .Where(c => c.Id != @case.Id
+                        && c.CalculatedSentence > 0
+                        && (c.Status == CriminalCaseStatus.Finished
+                            || c.Status == CriminalCaseStatus.Incarcerated
+                            || c.Status == CriminalCaseStatus.Closed))
             .SelectMany(c => c.Laws)
             .ToHashSet();
 
-        float totalModifierDelta = 0;
+        // Сначала рецидив к capped base, потом абсолютные минуты, затем % смягчения/отягчения к итогу
+        // (300+301, рецидив только 300 → 62.5; с явкой ×0.5 → ~31, а не 25).
+        float afterRecidivism = totalBase;
         foreach (var law in finalEffectiveCharges)
         {
-            float lawRecidivismPercent = 0;
-            if (pastLaws.Contains(law.ID))
-            {
-                lawRecidivismPercent = FishRecidivismPercent; // Fish-edit: вики — рецидив до удвоения срока
-                var lawName = law.LawIdentifier ?? Loc.GetString(law.Title);
-                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-recidivism", ("id", lawName), ("percent", lawRecidivismPercent.ToString("+0;-0"))));
-            }
+            if (!pastLaws.Contains(law.ID))
+                continue;
 
-            // Fish-edit: смягчение/отягчение применяем к сроку уже с учётом рецидива
-            var afterRecidivismFactor = 1f + lawRecidivismPercent / 100f;
-            var afterGlobalFactor = 1f + globalModifierPercent / 100f;
-            totalModifierDelta += law.BaseSentence * (afterRecidivismFactor * afterGlobalFactor - 1f);
+            afterRecidivism += law.BaseSentence * (FishRecidivismPercent / 100f);
+            var lawName = law.LawIdentifier ?? Loc.GetString(law.Title);
+            @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-recidivism", ("id", lawName), ("percent", FishRecidivismPercent.ToString("+0;-0"))));
         }
 
-        float finalMinutes = totalBase + totalModifierDelta + absoluteModifierMinutes; // Fish-edit: + абсолютные минуты
+        float finalMinutes = (afterRecidivism + absoluteModifierMinutes) * (1f + globalModifierPercent / 100f);
+        // Fish-end
 
 
         // Fish-edit: при статьях 5xx срок не ниже порога пермы (только если набор законов доступен)

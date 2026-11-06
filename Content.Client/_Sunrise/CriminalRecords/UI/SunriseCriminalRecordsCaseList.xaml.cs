@@ -127,7 +127,7 @@ public sealed partial class SunriseCriminalRecordsCaseControl : Button
             SentenceValueLabel.SetMessage(FormattedMessage.FromMarkupPermissive(
                 Loc.GetString("prisoner-management-warning").ToUpperInvariant()));
         }
-        else if (total >= threshold)
+        else if (threshold > 0 && total >= threshold) // Fish-edit: порог -1 не должен давать «ПЕРМА»
         {
             SentenceValueLabel.SetMessage(FormattedMessage.FromMarkupPermissive(
                 Loc.GetString("sunrise-records-sentence-life").ToUpperInvariant()));
