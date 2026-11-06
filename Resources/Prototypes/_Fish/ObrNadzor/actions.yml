@@ -1,0 +1,50 @@
+- type: entity
+  id: ActionFishObrNadzorTakeover
+  name: Request remote control
+  description: Take remote control of station systems after confirmation.
+  components:
+  - type: Action
+    priority: -20
+    itemIconStyle: BigAction
+    checkConsciousness: false
+    checkCanInteract: false
+  - type: Sprite
+    sprite: Interface/Actions/actions_ai.rsi
+    layers:
+    - state: ai_core
+  - type: InstantAction
+    event: !type:ObrNadzorTakeoverEvent
+
+- type: entity
+  id: ActionFishObrNadzorStopObserve
+  name: Stop observing
+  description: Leave the surveillance eye and return to your body view.
+  components:
+  - type: Action
+    priority: -19
+    itemIconStyle: BigAction
+    checkConsciousness: false
+    checkCanInteract: false
+  - type: Sprite
+    sprite: Interface/Actions/actions_ai.rsi
+    layers:
+    - state: emergency_off
+  - type: InstantAction
+    event: !type:ObrNadzorStopObserveEvent
+
+- type: entity
+  id: ActionFishObrNadzorRelease
+  name: End remote control
+  description: Return your mind to your body at the surveillance console.
+  components:
+  - type: Action
+    priority: -20
+    itemIconStyle: BigAction
+    checkConsciousness: false
+    checkCanInteract: false
+  - type: Sprite
+    sprite: Interface/Actions/actions_ai.rsi
+    layers:
+    - state: ai_core
+  - type: InstantAction
+    event: !type:ObrNadzorReleaseSessionEvent
