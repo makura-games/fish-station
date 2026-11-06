@@ -216,7 +216,7 @@
         Piercing: 0.95
         Heat: 0.90
         Radiation: 0.25
-  # Fish-start - Защита от болезни 50%
+  # Fish-start: To remove - защита от болезни 50%
   - type: DiseaseImmuneClothing
     prob: 0.5
   # Fish-end
@@ -268,7 +268,7 @@
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
-  # Fish-start - Защита от болезни 50%
+  # Fish-start: To remove - защита от болезни 50%
   - type: DiseaseImmuneClothing
     prob: 0.5
   # Fish-end

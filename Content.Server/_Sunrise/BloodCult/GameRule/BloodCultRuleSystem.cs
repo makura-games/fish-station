@@ -25,7 +25,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
-using Content.Shared.Mindshield.Components;
+using Content.Shared.Mindshield;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -52,6 +52,7 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
     [Dependency] private NpcFactionSystem _factionSystem = default!;
     [Dependency] private InventorySystem _inventorySystem = default!;
     [Dependency] private SharedMindSystem _mindSystem = default!;
+    [Dependency] private MindShieldSystem _mindShield = default!;
     [Dependency] private MobStateSystem _mobStateSystem = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private RoundEndSystem _roundEndSystem = default!;
@@ -132,7 +133,7 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
         var priorityTargets = potentialTargets
             .Where(target =>
                 HasComp<BibleUserComponent>(target) ||
-                HasComp<MindShieldComponent>(target))
+                IsMindshielded(target))
             .ToList();
 
         potentialTargets.RemoveAll(priorityTargets.Contains);
@@ -255,7 +256,7 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
         var priorityTargets = potentialTargets
             .Where(target =>
                 HasComp<BibleUserComponent>(target) ||
-                HasComp<MindShieldComponent>(target))
+                IsMindshielded(target))
                 .ToList();
 
         potentialTargets.RemoveAll(priorityTargets.Contains);
@@ -286,6 +287,12 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
     {
         _random.Shuffle(targets);
         return targets.Take(count).ToList();
+    }
+
+    private bool IsMindshielded(EntityUid target)
+    {
+        _mindShield.GetMindshieldStatus(target, out var mindshielded, out _);
+        return mindshielded;
     }
 
     public bool CultAwakened()

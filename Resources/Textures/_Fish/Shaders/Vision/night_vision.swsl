@@ -12,6 +12,8 @@ uniform bool noise_enabled;
 uniform highp float noise_frame;
 uniform highp vec4 phosphor_color;
 
+const highp float overexposure_strength = 0.7;
+
 highp float bright_sample(highp vec2 offset) {
     highp vec2 uv = clamp(UV + offset / viewport_size, vec2(0.0), vec2(1.0));
     if (!night_visible(uv)) {
@@ -42,10 +44,10 @@ void fragment() {
         highp float gain = texture2D(EXPOSURE_TEXTURE, vec2(0.5)).r;
         highp float brightness = max(luminance(original), 0.0);
         // Усиление теней сохраняет детали, яркие источники входят в мягкое насыщение люминофора.
-        highp float energy = (brightness + halo * (1.35 / 12.0)) * mix(1.0, 2.0, gain);
+        highp float energy = (brightness + halo * (1.35 * overexposure_strength / 12.0)) * mix(1.0, 2.0, gain);
         highp float base_tone = energy / (energy + 0.25);
         highp float overload = 1.0 - exp(-3.5 * max(energy - 0.24, 0.0));
-        highp float tone = mix(base_tone, 1.0, overload * 0.92);
+        highp float tone = mix(base_tone, 1.0, overload * 0.92 * overexposure_strength);
         if (noise_enabled) {
             highp vec2 pixel = floor(UV * viewport_size);
             highp float grain = fract(sin(dot(pixel, vec2(12.9898, 78.233)) + noise_frame * 37.719) * 43758.5453);
@@ -57,7 +59,7 @@ void fragment() {
             tone *= 1.0 - 0.025 * scanline - 0.04 * row_noise;
         }
         tone = clamp(tone, 0.0, 1.0);
-        highp vec3 phosphor = mix(phosphor_color.rgb, mix(phosphor_color.rgb, vec3(1.0), 0.94), smoothstep(0.52, 0.94, tone));
+        highp vec3 phosphor = mix(phosphor_color.rgb, mix(phosphor_color.rgb, vec3(1.0), 0.94 * overexposure_strength), smoothstep(0.52, 0.94, tone));
         highp float vignette = 1.0 - 0.85 * smoothstep(0.35, 1.0, radius);
         highp vec3 night = phosphor * tone * vignette * aperture;
         COLOR = vec4(mix(original, night, activation), 1.0);

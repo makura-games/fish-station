@@ -127,10 +127,10 @@
     sprite: Structures/Storage/Crates/toybox.rsi
     state: crate_icon
   product: CrateFunToyBox
-  # Fish edit start - fix arbitrage
+  # Fish-start - fix arbitrage
   # cost: 900
   cost: 1100
-  # Fish edit end
+  # Fish-end
   category: cargoproduct-category-name-fun
   group: market
 

@@ -165,7 +165,7 @@
   - type: GameRule
     minPlayers: 50
   - type: LoadMapRule
-    mapPath: /Maps/_Fish/Nonstations/nukieplanet.yml # Fish-Edit
+    mapPath: /Maps/_Fish/Nonstations/nukieplanet.yml # Fish-edit
   - type: AntagSelection
     selectionTime: PrePlayerSpawn
     antags:

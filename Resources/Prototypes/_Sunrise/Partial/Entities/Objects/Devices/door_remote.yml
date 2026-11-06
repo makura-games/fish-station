@@ -2,7 +2,7 @@
   id: DoorRemoteDefault
   components:
   - type: DoorRemote
-    options:
+    options: !Clear
     - mode: OpenClose
       tooltip: &TextOpenClose door-remote-open-close-text
       icon: &IconOpenClose
