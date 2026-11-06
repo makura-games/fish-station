@@ -17,7 +17,11 @@ public sealed partial class ObrNadzorSystem
             return;
         }
 
-        StopObserving(ent, args.Actor, deleteEye: true);
+        // Сбросить наблюдение с любой другой консоли / этой же, прежде чем стартовать заново.
+        if (TryGetConsoleForObserver(args.Actor, out var previous))
+            StopObserving(previous, args.Actor, deleteEye: true);
+        else
+            StopObserving(ent, args.Actor, deleteEye: true);
 
         CloseOtherUsers(ent, args.Actor);
         ent.Comp.Opener = args.Actor;

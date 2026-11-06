@@ -17,8 +17,9 @@ public sealed partial class ObrNadzorSystem
         if (ent.Comp.SessionBrain is not { } brain || !Exists(brain))
             return;
 
-        // Снять контроль может сам оператор (через AI) или любой с доступом у консоли.
-        if (args.Actor != brain && !_access.IsAllowed(args.Actor, ent))
+        // Снять контроль: сам оператор (brain), его тело у консоли, либо другой с доступом ЦК.
+        var isOperator = args.Actor == brain || args.Actor == ent.Comp.OperatorBody;
+        if (!isOperator && !_access.IsAllowed(args.Actor, ent))
             return;
 
         EndSession(ent, restoreMind: true);
