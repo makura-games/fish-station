@@ -3,7 +3,9 @@ using System.Numerics;
 using Content.Server.Actions;
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
+using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
+using Content.Shared.Administration;
 using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Server.Ghost.Roles;
@@ -46,6 +48,7 @@ public sealed partial class PettingSystem : SharedPettingSystem
     [Dependency] private NpcFactionSystem _npcFaction = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private IChatManager _chat = default!;
+    [Dependency] private IAdminManager _adminManager = default!;
 
     private const int MaxPetNameLenght = 30;
 
@@ -105,6 +108,15 @@ public sealed partial class PettingSystem : SharedPettingSystem
     {
         if (!TryValidate(ev, args))
             return;
+
+        // Fish-start: настройка роли призрака для питомцев доступна только администраторам
+        if (!_adminManager.HasAdminFlag(args.SenderSession, AdminFlags.Admin))
+        {
+            if (args.SenderSession.AttachedEntity is { } user)
+                _popup.PopupEntity(Loc.GetString("pet-admin-only-ghost-role"), user, user);
+            return;
+        }
+        // Fish-end
 
         var pet = GetEntity(ev.Entity);
 
