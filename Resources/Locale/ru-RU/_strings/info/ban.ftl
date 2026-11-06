@@ -75,8 +75,6 @@ ban-panel-expiry-error = ошибка
 server-ban-string = { $admin } создал бан на сервере с уровнем строгости { $severity }, который истекает { $expires } для [{ $name }, { $ip }, { $hwid }], с причиной: { $reason }, раунд: { $round }
 # Fish-edit
 ban-panel-defer = Отложить до конца раунда
-ban-panel-erase = Стереть сообщения в чате и игрока из раунда
-server-ban-string-never = никогда
 server-ban-string-no-pii = { $admin } установил серверный бан { $severity } тяжести, который истечёт { $expires } у { $name } с причиной: { $reason }, раунд: { $round }
 server-ban-string-never = никогда
 # Kick on ban

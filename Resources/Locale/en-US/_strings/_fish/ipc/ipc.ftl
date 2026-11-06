@@ -1,5 +1,3 @@
-species-name-ipc = IPC
-
 fish-ipc-overheating = You feel your circuits overheating!
 fish-ipc-crit = Structural integrity critical!
 fish-ipc-power-low = Power low!

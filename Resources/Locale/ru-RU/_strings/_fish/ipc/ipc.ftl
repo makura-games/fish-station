@@ -1,5 +1,3 @@
-species-name-ipc = КПБ
-
 fish-ipc-overheating = Ваши схемы перегреваются!
 fish-ipc-crit = Критическая целостность конструкции!
 fish-ipc-power-low = Низкий заряд!
