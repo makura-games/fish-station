@@ -15,6 +15,7 @@
       shader: unshaded
       map: ["enum.DiseaseMachineVisualLayers.IsOn"]
   - type: Appearance
+  # Fish-start: To remove - функционал разумной болезни
   - type: DiseaseMachineVisuals
     idleState: icon
     runningState: running
@@ -24,6 +25,7 @@
       path: /Audio/Machines/spinning.ogg
       params:
         volume: -4
+  # Fish-end
   - type: ReactionMixer
     reactionTypes:
     - Vaccinator

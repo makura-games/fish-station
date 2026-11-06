@@ -54,5 +54,10 @@
         shape:
           !type:PhysShapeAabb
           bounds: "-0.46,-0.46,0.46,0.46"
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
   - type: PlacementReplacement
     key: walls

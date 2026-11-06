@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using System.Linq;
 using Robust.Shared.Prototypes;
@@ -165,6 +166,7 @@ public sealed partial class SickSystem : SharedSickSystem
                         {
                             solution.AddReagent(reagentId, reagents.Volume);
                         }
+                        solution.MaxVolume = reagents.MaxVolume > 0 ? reagents.MaxVolume : reagents.Volume;
 
                         _bloodstream.ChangeBloodReagents(uid, solution);
                     }
@@ -187,6 +189,10 @@ public sealed partial class SickSystem : SharedSickSystem
                     );
                     _ui.SetUiState(component.owner, DiseaseInfoUiKey.Key, state);
                     component.Inited = true;
+                    // Fish-start - синхронизируем инициализацию инфекции на клиент
+                    Dirty(uid, component);
+                    RaiseNetworkEvent(new UpdateInfectionsEvent(GetNetEntity(uid)));
+                    // Fish-end
                 }
                 else
                 {

@@ -979,7 +979,7 @@
     implantAction: ActionActivateBombGrenadeImplantWM
   - type: TriggerOnActivateImplant
   - type: PlanetWarStunDrone
-  # FIsh edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
+  # Fish-edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container

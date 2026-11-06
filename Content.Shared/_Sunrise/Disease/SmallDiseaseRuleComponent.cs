@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Store;
 using Robust.Shared.Prototypes;

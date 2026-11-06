@@ -76,10 +76,10 @@ guide-entry-brute =
 guide-entry-botanicals = Ботаника
 guide-entry-cloning = Клонирование
 guide-entry-cryogenics = Криогеника
-# Fish edit start - руководства по медицине
+# Fish-start - руководства по медицине
 guide-entry-mangleness = Истощение
 guide-entry-medicaldrugs = Медицинские препараты
-# Fish edit end
+# Fish-end
 guide-entry-science = Научный отдел
 guide-entry-technologies = Технологии
 guide-entry-anomalous-research = Исследование аномалий
