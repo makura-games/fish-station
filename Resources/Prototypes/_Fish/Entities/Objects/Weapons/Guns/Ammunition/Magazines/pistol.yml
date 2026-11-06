@@ -1,0 +1,25 @@
+- type: entity
+  id: FishMagazinePistolSubMachineGunThompson
+  name: thompson magazine
+  parent: BaseMagazinePistolSubMachineGun
+  suffix: Fish
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgePistol40SP
+    capacity: 35
+    whitelist:
+      tags:
+        - CartridgePistolDP
+  - type: Sprite
+    sprite: _Fish/Objects/Weapons/Guns/Ammunition/Magazines/tommy_gun.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+  - type: Tag
+    tags:
+      - FishMagazineSMGThompson

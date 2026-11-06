@@ -26,14 +26,16 @@
   coefficients:
     Piercing: 0.7 # Bullets aren't a good option against metal
   flatReductions:
-    Blunt: 15
-    Slash: 15
-    Piercing: 15
-    Heat: 15
-    Cold: 15
-    Shock: 15
-    Caustic: 15
-    Structural: 6
+  # Fish-start - Повышенная защита статичного пластитана
+    Blunt: 20
+    Slash: 20
+    Piercing: 20
+    Heat: 20
+    Cold: 20
+    Shock: 20
+    Caustic: 20
+    Structural: 10
+  # Fish-end
 
 # Strong metal used by crew to protect important areas and items.
 # Used for dynamic entities which might move frequently.

@@ -325,6 +325,7 @@
   - type: InputMover
   - type: Examiner
   - type: BlockMovement
+    blockInteraction: false # Fish-edit - иначе мозг нельзя использовать ни на микроволновке, ни в MMI
   - type: BadFood
   - type: Solution
     solution:

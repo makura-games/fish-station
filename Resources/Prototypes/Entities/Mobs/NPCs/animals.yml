@@ -696,6 +696,12 @@
           32:
             sprite: Mobs/Animals/mothroach/displacement.rsi
             state: neck
+  # Fish-start
+  - type: WingFlight
+    speedModifier: 1.1
+    autoDisableThreshold: 0.2 # 6 секунд полета до почти стамина крита
+    sustainStaminaPerSecond: 10 # по дефолту использует 20 стамину и остается 60 стамины на полет
+  # Fish-end
 
 
 # Note that the mallard duck is actually a male drake mallard, with the brown duck being the female variant of the same species, however ss14 lacks sex specific textures

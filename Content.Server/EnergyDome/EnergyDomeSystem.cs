@@ -251,11 +251,11 @@ public sealed partial class EnergyDomeSystem : EntitySystem
 
     public bool AttemptToggle(Entity<EnergyDomeGeneratorComponent> generator, bool status)
     {
-        // FIsh edit start - ParentUid может быть Invalid при спавне на карте; Transform(Invalid) валит CI
+        // Fish-start - ParentUid может быть Invalid при спавне на карте; Transform(Invalid) валит CI
         var parent = Transform(generator.Owner).ParentUid;
         if (parent.IsValid() && HasComp<ContainerManagerComponent>(Transform(parent).ParentUid))
             return false;
-        // FIsh edit end
+        // Fish-end
 
         if (TryComp<UseDelayComponent>(generator, out var useDelay) &&
             _useDelay.IsDelayed((generator, useDelay)))

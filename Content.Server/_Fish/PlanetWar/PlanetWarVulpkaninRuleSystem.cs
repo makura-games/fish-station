@@ -1,4 +1,4 @@
-// Fish edit - Vulpkanin PlanetWar Meme Mode
+// Fish-edit - Vulpkanin PlanetWar Meme Mode
 using Content.Server.GameTicking.Rules;
 using Content.Shared.Body;
 using Content.Shared.Humanoid;
