@@ -43,6 +43,10 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
                 if (chargeFraction < module.MinChargeFraction)
                     continue;
 
+                // Выключенный toggle не должен жрать батарею.
+                if (!IsModuleDrawingPower(moduleUid))
+                    continue;
+
                 drain += module.PassiveDrainPerSecond;
             }
 
@@ -97,5 +101,26 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
 
         var (_, max) = _battery.GetCharge(battery.Value.Owner);
         return max;
+    }
+
+    /// <summary>
+    /// Тоггл-модули (хил / зрение / суставы) не расходуют заряд, пока выключены.
+    /// Остальные модули всегда «включены».
+    /// </summary>
+    private bool IsModuleDrawingPower(EntityUid moduleUid)
+    {
+        if (TryComp<FishIpcPassiveHealModuleComponent>(moduleUid, out var heal))
+            return heal.Enabled;
+
+        if (TryComp<FishIpcVisionModuleComponent>(moduleUid, out var vision))
+            return vision.Enabled;
+
+        if (TryComp<FishIpcMagneticJointsModuleComponent>(moduleUid, out var mag))
+            return mag.Enabled;
+
+        if (TryComp<FishIpcSealedJointsModuleComponent>(moduleUid, out var seal))
+            return seal.Enabled;
+
+        return true;
     }
 }

@@ -122,7 +122,8 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         EnsureComp<UnremoveableComponent>(pads);
         EnsureComp<MultiHandedItemComponent>(pads);
 
-        if (!_hands.TryPickupAnyHand(host, pads, checkActionBlocker: false))
+        // Свободных рук нет — выбросить предмет и занять руку, иначе модуль «включён» без накладок.
+        if (!_hands.TryForcePickupAnyHand(host, pads, checkActionBlocker: false))
         {
             QueueDel(pads);
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-tool-no-hand"), host, host);
@@ -183,6 +184,7 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         if (target == host)
         {
+            args.Handled = true;
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-defib-self"), host, host);
             return;
         }
@@ -322,7 +324,8 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         var tool = Spawn(ent.Comp.ToolPrototype, Transform(args.Host).Coordinates);
         EnsureComp<UnremoveableComponent>(tool);
-        if (!_hands.TryPickupAnyHand(args.Host, tool, checkActionBlocker: false))
+        // Модуль уже установлен — инструмент обязан попасть в руку (иначе «пустой» апгрейд).
+        if (!_hands.TryForcePickupAnyHand(args.Host, tool, checkActionBlocker: false))
         {
             QueueDel(tool);
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-tool-no-hand"), args.Host, args.Host);

@@ -96,6 +96,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         // Fish-start: обычный медсканер не сканирует КПБ
         if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value))
         {
+            args.Handled = true;
             _popupSystem.PopupEntity(Loc.GetString("fish-ipc-health-analyzer-refuse"), args.Target.Value, args.User, PopupType.SmallCaution);
             return;
         }

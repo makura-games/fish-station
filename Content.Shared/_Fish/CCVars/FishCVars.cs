@@ -68,8 +68,10 @@ namespace Content.Shared.CCVar
 
         /// <summary>
         /// Если игрок на loopback (127.0.0.1 / ::1) — не включать самозапрет агоста по умолчанию.
+        /// По умолчанию false: reverse-proxy / X-Forwarded-For часто показывают loopback и иначе
+        /// сняли бы самозапрет на проде. Локалка: development.toml.
         /// </summary>
         public static readonly CVarDef<bool> AghostUnrestrictOnLocalhost =
-            CVarDef.Create("fish.aghost_unrestrict_on_localhost", true, CVar.SERVERONLY | CVar.ARCHIVE);
+            CVarDef.Create("fish.aghost_unrestrict_on_localhost", false, CVar.SERVERONLY | CVar.ARCHIVE);
     }
 }

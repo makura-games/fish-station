@@ -87,7 +87,9 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
             BreakOnMove = true,
             DistanceThreshold = 1.35f,
             NeedHand = true,
-            CancelDuplicate = false,
+            // Без этого verb спамит параллельные циклы и sparks/звук.
+            CancelDuplicate = true,
+            DuplicateCondition = DuplicateConditions.SameEvent,
         });
     }
 
@@ -117,7 +119,8 @@ public sealed partial class FishBatteryDrinkerSystem : EntitySystem
 
         // 5% от ёмкости шасси за один цикл (адаптер ускоряет do-after, не размер порции).
         var amount = drinkerMax * ent.Comp.DrinkPercent;
-        if (ent.Comp.DrinkMultiplier > 0f && Math.Abs(ent.Comp.DrinkMultiplier - 1f) > 0.001f)
+        // DrinkMultiplier — legacy YAML; норма = 1.
+        if (ent.Comp.DrinkMultiplier is > 0f and not 1f)
             amount *= ent.Comp.DrinkMultiplier;
 
         var targetCharge = drinkerMax * ent.Comp.MaxSelfChargeFraction;

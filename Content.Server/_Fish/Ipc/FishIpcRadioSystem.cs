@@ -46,7 +46,11 @@ public sealed partial class FishIpcRadioSystem : EntitySystem
 
     private void OnGetDefault(Entity<FishIpcComponent> ent, ref GetDefaultRadioChannelEvent args)
     {
-        if (args.Channel != null || ent.Comp.PowerDown)
+        if (args.Channel != null)
+            return;
+
+        // Без вокального модулятора power-down глушит и канал по умолчанию.
+        if (ent.Comp.PowerDown && !HasComp<FishIpcVocalModHostComponent>(ent.Owner))
             return;
 
         if (TryComp<EncryptionKeyHolderComponent>(ent, out var keys) && keys.DefaultChannel != null)

@@ -107,7 +107,8 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
 
     private void OnHostInteractUsing(Entity<FishIpcModuleHostComponent> host, ref AfterInteractUsingEvent args)
     {
-        if (!args.CanReach || args.Handled || host.Owner == args.User)
+        // Самоустановка разрешена: панель/замок всё равно проверяются ниже.
+        if (!args.CanReach || args.Handled)
             return;
 
         if (!TryComp<FishIpcModuleComponent>(args.Used, out var module))

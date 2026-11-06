@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Shared._Fish.Ipc;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Radio.Components;
 using Content.Shared.Roles;
@@ -14,6 +15,7 @@ public sealed partial class FishIpcJobRadioSystem : EntitySystem
 {
     [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private FishIpcRadioSystem _radio = default!;
 
     public override void Initialize()
@@ -33,10 +35,13 @@ public sealed partial class FishIpcJobRadioSystem : EntitySystem
         {
             foreach (var key in headsetKeys.KeyContainer.ContainedEntities.ToArray())
             {
-                if (bodyKeys.KeyContainer.ContainedEntities.Count >= bodyKeys.KeySlots)
-                    break;
+                // Сначала в корпус; если слоты кончились — в руки/на пол, не удалять с гарнитурой.
+                if (bodyKeys.KeyContainer.ContainedEntities.Count < bodyKeys.KeySlots &&
+                    _container.Insert(key, bodyKeys.KeyContainer))
+                    continue;
 
-                _container.Insert(key, bodyKeys.KeyContainer);
+                _container.Remove(key, headsetKeys.KeyContainer, force: true);
+                _hands.PickupOrDrop(ent.Owner, key);
             }
         }
 

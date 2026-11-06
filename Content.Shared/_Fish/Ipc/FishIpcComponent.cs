@@ -53,16 +53,17 @@ public sealed partial class FishIpcComponent : Component
     public float ChargeThresholdCritical = 0.1f;
 
     /// <summary>
-    /// Множители скорости по ChargeState (ключ 0–4 условных уровней).
+    /// Множители скорости по ChargeState (ключ 0–10, как алерт батареи).
     /// </summary>
     [DataField(required: true)]
     public Dictionary<int, float> SpeedModifierThresholds = new()
     {
-        [4] = 1f,
-        [3] = 1f,
-        [2] = 0.8f,
-        [1] = 0.45f,
-        [0] = 0.25f,
+        [10] = 1f,
+        [8] = 1f,
+        [5] = 0.85f,
+        [3] = 0.55f,
+        [1] = 0.35f,
+        [0] = 0.2f,
     };
 
     /// <summary>

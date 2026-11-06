@@ -67,7 +67,7 @@ pg_password = "postgres"
 max_rapid_connections = 413
 max_ip_connections = 413
 
-# Fish-edit: на локалке агост без самозапрета взаимодействия (PR #537 бесит в деве)
+# Fish-edit: на локалке агост без самозапрета (прод: restricted=true, loopback-bypass=false)
 [fish]
 aghost_default_interaction_restricted = false
 aghost_unrestrict_on_localhost = true
