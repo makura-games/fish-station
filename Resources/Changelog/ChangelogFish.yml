@@ -1486,3 +1486,10 @@
     description: изображение
   - url: https://github.com/user-attachments/assets/44576a1c-503a-4821-b99d-c9eca0268946
     description: изображение
+- author: KrytoiChuvaaak
+  time: '2026-11-06T23:36:21.0000000+00:00'
+  changes:
+  - type: Add
+    message: Предметы можно передавать из рук в руки. Alt + ЛКМ по персонажу с предметом в руке протягивает ему предмет, Alt + ЛКМ по протягивающему забирает его.
+  id: 150
+  url: https://github.com/makura-games/fish-station/pull/595
