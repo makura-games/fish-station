@@ -30,13 +30,14 @@ sunrise-records-sentence-header = SENTENCE
 sunrise-records-person-name = Name:
 sunrise-records-person-job = Job:
 
-sunrise-records-breakdown-base-sum = Base sum (Cat 1-5): {$sum} min.
+sunrise-records-breakdown-base-sum = Base sum (Cat 1-4): {$sum} min.
 sunrise-records-breakdown-cap = Cap (1.5x Cat {$cat}): {$cap} min.
-sunrise-records-breakdown-perma-sum = Base (Cat 6): {$sum} min.
+sunrise-records-breakdown-perma-sum = Base (Cat 5): {$sum} min.
 sunrise-records-breakdown-warning = [color=yellow]{$id}: Warning (first violation)[/color]
 sunrise-records-breakdown-recidivism = [color=orange]{$id}: Recidivism {$percent}%[/color]
 sunrise-records-breakdown-escape-penalty = [color=red]Escape Penalty: +{$penalty} min.[/color]
 sunrise-records-breakdown-modifier = [color=cyan]{$id}: {$percent}%[/color]
+sunrise-records-breakdown-modifier-minutes = [color=cyan]{$id}: {$minutes} min.[/color]
 sunrise-records-person-age = Age:
 sunrise-records-person-dna = DNA:
 sunrise-records-person-gender = Gender:

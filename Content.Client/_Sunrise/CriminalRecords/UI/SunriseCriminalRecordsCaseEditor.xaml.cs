@@ -366,7 +366,14 @@ public sealed partial class SunriseCriminalRecordsCaseEditor : Control
 
     private void AddLawEntry(CorporateLawPrototype law, Control container, List<ProtoId<CorporateLawPrototype>> collection, Color? catColor = null)
     {
-        var text = law.LawIdentifier != null ? $"{law.LawIdentifier}: {Loc.GetString(law.Title)}" : Loc.GetString(law.Title);
+        // Fish-start: базовый срок статьи в редакторе дел
+        var title = Loc.GetString(law.Title);
+        var text = law.LawIdentifier != null
+            ? law.BaseSentence > 0
+                ? $"{law.LawIdentifier}: {title} ({law.BaseSentence} {Loc.GetString("corplaw-sentence-minutes-short")})"
+                : $"{law.LawIdentifier}: {title}"
+            : title;
+        // Fish-end
         var control = new SunriseCriminalRecordsLawControl();
 
         control.Setup(text, collection.Contains(law.ID), _isReadOnly, catColor);

@@ -115,9 +115,14 @@ public sealed partial class CorporateLawUiFragment : BoxContainer
                 
                 entryHeading.Label.Visible = false;
                 
-                var titleText = string.IsNullOrEmpty(entry.Identifier) 
-                    ? entry.Title 
-                    : $"[bold]{entry.Identifier}[/bold] {entry.Title}";
+                // Fish-start: показываем базовый срок статьи рядом с заголовком
+                var sentenceSuffix = entry.BaseSentence > 0
+                    ? $" [color=#8d9bb2]({entry.BaseSentence} {Loc.GetString("corplaw-sentence-minutes-short")})[/color]"
+                    : string.Empty;
+                var titleText = string.IsNullOrEmpty(entry.Identifier)
+                    ? $"{entry.Title}{sentenceSuffix}"
+                    : $"[bold]{entry.Identifier}[/bold] {entry.Title}{sentenceSuffix}";
+                // Fish-end
                 
                 var articleRichTitle = new RichTextLabel
                 {

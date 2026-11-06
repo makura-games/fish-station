@@ -9,14 +9,16 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
 {
     [Dependency] private SharedStationCorporateLawSystem _corporateLawSystem = default!;
 
+    // Fish-start: фиксированные сроки Fish КЗ (вики spacelaw); Max используется для лимита 1.5x
     private static readonly Dictionary<int, (int Min, int Max)> CategoryRanges = new()
     {
-        [1] = (5, 10),
-        [2] = (10, 15),
-        [3] = (17, 25),
-        [4] = (40, 45), // Fish-edit
-        [5] = (30, 50), // Fish-edit
+        [1] = (5, 5),
+        [2] = (10, 10),
+        [3] = (25, 25),
+        [4] = (40, 40),
+        [5] = (50, 50),
     };
+    // Fish-end
 
     public int CalculateSentence(CriminalCase @case, List<CriminalCase> allCases)
     {
@@ -116,6 +118,9 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
 
         // Modifiers (additive percentages applied to original BaseSentence)
         float globalModifierPercent = 0f;
+        // Fish-start: абсолютные минуты обстоятельств (сопротивление при аресте)
+        float absoluteModifierMinutes = 0f;
+        // Fish-end
         foreach (var circId in @case.Circumstances)
         {
             if (!circumstances.Contains(circId)) continue;
@@ -123,7 +128,16 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
             {
                 float p = (law.SentenceMultiplier - 1.0f) * 100f;
                 globalModifierPercent += p;
-                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", p.ToString("+0;-0"))));
+                if (p != 0f)
+                    @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", p.ToString("+0;-0"))));
+
+                // Fish-start: фиксированная надбавка/скидка в минутах
+                if (law.SentenceModifierMinutes != 0)
+                {
+                    absoluteModifierMinutes += law.SentenceModifierMinutes;
+                    @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier-minutes", ("id", Loc.GetString(law.Title)), ("minutes", law.SentenceModifierMinutes.ToString("+0;-0"))));
+                }
+                // Fish-end
             }
         }
 
@@ -138,7 +152,7 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
             float lawRecidivismPercent = 0;
             if (pastLaws.Contains(law.ID))
             {
-                lawRecidivismPercent = 15f;
+                lawRecidivismPercent = 100f; // Fish-edit: вики — рецидив до удвоения срока
                 var lawName = law.LawIdentifier ?? Loc.GetString(law.Title);
                 @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-recidivism", ("id", lawName), ("percent", lawRecidivismPercent.ToString("+0;-0"))));
             }
@@ -147,10 +161,10 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
             totalModifierDelta += law.BaseSentence * (totalLawPercent / 100f);
         }
 
-        float finalMinutes = totalBase + totalModifierDelta;
-        
+        float finalMinutes = totalBase + totalModifierDelta + absoluteModifierMinutes; // Fish-edit: + абсолютные минуты
 
-        // If there's any Category 6, ensure it's at least threshold
+
+        // Fish-edit: при статьях 5xx срок не ниже порога пермы
         if (permaCharges.Count > 0)
             finalMinutes = Math.Max(finalMinutes, threshold);
 

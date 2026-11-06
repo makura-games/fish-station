@@ -56,4 +56,13 @@ public sealed partial class CorporateLawPrototype : IPrototype
     /// </summary>
     [DataField("sentenceMultiplier")]
     public float SentenceMultiplier = 1.0f;
+
+    // Fish-start: абсолютная надбавка/скидка в минутах (вики: сопротивление при аресте +5/+10)
+    /// <summary>
+    ///     Flat sentence modifier in minutes (used for circumstances).
+    ///     Applied after percent multipliers. Positive adds time, negative reduces it.
+    /// </summary>
+    [DataField("sentenceModifierMinutes")]
+    public int SentenceModifierMinutes = 0;
+    // Fish-end
 }
