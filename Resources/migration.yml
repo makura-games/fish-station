@@ -1636,7 +1636,7 @@ DrinkWaterJug: JugWater
 #2026-09-05
 AsimovCircuitBoard: CrewsimovCircuitBoard
 
-# region Fish-start
+# Fish-start
 BigRedThruster: ThrusterLarge
 BigThruster: ThrusterLarge
 HugeRedThruster: ThrusterLarge
@@ -1646,4 +1646,5 @@ HighSecCommandLocked: AirlockCommandLocked
 HighSecCentralCommandLocked: AirlockCentralCommandLocked
 HighSecArmoryLocked: AirlockArmoryLocked
 HighSecCaptainLocked: AirlockCaptainLocked
-# region Fish-end
+FishResearchScanner: null # Fish-edit: удалённый экспериментальный сканер.
+# Fish-end

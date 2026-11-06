@@ -34,7 +34,15 @@ public sealed partial class NodeScannerSystem : EntitySystem
             connected.NextUpdate = _timing.CurTime + connected.LinkUpdateInterval;
 
             var attachedArtifact = connected.AttachedTo;
-            var artifactCoordinates = Transform(attachedArtifact).Coordinates;
+            // Fish-start: удалённый артефакт не оставляет недействительную связь.
+            if (!HasComp<XenoArtifactComponent>(attachedArtifact) ||
+                !TryComp(attachedArtifact, out TransformComponent? artifactTransform))
+            {
+                RemCompDeferred(uid, connected);
+                continue;
+            }
+            var artifactCoordinates = artifactTransform.Coordinates;
+            // Fish-end
             if (!_transform.InRange(artifactCoordinates, transform.Coordinates, scanner.MaxLinkedRange))
             {
                 //scanner is too far, disconnect

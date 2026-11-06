@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Unmodified bluespace_crystal states extracted from https://github.com/Goob-Station/Goob-Station/tree/38347df977cdecca5775c6a23c5c089406d25760/Resources/Textures/_Goobstation/Objects/Materials/materials.rsi. Original metadata: Taken from tg at https://github.com/tgstation/tgstation/blob/master/icons/obj/stack_objects.dmi. hex_1 and screw_1 created by @LuciferEOS (github) for Goobstation The hex and screw states mentioned in the original metadata are not included. Goob Station port by yglop: https://github.com/Goob-Station/Goob-Station/commit/13b24470bc1d53f9b390fa39423a2a864911fa32; the original upstream attributions above are retained. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "y": 32,
+    "x": 32
+  },
+  "states": [
+    {
+      "name": "bluespace_crystal"
+    },
+    {
+      "name": "bluespace_crystal_2"
+    },
+    {
+      "name": "bluespace_crystal_3"
+    }
+  ]
+}

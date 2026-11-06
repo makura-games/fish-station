@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "ParadiseSS13 contributors. Source: https://github.com/ParadiseSS13/Paradise/tree/d118a2ce60b712046ebb180834200fc8d25c91c8/icons. Original engineering-*-sealed states from mob/clothing/modsuit/mod_clothing.dmi and obj/clothing/modsuit/mod_clothing.dmi. Converted from DMI to RSI for Fish; boots, chestplate and gauntlets composed into one outer-clothing layer; helmet kept separate. Original colors and pixels preserved. License: https://creativecommons.org/licenses/by-sa/3.0/. In-hand state s_helmet from mob/inhands/clothing_lefthand.dmi and corresponding righthand atlas; generic space-helmet hand fallback.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon"
+    },
+    {
+      "name": "equipped-head",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+- type: entity
+  abstract: true
+  parent: ClothingHeadHardsuitBase
+  id: FishClothingHeadHardsuitResearchBase
+  name: research hardsuit helmet
+  suffix: Fish
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+  - type: Clothing
+    clothingVisuals:
+      head:
+      - state: equipped-head
+  - type: PressureProtection
+    highPressureMultiplier: 0.1
+    lowPressureMultiplier: 1000
+  - type: HandheldLight
+    addPrefix: false
+  - type: ItemTogglePointLight
+  - type: ToggleableVisuals
+    spriteLayer: null
+  - type: PointLight
+    enabled: false
+    radius: 3
+    energy: 2
+    lightMask: ConeSingle
+    autoRot: true
+    netsync: false
+  - type: Appearance
+  - type: Battery
+    maxCharge: 600
+    startingCharge: 600
+  - type: BatterySelfRecharger
+    autoRechargeRate: 2
+
+- type: entity
+  parent: FishClothingHeadHardsuitResearchBase
+  id: FishClothingHeadHelmetHardsuitExpedition
+  name: expedition helmet
+  description: A reinforced yellow helmet with a broad visor and an expedition headlamp.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/expedition.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/expedition.rsi
+  - type: PointLight
+    radius: 5
+    color: "#fff3c1"
+
+- type: entity
+  parent: FishClothingHeadHardsuitResearchBase
+  id: FishClothingHeadHelmetHardsuitEngineeringAdvanced
+  name: industrial helmet
+  description: An Icarus helmet with a shielded visor and an insulated neck seal.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/engineering_advanced.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/engineering_advanced.rsi
+  - type: PointLight
+    radius: 4
+    color: "#ffdbad"
+  - type: FireProtection
+    reduction: 0.1
+  - type: EyeProtection
+  - type: FlashImmunity
+
+- type: entity
+  parent: [FishClothingHeadHardsuitResearchBase, ShowMedicalIcons]
+  id: FishClothingHeadHelmetHardsuitMedicalRescue
+  name: rescue helmet
+  description: A white Valkyrie helmet with a blue visor and an integrated medical display.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/medical_rescue.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/medical_rescue.rsi
+  - type: PointLight
+    color: "#adf1ff"
+
+- type: entity
+  parent: FishClothingHeadHardsuitResearchBase
+  id: FishClothingHeadHelmetHardsuitSecurityAdvanced
+  name: riot helmet
+  description: A heavily plated security helmet with a recessed visor and red markings.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/security_advanced.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/security_advanced.rsi
+
+- type: entity
+  parent: FishClothingHeadHardsuitResearchBase
+  id: FishClothingHeadHelmetHardsuitResearch
+  name: laboratory helmet
+  description: A white laboratory helmet with purple trim and a shielded visor.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/research.rsi
+    layers:
+    - state: icon
+    - state: icon-unshaded
+      shader: unshaded
+    - state: light-overlay
+      visible: false
+      shader: unshaded
+      map: [light]
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/research.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-head
+      - state: equipped-head-unshaded
+        shader: unshaded
+  - type: ToggleableVisuals
+    spriteLayer: light
+    clothingVisuals:
+      head:
+      - state: equipped-head-light
+        shader: unshaded
+  - type: PointLight
+    color: "#dfc9ff"
+  - type: EyeProtection
+
+- type: entity
+  parent: FishClothingHeadHardsuitResearchBase
+  id: FishClothingHeadHelmetHardsuitCivilian
+  name: civilian helmet
+  description: A gray civilian helmet with a blue visor and a sealed neck ring.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/civilian.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/civilian.rsi

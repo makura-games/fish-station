@@ -1,0 +1,42 @@
+# Fish-edit: Нулевые пороги снимают проценты; int.MaxValue отключает выбор главной дисциплины.
+
+- type: !PartialOnly techDiscipline
+  id: Industrial
+  tierPrerequisites:
+    1: 0
+    2: 0
+    3: 0
+  lockoutTier: 2147483647
+
+- type: !PartialOnly techDiscipline
+  id: Arsenal
+  tierPrerequisites:
+    1: 0
+    2: 0
+    3: 0
+    4: 0
+  lockoutTier: 2147483647
+
+- type: !PartialOnly techDiscipline
+  id: Experimental
+  tierPrerequisites:
+    1: 0
+    2: 0
+    3: 0
+  lockoutTier: 2147483647
+
+- type: !PartialOnly techDiscipline
+  id: CivilianServices
+  tierPrerequisites:
+    1: 0
+    2: 0
+    3: 0
+  lockoutTier: 2147483647
+
+- type: !PartialOnly techDiscipline
+  id: Biochemical
+  tierPrerequisites:
+    1: 0
+    2: 0
+    3: 0
+  lockoutTier: 2147483647

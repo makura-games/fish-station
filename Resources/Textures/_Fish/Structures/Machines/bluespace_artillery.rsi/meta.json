@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/commit/29fe7720ca78f4999ae1c29a8abb2ebeaaf4bb4d , and edited by upnostnote (discord) for Space Station 14 server Fish Station",
+  "copyright": "Base cannon artwork: tgstation contributors, https://github.com/tgstation/tgstation/blob/d225d4800b0e8908f27088cee8d51016f5e003d9/icons/obj/lavaland/cannon.dmi . The source file was introduced by AnturK in https://github.com/tgstation/tgstation/pull/20009 . Adapted and edited for Fish Station by upnostnote (Discord), with changed canvas, geometry and animated states. Source license: https://github.com/tgstation/tgstation/blob/d225d4800b0e8908f27088cee8d51016f5e003d9/README.md#license . License: https://creativecommons.org/licenses/by-sa/3.0/.",
   "size": {
     "x": 384,
     "y": 96

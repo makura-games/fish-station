@@ -1,0 +1,31 @@
+- type: technology
+  id: FishBluespaceFieldResearch
+  name: research-technology-fish-bluespace-field
+  icon:
+    sprite: _Fish/Structures/Machines/bluespace_field.rsi
+    state: prober
+  discipline: Experimental
+  tier: 2
+  cost: 10000
+  technologyPrerequisites:
+  - FishBluespaceTheory
+  - AdvancedAnomalyResearch
+  recipeUnlocks:
+  - FishBluespaceProberBoard
+  - FishBluespaceSuppressorBoard
+
+- type: technology
+  id: FishBluespaceHarvesting
+  name: research-technology-fish-bluespace-harvesting
+  icon:
+    sprite: _Fish/Structures/Machines/bluespace_harvester.rsi
+    state: idle
+  discipline: Experimental
+  tier: 3
+  cost: 20000
+  technologyPrerequisites:
+  - FishBluespaceFieldResearch
+  - OptimizedMicrogalvanism
+  - FishUraniumProcessing
+  recipeUnlocks:
+  - FishBluespaceHarvesterBoard

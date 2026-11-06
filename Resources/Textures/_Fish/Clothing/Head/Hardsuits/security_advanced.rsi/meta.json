@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Baystation12 contributors. Source: https://github.com/Baystation12/Baystation12/tree/0c6465957eda6dd016824b420377c6efaffb8eee/icons. Body states rig-secalt from mob/onmob/onmob_suit.dmi and obj/clothing/obj_suit.dmi; helmet states secalt_helm from mob/onmob/onmob_head.dmi and rig0-secalt from obj/clothing/obj_head.dmi. Converted from DMI to RSI for Fish; sprite pixels preserved. License: https://creativecommons.org/licenses/by-sa/3.0/. In-hand state sec_helm from mob/onmob/items/lefthand_hats.dmi and corresponding righthand atlas.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon"
+    },
+    {
+      "name": "equipped-head",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}

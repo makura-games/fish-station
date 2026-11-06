@@ -1,9 +1,10 @@
 - type: guideEntry
   id: Science
   name: guide-entry-science
-  text: "/ServerInfo/Guidebook/Science/Science.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Research/Overview.xml" # Fish-edit: актуальные правила исследований и оборудования.
   children:
   - Technologies
+  - FishResearch # Fish-edit: практическое руководство по РНД.
   - AnomalousResearch
   - Xenoarchaeology
   - Robotics
@@ -11,13 +12,13 @@
 - type: guideEntry
   id: Technologies
   name: guide-entry-technologies
-  text: "/ServerInfo/Guidebook/_Sunrise/Science/Technologies.xml" # Sunrise-Edit
+  text: "/ServerInfo/Guidebook/_Fish/Research/Catalog.xml" # Fish-edit: сохраняем каталог без отменённых ограничений уровней.
   filterEnabled: True
 
 - type: guideEntry
   id: AnomalousResearch
   name: guide-entry-anomalous-research
-  text: "/ServerInfo/Guidebook/Science/AnomalousResearch.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Research/Anomalies.xml" # Fish-edit: пошаговое руководство по аномалиям.
   children:
   - APE
   - ScannersAndVessels
@@ -25,17 +26,17 @@
 - type: guideEntry
   id: ScannersAndVessels
   name: guide-entry-scanners-and-vessels
-  text: "/ServerInfo/Guidebook/Science/ScannersAndVessels.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Research/AnomalyEquipment.xml" # Fish-edit: привязка контейнера и получение очков.
 
 - type: guideEntry
   id: APE
   name: guide-entry-ape
-  text: "/ServerInfo/Guidebook/Science/APE.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Research/Particles.xml" # Fish-edit: выбор частиц и обслуживание аномалии.
 
 - type: guideEntry
   id: Xenoarchaeology
   name: guide-entry-xenoarchaeology
-  text: "/ServerInfo/Guidebook/Science/Xenoarchaeology.xml"
+  text: "/ServerInfo/Guidebook/_Fish/Research/Artifacts.xml" # Fish-edit: артефакты и ручной сканер с деревом узлов.
   children:
     - AnalysisConsole
     - XenoarchaeologyUnlockingNodes
