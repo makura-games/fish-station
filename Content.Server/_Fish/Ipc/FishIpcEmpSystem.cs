@@ -1,4 +1,5 @@
 using Content.Shared._Fish.Ipc;
+using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Emp;
@@ -21,9 +22,21 @@ public sealed partial class FishIpcEmpSystem : EntitySystem
     private void OnEmp(EntityUid uid, FishIpcComponent component, ref EmpPulseEvent args)
     {
         args.Affected = true;
-        args.Disabled = true;
 
-        var energy = Math.Clamp(args.EnergyConsumption / 1000f, 5f, 60f);
+        var mult = 1f;
+        if (TryComp<FishIpcEmpScreenHostComponent>(uid, out var screen))
+        {
+            mult = screen.DamageMultiplier;
+            if (!screen.BlockDisable)
+                args.Disabled = true;
+            // С экраном шасси не уходит в полный EMP-disable.
+        }
+        else
+        {
+            args.Disabled = true;
+        }
+
+        var energy = Math.Clamp(args.EnergyConsumption / 1000f, 5f, 60f) * mult;
         _damageable.TryChangeDamage(uid, new DamageSpecifier
         {
             DamageDict =
@@ -33,6 +46,10 @@ public sealed partial class FishIpcEmpSystem : EntitySystem
             }
         }, true, false, origin: args.User);
 
-        _popup.PopupEntity(Loc.GetString("fish-ipc-emp-hit"), uid, uid, PopupType.LargeCaution);
+        _popup.PopupEntity(
+            Loc.GetString(mult < 1f ? "fish-ipc-emp-hit-screened" : "fish-ipc-emp-hit"),
+            uid,
+            uid,
+            PopupType.LargeCaution);
     }
 }

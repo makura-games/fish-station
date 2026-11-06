@@ -6,9 +6,10 @@ using Content.Shared.Mobs.Systems;
 namespace Content.Server._Fish.Ipc.Modules;
 
 /// <summary>
-/// Пассивный наноремонт установленных модулей КПБ.
+/// Пассивный хил установленных модулей (наноремонт / реактивный).
+/// Поддерживает и новый <see cref="FishIpcPassiveHealModuleComponent"/>, и legacy NanoRepair.
 /// </summary>
-public sealed partial class FishIpcNanoRepairSystem : EntitySystem
+public sealed partial class FishIpcPassiveHealSystem : EntitySystem
 {
     [Dependency] private FishIpcModuleSystem _modules = default!;
     [Dependency] private DamageableSystem _damageable = default!;
@@ -18,8 +19,15 @@ public sealed partial class FishIpcNanoRepairSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        var query = EntityQueryEnumerator<FishIpcNanoRepairModuleComponent, FishIpcModuleComponent>();
-        while (query.MoveNext(out _, out var repair, out var module))
+        TickHeal<FishIpcPassiveHealModuleComponent>(frameTime, static (_, heal, _) => heal.HealPerSecond);
+        TickHeal<FishIpcNanoRepairModuleComponent>(frameTime, static (_, heal, _) => heal.HealPerSecond);
+    }
+
+    private void TickHeal<T>(float frameTime, Func<EntityUid, T, FishIpcModuleComponent, Content.Shared.Damage.DamageSpecifier> getHeal)
+        where T : Component
+    {
+        var query = EntityQueryEnumerator<T, FishIpcModuleComponent>();
+        while (query.MoveNext(out var uid, out var healComp, out var module))
         {
             if (!module.Installed || module.InstalledEntity is not { } host)
                 continue;
@@ -27,7 +35,6 @@ public sealed partial class FishIpcNanoRepairSystem : EntitySystem
             if (TerminatingOrDeleted(host) || _mobState.IsDead(host))
                 continue;
 
-            // Не чиним при power-down: эффект модулей останавливается вместе с шасси.
             if (TryComp<FishIpcComponent>(host, out var ipc) && ipc.PowerDown)
                 continue;
 
@@ -35,7 +42,7 @@ public sealed partial class FishIpcNanoRepairSystem : EntitySystem
             if (fraction < module.MinChargeFraction)
                 continue;
 
-            var heal = repair.HealPerSecond * frameTime;
+            var heal = getHeal(uid, healComp, module) * frameTime;
             _damageable.TryChangeDamage(host, heal, ignoreResistances: true, interruptsDoAfters: false);
         }
     }

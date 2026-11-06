@@ -11,6 +11,81 @@
     Gold: 100
 
 - type: latheRecipe
+  id: FishIpcModuleApcAdapter
+  result: FishIpcModuleApcAdapter
+  completetime: 30
+  materials:
+    Steel: 1400
+    Glass: 700
+    Plastic: 500
+    Silver: 250
+    Gold: 150
+
+- type: latheRecipe
+  id: FishIpcModuleVocalMod
+  result: FishIpcModuleVocalMod
+  completetime: 22
+  materials:
+    Steel: 900
+    Glass: 600
+    Plastic: 700
+    Silver: 150
+
+- type: latheRecipe
+  id: FishIpcModuleToolHand
+  result: FishIpcModuleToolHand
+  completetime: 35
+  materials:
+    Steel: 1800
+    Glass: 400
+    Plastic: 400
+    Silver: 200
+    Gold: 100
+
+- type: latheRecipe
+  id: FishIpcModuleMedHud
+  result: FishIpcModuleMedHud
+  completetime: 40
+  materials:
+    Steel: 1000
+    Glass: 1200
+    Plastic: 800
+    Silver: 300
+    Gold: 200
+
+- type: latheRecipe
+  id: FishIpcModuleSecHud
+  result: FishIpcModuleSecHud
+  completetime: 40
+  materials:
+    Steel: 1000
+    Glass: 1200
+    Plastic: 800
+    Silver: 300
+    Gold: 200
+
+- type: latheRecipe
+  id: FishIpcModuleMeson
+  result: FishIpcModuleMeson
+  completetime: 35
+  materials:
+    Steel: 900
+    Glass: 1100
+    Plastic: 600
+    Silver: 200
+
+- type: latheRecipe
+  id: FishIpcModuleNightVision
+  result: FishIpcModuleNightVision
+  completetime: 50
+  materials:
+    Steel: 1400
+    Glass: 1400
+    Plasma: 600
+    Silver: 400
+    Gold: 250
+
+- type: latheRecipe
   id: FishIpcModuleNanoRepair
   result: FishIpcModuleNanoRepair
   completetime: 55
@@ -21,4 +96,85 @@
     Silver: 400
     Gold: 300
     Uranium: 200
+
+- type: latheRecipe
+  id: FishIpcModuleReactiveRepair
+  result: FishIpcModuleReactiveRepair
+  completetime: 55
+  materials:
+    Steel: 2100
+    Glass: 1100
+    Plasma: 900
+    Silver: 450
+    Gold: 320
+    Uranium: 220
+
+- type: latheRecipe
+  id: FishIpcModuleEmpScreen
+  result: FishIpcModuleEmpScreen
+  completetime: 50
+  materials:
+    Steel: 1800
+    Glass: 1000
+    Plasma: 700
+    Silver: 500
+    Gold: 280
+
+- type: latheRecipe
+  id: FishIpcModuleMagneticJoints
+  result: FishIpcModuleMagneticJoints
+  completetime: 48
+  materials:
+    Steel: 1700
+    Glass: 600
+    Plasma: 500
+    Silver: 350
+    Gold: 200
+
+- type: latheRecipe
+  id: FishIpcModuleSealedJoints
+  result: FishIpcModuleSealedJoints
+  completetime: 52
+  materials:
+    Steel: 1900
+    Glass: 700
+    Plasma: 650
+    Silver: 400
+    Gold: 250
+
+- type: latheRecipe
+  id: FishIpcModuleJumpstarter
+  result: FishIpcModuleJumpstarter
+  completetime: 60
+  materials:
+    Steel: 2200
+    Glass: 1000
+    Plasma: 900
+    Silver: 500
+    Gold: 400
+    Uranium: 250
+
+- type: latheRecipe
+  id: FishIpcModuleDefib
+  result: FishIpcModuleDefib
+  completetime: 65
+  materials:
+    Steel: 2400
+    Glass: 1400
+    Plasma: 1000
+    Silver: 600
+    Gold: 500
+    Uranium: 300
+
+- type: latheRecipe
+  id: FishIpcModuleRadFilter
+  result: FishIpcModuleRadFilter
+  completetime: 50
+  materials:
+    Steel: 1600
+    Glass: 1200
+    Plasma: 700
+    Silver: 450
+    Gold: 300
+    Uranium: 350
 # Fish-end

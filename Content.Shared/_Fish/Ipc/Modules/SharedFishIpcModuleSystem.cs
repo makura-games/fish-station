@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Lock;
@@ -26,10 +27,40 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<FishIpcModuleHostComponent, ComponentStartup>(OnHostStartup);
+        SubscribeLocalEvent<FishIpcModuleHostComponent, ComponentShutdown>(OnHostShutdown);
         SubscribeLocalEvent<FishIpcModuleHostComponent, AfterInteractUsingEvent>(OnHostInteractUsing);
         SubscribeLocalEvent<FishIpcModuleHostComponent, EntInsertedIntoContainerMessage>(OnModuleInserted);
         SubscribeLocalEvent<FishIpcModuleHostComponent, EntRemovedFromContainerMessage>(OnModuleRemoved);
+        SubscribeLocalEvent<FishIpcModuleHostComponent, ContainerIsInsertingAttemptEvent>(OnInsertAttempt);
         SubscribeLocalEvent<FishIpcModuleHostComponent, GetVerbsEvent<AlternativeVerb>>(OnHostVerbs);
+    }
+
+    private void OnHostShutdown(Entity<FishIpcModuleHostComponent> host, ref ComponentShutdown args)
+    {
+        if (host.Comp.ModuleContainer is not { } container)
+            return;
+
+        // Снимаем эффекты модулей до удаления контейнера.
+        foreach (var moduleUid in container.ContainedEntities.ToArray())
+        {
+            if (TryComp<FishIpcModuleComponent>(moduleUid, out var module) && module.Installed)
+                UninstallModule(host, (moduleUid, module));
+        }
+    }
+
+    private void OnInsertAttempt(Entity<FishIpcModuleHostComponent> host, ref ContainerIsInsertingAttemptEvent args)
+    {
+        if (args.Container.ID != host.Comp.ModuleContainerId)
+            return;
+
+        if (!TryComp<FishIpcModuleComponent>(args.EntityUid, out var module))
+        {
+            args.Cancel();
+            return;
+        }
+
+        if (!CanInsertModule(host, (args.EntityUid, module)))
+            args.Cancel();
     }
 
     private void OnHostVerbs(Entity<FishIpcModuleHostComponent> host, ref GetVerbsEvent<AlternativeVerb> args)
@@ -80,6 +111,9 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         if (!TryComp<FishIpcModuleComponent>(args.Used, out var module))
             return;
 
+        // Это модуль — не отдаём interact другим системам.
+        args.Handled = true;
+
         if (TryComp<WiresPanelComponent>(host, out var panel) && !panel.Open)
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-panel-closed"), host, args.User);
@@ -98,10 +132,7 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         if (host.Comp.ModuleContainer is not { } insertContainer)
             return;
 
-        if (!_container.Insert(args.Used, insertContainer))
-            return;
-
-        args.Handled = true;
+        _container.Insert(args.Used, insertContainer);
     }
 
     private void OnModuleInserted(Entity<FishIpcModuleHostComponent> host, ref EntInsertedIntoContainerMessage args)
@@ -133,13 +164,15 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
 
         if (container.ContainedEntities.Count >= host.Comp.MaxModules)
         {
-            _popup.PopupEntity(Loc.GetString("fish-ipc-module-too-many", ("max", host.Comp.MaxModules)), host, user);
+            if (user != null)
+                _popup.PopupEntity(Loc.GetString("fish-ipc-module-too-many", ("max", host.Comp.MaxModules)), host, user.Value);
             return false;
         }
 
         if (_whitelist.IsWhitelistFail(host.Comp.ModuleWhitelist, module))
         {
-            _popup.PopupEntity(Loc.GetString("fish-ipc-module-whitelist-deny"), host, user);
+            if (user != null)
+                _popup.PopupEntity(Loc.GetString("fish-ipc-module-whitelist-deny"), host, user.Value);
             return false;
         }
 
@@ -147,12 +180,16 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         {
             foreach (var other in container.ContainedEntities)
             {
+                if (other == module.Owner)
+                    continue;
+
                 if (!TryComp<FishIpcModuleComponent>(other, out var otherMod))
                     continue;
 
                 if (otherMod.ExclusionGroup == module.Comp.ExclusionGroup)
                 {
-                    _popup.PopupEntity(Loc.GetString("fish-ipc-module-exclusion"), host, user);
+                    if (user != null)
+                        _popup.PopupEntity(Loc.GetString("fish-ipc-module-exclusion"), host, user.Value);
                     return false;
                 }
             }

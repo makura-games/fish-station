@@ -1,5 +1,6 @@
 using Content.Server.Radio.EntitySystems;
 using Content.Shared._Fish.Ipc;
+using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Chat;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
@@ -58,6 +59,10 @@ public sealed partial class FishIpcRadioSystem : EntitySystem
         if (!ent.Comp.PowerDown || args.Channel == null)
             return;
 
+        // Вокальный модулятор держит эфир даже на низком заряде.
+        if (HasComp<FishIpcVocalModHostComponent>(ent.Owner))
+            return;
+
         // Без заряда префикс рации не уходит в эфир.
         args.Channel = null;
     }
@@ -66,6 +71,10 @@ public sealed partial class FishIpcRadioSystem : EntitySystem
     {
         if (TerminatingOrDeleted(ent.Owner) || !TryComp<IntrinsicRadioTransmitterComponent>(ent, out var transmitter))
             return;
+
+        // С вокальным модулятором рация не глушится power-down.
+        if (!enabled && HasComp<FishIpcVocalModHostComponent>(ent.Owner))
+            enabled = true;
 
         if (!enabled)
         {

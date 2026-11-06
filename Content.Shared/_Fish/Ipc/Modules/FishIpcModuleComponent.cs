@@ -42,3 +42,10 @@ public readonly record struct FishIpcModuleUninstalledEvent(EntityUid Host);
 /// <summary>Попытка вставить модуль; можно отменить.</summary>
 [ByRefEvent]
 public record struct FishIpcModuleInsertAttemptEvent(EntityUid Module, EntityUid Host, bool Cancelled = false);
+
+/// <summary>
+/// Попытка ампутации конечности на теле. Поднимается на Body до LimbSystem.Amputate.
+/// Модули суставов КПБ могут отменить.
+/// </summary>
+[ByRefEvent]
+public record struct FishIpcAmputationAttemptEvent(EntityUid User, EntityUid Part, bool Cancelled = false);

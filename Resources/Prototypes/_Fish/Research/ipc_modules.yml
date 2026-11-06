@@ -1,4 +1,4 @@
-# Fish-start: отдельные T3/T4 технологии модулей КПБ
+# Fish-start: отдельные T3/T4 технологии модулей КПБ (без anti-drop)
 - type: technology
   id: FishTechIpcWireInterface
   name: research-technology-fish-ipc-wire-interface
@@ -14,6 +14,104 @@
   - BasicRobotics
 
 - type: technology
+  id: FishTechIpcApcAdapter
+  name: research-technology-fish-ipc-apc-adapter
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 3
+  cost: 15000
+  recipeUnlocks:
+  - FishIpcModuleApcAdapter
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcVocalMod
+  name: research-technology-fish-ipc-vocal-mod
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 3
+  cost: 12000
+  recipeUnlocks:
+  - FishIpcModuleVocalMod
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcToolHand
+  name: research-technology-fish-ipc-tool-hand
+  icon:
+    sprite: Objects/Tools/crowbar.rsi
+    state: icon
+  discipline: Experimental
+  tier: 3
+  cost: 16000
+  recipeUnlocks:
+  - FishIpcModuleToolHand
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcMedHud
+  name: research-technology-fish-ipc-med-hud
+  icon:
+    sprite: Clothing/Eyes/Hud/med.rsi
+    state: icon
+  discipline: Experimental
+  tier: 3
+  cost: 15500
+  recipeUnlocks:
+  - FishIpcModuleMedHud
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcSecHud
+  name: research-technology-fish-ipc-sec-hud
+  icon:
+    sprite: Clothing/Eyes/Hud/sec.rsi
+    state: icon
+  discipline: Experimental
+  tier: 3
+  cost: 15500
+  recipeUnlocks:
+  - FishIpcModuleSecHud
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcMeson
+  name: research-technology-fish-ipc-meson
+  icon:
+    sprite: Clothing/Eyes/Glasses/meson.rsi
+    state: icon
+  discipline: Experimental
+  tier: 3
+  cost: 14500
+  recipeUnlocks:
+  - FishIpcModuleMeson
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcNightVision
+  name: research-technology-fish-ipc-night-vision
+  icon:
+    sprite: Interface/Actions/night_vision.rsi
+    state: icon
+  discipline: Experimental
+  tier: 4
+  cost: 22000
+  recipeUnlocks:
+  - FishIpcModuleNightVision
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
   id: FishTechIpcNanoRepair
   name: research-technology-fish-ipc-nano-repair
   icon:
@@ -24,6 +122,104 @@
   cost: 24000
   recipeUnlocks:
   - FishIpcModuleNanoRepair
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcReactiveRepair
+  name: research-technology-fish-ipc-reactive-repair
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 4
+  cost: 25000
+  recipeUnlocks:
+  - FishIpcModuleReactiveRepair
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcEmpScreen
+  name: research-technology-fish-ipc-emp-screen
+  icon:
+    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
+    state: base
+  discipline: Experimental
+  tier: 4
+  cost: 23000
+  recipeUnlocks:
+  - FishIpcModuleEmpScreen
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcMagneticJoints
+  name: research-technology-fish-ipc-magnetic-joints
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 4
+  cost: 22000
+  recipeUnlocks:
+  - FishIpcModuleMagneticJoints
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcSealedJoints
+  name: research-technology-fish-ipc-sealed-joints
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 4
+  cost: 23500
+  recipeUnlocks:
+  - FishIpcModuleSealedJoints
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcJumpstarter
+  name: research-technology-fish-ipc-jumpstarter
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 4
+  cost: 26000
+  recipeUnlocks:
+  - FishIpcModuleJumpstarter
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcDefib
+  name: research-technology-fish-ipc-defib
+  icon:
+    sprite: Objects/Specific/Medical/defib.rsi
+    state: icon
+  discipline: Experimental
+  tier: 4
+  cost: 28000
+  recipeUnlocks:
+  - FishIpcModuleDefib
+  technologyPrerequisites:
+  - BasicRobotics
+
+- type: technology
+  id: FishTechIpcRadFilter
+  name: research-technology-fish-ipc-rad-filter
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 4
+  cost: 24000
+  recipeUnlocks:
+  - FishIpcModuleRadFilter
   technologyPrerequisites:
   - BasicRobotics
 # Fish-end

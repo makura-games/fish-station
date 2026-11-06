@@ -1,7 +1,21 @@
-# Fish-start: dynamic pack модулей КПБ (не автолат)
+# Fish-start: dynamic pack модулей КПБ
 - type: latheRecipePack
   id: FishIpcModulesDynamic
   recipes:
   - FishIpcModuleWireInterface
+  - FishIpcModuleApcAdapter
+  - FishIpcModuleVocalMod
+  - FishIpcModuleToolHand
+  - FishIpcModuleMedHud
+  - FishIpcModuleSecHud
+  - FishIpcModuleMeson
+  - FishIpcModuleNightVision
   - FishIpcModuleNanoRepair
+  - FishIpcModuleReactiveRepair
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleMagneticJoints
+  - FishIpcModuleSealedJoints
+  - FishIpcModuleJumpstarter
+  - FishIpcModuleDefib
+  - FishIpcModuleRadFilter
 # Fish-end

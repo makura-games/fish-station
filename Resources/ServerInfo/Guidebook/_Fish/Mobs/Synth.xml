@@ -33,12 +33,15 @@
 
   ## Модули шасси
   <Box>
-    <GuideEntityEmbed Entity="FishIpcModuleWireInterface" Caption="Интерфейс проводов"/>
+    <GuideEntityEmbed Entity="FishIpcModuleWireInterface" Caption="Интерфейс"/>
     <GuideEntityEmbed Entity="FishIpcModuleNanoRepair" Caption="Наноремонт"/>
+    <GuideEntityEmbed Entity="FishIpcModuleDefib" Caption="Дефиб"/>
+    <GuideEntityEmbed Entity="FishIpcModuleEmpScreen" Caption="EMP-экран"/>
   </Box>
 
-  - В открытый разблокированный корпус ставятся до [color=yellow]трёх[/color] модулей (РНД T3–T4, дорогой крафт на фабрикаторе экзокостюмов / протолате).
+  - В открытый разблокированный корпус ставятся до [color=yellow]трёх[/color] модулей (отдельные Experimental tech T3–T4, дорогой крафт на фабрикаторе экзокостюмов / протолате).
   - Модули едят заряд батареи. Самозаряжающиеся ячейки (микрореакторка) в КПБ не встают.
+  - Группы взаимоисключения: ремонт (нано/реактивный), суставы (магнит/герметика), зрение (мед/сек/мезон/ПНВ).
   - Снимают модули из контекстного меню при открытой панели.
 
   ## Связь и голос

@@ -1,0 +1,41 @@
+# Fish-start: actions модулей КПБ
+- type: entity
+  parent: BaseAction
+  id: FishActionIpcDefib
+  name: Chassis defibrillator
+  description: Discharge the chassis capacitors into a patient. Huge battery cost.
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Objects/Specific/Medical/defib.rsi
+    state: icon
+  - type: TargetAction
+    range: 1.5
+    interactOnMiss: false
+  - type: EntityTargetAction
+    event: !type:FishIpcDefibActionEvent
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+
+- type: entity
+  parent: BaseAction
+  id: FishActionIpcJumpstarter
+  name: Jumpstarter pulse
+  description: Dump capacitor charge to claw out of critical condition.
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: NoItem
+    # Jumpstarter должен работать в crit.
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: InstantAction
+    event: !type:FishIpcJumpstarterActionEvent
+# Fish-end

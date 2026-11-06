@@ -88,4 +88,14 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
         var (charge, max) = _battery.GetCharge(battery.Value.Owner);
         return max <= 0f ? 0f : charge / max;
     }
+
+    /// <summary>Максимальный заряд батареи хоста в Дж, либо 0.</summary>
+    public float GetHostMaxCharge(EntityUid host)
+    {
+        if (!_powerCell.TryGetBatteryFromSlot(host, out var battery))
+            return 0f;
+
+        var (_, max) = _battery.GetCharge(battery.Value.Owner);
+        return max;
+    }
 }
