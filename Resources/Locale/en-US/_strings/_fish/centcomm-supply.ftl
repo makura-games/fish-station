@@ -1,6 +1,6 @@
 centcomm-supply-window-title = CentComm Supply
 centcomm-supply-window-account-name-label = Account name:
-centcomm-supply-window-account-name = [bold]Central Command[/bold] [font="Monospace"]\[CC\][/font]
+centcomm-supply-window-account-name = [color=darkgreen][bold]Central Command[/bold] [font="Monospace"]\[CC\][/font][/color]
 centcomm-supply-window-station = Station:
 centcomm-supply-window-search-placeholder = Search
 centcomm-supply-window-categories-label = Categories:
@@ -22,19 +22,17 @@ centcomm-supply-order-row-title = { $product } × { $count }
 centcomm-supply-order-row-remove = Remove
 
 centcomm-supply-unknown-station = Unknown station
-centcomm-supply-announcement = Attention! Central Command has approved special equipment order #{ $number } for { $station }. The cargo will be delivered to the supply department shortly.
-centcomm-supply-announcement-sender = Nanotrasen
-centcomm-supply-order-accepted = Order #{ $number } accepted. Delivery to the supply department in { $seconds } sec.
-centcomm-supply-paper-name = Supply order #{ $orderNumber }
-centcomm-supply-paper-text =
-    [head=2]Supply order #{ $orderNumber }[/head]
-    { "[bold]Station:[/bold]" } { $station }
-    { "[bold]Requester:[/bold]" } Central Command
-    { "[bold]Sender:[/bold]" } Nanotrasen
-    { "[bold]Reason:[/bold]" } special equipment
-    { "[bold]Approved by:[/bold]" } Nanotrasen
-    { "[head=3]Order contents[/head]" }
+centcomm-supply-announcement = Attention! Central Command has approved a special equipment order for { $station }. The cargo will be delivered to the supply department shortly.
+centcomm-supply-announcement-sender = Central Command
+centcomm-supply-order-accepted = Order accepted. Await delivery to the supply department.
+centcomm-supply-paper-name = Order #{ $orderNumber }
+centcomm-supply-paper-text = Order #{ $orderNumber }
     { $contents }
+    Requested by: Nanotrasen
+    Reason: special equipment
+    Approved by: Supply Department (Nanotrasen)
+centcomm-supply-paper-product = Product: { $product }
+centcomm-supply-paper-quantity = Quantity: { $quantity }
 
 centcomm-supply-error-access = Access denied.
 centcomm-supply-error-invalid-station = Invalid station.

@@ -6,7 +6,9 @@ using Content.Server.GameTicking;
 using Content.Server.Station.Systems;
 using Content.Shared._Fish.CentCommSupply;
 using Content.Shared.Access.Components;
+using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Maps;
+using Content.Shared.Paper;
 using Content.Shared.Storage.Components;
 using NUnit.Framework;
 using Robust.Server.GameObjects;
@@ -31,6 +33,7 @@ public sealed class CentCommSupplyTest
         var ticker = server.System<GameTicker>();
         var stationSystem = server.System<StationSystem>();
         var mapSystem = server.System<MapSystem>();
+        var labelSystem = server.System<LabelSystem>();
         var ui = server.System<UserInterfaceSystem>();
         var bus = entMan.EventBus;
 
@@ -139,6 +142,16 @@ public sealed class CentCommSupplyTest
             foreach (var crate in crates)
             {
                 Assert.That(stationSystem.GetOwningStation(crate), Is.EqualTo(target));
+
+                Assert.That(labelSystem.TryGetLabel<PaperComponent>(crate, out var label), Is.True,
+                    "CentComm supply invoice was not attached to the crate");
+                Assert.That(label!.Value.Comp.Content, Is.Not.Empty, "CentComm supply invoice is blank");
+                Assert.That(label.Value.Comp.Content, Does.Contain("\n"),
+                    "CentComm supply invoice contains only one line");
+                Assert.That(label.Value.Comp.Content, Does.Not.Contain("centcomm-supply-paper-text"),
+                    "CentComm supply invoice localization key was not resolved");
+                Assert.That(label.Value.Comp.Content, Does.Not.Contain("centcomm-supply-paper-product"),
+                    "CentComm supply invoice product localization key was not resolved");
 
                 var storage = entMan.GetComponent<EntityStorageComponent>(crate);
                 products.AddRange(storage.Contents.ContainedEntities

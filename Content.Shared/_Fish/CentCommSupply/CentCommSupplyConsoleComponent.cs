@@ -26,7 +26,7 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     /// Delay between successful orders.
     /// </summary>
     [DataField]
-    public TimeSpan OrderCooldown = TimeSpan.FromSeconds(10);
+    public TimeSpan OrderCooldown = TimeSpan.FromSeconds(120);
 
     /// <summary>
     /// Crate prototype used to pack ordered items.
@@ -38,10 +38,10 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     /// Delay between accepting an order and delivering its crates to the station.
     /// </summary>
     [DataField]
-    public TimeSpan DeliveryDelay = TimeSpan.FromMinutes(1);
+    public TimeSpan DeliveryDelay = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Localized announcement played when an order is accepted. Arguments: order number and station name.
+    /// Localized announcement played when an order is accepted. Argument: station name.
     /// </summary>
     [DataField]
     public LocId OrderAnnouncement = "centcomm-supply-announcement";
@@ -53,10 +53,16 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     public LocId AnnouncementSender = "centcomm-supply-announcement-sender";
 
     /// <summary>
-    /// Sound played together with the order announcement.
+    /// Sound played globally when the order arrives at the station.
     /// </summary>
     [DataField]
-    public SoundSpecifier? AnnouncementSound = new SoundPathSpecifier("/Audio/Announcements/announce.ogg");
+    public SoundSpecifier? DeliverySound = new SoundPathSpecifier("/Audio/Announcements/announce.ogg");
+
+    /// <summary>
+    /// Sound played when the order is approved.
+    /// </summary>
+    [DataField]
+    public SoundSpecifier? ApproveSound = new SoundPathSpecifier("/Audio/Effects/Cargo/ping.ogg");
 
     /// <summary>
     /// Station currently selected in the console.

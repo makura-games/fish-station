@@ -1,6 +1,6 @@
 centcomm-supply-window-title = Снабжение Центком
 centcomm-supply-window-account-name-label = Имя аккаунта:
-centcomm-supply-window-account-name = [bold]Центральное Командование[/bold] [font="Monospace"]\[ЦК\][/font]
+centcomm-supply-window-account-name = [color=darkgreen][bold]Центральное Командование[/bold] [font="Monospace"]\[ЦК\][/font][/color]
 centcomm-supply-window-station = Станция:
 centcomm-supply-window-search-placeholder = Поиск
 centcomm-supply-window-categories-label = Категории:
@@ -22,19 +22,17 @@ centcomm-supply-order-row-title = { $product } × { $count }
 centcomm-supply-order-row-remove = Убрать
 
 centcomm-supply-unknown-station = Неизвестная станция
-centcomm-supply-announcement = Внимание! Центральное командование одобрило заказ #{ $number } на особое снаряжение для станции { $station }. Груз будет доставлен в отдел снабжения в ближайшее время.
-centcomm-supply-announcement-sender = Нанотрейзен
-centcomm-supply-order-accepted = Заказ #{ $number } оформлен. Доставка в отдел снабжения через { $seconds } сек.
-centcomm-supply-paper-name = Заказ снабжения #{ $orderNumber }
-centcomm-supply-paper-text =
-    [head=2]Заказ снабжения #{ $orderNumber }[/head]
-    { "[bold]Станция:[/bold]" } { $station }
-    { "[bold]Заказчик:[/bold]" } Центральное командование
-    { "[bold]Отправитель:[/bold]" } Нанотрейзен
-    { "[bold]Причина:[/bold]" } особое снаряжение
-    { "[bold]Одобрено:[/bold]" } Нанотрейзен
-    { "[head=3]Состав заказа[/head]" }
+centcomm-supply-announcement = Внимание! Центральное командование одобрило заказ на особое снаряжение для станции { $station }. Груз будет доставлен в отдел снабжения в ближайшее время.
+centcomm-supply-announcement-sender = Центральное командование
+centcomm-supply-order-accepted = Заказ оформлен. Ожидайте доставку в отдел снабжения.
+centcomm-supply-paper-name = Заказ #{ $orderNumber }
+centcomm-supply-paper-text = Заказ #{ $orderNumber }
     { $contents }
+    Запросил: Нанотрейзен
+    Причина: особое снаряжение
+    Одобрил: отдел снабжения (Нанотрейзен)
+centcomm-supply-paper-product = Товар: { $product }
+centcomm-supply-paper-quantity = Кол-во: { $quantity }
 
 centcomm-supply-error-access = Доступ запрещён.
 centcomm-supply-error-invalid-station = Неверная станция.

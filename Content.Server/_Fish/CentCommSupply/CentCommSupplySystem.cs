@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server.Administration.Logs;
 using Content.Server.Cargo.Components;
 using Content.Server.Chat.Systems;
+using Content.Server.GameTicking;
 using Content.Server.Popups;
 using Content.Server.Station.Systems;
 using Content.Server.Storage.EntitySystems;
@@ -16,9 +17,12 @@ using Content.Shared.Popups;
 using Content.Shared.Station.Components;
 using Content.Shared.Storage.Components;
 using Robust.Server.GameObjects;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -34,6 +38,7 @@ public sealed partial class CentCommSupplySystem : EntitySystem
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private EntityStorageSystem _storage = default!;
+    [Dependency] private GameTicker _gameTicker = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
@@ -42,6 +47,7 @@ public sealed partial class CentCommSupplySystem : EntitySystem
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private PaperSystem _paper = default!;
     [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
@@ -58,6 +64,7 @@ public sealed partial class CentCommSupplySystem : EntitySystem
         public EntProtoId PaperPrototype;
         public string StationName = string.Empty;
         public string Contents = string.Empty;
+        public SoundSpecifier? DeliverySound;
         public List<EntityUid> Crates = new();
     }
 
@@ -233,7 +240,10 @@ public sealed partial class CentCommSupplySystem : EntitySystem
                 return;
             }
 
-            productSummary.Add($"{Loc.GetString(product.Name)} ×{entry.Quantity}");
+            productSummary.Add(Loc.GetString("centcomm-supply-paper-product",
+                ("product", Loc.GetString(product.Name))));
+            productSummary.Add(Loc.GetString("centcomm-supply-paper-quantity",
+                ("quantity", entry.Quantity)));
 
             foreach (var content in product.Contents)
             {
@@ -343,21 +353,21 @@ public sealed partial class CentCommSupplySystem : EntitySystem
             OrderNumber = orderNumber,
             PaperPrototype = paperPrototype,
             StationName = stationName,
-            Contents = string.Join(", ", productSummary),
+            Contents = string.Join("\n", productSummary),
+            DeliverySound = ent.Comp.DeliverySound,
             Crates = crates,
         });
 
         ent.Comp.SelectedStation = station;
         ent.Comp.NextOrderTime = now + ent.Comp.OrderCooldown;
+        _audio.PlayPvs(ent.Comp.ApproveSound, ent.Owner);
 
         var announcement = Loc.GetString(ent.Comp.OrderAnnouncement,
-            ("number", orderNumber),
             ("station", stationName));
-        _chat.DispatchStationAnnouncement(station,
+        _chat.DispatchGlobalAnnouncement(
             announcement,
             sender: Loc.GetString(ent.Comp.AnnouncementSender),
-            playDefault: false,
-            announcementSound: ent.Comp.AnnouncementSound);
+            playDefault: false);
 
         var summary = string.Join(", ", args.Entries.Select(entry => $"{entry.ProductId} x{entry.Quantity}"));
         _adminLog.Add(
@@ -365,10 +375,7 @@ public sealed partial class CentCommSupplySystem : EntitySystem
             LogImpact.High,
             $"{ToPrettyString(args.Actor)} ordered CentComm supplies #{orderNumber} via {ToPrettyString(ent)} for {ToPrettyString(station)}: {summary}");
 
-        var seconds = Math.Max(1, (int) Math.Ceiling(deliveryDelay.TotalSeconds));
-        var accepted = Loc.GetString("centcomm-supply-order-accepted",
-            ("number", orderNumber),
-            ("seconds", seconds));
+        var accepted = Loc.GetString("centcomm-supply-order-accepted");
         _popup.PopupEntity(accepted, ent.Owner, args.Actor, PopupType.Medium);
         UpdateUi(ent, accepted, orderPlaced: true);
     }
@@ -438,6 +445,10 @@ public sealed partial class CentCommSupplySystem : EntitySystem
         foreach (var crate in order.Crates)
             AttachInvoice(crate, order);
 
+        _audio.PlayGlobal(order.DeliverySound,
+            Filter.Empty().AddWhere(_gameTicker.UserHasJoinedGame),
+            true);
+
         _adminLog.Add(
             LogType.Action,
             LogImpact.Low,
@@ -455,7 +466,6 @@ public sealed partial class CentCommSupplySystem : EntitySystem
                 Loc.GetString("centcomm-supply-paper-name", ("orderNumber", order.OrderNumber)));
             _paper.SetContent((paper, paperComponent), Loc.GetString("centcomm-supply-paper-text",
                 ("orderNumber", order.OrderNumber),
-                ("station", order.StationName),
                 ("contents", order.Contents)));
         }
 
