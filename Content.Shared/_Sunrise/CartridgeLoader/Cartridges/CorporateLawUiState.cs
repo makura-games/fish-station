@@ -37,11 +37,15 @@ public sealed class LawEntry
     public readonly string? Identifier;
     public readonly string Title;
     public readonly string Description;
+    // Fish-start: базовый срок статьи для отображения в КПК СБ
+    public readonly int BaseSentence;
+    // Fish-end
 
-    public LawEntry(string? identifier, string title, string description)
+    public LawEntry(string? identifier, string title, string description, int baseSentence = 0)
     {
         Identifier = identifier;
         Title = title;
         Description = description;
+        BaseSentence = baseSentence; // Fish-edit: передаём базовый срок
     }
 }
