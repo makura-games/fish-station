@@ -23,7 +23,7 @@
   footstepCollection:
     collection: FootstepBorg
   # Mk2 рисуется с холста _Fish вместо Mobs/Silicon/chassis.rsi с масштабом 0.8;
-  # смещение 0,0.4 (= 0,0.5 × scale) совпадает с низом кадра 32×64.
+  # смещение 0,0.4 (= 0,0.5 × 0.8) совпадает с низом кадра 32×64.
   spriteRsiPath: _Fish/Mobs/Silicon/chassis.rsi
   spriteOffset: 0,0.4
   spriteScale: 0.8
@@ -86,7 +86,6 @@
   dummyPrototype: FishBorgChassisMedicalMk2
   # Шаблон с belt-слотом (обычные борги остаются на borgShort/borgTall/borgDutch).
   inventoryTemplateId: FishBorgDutchMk2
-  # Как у инженерного МК2, вместо hover-звука обычного медицинского борга.
   footstepCollection:
     collection: FootstepBorg
   spriteBodyMovementState: medical

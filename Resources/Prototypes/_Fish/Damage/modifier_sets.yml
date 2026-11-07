@@ -6,6 +6,7 @@
     Blunt: 1.2
     Piercing: 1.2
 
+# Такие же характеристики что у киборгов, но с увеличенной защитой от структурных повреждений
 - type: damageModifierSet
   id: FishBorgReaper
   coefficients:
