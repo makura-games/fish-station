@@ -28,6 +28,7 @@
     eyes: ClothingEyesGlassesSecurity
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     # gloves: ClothingHandsGlovesCombat #Sunrise-Edit
+    gloves: ClothingHandsPowerGlovesUplinkNTERTCBURN # Fish-edit
     outerClothing: ClothingOuterHardsuitCBURN
     shoes: ClothingShoesBootsCombatFilled
     id: CBURNPDA
@@ -42,7 +43,6 @@
     - PillAmbuzolPlus
     - PillAmbuzol
     - TacticalAxe #Sunrise-Edit
-    - ClothingHandsPowerGlovesUplinkNTERTCBURN #Sunrise-Edit
 
 - type: chameleonOutfit
   id: CBURNChameleonOutfit
