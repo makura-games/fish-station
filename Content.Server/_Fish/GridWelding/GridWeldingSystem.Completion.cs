@@ -2,6 +2,7 @@ using Content.Shared._Fish.GridWelding;
 using Content.Shared.FixedPoint;
 using Content.Shared.GameTicking;
 using Content.Shared.Tools.Components;
+using Robust.Shared.Localization;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.GridWelding;
@@ -99,7 +100,7 @@ public sealed partial class GridWeldingSystem
 
     /// <summary>Checks interaction permission again after the queue wait, before any expensive merge validation.</summary>
     private bool CanFinishWelding(Entity<GridWeldingComponent> welder, GridWeldingDoAfterEvent args,
-        out WeldAlignment alignment, out string reason)
+        out WeldAlignment alignment, out LocId reason)
     {
         if (!CanWeld(welder, args.User, args, out alignment, out reason))
             return false;

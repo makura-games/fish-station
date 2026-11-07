@@ -1,0 +1,23 @@
+- type: !PartialOnly entity
+  id: Protolathe
+  components:
+  - type: Lathe
+    dynamicPacks:
+    - FishCargoHardsuits
+    - FishEngineeringHardsuits
+    - FishResearchHardsuits
+    - FishServiceHardsuits
+
+- type: !PartialOnly entity
+  id: MedicalTechFab
+  components:
+  - type: Lathe
+    dynamicPacks:
+    - FishMedicalHardsuits
+
+- type: !PartialOnly entity
+  id: SecurityTechFab
+  components:
+  - type: Lathe
+    dynamicPacks:
+    - FishSecurityHardsuits

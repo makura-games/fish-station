@@ -1,0 +1,1414 @@
+{
+  "branch": "origin/features/new_rnd",
+  "commit": "3e2c1b314db1fa9ae2d82fc92ef956dea5ef0c19",
+  "base": "cdc2e2163d3a101e727b29153b4bb9dacc566051",
+  "files": [
+    {
+      "status": "M",
+      "path": "Content.Client/Lathe/UI/LatheMenu.xaml.cs",
+      "git_blob": "8a1e54951dfe09c06482e525f8e1d819eb7c7d3b",
+      "mode": "100644",
+      "sha256": "d5d792d4dca821c5e067767883bbb7fd8a0f1954f418646d15a4505dc1e4b65e"
+    },
+    {
+      "status": "M",
+      "path": "Content.Client/Research/UI/ResearchConsoleBoundUserInterface.cs",
+      "git_blob": "f0a58a5ad397715593ec7dfa06d8e6b9224ca6a5",
+      "mode": "100644",
+      "sha256": "a0873e3b0fc9ec27d20a2665b61297210b9c27e1c1db99d67dfb175c47ed23aa"
+    },
+    {
+      "status": "M",
+      "path": "Content.Client/Xenoarchaeology/Ui/AnalysisConsoleMenu.xaml.cs",
+      "git_blob": "3dccc032c0860444b2a6aebb4f5dee233c235b29",
+      "mode": "100644",
+      "sha256": "6708fd12c5a56598285c264153785f6d73caa8b771629ebf5827eff1fb3ea1ba"
+    },
+    {
+      "status": "M",
+      "path": "Content.Client/Xenoarchaeology/Ui/NodeScannerBoundUserInterface.cs",
+      "git_blob": "458b887131588b8ed99c19f7298b8a92bb076d5c",
+      "mode": "100644",
+      "sha256": "067fea885ac1ec4c5642ea7446adbf61c302a5d66ac03e7304577b3f5d37a2f8"
+    },
+    {
+      "status": "M",
+      "path": "Content.Client/Xenoarchaeology/Ui/XenoArtifactGraphControl.xaml.cs",
+      "git_blob": "f34256e282c33e3727760803d004ce6b3969b2ae",
+      "mode": "100644",
+      "sha256": "1e9e23d74e5ed8b6742646933a9e1e7c7ce8968ec823062ecb6c9b8416af5c37"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/Bluespace/FishBluespaceDeviceBoundUserInterface.cs",
+      "git_blob": "1cc9ee261e0e9be637e69b890547f69a219db388",
+      "mode": "100644",
+      "sha256": "68802449d7dc7533bb45ece7dfe15b2f99a0a64d4357e999a1ac1b60dcdc1961"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/Bluespace/FishBluespaceDeviceWindow.xaml",
+      "git_blob": "927cfa4885daa48d75c88813d60105e8c706eb2b",
+      "mode": "100644",
+      "sha256": "beaa824e12bd12350f34ebdb72d62060cfcb9b30bf80ee913175e47266073f80"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/Bluespace/FishBluespaceDeviceWindow.xaml.cs",
+      "git_blob": "dc0bd75cca6af7145005dc80a607c8055ed3541e",
+      "mode": "100644",
+      "sha256": "587a7de8ba2c3c10b44e3ea9af6c38cd7d447306711e0ffdbd72be87b140e85e"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/ResearchSystem.Refresh.cs",
+      "git_blob": "41f6aa1ba6c416197341df4427bd0bf2ad37785a",
+      "mode": "100644",
+      "sha256": "efbfc43e1348d11fc90a6792666d82353b8ea3292dfeb0af93afbb1b716cf06d"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/UI/FishResearchConsoleMenu.Details.cs",
+      "git_blob": "5494ec9e9b25377d4f3b7bb2e6d98fa09a65a508",
+      "mode": "100644",
+      "sha256": "f21aa621e957cc51b0a4374e1086c2a8b22df5920ea8c66e8f3c44e0d3df5e8b"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/UI/FishResearchConsoleMenu.xaml",
+      "git_blob": "14fc522c692068e5787ddbccce276e908c35a045",
+      "mode": "100644",
+      "sha256": "58d633f178ce446ef6272aefd395647b5686908d2667238b7b0c1b2fce6c20f3"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/UI/FishResearchConsoleMenu.xaml.cs",
+      "git_blob": "d21441d27310c893dc5f5fcfb8421747c9e0d686",
+      "mode": "100644",
+      "sha256": "bd61822ce4e28c7dad6b3eaa43fc2c9b4c006b38d4da8f48126c8dbbdfe998dd"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/UI/FishResearchTreeCatalog.cs",
+      "git_blob": "c110171cf6a6a87533a58e69c9da22d5ba046a70",
+      "mode": "100644",
+      "sha256": "c01f3d260c865282253b67eb42784eaf0893411081d36ad8854cc5ec1cef54a7"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/UI/FishResearchTreeControl.Layout.cs",
+      "git_blob": "05dee842091579278ecb2885e2333e87404f1065",
+      "mode": "100644",
+      "sha256": "2d8ab7b85536b1a02761661f30bbefc7c3081cfe52803ddd04ac46d4cb8bba29"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Research/UI/FishResearchTreeControl.cs",
+      "git_blob": "fdcc25fde8f6a6f375cbb95ea823d08ba0719eb7",
+      "mode": "100644",
+      "sha256": "f38a4966daf121622024b77d1955a0b0e7b47b56cbecf1e1e3b2383c03b1750a"
+    },
+    {
+      "status": "A",
+      "path": "Content.Client/_Fish/Xenoarchaeology/Ui/AnalysisConsoleMenu.Scanner.cs",
+      "git_blob": "d36000184bdc2064a80342ec3a44e2bed7f34eb9",
+      "mode": "100644",
+      "sha256": "ae02300de6a2c697b41d9c2de0ffdf571b1a0de10d0ceea74e7de6222c2a6f0a"
+    },
+    {
+      "status": "M",
+      "path": "Content.IntegrationTests/Tests/MaterialArbitrageTest.cs",
+      "git_blob": "1452a448332c88bf05abf400ca8dbe4cdd9d2d70",
+      "mode": "100644",
+      "sha256": "572b91b970a26725ba29e1ad03e0b4efd92d32f5488e7b936619863b00591ca9"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishBluespaceCrystalTest.cs",
+      "git_blob": "52220cd2fe5a697f62cf6729df9f30e9e3945c2b",
+      "mode": "100644",
+      "sha256": "c8beecba064392c545752ce7b993b7937e4fa96e94dc6cdc124749ce65a25845"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishBluespaceDeviceUiTest.cs",
+      "git_blob": "cfde2c2c9310e71416cccd62d927cbf99694e5dc",
+      "mode": "100644",
+      "sha256": "280fd910af03f76d644a2c6111c49fecccdae6d5c6440860f4d9407a99781e9e"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishBluespaceInfrastructureTest.Hazards.cs",
+      "git_blob": "d80b47506501020cbd759f1c685997a50631df47",
+      "mode": "100644",
+      "sha256": "410b7bfb6a22263f498ca9051f2e41f1d228054d0e713405d66114f1ed3dffb9"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishBluespaceInfrastructureTest.cs",
+      "git_blob": "5af35537d9066db1b77b5ff7bec245a033c63dc6",
+      "mode": "100644",
+      "sha256": "ddc15d1300f5dc6fa096d3e47abd8db7dfd1371be778b236955c3ec346fdd024"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishNodeScannerTest.cs",
+      "git_blob": "58986de7af775e0340fdbe04a86393cbf307a3d0",
+      "mode": "100644",
+      "sha256": "1f2aea4124efbea6cc31f38b69bc83a13567a34613763184d346e7e25cb2ecf5"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishResearchAccessTest.cs",
+      "git_blob": "cb0c98c352388b09b7f3fb9459b028a528e702d8",
+      "mode": "100644",
+      "sha256": "f1479c61b79e918144a8c0d69502b533152f4d1b95392f3b342ebcc999ee2ad6"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishResearchMaterialsTest.cs",
+      "git_blob": "e0e53940ff96e89f9ed7cba46dca7770b7758fad",
+      "mode": "100644",
+      "sha256": "9703a21b3eca2b8be4483ace8fc694bd2af02d0c1ceb189318bcf2a79168b8a7"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishResearchProductionTest.cs",
+      "git_blob": "e2c22c15e04aadee23963023f6f665f341e522ad",
+      "mode": "100644",
+      "sha256": "00d8ca0c0adfdbd3f74539ca5c960d5e497e97816a50f4f343d1ea78bfaf7c77"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishResearchProgressionTest.cs",
+      "git_blob": "529dfb8d2c81512cfd049ecaf3860ff31e390e4a",
+      "mode": "100644",
+      "sha256": "e2164bde1df18921c3d714cb0dd983dc71d2800faee2a584ecf776b6cf12774f"
+    },
+    {
+      "status": "A",
+      "path": "Content.IntegrationTests/Tests/_Fish/Research/FishResearchTreeUiTest.cs",
+      "git_blob": "b34530d8011113f782a336047ddc5db02468be91",
+      "mode": "100644",
+      "sha256": "29b1facd5007cfa1ff31005b04231cbafeb033294aec448215778a7b2b10ce33"
+    },
+    {
+      "status": "M",
+      "path": "Content.Server/Lathe/LatheSystem.cs",
+      "git_blob": "fd26fd09ddb42720487343b3237abb75c8464c69",
+      "mode": "100644",
+      "sha256": "cfa58878656c6e7586e98e6ac72d341e440cd624dc8ce8eefbc17d09e2b9cc3d"
+    },
+    {
+      "status": "M",
+      "path": "Content.Server/Research/Systems/ResearchSystem.Technology.cs",
+      "git_blob": "c20da129150a58af87ee2d800ad77a37e0ac6a1c",
+      "mode": "100644",
+      "sha256": "976c53606dd18f739827e87b4c84e5ab99a50881cab21c2f389cb5663454a5cf"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Lathe/LatheSystem.Fish.cs",
+      "git_blob": "67621080e32bfa3ce590c0d8a091780d2b8e37d8",
+      "mode": "100644",
+      "sha256": "1b625e990509719d754eb33556a5f381fcf298181c48c4e7a2f52759b1027d7d"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceBackgroundComponent.cs",
+      "git_blob": "aceb1b154dd5004b0acc16c4c6a5da65b51ada40",
+      "mode": "100644",
+      "sha256": "00259e55b3d0b65d18acf52b466a3c1410866bc6809e4af5a2cb5a837035afae"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceBackgroundSystem.cs",
+      "git_blob": "b8021b5e2d79b8324ee8e2267e3e2fee95a33d59",
+      "mode": "100644",
+      "sha256": "af9d6c5148c5a095a9ca8e78c58cb64a412b6b9f9fa31217dc19a3e9dc8386a0"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceHarvesterComponent.cs",
+      "git_blob": "1202f27a1b6ed5e94624aef1b8796fde8b46e63b",
+      "mode": "100644",
+      "sha256": "ec26ff5fb39c5293829a29f2a85e017793ad75778ea250615c003e59fd08610e"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceHarvesterStationComponent.cs",
+      "git_blob": "dbe517750f04407f8c6303b84a972fe108163632",
+      "mode": "100644",
+      "sha256": "b59e8260cb0e39bd6ac6c1d5b3919d21f65b6fb8467b781e0ee0718af1a3e36f"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceHarvesterSystem.Controls.cs",
+      "git_blob": "82eaaf3aaf67bd170b06fa6ec58cfcd701a6e9ec",
+      "mode": "100644",
+      "sha256": "3ee030e1ea2481f26e2659fdf2033cec4d559c3d34e110e7b6d53f6f5f18e4b0"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceHarvesterSystem.Incursions.cs",
+      "git_blob": "ae01a03a33a1f646de8fdb78139849cecb1a54fc",
+      "mode": "100644",
+      "sha256": "e7aa6e55c8b4d5e9c51497cae680d1b5c01a04a8393ce945d38340681a74809a"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceHarvesterSystem.Production.cs",
+      "git_blob": "a00562547937170a4186801495a9d77155e7b98e",
+      "mode": "100644",
+      "sha256": "3a42148950cc3f227b89844d028fc49d0fa2b9c936a0544f339f62dff00b986d"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceHarvesterSystem.cs",
+      "git_blob": "2cfbc4c40b78d3a6a6c09089d4298e92095aaf63",
+      "mode": "100644",
+      "sha256": "4cfb555daffe7bd93092ce666dd7fde1cf50a090068e4266981574cdeb703f04"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceProberComponent.cs",
+      "git_blob": "1f8b011b1118e30040ad23614ece4903f576bc80",
+      "mode": "100644",
+      "sha256": "2e3922a4b0793e5309591c896e0cacd6cd6c67038a71cbbedc0ebfc44ec19585"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceResearchSystem.cs",
+      "git_blob": "b5e774d2dadecf3c02ba26d0d6b43b0ee661e2d5",
+      "mode": "100644",
+      "sha256": "7f7dc72ae6c92649ad5504ce60564908dd2cdbca9c65e0c7fab02f968fb25038"
+    },
+    {
+      "status": "A",
+      "path": "Content.Server/_Fish/Research/Bluespace/FishBluespaceSuppressorComponent.cs",
+      "git_blob": "930ddb88f584f5779abd0788f6a76ed7e6ead598",
+      "mode": "100644",
+      "sha256": "0b98f842890d41fd3a83f02d97723501d7cce61551767952169aa39c94728d1f"
+    },
+    {
+      "status": "M",
+      "path": "Content.Shared/Entry/EntryPoint.cs",
+      "git_blob": "602c4f01a7a1741380daa38cc50eade2cff8c1cb",
+      "mode": "100644",
+      "sha256": "e7eea50fc0572f123c4c335d99ff730976dd29c3ce62dbc36980f6c7576bfa5f"
+    },
+    {
+      "status": "M",
+      "path": "Content.Shared/Lathe/SharedLatheSystem.cs",
+      "git_blob": "d0dd789525c936bdd002b9396a5e2bb8a72827f5",
+      "mode": "100644",
+      "sha256": "341a620bcde95bcd94d0cff511a6019be7af8ee3788128ab8261e040f2255723"
+    },
+    {
+      "status": "M",
+      "path": "Content.Shared/Research/Components/TechnologyDatabaseComponent.cs",
+      "git_blob": "b2e4c5bc84947129421a48cf5da4edabf6c86c67",
+      "mode": "100644",
+      "sha256": "8a769769d6716c58d9a7f9eceb0cc43a1e47d1eccb1a42fa1aff4fc0b7d8d843"
+    },
+    {
+      "status": "M",
+      "path": "Content.Shared/Research/Systems/SharedResearchSystem.cs",
+      "git_blob": "2faf8573b6bd7973a5260408c02f5fad71bc67c9",
+      "mode": "100644",
+      "sha256": "f6adc8ec5af95d1f759b56df09a9bb5024383cd8ab81554a03c628729ad965bd"
+    },
+    {
+      "status": "M",
+      "path": "Content.Shared/Xenoarchaeology/Equipment/NodeScannerSystem.cs",
+      "git_blob": "0a69ca4cd7b31b672847e1ed1d1dbe9d4bb0e74f",
+      "mode": "100644",
+      "sha256": "7dd31b878c4e410d4b527b9eb1fa0065fa5525b37049f908d6ff603da860a60f"
+    },
+    {
+      "status": "A",
+      "path": "Content.Shared/_Fish/Lathe/SharedLatheSystem.Fish.cs",
+      "git_blob": "72d52ec9b11571de784bb55e590c5a2578253a49",
+      "mode": "100644",
+      "sha256": "b5e2488303282403b2971d8c6b8133abf51505ba532288c0f1013d72b19933e9"
+    },
+    {
+      "status": "A",
+      "path": "Content.Shared/_Fish/Materials/MaterialPrototype.Fish.cs",
+      "git_blob": "1798ad7d9fd30eed3923a2ae41990cac82a63202",
+      "mode": "100644",
+      "sha256": "156f5bcfaec7e33a04847a2e7a41650561d916ccf088de06876fbd299995fdd0"
+    },
+    {
+      "status": "A",
+      "path": "Content.Shared/_Fish/Research/Bluespace/FishBluespaceDeviceUi.cs",
+      "git_blob": "7d06324dfd51fe77cd4b0d54cdc32cee03168b47",
+      "mode": "100644",
+      "sha256": "54514671c6fb7f16b15f769e51b3ddca8ea4f2b6adf038c3db10d6ff35846ac4"
+    },
+    {
+      "status": "A",
+      "path": "Content.Shared/_Fish/Research/Bluespace/FishBluespaceHarvesterLootPrototype.cs",
+      "git_blob": "646dba4a2925eff3369fe9c7cda98c3f9ee97212",
+      "mode": "100644",
+      "sha256": "cae2bad24872d565d3fb15952c4ccf3710a6b8de2e2b7f792c4479d3eaf1b5de"
+    },
+    {
+      "status": "A",
+      "path": "Content.Shared/_Fish/Research/Systems/SharedResearchSystem.Fish.cs",
+      "git_blob": "bc3c77c2c1284d141246c71900cd413921b58bcd",
+      "mode": "100644",
+      "sha256": "0fe8c41c96f1b248a6360c56e092f8aeee0835b7c66e03861d6c393091e4cbed"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/clothing/research_hardsuits.ftl",
+      "git_blob": "f91e8ec46758da9f1e1b086296f9f48b58b235f3",
+      "mode": "100644",
+      "sha256": "706319eba953e77313337c85ead77d6f17e18661498231f75dafb44b140b7c6e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/materials/bluespace_crystal.ftl",
+      "git_blob": "ea54c6a3b76d96e16ad47e203a128388423b2c1b",
+      "mode": "100644",
+      "sha256": "92ef2f9185a749bd527547a99e841bc4e394fe2cf01b33503479d6cff85ee1bd"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/materials/processed_uranium.ftl",
+      "git_blob": "d343b152a406e28d80a97bcf6a4a371d2674b0f3",
+      "mode": "100644",
+      "sha256": "e86011d716e740519f9cfaad766a09659c61eb3a406d82f998845b58fe23a5b0"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/research/bluespace.ftl",
+      "git_blob": "5af1eb4ff4ad524828807acb40ebb40b51a215a3",
+      "mode": "100644",
+      "sha256": "4b3bee251fdf468bb49cb5216a05cee12ab899ae01ed71662e41aa00303c1bde"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/research/cremation.ftl",
+      "git_blob": "3b1e8dc9dba2185d4fdbc60eee2edcf880b426df",
+      "mode": "100644",
+      "sha256": "e6a67a1e2f0b3e044a5a1903dd08e872578862f0285238e2d9e357703840d395"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/research/guidebook.ftl",
+      "git_blob": "e23944d2441e223e4d80d36f634c912c5d53f7f4",
+      "mode": "100644",
+      "sha256": "5da11957b31f73eabec1bf57fcf22282d82f1c2f82c295e1431b114dbd7745fe"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/research/hardsuits.ftl",
+      "git_blob": "9e7ba8d30acb0da8c738ea275da62a93d33a2553",
+      "mode": "100644",
+      "sha256": "b7245cdb1cda5fd6922e94e4dcd4d5e72eb83caa857d4cb10886a07fb3a35d86"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/research/radiation_emitter.ftl",
+      "git_blob": "245432ba7111f38b795cb956cc3d94647c93f799",
+      "mode": "100644",
+      "sha256": "2627ed40547eb352905834b149d9a1345ab808558eabb57068aa9cfe4efc0b03"
+    },
+    {
+      "status": "M",
+      "path": "Resources/Locale/en-US/_fish/research/technologies.ftl",
+      "git_blob": "8b0f434662b381402204fa0889ab205e7d0921ec",
+      "mode": "100644",
+      "sha256": "b411610902a42475b28d9cefa5c76761161e15f7484f3324331aee7e60074ce3"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/research/technology_descriptions.ftl",
+      "git_blob": "719050c77d3ffb5c1cf81001e79e634c847100b1",
+      "mode": "100644",
+      "sha256": "b25449997ee5339ba6213041a52f87b6415c069d4eb4f480a480346d83c54e9e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/en-US/_fish/research/tree_ui.ftl",
+      "git_blob": "6bfbc8a5c8432eda18a35988309e638e96f3bd9a",
+      "mode": "100644",
+      "sha256": "385a5310a4ad9833cb8cfc3ef4447ff6fd4c9ce8904263eb0eb28d4844ca9cbe"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/clothing/research_hardsuits.ftl",
+      "git_blob": "807f8a395c42a98f50d9f98135e232e51ea025e1",
+      "mode": "100644",
+      "sha256": "bfba328057d0f712866ab5e7fc8f02ffa2c8838c21f7c632ebfc8016d47c77a4"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/materials/bluespace_crystal.ftl",
+      "git_blob": "0afb4574aa55f7bac9324dccb786d292b5d8531b",
+      "mode": "100644",
+      "sha256": "d8438430588bf5b34df9f91829ca9303b88574bda7cf18a925b11e5eae269839"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/materials/processed_uranium.ftl",
+      "git_blob": "9c717b2ba22052e35f6c560d6af2bdea8bf8dc27",
+      "mode": "100644",
+      "sha256": "27e282f63a605253f681ddc84a33e742de6caf03a4000707fb4e4ef5dffd9231"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/research/bluespace.ftl",
+      "git_blob": "42dfc06e4475eb021baccf302cb9746bb3796fa0",
+      "mode": "100644",
+      "sha256": "49f68e2f9d958967e30c6fa217106965408f177e542ba0b44a332ea2604345ef"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/research/cremation.ftl",
+      "git_blob": "19b0a3696fb63a7337069d674a52b86bb94dca1a",
+      "mode": "100644",
+      "sha256": "516ead37a6dee5585c6d1322aed6feac328502bfe1d99b0412d447744d9170ce"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/research/guidebook.ftl",
+      "git_blob": "c98d87b207352a39b801513e1a685858a510e7fd",
+      "mode": "100644",
+      "sha256": "65a48cfae8d71a7fe95bff0c8c08ea73d5af949d89b53c39bc219e33ccec5915"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/research/hardsuits.ftl",
+      "git_blob": "24deba7e52bced3eb8e2a4fb6ef060c828a202c1",
+      "mode": "100644",
+      "sha256": "5f8b855b2a3223ef3b6fd4ec50e2ff26cc03cbd6c62f665b9a86c15ffec3e5ed"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/research/radiation_emitter.ftl",
+      "git_blob": "1a677b1bc5fc1ffbd026dc7ef8983f4a043afc04",
+      "mode": "100644",
+      "sha256": "04eed2de6074b2fb0225f23f410e15830c3e260c235aebc2279e77ab6d4ad46d"
+    },
+    {
+      "status": "M",
+      "path": "Resources/Locale/ru-RU/_fish/research/technologies.ftl",
+      "git_blob": "d68a60cc4afa9ef2a3101607ae04ab568f15f478",
+      "mode": "100644",
+      "sha256": "0999f12207d4dc6c5a26b76c90e8c6ccd7f4c085458007d5b4c9d11a187c96d0"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/research/technology_descriptions.ftl",
+      "git_blob": "006b663662665d7cf3985b69028c92a45d90669e",
+      "mode": "100644",
+      "sha256": "3a19ea80881d6044ddb83dc57041352e81f25bdda15f3f9d6b60b8986ae3fc4c"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Locale/ru-RU/_fish/research/tree_ui.ftl",
+      "git_blob": "78d8503f0fdeae99a2025e1cf45c4e310ba07d0a",
+      "mode": "100644",
+      "sha256": "3f764f146f4d3d5ae2b82e4f1d7705143fe4bd4b3c0ef87f7eb57e3668a6d4e2"
+    },
+    {
+      "status": "M",
+      "path": "Resources/Prototypes/Guidebook/science.yml",
+      "git_blob": "577bdddb1ba5a98c9693da5a8a00b23b4287ebcc",
+      "mode": "100644",
+      "sha256": "7e4b8cdfe9b29a1dd27b475f1142eb8ce53fb5175f8d0f41bd83fc80bd5e020a"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Entities/Clothing/Head/research_hardsuits.yml",
+      "git_blob": "a7a794998eeae61f7a5b0b1b3037edaf381e21ef",
+      "mode": "100644",
+      "sha256": "4d1815d6ef4573d18faf7e0fdbec5ae4eb5513012b116b7175eba7fd1595d7c6"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Entities/Clothing/OuterClothing/research_hardsuits.yml",
+      "git_blob": "0fa7f243841a756cf181359b0c515d99d869d53d",
+      "mode": "100644",
+      "sha256": "38d95b7489b7b2e4fa1e0e6832b8992963c1daa3076067e0c2837fc552aca178"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Entities/Objects/Devices/flatpacks.yml",
+      "git_blob": "410dc928d5188d4d57b61dd38af501c5145502ee",
+      "mode": "100644",
+      "sha256": "5c678d822d81df47b6e68a7d8f1b5bd86253eccbd60731c352f6b854ea209e3e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Entities/Structures/Machines/bluespace_research.yml",
+      "git_blob": "ff15e30d449bab52e3e9c9bd7fcef3d0a19d2547",
+      "mode": "100644",
+      "sha256": "8bc8341cfb826fc19e8d1c5835b0bf269fc7bada8cf7c8c6a0d9ff04366d82ac"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Entities/Structures/Walls/bluespace_ore.yml",
+      "git_blob": "f16a121df62a5159cb62c94b40f4fa495aebccbd",
+      "mode": "100644",
+      "sha256": "2efffdf1c1b6b9c5243514dc2c96123fba8c19dc5788457f1aa04d8fd7cb3695"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Guidebook/research.yml",
+      "git_blob": "4f1bffa5ac8fb8d8eb158221540874cb6e0be470",
+      "mode": "100644",
+      "sha256": "e3ead23500c98e23f1b5a968276418ce2ae796d44e2dec33dfc5fb0afd411811"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Materials/bluespace_crystal.yml",
+      "git_blob": "c1e0bcade505cbd0f8c08019c6414b0757068cb3",
+      "mode": "100644",
+      "sha256": "a872c1269a3c2b6801fafde26ef0474a626a6ae3f88dabc1e1c0c18e5c1933f4"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Materials/processed_uranium.yml",
+      "git_blob": "a4915b07c38c405204ab03ca5ac557b518444d9f",
+      "mode": "100644",
+      "sha256": "af5187e315288b3bcf730b1475ecad4f6bcafe3ac25ee06a12aee410b7d9f6b9"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Entities/Structures/Machines/Computers/research_access.yml",
+      "git_blob": "ee9f314b3b59b817838602c52e6258868c819aba",
+      "mode": "100644",
+      "sha256": "22ce0149e0a569096f18b5ddabaa694dea7a2500ccfe7f1477521dc40988471b"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Guidebook/research.yml",
+      "git_blob": "d3573085260547c759829bbb3b961fb628a9e96a",
+      "mode": "100644",
+      "sha256": "7325f47396b18be87d0b60882714ad361b1ced591bbebd25aa91c5f6bfede418"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Lathe/hardsuits.yml",
+      "git_blob": "c371047fdbefa9096a55d3929b20ed1caf832d24",
+      "mode": "100644",
+      "sha256": "c77ca55acf3315351ebde67f904e9adba1ae0c89e7342fc0a61a47f46214eb41"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Procedural/bluespace_ore.yml",
+      "git_blob": "96f188166f0b32cd2696e315fb21029e7657fb05",
+      "mode": "100644",
+      "sha256": "97a25faa6a728823dc2d193c10dbff6260144ac3eedf2d43507f2f0e2c8c46de"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Recipes/Lathes/Packs/bluespace_research.yml",
+      "git_blob": "8230b5d7f44650bb12490ec6105e3e81b3a6618b",
+      "mode": "100644",
+      "sha256": "8cb0c44a4125caf1332355a3f87653233089dead9e25e8825eceb3c5c34032de"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Recipes/Lathes/Packs/science.yml",
+      "git_blob": "0ce18be7aa5c5c597c5fef7265b8e6395159cfca",
+      "mode": "100644",
+      "sha256": "96c349fd5b45bbbd17133625a9d660209ca7efdc40f72415343aa25f8578a7ea"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Recipes/Lathes/Packs/service.yml",
+      "git_blob": "970463feb717c0dd886f865e15ab563423c1f3ec",
+      "mode": "100644",
+      "sha256": "9af7d6d7608f07012e39bbcf0c251e1ee56e7d1e7aefd9656bf0c6ae99e56b91"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Recipes/Lathes/bluespace.yml",
+      "git_blob": "814718a72b45fb4fd041737e6a5d572e5668ef5c",
+      "mode": "100644",
+      "sha256": "da252f39f69ed6fa9f68de2e495440b4d6987c23623845521094a5314ac811bd"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Recipes/Lathes/powercells.yml",
+      "git_blob": "e6ac2881ce0529343a87fe98f87dd526a13a982e",
+      "mode": "100644",
+      "sha256": "5c16061e6c962264528f6a0d3528b7fb89f8e66ef4f964d19a9e8782071df2ff"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Research/disciplines.yml",
+      "git_blob": "6df4274da2de293fb0839851589a83453652e9af",
+      "mode": "100644",
+      "sha256": "31951a401172045aaf6d0cc8d8e6e674554f7a50fd3aea6ae35c818ae53d2ad5"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Research/hardsuits.yml",
+      "git_blob": "58c5835e0a5b513edcd59fa8fc8d7857dab59247",
+      "mode": "100644",
+      "sha256": "630d24aa7eddb616738f090a96ae3fc2f5520e1ce0c2ad4768a2933a91a2cb60"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Partial/Research/technology.yml",
+      "git_blob": "1b7286cfff482ce6d3f71d609cf09dfd200f49d3",
+      "mode": "100644",
+      "sha256": "c743dd152bc6ea9d7f351d31faaaf978933ca38d558438d3804d8deca28be885"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Procedural/bluespace_ore.yml",
+      "git_blob": "e815db4c95202c5d193396293858c3aa789f3155",
+      "mode": "100644",
+      "sha256": "17b04c04fc4dd8c4761a3980d9831e147c522c3d35ce747fdcbdf19081bdd181"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Recipes/Lathes/Packs/hardsuits.yml",
+      "git_blob": "357a96ffcbf816c53abe26698b04f1f2654cedf4",
+      "mode": "100644",
+      "sha256": "28b00325f23605bbff04035ea0885a304b587e4d2655f70ce76be1ddf4413c2c"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Recipes/Lathes/bluespace_research.yml",
+      "git_blob": "5c42e610b34afb7999a86a540f1048df811581d0",
+      "mode": "100644",
+      "sha256": "1568e5aabc50009dc73e59d6bd0b4752a6a7f9d10fbc0e16be462c5eb2a233de"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Recipes/Lathes/hardsuits.yml",
+      "git_blob": "36c7b45a5608b0f79cbaf8d2e43a84db997d926a",
+      "mode": "100644",
+      "sha256": "e9398d540e39eed94e868d3201bf3d80ac083b8eb2789865ba11490190aa754a"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Recipes/Lathes/processed_uranium.yml",
+      "git_blob": "f8bb9a866417a9afbf9306dcf1e0b0bdc1064e3b",
+      "mode": "100644",
+      "sha256": "b8fb807cad7efb288f522b90c6cedc7ed95af344fe7fd40ba40410ae31fe6d6d"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Recipes/Lathes/science.yml",
+      "git_blob": "96e875844184811fdc46cfe00f80c030bf08b759",
+      "mode": "100644",
+      "sha256": "658400c64c6db5ac179f9f4dcde6f33ab6d02d9da937c1db26cd613d2f904f35"
+    },
+    {
+      "status": "M",
+      "path": "Resources/Prototypes/_Fish/Recipes/Lathes/service.yml",
+      "git_blob": "15c60443e1c37619be58d4a38349c921ac864f1c",
+      "mode": "100644",
+      "sha256": "f1367641a88a5c57d2a9ab218ef62864750743e100e8a356db2ba1ced0baac0e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Research/bluespace.yml",
+      "git_blob": "ff1b2ecc309e52f9e0ef5b230fb57738675a1f30",
+      "mode": "100644",
+      "sha256": "91e9a26ea0446d7cf6ff996fc0d50592f6ec02ecef515ada846eadabd75f213f"
+    },
+    {
+      "status": "M",
+      "path": "Resources/Prototypes/_Fish/Research/experimental.yml",
+      "git_blob": "c48331f43f126341ebe3bd897efb50e89099574b",
+      "mode": "100644",
+      "sha256": "2295cf8dda0055d834ac76f12bad8e8c006fbd61c456c0c87d79d1c6bbdecc55"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Research/hardsuits.yml",
+      "git_blob": "9a751bb1360f89045dcc2cc94087dde2549f71fe",
+      "mode": "100644",
+      "sha256": "5515a8ec5f3c682e08f002c884f80ab6d8a63218724b7f5d9e16229a401cfdb5"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Research/harvester_loot.yml",
+      "git_blob": "430645b8341e54e369208c66ab27b3b1805c11d4",
+      "mode": "100644",
+      "sha256": "9665ae4e26d4880ecd52732c7c2e85e8400f56e30e36c285b5c6937c7813ae9d"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Research/industrial.yml",
+      "git_blob": "3e49ea31a0c17cea97bc8651604d6647248d8b5e",
+      "mode": "100644",
+      "sha256": "fb975286de39a9ca0608a924290c685e8ab3682a1fc24216a03e0f9232f7f3d5"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Prototypes/_Fish/Research/service.yml",
+      "git_blob": "26b0d055ffd47010c143142f05165c7bab59df70",
+      "mode": "100644",
+      "sha256": "b9b9f296e2ea634b18a6ce6185af3de8eb415bafdabe3cf16e5abb69f1fb0c4a"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Anomalies.xml",
+      "git_blob": "a36763d243ca5a6c747f27e7dceeab983a36fbfb",
+      "mode": "100644",
+      "sha256": "e238ef0397f2f74569b89cd1914265d675fd915a833d0c8aa747965e93060209"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/AnomalyEquipment.xml",
+      "git_blob": "7435486935a63ed78da286f93c8a9925f16c085e",
+      "mode": "100644",
+      "sha256": "06472b4c686c222d5af21b518f220e5c7daf196918fd0fffa90635d32c985968"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Artifacts.xml",
+      "git_blob": "7ce01c7ebc2fa3ed5bee5428285e1a5c9f28d584",
+      "mode": "100644",
+      "sha256": "6755480eb8993b7ec717aafe649f7568619582fff174346266b5282c65c6fcb3"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Background.xml",
+      "git_blob": "541e514359236e43dba3015a753273787b61a8f7",
+      "mode": "100644",
+      "sha256": "337d11f09f745bafce799b9275136ec2d05ec9a6332719754c5299a53624ae07"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Catalog.xml",
+      "git_blob": "15d3dc5ac507d6a5e8bb893ce4f1ddf0cebbaaac",
+      "mode": "100644",
+      "sha256": "b6b0c564bd105b798a1a85544278a0d61b72b2332a0a6fcfc00ef47e29325490"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Equipment.xml",
+      "git_blob": "75d69f438913f37d03de846fbb75ff33381dfe60",
+      "mode": "100644",
+      "sha256": "870b811224b850b291b265dbfe7ee4811a4b208d6d97895174c2849aeb0d9958"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Harvester.xml",
+      "git_blob": "acfdfe9f80bdf2ba91467a673aef3bfa72075475",
+      "mode": "100644",
+      "sha256": "4076c157d5a184ffa7615e4bf2b60cbf3c24ab11ff958a7b398a99541fee5509"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Materials.xml",
+      "git_blob": "d8c2e9808d48780a7c4960cd56019e292206d2cc",
+      "mode": "100644",
+      "sha256": "997550c2ec726cee38c5830245736297b5ff795f95e2f83a4d44f51c0150a2dd"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Overview.xml",
+      "git_blob": "9daf42d57ab7ab8716e05a709eb7da5176eb6819",
+      "mode": "100644",
+      "sha256": "9a533295a455e586c231096784400755688c6e79b46b1094221e957bebe1348e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Particles.xml",
+      "git_blob": "ec8519df3485924b0fb5a6814df937a9861128ac",
+      "mode": "100644",
+      "sha256": "ea48fd2b5a1848ce4e02f35fe0141698610fd4a3a0a3d88449f5759412b142f2"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Probers.xml",
+      "git_blob": "c9999b03d6339cad97bf0dfcc05e4910bb07201e",
+      "mode": "100644",
+      "sha256": "e367d0971e323e9c7937e9735c5b0c54b345e0dc972a2267c7ddfe8bec156750"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Tree.xml",
+      "git_blob": "14944b7dddc850fef9e46f8b6da89a9bef076df1",
+      "mode": "100644",
+      "sha256": "200a7414d04fcfcddbed5aab8d2ea6dbccf2539ff8d627461ff836b352a2a88e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/ServerInfo/Guidebook/_Fish/Research/Troubleshooting.xml",
+      "git_blob": "0be199a7e7e6382142fa13d61438476ef2746e47",
+      "mode": "100644",
+      "sha256": "837fc990379d9570333845a5f7eac5059b59b7c1289cde57c7dc5eeb6e7fb3f2"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/civilian.rsi/equipped-head.png",
+      "git_blob": "c96df70ccbd2e8128c3e9241580a672cb299cf65",
+      "mode": "100644",
+      "sha256": "36dbc2c4a8059ddfdc6bc55b6098456df83c0262316637ac10c533fc189e6301"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/civilian.rsi/icon.png",
+      "git_blob": "62887f60114f8d81b306de61ff985750f5136f5f",
+      "mode": "100644",
+      "sha256": "7e7f3cc4efbcedb91be7f249b8c615ef43c47b515bfa8d47e1ddbff7b745e68e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/civilian.rsi/inhand-left.png",
+      "git_blob": "8cfa773f612bd4825394e6228d002928b073079b",
+      "mode": "100644",
+      "sha256": "079c75a08d5f317bc669bef9f6c65660b8315fd5ef195a681d2f14e88664a6ae"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/civilian.rsi/inhand-right.png",
+      "git_blob": "69cf3741b7b9eddd066816e4e5a30ba3798c9ce5",
+      "mode": "100644",
+      "sha256": "c529d383ec1e5f97b1f29969561e1d13a7622634f2b8ccf4929942cfe543ac95"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/civilian.rsi/meta.json",
+      "git_blob": "82487d33b1dbfd7c2434133f2522cf4993720b41",
+      "mode": "100644",
+      "sha256": "1bd0b589cc84014dd3f867b762102aa2d848b4979d6c3eeb4bfc34b53664c138"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/engineering_advanced.rsi/equipped-head.png",
+      "git_blob": "e792a2a4316d7bc06ddb9b6a48cad8987b554c0d",
+      "mode": "100644",
+      "sha256": "f154fd3d7210c2ce1ca2fa47d455059d3e0ee2eaede72f6f756221e2f9dc3ef4"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/engineering_advanced.rsi/icon.png",
+      "git_blob": "852a7f68e149491b65b65a62a8f069c19ee66cf1",
+      "mode": "100644",
+      "sha256": "a258b9b806de9f3b37d1e90564f158e3a40ae6edf824dc868733506ef18087b0"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/engineering_advanced.rsi/inhand-left.png",
+      "git_blob": "8cfa773f612bd4825394e6228d002928b073079b",
+      "mode": "100644",
+      "sha256": "079c75a08d5f317bc669bef9f6c65660b8315fd5ef195a681d2f14e88664a6ae"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/engineering_advanced.rsi/inhand-right.png",
+      "git_blob": "69cf3741b7b9eddd066816e4e5a30ba3798c9ce5",
+      "mode": "100644",
+      "sha256": "c529d383ec1e5f97b1f29969561e1d13a7622634f2b8ccf4929942cfe543ac95"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/engineering_advanced.rsi/meta.json",
+      "git_blob": "52ae32910d047a38ed2de503f94be27633c39464",
+      "mode": "100644",
+      "sha256": "4da8dac6e661942a18dba79824a2fe51fbb9a1db779cb7c08696ba19311e657d"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/expedition.rsi/equipped-head.png",
+      "git_blob": "d18dc1234107fa0b6e944499ed390c38c833c5f2",
+      "mode": "100644",
+      "sha256": "9bd3ed896376df412c498528cde458b0175f0c5b87e259f18020f3f604b37ade"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/expedition.rsi/icon.png",
+      "git_blob": "a1d371003fceeca849193e02b31ab45d6012fa94",
+      "mode": "100644",
+      "sha256": "9bc2b13377043e64d32adc9fd02cb09822ecf906698c575f66a3acb638f44beb"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/expedition.rsi/inhand-left.png",
+      "git_blob": "01b7931d22186547ca2538cca3b56f49e2fed493",
+      "mode": "100644",
+      "sha256": "b1dcd58b2de88821ca200c77d30a851a8db8f97f4d37798bc03fdc892e773374"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/expedition.rsi/inhand-right.png",
+      "git_blob": "1f5ad69132c8e6d0edc80227e16219c736a838e3",
+      "mode": "100644",
+      "sha256": "89cebf14c96cff7bf3ab97f4ccb83411345c1118ae5b7fbf8954b830291f469d"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/expedition.rsi/meta.json",
+      "git_blob": "df6c6c7551f9e9bc6b3144e23c3f974e57a6bf6b",
+      "mode": "100644",
+      "sha256": "8f8da1f2335cd4fdeaca2e8740f9ad2b8ddd8f00832e52c501b2e60362ffa6dc"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/medical_rescue.rsi/equipped-head.png",
+      "git_blob": "59dc0d35019ccf43f14616f9887ba0c3fde80ea5",
+      "mode": "100644",
+      "sha256": "b6161f0c36a5430c25a4953a39e760a08625225f41168ec8619753664f706c23"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/medical_rescue.rsi/icon.png",
+      "git_blob": "9a3a0bdc8268da31ec77f9d36576834bbf097625",
+      "mode": "100644",
+      "sha256": "7c68abe1276479a157391ff1aeaedc09912e97bb1c3f85892d0d370f4508bcd0"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/medical_rescue.rsi/inhand-left.png",
+      "git_blob": "8cfa773f612bd4825394e6228d002928b073079b",
+      "mode": "100644",
+      "sha256": "079c75a08d5f317bc669bef9f6c65660b8315fd5ef195a681d2f14e88664a6ae"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/medical_rescue.rsi/inhand-right.png",
+      "git_blob": "69cf3741b7b9eddd066816e4e5a30ba3798c9ce5",
+      "mode": "100644",
+      "sha256": "c529d383ec1e5f97b1f29969561e1d13a7622634f2b8ccf4929942cfe543ac95"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/medical_rescue.rsi/meta.json",
+      "git_blob": "9564e3cdd1276a4619c418263d9c2edd573265fc",
+      "mode": "100644",
+      "sha256": "e0df997b3116ae8ca79fa22108f078d8cf33c24604c5cadac336bbba8204655e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/equipped-head-light.png",
+      "git_blob": "148a639911c3715ef9ed76b85dc456ad9fc1f478",
+      "mode": "100644",
+      "sha256": "364ffefacdfacb149367cfda18b2a29b6ac4ad631c917e1009c021e2a169378e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/equipped-head-unshaded.png",
+      "git_blob": "6c63121d22332a3f210304f07fe60777f1f04d25",
+      "mode": "100644",
+      "sha256": "32918363c495e406660449e7a0024da8b47319951a81bec8f9099c1acc25e35a"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/equipped-head.png",
+      "git_blob": "8b761f302357a48ceb925df78461febf3bbb360f",
+      "mode": "100644",
+      "sha256": "ac458a30c49e055d2a8185051e84e4431b71d49aded89b4374cef9c0a8276df8"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/icon-unshaded.png",
+      "git_blob": "6e7aaf6aeb38f7068c78517c8f51e2b395a2c09e",
+      "mode": "100644",
+      "sha256": "401ad3eea080e543280d7dc6ae4f5fe6aa4f680346fb6b88ce99286517461984"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/icon.png",
+      "git_blob": "8b05c725f46cec7d9db2aa4e05d4fda0394bf1f3",
+      "mode": "100644",
+      "sha256": "d7a0f655809a201d9be41f9d0f5b925f48e55ad63a002adb6e4059864e5aad55"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/inhand-left.png",
+      "git_blob": "8cfa773f612bd4825394e6228d002928b073079b",
+      "mode": "100644",
+      "sha256": "079c75a08d5f317bc669bef9f6c65660b8315fd5ef195a681d2f14e88664a6ae"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/inhand-right.png",
+      "git_blob": "69cf3741b7b9eddd066816e4e5a30ba3798c9ce5",
+      "mode": "100644",
+      "sha256": "c529d383ec1e5f97b1f29969561e1d13a7622634f2b8ccf4929942cfe543ac95"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/light-overlay.png",
+      "git_blob": "6e7aaf6aeb38f7068c78517c8f51e2b395a2c09e",
+      "mode": "100644",
+      "sha256": "401ad3eea080e543280d7dc6ae4f5fe6aa4f680346fb6b88ce99286517461984"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/research.rsi/meta.json",
+      "git_blob": "ea2ba817ae68b6f450a0426322541739f01c61d4",
+      "mode": "100644",
+      "sha256": "ae6b89b1a571b062694f0453436d5631acdd0c64fc2f77fad6845a81c04b44f7"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/security_advanced.rsi/equipped-head.png",
+      "git_blob": "1de7bb3a14bd4f4e182d5eb7254a6b828a6f4887",
+      "mode": "100644",
+      "sha256": "eaee0ab2dcfbe5b05ee917df7184fb6f926951c74b9f1da38b61289fadf85a13"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/security_advanced.rsi/icon.png",
+      "git_blob": "57c3cd658b50dbb72552c8792b30bf0fbcc64ebf",
+      "mode": "100644",
+      "sha256": "9205cce43a7d09ee770235dde64490162826e04a732006f9061e39e1afd4278d"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/security_advanced.rsi/inhand-left.png",
+      "git_blob": "7c88bb8d51f6c26c0667d0b87b7ba6cb460f480c",
+      "mode": "100644",
+      "sha256": "5264dbb3da73403aadb5eed846c72408995e1bceb5df45fed38c6fe2a1006d36"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/security_advanced.rsi/inhand-right.png",
+      "git_blob": "c36174906d140003653f27bf98f9b066ed19ee66",
+      "mode": "100644",
+      "sha256": "54fddd062eb4302c1b7a0ca7615a58cd205229b58b86eefcaa0fa57aaae0a805"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/Head/Hardsuits/security_advanced.rsi/meta.json",
+      "git_blob": "e945d0d0fd5e1ebfdfb6be830ba9fe59a18528e5",
+      "mode": "100644",
+      "sha256": "801af7df7609301fa6b5d346caa885c103cef3283fde382e0e9930578a82e7c2"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/civilian.rsi/equipped-OUTERCLOTHING.png",
+      "git_blob": "38540698787bfe8b5cbc663e03bec5814fb9392e",
+      "mode": "100644",
+      "sha256": "fd354d288c33d336dd77964fc860349c6d66a9b75105673df7649877fcc153bb"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/civilian.rsi/icon.png",
+      "git_blob": "3db43a48e187e5ccbb258c1022169d7fdb2b7213",
+      "mode": "100644",
+      "sha256": "c2877ec5142175fe2e718776c71653dd735c15996d5f5f1bcc6365c0508d623f"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/civilian.rsi/inhand-left.png",
+      "git_blob": "2b0f8682bbac783a37a525c1cb09a705d8fc849a",
+      "mode": "100644",
+      "sha256": "805a2000ec1a8f21b2068dafa2c0aae31d70c26f316db23c437c79aee69c9f2f"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/civilian.rsi/inhand-right.png",
+      "git_blob": "4c5968b3eb95374184d8af82987339982eb8f169",
+      "mode": "100644",
+      "sha256": "9c6f689de78efb98402ef336cf37331477ba4e6eb72eaaf4bbd4b429acfba6bd"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/civilian.rsi/meta.json",
+      "git_blob": "322857b1b745045ecbdeaaca4d43ede44a60dff1",
+      "mode": "100644",
+      "sha256": "7a009746df029748df885a920b11a0034cad467f6c08b17162952d906032ee2a"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/engineering_advanced.rsi/equipped-OUTERCLOTHING.png",
+      "git_blob": "9402ef63aff5c98a17b820c6fbe6cbd685b5ae25",
+      "mode": "100644",
+      "sha256": "e68e0420509cf162fd7f7ed27d095163febee6a305ce904ce9387ca111cf4a2c"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/engineering_advanced.rsi/icon.png",
+      "git_blob": "52099eceaef4d0d823a7a9bfc785aa74040d7446",
+      "mode": "100644",
+      "sha256": "19668de1631051a7667a66fd7c93ad6c982239cadde03a37a3d65455c873f838"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/engineering_advanced.rsi/inhand-left.png",
+      "git_blob": "2b0f8682bbac783a37a525c1cb09a705d8fc849a",
+      "mode": "100644",
+      "sha256": "805a2000ec1a8f21b2068dafa2c0aae31d70c26f316db23c437c79aee69c9f2f"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/engineering_advanced.rsi/inhand-right.png",
+      "git_blob": "4c5968b3eb95374184d8af82987339982eb8f169",
+      "mode": "100644",
+      "sha256": "9c6f689de78efb98402ef336cf37331477ba4e6eb72eaaf4bbd4b429acfba6bd"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/engineering_advanced.rsi/meta.json",
+      "git_blob": "a949f75b90c5f732036c7ec839f676ea8f30bf63",
+      "mode": "100644",
+      "sha256": "628f0cdd3f7f7e95dc958ec3ceb4b2aab29ff1d6a6e518ab8989c9424ce79c4d"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/expedition.rsi/equipped-OUTERCLOTHING.png",
+      "git_blob": "bb4e511702ab8765ec0fba68aa175339b9aae723",
+      "mode": "100644",
+      "sha256": "8b3f05dba16bf02c078a013952e443c77f2f8ab9fa4af65b57fa18e6376649e3"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/expedition.rsi/icon.png",
+      "git_blob": "af67664bcda0e185eb9dbc7dcb095e42e1e07977",
+      "mode": "100644",
+      "sha256": "346c919bf1a9f714381bf50d7aeaff4bfc26cf21ef3ceeeda45b426143102ca8"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/expedition.rsi/inhand-left.png",
+      "git_blob": "9caf72096157b082e2dd076e7c382631c93fa730",
+      "mode": "100644",
+      "sha256": "20f0a81cf0431403a39ba7782469141a4bf5b631567c9406afe57b7e3bec2162"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/expedition.rsi/inhand-right.png",
+      "git_blob": "6a9f07bf9990ecbb6c0d15ca6eb9572c657be2d8",
+      "mode": "100644",
+      "sha256": "dcd1f2de97aaf74fe1dfea14f981c423e77cda0a7a007fe15b300da52a135047"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/expedition.rsi/meta.json",
+      "git_blob": "b876f59c0e9c141005d7321c751f48f8a7afec65",
+      "mode": "100644",
+      "sha256": "7246e70e181a358b41a6cd3fca0d567f6c95a1134edccb8a9dd362aca4a83a53"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/medical_rescue.rsi/equipped-OUTERCLOTHING.png",
+      "git_blob": "bb771baf20f92370b9a72957f4ac81e1301d5f45",
+      "mode": "100644",
+      "sha256": "26c1da2594d98f6531f2fe5b1b98a7eae2330e00d34f5204c7546118b1c2d7b4"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/medical_rescue.rsi/icon.png",
+      "git_blob": "cf9394e81ea7d6a50556364898158e737fa9c319",
+      "mode": "100644",
+      "sha256": "e1804839346c01ca53170919f21f5d8c9859b63a3fe32eb0795ba88aa714b615"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/medical_rescue.rsi/inhand-left.png",
+      "git_blob": "2b0f8682bbac783a37a525c1cb09a705d8fc849a",
+      "mode": "100644",
+      "sha256": "805a2000ec1a8f21b2068dafa2c0aae31d70c26f316db23c437c79aee69c9f2f"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/medical_rescue.rsi/inhand-right.png",
+      "git_blob": "4c5968b3eb95374184d8af82987339982eb8f169",
+      "mode": "100644",
+      "sha256": "9c6f689de78efb98402ef336cf37331477ba4e6eb72eaaf4bbd4b429acfba6bd"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/medical_rescue.rsi/meta.json",
+      "git_blob": "39dcde2b8c0f096c87584e3e0df78aa1103e12f9",
+      "mode": "100644",
+      "sha256": "da12006b82bcf93b5901d104d632e1ca301bb39d6186c0f3d504a0ec99a8ef3d"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/research.rsi/equipped-OUTERCLOTHING.png",
+      "git_blob": "ea65fd30cfa6d79965a2464176911731ae425d4e",
+      "mode": "100644",
+      "sha256": "a443701aba6ebf58cfc712bc5f7a409d7b25c8b344f7ee243aa5a5304fbb2bbb"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/research.rsi/icon.png",
+      "git_blob": "4c49c594b7dbc1402c5919d71e0b241dd9ed5cd3",
+      "mode": "100644",
+      "sha256": "b4269fc642412d65c98c04c0bf53b24686327d5cc6151391b32ef02354e48b0b"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/research.rsi/inhand-left.png",
+      "git_blob": "2b0f8682bbac783a37a525c1cb09a705d8fc849a",
+      "mode": "100644",
+      "sha256": "805a2000ec1a8f21b2068dafa2c0aae31d70c26f316db23c437c79aee69c9f2f"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/research.rsi/inhand-right.png",
+      "git_blob": "4c5968b3eb95374184d8af82987339982eb8f169",
+      "mode": "100644",
+      "sha256": "9c6f689de78efb98402ef336cf37331477ba4e6eb72eaaf4bbd4b429acfba6bd"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/research.rsi/meta.json",
+      "git_blob": "65e0ea62227285150f59ea0f839e81c04a919d15",
+      "mode": "100644",
+      "sha256": "85671e3c024011632251963a2c1906d81e4d3bf9851df4db81a68a7fc95eec94"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/security_advanced.rsi/equipped-OUTERCLOTHING.png",
+      "git_blob": "0b75ae45093a9036382c6c42b795a68784b24af3",
+      "mode": "100644",
+      "sha256": "6b34ff98bd41ad055003ef63ef6843a4e50be412ac9a9e7e9ffa616c352a6e3a"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/security_advanced.rsi/icon.png",
+      "git_blob": "8983bda3712ea2bddb3405d1b135507423356935",
+      "mode": "100644",
+      "sha256": "8035701fb7cec239b0244425e85da91b73160748f075138db5cf8461db832493"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/security_advanced.rsi/inhand-left.png",
+      "git_blob": "32806280314cb5fe5b1e1c046834cf837191a6d9",
+      "mode": "100644",
+      "sha256": "00e153e7ff9f2d1a18eb447f1dfc5d20bcfa4d03ad171b5975a70e470793d637"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/security_advanced.rsi/inhand-right.png",
+      "git_blob": "d6f24f16b54ec42dfc1c515ac6fec38257e0b04b",
+      "mode": "100644",
+      "sha256": "6cdd02fa5547cb98b5052bd52a1baf6383da8f8a09e05269c5f578096aa4b18e"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Clothing/OuterClothing/Hardsuits/security_advanced.rsi/meta.json",
+      "git_blob": "f0d618eafc4b7ee16ac50422510da42fd307f1e1",
+      "mode": "100644",
+      "sha256": "16e4ce45ef61fa17160805c3256b6a635d575e325f74897a925f8c1f7a79d4c0"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Objects/Materials/bluespace_crystal.rsi/bluespace_crystal.png",
+      "git_blob": "5f0577df0286dc014862b5964300c26843ed42b5",
+      "mode": "100644",
+      "sha256": "f2f70768c142663e3b4eb232e9a07786c299f166e6d96879b53df0858f97a3ab"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Objects/Materials/bluespace_crystal.rsi/bluespace_crystal_2.png",
+      "git_blob": "a1df1b17023a0ed8b2d6b5ac481ef9e227f2298e",
+      "mode": "100644",
+      "sha256": "0c60f72e09fcb51aa69dda553befe735e392c33bc6653d5cbf4d188054a323b1"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Objects/Materials/bluespace_crystal.rsi/bluespace_crystal_3.png",
+      "git_blob": "aa52e975dba6f1fc4af1ebc703180cd029b593e8",
+      "mode": "100644",
+      "sha256": "69f207b721356eacbe47e29f2b0d7258f2683a377b4e8f4dc60d68c15e3b3795"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Objects/Materials/bluespace_crystal.rsi/meta.json",
+      "git_blob": "e9cce7514e03f422e7adea8dba9e59498dddb6ef",
+      "mode": "100644",
+      "sha256": "deaab9f9a47554f3b2888b51f7c30154e2680d5dd086916d815a5a70031f2d51"
+    },
+    {
+      "status": "M",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_artillery.rsi/meta.json",
+      "git_blob": "15abde3cf735cce53293b439b5fa880e5e40f9c6",
+      "mode": "100644",
+      "sha256": "0ea365dfbff174f86a4b12bd0dc45e5c5be850ceafb373b9733e7f2ca5e70651"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_field.rsi/base.png",
+      "git_blob": "35d82ce6b0ca2d871f2f03c8bc1f27ae75f689d4",
+      "mode": "100644",
+      "sha256": "f64968458b7b7361e1d1f9488fbac1bbe299e8f5ddef5ca45e2075fad12ffa02"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_field.rsi/drain.png",
+      "git_blob": "db19c2b9634c9e0dbb25dd381572450d54613af8",
+      "mode": "100644",
+      "sha256": "3752d86cb646af64e836926bf6195044daf12a014dbf99e2af7727cf950ad0fa"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_field.rsi/meta.json",
+      "git_blob": "800a05e0a7e994605e0d39aa4d7334c8dcf9e0de",
+      "mode": "100644",
+      "sha256": "a3afff23febe427e0eca1cb20488bc666df8dbe39de9aaf90edd9f81bbce3b6c"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_field.rsi/powered.png",
+      "git_blob": "c0860f8e2e008444b15bc029144b851cc20c93a9",
+      "mode": "100644",
+      "sha256": "144570215b1698a3b8faffcef422e1e99c1ad43fc334b30dfb545f8bad044049"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_field.rsi/prober.png",
+      "git_blob": "a066c80fa8d05b721c004cd1707aeb7b19f04dca",
+      "mode": "100644",
+      "sha256": "94a31c9cddb411addb866fa2701b24fdadd5b87a3eb0457f9e5542ea18dc71ad"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_harvester.rsi/active.png",
+      "git_blob": "8527f24b8d73f850748bb53c10d6375f2a0110b4",
+      "mode": "100644",
+      "sha256": "4dae3dd219700d8341d6d3891f6c810082da1e38a3c3c015582544942b1d4eb2"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_harvester.rsi/idle.png",
+      "git_blob": "1615af6976eb7c6e4e9a0569f170826f96c5a7b5",
+      "mode": "100644",
+      "sha256": "e0a319ce4739f1547ba1a1060f498ef97ecc414df342856ca9694e9e3055cedc"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_harvester.rsi/meta.json",
+      "git_blob": "e5e4553dfb1479dca49e6ad299f259609f9ee263",
+      "mode": "100644",
+      "sha256": "633458b45037e3486b591eba1bdb5f4f64e79ab206778d61d1358c58b520e1b3"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Machines/bluespace_harvester.rsi/unstable.png",
+      "git_blob": "a73c59608a2a6a220f8a8a8f5793699ca2bc83c0",
+      "mode": "100644",
+      "sha256": "4f839546ec129599f06a3015c60f398f068926fbafa5dbd66510eb1c5752c940"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Walls/bluespace_ore.rsi/meta.json",
+      "git_blob": "fc1a468aaa3392c116ed84eb0067cc94de734f39",
+      "mode": "100644",
+      "sha256": "a5db7550c3c7cd5bf358693779aa68184dcc2b2d1915014c2ba2d64532cd0b33"
+    },
+    {
+      "status": "A",
+      "path": "Resources/Textures/_Fish/Structures/Walls/bluespace_ore.rsi/rock_bluespace_crystal.png",
+      "git_blob": "212d074914d88942c759af7e627939924bef40b0",
+      "mode": "100644",
+      "sha256": "5b0c8557df1207d3ec7394bae33257d09deb9ad3f9fbd9b2ed5653d01a7b2424"
+    },
+    {
+      "status": "M",
+      "path": "Resources/migration.yml",
+      "git_blob": "e173af6fe4c5a48a47cf7ecf6607554327bcbf70",
+      "mode": "100644",
+      "sha256": "4fb2df9fdce335b2161b5b6bd7f7bc47049f09570c0eed28440cbf29bd9f9da0"
+    }
+  ]
+}

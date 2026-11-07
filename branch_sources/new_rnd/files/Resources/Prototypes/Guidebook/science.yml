@@ -1,0 +1,64 @@
+- type: guideEntry
+  id: Science
+  name: guide-entry-science
+  text: "/ServerInfo/Guidebook/_Fish/Research/Overview.xml" # Fish-edit: актуальные правила исследований и оборудования.
+  children:
+  - Technologies
+  - FishResearch # Fish-edit: практическое руководство по РНД.
+  - AnomalousResearch
+  - Xenoarchaeology
+  - Robotics
+
+- type: guideEntry
+  id: Technologies
+  name: guide-entry-technologies
+  text: "/ServerInfo/Guidebook/_Fish/Research/Catalog.xml" # Fish-edit: сохраняем каталог без отменённых ограничений уровней.
+  filterEnabled: True
+
+- type: guideEntry
+  id: AnomalousResearch
+  name: guide-entry-anomalous-research
+  text: "/ServerInfo/Guidebook/_Fish/Research/Anomalies.xml" # Fish-edit: пошаговое руководство по аномалиям.
+  children:
+  - APE
+  - ScannersAndVessels
+
+- type: guideEntry
+  id: ScannersAndVessels
+  name: guide-entry-scanners-and-vessels
+  text: "/ServerInfo/Guidebook/_Fish/Research/AnomalyEquipment.xml" # Fish-edit: привязка контейнера и получение очков.
+
+- type: guideEntry
+  id: APE
+  name: guide-entry-ape
+  text: "/ServerInfo/Guidebook/_Fish/Research/Particles.xml" # Fish-edit: выбор частиц и обслуживание аномалии.
+
+- type: guideEntry
+  id: Xenoarchaeology
+  name: guide-entry-xenoarchaeology
+  text: "/ServerInfo/Guidebook/_Fish/Research/Artifacts.xml" # Fish-edit: артефакты и ручной сканер с деревом узлов.
+  children:
+    - AnalysisConsole
+    - XenoarchaeologyUnlockingNodes
+
+- type: guideEntry
+  id: XenoarchaeologyUnlockingNodes
+  name: guide-entry-xenoarchaeologyunlockingnodes
+  text: "/ServerInfo/Guidebook/Science/UnlockingNodes.xml"
+
+- type: guideEntry
+  id: AnalysisConsole
+  name: guide-entry-analysisconsole
+  text: "/ServerInfo/Guidebook/Science/AnalysisConsole.xml"
+
+- type: guideEntry
+  id: Robotics
+  name: guide-entry-robotics
+  text: "/ServerInfo/Guidebook/Science/Robotics.xml"
+  children:
+  - Cyborgs
+
+- type: guideEntry
+  id: Cyborgs
+  name: guide-entry-cyborgs
+  text: "/ServerInfo/Guidebook/Science/Cyborgs.xml"

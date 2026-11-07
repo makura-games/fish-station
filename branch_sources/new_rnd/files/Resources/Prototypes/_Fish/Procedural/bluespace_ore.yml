@@ -1,0 +1,30 @@
+- type: oreDunGen
+  id: FishOreBluespaceCrystal
+  replacement: AsteroidRock
+  entity: FishAsteroidRockBluespaceCrystal
+  count: 1
+  minGroupSize: 1
+  maxGroupSize: 1
+
+- type: biomeMarkerLayer
+  id: FishOreBluespaceCrystal
+  entityMask:
+    AsteroidRock: FishAsteroidRockBluespaceCrystal
+    IronRock: FishIronRockBluespaceCrystal
+    WallRock: FishWallRockBluespaceCrystal
+    WallRockChromite: FishWallRockChromiteBluespaceCrystal
+    WallRockSand: FishWallRockSandBluespaceCrystal
+    WallRockSnow: FishWallRockSnowBluespaceCrystal
+    WallRockBasalt: FishWallRockBasaltBluespaceCrystal
+  size: 128
+  maxCount: 1
+  minGroupSize: 1
+  maxGroupSize: 1
+  radius: 4
+
+- type: salvageLoot
+  id: FishOreBluespaceCrystal
+  guaranteed: true
+  loots:
+  - !type:BiomeMarkerLoot
+    proto: FishOreBluespaceCrystal

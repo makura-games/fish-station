@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Shared._Fish.GridWelding;
 using Content.Shared.Station.Components;
 using Content.Shared.Shuttles.Components;
+using Robust.Shared.Localization;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
@@ -34,7 +35,7 @@ public sealed partial class GridWeldingSystem
     /// On failure, <paramref name="reason"/> identifies the localization key for the failed check.
     /// </remarks>
     private bool CanWeld(Entity<GridWeldingComponent> welder, EntityUid user,
-        GridWeldingDoAfterEvent args, out WeldAlignment alignment, out string reason)
+        GridWeldingDoAfterEvent args, out WeldAlignment alignment, out LocId reason)
     {
         alignment = default;
         reason = "fish-grid-welding-unavailable";
@@ -132,7 +133,7 @@ public sealed partial class GridWeldingSystem
     /// Scans the consumed grid in survivor coordinates at action start and completion, rather than every tick.
     /// On failure, <paramref name="reason"/> identifies the localization key for the failed check.
     /// </remarks>
-    private bool CanMergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, out string reason)
+    private bool CanMergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, out LocId reason)
     {
         reason = "fish-grid-welding-protected";
         var survivor = GetSurvivingGrid(first, second);

@@ -32,7 +32,6 @@ public sealed partial class GridWeldingSystem : EntitySystem
     [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private PopupSystem _popup = default!;
-    [Dependency] private ILocalizationManager _loc = default!;
 
     private const string WeldingQuality = "Welding";
     private const float WeldingTime = 5f;
@@ -117,15 +116,29 @@ public sealed partial class GridWeldingSystem : EntitySystem
     /// </summary>
     public bool TryStartWelding(Entity<GridWeldingComponent> welder, EntityUid user, EntityUid second, Vector2i secondTile)
     {
-        if (welder.Comp.DoAfter != null || welder.Comp.PendingWeld != null)
-            return true;
+        if (!CanStartWelding(welder, user, second, secondTile, out var ev, out var delay, out var handled))
+            return handled;
 
-        var ev = new GridWeldingDoAfterEvent(GetNetEntity(welder.Comp.Grid), GetNetEntity(second), welder.Comp.Tile, secondTile);
+        StartWelding(welder, user, ev, delay);
+        return true;
+    }
+
+    /// <summary>Checks the seam and tool-use permissions without starting or changing a welding action.</summary>
+    private bool CanStartWelding(Entity<GridWeldingComponent> welder, EntityUid user, EntityUid second,
+        Vector2i secondTile, out GridWeldingDoAfterEvent ev, out float delay, out bool handled)
+    {
+        ev = default!;
+        delay = default;
+        handled = true;
+        if (welder.Comp.DoAfter != null || welder.Comp.PendingWeld != null)
+            return false;
+
+        ev = new GridWeldingDoAfterEvent(GetNetEntity(welder.Comp.Grid), GetNetEntity(second), welder.Comp.Tile, secondTile);
         if (!CanWeld(welder, user, ev, out var alignment, out var reason) ||
             !CanMergeGrids(welder.Comp.Grid, second, alignment, out reason))
         {
             Popup(user, reason);
-            return true;
+            return false;
         }
 
         var userAttempt = new ToolUserAttemptUseEvent(null);
@@ -133,13 +146,23 @@ public sealed partial class GridWeldingSystem : EntitySystem
         var toolAttempt = new ToolUseAttemptEvent(user, WeldingFuel);
         RaiseLocalEvent(welder, toolAttempt);
         if (userAttempt.Cancelled || toolAttempt.Cancelled)
-            return true;
+            return false;
 
         var tool = Comp<ToolComponent>(welder);
         if (!float.IsFinite(tool.SpeedModifier) || tool.SpeedModifier <= 0)
+        {
+            handled = false;
             return false;
+        }
 
-        var args = new DoAfterArgs(EntityManager, user, WeldingTime / tool.SpeedModifier, ev, welder, used: welder)
+        delay = WeldingTime / tool.SpeedModifier;
+        return true;
+    }
+
+    /// <summary>Starts and tracks a welding action after its checks have succeeded.</summary>
+    private void StartWelding(Entity<GridWeldingComponent> welder, EntityUid user, GridWeldingDoAfterEvent ev, float delay)
+    {
+        var args = new DoAfterArgs(EntityManager, user, delay, ev, welder, used: welder)
         {
             NeedHand = true,
             BreakOnDamage = true,
@@ -153,7 +176,6 @@ public sealed partial class GridWeldingSystem : EntitySystem
             welder.Comp.DoAfter = id;
             Popup(user, "fish-grid-welding-started");
         }
-        return true;
     }
 
     private static void ClearSelection(GridWeldingComponent comp)
@@ -182,8 +204,8 @@ public sealed partial class GridWeldingSystem : EntitySystem
                _maps.GetTileRef(uid, grid, tile + Vector2i.Right).Tile.IsEmpty;
     }
 
-    private void Popup(EntityUid user, string key)
+    private void Popup(EntityUid user, LocId key)
     {
-        _popup.PopupEntity(_loc.GetString(key), user, user);
+        _popup.PopupEntity(Loc.GetString(key), user, user);
     }
 }

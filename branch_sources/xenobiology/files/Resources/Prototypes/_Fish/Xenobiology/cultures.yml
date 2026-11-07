@@ -1,0 +1,278 @@
+- type: entity
+  parent: BaseItem
+  id: FishXenoCultureBase
+  name: slime culture
+  description: A dormant laboratory culture. Add five units of water and place it on the floor to hatch a juvenile slime.
+  suffix: Fish
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _Fish/Xenobiology/Objects/extract_jellies.rsi
+    state: jelly
+  - type: Item
+    size: Small
+    sprite: _Fish/Xenobiology/Objects/extract_jellies.rsi
+  - type: SolutionManager
+    solutions: [FishXenoCultureSolution]
+  - type: InjectableSolution
+    solution: culture
+  - type: RefillableSolution
+    solution: culture
+  - type: ExaminableSolution
+    solution: culture
+    exactVolume: true
+  - type: StaticPrice
+    price: 0
+
+- type: entity
+  parent: Solution
+  id: FishXenoCultureSolution
+  suffix: Fish
+  categories: [HideSpawnMenu]
+  components:
+  - type: Solution
+    id: culture
+    solution:
+      maxVol: 10
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureGrey
+  name: grey culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#9b9b9b'
+  - type: FishXenobiologyCulture
+    breed: FishGrey
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureBlue
+  name: blue culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#6a9ef0'
+  - type: FishXenobiologyCulture
+    breed: FishBlue
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureMetal
+  name: metal culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#939ca6'
+  - type: FishXenobiologyCulture
+    breed: FishMetal
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureOrange
+  name: orange culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#f39b45'
+  - type: FishXenobiologyCulture
+    breed: FishOrange
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCulturePurple
+  name: purple culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#a66bd5'
+  - type: FishXenobiologyCulture
+    breed: FishPurple
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureDarkBlue
+  name: dark blue culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#385ab5'
+  - type: FishXenobiologyCulture
+    breed: FishDarkBlue
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureDarkPurple
+  name: dark purple culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#6d368b'
+  - type: FishXenobiologyCulture
+    breed: FishDarkPurple
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureSilver
+  name: silver culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#c9d4db'
+  - type: FishXenobiologyCulture
+    breed: FishSilver
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureYellow
+  name: yellow culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#f1dc52'
+  - type: FishXenobiologyCulture
+    breed: FishYellow
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureRed
+  name: red culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#e35353'
+  - type: FishXenobiologyCulture
+    breed: FishRed
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureGreen
+  name: green culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#78c765'
+  - type: FishXenobiologyCulture
+    breed: FishGreen
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCulturePink
+  name: pink culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#ef9ac5'
+  - type: FishXenobiologyCulture
+    breed: FishPink
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureGold
+  name: gold culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#d6b145'
+  - type: FishXenobiologyCulture
+    breed: FishGold
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureCerulean
+  name: cerulean culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#64ccd5'
+  - type: FishXenobiologyCulture
+    breed: FishCerulean
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCulturePyrite
+  name: pyrite culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#e0cb76'
+  - type: FishXenobiologyCulture
+    breed: FishPyrite
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureBluespace
+  name: bluespace culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#4a7ffc'
+  - type: FishXenobiologyCulture
+    breed: FishBluespace
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureSepia
+  name: sepia culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#9e795c'
+  - type: FishXenobiologyCulture
+    breed: FishSepia
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureOil
+  name: oil culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#443d4e'
+  - type: FishXenobiologyCulture
+    breed: FishOil
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureBlack
+  name: black culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#55515c'
+  - type: FishXenobiologyCulture
+    breed: FishBlack
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureLightPink
+  name: light pink culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#f3bed7'
+  - type: FishXenobiologyCulture
+    breed: FishLightPink
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureAdamantine
+  name: adamantine culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#729c8d'
+  - type: FishXenobiologyCulture
+    breed: FishAdamantine
+
+- type: entity
+  parent: FishXenoCultureBase
+  id: FishXenoCultureRainbow
+  name: rainbow culture
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: '#ede2ff'
+  - type: FishXenobiologyCulture
+    breed: FishRainbow

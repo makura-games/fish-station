@@ -1,0 +1,31 @@
+- type: latheRecipe
+  id: FishBluespaceProberBoard
+  result: FishBluespaceProberBoard
+  categories: [Machines, Research]
+  completetime: 6
+  materials:
+    Glass: 500
+    Gold: 200
+    FishBluespaceCrystal: 100
+
+- type: latheRecipe
+  id: FishBluespaceSuppressorBoard
+  result: FishBluespaceSuppressorBoard
+  categories: [Machines, Research]
+  completetime: 6
+  materials:
+    Glass: 500
+    Gold: 200
+    Silver: 200
+    FishBluespaceCrystal: 100
+
+- type: latheRecipe
+  id: FishBluespaceHarvesterBoard
+  result: FishBluespaceHarvesterBoard
+  categories: [Machines, Research]
+  completetime: 10
+  materials:
+    Glass: 1000
+    Gold: 500
+    FishBluespaceCrystal: 200
+    FishProcessedUranium: 500

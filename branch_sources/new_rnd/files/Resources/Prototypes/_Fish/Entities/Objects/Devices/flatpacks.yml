@@ -1,0 +1,9 @@
+- type: entity
+  parent: BaseFlatpack
+  id: FishCrematoriumFlatpack
+  name: crematorium flatpack
+  description: A flatpack for assembling a crematorium. Unpack it with a multitool.
+  suffix: Fish
+  components:
+  - type: Flatpack
+    entity: Crematorium

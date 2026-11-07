@@ -1,0 +1,13 @@
+- type: technology
+  id: FishCremation
+  name: research-technology-fish-cremation
+  icon:
+    sprite: Structures/Storage/morgue.rsi
+    state: crema_closed
+  discipline: CivilianServices
+  tier: 3
+  cost: 10000
+  technologyPrerequisites:
+  - AdvancedCleaning
+  recipeUnlocks:
+  - FishCrematoriumFlatpack

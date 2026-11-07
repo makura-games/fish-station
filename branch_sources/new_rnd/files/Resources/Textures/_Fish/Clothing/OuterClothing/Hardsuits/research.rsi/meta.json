@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Adapted from AdventureTimeSS14/space_station_ADT at 7b10d762fbeaa0aab2780981b09d3cd6430d4c64, Resources/Textures/ADT/Clothing/. Body: OuterClothing/Modsuit/science.rsi; hands: Hands/Modsuit/cience.rsi; feet: Shoes/Modsuit/cience.rsi. body: Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/5bce3744f0dffbb34f8f51ced71d3b188867862f hands: Made by tamioki feet: Made by tamioki Fish conversion: original feet, torso and glove frames composed into one outer-clothing layer; colors preserved. In-hand sprites: ParadiseSS13 contributors, generic folded MOD control mod_control, from https://github.com/ParadiseSS13/Paradise/tree/d118a2ce60b712046ebb180834200fc8d25c91c8/icons/mob/inhands, original left/right states preserved. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon"
+    },
+    {
+      "name": "equipped-OUTERCLOTHING",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}

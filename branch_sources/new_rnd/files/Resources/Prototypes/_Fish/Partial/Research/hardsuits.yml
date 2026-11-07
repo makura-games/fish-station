@@ -1,0 +1,41 @@
+- type: !PartialOnly technology
+  id: SalvageEquipment
+  recipeUnlocks:
+  - FishHardsuitSpatio
+  - FishHardsuitSalvage
+  - FishHardsuitSpaceHazard
+
+- type: !PartialOnly technology
+  id: MassExcavation
+  recipeUnlocks:
+  - FishHardsuitMining
+
+- type: !PartialOnly technology
+  id: IndustrialEngineering
+  recipeUnlocks:
+  - FishHardsuitEngineering
+
+- type: !PartialOnly technology
+  id: AdvancedAtmospherics
+  recipeUnlocks:
+  - FishHardsuitAtmos
+
+- type: !PartialOnly technology
+  id: AdvancedToolsTechnology
+  recipeUnlocks:
+  - FishHardsuitEngineeringCompact
+
+- type: !PartialOnly technology
+  id: FishMedicalPouches
+  recipeUnlocks:
+  - FishHardsuitParamedic
+
+- type: !PartialOnly technology
+  id: AdvancedRiotControl
+  recipeUnlocks:
+  - FishHardsuitSecurity
+
+- type: !PartialOnly technology
+  id: CombatEquipment
+  recipeUnlocks:
+  - FishHardsuitBrigmedic

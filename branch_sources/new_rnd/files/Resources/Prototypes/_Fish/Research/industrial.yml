@@ -1,0 +1,14 @@
+- type: technology
+  id: FishUraniumProcessing
+  name: research-technology-fish-uranium-processing
+  icon:
+    sprite: Objects/Materials/Sheets/other.rsi
+    state: uranium
+  discipline: Industrial
+  tier: 2
+  cost: 7500
+  technologyPrerequisites:
+  - SalvageEquipment
+  - IndustrialEngineering
+  recipeUnlocks:
+  - FishProcessedUranium

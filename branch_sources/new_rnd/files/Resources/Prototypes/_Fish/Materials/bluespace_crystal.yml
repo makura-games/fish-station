@@ -1,0 +1,52 @@
+- type: material
+  id: FishBluespaceCrystal
+  stackEntity: FishBluespaceCrystal1
+  name: materials-fish-bluespace-crystal
+  unit: materials-unit-fish-crystal
+  icon: { sprite: _Fish/Objects/Materials/bluespace_crystal.rsi, state: bluespace_crystal }
+  color: "#416be0"
+  price: 5
+  fishLatheUnit: 100
+
+- type: stack
+  parent: BaseMediumStack
+  id: FishBluespaceCrystal
+  name: stack-fish-bluespace-crystal
+  icon: { sprite: _Fish/Objects/Materials/bluespace_crystal.rsi, state: bluespace_crystal }
+  spawn: FishBluespaceCrystal1
+
+- type: entity
+  parent: OreBase
+  id: FishBluespaceCrystal1
+  name: bluespace crystal
+  description: A fragile blue crystal with a faint shimmer deep inside.
+  suffix: Fish
+  components:
+  - type: Tag
+    tags:
+    - Ore
+    - RawMaterial
+  - type: Stack
+    stackType: FishBluespaceCrystal
+    count: 1
+    baseLayer: base
+    layerStates:
+    - bluespace_crystal
+    - bluespace_crystal_2
+    - bluespace_crystal_3
+  - type: PhysicalComposition
+    materialComposition:
+      FishBluespaceCrystal: 100
+  - type: Sprite
+    sprite: _Fish/Objects/Materials/bluespace_crystal.rsi
+    layers:
+    - state: bluespace_crystal
+      map: ["base"]
+  - type: Item
+    heldPrefix: diamond
+
+- type: ore
+  id: FishOreBluespaceCrystal
+  oreEntity: FishBluespaceCrystal1
+  minOreYield: 1
+  maxOreYield: 1

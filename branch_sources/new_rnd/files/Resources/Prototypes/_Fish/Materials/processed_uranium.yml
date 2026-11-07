@@ -1,0 +1,41 @@
+- type: material
+  id: FishProcessedUranium
+  stackEntity: FishSheetProcessedUranium1
+  name: materials-fish-processed-uranium
+  icon: { sprite: Objects/Materials/Sheets/other.rsi, state: uranium }
+  color: "#c8f0b5"
+  price: 1.7
+
+- type: stack
+  parent: BaseSheetStack
+  id: FishProcessedUranium
+  name: stack-fish-processed-uranium
+  icon: { sprite: Objects/Materials/Sheets/other.rsi, state: uranium }
+  spawn: FishSheetProcessedUranium1
+
+- type: entity
+  parent: SheetOtherBase
+  id: FishSheetProcessedUranium1
+  name: processed uranium
+  description: Pale green sheets of purified uranium prepared for compact reactor cells.
+  suffix: Fish
+  components:
+  - type: PhysicalComposition
+    materialComposition:
+      FishProcessedUranium: 100
+  - type: Stack
+    stackType: FishProcessedUranium
+    count: 1
+    baseLayer: base
+    layerStates:
+    - uranium
+    - uranium_2
+    - uranium_3
+  - type: Sprite
+    state: uranium
+    color: "#c8f0b5"
+    layers:
+    - state: uranium
+      map: ["base"]
+  - type: Item
+    heldPrefix: uranium

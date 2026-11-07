@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "core.png: grey-core by MTandi, /tg/station PR https://github.com/tgstation/tgstation/pull/83891; source https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/icons/mob/simple/slimes.dmi. Fish DMI-to-RSI conversion preserves the original 32x32 RGBA pixels and colors. Core license notice: https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/README.md#license. inhand-left.png and inhand-right.png: sprites by Rubin, retained byte-for-byte from Goob Station https://github.com/Goob-Station/Goob-Station/tree/7e962071658b3f59a14b54fefb3b376edee7bb3c/Resources/Textures/_Goobstation/Xenobiology/Specific/Xenobiology/extract_jellies.rsi; original four-direction frame order preserved. Both parts are CC-BY-SA-3.0. License: https://creativecommons.org/licenses/by-sa/3.0/.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "core"
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}
