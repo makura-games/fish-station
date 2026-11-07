@@ -2,7 +2,7 @@ using Content.Shared.Damage;
 using Content.Shared.Tools;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server._Fish.Ipc;
+namespace Content.Shared._Fish.Ipc;
 
 [RegisterComponent]
 public sealed partial class FishWeldingHealableComponent : Component;

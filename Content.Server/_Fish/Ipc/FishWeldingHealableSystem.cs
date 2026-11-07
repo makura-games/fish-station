@@ -1,98 +1,39 @@
+using Content.Server.Atmos.EntitySystems;
 using Content.Shared._Fish.Ipc;
-using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Damage.Components;
-using Content.Shared.Damage.Systems;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
-using Content.Shared.Stacks;
-using Content.Shared.Tools.Components;
-using Content.Shared.Tools.Systems;
 
 namespace Content.Server._Fish.Ipc;
 
-/// <summary>Ремонт КПБ сваркой (Paradise: welder → burn).</summary>
-public sealed partial class FishWeldingHealableSystem : EntitySystem
+/// <summary>
+/// Клик сваркой по шасси. Раньше поджога: иначе зажжённая горелка поджигает Flammable и взаимодействие теряется.
+/// </summary>
+public sealed class FishWeldingHealableSystem : EntitySystem
 {
-    [Dependency] private SharedToolSystem _tool = default!;
-    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private SharedFishWeldingHealableSystem _weld = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
-    [Dependency] private SharedSolutionContainerSystem _solution = default!;
-    [Dependency] private SharedStackSystem _stack = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<FishWeldingHealableComponent, InteractUsingEvent>(OnInteract);
-        SubscribeLocalEvent<FishWeldingHealableComponent, FishSiliconRepairDoAfterEvent>(OnFinished);
+
+        SubscribeLocalEvent<FishWeldingHealableComponent, InteractUsingEvent>(OnInteract, before: [typeof(FlammableSystem)]);
     }
 
-    private void OnFinished(EntityUid uid, FishWeldingHealableComponent _, FishSiliconRepairDoAfterEvent args)
+    private void OnInteract(Entity<FishWeldingHealableComponent> ent, ref InteractUsingEvent args)
     {
-        if (args.Cancelled || args.Used is not { } used
-            || !TryComp<InjurableComponent>(args.Target, out var injurable)
-            || !TryComp<FishWeldingHealingComponent>(used, out var healing)
-            || injurable.DamageContainer is null
-            || !healing.DamageContainers.Contains(injurable.DamageContainer.Value)
-            || !HasDamage(uid, healing))
+        if (args.Handled || !TryComp<FishWeldingHealingComponent>(args.Used, out var healing))
             return;
 
-        if (healing.RequireWelderFuel)
+        switch (_weld.TryStartWeld((args.Used, healing), args.User, ent))
         {
-            if (!TryComp<WelderComponent>(used, out var welder)
-                || !_solution.TryGetSolution(used, welder.FuelSolutionName, out var solution))
-                return;
-
-            _solution.RemoveReagent(solution.Value, welder.FuelReagent, healing.FuelCost);
+            case FishWeldResult.Started:
+                args.Handled = true;
+                break;
+            case FishWeldResult.NoDamage:
+                _popup.PopupEntity(Loc.GetString("fish-ipc-weld-no-damage"), ent, args.User);
+                args.Handled = true;
+                break;
         }
-        else if (TryComp<StackComponent>(used, out var stack))
-        {
-            if (!_stack.TryUse((used, stack), healing.StackCost))
-                return;
-        }
-
-        _damageable.TryChangeDamage(uid, healing.Damage, true, false, origin: args.User);
-        _popup.PopupEntity(Loc.GetString("comp-repairable-repair", ("target", uid), ("tool", used)), uid, args.User);
-
-        // Следующий цикл саморемонта тоже со штрафом SelfHealPenalty (не хардкод 3f).
-        if (!HasDamage(uid, healing))
-            return;
-
-        var nextDelay = args.User == uid
-            ? healing.DoAfterDelay * healing.SelfHealPenalty
-            : healing.DoAfterDelay;
-
-        args.Handled = _tool.UseTool(used, args.User, uid, nextDelay, healing.QualityNeeded, new FishSiliconRepairDoAfterEvent());
-    }
-
-    private void OnInteract(EntityUid uid, FishWeldingHealableComponent _, InteractUsingEvent args)
-    {
-        if (args.Handled
-            || !TryComp(args.Used, out FishWeldingHealingComponent? healing)
-            || !TryComp(args.Target, out InjurableComponent? injurable)
-            || injurable.DamageContainer is null
-            || !healing.DamageContainers.Contains(injurable.DamageContainer.Value)
-            || !HasDamage(args.Target, healing)
-            || !_tool.HasQuality(args.Used, healing.QualityNeeded)
-            || args.User == args.Target && !healing.AllowSelfHeal)
-            return;
-
-        var delay = args.User == args.Target
-            ? healing.DoAfterDelay * healing.SelfHealPenalty
-            : healing.DoAfterDelay;
-
-        args.Handled = _tool.UseTool(args.Used, args.User, args.Target, delay, healing.QualityNeeded,
-            new FishSiliconRepairDoAfterEvent());
-    }
-
-    private bool HasDamage(EntityUid target, FishWeldingHealingComponent healing)
-    {
-        var current = _damageable.GetAllDamage(target);
-        foreach (var (type, _) in healing.Damage.DamageDict)
-        {
-            if (current.DamageDict.TryGetValue(type, out var amount) && amount > 0)
-                return true;
-        }
-
-        return false;
     }
 }
