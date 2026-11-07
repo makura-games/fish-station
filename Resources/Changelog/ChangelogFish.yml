@@ -1493,3 +1493,10 @@
     message: Предметы можно передавать из рук в руки. Alt + ЛКМ по персонажу с предметом в руке протягивает ему предмет, Alt + ЛКМ по протягивающему забирает его.
   id: 150
   url: https://github.com/makura-games/fish-station/pull/595
+- author: Pythagorius-cra
+  time: '2026-11-07T00:05:36.0000000+00:00'
+  changes:
+  - type: Fix
+    message: 'Расчёт Fish корпоративного закона: сопротивление, рецидив+явка, крайняя необходимость и порог пермы согласованы с вики и консолями.'
+  id: 151
+  url: https://github.com/makura-games/fish-station/pull/625
