@@ -215,14 +215,14 @@
     - Ipc # Fish-edit: HealingSystem принимает кабель для MobIpc
     damage:
       types:
-        # Fish-start: кабель чинит brute у КПБ; burn/shock/caustic — для Synth/Silicon/Mech
+        # Fish-start: мех. типы для Synth/Silicon/Mech; с КПБ их снимает HealingSystem
         Blunt: -6
         Slash: -6
         Piercing: -6
+        # Fish-end
         Heat: -6
         Shock: -6
         Caustic: -6
-        # Fish-end
         Mangleness: -1
     # Sunrise end
 

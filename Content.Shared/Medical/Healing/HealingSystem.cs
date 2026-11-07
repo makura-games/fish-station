@@ -18,6 +18,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
+using Content.Shared.Tag;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Utility;
 
@@ -36,6 +37,7 @@ public sealed partial class HealingSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popupSystem = default!;
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private TagSystem _tag = default!; // Fish-edit: катушка не лечит мех. урон КПБ
 
     public override void Initialize()
     {
@@ -85,7 +87,13 @@ public sealed partial class HealingSystem : EntitySystem
         if (healing.ModifyBloodLevel != 0 && bloodstream != null)
             _bloodstreamSystem.TryModifyBloodLevel((target.Owner, bloodstream), healing.ModifyBloodLevel);
 
-        if (!_damageable.TryChangeDamage(target.Owner, healing.Damage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
+        var healDamage = healing.Damage;
+        // Fish-start: катушка не снимает Blunt/Slash/Piercing с КПБ. Нанопаста и прочие силиконы без тега CableCoil не затронуты.
+        if (args.Used is { } used && IgnoresIpcCableMechanical(target.Owner, used))
+            healDamage = WithoutIpcMechanical(healDamage);
+        // Fish-end
+
+        if (!_damageable.TryChangeDamage(target.Owner, healDamage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
             return;
 
         var total = healed.GetTotal();
@@ -168,6 +176,11 @@ public sealed partial class HealingSystem : EntitySystem
                 && amount > 0
                 && (type.Key != "Mangleness" || type.Value < 0)) // Sunrise-Edit — Mangleness нельзя наносить лечебным предметом
             {
+                // Fish-start: у КПБ катушка не считает мех. урон поводом для лечения
+                if (IgnoresIpcCableMechanical(target.Owner, healing.Owner) && IsIpcMechanical(type.Key))
+                    continue;
+                // Fish-end
+
                 return true;
             }
         }
