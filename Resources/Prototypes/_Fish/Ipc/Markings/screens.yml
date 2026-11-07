@@ -4,7 +4,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenStatic
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -14,7 +14,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenBlue
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -24,7 +24,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenBreakout
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -34,7 +34,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenEight
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -44,7 +44,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenGoggles
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -54,7 +54,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenExclaim
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -64,7 +64,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenHeart
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -74,7 +74,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenMonoeye
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -84,7 +84,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenNature
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -94,7 +94,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenOrange
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -104,7 +104,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenPink
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -114,7 +114,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenQuestion
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -124,7 +124,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenShower
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -134,7 +134,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenYellow
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -144,7 +144,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenScroll
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -154,7 +154,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenConsole
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -164,7 +164,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenRgb
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -174,7 +174,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenGlider
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -184,7 +184,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenRainbowhoriz
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -194,7 +194,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenBsod
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -204,7 +204,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenRedtext
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -214,7 +214,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenSinewave
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -224,7 +224,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenSquarewave
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -234,7 +234,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenEcgwave
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -244,7 +244,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenEyes
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -254,7 +254,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenEyestall
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -264,7 +264,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenEyesangry
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -274,7 +274,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenLoading
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -284,7 +284,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenWindowsxp
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -294,7 +294,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenTetris
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -304,7 +304,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenTv
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -314,7 +314,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenTextdrop
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -324,7 +324,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenStars
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -334,7 +334,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenRainbowdiag
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -344,7 +344,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenBlank
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -354,7 +354,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenSmile
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -363,7 +363,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenFrown
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -373,7 +373,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenRing
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
@@ -383,7 +383,7 @@
 - type: marking
   groupWhitelist: [ Ipc ]
   id: ScreenL
-  bodyPart: HeadSide
+  bodyPart: Eyes
   
   sprites:
     - sprite: _Fish/Mobs/Customization/ipc_screens.rsi

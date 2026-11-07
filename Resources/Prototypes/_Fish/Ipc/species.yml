@@ -98,7 +98,8 @@
     enum.HumanoidVisualLayers.FacialHair:
       limit: 0
       required: false
-    enum.HumanoidVisualLayers.HeadSide:
+    # Экран — слой глаз, под слотом очков. HeadSide рисуется поверх EyeWear.
+    enum.HumanoidVisualLayers.Eyes:
       limit: 1
       required: true
       default: [ ScreenStatic ]
