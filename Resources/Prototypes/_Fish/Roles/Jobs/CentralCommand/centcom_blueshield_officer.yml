@@ -23,7 +23,7 @@
   - CentralCommand
   special:
    - !type:AddImplantSpecial
-     implants: [ MindShieldImplant ]
+     implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ] # Fish-edit
 
 - type: startingGear
   id: CentcomBlueShieldGear
@@ -32,8 +32,10 @@
    eyes: ClothingEyesGlassesBlueShield
    # head через BlueShieldHead loadout # Fish-edit
    id: BlueShieldOperativePDA
+   outerClothing: ClothingOuterArmorBlueShield
    ears: ClothingHeadsetFishCentCom
    gloves: ClothingHandsGlovesCombat
   storage:
    back:
    - HandheldBSOCrewMonitor
+   - FishUplinkNTERTBlueShield # Fish-edit

@@ -70,14 +70,11 @@ namespace Content.Client.ContextMenu.UI
             };
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void ExitedTree()
         {
-            if (disposing && Visible)
-                Close(); // FIsh edit - закрываем модальное меню до удаления его дочерних элементов
-
+            base.ExitedTree();
             MenuBody.OnChildRemoved -= ctrl => _uiController.OnRemoveElement(this, ctrl);
             ParentElement = null;
-            base.Dispose(disposing);
         }
     }
 }

@@ -1,0 +1,23 @@
+light_mode unshaded;
+blend_mode add;
+
+uniform mediump float threshold;
+uniform mediump float soft_knee;
+
+void fragment() {
+    lowp vec4 source = zTexture(UV) * MODULATE;
+    // Модуляция уже учтена до bright-pass; не умножаем цвет и alpha повторно.
+    MODULATE = vec4(1.0);
+    mediump float brightness = max(source.r, max(source.g, source.b)) * source.a;
+    if (brightness <= 0.001)
+        discard;
+
+    mediump float knee = clamp(soft_knee, 0.0001, threshold);
+    mediump float soft = clamp(brightness - threshold + knee, 0.0, 2.0 * knee);
+    soft = soft * soft / (4.0 * knee);
+    mediump float contribution = max(brightness - threshold, soft) / max(brightness, 0.0001);
+
+    COLOR = vec4(
+        source.rgb * source.a * contribution,
+        1.0);
+}

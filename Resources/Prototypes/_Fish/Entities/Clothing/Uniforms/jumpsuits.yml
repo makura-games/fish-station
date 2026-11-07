@@ -1,4 +1,4 @@
-# Fish added start - Spooky clown suit
+# Fish-start - Spooky clown suit
 - type: entity
   parent: ClothingUniformJumpsuitClown
   id: FishClothingUniformJumpsuitClownSpooky
@@ -28,4 +28,4 @@
         Heat: 0.2
         Radiation: 0.2
         Caustic: 0.2
-# Fish added end
+# Fish-end

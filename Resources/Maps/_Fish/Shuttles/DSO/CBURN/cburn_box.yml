@@ -1,11 +1,11 @@
 meta:
   format: 7
   category: Grid
-  engineVersion: 271.1.0
+  engineVersion: 277.0.0
   forkId: ""
   forkVersion: ""
-  time: 07/06/2026 18:25:55
-  entityCount: 884
+  time: 10/01/2026 09:01:22
+  entityCount: 891
 maps: []
 grids:
 - 1
@@ -816,16 +816,6 @@ entities:
     - type: Transform
       pos: 3.5,-11.5
       parent: 1
-  - uid: 864
-    components:
-    - type: Transform
-      pos: 4.5,-10.5
-      parent: 1
-  - uid: 865
-    components:
-    - type: Transform
-      pos: 4.5,-9.5
-      parent: 1
   - uid: 866
     components:
     - type: Transform
@@ -866,16 +856,6 @@ entities:
     - type: Transform
       pos: -2.5,-9.5
       parent: 1
-  - uid: 874
-    components:
-    - type: Transform
-      pos: -3.5,-10.5
-      parent: 1
-  - uid: 875
-    components:
-    - type: Transform
-      pos: -3.5,-9.5
-      parent: 1
   - uid: 876
     components:
     - type: Transform
@@ -900,6 +880,26 @@ entities:
     components:
     - type: Transform
       pos: -6.5,-8.5
+      parent: 1
+  - uid: 885
+    components:
+    - type: Transform
+      pos: -3.5,-9.5
+      parent: 1
+  - uid: 886
+    components:
+    - type: Transform
+      pos: -3.5,-10.5
+      parent: 1
+  - uid: 899
+    components:
+    - type: Transform
+      pos: 4.5,-10.5
+      parent: 1
+  - uid: 900
+    components:
+    - type: Transform
+      pos: 4.5,-9.5
       parent: 1
 - proto: Autolathe
   entities:
@@ -2248,23 +2248,11 @@ entities:
       rot: 3.141592653589793 rad
       pos: 3.5,-9.5
       parent: 1
-  - uid: 633
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 4.5,-10.5
-      parent: 1
   - uid: 637
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: -2.5,-10.5
-      parent: 1
-  - uid: 639
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -3.5,-9.5
       parent: 1
   - uid: 640
     components:
@@ -2283,12 +2271,6 @@ entities:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: -5.5,-7.5
-      parent: 1
-  - uid: 645
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -3.5,-10.5
       parent: 1
   - uid: 744
     components:
@@ -2368,17 +2350,10 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 3.5,-5.5
       parent: 1
-  - uid: 785
+  - uid: 782
     components:
     - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 4.5,-9.5
-      parent: 1
-  - uid: 786
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 3.5,-10.5
+      pos: -3.5,-10.5
       parent: 1
   - uid: 789
     components:
@@ -2438,21 +2413,32 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 6.5,-8.5
       parent: 1
+  - uid: 874
+    components:
+    - type: Transform
+      pos: 4.5,-10.5
+      parent: 1
+  - uid: 875
+    components:
+    - type: Transform
+      pos: -3.5,-9.5
+      parent: 1
   - uid: 883
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 4.5,-5.5
       parent: 1
-- proto: FishComputerCommsObr
-  entities:
-  - uid: 78
+  - uid: 887
     components:
     - type: Transform
-      pos: 1.5,10.5
+      pos: 4.5,-9.5
       parent: 1
-    - type: CommunicationsConsole
-      title: Отряд РХБЗЗ
+  - uid: 888
+    components:
+    - type: Transform
+      pos: 3.5,-10.5
+      parent: 1
 - proto: CentcomTechFab
   entities:
   - uid: 53
@@ -2742,13 +2728,6 @@ entities:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -5.5,0.5
-      parent: 1
-- proto: FishComputerShuttleObr
-  entities:
-  - uid: 491
-    components:
-    - type: Transform
-      pos: 0.5,10.5
       parent: 1
 - proto: CrateCommandSecure
   entities:
@@ -3212,6 +3191,29 @@ entities:
       deviceLists:
       - 2
       - 274
+- proto: FishComputerCommsObr
+  entities:
+  - uid: 78
+    components:
+    - type: Transform
+      pos: 1.5,10.5
+      parent: 1
+    - type: CommunicationsConsole
+      title: Отряд РХБЗЗ
+- proto: FishComputerShuttleObr
+  entities:
+  - uid: 491
+    components:
+    - type: Transform
+      pos: 0.5,10.5
+      parent: 1
+- proto: FishGyroscope10K
+  entities:
+  - uid: 750
+    components:
+    - type: Transform
+      pos: 5.5,-5.5
+      parent: 1
 - proto: FloorDrain
   entities:
   - uid: 488
@@ -4175,16 +4177,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 2.5,11.5
       parent: 1
-- proto: Gyroscope
-  entities:
-  - uid: 154
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 5.5,-5.5
-      parent: 1
-    - type: Thruster
-      thrust: 12000
 - proto: HighSecCentralCommandLocked
   entities:
   - uid: 8
@@ -5375,6 +5367,63 @@ entities:
       pos: 6.5,-6.5
       parent: 1
     - type: CMExplosionEffect
+- proto: SunriseWallhornWhite
+  entities:
+  - uid: 154
+    components:
+    - type: Transform
+      pos: 4.5,-2.5
+      parent: 1
+    - type: Fixtures
+      fixtures: {}
+  - uid: 263
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -2.5,-3.5
+      parent: 1
+    - type: Fixtures
+      fixtures: {}
+  - uid: 371
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 3.5,-0.5
+      parent: 1
+    - type: Fixtures
+      fixtures: {}
+  - uid: 624
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 1.5,-0.5
+      parent: 1
+    - type: Fixtures
+      fixtures: {}
+  - uid: 626
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 2.5,7.5
+      parent: 1
+    - type: Fixtures
+      fixtures: {}
+  - uid: 633
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -0.5,5.5
+      parent: 1
+    - type: Fixtures
+      fixtures: {}
+  - uid: 645
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -4.5,-0.5
+      parent: 1
+    - type: Fixtures
+      fixtures: {}
 - proto: TableReinforced
   entities:
   - uid: 45
@@ -5447,39 +5496,39 @@ entities:
           ents: []
 - proto: ThrusterLarge
   entities:
-  - uid: 263
+  - uid: 785
+    components:
+    - type: Transform
+      pos: -4.5,8.5
+      parent: 1
+  - uid: 786
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 4.5,-9.5
       parent: 1
-  - uid: 371
+  - uid: 864
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -3.5,-10.5
       parent: 1
-  - uid: 624
+  - uid: 865
     components:
     - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -4.5,-8.5
+      pos: 4.5,8.5
       parent: 1
-  - uid: 626
+  - uid: 889
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 6.5,-8.5
       parent: 1
-  - uid: 750
+  - uid: 890
     components:
     - type: Transform
-      pos: -4.5,8.5
-      parent: 1
-  - uid: 782
-    components:
-    - type: Transform
-      pos: 4.5,8.5
+      rot: 3.141592653589793 rad
+      pos: -4.5,-8.5
       parent: 1
 - proto: TurboItemRecharger
   entities:

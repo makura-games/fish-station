@@ -1,3 +1,4 @@
+# Fish-edit: To remove - прототипы разумной болезни
 - type: reagent
   id: DiseaseBloodFirst
   name: reagent-name-disease-blood-first
@@ -10,7 +11,8 @@
     Digestion:
       # Disgusting!
       effects:
-      - !type:SatiateThirst
+      - !type:Satiate
+        satiationType: Thirst
         factor: -0.5
     Bloodstream:
       effects:
@@ -33,7 +35,8 @@
     Digestion:
       # Disgusting!
       effects:
-      - !type:SatiateThirst
+      - !type:Satiate
+        satiationType: Thirst
         factor: -0.5
     Bloodstream:
       effects:
@@ -56,7 +59,8 @@
     Digestion:
       # Disgusting!
       effects:
-      - !type:SatiateThirst
+      - !type:Satiate
+        satiationType: Thirst
         factor: -0.5
     Bloodstream:
       effects:
@@ -79,7 +83,8 @@
     Digestion:
       # Disgusting!
       effects:
-      - !type:SatiateThirst
+      - !type:Satiate
+        satiationType: Thirst
         factor: -0.5
     Bloodstream:
       effects:

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._Sunrise.Humanoid;
 using Content.Shared.Body;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
@@ -24,23 +25,22 @@ public sealed partial class FishSurgeryBodyDiagram : Control
     [Dependency] private MarkingManager _marking = default!;
 
     // Координаты общего холста частей тела 32x32. Кисти и стопы имеют расширенные области нажатия.
-    // Стороны выбора соответствуют экрану: левые конечности выбираются слева, правые — справа.
+    // Пациент смотрит на нас: его правая сторона находится слева на экране.
     private static readonly Region[] Regions =
     [
         new("Head", new(10, 2, 21, 10)),
         new("Torso", new(11, 10, 20, 23)),
-        new("ArmRight", new(20, 10, 26, 18)),
-        new("ArmLeft", new(5, 10, 11, 18)),
-        new("HandRight", new(20, 18, 26, 23)),
-        new("HandLeft", new(5, 18, 11, 23)),
-        new("LegRight", new(16, 23, 21, 29)),
-        new("LegLeft", new(10, 23, 15, 29)),
-        new("FootRight", new(16, 29, 23, 32)),
-        new("FootLeft", new(8, 29, 15, 32)),
+        new("ArmRight", new(5, 10, 11, 18)),
+        new("ArmLeft", new(20, 10, 26, 18)),
+        new("HandRight", new(5, 18, 11, 23)),
+        new("HandLeft", new(20, 18, 26, 23)),
+        new("LegRight", new(10, 23, 15, 29)),
+        new("LegLeft", new(16, 23, 21, 29)),
+        new("FootRight", new(8, 29, 15, 32)),
+        new("FootLeft", new(16, 29, 23, 32)),
     ];
 
     private readonly Dictionary<string, Part> _parts = new();
-    private static readonly HumanoidVisualLayers[] BodyLayers = Enum.GetValues<HumanoidVisualLayers>();
     private readonly SortedSet<int> _layerIndices = new();
     private readonly List<BodyLayer> _appearance = new();
     private readonly float[] _highlightAmounts = new float[Regions.Length];
@@ -149,35 +149,32 @@ public sealed partial class FishSurgeryBodyDiagram : Control
     {
         _appearance.Clear();
         _layerIndices.Clear();
-        if (Patient is not { } patient || !_entities.TryGetComponent<SpriteComponent>(patient, out var sprite))
+        if (Patient is not { } patient || !_entities.TryGetComponent<SpriteComponent>(patient, out var sprite) ||
+            !_entities.TryGetComponent<BodyComponent>(patient, out var body) || body.Organs == null)
             return;
 
         var sprites = _entities.System<SpriteSystem>();
-        foreach (var key in BodyLayers)
+        _entities.TryGetComponent<SunriseHumanoidBaseLayersComponent>(patient, out var baseLayers);
+        // Берём только существующие органы. Видимость одежды не должна скрывать анатомию.
+        foreach (var organ in body.Organs.ContainedEntities)
         {
-            if (key is HumanoidVisualLayers.Handcuffs or HumanoidVisualLayers.Ensnare or
-                HumanoidVisualLayers.Fire or HumanoidVisualLayers.StencilMask or HumanoidVisualLayers.Overlay)
-                continue;
-            if (sprites.LayerMapTryGet((patient, sprite), key, out var index, false))
+            if (_entities.TryGetComponent<VisualOrganComponent>(organ, out var visual) &&
+                (visual.Layer is not HumanoidVisualLayers key || baseLayers?.PermanentlyHidden.Contains(key) != true) &&
+                sprites.LayerMapTryGet((patient, sprite), visual.Layer, out var index, false))
                 _layerIndices.Add(index);
-        }
 
-        if (_entities.TryGetComponent<BodyComponent>(patient, out var body) && body.Organs != null)
-        {
-            foreach (var organ in body.Organs.ContainedEntities)
+            if (!_entities.TryGetComponent<VisualOrganMarkingsComponent>(organ, out var markings))
+                continue;
+            foreach (var marking in markings.AppliedMarkings)
             {
-                if (!_entities.TryGetComponent<VisualOrganMarkingsComponent>(organ, out var markings))
+                if (!_marking.TryGetMarking(marking, out var prototype) ||
+                    baseLayers?.PermanentlyHidden.Contains(prototype.BodyPart) == true)
                     continue;
-                foreach (var marking in markings.AppliedMarkings)
+                foreach (var specifier in prototype.Sprites)
                 {
-                    if (!_marking.TryGetMarking(marking, out var prototype))
-                        continue;
-                    foreach (var specifier in prototype.Sprites)
-                    {
-                        if (specifier is SpriteSpecifier.Rsi rsi &&
-                            sprites.LayerMapTryGet((patient, sprite), $"{prototype.ID}-{rsi.RsiState}", out var index, false))
-                            _layerIndices.Add(index);
-                    }
+                    if (specifier is SpriteSpecifier.Rsi rsi &&
+                        sprites.LayerMapTryGet((patient, sprite), $"{prototype.ID}-{rsi.RsiState}", out var markingIndex, false))
+                        _layerIndices.Add(markingIndex);
                 }
             }
         }
@@ -188,7 +185,7 @@ public sealed partial class FishSurgeryBodyDiagram : Control
                 continue;
             var texture = layer.ActualState?.Frame0 ?? layer.Texture;
             if (texture != null)
-                _appearance.Add(new BodyLayer(texture, layer.Color, layer.Scale, layer.Offset));
+                _appearance.Add(new BodyLayer(texture, layer.Color, layer.Scale, layer.Offset, layer.Shader));
         }
     }
 
@@ -201,13 +198,16 @@ public sealed partial class FishSurgeryBodyDiagram : Control
 
         if (Patient != null)
         {
+            var previousShader = handle.GetShader();
             foreach (var layer in _appearance)
             {
                 var size = (Vector2)layer.Texture.Size * layer.Scale * scale;
                 var offset = new Vector2(layer.Offset.X, -layer.Offset.Y) * 32f * scale;
+                handle.UseShader(layer.Shader);
                 handle.DrawTextureRect(layer.Texture,
                     UIBox2.FromDimensions(canvas.Center + offset - size / 2, size), layer.Color);
             }
+            handle.UseShader(previousShader);
         }
         else
         {
@@ -327,5 +327,5 @@ public sealed partial class FishSurgeryBodyDiagram : Control
 
     private sealed record Region(string Category, UIBox2 Bounds);
     private sealed record Part(EntityUid Uid, string Name, Texture? Texture, Color Color);
-    internal readonly record struct BodyLayer(Texture Texture, Color Color, Vector2 Scale, Vector2 Offset);
+    internal readonly record struct BodyLayer(Texture Texture, Color Color, Vector2 Scale, Vector2 Offset, ShaderInstance? Shader);
 }

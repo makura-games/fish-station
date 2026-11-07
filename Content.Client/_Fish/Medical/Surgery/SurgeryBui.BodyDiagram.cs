@@ -44,7 +44,7 @@ public sealed partial class SurgeryBui
         _window?.ClearActionProgress();
     }
 
-    /// <summary>Обновляет схему только после события изменения внешности пациента.</summary>
+    /// <summary>Queues a diagram refresh after the patient's appearance or anatomy changes.</summary>
     internal void RefreshFishAppearance()
     {
         _window?.RefreshPatientAppearance();

@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Shared.Actions;
 using Robust.Shared.Serialization;
@@ -33,8 +34,8 @@ public sealed class InfectWithChanceEvent : EntityEventArgs, IInventoryRelayEven
 [Serializable, NetSerializable]
 public sealed partial class ClientInfectEvent : EntityEventArgs
 {
-    public NetEntity Infected { get; }
-    public NetEntity Owner { get; }
+    public NetEntity Infected; // Fish-edit: открытые поля для Robust NetSerializer
+    public NetEntity Owner; // Fish-edit
     public ClientInfectEvent(NetEntity infected, NetEntity owner)
     {
         Infected = infected;
@@ -90,7 +91,7 @@ public sealed partial class DiseaseAddShieldEvent : InstantActionEvent
 [Serializable, NetSerializable]
 public sealed class UpdateInfectionsEvent : EntityEventArgs
 {
-    public NetEntity Uid { get; }
+    public NetEntity Uid; // Fish-edit: открытые поля для Robust NetSerializer
     public UpdateInfectionsEvent(NetEntity id)
     {
         Uid = id;

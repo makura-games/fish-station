@@ -1,3 +1,5 @@
+// Fish-start - перенесено в Content.Shared.Guardian.Components.GuardianComponent после апстрима
+/*
 using Robust.Shared.Audio;
 
 namespace Content.Server.Guardian
@@ -59,3 +61,6 @@ namespace Content.Server.Guardian
         // Fish-end
     }
 }
+*/
+// Fish-end
+

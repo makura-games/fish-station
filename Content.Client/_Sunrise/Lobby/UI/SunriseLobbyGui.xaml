@@ -13,8 +13,7 @@
     xmlns:vote="clr-namespace:Content.Client.Voting.UI"
     xmlns:widgets="clr-namespace:Content.Client.UserInterface.Systems.Chat.Widgets"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ui="clr-namespace:Content.Client._Sunrise.Lobby.UI"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    xmlns:ui="clr-namespace:Content.Client._Sunrise.Lobby.UI">
     <!--  Background  -->
     <TextureRect
         Access="Public"
@@ -120,12 +119,8 @@
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalExpand="True"
                                                 MinWidth="200"
-                                                Text="{Loc 'ui-tutorial'}">
-                                                <Button.StyleClasses>
-                                                    <system:String>ButtonBig</system:String>
-                                                    <system:String>negative</system:String>
-                                                </Button.StyleClasses>
-                                            </Button>
+                                                StyleClasses="ButtonBig negative"
+                                                Text="{Loc 'ui-tutorial'}" />
                                         </BoxContainer>
                                     </controls:StripeBack>
                                     <RichTextLabel
@@ -404,7 +399,7 @@
                                         MinWidth="40"
                                         Name="CallVoteButton"
                                         StyleClasses="ButtonBig" />
-                                    <!-- ===== FISH EDIT START: ACHIEVEMENTS ===== -->
+                                    <!-- ===== Fish-start: ACHIEVEMENTS ===== -->
                                     <Button
                                         Access="Public"
                                         HorizontalExpand="True"
@@ -412,7 +407,7 @@
                                         Name="AchievementsButton"
                                         StyleClasses="ButtonBig"
                                         Text="{Loc 'fish-achievements-button'}" />
-                                    <!-- ===== FISH EDIT END: ACHIEVEMENTS ===== -->
+                                    <!-- ===== Fish-end: ACHIEVEMENTS ===== -->
                                     <Button
                                         Access="Public"
                                         HorizontalExpand="True"

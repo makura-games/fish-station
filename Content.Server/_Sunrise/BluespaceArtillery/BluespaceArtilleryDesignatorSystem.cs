@@ -24,7 +24,7 @@ public sealed partial class BluespaceArtilleryDesignatorSystem : SharedBluespace
 {
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private ExplosionSystem _explosion = default!;
-    [Dependency] private IMapManager _mapManager = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedChargesSystem _charges = default!;
@@ -144,13 +144,19 @@ public sealed partial class BluespaceArtilleryDesignatorSystem : SharedBluespace
         var mode = ent.Comp.FireModes[modeIndex];
         var mapCoords = _transform.ToMapCoordinates(location);
 
-        _chat.DispatchGlobalAnnouncement(
+        // Fish-start
+        // Объявление и звук слышны только на карте, где вызван удар.
+        var mapFilter = Filter.BroadcastMap(mapCoords.MapId);
+
+        _chat.DispatchFilteredAnnouncement(
+            mapFilter,
             Loc.GetString(ent.Comp.Announcement),
-            Loc.GetString(ent.Comp.AnnouncementSender),
+            sender: Loc.GetString(ent.Comp.AnnouncementSender),
             playDefault: false,
             colorOverride: ent.Comp.AnnouncementColor);
 
-        _audio.PlayGlobal(ent.Comp.AnnouncementSound, Filter.Broadcast(), true);
+        _audio.PlayGlobal(ent.Comp.AnnouncementSound, mapFilter, true);
+        // Fish-end
 
         if (user != null)
         {
@@ -174,7 +180,7 @@ public sealed partial class BluespaceArtilleryDesignatorSystem : SharedBluespace
         {
             DeleteMarker(markerUid);
 
-            if (!_mapManager.MapExists(mapCoords.MapId))
+            if (!_mapSystem.MapExists(mapCoords.MapId))
                 return;
 
             _explosion.QueueExplosion(

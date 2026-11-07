@@ -28,14 +28,14 @@ public sealed class FishSurgeryBodyDiagramTest
     // Проверяем не только туловище, но и маленькие области, которые легко перепутать при масштабировании.
     [TestCase("Head", 15, 6)]
     [TestCase("Torso", 15, 16)]
-    [TestCase("ArmRight", 23, 14)]
-    [TestCase("ArmLeft", 8, 14)]
-    [TestCase("HandRight", 23, 20)]
-    [TestCase("HandLeft", 8, 20)]
-    [TestCase("LegRight", 18, 26)]
-    [TestCase("LegLeft", 12, 26)]
-    [TestCase("FootRight", 19, 30)]
-    [TestCase("FootLeft", 11, 30)]
+    [TestCase("ArmRight", 8, 14)]
+    [TestCase("ArmLeft", 23, 14)]
+    [TestCase("HandRight", 8, 20)]
+    [TestCase("HandLeft", 23, 20)]
+    [TestCase("LegRight", 12, 26)]
+    [TestCase("LegLeft", 18, 26)]
+    [TestCase("FootRight", 11, 30)]
+    [TestCase("FootLeft", 19, 30)]
     public void BodyRegionsMatchAtDifferentSizes(string category, float x, float y)
     {
         foreach (var size in new[] { new Vector2(230, 330), new Vector2(460, 660), new Vector2(250, 480) })
@@ -58,10 +58,10 @@ public sealed class FishSurgeryBodyDiagramTest
         Assert.That(FishSurgeryBodyDiagram.HitTestRegion(pixel, size), Is.Null);
     }
 
-    [TestCase(23, 18, "HandRight")]
-    [TestCase(8, 18, "HandLeft")]
-    [TestCase(18, 29, "FootRight")]
-    [TestCase(12, 29, "FootLeft")]
+    [TestCase(8, 18, "HandRight")]
+    [TestCase(23, 18, "HandLeft")]
+    [TestCase(12, 29, "FootRight")]
+    [TestCase(18, 29, "FootLeft")]
     public void SmallPartsWinAtSharedEdges(float x, float y, string category)
     {
         var size = new Vector2(230, 330);

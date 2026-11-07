@@ -77,7 +77,7 @@ public sealed partial class FishSurgeryWindow : FancyWindow
         BodyDiagram.Patient = patient;
     }
 
-    /// <summary>Обновляет кэш внешности после клиентского AppearanceChangeEvent.</summary>
+    /// <summary>Queues an appearance refresh for the next UI frame.</summary>
     public void RefreshPatientAppearance()
     {
         _appearanceRefreshRequested = true;
@@ -121,6 +121,7 @@ public sealed partial class FishSurgeryWindow : FancyWindow
             AddPart(part, name);
         }
         BodyDiagram.EndPartsUpdate();
+        RefreshPatientAppearance();
     }
 
     /// <summary>

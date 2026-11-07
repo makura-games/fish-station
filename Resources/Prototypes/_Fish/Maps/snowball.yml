@@ -15,35 +15,17 @@
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: 'FH'
-        - type: SpawnGridAndDockToStation
-          grids:
-          - gridPath: /Maps/_Fish/Shuttles/mining.yml
-            priorityTag: DockMining
-          - gridPath: /Maps/_Fish/Shuttles/security_jay.yml
-            priorityTag: DockFishSecurity
         - type: StationEmergencyShuttle
           emergencyShuttlePath: /Maps/_Fish/Shuttles/emergency_Case.yml
         - type: StationGoal
           goals:
-          - Shuttle
-          - Singularity
           - SolarPanels
           - Artifacts
-          - Bank
           - Zoo
-          - MiningOutpost
-          - Tesla
-          - XenobiologyRepair
-          - VirusologyAmbusol
-          - Containment
           - WeaponsSecurity
           - MaintsRepair
           - DormsBuild
-          - BattleShuttle
           - Transit
-          - NukeRoom
-          - Permabrig
-          - Farm
           - Delegates
           - Cyborgs
           - Testing
@@ -54,15 +36,12 @@
           - Reconnaissance
           - Saboteurs
           - Crew
-          - CleaningUp
           - HumanitarianAid
           - PersonnelRecovery
           - CrewEducation
-          - Virology
           - SampleCollection
           - Examination
           - StationGoalPolymorph
-          - VirusFlesh
         - type: StationJobs
           availableJobs:
             #command

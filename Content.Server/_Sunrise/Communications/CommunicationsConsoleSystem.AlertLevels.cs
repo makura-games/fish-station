@@ -1,9 +1,11 @@
-using Content.Server.AlertLevel;
+using Content.Shared.AlertLevel;
 using Content.Shared.CCVar;
 using Content.Shared.Communications;
 using Content.Shared.Popups;
 using Content.Shared.Station.Components;
 using Content.Shared.UserInterface;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 #pragma warning disable IDE0130 // Пространство имён соответствует расширяемой upstream-системе.
 namespace Content.Server.Communications;
@@ -14,7 +16,9 @@ public sealed partial class CommunicationsConsoleSystem
      * Additional alert-level controls and remote station selection.
      */
 
-    private void OnAdditionalAlertLevelChanged(AdditionalAlertLevelChangedEvent args)
+    [Dependency] private IGameTiming _timing = default!;
+
+    private void OnAdditionalAlertLevelChanged(ref AdditionalAlertLevelChangedEvent args)
     {
         var query = EntityQueryEnumerator<CommunicationsConsoleComponent>();
         while (query.MoveNext(out var uid, out var component))
@@ -103,16 +107,21 @@ public sealed partial class CommunicationsConsoleSystem
         CommunicationsConsoleComponent console)
     {
         var result = new List<CommunicationsConsoleAdditionalAlertLevelState>();
-        foreach (var (id, detail) in station.Comp.AlertLevels!.Levels)
+        var hasDelay = _alertLevelSystem.GetAlertLevelDelay(station.AsNullable()) > TimeSpan.Zero;
+        foreach (var id in station.Comp.AvailableAlertLevels)
         {
-            if (!detail.IsAdditional || !IsAlertLevelAllowed(console, id, detail))
+            if (!ProtoMan.Resolve(id, out var detail)
+                || !detail.IsAdditional
+                || !IsAlertLevelAllowed(console, id, detail))
+            {
                 continue;
+            }
 
             var enabled = station.Comp.ActiveAdditionalLevels.Contains(id);
             result.Add(new CommunicationsConsoleAdditionalAlertLevelState(
                 id,
                 enabled,
-                station.Comp.CurrentDelay <= 0 && _alertLevelSystem.CanSetAdditionalLevel(
+                !hasDelay && _alertLevelSystem.CanSetAdditionalLevel(
                     station.AsNullable(),
                     id,
                     !enabled,
@@ -126,7 +135,7 @@ public sealed partial class CommunicationsConsoleSystem
     {
         return HasComp<StationDataComponent>(station)
             && TryComp<AlertLevelComponent>(station, out var alert)
-            && alert.AlertLevels != null;
+            && alert.AvailableAlertLevels.Count > 0;
     }
 
     /// <summary>
@@ -171,8 +180,8 @@ public sealed partial class CommunicationsConsoleSystem
     /// </summary>
     public static bool IsAlertLevelAllowed(
         CommunicationsConsoleComponent console,
-        string level,
-        AlertLevelDetail detail)
+        ProtoId<AlertLevelPrototype> level,
+        AlertLevelPrototype detail)
     {
         return console.AllowedAlertLevels?.Contains(level) ?? detail.Selectable;
     }
@@ -182,7 +191,7 @@ public sealed partial class CommunicationsConsoleSystem
     /// </summary>
     public bool TrySetPrimaryAlertLevel(
         Entity<CommunicationsConsoleComponent?> console,
-        string level,
+        ProtoId<AlertLevelPrototype> level,
         EntityUid user)
     {
         if (!CanSetPrimaryAlertLevel(console, level, user))
@@ -197,7 +206,7 @@ public sealed partial class CommunicationsConsoleSystem
     /// </summary>
     public bool CanSetPrimaryAlertLevel(
         Entity<CommunicationsConsoleComponent?> console,
-        string level,
+        ProtoId<AlertLevelPrototype> level,
         EntityUid user,
         bool quiet = false)
     {
@@ -220,38 +229,37 @@ public sealed partial class CommunicationsConsoleSystem
         var station = ResolveAlertStation((console, console.Comp));
         return station is { } stationUid
             && TryComp<AlertLevelComponent>(stationUid, out var alert)
-            && alert.AlertLevels != null
-            && alert.AlertLevels.Levels.TryGetValue(level, out var detail)
+            && alert.AvailableAlertLevels.Contains(level)
+            && ProtoMan.Resolve(level, out var detail)
             && !detail.IsAdditional
             && IsAlertLevelAllowed(console.Comp, level, detail)
-            && alert.CurrentLevel != level
-            && alert.CurrentDelay <= 0
+            && alert.CurrentAlertLevel != level
+            && _alertLevelSystem.GetAlertLevelDelay((stationUid, alert)) <= TimeSpan.Zero
             && (console.Comp.ForceAlertLevelChanges
                 || detail.Selectable && _alertLevelSystem.IsSelectable((stationUid, alert)));
     }
 
     private bool DoSetPrimaryAlertLevel(
         Entity<CommunicationsConsoleComponent> console,
-        string level)
+        ProtoId<AlertLevelPrototype> level)
     {
         var station = ResolveAlertStation(console);
         if (station is not { } stationUid || !TryComp<AlertLevelComponent>(stationUid, out var alert))
             return false;
 
         _alertLevelSystem.SetLevel(
-            stationUid,
+            (stationUid, alert),
             level,
-            true,
-            true,
-            console.Comp.ForceAlertLevelChanges,
-            component: alert);
+            playSound: true,
+            announce: true,
+            force: console.Comp.ForceAlertLevelChanges);
 
-        if (alert.CurrentLevel != level)
+        if (alert.CurrentAlertLevel != level)
             return false;
 
         // Привилегированная консоль обходит запрет выбора кода, но не общий cooldown ручных изменений.
         if (console.Comp.ForceAlertLevelChanges)
-            StartAlertLevelCooldown(alert);
+            StartAlertLevelCooldown((stationUid, alert));
 
         return true;
     }
@@ -261,7 +269,7 @@ public sealed partial class CommunicationsConsoleSystem
     /// </summary>
     public bool TrySetAdditionalAlertLevel(
         Entity<CommunicationsConsoleComponent?> console,
-        string level,
+        ProtoId<AlertLevelPrototype> level,
         bool enabled,
         EntityUid user)
     {
@@ -277,7 +285,7 @@ public sealed partial class CommunicationsConsoleSystem
     /// </summary>
     public bool CanSetAdditionalAlertLevel(
         Entity<CommunicationsConsoleComponent?> console,
-        string level,
+        ProtoId<AlertLevelPrototype> level,
         bool enabled,
         EntityUid user,
         bool quiet = false)
@@ -301,16 +309,19 @@ public sealed partial class CommunicationsConsoleSystem
         var station = ResolveAlertStation((console, console.Comp));
         if (station == null
             || !TryComp<AlertLevelComponent>(station.Value, out var alert)
-            || alert.AlertLevels == null
-            || !alert.AlertLevels.Levels.TryGetValue(level, out var detail)
+            || !alert.AvailableAlertLevels.Contains(level)
+            || !ProtoMan.Resolve(level, out var detail)
             || !detail.IsAdditional
             || !IsAlertLevelAllowed(console.Comp, level, detail))
         {
             return false;
         }
 
-        if (console.Comp.ForceAlertLevelChanges && alert.CurrentDelay > 0)
+        if (console.Comp.ForceAlertLevelChanges
+            && _alertLevelSystem.GetAlertLevelDelay((station.Value, alert)) > TimeSpan.Zero)
+        {
             return false;
+        }
 
         return _alertLevelSystem.CanSetAdditionalLevel(
             (station.Value, alert),
@@ -321,7 +332,7 @@ public sealed partial class CommunicationsConsoleSystem
 
     private bool DoSetAdditionalAlertLevel(
         Entity<CommunicationsConsoleComponent> console,
-        string level,
+        ProtoId<AlertLevelPrototype> level,
         bool enabled)
     {
         var station = ResolveAlertStation(console);
@@ -329,19 +340,18 @@ public sealed partial class CommunicationsConsoleSystem
             return false;
 
         if (!_alertLevelSystem.TrySetAdditionalLevel(
-            station.Value,
+            (station.Value, alert),
             level,
             enabled,
             playSound: true,
             announce: true,
-            force: console.Comp.ForceAlertLevelChanges,
-            component: alert))
+            force: console.Comp.ForceAlertLevelChanges))
         {
             return false;
         }
 
         if (console.Comp.ForceAlertLevelChanges)
-            StartAlertLevelCooldown(alert);
+            StartAlertLevelCooldown((station.Value, alert));
 
         return true;
     }
@@ -357,10 +367,10 @@ public sealed partial class CommunicationsConsoleSystem
         UpdateCommsConsoleInterface(console, console.Comp);
     }
 
-    private void StartAlertLevelCooldown(AlertLevelComponent alert)
+    private void StartAlertLevelCooldown(Entity<AlertLevelComponent> station)
     {
-        alert.CurrentDelay = _cfg.GetCVar(CCVars.GameAlertLevelChangeDelay);
-        alert.ActiveDelay = true;
+        station.Comp.DelayedUntil = _timing.CurTime + TimeSpan.FromSeconds(_cfg.GetCVar(CCVars.GameAlertLevelChangeDelay));
+        Dirty(station);
     }
 
     private void OnSelectAlertStationMessage(

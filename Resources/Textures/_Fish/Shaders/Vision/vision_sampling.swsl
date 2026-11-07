@@ -1,0 +1,18 @@
+uniform sampler2D VISION_LIGHT_TEXTURE;
+uniform bool lighting_mask_enabled;
+
+// Световая маска уже прошла FOV: скрытые источники не влияют на засветку и адаптацию.
+bool night_visible(highp vec2 uv) {
+    if (lighting_mask_enabled) {
+        highp vec3 light_color = zTextureSpec(VISION_LIGHT_TEXTURE, uv).rgb;
+        if (max(max(light_color.r, light_color.g), light_color.b) <= 0.0001) {
+            return false;
+        }
+    }
+    highp vec3 sample_color = zTextureSpec(SCREEN_TEXTURE, uv).rgb;
+    return max(max(sample_color.r, sample_color.g), sample_color.b) > 0.0001;
+}
+
+highp float luminance(highp vec3 color) {
+    return dot(color, vec3(0.2126, 0.7152, 0.0722));
+}

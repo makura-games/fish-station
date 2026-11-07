@@ -4,9 +4,10 @@
   name: gas mask
   description: A face-covering mask that can be connected to an air supply.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.3
+  # Fish-end
   - type: Sprite
     sprite: Clothing/Mask/gas.rsi
   - type: Clothing
@@ -141,9 +142,10 @@
   name: medical mask
   description: A close-fitting sterile mask that can be connected to an air supply.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.5
+  # Fish-end
   - type: Item
     size: Tiny
   - type: Sprite
@@ -215,6 +217,7 @@
   name: clown wig and mask
   description: A true prankster's facial attire. A clown is incomplete without his wig and mask.
   components:
+  - type: Appearance
   - type: Sprite
     sprite: Clothing/Mask/clown.rsi
   - type: Clothing
@@ -234,7 +237,6 @@
   id: ClothingMaskClown
   description: A clown mask featuring a foldable wig; a true prankster's attire.
   components:
-  - type: Appearance
   - type: Foldable
     canFoldInsideContainer: true
   - type: FoldableClothing
@@ -348,7 +350,7 @@
   components:
   - type: Sprite
     sprite: Clothing/Mask/sterile.rsi
-  # Fish-start - Защита от болезни 50%
+  # Fish-start: To remove - защита от болезни 50%
   - type: DiseaseImmuneClothing
     prob: 0.5
   # Fish-end
@@ -380,8 +382,8 @@
     equipDelay: 3
     unequipDelay: 3
   - type: IngestionBlocker
-  - type: AddAccentClothing
-    accent: MumbleAccent
+  - type: MumbleAccent
+    relayAccent: true
   - type: EmoteBlocker
     blocksCategories:
     - Vocal
@@ -395,9 +397,10 @@
   name: plague doctor mask
   description: A bad omen.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.5
+  # Fish-end
   - type: Sprite
     sprite: Clothing/Mask/plaguedoctormask.rsi
   - type: Clothing
@@ -422,8 +425,8 @@
   - type: Clothing
     sprite: Clothing/Mask/cluwne.rsi
   - type: Unremoveable
-  - type: AddAccentClothing
-    accent: StutteringAccent
+  - type: StutteringAccent
+    relayAccent: true
 
 - type: entity
   parent: [ ClothingMaskGas, BaseSecurityContraband ]
@@ -786,9 +789,10 @@
   name: ninja mask
   description: A close-fitting nano-enhanced mask that acts both as an air filter and a post-modern fashion statement.
   components:
-  # Fish edit
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.3
+  # Fish-end
   - type: Sprite
     sprite: Clothing/Mask/ninja.rsi
   - type: Clothing
@@ -800,7 +804,7 @@
   - type: IdentityBlocker
 
 - type: entity
-  parent: ClothingMaskGas
+  parent: [ClothingMaskGas, WeldingMaskBase]
   id: ClothingMaskWeldingGas
   name: welding gas mask
   description: A gas mask with built in welding goggles and face shield. Looks like a skull, clearly designed by a nerd.
@@ -810,18 +814,15 @@
     state: icon
   - type: Clothing
     sprite: Clothing/Mask/welding-gas.rsi
-  - type: FlashImmunity
-  - type: EyeProtection
-  - type: PhysicalComposition
-    materialComposition:
-      Steel: 200
-      Glass: 100
   - type: StaticPrice
     price: 100
   - type: Tag
     tags:
     - WhitelistChameleon
     - FaceCovered # Sunrise-Edit
+  - type: ImageOverlay
+    pathToOverlayImage: "/Textures/Clothing/Head/Welding/weldingTexture.png"
+    additionalColorOverlay: "#00000050"
 
 # Entity tables
 - type: entityTable
