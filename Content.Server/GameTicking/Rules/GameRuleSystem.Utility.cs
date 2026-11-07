@@ -31,6 +31,13 @@ public abstract partial class GameRuleSystem<T> where T: IComponent
         return EntityQueryEnumerator<T, GameRuleComponent>();
     }
 
+    // Fish-start: единая проверка принадлежности сущности к карте ЦК для правил и событий.
+    protected bool IsOnCentcomm(EntityUid uid)
+    {
+        return _centcomm.IsOnCentcomm(uid);
+    }
+    // Fish-end
+
     /// <summary>
     ///     Utility function for finding a random event-eligible station entity
     /// </summary>
@@ -45,6 +52,11 @@ public abstract partial class GameRuleSystem<T> where T: IComponent
         {
             if (!filter(uid))
                 continue;
+
+            // Fish-start: не выбираем ЦК как станцию для события.
+            if (IsOnCentcomm(uid))
+                continue;
+            // Fish-end
 
             stations.Add(uid);
         }
@@ -95,6 +107,11 @@ public abstract partial class GameRuleSystem<T> where T: IComponent
         var grids = new List<(Entity<MapGridComponent> Entity, int Count, List<TileRef> Tiles)>();
         foreach (var possibleTarget in station.Comp.Grids)
         {
+            // Fish-start: не выбираем гриды карты ЦК.
+            if (IsOnCentcomm(possibleTarget))
+                continue;
+            // Fish-end
+
             if (!TryComp<MapGridComponent>(possibleTarget, out var comp))
                 continue;
 
