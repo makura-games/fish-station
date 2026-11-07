@@ -31,13 +31,6 @@ public abstract partial class GameRuleSystem<T> where T: IComponent
         return EntityQueryEnumerator<T, GameRuleComponent>();
     }
 
-    // Fish-start: единая проверка принадлежности сущности к карте ЦК для правил и событий.
-    protected bool IsOnCentcomm(EntityUid uid)
-    {
-        return _centcomm.IsOnCentcomm(uid);
-    }
-    // Fish-end
-
     /// <summary>
     ///     Utility function for finding a random event-eligible station entity
     /// </summary>

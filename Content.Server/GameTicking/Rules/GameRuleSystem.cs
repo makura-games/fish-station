@@ -1,5 +1,4 @@
 using Content.Server.Atmos.EntitySystems;
-using Content.Server._Sunrise.StationCentComm; // Fish-edit: используем общую проверку карты ЦК.
 using Content.Shared.GameTicking.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Random;
@@ -16,7 +15,6 @@ public abstract partial class GameRuleSystem<T> : EntitySystem where T : ICompon
     // Not protected, just to be used in utility methods
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private MapSystem _map = default!;
-    [Dependency] private StationCentCommSystem _centcomm = default!; // Fish-edit: централизованная проверка карты ЦК.
 
     [Dependency] protected EntityQuery<GameRuleComponent> GameRuleQuery = default!;
     [Dependency] protected EntityQuery<T> RuleQuery = default!;

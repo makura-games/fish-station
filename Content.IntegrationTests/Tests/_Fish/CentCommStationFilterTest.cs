@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Pair;
+using Content.Server._Fish.StationCentcomm;
 using Content.Server._Sunrise.FleshCult.Events;
 using Content.Server._Sunrise.Station;
 using Content.Server._Sunrise.StationCentComm;
@@ -58,7 +59,7 @@ public sealed class CentCommStationFilterTest
                 var transform = entityManager.GetComponent<TransformComponent>(location);
                 Assert.That(transform.Anchored, Is.True);
                 Assert.That(transform.GridUid, Is.EqualTo(ordinaryGrid));
-                Assert.That(server.System<StationCentCommSystem>().IsOnCentcomm(location), Is.False);
+                Assert.That(server.System<FishCentcommCheckSystem>().IsOnCentcomm(location), Is.False);
                 Assert.That(entityManager.GetComponent<StationMemberComponent>(ordinaryGrid).Station,
                     Is.EqualTo(centcommStation));
                 Assert.That(stationSystem.GetStations()
@@ -100,7 +101,7 @@ public sealed class CentCommStationFilterTest
                 Assert.That(transform.Anchored, Is.True);
                 Assert.That(transform.GridUid, Is.EqualTo(centcommGrid));
                 Assert.That(transform.MapID, Is.EqualTo(centcommMapId));
-                Assert.That(server.System<StationCentCommSystem>().IsOnCentcomm(location), Is.True);
+                Assert.That(server.System<FishCentcommCheckSystem>().IsOnCentcomm(location), Is.True);
                 Assert.That(entityManager.GetComponent<StationMemberComponent>(centcommGrid).Station,
                     Is.EqualTo(ordinaryStation));
 
@@ -234,7 +235,7 @@ public sealed class CentCommStationFilterTest
                 var transform = entityManager.GetComponent<TransformComponent>(vent);
                 Assert.That(transform.GridUid, Is.EqualTo(centcommGrid));
                 Assert.That(transform.MapID, Is.EqualTo(centcommMapId));
-                Assert.That(server.System<StationCentCommSystem>().IsOnCentcomm(vent), Is.True);
+                Assert.That(server.System<FishCentcommCheckSystem>().IsOnCentcomm(vent), Is.True);
                 Assert.That(entityManager.GetComponent<StationMemberComponent>(centcommGrid).Station,
                     Is.EqualTo(ordinaryStation));
 
@@ -406,7 +407,7 @@ public sealed class CentCommStationFilterTest
 
                 stationMapId = entityManager.GetComponent<TransformComponent>(targetGrid).MapID;
                 Assert.That(stationMapId, Is.Not.EqualTo(centcommMapId));
-                Assert.That(server.System<StationCentCommSystem>().IsOnCentcomm(targetGrid), Is.False);
+                Assert.That(server.System<FishCentcommCheckSystem>().IsOnCentcomm(targetGrid), Is.False);
 
                 existing = GetEntityIds(entityManager);
                 var rule = ticker.AddGameRule(MeteorSwarmRule);
