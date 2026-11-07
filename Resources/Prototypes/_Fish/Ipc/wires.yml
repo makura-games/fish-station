@@ -1,0 +1,10 @@
+# Fish-start: панель обслуживания шасси КПБ
+- type: wireLayout
+  id: FishIpc
+  dummyWires: 2
+  wires:
+  - !type:SpeechWireAction
+    lightRequiresPower: false
+  - !type:AccessWireAction
+    lightRequiresPower: false
+# Fish-end

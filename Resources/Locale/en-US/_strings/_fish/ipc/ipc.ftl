@@ -20,3 +20,6 @@ fish-ipc-battery-drinker-empty = { CAPITALIZE($target) } is already empty!
 fish-ipc-startup-verb = Restart chassis
 fish-ipc-startup-failed = Reboot failed: damage exceeds safe threshold.
 fish-ipc-startup-success = Chassis reboot successful.
+fish-ipc-weld-no-damage = There are no burns to weld.
+fish-ipc-not-organic = This is a robot. It is not treated this way.
+fish-ipc-wires-board-name = IPC chassis panel

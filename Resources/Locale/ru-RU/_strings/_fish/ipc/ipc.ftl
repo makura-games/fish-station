@@ -20,3 +20,6 @@ fish-ipc-battery-drinker-empty = { CAPITALIZE($target) } уже разряжен
 fish-ipc-startup-verb = Перезапустить шасси
 fish-ipc-startup-failed = Перезапуск не удался: повреждения выше безопасного порога.
 fish-ipc-startup-success = Перезапуск шасси успешен.
+fish-ipc-weld-no-damage = Нет ожогов, которые можно заварить.
+fish-ipc-not-organic = Это робот. Так его не лечат.
+fish-ipc-wires-board-name = Панель шасси КПБ
