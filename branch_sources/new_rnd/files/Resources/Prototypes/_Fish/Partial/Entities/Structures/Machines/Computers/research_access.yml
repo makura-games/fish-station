@@ -1,6 +1,0 @@
-- type: !PartialOnly entity
-  id: ComputerResearchAndDevelopment
-  components:
-  - type: AccessReader
-    access: !Clear
-    - [ResearchDirector]

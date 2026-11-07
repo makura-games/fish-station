@@ -1,6 +1,0 @@
-- type: !PartialOnly latheRecipePack
-  id: ScienceBoards
-  recipes:
-  - FishBluespaceProberBoard
-  - FishBluespaceSuppressorBoard
-  - FishBluespaceHarvesterBoard
