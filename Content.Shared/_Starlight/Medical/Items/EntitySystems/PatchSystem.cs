@@ -60,6 +60,14 @@ public sealed partial class PatchSystem : EntitySystem
         if (!TryComp<DamageableComponent>(target, out var targetDamage))
             return false;
 
+        // Fish-start: пластырь не лечит КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("fish-ipc-not-organic"), target, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
+
         if (user != target && !_interactionSystem.InRangeUnobstructed(user, target, popup: true))
             return false;
 

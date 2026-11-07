@@ -17,6 +17,25 @@ public sealed partial class HealingSystem
         "Piercing",
     ];
 
+    // Fish-start: органика не лечит КПБ; кабель и нанопаста со своим списком контейнеров — лечат
+    private static bool IpcAllowsHeal(HealingComponent healing)
+    {
+        if (healing.DamageContainers is not { Count: > 0 } containers)
+            return false;
+
+        foreach (var container in containers)
+        {
+            if (container == "Ipc"
+                || container == "Silicon"
+                || container == "Synth"
+                || container == "Xenoborg"
+                || container == "Mech")
+                return true;
+        }
+
+        return false;
+    }
+
     // Fish-start: катушка не лечит мех. урон КПБ
     private bool IgnoresIpcCableMechanical(EntityUid target, EntityUid used)
     {

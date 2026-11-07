@@ -15,7 +15,7 @@ namespace Content.Shared._Fish.Ipc;
 /// Старт и завершение сварки КПБ. Самосварка — использование зажжённой горелки в руке,
 /// чужой ремонт — клик по шасси (серверный хук раньше Flammable).
 /// </summary>
-public sealed class SharedFishWeldingHealableSystem : EntitySystem
+public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
 {
     [Dependency] private SharedToolSystem _tool = default!;
     [Dependency] private DamageableSystem _damageable = default!;

@@ -8,7 +8,7 @@ namespace Content.Server._Fish.Ipc;
 /// <summary>
 /// Клик сваркой по шасси. Раньше поджога: иначе зажжённая горелка поджигает Flammable и взаимодействие теряется.
 /// </summary>
-public sealed class FishWeldingHealableSystem : EntitySystem
+public sealed partial class FishWeldingHealableSystem : EntitySystem
 {
     [Dependency] private SharedFishWeldingHealableSystem _weld = default!;
     [Dependency] private SharedPopupSystem _popup = default!;

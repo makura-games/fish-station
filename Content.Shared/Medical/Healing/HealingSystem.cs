@@ -231,6 +231,14 @@ public sealed partial class HealingSystem : EntitySystem
         if (!TryComp<InjurableComponent>(target, out var injurable))
             return false;
 
+        // Fish-start: органика не лечит КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target.Owner) && !IpcAllowsHeal(healing.Comp))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("fish-ipc-not-organic"), target.Owner, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
+
         if (healing.Comp.DamageContainers is not null &&
             injurable.DamageContainer is not null &&
             !healing.Comp.DamageContainers.Contains(injurable.DamageContainer.Value))
