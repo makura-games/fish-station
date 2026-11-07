@@ -145,8 +145,9 @@ public sealed class FishIpcMedicineSystem : EntitySystem
 
     private static bool HealsChassis(HealingComponent healing)
     {
+        // Пустой фильтр лечит и плоть. На КПБ такое не пускаем.
         if (healing.DamageContainers is not { Count: > 0 } containers)
-            return true;
+            return false;
 
         foreach (var container in containers)
         {
