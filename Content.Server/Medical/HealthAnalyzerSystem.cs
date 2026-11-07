@@ -93,8 +93,8 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (args.Target == null || !args.CanReach || !HasComp<MobStateComponent>(args.Target) || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
 
-        // Fish-start: обычный медсканер не сканирует КПБ
-        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value))
+        // Fish-start: обычный медсканер не читает КПБ; робо- и мех-анализаторы читают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value) && !AcceptsFishIpc(uid.Comp))
         {
             args.Handled = true;
             _popupSystem.PopupEntity(Loc.GetString("fish-ipc-health-analyzer-refuse"), args.Target.Value, args.User, PopupType.SmallCaution);
@@ -122,8 +122,8 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (args.Handled || args.Cancelled || args.Target == null || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
 
-        // Fish-start: обычный медсканер не сканирует КПБ
-        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value))
+        // Fish-start: обычный медсканер не читает КПБ; робо- и мех-анализаторы читают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value) && !AcceptsFishIpc(uid.Comp))
             return;
         // Fish-end
 
