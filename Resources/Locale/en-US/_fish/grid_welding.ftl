@@ -1,0 +1,16 @@
+fish-grid-welding-selected = First edge selected. Touch the other part's edge with the welder. Unequip the welder to clear the selection.
+fish-grid-welding-started = Both edges selected. Welding in progress.
+fish-grid-welding-same-grid = These tiles already belong to the same structure. Select another grid's edge.
+fish-grid-welding-cleared = Edge selection cleared.
+fish-grid-welding-edge-required = Select a tile at the edge of the structure.
+fish-grid-welding-unavailable = Hold a lit, fueled welder in your active hand.
+fish-grid-welding-invalid = A selected tile or grid no longer exists. Select an edge again.
+fish-grid-welding-unreachable = Both selected tiles must remain within reach.
+fish-grid-welding-alignment = Bring the selected edges within one tile. The part's rotation will be aligned automatically.
+fish-grid-welding-motion = The parts are moving or rotating too quickly relative to each other.
+fish-grid-welding-overlap = The parts would overlap after alignment. Clear space for the connection.
+fish-grid-welding-attached = Disconnect grid docking ports and attachments first.
+fish-grid-welding-station = These parts belong to different stations.
+fish-grid-welding-protected = These structures are protected from this connection.
+fish-grid-welding-interrupted = Welding interrupted. Check the parts' alignment and click the second tile again.
+fish-grid-welding-complete = The parts have been welded into one structure.
