@@ -1,5 +1,7 @@
 - type: antag
   id: Thief
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-thief
   name: roles-antag-thief-name
   antagonist: true
   setPreference: true

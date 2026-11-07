@@ -1,5 +1,7 @@
 - type: antag
   id: Changeling
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-changeling
   name: roles-antag-changeling-name
   antagonist: true
   setPreference: true

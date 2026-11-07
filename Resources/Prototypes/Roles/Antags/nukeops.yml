@@ -1,5 +1,7 @@
 - type: antag
   id: Nukeops
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-nukeops
   name: roles-antag-nuclear-operative-name
   antagonist: true
   setPreference: true
@@ -20,6 +22,8 @@
 
 - type: antag
   id: NukeopsMedic
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-nukeops
   name: roles-antag-nuclear-operative-medic-name
   antagonist: true
   setPreference: true
@@ -43,6 +47,8 @@
 
 - type: antag
   id: NukeopsCommander
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-nukeops
   name: roles-antag-nuclear-operative-commander-name
   antagonist: true
   setPreference: true

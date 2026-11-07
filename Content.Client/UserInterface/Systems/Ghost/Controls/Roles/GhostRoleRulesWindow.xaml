@@ -2,8 +2,11 @@
             Title="{Loc 'ghost-roles-window-title'}"
             MinSize="500 300"
             SetSize="500 300">
-    <BoxContainer Orientation="Vertical"
-                  HorizontalExpand="True">
-        <RichTextLabel Name="TopBanner" VerticalExpand="True"/>
-    </BoxContainer>
+    <ScrollContainer HScrollEnabled="False"
+                     VerticalExpand="True"
+                     HorizontalExpand="True">
+        <RichTextLabel Name="TopBanner"
+                       VerticalExpand="True"
+                       HorizontalExpand="True"/>
+    </ScrollContainer>
 </DefaultWindow>

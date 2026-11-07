@@ -1,5 +1,7 @@
 - type: antag
   id: Traitor
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-traitor
   name: roles-antag-syndicate-agent-name
   antagonist: true
   setPreference: true
@@ -38,6 +40,8 @@
 
 - type: antag
   id: TraitorSleeper
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-traitor
   name: roles-antag-syndicate-agent-sleeper-name
   antagonist: true
   setPreference: true
