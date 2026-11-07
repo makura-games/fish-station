@@ -19,15 +19,3 @@
           tableId: LockerFillQuarterMaster
         - !type:NestedSelector
           tableId: FishFillQuarterMasterHardsuit
-
-- type: entity
-  id: FishSuitStorageQM
-  parent: SuitStorageBase
-  suffix: Quartermaster
-  components:
-  - type: EntityTableContainerFill
-    containers:
-      entity_storage: !type:NestedSelector
-        tableId: FishFillQuarterMasterHardsuit
-  - type: AccessReader
-    access: [["Quartermaster"]]
