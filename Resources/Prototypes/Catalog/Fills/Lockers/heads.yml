@@ -1,4 +1,4 @@
-- type: entityTable
+﻿- type: entityTable
   id: LockerFillQuarterMaster
   table: !type:AllSelector
     children:
@@ -31,6 +31,7 @@
     containers:
       entity_storage: !type:NestedSelector
         tableId: LockerFillQuarterMaster
+
 
 # No laser table
 - type: entityTable

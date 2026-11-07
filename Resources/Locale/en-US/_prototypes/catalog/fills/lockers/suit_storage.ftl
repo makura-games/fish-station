@@ -1,4 +1,4 @@
-ent-SuitStorageEVA = { ent-SuitStorageBase }
+﻿ent-SuitStorageEVA = { ent-SuitStorageBase }
     .suffix = EVA
     .desc = { ent-SuitStorageBase.desc }
 ent-SuitStorageEVAAlternate = { ent-SuitStorageBase }
