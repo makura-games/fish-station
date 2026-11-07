@@ -17,7 +17,7 @@
         Quantity: 5
   - type: Sprite
     sprite: _Fish/Objects/Specific/Hydroponics/mango.rsi
-    state: produce # Fish-Edit: ясный стейт для предсказуемого отображения
+    state: produce # Fish-edit: ясный стейт для предсказуемого отображения
   - type: Produce
     plantId: Mango
   - type: Extractable

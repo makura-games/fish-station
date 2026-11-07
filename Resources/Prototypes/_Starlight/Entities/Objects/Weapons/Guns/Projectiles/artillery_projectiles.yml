@@ -174,7 +174,7 @@
     location: location-artillery-240mm-he-payload
   - type: TimedDespawn
     lifetime: 15
-  - type: SpawnOnDespawn # Fish edit
+  - type: SpawnOnDespawn # Fish-edit
     prototype: BulletLeviathan240mmHESelfExplode
 
 - type: entity
@@ -265,7 +265,7 @@
     follow: true
     location: location-artillery-240mm-cluster-payload
 
-# Fish edit start - Добавление self-explode для 240мм фугасного снаряда по аналогии с разрывом поврежденного снаряда
+# Fish-start - Добавление self-explode для 240мм фугасного снаряда по аналогии с разрывом поврежденного снаряда
 - type: entity
   id: BulletLeviathan240mmHESelfExplode
   name: 240mm HE shell
@@ -298,7 +298,7 @@
     color: "#ff4400"
   - type: TimedDespawn
     lifetime: 0.5
-# Fish edit end
+# Fish-end
 
 - type: entity
   id: BulletLeviathan240mmNukeSelfExplode

@@ -74,7 +74,7 @@
     lightingColor: '#D61B1B26'
 
 - type: entity
-  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ] # Fish-edit - ПНВ для командирского костюма химзащиты.
   id: ClothingHeadHelmetCBURNLeader
   categories: [ HideSpawnMenu ]
   name: cburn commander helmet

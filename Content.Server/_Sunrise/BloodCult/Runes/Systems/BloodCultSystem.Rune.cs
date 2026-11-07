@@ -811,7 +811,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
             var ev = new SummonNarsieDoAfterEvent();
 
-            var argsDoAfterEvent = new DoAfterArgs(_entityManager, user, TimeSpan.FromSeconds(170), ev, user) //fish-edit
+            var argsDoAfterEvent = new DoAfterArgs(_entityManager, user, TimeSpan.FromSeconds(170), ev, user) //Fish-edit
             {
                 BreakOnMove = true,
                 MovementThreshold = 3f, // ритуал призыва Бога: до 3 тайлов
@@ -832,7 +832,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             var stream = _audio.PlayGlobal(_narsie40Sec,
                 Filter.Broadcast(),
                 false,
-                AudioParams.Default.WithLoop(false).WithVolume(0.1f)); //fish-edit
+                AudioParams.Default.WithLoop(false).WithVolume(0.1f)); //Fish-edit
 
             _playingStream = stream?.Entity;
 

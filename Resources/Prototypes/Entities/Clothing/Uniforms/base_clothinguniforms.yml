@@ -28,6 +28,52 @@
     - ClothMade
     - Recyclable
     - WhitelistChameleon
+  # Fish-start - медали можно крепить к форме
+  - type: ItemSlots
+    slots:
+      medal1:
+        whitelist:
+          tags:
+          - Medal
+        swap: false
+        disableEject: true
+        insertSound: null
+        ejectSound: null
+        insertSuccessPopup: clothing-medal-attached
+      medal2:
+        whitelist:
+          tags:
+          - Medal
+        swap: false
+        disableEject: true
+        insertSound: null
+        ejectSound: null
+        insertSuccessPopup: clothing-medal-attached
+      medal3:
+        whitelist:
+          tags:
+          - Medal
+        swap: false
+        disableEject: true
+        insertSound: null
+        ejectSound: null
+        insertSuccessPopup: clothing-medal-attached
+      medal4:
+        whitelist:
+          tags:
+          - Medal
+        swap: false
+        disableEject: true
+        insertSound: null
+        ejectSound: null
+        insertSuccessPopup: clothing-medal-attached
+  - type: ContainerContainer
+    containers:
+      medal1: !type:ContainerSlot
+      medal2: !type:ContainerSlot
+      medal3: !type:ContainerSlot
+      medal4: !type:ContainerSlot
+  # Fish-end
 
 - type: entity
   abstract: true

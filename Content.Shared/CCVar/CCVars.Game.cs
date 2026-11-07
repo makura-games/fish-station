@@ -397,7 +397,7 @@ public sealed partial class CCVars
     /// </summary>
     public static readonly CVarDef<string> SecretWeightPrototype =
         //CVarDef.Create("game.secret_weight_prototype", "SunriseSecret", CVar.SERVERONLY); // Sunrise-Edit
-        CVarDef.Create("game.secret_weight_prototype", "FishSecret", CVar.SERVERONLY); // Fish-Edit
+        CVarDef.Create("game.secret_weight_prototype", "FishSecret", CVar.SERVERONLY); // Fish-edit
     /// <summary>
     ///     The id of the sound collection to randomly choose a sound from and play when the round ends.
     /// </summary>

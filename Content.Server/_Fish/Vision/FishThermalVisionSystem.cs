@@ -1,5 +1,4 @@
 using Content.Shared._Fish.Vision;
-using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Temperature.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
@@ -16,7 +15,6 @@ public sealed partial class FishThermalVisionSystem : EntitySystem
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private EntityQuery<FishThermalVisionComponent> _visionQuery = default!;
-    [Dependency] private EntityQuery<EyeProtectionComponent> _eyeProtectionQuery = default!;
 
     private readonly HashSet<Entity<TemperatureComponent>> _candidates = new();
     private readonly HashSet<EntityUid> _sampled = new();
@@ -51,7 +49,7 @@ public sealed partial class FishThermalVisionSystem : EntitySystem
         var viewers = EntityQueryEnumerator<FishThermalVisionComponent, ActorComponent>();
         while (viewers.MoveNext(out var uid, out var vision, out var actor))
         {
-            if (actor.PlayerSession.AttachedEntity != uid || _eyeProtectionQuery.HasComp(uid) ||
+            if (actor.PlayerSession.AttachedEntity != uid ||
                 !float.IsFinite(vision.Range) || vision.Range <= 0f)
                 continue;
 
@@ -92,7 +90,7 @@ public sealed partial class FishThermalVisionSystem : EntitySystem
     private bool CanReceiveTemperature(EntityUid target, ICommonSession session)
     {
         if (session.AttachedEntity is not { } viewer || TerminatingOrDeleted(viewer) ||
-            !_visionQuery.TryComp(viewer, out var vision) || _eyeProtectionQuery.HasComp(viewer) ||
+            !_visionQuery.TryComp(viewer, out var vision) ||
             !float.IsFinite(vision.Range) || vision.Range <= 0f || _container.IsEntityInContainer(target))
             return false;
 
