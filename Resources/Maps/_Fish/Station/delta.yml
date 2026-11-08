@@ -326155,14 +326155,6 @@ entities:
     - type: Transform
       parent: 2
       pos: -85.5,32.5
-- proto: Telecrystal5
-  entities:
-  - uid: 29825
-    components:
-    - type: Transform
-      parent: 29824
-    - type: Physics
-      canCollide: False
 - proto: TeslaCoil
   entities:
   - uid: 38585
