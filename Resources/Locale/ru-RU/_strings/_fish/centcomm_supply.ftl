@@ -10,6 +10,8 @@ centcomm-supply-window-product-quantity = { $count }/{ $max }
 centcomm-supply-window-order-button = Отправить
 centcomm-supply-window-no-station = Станция не выбрана.
 centcomm-supply-window-empty-order = Выберите хотя бы один товар.
+centcomm-supply-window-order-too-many-products = Слишком много товаров в заказе (максимум { $max }). Уберите товары, чтобы продолжить.
+centcomm-supply-window-order-invalid-quantity = «{ $product }»: текущий лимит — { $max }. Уменьшите количество, чтобы продолжить.
 centcomm-supply-window-flavor-left = Отдел снабжения Центрального командования
 centcomm-supply-window-flavor-right = v2.0
 

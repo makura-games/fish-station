@@ -55,6 +55,12 @@ public sealed partial class CentCommSupplyProductPrototype : IPrototype
     public bool Enabled = true;
 
     /// <summary>
+    /// Fork suffix used to mark Fish supply products.
+    /// </summary>
+    [DataField]
+    public string Suffix = "Fish";
+
+    /// <summary>
     /// Ordering priority in the console list. Lower values are shown first.
     /// </summary>
     [DataField]

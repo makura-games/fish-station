@@ -38,6 +38,7 @@ public sealed class CentCommSupplyTest
         var stationSystem = server.System<StationSystem>();
         var mapSystem = server.System<MapSystem>();
         var labelSystem = server.System<LabelSystem>();
+        var accessSystem = server.System<AccessSystem>();
         var ui = server.System<UserInterfaceSystem>();
         var bus = entMan.EventBus;
 
@@ -61,9 +62,11 @@ public sealed class CentCommSupplyTest
         {
             var consoleMap = mapSystem.CreateMap(out consoleMapId);
             console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
-            entMan.GetComponent<CentCommSupplyConsoleComponent>(console).DeliveryDelay = TimeSpan.Zero;
+            var consoleComponent = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
+            consoleComponent.DeliveryDelay = TimeSpan.Zero;
+            consoleComponent.DeliveryTimeout = TimeSpan.Zero;
             actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
-            entMan.RemoveComponent<AccessReaderComponent>(console);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
             bus.RaiseLocalEvent(console, new BoundUIOpenedEvent(CentCommSupplyUiKey.Key, console, actor));
         });
 
@@ -81,7 +84,7 @@ public sealed class CentCommSupplyTest
         await server.WaitPost(() =>
         {
             targetNet = entMan.GetNetEntity(target);
-            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet)
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid())
             {
                 Actor = actor,
             });
@@ -193,6 +196,7 @@ public sealed class CentCommSupplyTest
         var ticker = server.System<GameTicker>();
         var stationSystem = server.System<StationSystem>();
         var mapSystem = server.System<MapSystem>();
+        var accessSystem = server.System<AccessSystem>();
         var bus = entMan.EventBus;
 
         EntityUid console = default;
@@ -202,6 +206,7 @@ public sealed class CentCommSupplyTest
         EntityUid actor = default;
         var targetNet = NetEntity.Invalid;
         var existingCrates = new HashSet<EntityUid>();
+        var deliveryDelay = TimeSpan.FromSeconds(2);
 
         await server.WaitPost(() =>
         {
@@ -215,16 +220,16 @@ public sealed class CentCommSupplyTest
         {
             var consoleMap = mapSystem.CreateMap(out consoleMapId);
             console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
-            entMan.GetComponent<CentCommSupplyConsoleComponent>(console).DeliveryDelay = TimeSpan.FromSeconds(1);
+            entMan.GetComponent<CentCommSupplyConsoleComponent>(console).DeliveryDelay = deliveryDelay;
             actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
-            entMan.RemoveComponent<AccessReaderComponent>(console);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
             bus.RaiseLocalEvent(console, new BoundUIOpenedEvent(CentCommSupplyUiKey.Key, console, actor));
         });
 
         await server.WaitPost(() =>
         {
             targetNet = entMan.GetNetEntity(target);
-            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet) { Actor = actor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = actor });
         });
 
         await server.WaitAssertion(() =>
@@ -245,7 +250,11 @@ public sealed class CentCommSupplyTest
             });
         });
 
-        await server.WaitRunTicks(2);
+        var tickPeriod = server.Timing.TickPeriod;
+        var ticksBeforeExpiry = Math.Max(1,
+            (int) Math.Floor((deliveryDelay - tickPeriod).TotalSeconds / tickPeriod.TotalSeconds));
+
+        await server.WaitRunTicks(ticksBeforeExpiry);
 
         await server.WaitAssertion(() =>
         {
@@ -257,7 +266,7 @@ public sealed class CentCommSupplyTest
                 "CentComm supply crates were delivered before the configured delay");
         });
 
-        await server.WaitRunTicks(120);
+        await server.WaitRunTicks(3);
 
         await server.WaitAssertion(() =>
         {
@@ -324,7 +333,28 @@ public sealed class CentCommSupplyTest
         await server.WaitPost(() =>
         {
             targetNet = entMan.GetNetEntity(target);
-            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet) { Actor = actor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = actor });
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(ui.TryGetUiState<CentCommSupplyBoundUserInterfaceState>(
+                console,
+                CentCommSupplyUiKey.Key,
+                out var state), Is.True);
+            Assert.That(state!.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-access")));
+        });
+
+        await server.WaitPost(() =>
+        {
+            var entries = new List<CentCommSupplyOrderEntry>
+            {
+                new("FishCentCommSupplyMedicalBundle", 1),
+            };
+            bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(Guid.NewGuid(), targetNet, entries)
+            {
+                Actor = actor,
+            });
         });
 
         await server.WaitAssertion(() =>
@@ -371,6 +401,7 @@ public sealed class CentCommSupplyTest
         MapId consoleMapId = default;
         EntityUid actor = default;
         var targetNet = NetEntity.Invalid;
+        var existingCrates = new HashSet<EntityUid>();
 
         await server.WaitPost(() =>
         {
@@ -384,18 +415,16 @@ public sealed class CentCommSupplyTest
         {
             var consoleMap = mapSystem.CreateMap(out consoleMapId);
             console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
+            entMan.GetComponent<CentCommSupplyConsoleComponent>(console).DeliveryDelay = TimeSpan.Zero;
             actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
-            var access = entMan.AddComponent<AccessComponent>(actor);
-            accessSystem.TrySetTags(actor,
-                new[] { new ProtoId<AccessLevelPrototype>("CentralCommand") },
-                access);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
             bus.RaiseLocalEvent(console, new BoundUIOpenedEvent(CentCommSupplyUiKey.Key, console, actor));
         });
 
         await server.WaitPost(() =>
         {
             targetNet = entMan.GetNetEntity(target);
-            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet) { Actor = actor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = actor });
         });
 
         await server.WaitAssertion(() =>
@@ -406,6 +435,32 @@ public sealed class CentCommSupplyTest
                 out var state), Is.True);
             Assert.That(state!.StatusMessage, Is.Null);
             Assert.That(state!.SelectedStation, Is.EqualTo((NetEntity?) targetNet));
+
+            existingCrates.UnionWith(GetNewCrates(entMan, new HashSet<EntityUid>()));
+        });
+
+        await server.WaitPost(() =>
+        {
+            var entries = new List<CentCommSupplyOrderEntry>
+            {
+                new("FishCentCommSupplyMedicalBundle", 1),
+            };
+            bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(Guid.NewGuid(), targetNet, entries)
+            {
+                Actor = actor,
+            });
+        });
+
+        await server.WaitRunTicks(2);
+
+        await server.WaitAssertion(() =>
+        {
+            var delivered = GetNewCrates(entMan, existingCrates)
+                .Where(crate => stationSystem.GetOwningStation(crate) == target)
+                .ToList();
+
+            Assert.That(delivered, Is.Not.Empty,
+                "CentComm supply order was not delivered with CentralCommand access");
         });
 
         await server.WaitPost(() =>
@@ -423,6 +478,20 @@ public sealed class CentCommSupplyTest
         await pair.CleanReturnAsync();
     }
 
+    /// <summary>
+    /// Grants CentralCommand access to the test actor.
+    /// </summary>
+    private static void GrantCentralCommandAccess(IEntityManager entMan, AccessSystem accessSystem, EntityUid actor)
+    {
+        var access = entMan.AddComponent<AccessComponent>(actor);
+        accessSystem.TrySetTags(actor,
+            new[] { new ProtoId<AccessLevelPrototype>("CentralCommand") },
+            access);
+    }
+
+    /// <summary>
+    /// Returns crates that were not present before the order.
+    /// </summary>
     private static List<EntityUid> GetNewCrates(IEntityManager entMan, HashSet<EntityUid> existing)
     {
         var crates = new List<EntityUid>();

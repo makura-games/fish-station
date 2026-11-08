@@ -1,12 +1,17 @@
 using System;
 using Content.Shared._Fish.CentCommSupply;
+using Content.Shared.ActionBlocker;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.XAML;
+using Robust.Client.Player;
 
 namespace Content.Client._Fish.CentCommSupply;
 
-public sealed class CentCommSupplyBoundUserInterface : BoundUserInterface
+public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterface
 {
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private IPlayerManager _player = default!;
+
     private CentCommSupplyWindow? _window;
     private bool _orderPending;
 
@@ -19,15 +24,22 @@ public sealed class CentCommSupplyBoundUserInterface : BoundUserInterface
         base.Open();
 
         _window = this.CreateWindow<CentCommSupplyWindow>();
-        _window.OnStationSelected += station =>
-            SendMessage(new CentCommSupplySelectStationMessage(station));
+        _window.OnStationSelected += (station, selectionId) =>
+        {
+            if (!CanInteract())
+                return false;
+
+            SendMessage(new CentCommSupplySelectStationMessage(station, selectionId));
+            return true;
+        };
         _window.OnOrderPressed += (station, entries) =>
         {
-            if (_orderPending)
-                return;
+            if (_orderPending || !CanInteract())
+                return false;
 
             _orderPending = true;
             SendMessage(new CentCommSupplyOrderMessage(Guid.NewGuid(), station, entries));
+            return true;
         };
     }
 
@@ -42,5 +54,14 @@ public sealed class CentCommSupplyBoundUserInterface : BoundUserInterface
             _orderPending = false;
 
         _window?.UpdateState(cast);
+    }
+
+    /// <summary>
+    /// Checks whether the local player can currently use the console.
+    /// </summary>
+    private bool CanInteract()
+    {
+        var localEntity = _player.LocalEntity;
+        return localEntity is { } player && _actionBlocker.CanInteract(player, Owner);
     }
 }

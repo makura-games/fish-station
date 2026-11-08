@@ -1,6 +1,6 @@
 centcomm-supply-window-title = CentComm Supply
 centcomm-supply-window-account-name-label = Account name:
-centcomm-supply-window-account-name = [color=darkgreen][bold]Central Command[/bold] [font="Monospace"]\[CC\][/font][/color]
+centcomm-supply-window-account-name = [color=darkgreen][bold]Central Command[/bold][/color] [font="Monospace"]\[CC\][/font]
 centcomm-supply-window-station = Station:
 centcomm-supply-window-search-placeholder = Search
 centcomm-supply-window-categories-label = Categories:
@@ -10,6 +10,8 @@ centcomm-supply-window-product-quantity = { $count }/{ $max }
 centcomm-supply-window-order-button = Send
 centcomm-supply-window-no-station = No station selected.
 centcomm-supply-window-empty-order = Select at least one product.
+centcomm-supply-window-order-too-many-products = Too many products in the order (max { $max }). Remove products to continue.
+centcomm-supply-window-order-invalid-quantity = { $product }: the current limit is { $max }. Reduce the quantity to continue.
 centcomm-supply-window-flavor-left = Central Command Supply Division
 centcomm-supply-window-flavor-right = v2.0
 

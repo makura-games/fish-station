@@ -1,5 +1,6 @@
 - type: centCommSupplyProduct
   id: FishCentCommSupplyMedicalBundle
+  suffix: Fish
   name: centcomm-supply-product-medical-bundle-name
   description: centcomm-supply-product-medical-bundle-desc
   category: centcomm-supply-category-medical
@@ -13,6 +14,7 @@
 
 - type: centCommSupplyProduct
   id: FishCentCommSupplyAsh12Duffel
+  suffix: Fish
   name: centcomm-supply-product-ash12-duffel-name
   description: centcomm-supply-product-ash12-duffel-desc
   category: centcomm-supply-category-weapons
@@ -26,6 +28,7 @@
 
 - type: centCommSupplyProduct
   id: FishCentCommSupplyAsh12Slug
+  suffix: Fish
   name: centcomm-supply-product-ash12-slug-name
   description: centcomm-supply-product-ash12-slug-desc
   category: centcomm-supply-category-ammo
@@ -39,6 +42,7 @@
 
 - type: centCommSupplyProduct
   id: FishCentCommSupplyAsh12Blueprint
+  suffix: Fish
   name: centcomm-supply-product-ash12-blueprint-name
   description: centcomm-supply-product-ash12-blueprint-desc
   category: centcomm-supply-category-blueprints

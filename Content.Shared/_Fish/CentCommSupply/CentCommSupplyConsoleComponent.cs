@@ -77,6 +77,12 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     public EntityUid? SelectedStation;
 
     /// <summary>
+    /// Identifier of the last station selection request, used to reject stale client updates.
+    /// </summary>
+    [ViewVariables]
+    public Guid? LastStationSelectionId;
+
+    /// <summary>
     /// Earliest time the next order can be placed.
     /// </summary>
     [ViewVariables]

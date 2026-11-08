@@ -3,7 +3,7 @@
   parent: BaseComputerSunrise
   name: CentComm supply console
   suffix: Fish
-  description: Allows Central Command to order supplies for a station.
+  description: A secure console for ordering supplies for a station.
   components:
   - type: Sprite
     layers:
