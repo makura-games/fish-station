@@ -47,27 +47,32 @@ public sealed class FishCentcommCheckSystem : EntitySystem
             if (stationData == null || stationData.Grids.Count == 0)
                 continue;
 
-            // Шаттлы ЦК не должны влиять на определение принадлежности станции к карте ЦК.
+            // Если у станции есть обычные гриды, проверяем только их.
+            // Если остались только шаттлы ЦК, проверяем и их расположение.
             var allGridsOnCentcommMap = true;
-            var hasStationGrid = false;
+            var allNonShuttleGridsOnCentcommMap = true;
+            var hasNonShuttleGrid = false;
 
             foreach (var grid in stationData.Grids)
             {
-                // Шаттлы ЦК могут покидать карту, оставаясь членами станции.
+                var isOnCentcommMap = TryComp(grid, out TransformComponent? gridTransform)
+                    && gridTransform.MapID == centcomm.MapId;
+
+                if (!isOnCentcommMap)
+                    allGridsOnCentcommMap = false;
+
                 if (HasComp<CentCommShuttleComponent>(grid))
                     continue;
 
-                hasStationGrid = true;
+                hasNonShuttleGrid = true;
 
-                if (TryComp(grid, out TransformComponent? gridTransform)
-                    && gridTransform.MapID == centcomm.MapId)
-                    continue;
-
-                allGridsOnCentcommMap = false;
-                break;
+                if (!isOnCentcommMap)
+                    allNonShuttleGridsOnCentcommMap = false;
             }
 
-            if (hasStationGrid && allGridsOnCentcommMap)
+            if (hasNonShuttleGrid
+                ? allNonShuttleGridsOnCentcommMap
+                : allGridsOnCentcommMap)
                 return true;
         }
 
