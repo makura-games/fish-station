@@ -41,6 +41,9 @@
     - id: PlushieVulp
     - id: PlushieSheep
     - id: PlushieSpaceSheep
+    # Fish-start
+    - id: FishPlushieToolbox
+    # Fish-end
     - !type:GroupSelector
       children:
       - id: PlushieBee
