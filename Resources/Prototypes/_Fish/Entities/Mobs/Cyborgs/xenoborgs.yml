@@ -1,19 +1,29 @@
-# Fish-ксеноборг-рипер (id и содержимое перенесены из _Sunrise/Entities/Mobs/Cyborgs/xenoborgs.yml
-# без изменений, чтобы Fish-контент жил в _Fish; путь/владение лежали в _Sunrise исторически).
 - type: entity
-  parent: [ BaseXenoborgChassis, BaseXenoborgTransponder ]
+  parent: [ BaseXenoborgChassis, BaseXenoborgTransponder, BaseXenoborgDestructible ]
   id: FishXenoReaper
   name: reaper xenoborg
   suffix: with brain, FISH
   description: A man-machine hybrid that aims to replicate itself. They love extracting brains to insert into fresh Xenoborg chassis to grow their army. This is a reaper type, a stealthy infiltration unit designed for sabotage and assassination.
   components:
+  - type: MeleeWeapon
+    altDisarm: false
+    soundHit:
+      collection: MetalThud
+    angle: 30
+    animation: WeaponArcFist
+    wideAnimation: WeaponArcFist
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 8
+        Structural: 5
   - type: BorgTransponder
     name: reaper xenoborg
     sprite:
-      sprite: _Sunrise/Mobs/Silicon/xenoreaper.rsi
+      sprite: _Fish/Mobs/Silicon/xenoreaper.rsi
       state: xeno_reaper
   - type: Sprite
-    sprite: _Sunrise/Mobs/Silicon/xenoreaper.rsi
+    sprite: _Fish/Mobs/Silicon/xenoreaper.rsi
     layers:
     - state: xeno_reaper
     - state: xeno_reaper_e
@@ -24,6 +34,15 @@
       shader: unshaded
       map: ["light"]
       visible: false
+    - map: ["belt"]
+    - map: ["id"]
+    - map: ["outerClothing"]
+    - map: ["back"]
+    - map: ["neck"]
+    - map: ["suitstorage"]
+    - map: ["head"]
+    - map: ["pocket1"]
+    - map: ["pocket2"]
   - type: BorgChassis
     maxModules: 4
     hasMindState: xeno_reaper_e
@@ -40,7 +59,7 @@
       borg_module:
       - XenoborgModuleBasic
   - type: Inventory
-    templateId: FishXenoborgReaper
+    templateId: FishReaper
   - type: InventorySlots
   - type: Body
   # Fish: постоянные chassis-руки рипера; showInHands включает отображение
@@ -52,6 +71,7 @@
       hand_left:
         location: Left
     showInHands: true
+    disableExplosionRecursion: true
     canBeStripped: true
   - type: DamageStateVisuals
     states:
@@ -71,6 +91,10 @@
       cell_slot:
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellHighPrinted # Fish-edit
+  - type: Pierceable
+    level: Metal
+  - type: Damageable
+    damageModifierSet: FishBorgReaper
 
 - type: entity
   parent: FishXenoReaper

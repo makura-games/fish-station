@@ -1500,3 +1500,58 @@
     message: 'Расчёт Fish корпоративного закона: сопротивление, рецидив+явка, крайняя необходимость и порог пермы согласованы с вики и консолями.'
   id: 151
   url: https://github.com/makura-games/fish-station/pull/625
+- author: KrytoiChuvaaak
+  time: '2026-11-08T11:57:07.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Деадмин больше не сбрасывается после переподключения или перезахода на сервер.
+  id: 152
+  url: https://github.com/makura-games/fish-station/pull/606
+- author: NekutGit
+  time: '2026-11-08T12:01:40.0000000+00:00'
+  changes:
+  - type: Add
+    message: Для жнецов-киборгов добавлены безоружные атаки руками.
+  - type: Add
+    message: Добавлены уникальные характеристики защиты жнецов-киборгов с учётом структурного урона.
+  - type: Add
+    message: Добавлено отображение ролей киборгов МК2 в гост-меню.
+  - type: Tweak
+    message: Синхронизированы инвентарь у жнецов-киборгов Синдиката и Ксеноборгов.
+  - type: Tweak
+    message: Верхние элементы одежды на киборгах МК2 больше не отображаются во время отдыха.
+  - type: Tweak
+    message: Хотбар состояния киборгов МК2 в диагностическом худе был уменьшен до нормального.
+  - type: Tweak
+    message: Звуки шагов киборгов МК2 изменены для соответствия с их спрайтами.
+  - type: Fix
+    message: Исправлена анимация жнеца-киборга Ксеноборгов без разума.
+  id: 153
+  url: https://github.com/makura-games/fish-station/pull/613
+- author: TiFeRi
+  time: '2026-11-08T12:03:20.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Возвращена возможность изучения множества Т3 технологий в РНД.
+  id: 154
+  url: https://github.com/makura-games/fish-station/pull/617
+- author: NekutGit
+  time: '2026-11-08T12:03:51.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Размер медицинского блюспейс-подсумка увеличен до 21 клеток.
+  - type: Fix
+    message: Исправлен размер медицинских подсумков в рюкзаке.
+  id: 155
+  url: https://github.com/makura-games/fish-station/pull/621
+- author: NekutGit
+  time: '2026-11-08T12:04:28.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлены два типа магазинов под патроны общего назначения (СП).
+  - type: Tweak
+    message: Скорострельность SCAR-H была увеличена.
+  - type: Tweak
+    message: Изменено наполнение кейса с SCAR-H, в комплект идут все доступные типы боеприпасов.
+  id: 156
+  url: https://github.com/makura-games/fish-station/pull/622
