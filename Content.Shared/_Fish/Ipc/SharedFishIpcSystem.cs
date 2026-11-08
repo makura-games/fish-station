@@ -10,7 +10,7 @@ using Content.Shared.Wires;
 namespace Content.Shared._Fish.Ipc;
 
 /// <summary>
-/// Общая логика КПБ: алерты, скорость, слот батареи, сон, взаимный unlock шасси.
+/// Общая логика КПБ: алерты, скорость, слот батареи, сон, self-unlock шасси.
 /// </summary>
 public abstract partial class SharedFishIpcSystem : EntitySystem
 {
@@ -28,7 +28,7 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         SubscribeLocalEvent<FishIpcComponent, ItemSlotInsertAttemptEvent>(OnItemSlotInsertAttempt);
         SubscribeLocalEvent<FishIpcComponent, ItemSlotEjectAttemptEvent>(OnItemSlotEjectAttempt);
         SubscribeLocalEvent<FishIpcComponent, TryingToSleepEvent>(OnTryingToSleep);
-        // Fish-edit: любой КПБ открывает замок другого КПБ
+        // Fish-edit: только сам себе — чужих КПБ без Command/Research/Robotics не открываем
         SubscribeLocalEvent<FishIpcComponent, CheckUserHasLockAccessEvent>(OnCheckLockAccess);
     }
 
@@ -109,8 +109,8 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         if (!args.FoundReaders.HasFlag(LockTypes.Access))
             return;
 
-        // Peer-unlock: КПБ ↔ КПБ без ID с тегом FishIpcChassis.
-        if (HasComp<FishIpcComponent>(args.User))
+        // Только свой корпус. Чужой КПБ — через AccessReader (Command/Research/Robotics).
+        if (args.User == ent.Owner)
             args.HasAccess |= LockTypes.Access;
     }
 

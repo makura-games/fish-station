@@ -156,12 +156,9 @@
     locked: true
     lockOnClick: false
     unlockOnClick: false
-  # Fish-edit: сам/другой КПБ, командование, РнД и робототехника
-  - type: Access
-    tags:
-    - FishIpcChassis
+  # Fish-edit: Command/Research/Robotics; себя — SharedFishIpcSystem (не через Access FishIpcChassis, иначе peer)
   - type: AccessReader
-    access: [["Command"], ["Research"], ["Robotics"], ["FishIpcChassis"]]
+    access: [["Command"], ["Research"], ["Robotics"]]
   - type: WiresPanel
     openingTool: Prying
     openDelay: 3
