@@ -7,9 +7,6 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.SurveillanceCamera.UI;
 
-/// <summary>
-/// Обычные облачки речи над говорящими поверх вида камеры в мониторе.
-/// </summary>
 public sealed class FishCameraSpeechLog : Control
 {
     [Dependency] private IEntityManager _entMan = default!;
@@ -60,7 +57,6 @@ public sealed class FishCameraSpeechLog : Control
         InvalidateArrange();
     }
 
-    // Облачко само ставит себя по главному экрану, поэтому его позицию здесь перекрываем под вид камеры.
     protected override Vector2 ArrangeOverride(Vector2 finalSize)
     {
         if (_viewport?.Eye is not { } eye)

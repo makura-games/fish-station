@@ -13,7 +13,7 @@ using Robust.Shared.Player;
 namespace Content.Server._Fish.CameraHearing;
 
 /// <summary>
-/// Речь рядом с улучшенной камерой или активным боргом слышит ИИ, а мониторы камер показывают её облачком над говорящим. Стены глушат звук.
+/// Речь рядом с улучшенной камерой или активным боргом слышит ИИ. Стены глушат звук.
 /// </summary>
 public sealed partial class FishCameraHearingSystem : EntitySystem
 {
@@ -82,14 +82,12 @@ public sealed partial class FishCameraHearingSystem : EntitySystem
 
             var session = actor.PlayerSession;
 
-            // Летающий глаз ИИ слышит речь в радиусе, но не сквозь стены. Слух у ядра и в голопаде не трогаем.
             if (session.AttachedEntity is { } eye &&
                 eye == coreComp.RemoteEntity &&
                 ev.Recipients.ContainsKey(session) &&
                 !_examine.InRangeUnOccluded(eye, sourceCoords, 0f))
                 ev.Recipients.Remove(session);
 
-            // Через камеру ИИ видит речь только облачком, шёпот приходит в чат.
             if (nearest != null)
                 ev.Recipients.TryAdd(session, new ChatSystem.ICChatRecipientData(nearest.Value, false, !whisper));
         }
