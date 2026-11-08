@@ -1,6 +1,6 @@
-# Fish-start: модули КПБ v1 (без anti-drop)
+# Fish-start: модули КПБ (без суставов — лимбов нет)
 
-# --- T3 ---
+# --- utility ---
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleWireInterface
@@ -113,8 +113,8 @@
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleNightVision
-  name: IPC night vision module
-  description: Draws 0.55 J/s. Vision slot green phosphor and a lighting lift. Toggleable.
+  name: IPC thermal vision module
+  description: Draws 0.55 J/s. Vision slot thermal overlay. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -124,14 +124,14 @@
     passiveDrainPerSecond: 0.55
     exclusionGroup: vision
   - type: FishIpcVisionModule
-    kind: NightVision
+    kind: Thermal
 
-# --- T4 ---
+# --- repair split: физ / мех ---
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleNanoRepair
-  name: IPC nanorepair module
-  description: Draws 1.2 J/s above 10% charge. Brute -0.15/s, heat and shock -0.2/s. Not with reactive repair.
+  name: IPC physical repair module
+  description: Draws 1.2 J/s above 10% charge. Heals only blunt, slash and piercing. Not with reactive repair.
   suffix: Fish
   components:
   - type: Sprite
@@ -147,14 +147,12 @@
         Blunt: -0.15
         Slash: -0.15
         Piercing: -0.15
-        Heat: -0.2
-        Shock: -0.2
 
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleReactiveRepair
-  name: IPC reactive repair module
-  description: Draws 1.6 J/s above 12% charge. Brute -0.35/s, heat and shock -0.4/s. Not with nanorepair.
+  name: IPC thermal repair module
+  description: Draws 1.6 J/s above 12% charge. Heals only heat and shock. Not with nanorepair.
   suffix: Fish
   components:
   - type: Sprite
@@ -165,12 +163,8 @@
     exclusionGroup: repair
     minChargeFraction: 0.12
   - type: FishIpcPassiveHealModule
-    # Чуть сильнее наноремонта; накопитель в системе чинит FixedPoint2-обнуление.
     healPerSecond:
       types:
-        Blunt: -0.35
-        Slash: -0.35
-        Piercing: -0.35
         Heat: -0.4
         Shock: -0.4
 
@@ -188,36 +182,6 @@
     passiveDrainPerSecond: 0.45
   - type: FishIpcModulePowerToggle
   - type: FishIpcEmpScreenModule
-
-- type: entity
-  parent: FishBaseIpcModule
-  id: FishIpcModuleMagneticJoints
-  name: IPC magnetic joints module
-  description: Draws 0.4 J/s. 65% chance to cancel amputation. EMP disables it. Not with sealed joints.
-  suffix: Fish
-  components:
-  - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: FishIpcModule
-    passiveDrainPerSecond: 0.4
-    exclusionGroup: joints
-  - type: FishIpcMagneticJointsModule
-
-- type: entity
-  parent: FishBaseIpcModule
-  id: FishIpcModuleSealedJoints
-  name: IPC sealed joints module
-  description: Draws 0.5 J/s. Blocks amputation. EMP stuns for 12 s. Not with magnetic joints.
-  suffix: Fish
-  components:
-  - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: FishIpcModule
-    passiveDrainPerSecond: 0.5
-    exclusionGroup: joints
-  - type: FishIpcSealedJointsModule
 
 - type: entity
   parent: FishBaseIpcModule

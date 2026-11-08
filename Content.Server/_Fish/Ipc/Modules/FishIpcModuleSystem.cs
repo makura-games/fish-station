@@ -114,12 +114,6 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
         if (TryComp<FishIpcVisionModuleComponent>(moduleUid, out var vision))
             return vision.Enabled;
 
-        if (TryComp<FishIpcMagneticJointsModuleComponent>(moduleUid, out var mag))
-            return mag.Enabled;
-
-        if (TryComp<FishIpcSealedJointsModuleComponent>(moduleUid, out var seal))
-            return seal.Enabled;
-
         if (TryComp<FishIpcModulePowerToggleComponent>(moduleUid, out var power))
             return power.Enabled;
 

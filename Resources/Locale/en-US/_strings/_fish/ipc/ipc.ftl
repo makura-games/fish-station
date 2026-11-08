@@ -1,10 +1,10 @@
 ent-MobIpc = Urist McPositronic
-    .desc = A positronic brain in a metal body.
+    .desc = A metal crewmate. Talks on radio like anyone else — just runs on a battery, not food.
 ent-MobIpcDummy = Urist McPositronic
     .desc = A dummy IPC for character setup.
     .suffix = Dummy
 ent-AppearanceIpc = ipc appearance
-    .desc = Appearance data for an integrated positronic chassis.
+    .desc = How the chassis looks.
     .suffix = IPC
 
 fish-ipc-overheating = You feel your circuits overheating!
@@ -26,4 +26,7 @@ fish-ipc-wires-board-name = IPC chassis panel
 fish-ipc-devour-robot = This is a robot. It cannot be devoured.
 fish-ipc-disease-robot = This is a robot. It cannot be infected.
 fish-ipc-emag-access = Chassis access locks cleared. Anyone can open the panel.
+fish-ipc-module-toggled-on = { $module }: enabled.
+fish-ipc-module-toggled-off-named = { $module }: disabled.
+fish-ipc-cell-panel-closed = Open the chassis panel before swapping the battery.
 id-card-access-level-fish-ipc-chassis = IPC chassis

@@ -35,7 +35,7 @@
   - MobAtmosExposed
   id: MobIpc
   name: Urist McPositronic
-  description: A positronic brain in a metal body.
+  description: A metal crewmate. Talks on radio like anyone else — just runs on a battery, not food.
   components:
   - type: Icon
     sprite: _Fish/Mobs/Species/Ipc/parts.rsi
@@ -140,7 +140,6 @@
       cell_slot:
         name: power-cell-slot-component-slot-name-default
         startingItem: PowerCellMedium
-        locked: true
         whitelist:
           tags:
           - PowerCell
@@ -157,7 +156,7 @@
     locked: true
     lockOnClick: false
     unlockOnClick: false
-  # Fish-edit: сам КПБ открывает свой замок; командование, РнД и робототехника остаются
+  # Fish-edit: сам/другой КПБ, командование, РнД и робототехника
   - type: Access
     tags:
     - FishIpcChassis
@@ -170,9 +169,7 @@
     boardName: fish-ipc-wires-board-name
     layoutId: FishIpc
   - type: LockedWiresPanel
-  - type: ItemSlotsLock
-    slots:
-    - cell_slot
+  # Fish-edit: батарея через панель (SharedFishIpcSystem), без ItemSlotsLock
   - type: IntrinsicRadioReceiver
   - type: IntrinsicRadioTransmitter
     channels:

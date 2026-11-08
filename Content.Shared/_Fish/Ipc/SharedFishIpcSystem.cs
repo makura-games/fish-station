@@ -1,34 +1,66 @@
 using Content.Shared.Alert;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Lock;
 using Content.Shared.Movement.Systems;
+using Content.Shared.Popups;
 using Content.Shared.PowerCell.Components;
+using Content.Shared.Radio.Components;
+using Content.Shared.Wires;
 
 namespace Content.Shared._Fish.Ipc;
 
 /// <summary>
-/// Общая логика КПБ: алерты, скорость, запрет самообслуживания слота батареи, сон.
+/// Общая логика КПБ: алерты, скорость, слот батареи/ключей, сон, взаимный unlock шасси.
 /// </summary>
 public abstract partial class SharedFishIpcSystem : EntitySystem
 {
     [Dependency] private AlertsSystem _alerts = default!;
     [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<FishIpcComponent, ComponentInit>(OnInit);
+        SubscribeLocalEvent<FishIpcComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<FishIpcComponent, FishIpcChargeStateUpdateEvent>(OnChargeUpdate);
         SubscribeLocalEvent<FishIpcComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovespeed);
         SubscribeLocalEvent<FishIpcComponent, ItemSlotInsertAttemptEvent>(OnItemSlotInsertAttempt);
         SubscribeLocalEvent<FishIpcComponent, ItemSlotEjectAttemptEvent>(OnItemSlotEjectAttempt);
         SubscribeLocalEvent<FishIpcComponent, TryingToSleepEvent>(OnTryingToSleep);
+        // Fish-edit: любой КПБ открывает замок другого КПБ
+        SubscribeLocalEvent<FishIpcComponent, CheckUserHasLockAccessEvent>(OnCheckLockAccess);
+        SubscribeLocalEvent<FishIpcComponent, LockToggledEvent>(OnLockToggled);
     }
 
     private void OnInit(Entity<FishIpcComponent> ent, ref ComponentInit args)
     {
         _alerts.ShowAlert(ent.Owner, ent.Comp.BatteryAlert, ent.Comp.ChargeState);
+    }
+
+    private void OnMapInit(Entity<FishIpcComponent> ent, ref MapInitEvent args)
+    {
+        SyncKeysUnlocked(ent.Owner);
+    }
+
+    private void OnLockToggled(Entity<FishIpcComponent> ent, ref LockToggledEvent args)
+    {
+        SyncKeysUnlocked(ent.Owner);
+    }
+
+    /// <summary>Ключи шифрования только при снятом замке (панель всё равно нужна открытой).</summary>
+    private void SyncKeysUnlocked(EntityUid uid)
+    {
+        if (!TryComp<EncryptionKeyHolderComponent>(uid, out var keys))
+            return;
+
+        var unlocked = !TryComp<LockComponent>(uid, out var lockComp) || !lockComp.Locked;
+        if (keys.KeysUnlocked == unlocked)
+            return;
+
+        keys.KeysUnlocked = unlocked;
     }
 
     private void OnChargeUpdate(Entity<FishIpcComponent> ent, ref FishIpcChargeStateUpdateEvent args)
@@ -55,28 +87,69 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
 
     private void OnItemSlotInsertAttempt(Entity<FishIpcComponent> ent, ref ItemSlotInsertAttemptEvent args)
     {
-        if (args.Cancelled || args.User != ent.Owner)
+        if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
 
-        if (!TryComp<PowerCellSlotComponent>(ent.Owner, out var cellSlot) ||
-            !_itemSlots.TryGetSlot(ent.Owner, cellSlot.CellSlotId, out var slot) ||
-            slot != args.Slot)
+        // Сам себе батарею не меняет.
+        if (args.User == ent.Owner)
+        {
+            args.Cancelled = true;
             return;
+        }
 
-        args.Cancelled = true;
+        if (!CanSwapCell(ent.Owner, args.User))
+            args.Cancelled = true;
     }
 
     private void OnItemSlotEjectAttempt(Entity<FishIpcComponent> ent, ref ItemSlotEjectAttemptEvent args)
     {
-        if (args.Cancelled || args.User != ent.Owner)
+        if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
 
-        if (!TryComp<PowerCellSlotComponent>(ent.Owner, out var cellSlot) ||
-            !_itemSlots.TryGetSlot(ent.Owner, cellSlot.CellSlotId, out var slot) ||
-            slot != args.Slot)
+        if (args.User == ent.Owner)
+        {
+            args.Cancelled = true;
+            return;
+        }
+
+        if (!CanSwapCell(ent.Owner, args.User))
+            args.Cancelled = true;
+    }
+
+    private bool IsCellSlot(EntityUid owner, ItemSlot slot)
+    {
+        if (!TryComp<PowerCellSlotComponent>(owner, out var cellSlot) ||
+            !_itemSlots.TryGetSlot(owner, cellSlot.CellSlotId, out var owned) ||
+            owned != slot)
+            return false;
+
+        return true;
+    }
+
+    /// <summary>Батарею меняют только при снятом замке и открытой панели.</summary>
+    private bool CanSwapCell(EntityUid owner, EntityUid? user)
+    {
+        if (TryComp<LockComponent>(owner, out var lockComp) && lockComp.Locked)
+            return false;
+
+        if (TryComp<WiresPanelComponent>(owner, out var panel) && !panel.Open)
+        {
+            if (user != null)
+                _popup.PopupClient(Loc.GetString("fish-ipc-cell-panel-closed"), owner, user.Value);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void OnCheckLockAccess(Entity<FishIpcComponent> ent, ref CheckUserHasLockAccessEvent args)
+    {
+        if (!args.FoundReaders.HasFlag(LockTypes.Access))
             return;
 
-        args.Cancelled = true;
+        // Peer-unlock: КПБ ↔ КПБ без ID с тегом FishIpcChassis.
+        if (HasComp<FishIpcComponent>(args.User))
+            args.HasAccess |= LockTypes.Access;
     }
 
     private void OnTryingToSleep(Entity<FishIpcComponent> ent, ref TryingToSleepEvent args)

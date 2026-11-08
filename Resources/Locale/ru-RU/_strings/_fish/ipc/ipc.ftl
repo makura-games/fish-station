@@ -1,10 +1,10 @@
 ent-MobIpc = урист МакПозитроник
-    .desc = Позитронный мозг в металлическом теле.
+    .desc = Железный член экипажа. Думает и орёт в рацию как все — только ест батарею, а не еду.
 ent-MobIpcDummy = урист МакПозитроник
     .desc = Макет КПБ для настройки персонажа.
     .suffix = Макет
 ent-AppearanceIpc = внешность КПБ
-    .desc = Внешность кибернетического позитронного блока.
+    .desc = Как выглядит шасси.
     .suffix = КПБ
 
 fish-ipc-overheating = Ваши схемы перегреваются!
@@ -26,4 +26,7 @@ fish-ipc-wires-board-name = Панель шасси КПБ
 fish-ipc-devour-robot = Это робот. Его нельзя поглотить.
 fish-ipc-disease-robot = Это робот. Заражение невозможно.
 fish-ipc-emag-access = Замки доступа шасси сброшены. Панель теперь открывает кто угодно.
+fish-ipc-module-toggled-on = { $module }: включён.
+fish-ipc-module-toggled-off-named = { $module }: выключен.
+fish-ipc-cell-panel-closed = Сначала откройте панель шасси, чтобы менять батарею.
 id-card-access-level-fish-ipc-chassis = Шасси КПБ

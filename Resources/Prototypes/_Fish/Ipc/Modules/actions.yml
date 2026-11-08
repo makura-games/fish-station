@@ -64,36 +64,6 @@
 
 - type: entity
   parent: BaseToggleAction
-  id: FishActionIpcToggleMagneticJoints
-  name: Toggle magnetic joints
-  description: Enable or disable magnetic amputation resistance.
-  components:
-  - type: Action
-    useDelay: 0.5
-    itemIconStyle: NoItem
-  - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: InstantAction
-    event: !type:FishIpcModuleToggleActionEvent
-
-- type: entity
-  parent: BaseToggleAction
-  id: FishActionIpcToggleSealedJoints
-  name: Toggle sealed joints
-  description: Enable or disable sealed amputation lock.
-  components:
-  - type: Action
-    useDelay: 0.5
-    itemIconStyle: NoItem
-  - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: InstantAction
-    event: !type:FishIpcModuleToggleActionEvent
-
-- type: entity
-  parent: BaseToggleAction
   id: FishActionIpcToggleModule
   name: Toggle chassis module
   description: Enable or disable this chassis module.

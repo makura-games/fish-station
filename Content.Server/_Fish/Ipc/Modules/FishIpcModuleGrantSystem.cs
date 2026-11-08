@@ -7,6 +7,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Examine;
 using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Overlays;
+using Content.Shared.Popups;
 
 namespace Content.Server._Fish.Ipc.Modules;
 
@@ -18,6 +19,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
     [Dependency] private FishIpcRadioSystem _radio = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private MetaDataSystem _meta = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     public override void Initialize()
     {
@@ -25,12 +27,6 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
 
         SubscribeLocalEvent<FishIpcEmpScreenModuleComponent, FishIpcModuleInstalledEvent>(OnEmpScreenInstall);
         SubscribeLocalEvent<FishIpcEmpScreenModuleComponent, FishIpcModuleUninstalledEvent>(OnEmpScreenUninstall);
-
-        SubscribeLocalEvent<FishIpcMagneticJointsModuleComponent, FishIpcModuleInstalledEvent>(OnMagInstall);
-        SubscribeLocalEvent<FishIpcMagneticJointsModuleComponent, FishIpcModuleUninstalledEvent>(OnMagUninstall);
-
-        SubscribeLocalEvent<FishIpcSealedJointsModuleComponent, FishIpcModuleInstalledEvent>(OnSealInstall);
-        SubscribeLocalEvent<FishIpcSealedJointsModuleComponent, FishIpcModuleUninstalledEvent>(OnSealUninstall);
 
         SubscribeLocalEvent<FishIpcApcAdapterModuleComponent, FishIpcModuleInstalledEvent>(OnApcInstall);
         SubscribeLocalEvent<FishIpcApcAdapterModuleComponent, FishIpcModuleUninstalledEvent>(OnApcUninstall);
@@ -64,40 +60,6 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
 
     private void OnEmpScreenUninstall(Entity<FishIpcEmpScreenModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
         RemComp<FishIpcEmpScreenHostComponent>(args.Host);
-
-    private void OnMagInstall(Entity<FishIpcMagneticJointsModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
-    {
-        var host = EnsureComp<FishIpcMagneticJointsHostComponent>(args.Host);
-        host.ModuleEnabled = ent.Comp.Enabled;
-        Dirty(args.Host, host);
-        _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
-        if (ent.Comp.ToggleActionEntity is { } action)
-            _actions.SetToggled(action, ent.Comp.Enabled);
-    }
-
-    private void OnMagUninstall(Entity<FishIpcMagneticJointsModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
-    {
-        _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
-        ent.Comp.ToggleActionEntity = null;
-        RemComp<FishIpcMagneticJointsHostComponent>(args.Host);
-    }
-
-    private void OnSealInstall(Entity<FishIpcSealedJointsModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
-    {
-        var host = EnsureComp<FishIpcSealedJointsHostComponent>(args.Host);
-        host.ModuleEnabled = ent.Comp.Enabled;
-        Dirty(args.Host, host);
-        _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
-        if (ent.Comp.ToggleActionEntity is { } action)
-            _actions.SetToggled(action, ent.Comp.Enabled);
-    }
-
-    private void OnSealUninstall(Entity<FishIpcSealedJointsModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
-    {
-        _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
-        ent.Comp.ToggleActionEntity = null;
-        RemComp<FishIpcSealedJointsHostComponent>(args.Host);
-    }
 
     private void OnApcInstall(Entity<FishIpcApcAdapterModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
     {
@@ -216,6 +178,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 heal.Enabled = !heal.Enabled;
                 Dirty(uid, heal);
                 _actions.SetToggled(action, heal.Enabled);
+                NotifyModuleToggle(host.Owner, uid, heal.Enabled);
                 args.Handled = true;
                 return;
             }
@@ -227,38 +190,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 Dirty(uid, vision);
                 ApplyVision(host.Owner, vision.Kind, vision.Enabled);
                 _actions.SetToggled(action, vision.Enabled);
-                args.Handled = true;
-                return;
-            }
-
-            if (TryComp<FishIpcMagneticJointsModuleComponent>(uid, out var mag) &&
-                mag.ToggleActionEntity == action)
-            {
-                mag.Enabled = !mag.Enabled;
-                Dirty(uid, mag);
-                if (TryComp<FishIpcMagneticJointsHostComponent>(host.Owner, out var magHost))
-                {
-                    magHost.ModuleEnabled = mag.Enabled;
-                    Dirty(host.Owner, magHost);
-                }
-
-                _actions.SetToggled(action, mag.Enabled);
-                args.Handled = true;
-                return;
-            }
-
-            if (TryComp<FishIpcSealedJointsModuleComponent>(uid, out var seal) &&
-                seal.ToggleActionEntity == action)
-            {
-                seal.Enabled = !seal.Enabled;
-                Dirty(uid, seal);
-                if (TryComp<FishIpcSealedJointsHostComponent>(host.Owner, out var sealHost))
-                {
-                    sealHost.ModuleEnabled = seal.Enabled;
-                    Dirty(host.Owner, sealHost);
-                }
-
-                _actions.SetToggled(action, seal.Enabled);
+                NotifyModuleToggle(host.Owner, uid, vision.Enabled);
                 args.Handled = true;
                 return;
             }
@@ -267,10 +199,17 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 power.ToggleActionEntity == action)
             {
                 SetModulePower((uid, power), host.Owner, !power.Enabled);
+                NotifyModuleToggle(host.Owner, uid, power.Enabled);
                 args.Handled = true;
                 return;
             }
         }
+    }
+
+    private void NotifyModuleToggle(EntityUid host, EntityUid module, bool enabled)
+    {
+        var key = enabled ? "fish-ipc-module-toggled-on" : "fish-ipc-module-toggled-off-named";
+        _popup.PopupEntity(Loc.GetString(key, ("module", Name(module))), host, host);
     }
 
     private void SetModulePower(Entity<FishIpcModulePowerToggleComponent> module, EntityUid host, bool enabled)
@@ -351,15 +290,15 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 // Защита глаз от сварки только пока модуль включён. Вспышки мезон не закрывает.
                 ToggleComp<EyeProtectionComponent>(host, add);
                 break;
-            case FishIpcVisionKind.NightVision:
+            case FishIpcVisionKind.Thermal:
                 if (add)
                 {
-                    var nv = EnsureComp<FishNightVisionComponent>(host);
-                    Dirty(host, nv);
+                    var tv = EnsureComp<FishThermalVisionComponent>(host);
+                    Dirty(host, tv);
                 }
                 else
                 {
-                    RemComp<FishNightVisionComponent>(host);
+                    RemComp<FishThermalVisionComponent>(host);
                 }
                 break;
         }

@@ -30,32 +30,24 @@ ent-FishIpcModuleMeson = модуль мезонной оптики КПБ
     .desc = Расход 0,25 Дж/с. Слот зрения. Пока включён, защищает глаза от сварки. Выключенный защиту не даёт. Стены не показывает, от вспышек не спасает.
     .suffix = Fish
 
-ent-FishIpcModuleNightVision = модуль ночного зрения КПБ
-    .desc = Расход 0,55 Дж/с. Слот зрения: зелёный фосфор и подъём освещения. Выключается кнопкой.
+ent-FishIpcModuleNightVision = модуль термального зрения КПБ
+    .desc = Расход 0,55 Дж/с. Слот зрения: тепловая картинка. Выключается кнопкой.
     .suffix = Fish
 
-ent-FishIpcModuleNanoRepair = модуль наноремонта КПБ
-    .desc = Расход 1,2 Дж/с, порог 10% заряда. Дробление, порез и прокол −0,15/с, жар и ток −0,2/с. Не вместе с реактивным ремонтом.
+ent-FishIpcModuleNanoRepair = модуль физического ремонта КПБ
+    .desc = Расход 1,2 Дж/с, порог 10% заряда. Чинит только удары, порезы и проколы (−0,15/с). Не вместе с термическим ремонтом.
     .suffix = Fish
 
-ent-FishIpcModuleReactiveRepair = модуль реактивного ремонта КПБ
-    .desc = Расход 1,6 Дж/с, порог 12% заряда. Дробление, порез и прокол −0,35/с, жар и ток −0,4/с. Не вместе с наноремонтом.
+ent-FishIpcModuleReactiveRepair = модуль термического ремонта КПБ
+    .desc = Расход 1,6 Дж/с, порог 12% заряда. Чинит только жар и ток (−0,4/с). Не вместе с физическим ремонтом.
     .suffix = Fish
 
 ent-FishIpcModuleEmpScreen = модуль EMP-экрана КПБ
     .desc = Расход 0,45 Дж/с. Урон ЭМИ ×0,4, шасси не уходит в полный EMP-disable. Выключается кнопкой.
     .suffix = Fish
 
-ent-FishIpcModuleMagneticJoints = модуль магнитных суставов КПБ
-    .desc = Расход 0,4 Дж/с. 65% шанс отменить ампутацию. EMP глушит эффект. Не вместе с герметичными суставами.
-    .suffix = Fish
-
-ent-FishIpcModuleSealedJoints = модуль герметичных суставов КПБ
-    .desc = Расход 0,5 Дж/с. Блокирует ампутацию. EMP оглушает на 12 с и глушит эффект. Не вместе с магнитными.
-    .suffix = Fish
-
 ent-FishIpcModuleJumpstarter = модуль jumpstarter КПБ
-    .desc = Расход 0,2 Дж/с. Импульс только в крите: 30% заряда, откат 180 с, −15 дробящего и по −10 режущего, колющего, жара и тока. Смертельный урон не снимает. Выключается кнопкой.
+    .desc = Расход 0,2 Дж/с. Импульс только в крите: 30% заряда, откат 180 с. Смертельный урон не снимает. Выключается кнопкой.
     .suffix = Fish
 
 ent-FishIpcModuleDefib = модуль дефибриллятора КПБ
@@ -78,11 +70,8 @@ ent-FishActionIpcToggleRepair = переключить ремонт шасси
 ent-FishActionIpcToggleVision = переключить оптику шасси
     .desc = Включить или выключить установленный модуль зрения.
 
-ent-FishActionIpcToggleMagneticJoints = переключить магнитные суставы
-    .desc = Включить или выключить сопротивление ампутации.
-
-ent-FishActionIpcToggleSealedJoints = переключить герметичные суставы
-    .desc = Включить или выключить блокировку ампутации.
+ent-FishActionIpcToggleModule = переключить модуль шасси
+    .desc = Включить или выключить модуль. Всплывёт статус.
 
 ent-FishIpcDefibPads = накладки дефибриллятора шасси
     .desc = Встроенные шоковые накладки модуля КПБ.
@@ -109,26 +98,9 @@ fish-ipc-module-tool-no-hand = Нет свободной руки для вст�
 fish-ipc-module-wire-interface-self = Интерфейс проводов активен: панели рядом дают доп. диагностику.
 fish-ipc-module-wire-interface-panel-open = Интерфейс проводов: панель открыта.
 fish-ipc-module-wire-interface-panel-closed = Интерфейс проводов: панель закрыта.
-fish-ipc-module-joints-sealed-block = Герметичные суставы не поддаются.
-fish-ipc-module-joints-magnetic-resist = Магнитные крепления возвращают конечность на место!
-fish-ipc-module-joints-emp-magnetic = EMP выбивает магнитные суставы!
-fish-ipc-module-joints-emp-sealed = EMP стопорит герметичные суставы — шасси клинит!
 fish-ipc-emp-hit-screened = EMP бьёт по шасси, но экран снимает большую часть удара.
 fish-ipc-health-analyzer-refuse = Обычный медсканер не читает шасси КПБ.
 
-research-technology-fish-ipc-wire-interface = Интерфейс проводов КПБ
-research-technology-fish-ipc-apc-adapter = Адаптер ЛКП КПБ
-research-technology-fish-ipc-vocal-mod = Вокальный модулятор КПБ
-research-technology-fish-ipc-tool-hand = Инструмент-рука КПБ
-research-technology-fish-ipc-med-hud = Медицинская оптика КПБ
-research-technology-fish-ipc-sec-hud = Охранная оптика КПБ
-research-technology-fish-ipc-meson = Мезонная оптика КПБ
-research-technology-fish-ipc-night-vision = Ночное зрение КПБ
-research-technology-fish-ipc-nano-repair = Наноремонт КПБ
-research-technology-fish-ipc-reactive-repair = Реактивный ремонт КПБ
-research-technology-fish-ipc-emp-screen = EMP-экран КПБ
-research-technology-fish-ipc-magnetic-joints = Магнитные суставы КПБ
-research-technology-fish-ipc-sealed-joints = Герметичные суставы КПБ
-research-technology-fish-ipc-jumpstarter = Jumpstarter КПБ
-research-technology-fish-ipc-defib = Дефибриллятор КПБ
-research-technology-fish-ipc-rad-filter = Радфильтр КПБ
+research-technology-fish-ipc-healthcare = Модули здравоохранения КПБ
+research-technology-fish-ipc-utility = Служебные модули КПБ
+research-technology-fish-ipc-advanced-optics = Продвинутая оптика КПБ

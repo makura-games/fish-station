@@ -121,28 +121,6 @@
     Gold: 280
 
 - type: latheRecipe
-  id: FishIpcModuleMagneticJoints
-  result: FishIpcModuleMagneticJoints
-  completetime: 48
-  materials:
-    Steel: 1700
-    Glass: 600
-    Plasma: 500
-    Silver: 350
-    Gold: 200
-
-- type: latheRecipe
-  id: FishIpcModuleSealedJoints
-  result: FishIpcModuleSealedJoints
-  completetime: 52
-  materials:
-    Steel: 1900
-    Glass: 700
-    Plasma: 650
-    Silver: 400
-    Gold: 250
-
-- type: latheRecipe
   id: FishIpcModuleJumpstarter
   result: FishIpcModuleJumpstarter
   completetime: 60

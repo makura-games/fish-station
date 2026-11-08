@@ -12,7 +12,7 @@ public enum FishIpcVisionKind : byte
     Medical,
     Security,
     Meson,
-    NightVision,
+    Thermal,
 }
 
 /// <summary>Маркер хоста: частичная EMP-защита шасси.</summary>
