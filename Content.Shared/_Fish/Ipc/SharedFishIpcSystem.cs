@@ -5,13 +5,12 @@ using Content.Shared.Lock;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared.PowerCell.Components;
-using Content.Shared.Radio.Components;
 using Content.Shared.Wires;
 
 namespace Content.Shared._Fish.Ipc;
 
 /// <summary>
-/// Общая логика КПБ: алерты, скорость, слот батареи/ключей, сон, взаимный unlock шасси.
+/// Общая логика КПБ: алерты, скорость, слот батареи, сон, взаимный unlock шасси.
 /// </summary>
 public abstract partial class SharedFishIpcSystem : EntitySystem
 {
@@ -24,7 +23,6 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<FishIpcComponent, ComponentInit>(OnInit);
-        SubscribeLocalEvent<FishIpcComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<FishIpcComponent, FishIpcChargeStateUpdateEvent>(OnChargeUpdate);
         SubscribeLocalEvent<FishIpcComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovespeed);
         SubscribeLocalEvent<FishIpcComponent, ItemSlotInsertAttemptEvent>(OnItemSlotInsertAttempt);
@@ -32,35 +30,11 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         SubscribeLocalEvent<FishIpcComponent, TryingToSleepEvent>(OnTryingToSleep);
         // Fish-edit: любой КПБ открывает замок другого КПБ
         SubscribeLocalEvent<FishIpcComponent, CheckUserHasLockAccessEvent>(OnCheckLockAccess);
-        SubscribeLocalEvent<FishIpcComponent, LockToggledEvent>(OnLockToggled);
     }
 
     private void OnInit(Entity<FishIpcComponent> ent, ref ComponentInit args)
     {
         _alerts.ShowAlert(ent.Owner, ent.Comp.BatteryAlert, ent.Comp.ChargeState);
-    }
-
-    private void OnMapInit(Entity<FishIpcComponent> ent, ref MapInitEvent args)
-    {
-        SyncKeysUnlocked(ent.Owner);
-    }
-
-    private void OnLockToggled(Entity<FishIpcComponent> ent, ref LockToggledEvent args)
-    {
-        SyncKeysUnlocked(ent.Owner);
-    }
-
-    /// <summary>Ключи шифрования только при снятом замке (панель всё равно нужна открытой).</summary>
-    private void SyncKeysUnlocked(EntityUid uid)
-    {
-        if (!TryComp<EncryptionKeyHolderComponent>(uid, out var keys))
-            return;
-
-        var unlocked = !TryComp<LockComponent>(uid, out var lockComp) || !lockComp.Locked;
-        if (keys.KeysUnlocked == unlocked)
-            return;
-
-        keys.KeysUnlocked = unlocked;
     }
 
     private void OnChargeUpdate(Entity<FishIpcComponent> ent, ref FishIpcChargeStateUpdateEvent args)
@@ -90,13 +64,7 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
 
-        // Сам себе батарею не меняет.
-        if (args.User == ent.Owner)
-        {
-            args.Cancelled = true;
-            return;
-        }
-
+        // Как модули: самообслуживание ок при открытой панели (LockedWiresPanel уже требует unlock).
         if (!CanSwapCell(ent.Owner, args.User))
             args.Cancelled = true;
     }
@@ -105,12 +73,6 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
     {
         if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
-
-        if (args.User == ent.Owner)
-        {
-            args.Cancelled = true;
-            return;
-        }
 
         if (!CanSwapCell(ent.Owner, args.User))
             args.Cancelled = true;
@@ -126,12 +88,12 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         return true;
     }
 
-    /// <summary>Батарею меняют только при снятом замке и открытой панели.</summary>
+    /// <summary>
+    /// Батарею меняют при открытой панели (как у боргов). Замок отдельно не проверяем:
+    /// LockedWiresPanel не даёт открыть панель, пока корпус заперт.
+    /// </summary>
     private bool CanSwapCell(EntityUid owner, EntityUid? user)
     {
-        if (TryComp<LockComponent>(owner, out var lockComp) && lockComp.Locked)
-            return false;
-
         if (TryComp<WiresPanelComponent>(owner, out var panel) && !panel.Open)
         {
             if (user != null)
