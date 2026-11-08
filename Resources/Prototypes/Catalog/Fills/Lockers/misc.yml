@@ -265,9 +265,7 @@
     - id: PlushieLizardJobPassenger
     - id: PlushieLizardJobReporter
     - id: PlushieLizardJobZookeeper
-    # Fish-start
-    - id: FishPlushieToolbox
-    # Fish-end
+    - id: FishPlushieToolbox # Fish-edit
 
 - type: entity
   id: ClosetMaintenanceFilledRandom
