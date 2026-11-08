@@ -238,7 +238,7 @@
 # --- Trinkets ---
 
 - type: loadout
-  id: CentCommFlippoFish
+  id: FishCentCommFlippo
   storage:
     back:
     - CentCommFlippo
