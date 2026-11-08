@@ -234,3 +234,11 @@
   id: CentCommAdminGlasses
   equipment:
     eyes: ClothingEyesGlassesCommand
+
+# --- Trinkets ---
+
+- type: loadout
+  id: CentCommFlippoFish
+  storage:
+    back:
+    - CentCommFlippo
