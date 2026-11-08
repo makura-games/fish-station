@@ -69,6 +69,28 @@
       Alive: BorgHealth
       Critical: BorgCrit
       Dead: BorgDead
+  # Fish-edit: гиба от сильного перегруза урона, не от лёгкого удара; модули и батарея выпадают
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          path: /Audio/Machines/warning_buzzer.ogg
+    - trigger:
+        !type:DamageTrigger
+        damage: 450
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:EmptyContainersBehaviour
+        containers:
+        - ipc_module
+        - cell_slot
+      - !type:GibBehavior { }
   - type: SlowOnDamage
     speedModifierThresholds:
       60: 0.7
@@ -107,6 +129,9 @@
   - type: ZombieImmune
   - type: FlashImmunity
     showInExamine: false
+  # Fish-edit: защита глаз от сварки без модуля (мезон её больше не обязателен)
+  - type: EyeProtection
+    protectionTime: 10
   - type: PassiveDamage
     allowedStates:
     - Alive
@@ -137,9 +162,12 @@
     locked: true
     lockOnClick: false
     unlockOnClick: false
+  # Fish-edit: сам КПБ открывает свой замок; командование, РнД и робототехника остаются
+  - type: Access
+    tags:
+    - FishIpcChassis
   - type: AccessReader
-    # Командование / РнД / робототехник — не «кто угодно с отвёрткой».
-    access: [["Command"], ["Research"], ["Robotics"]]
+    access: [["Command"], ["Research"], ["Robotics"], ["FishIpcChassis"]]
   - type: WiresPanel
     openingTool: Prying
     openDelay: 3
@@ -162,12 +190,6 @@
   - type: EncryptionKeyHolder
     keySlots: 4
   - type: RevolutionaryImmune
-  - type: Satiation
-    satiations:
-      Hunger:
-        prototype: IpcSatiationHunger
-      Thirst:
-        prototype: IpcSatiationThirst
   # Inherited Internals (BaseSpeciesMob) Resolve Respirator on gear equip; IPC does not breathe.
   - type: Respirator
     damage:
@@ -196,7 +218,7 @@
       tags:
       - FishIpcModule
   - type: FishBatteryDrinker
-  - type: FishWeldingHealable # Fish-edit: сварка чинит burn (Paradise welder); brute — кабелем
+  - type: FishWeldingHealable # Fish-edit: сварка чинит мех. урон, кабель — ожоги
   - type: FishDeadStartupButton
   - type: FishEmitBuzzWhileDamaged
   - type: RangedDamageSound

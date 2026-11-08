@@ -1,4 +1,5 @@
 using Content.Shared.Damage;
+using Content.Shared.FixedPoint;
 using Content.Shared.Tools;
 using Robust.Shared.Prototypes;
 
@@ -18,13 +19,14 @@ public sealed partial class FishWeldingHealingComponent : Component
     public ProtoId<ToolQualityPrototype> QualityNeeded = "Welding";
 
     [DataField]
-    public int FuelCost = 5;
+    public FixedPoint2 FuelCost = 0.5;
 
     [DataField]
-    public float DoAfterDelay = 3f;
+    public float DoAfterDelay = 1f;
 
+    /// <summary>Самосварка дольше чужого ремонта во столько раз.</summary>
     [DataField]
-    public float SelfHealPenalty = 3f;
+    public float SelfHealPenalty = 2f;
 
     [DataField]
     public bool AllowSelfHeal = true;

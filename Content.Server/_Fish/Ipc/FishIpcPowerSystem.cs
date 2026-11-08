@@ -52,12 +52,12 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
         while (query.MoveNext(out var uid, out var ipc, out var slot))
         {
             // Снятие ячейки при удалении сущности не должно трогать заряд и рацию.
-            if (TerminatingOrDeleted(uid) || _mobState.IsDead(uid) || !ipc.BatteryPowered)
+            if (TerminatingOrDeleted(uid) || !ipc.BatteryPowered)
                 continue;
 
-            // SSD не расходуют заряд и не получают предупреждения.
-            if (TryComp<MindContainerComponent>(uid, out var mind) && !mind.HasMind)
-                continue;
+            // Мёртвые и SSD не тратят заряд, но индикатор всё равно читает ту же ячейку, что и осмотр.
+            var skipDrain = _mobState.IsDead(uid)
+                || (TryComp<MindContainerComponent>(uid, out var mind) && !mind.HasMind);
 
             if (!_powerCell.TryGetBatteryFromSlot((uid, slot), out var batteryEnt))
             {
@@ -71,7 +71,7 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
                 continue;
             }
 
-            if (!ipc.PowerDown)
+            if (!skipDrain && !ipc.PowerDown)
                 _powerCell.TryUseCharge((uid, slot), frameTime * ipc.DrainPerSecond);
 
             var level = _battery.GetChargeLevel(batteryEnt.Value.AsNullable());
@@ -86,6 +86,9 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
                 _alerts.ClearAlert(uid, ipc.NoBatteryAlert);
                 _alerts.ShowAlert(uid, ipc.BatteryAlert, chargePercent);
             }
+
+            if (skipDrain)
+                continue;
 
             if (level <= ipc.ChargeThresholdCritical && level > 0f)
             {

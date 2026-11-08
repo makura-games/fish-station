@@ -80,6 +80,7 @@
     - Silicon
     - Xenoborg
     - Mech
+    - Ipc # Fish-edit: кабель лечит ожоги КПБ
     damage:
       types:
         Heat: -6
@@ -153,6 +154,7 @@
     - Silicon
     - Xenoborg
     - Mech
+    - Ipc # Fish-edit: кабель лечит ожоги КПБ
     damage:
       types:
         Heat: -6

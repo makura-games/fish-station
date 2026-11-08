@@ -7,4 +7,6 @@
   supportedTypes:
   - Structural
   - Mangleness
+  - Radiation # Fish-edit: без фильтра шасси получает радиацию
+  - Cellular # Fish-edit: без фильтра шасси получает клеточный урон
 # Fish-end

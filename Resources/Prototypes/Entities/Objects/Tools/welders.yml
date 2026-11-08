@@ -95,23 +95,22 @@
       collection: Welder
     qualities: [ Welding ]
   - type: Welder
-  # Fish-start: ремонт burn у КПБ/силиконов (Paradise welder)
+  # Fish-start: сварка чинит механику только у КПБ, цифры как у борга
   - type: FishWeldingHealing
     qualityNeeded: Welding
-    fuelCost: 5
-    doAfterDelay: 3
+    # Цифры механики как у борга: 1 с, 0.5 топлива, Blunt/Slash/Piercing. Самосварка ×2.
+    fuelCost: 0.5
+    doAfterDelay: 1
+    selfHealPenalty: 2
     allowSelfHeal: true
     requireWelderFuel: true
     damageContainers:
-    - Synth
-    - Silicon
-    - Xenoborg
-    - Mech
     - Ipc
     damage:
       types:
-        Heat: -10
-        Shock: -5
+        Blunt: -3.34
+        Slash: -3.33
+        Piercing: -3.33
   # Fish-end
   - type: PointLight
     enabled: false

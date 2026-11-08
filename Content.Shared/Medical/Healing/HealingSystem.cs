@@ -163,7 +163,8 @@ public sealed partial class HealingSystem : EntitySystem
 
         // Update our self heal delay so it shortens as we heal more damage.
         if (args.User == target.Owner)
-            args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, healing.SelfHealPenaltyMultiplier);
+            // Fish-edit: у КПБ потолок самолечения ×2
+            args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, IpcSelfHealCap(target.Owner, healing.SelfHealPenaltyMultiplier));
     }
 
     private bool HasDamage(Entity<HealingComponent> healing, Entity<DamageableComponent> target)
@@ -294,7 +295,8 @@ public sealed partial class HealingSystem : EntitySystem
 
         var delay = isNotSelf
             ? healing.Comp.Delay
-            : healing.Comp.Delay * GetScaledHealingPenalty(target, healing.Comp.SelfHealPenaltyMultiplier);
+            // Fish-edit: у КПБ потолок самолечения ×2
+            : healing.Comp.Delay * GetScaledHealingPenalty(target, IpcSelfHealCap(target, healing.Comp.SelfHealPenaltyMultiplier));
 
         var doAfterEventArgs =
             new DoAfterArgs(EntityManager, user, delay, new HealingDoAfterEvent(), target, target: target, used: healing)
