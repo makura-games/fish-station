@@ -66,11 +66,11 @@ public sealed partial class StorytellerRuleComponent : Component
     public TimeSpan LastStrengthBoostingEventTime;
     // Fish-end
 
-    // Fish-start - флаг принудительного перехода в стейт Peak после 1 часа смены
+    // Fish-start - флаг принудительного перехода в стейт Peak после 65 минут смены
     /// <summary>
-    /// Whether the forced 1-hour peak state transition has been executed.
+    /// Whether the forced 65-minute peak state transition has been executed.
     /// </summary>
-    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    [ViewVariables(VVAccess.ReadWrite)]
     public bool HourPeakForced = false;
     // Fish-end
 

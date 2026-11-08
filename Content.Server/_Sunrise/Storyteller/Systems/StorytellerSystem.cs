@@ -308,8 +308,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         }
         // Fish-end
 
-        // Fish-start - после 1 часа смены форсируем стейт Peak на максимальную продолжительность
-        if (!component.HourPeakForced && GameTicker.RoundDuration() >= TimeSpan.FromHours(1))
+        // Fish-start - после 65 минут смены форсируем стейт Peak на максимальную продолжительность
+        if (!component.HourPeakForced && GameTicker.RoundDuration() >= TimeSpan.FromMinutes(65))
         {
             ForceHourPeakState((uid, component));
         }
@@ -1350,19 +1350,27 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         return result;
     }
 
+    // Fish-start - вспомогательный метод вычисления веса события
+    private float GetEventWeight(EntityPrototype proto, StorytellerMetadataPrototype metadata)
+    {
+        var baseWeight = 10f;
+        if (proto.TryGetComponent<StationEventComponent>(out var stationEvent, EntityManager.ComponentFactory))
+        {
+            baseWeight = stationEvent.Weight;
+        }
+
+        return baseWeight * metadata.WeightModifier;
+    }
+    // Fish-end
+
     private (EntityPrototype, StorytellerMetadataPrototype)? PickEventFromEligible(
         Dictionary<EntityPrototype, StorytellerMetadataPrototype> available)
     {
         var totalWeight = 0f;
         foreach (var (proto, metadata) in available)
         {
-            var baseWeight = 10f;
-            if (proto.TryGetComponent<StationEventComponent>(out var stationEvent, EntityManager.ComponentFactory))
-            {
-                baseWeight = stationEvent.Weight;
-            }
-
-            var weight = baseWeight * metadata.WeightModifier;
+            // Fish-edit: использование GetEventWeight
+            var weight = GetEventWeight(proto, metadata);
             totalWeight += weight;
         }
 
@@ -1372,13 +1380,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         var roll = _random.NextFloat(totalWeight);
         foreach (var (proto, metadata) in available)
         {
-            var baseWeight = 10f;
-            if (proto.TryGetComponent<StationEventComponent>(out var stationEvent, EntityManager.ComponentFactory))
-            {
-                baseWeight = stationEvent.Weight;
-            }
-
-            var weight = baseWeight * metadata.WeightModifier;
+            // Fish-edit: использование GetEventWeight
+            var weight = GetEventWeight(proto, metadata);
             roll -= weight;
             if (roll <= 0f)
             {
@@ -2556,6 +2559,9 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
     // Fish-start - попытка форсированного вызова целевого крупного антагониста в Peak
     private bool TryTriggerTargetMajorEvent(Entity<StorytellerRuleComponent> entity, StationMetrics metrics)
     {
+        if (!_cfg.GetCVar(CCVars.EventsEnabled) || _roundEnd.IsRoundEndRequested())
+            return false;
+
         if (entity.Comp.TargetMajorEvent == null || entity.Comp.TargetMajorTriggered)
             return false;
 
@@ -2642,9 +2648,15 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             if (entity.Comp.MajorThreatBudget <= 0f)
                 break;
 
+            // Обновляем метрики станции и стресс команды перед проверкой доступности
+            metrics = CalculateStationMetrics(entity.Comp);
+            entity.Comp.CrewStress = CalculateCrewStress(ref metrics);
+
             var eligible = GetEligibleHeuristicEvents(entity.Comp, metrics, isMajor: true);
             var majorAntags = eligible
-                .Where(kv => kv.Value.ThreatType == StorytellerThreatType.MajorAntag && kv.Value.ThreatCost <= entity.Comp.MajorThreatBudget)
+                .Where(kv => kv.Value.ThreatType == StorytellerThreatType.MajorAntag
+                    && kv.Value.ThreatCost <= entity.Comp.MajorThreatBudget
+                    && GetEventWeight(kv.Key, kv.Value) > 0f)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
 
             if (majorAntags.Count == 0)
