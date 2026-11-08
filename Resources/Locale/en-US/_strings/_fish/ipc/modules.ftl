@@ -1,61 +1,61 @@
 ent-FishBaseIpcModule = IPC chassis module
-    .desc = An upgrade module for an integrated positronic chassis.
+    .desc = An upgrade board that slots into an open IPC chassis.
     .suffix = Fish
 
 ent-FishIpcModuleWireInterface = IPC wire interface module
-    .desc = Draws 0.05 J/s. Examining a panel reports whether it is open or closed. Toggleable.
+    .desc = Examining a panel tells you if it is open or closed. Light battery drain. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleApcAdapter = IPC APC adapter module
-    .desc = Draws 0.1 J/s. APC charge do-after time is multiplied by 0.55. The sip per cycle stays the same. Toggleable.
+    .desc = Charges faster from APCs. Light battery drain. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleVocalMod = IPC vocal modulator module
-    .desc = Draws 0.15 J/s. Built-in radio keeps working after the battery dies. Toggleable.
+    .desc = Built-in radio keeps working even when the battery is dead. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleToolHand = IPC tool-hand module
-    .desc = Draws 0.2 J/s. While on, places a crowbar in a free hand. Toggleable.
+    .desc = While on, puts a crowbar in a free hand. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleMedHud = IPC medical optics module
-    .desc = Draws 0.35 J/s. Vision slot: health bars and health icons. Toggleable.
+    .desc = Health bars and icons over your vision. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleSecHud = IPC security optics module
-    .desc = Draws 0.35 J/s. Vision slot: job, mindshield and criminal status icons. Toggleable.
+    .desc = Job, mindshield and criminal status over your vision. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleMeson = IPC meson optics module
-    .desc = Draws 0.25 J/s. Vision slot. While on, protects the eyes from welding. While off, it does not. Does not show walls and does not block flashes.
+    .desc = While on, protects your eyes from welding. Does not show walls or block flashes. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleNightVision = IPC thermal vision module
-    .desc = Draws 0.55 J/s. Vision slot: thermal overlay. Toggleable.
+    .desc = Heat overlay of the surroundings. Drains more than regular optics. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleNanoRepair = IPC physical repair module
-    .desc = Draws 1.2 J/s above 10% charge. Heals only blunt, slash and piercing (-0.15/s). Not with thermal repair.
+    .desc = Slowly heals blunt, slash and piercing. Not with thermal repair. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleReactiveRepair = IPC thermal repair module
-    .desc = Draws 1.6 J/s above 12% charge. Heals only heat and shock (-0.4/s). Not with physical repair.
+    .desc = Slowly heals heat and shock. Not with physical repair. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleEmpScreen = IPC EMP screen module
-    .desc = Draws 0.45 J/s. EMP damage is multiplied by 0.4 and the chassis is not fully disabled. Toggleable.
+    .desc = Greatly cuts EMP damage and stops a full chassis blackout. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleJumpstarter = IPC jumpstarter module
-    .desc = Draws 0.2 J/s. Crit-only pulse: 30% charge, 180 s cooldown. Does not clear lethal damage. Toggleable.
+    .desc = In crit, fires a costly get-up pulse with a cooldown. Does not clear lethal damage. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleDefib = IPC defibrillator module
-    .desc = Draws 0.25 J/s. Pads in both hands. Zap: 40% charge, 4 s, 90 s cooldown, -40 asphyxiation. Cannot zap yourself. Toggleable.
+    .desc = Pads in both hands to zap others. Cannot zap yourself. Big battery cost. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleRadFilter = IPC radiation filter module
-    .desc = Draws 0.6 J/s. Radiation and cellular damage are multiplied by 0.35. Without it the chassis takes both in full. Toggleable.
+    .desc = Cuts radiation and cellular damage. Without it the chassis takes both in full. Toggleable.
     .suffix = Fish
 
 ent-FishActionIpcDefib = Chassis defibrillator pads

@@ -35,7 +35,7 @@
   - MobAtmosExposed
   id: MobIpc
   name: Urist McPositronic
-  description: A metal crewmate. Talks on radio like anyone else — just runs on a battery, not food.
+  description: A metal crewmate. Thinks and yells on the radio like anyone else — just runs on a battery instead of food.
   components:
   - type: Icon
     sprite: _Fish/Mobs/Species/Ipc/parts.rsi

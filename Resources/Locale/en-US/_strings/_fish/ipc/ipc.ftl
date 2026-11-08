@@ -1,5 +1,5 @@
 ent-MobIpc = Urist McPositronic
-    .desc = A metal crewmate. Talks on radio like anyone else — just runs on a battery, not food.
+    .desc = A metal crewmate. Thinks and yells on the radio like anyone else — just runs on a battery instead of food.
 ent-MobIpcDummy = Urist McPositronic
     .desc = A dummy IPC for character setup.
     .suffix = Dummy
