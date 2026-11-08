@@ -1500,3 +1500,10 @@
     message: 'Расчёт Fish корпоративного закона: сопротивление, рецидив+явка, крайняя необходимость и порог пермы согласованы с вики и консолями.'
   id: 151
   url: https://github.com/makura-games/fish-station/pull/625
+- author: KrytoiChuvaaak
+  time: '2026-11-08T11:57:07.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Деадмин больше не сбрасывается после переподключения или перезахода на сервер.
+  id: 152
+  url: https://github.com/makura-games/fish-station/pull/606
