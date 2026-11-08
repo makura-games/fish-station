@@ -31,6 +31,16 @@
   equipment:
     jumpsuit: ClothingUniformJumpsuitCentcomOfficialBlackFish
 
+- type: loadout
+  id: CentCommFormalJumpsuitFish
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomFormal
+
+- type: loadout
+  id: CentCommFormalDressFish
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCentcomFormalDress
+
 # --- Shoes ---
 
 - type: loadout
@@ -61,6 +71,11 @@
   id: CentcommArmorFish
   equipment:
     outerClothing: ClothingOuterArmorCentcomFish
+
+- type: loadout
+  id: CentCommCarapaceFish
+  equipment:
+    outerClothing: ClothingOuterArmorCentcommCarapace
 
 # --- Neck ---
 
