@@ -47,6 +47,7 @@ centcomm-supply-error-bad-config = Crate configuration is invalid.
 centcomm-supply-error-too-many-crates = The order requires too many crates (max { $max }).
 centcomm-supply-error-no-pallets = Not enough free cargo pallets: need { $required }, available { $available }.
 centcomm-supply-error-pack-failed = Failed to pack the order.
+centcomm-supply-error-delivery-timeout = Failed to deliver the order: the cargo pallets were not freed in time.
 
 centcomm-supply-category-general = General
 centcomm-supply-category-medical = Medical

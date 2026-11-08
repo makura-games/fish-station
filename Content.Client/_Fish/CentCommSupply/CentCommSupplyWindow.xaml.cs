@@ -28,7 +28,11 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private string? _category;
     private NetEntity? _selectedStation;
+    private NetEntity? _pendingStationSelection;
     private CentCommSupplyProductEntry? _pendingProduct;
+    private int _maxProductsPerOrder = int.MaxValue;
+    private bool _stationSelectionPending;
+    private bool _orderPending;
 
     public event Action<NetEntity>? OnStationSelected;
     public event Action<NetEntity, List<CentCommSupplyOrderEntry>>? OnOrderPressed;
@@ -44,6 +48,9 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
         StationSelector.OnItemSelected += args =>
         {
+            if (_orderPending || _stationSelectionPending)
+                return;
+
             if (args.Id < 0 || args.Id >= _stationEntities.Count)
                 return;
 
@@ -52,7 +59,10 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
                 return;
 
             _selectedStation = station;
+            _pendingStationSelection = station;
+            _stationSelectionPending = true;
             ClearOrder();
+            UpdateStationSelector();
             OnStationSelected?.Invoke(station);
         };
 
@@ -68,6 +78,8 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     public void UpdateState(CentCommSupplyBoundUserInterfaceState state)
     {
+        _maxProductsPerOrder = Math.Max(1, state.MaxProductsPerOrder);
+
         UpdateStations(state);
 
         _products.Clear();
@@ -77,12 +89,20 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         foreach (var product in _products)
             _productsById[product.PrototypeId] = product;
 
+        PruneOrder();
         PopulateCategories();
         PopulateProducts();
         PopulateOrder();
 
         if (state.OrderPlaced)
+        {
+            _orderPending = false;
             ClearOrder();
+        }
+        else if (_orderPending && !string.IsNullOrWhiteSpace(state.StatusMessage))
+        {
+            _orderPending = false;
+        }
 
         if (!string.IsNullOrWhiteSpace(state.StatusMessage))
         {
@@ -93,6 +113,8 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         {
             StatusLabel.Visible = false;
         }
+
+        UpdateOrderButton();
     }
 
     protected override void Dispose(bool disposing)
@@ -107,44 +129,76 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void UpdateStations(CentCommSupplyBoundUserInterfaceState state)
     {
+        var previousSelection = _selectedStation;
+        var wasPending = _stationSelectionPending;
+
         StationSelector.Clear();
         _stationEntities.Clear();
-
-        var selectedIndex = -1;
-        var index = 0;
 
         foreach (var (station, name) in state.AvailableStations)
         {
             _stationEntities.Add(station);
             StationSelector.AddItem(name);
-
-            if (state.SelectedStation is { } selected && station == selected)
-                selectedIndex = index;
-
-            index++;
         }
 
         if (_stationEntities.Count == 0)
         {
             _selectedStation = null;
-            StationSelector.Disabled = true;
+            _pendingStationSelection = null;
+            _stationSelectionPending = false;
+            UpdateStationSelector();
             ClearOrder();
             return;
         }
 
-        StationSelector.Disabled = false;
+        var serverSelected = state.SelectedStation;
+        var hasStatus = !string.IsNullOrWhiteSpace(state.StatusMessage);
+
+        if (_stationSelectionPending)
+        {
+            var pending = _pendingStationSelection;
+            var pendingAvailable = pending is { } pendingStation && _stationEntities.Contains(pendingStation);
+
+            if (pendingAvailable && serverSelected == pending)
+            {
+                _selectedStation = pending;
+                _pendingStationSelection = null;
+                _stationSelectionPending = false;
+            }
+            else if (pendingAvailable && !hasStatus)
+            {
+                _selectedStation = pending;
+            }
+            else
+            {
+                _pendingStationSelection = null;
+                _stationSelectionPending = false;
+                _selectedStation = serverSelected is { } selected && _stationEntities.Contains(selected)
+                    ? selected
+                    : _stationEntities[0];
+                ClearOrder();
+            }
+        }
+        else
+        {
+            _selectedStation = serverSelected is { } selected && _stationEntities.Contains(selected)
+                ? selected
+                : _stationEntities[0];
+        }
+
+        if (!wasPending && _selectedStation != previousSelection)
+            ClearOrder();
+
+        var selectedIndex = _selectedStation is { } current
+            ? _stationEntities.IndexOf(current)
+            : -1;
 
         if (selectedIndex < 0)
             selectedIndex = 0;
 
-        var newSelected = _stationEntities[selectedIndex];
-        if (_selectedStation != newSelected)
-        {
-            _selectedStation = newSelected;
-            ClearOrder();
-        }
-
+        _selectedStation = _stationEntities[selectedIndex];
         StationSelector.SelectId(selectedIndex);
+        UpdateStationSelector();
     }
 
     private void PopulateCategories()
@@ -241,22 +295,46 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void OpenOrderMenu(CentCommSupplyProductEntry product)
     {
-        _pendingProduct = product;
-        _orderMenu.SetProduct(product);
+        if (_orderPending || _stationSelectionPending)
+            return;
+
+        if (!_productsById.TryGetValue(product.PrototypeId, out var current))
+            return;
+
+        _pendingProduct = current;
+        _orderMenu.SetProduct(current);
         _orderMenu.OpenCentered();
         _orderMenu.SetPositionLast();
     }
 
     private void AddPendingProduct()
     {
-        if (_pendingProduct is not { } product)
+        if (_orderPending || _stationSelectionPending)
             return;
+
+        if (_pendingProduct is not { } pending)
+            return;
+
+        if (!_productsById.TryGetValue(pending.PrototypeId, out var product))
+        {
+            _pendingProduct = null;
+            _orderMenu.Close();
+            return;
+        }
 
         var amount = _orderMenu.Amount.Value;
         if (amount < 1)
             return;
 
         var current = _order.TryGetValue(product.PrototypeId, out var existing) ? existing : 0;
+        if (current <= 0 && _order.Count >= _maxProductsPerOrder)
+        {
+            StatusLabel.Visible = true;
+            StatusLabel.Text = Loc.GetString("centcomm-supply-error-too-many-products",
+                ("max", _maxProductsPerOrder));
+            return;
+        }
+
         _order[product.PrototypeId] = Math.Min(product.MaxQuantity, current + amount);
 
         PopulateProducts();
@@ -266,6 +344,9 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void RemoveProduct(string productId)
     {
+        if (_orderPending || _stationSelectionPending)
+            return;
+
         if (!_order.Remove(productId))
             return;
 
@@ -275,6 +356,9 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void SubmitOrder()
     {
+        if (_orderPending || _stationSelectionPending)
+            return;
+
         if (_selectedStation is not { } station)
         {
             StatusLabel.Visible = true;
@@ -293,20 +377,68 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         foreach (var (productId, quantity) in _order)
             entries.Add(new CentCommSupplyOrderEntry(productId, quantity));
 
+        _orderPending = true;
+        UpdateOrderButton();
         OnOrderPressed?.Invoke(station, entries);
     }
 
     private void ClearOrder()
     {
         _order.Clear();
+        _pendingProduct = null;
+
+        if (_orderMenu.IsOpen)
+            _orderMenu.Close();
+
         PopulateProducts();
         Order.RemoveAllChildren();
         UpdateOrderButton();
     }
 
+    private void PruneOrder()
+    {
+        List<string>? remove = null;
+        List<(string Id, int Quantity)>? clamp = null;
+
+        foreach (var (productId, quantity) in _order)
+        {
+            if (!_productsById.TryGetValue(productId, out var product))
+            {
+                (remove ??= new()).Add(productId);
+                continue;
+            }
+
+            var max = Math.Max(1, product.MaxQuantity);
+            if (quantity > max)
+                (clamp ??= new()).Add((productId, max));
+        }
+
+        if (remove != null)
+        {
+            foreach (var productId in remove)
+                _order.Remove(productId);
+        }
+
+        if (clamp != null)
+        {
+            foreach (var (productId, quantity) in clamp)
+                _order[productId] = quantity;
+        }
+    }
+
     private void UpdateOrderButton()
     {
-        OrderButton.Disabled = _selectedStation == null || _order.Count == 0;
+        OrderButton.Disabled = _orderPending
+            || _stationSelectionPending
+            || _selectedStation == null
+            || _order.Count == 0;
+    }
+
+    private void UpdateStationSelector()
+    {
+        StationSelector.Disabled = _orderPending
+            || _stationSelectionPending
+            || _stationEntities.Count == 0;
     }
 
     private Texture? GetIcon(string prototypeId)

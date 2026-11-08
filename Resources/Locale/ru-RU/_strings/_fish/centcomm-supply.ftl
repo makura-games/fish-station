@@ -1,6 +1,6 @@
 centcomm-supply-window-title = Снабжение Центком
 centcomm-supply-window-account-name-label = Имя аккаунта:
-centcomm-supply-window-account-name = [color=darkgreen][bold]Центральное Командование[/bold] [font="Monospace"]\[ЦК\][/font][/color]
+centcomm-supply-window-account-name = [color=darkgreen][bold]Центральное Командование[/bold][/color] [font="Monospace"]\[ЦК\][/font]
 centcomm-supply-window-station = Станция:
 centcomm-supply-window-search-placeholder = Поиск
 centcomm-supply-window-categories-label = Категории:
@@ -47,6 +47,7 @@ centcomm-supply-error-bad-config = Некорректная конфигурац
 centcomm-supply-error-too-many-crates = Для заказа требуется слишком много ящиков (максимум { $max }).
 centcomm-supply-error-no-pallets = Недостаточно свободных грузовых паллет: нужно { $required }, доступно { $available }.
 centcomm-supply-error-pack-failed = Не удалось упаковать заказ.
+centcomm-supply-error-delivery-timeout = Не удалось доставить заказ: грузовые паллеты не освободились за отведённое время.
 
 centcomm-supply-category-general = Общее
 centcomm-supply-category-medical = Медицина

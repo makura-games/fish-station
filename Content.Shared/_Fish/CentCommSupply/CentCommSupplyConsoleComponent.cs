@@ -41,6 +41,12 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     public TimeSpan DeliveryDelay = TimeSpan.FromSeconds(30);
 
     /// <summary>
+    /// How long an order may wait for free cargo pallets after the delivery delay expires.
+    /// </summary>
+    [DataField]
+    public TimeSpan DeliveryTimeout = TimeSpan.FromMinutes(5);
+
+    /// <summary>
     /// Localized announcement played when an order is accepted. Argument: station name.
     /// </summary>
     [DataField]

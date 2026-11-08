@@ -19,6 +19,7 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
     public readonly Dictionary<NetEntity, string> AvailableStations;
     public readonly NetEntity? SelectedStation;
     public readonly int MaxCratesPerOrder;
+    public readonly int MaxProductsPerOrder;
     public readonly string? StatusMessage;
     public readonly bool OrderPlaced;
 
@@ -27,6 +28,7 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
         Dictionary<NetEntity, string> availableStations,
         NetEntity? selectedStation,
         int maxCratesPerOrder,
+        int maxProductsPerOrder,
         string? statusMessage,
         bool orderPlaced)
     {
@@ -34,6 +36,7 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
         AvailableStations = availableStations;
         SelectedStation = selectedStation;
         MaxCratesPerOrder = maxCratesPerOrder;
+        MaxProductsPerOrder = maxProductsPerOrder;
         StatusMessage = statusMessage;
         OrderPlaced = orderPlaced;
     }

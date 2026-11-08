@@ -53,13 +53,17 @@ public sealed partial class CentCommSupplySystem : EntitySystem
     [Dependency] private UserInterfaceSystem _ui = default!;
 
     private readonly Dictionary<Guid, TimeSpan> _recentOrders = new();
+    private readonly HashSet<Guid> _acceptedOrders = new();
     private readonly List<PendingOrder> _pendingOrders = new();
     private readonly List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> _pads = new();
 
     private sealed class PendingOrder
     {
+        public EntityUid Console;
+        public EntityUid Actor;
         public EntityUid Station;
         public TimeSpan DeliverAt;
+        public TimeSpan ExpireAt;
         public int OrderNumber;
         public EntProtoId PaperPrototype;
         public string StationName = string.Empty;
@@ -91,6 +95,14 @@ public sealed partial class CentCommSupplySystem : EntitySystem
             var order = _pendingOrders[i];
             if (now < order.DeliverAt)
                 continue;
+
+            if (now >= order.ExpireAt)
+            {
+                RollbackCrates(order.Crates);
+                _pendingOrders.RemoveAt(i);
+                NotifyDeliveryTimeout(order);
+                continue;
+            }
 
             if (!TryComp<StationDataComponent>(order.Station, out _))
             {
@@ -125,6 +137,7 @@ public sealed partial class CentCommSupplySystem : EntitySystem
 
         _pendingOrders.Clear();
         _recentOrders.Clear();
+        _acceptedOrders.Clear();
     }
 
     private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
@@ -144,7 +157,8 @@ public sealed partial class CentCommSupplySystem : EntitySystem
         var owningStation = _station.GetOwningStation(ent.Owner);
         if (station == owningStation
             || !TryComp<StationDataComponent>(station, out var data)
-            || !HasBuyPallets(data))
+            || !HasBuyPallets(data)
+            || !TryComp<StationCargoOrderDatabaseComponent>(station, out _))
         {
             Fail(ent, args.Actor, Loc.GetString("centcomm-supply-error-invalid-station"));
             return;
@@ -162,14 +176,16 @@ public sealed partial class CentCommSupplySystem : EntitySystem
             return;
         }
 
-        if (args.OrderId == Guid.Empty || _recentOrders.ContainsKey(args.OrderId))
+        if (args.OrderId == Guid.Empty
+            || _recentOrders.ContainsKey(args.OrderId)
+            || _acceptedOrders.Contains(args.OrderId))
+        {
             return;
-
-        _recentOrders[args.OrderId] = _timing.CurTime;
-        if (_recentOrders.Count > 512)
-            _recentOrders.Clear();
+        }
 
         var now = _timing.CurTime;
+        _recentOrders[args.OrderId] = now;
+        PruneRecentOrders();
         if (now < ent.Comp.NextOrderTime)
         {
             var secondsCount = Math.Max(1, (int) Math.Ceiling((ent.Comp.NextOrderTime - now).TotalSeconds));
@@ -345,11 +361,18 @@ public sealed partial class CentCommSupplySystem : EntitySystem
         var deliveryDelay = ent.Comp.DeliveryDelay > TimeSpan.Zero
             ? ent.Comp.DeliveryDelay
             : TimeSpan.Zero;
+        var deliveryTimeout = ent.Comp.DeliveryTimeout > TimeSpan.Zero
+            ? ent.Comp.DeliveryTimeout
+            : TimeSpan.Zero;
 
+        _acceptedOrders.Add(args.OrderId);
         _pendingOrders.Add(new PendingOrder
         {
+            Console = ent.Owner,
+            Actor = args.Actor,
             Station = station,
             DeliverAt = now + deliveryDelay,
+            ExpireAt = now + deliveryDelay + deliveryTimeout,
             OrderNumber = orderNumber,
             PaperPrototype = paperPrototype,
             StationName = stationName,
@@ -418,6 +441,7 @@ public sealed partial class CentCommSupplySystem : EntitySystem
             available,
             selected is { } selectedStation ? GetNetEntity(selectedStation) : null,
             ent.Comp.MaxCratesPerOrder,
+            ent.Comp.MaxProductsPerOrder,
             status,
             orderPlaced);
 
@@ -513,6 +537,9 @@ public sealed partial class CentCommSupplySystem : EntitySystem
             if (!TryComp<StationDataComponent>(station, out var data))
                 continue;
 
+            if (!TryComp<StationCargoOrderDatabaseComponent>(station, out _))
+                continue;
+
             if (HasBuyPallets(data))
                 stations.Add(station);
         }
@@ -585,8 +612,14 @@ public sealed partial class CentCommSupplySystem : EntitySystem
                 pallet.Transform.LocalPosition,
                 pallet.Transform.LocalRotation);
 
-            if (_lookup.AnyLocalEntitiesIntersecting(gridUid, aabb, LookupFlags.Dynamic))
+            if (_lookup.AnyLocalEntitiesIntersecting(
+                    gridUid,
+                    aabb,
+                    LookupFlags.Dynamic | LookupFlags.Static,
+                    pallet.Entity))
+            {
                 continue;
+            }
 
             result.Add(pallet);
         }
@@ -606,6 +639,40 @@ public sealed partial class CentCommSupplySystem : EntitySystem
         }
 
         return true;
+    }
+
+    private void PruneRecentOrders()
+    {
+        if (_recentOrders.Count <= 512)
+            return;
+
+        foreach (var (orderId, _) in _recentOrders.OrderBy(pair => pair.Value).ToList())
+        {
+            if (_recentOrders.Count <= 512)
+                break;
+
+            if (_acceptedOrders.Contains(orderId))
+                continue;
+
+            _recentOrders.Remove(orderId);
+        }
+    }
+
+    private void NotifyDeliveryTimeout(PendingOrder order)
+    {
+        Log.Warning($"CentComm supply order #{order.OrderNumber} timed out waiting for free cargo pallets.");
+
+        if (TerminatingOrDeleted(order.Console)
+            || !TryComp<CentCommSupplyConsoleComponent>(order.Console, out var component))
+        {
+            return;
+        }
+
+        var message = Loc.GetString("centcomm-supply-error-delivery-timeout");
+        if (!TerminatingOrDeleted(order.Actor))
+            _popup.PopupEntity(message, order.Console, order.Actor, PopupType.MediumCaution);
+
+        UpdateUi((order.Console, component), message);
     }
 
     private void RollbackCrates(List<EntityUid> crates)
