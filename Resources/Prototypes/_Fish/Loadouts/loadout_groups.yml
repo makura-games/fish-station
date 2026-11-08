@@ -9,8 +9,8 @@
   - CentCommOfficialJumpsuitFish
   - CentCommOfficialJumpskirtFish
   - CentCommAssistantJumpsuitFish
-  - CentCommFormalJumpsuitFish
-  - CentCommFormalDressFish
+  - FishCentCommFormalJumpsuit
+  - FishCentCommFormalDress
 
 - type: loadoutGroup
   id: SpecOpsJumpsuitFish
@@ -75,7 +75,7 @@
   - CentCommArmorSlim
   - CentcommCoatFish
   - CentcommArmorFish
-  - CentCommCarapaceFish
+  - FishCentCommCarapace
 
 - type: loadoutGroup
   id: CentCommOperatorNeckFish
