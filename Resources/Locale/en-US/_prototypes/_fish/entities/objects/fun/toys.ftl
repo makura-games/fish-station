@@ -18,6 +18,8 @@ ent-PlushieMina = Plushie Mina Armstrong
 ent-PlushieLusain = Plushie Andre Lusain
     .desc = A small purple-haired plushie in dark clothes. On her right wrist you can make out a purple tattoo that reads "LusainFamily". She is terribly tired and dreams only of a warm blanket and some quiet.
 
+# Fish-start
 ent-FishPlushieToolbox = plush toolbox
     .desc = A soft, squeezable toolbox that squeaks when hugged.
     .suffix = Fish
+# Fish-end

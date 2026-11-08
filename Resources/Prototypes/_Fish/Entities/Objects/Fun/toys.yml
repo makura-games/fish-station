@@ -255,6 +255,7 @@
   - type: TTS
     voice: HeartstoneDjaina
 
+# Fish-start
 - type: entity
   parent: BasePlushie
   id: FishPlushieToolbox
@@ -268,3 +269,4 @@
   - type: Item
     size: Tiny
     sprite: _Fish/Objects/Fun/Plushies/toolbox.rsi
+# Fish-end
