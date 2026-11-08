@@ -19,8 +19,20 @@ public sealed class FishCentcommCheckSystem : EntitySystem
     /// </summary>
     public bool IsOnCentcomm(EntityUid uid)
     {
+        // NanotrasenCentralCommand получает этот компонент через BaseCentCommShuttles.
+        // Поэтому станция распознаётся даже до назначения MapId.
+        if (IsCentcommStation(uid))
+            return true;
+
         if (!TryComp(uid, out TransformComponent? xform))
             return false;
+
+        // Учитываем принадлежность грида к станции ЦК независимо от его текущей карты.
+        var gridUid = xform.GridUid ?? uid;
+        if (HasComp<CentCommShuttleComponent>(gridUid)
+            && TryComp(gridUid, out StationMemberComponent? stationMember)
+            && IsCentcommStation(stationMember.Station))
+            return true;
 
         var entityMapId = xform.MapID;
 
@@ -42,13 +54,9 @@ public sealed class FishCentcommCheckSystem : EntitySystem
                 continue;
             }
 
-            // Корень станции считаем ЦК только если все его гриды на одной карте ЦК;
-            // шаттл ЦК не должен переклассифицировать обычную станцию.
             if (stationData == null || stationData.Grids.Count == 0)
                 continue;
 
-            // Если у станции есть обычные гриды, проверяем только их.
-            // Если остались только шаттлы ЦК, проверяем и их расположение.
             var allGridsOnCentcommMap = true;
             var allNonShuttleGridsOnCentcommMap = true;
             var hasNonShuttleGrid = false;
@@ -77,5 +85,11 @@ public sealed class FishCentcommCheckSystem : EntitySystem
         }
 
         return false;
+    }
+
+    private bool IsCentcommStation(EntityUid station)
+    {
+        return TryComp(station, out MetaDataComponent? metadata)
+            && metadata.EntityPrototype?.ID == "NanotrasenCentralCommand";
     }
 }

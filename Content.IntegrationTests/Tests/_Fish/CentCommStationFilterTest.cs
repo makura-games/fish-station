@@ -4,6 +4,7 @@ using System.Numerics;
 using Content.IntegrationTests.Pair;
 using Content.Server._Fish.StationCentcomm;
 using Content.Server._Sunrise.FleshCult.Events;
+using Content.Server._Sunrise.GridDock;
 using Content.Server._Sunrise.Station;
 using Content.Server._Sunrise.StationCentComm;
 using Content.Server.Atmos.Piping.Unary.Components;
@@ -16,6 +17,7 @@ using Content.Server.StationEvents.Events;
 using Content.Server.VentHorde.Components;
 using Content.Server.VentHorde.Systems;
 using Content.Shared.GameTicking.Components;
+using Content.Shared._Sunrise.Shuttles;
 using Content.Shared.Station.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -35,6 +37,63 @@ public sealed class CentCommStationFilterTest
     private const string VentClogRule = "VentClog";
     private const string RandomSpawnRule = "RevenantSpawn";
     private const string MeteorSwarmRule = "SpaceDustMinor";
+
+    [Test]
+    public async Task CentCommStationIsRecognizedWithoutMapIdOrMainGrid()
+    {
+        await using var pair = await PoolManager.GetServerClient(CreatePoolSettings());
+        var server = pair.Server;
+        var entityManager = server.ResolveDependency<IEntityManager>();
+        var stationSystem = server.System<StationSystem>();
+
+        try
+        {
+            await server.WaitIdleAsync();
+            await server.WaitAssertion(() =>
+            {
+                var (centcommStation, ordinaryStation, _, ordinaryGrid, _) =
+                    GetStations(entityManager, stationSystem);
+
+
+                Assert.That(
+                    entityManager.HasComponent<SpawnGridAndDockToStationComponent>(centcommStation),
+                    Is.True);
+
+                // Удаляем исходные гриды ЦК.
+                var centcommData = entityManager.GetComponent<StationDataComponent>(centcommStation);
+                foreach (var grid in centcommData.Grids.ToArray())
+                    stationSystem.RemoveGridFromStation(centcommStation, grid);
+
+                // Переносим шаттл с обычной карты в членство станции ЦК.
+                stationSystem.RemoveGridFromStation(ordinaryStation, ordinaryGrid);
+                entityManager.EnsureComponent<CentCommShuttleComponent>(ordinaryGrid);
+                stationSystem.AddGridToStation(centcommStation, ordinaryGrid);
+
+                // Имитируем момент, когда MapId ещё не назначен.
+                foreach (var link in entityManager.EntityQuery<StationCentCommComponent>().ToArray())
+                    link.MapId = MapId.Nullspace;
+
+                var check = server.System<FishCentcommCheckSystem>();
+
+                Assert.That(check.IsOnCentcomm(centcommStation), Is.True,
+                    "ЦК должен распознаваться без исходного грида и до назначения MapId.");
+
+                Assert.That(check.IsOnCentcomm(ordinaryGrid), Is.True,
+                    "Шаттл, зарегистрированный за ЦК, должен сохранять принадлежность к ЦК.");
+
+                var vent = AddVentLocation(entityManager, ordinaryGrid);
+                Assert.That(check.IsOnCentcomm(vent), Is.True,
+                    "Объекты на гриде зарегистрированного шаттла должны распознавать станцию ЦК.");
+
+                Assert.That(check.IsOnCentcomm(ordinaryStation), Is.False,
+                    "Обычная станция не должна ошибочно распознаваться как ЦК.");
+            });
+        }
+        finally
+        {
+            await pair.CleanReturnAsync();
+        }
+    }
 
     [Test]
     public async Task GameRuleDoesNotChooseCentCommStation()
