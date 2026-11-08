@@ -1,5 +1,6 @@
 ﻿using Content.Server._Sunrise.StationCentComm;
 using Content.Shared.Station.Components;
+using Content.Shared._Sunrise.Shuttles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 
@@ -46,9 +47,18 @@ public sealed class FishCentcommCheckSystem : EntitySystem
             if (stationData == null || stationData.Grids.Count == 0)
                 continue;
 
+            // Шаттлы ЦК не должны влиять на определение принадлежности станции к карте ЦК.
             var allGridsOnCentcommMap = true;
+            var hasStationGrid = false;
+
             foreach (var grid in stationData.Grids)
             {
+                // Шаттлы ЦК могут покидать карту, оставаясь членами станции.
+                if (HasComp<CentCommShuttleComponent>(grid))
+                    continue;
+
+                hasStationGrid = true;
+
                 if (TryComp(grid, out TransformComponent? gridTransform)
                     && gridTransform.MapID == centcomm.MapId)
                     continue;
@@ -57,7 +67,7 @@ public sealed class FishCentcommCheckSystem : EntitySystem
                 break;
             }
 
-            if (allGridsOnCentcommMap)
+            if (hasStationGrid && allGridsOnCentcommMap)
                 return true;
         }
 
