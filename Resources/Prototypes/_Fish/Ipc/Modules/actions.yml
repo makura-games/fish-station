@@ -93,6 +93,21 @@
     event: !type:FishIpcModuleToggleActionEvent
 
 - type: entity
+  parent: BaseToggleAction
+  id: FishActionIpcToggleModule
+  name: Toggle chassis module
+  description: Enable or disable this chassis module.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: InstantAction
+    event: !type:FishIpcModuleToggleActionEvent
+
+- type: entity
   parent: BaseItem
   id: FishIpcDefibPads
   name: chassis defibrillator pads

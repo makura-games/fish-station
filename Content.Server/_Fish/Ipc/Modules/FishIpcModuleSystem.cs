@@ -104,8 +104,7 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
     }
 
     /// <summary>
-    /// Тоггл-модули (хил / зрение / суставы) не расходуют заряд, пока выключены.
-    /// Остальные модули всегда «включены».
+    /// Выключенный тумблер не тратит заряд. Модуль без тумблера всегда включён.
     /// </summary>
     private bool IsModuleDrawingPower(EntityUid moduleUid)
     {
@@ -120,6 +119,9 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
 
         if (TryComp<FishIpcSealedJointsModuleComponent>(moduleUid, out var seal))
             return seal.Enabled;
+
+        if (TryComp<FishIpcModulePowerToggleComponent>(moduleUid, out var power))
+            return power.Enabled;
 
         return true;
     }

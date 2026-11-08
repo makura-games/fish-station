@@ -267,3 +267,20 @@ public sealed partial class FishIpcVocalModModuleComponent : Component;
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FishIpcWireInterfaceModuleComponent : Component;
+
+/// <summary>
+/// Кнопка вкл/выкл для модулей без собственного тумблера.
+/// Выключенный модуль не даёт эффект и не тратит заряд.
+/// </summary>
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+public sealed partial class FishIpcModulePowerToggleComponent : Component
+{
+    [DataField]
+    public EntProtoId ToggleAction = "FishActionIpcToggleModule";
+
+    [DataField, AutoNetworkedField]
+    public bool Enabled = true;
+
+    [ViewVariables]
+    public EntityUid? ToggleActionEntity;
+}

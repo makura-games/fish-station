@@ -3,67 +3,67 @@ ent-FishBaseIpcModule = IPC chassis module
     .suffix = Fish
 
 ent-FishIpcModuleWireInterface = IPC wire interface module
-    .desc = A diagnostic interface that highlights chassis wiring. Barely draws power, but occupies a module slot.
+    .desc = Draws 0.05 J/s. Examining a panel reports whether it is open or closed. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleApcAdapter = IPC APC adapter module
-    .desc = Accelerates chassis charging from APCs and compatible sources. Still finite.
+    .desc = Draws 0.1 J/s. APC charge do-after time is multiplied by 0.55. The sip per cycle stays the same. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleVocalMod = IPC vocal modulator module
-    .desc = Keeps built-in radio online even when the chassis is power-starved.
+    .desc = Draws 0.15 J/s. Built-in radio keeps working after the battery dies. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleToolHand = IPC tool-hand module
-    .desc = Mounts a single integrated crowbar into a free hand. Not a full toolset.
+    .desc = Draws 0.2 J/s. While on, places a crowbar in a free hand. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleMedHud = IPC medical optics module
-    .desc = Built-in medical HUD. Occupies the vision module slot.
+    .desc = Draws 0.35 J/s. Vision slot: health bars and health icons. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleSecHud = IPC security optics module
-    .desc = Built-in security HUD. Occupies the vision module slot.
+    .desc = Draws 0.35 J/s. Vision slot: job, mindshield and criminal status icons. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleMeson = IPC meson optics module
-    .desc = Built-in welding eye protection. Occupies the vision module slot.
+    .desc = Draws 0.25 J/s. Vision slot: adds welder eye protection. The chassis already has it. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleNightVision = IPC night vision module
-    .desc = Low-light optics for the chassis. Occupies the vision module slot.
+    .desc = Draws 0.55 J/s. Vision slot: green phosphor and a lighting lift. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleNanoRepair = IPC nanorepair module
-    .desc = Microscopic repair drones slowly mend chassis damage while hungrily draining the battery.
+    .desc = Draws 1.2 J/s above 10% charge. Blunt, slash and piercing -0.15/s, heat and shock -0.2/s. Not with reactive repair.
     .suffix = Fish
 
 ent-FishIpcModuleReactiveRepair = IPC reactive repair module
-    .desc = Faster micro-repairs than nanorepair, still hungry. Mutually exclusive with nanorepair.
+    .desc = Draws 1.6 J/s above 12% charge. Blunt, slash and piercing -0.35/s, heat and shock -0.4/s. Not with nanorepair.
     .suffix = Fish
 
 ent-FishIpcModuleEmpScreen = IPC EMP screen module
-    .desc = Partial EMP shielding for the chassis. Not full immunity.
+    .desc = Draws 0.45 J/s. EMP damage is multiplied by 0.4 and the chassis is not fully disabled. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleMagneticJoints = IPC magnetic joints module
-    .desc = Magnetic couplings resist limb amputation. EMP temporarily disables the effect.
+    .desc = Draws 0.4 J/s. 65% chance to cancel amputation. EMP disables the effect. Not with sealed joints.
     .suffix = Fish
 
 ent-FishIpcModuleSealedJoints = IPC sealed joints module
-    .desc = Sealed couplings block amputation. EMP locks the chassis hard. Mutually exclusive with magnetic joints.
+    .desc = Draws 0.5 J/s. Blocks amputation. EMP stuns for 12 s and disables the effect. Not with magnetic joints.
     .suffix = Fish
 
 ent-FishIpcModuleJumpstarter = IPC jumpstarter module
-    .desc = Capacitor dump that can claw a chassis out of critical — not death. Long cooldown.
+    .desc = Draws 0.2 J/s. Crit-only pulse: 30% charge, 180 s cooldown, -15 blunt and -10 slash, piercing, heat and shock. Does not clear lethal damage. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleDefib = IPC defibrillator module
-    .desc = Integrated defibrillator pads. Consumes a huge slice of the battery per zap.
+    .desc = Draws 0.25 J/s. Pads in both hands. Zap: 40% charge, 4 s, 90 s cooldown, -40 asphyxiation. Cannot zap yourself. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleRadFilter = IPC radiation filter module
-    .desc = Cuts radiation and related cellular damage at the cost of constant drain.
+    .desc = Draws 0.6 J/s. Radiation and cellular damage are multiplied by 0.35. Without it the chassis takes both in full. Toggleable.
     .suffix = Fish
 
 ent-FishActionIpcDefib = Chassis defibrillator pads
@@ -88,6 +88,9 @@ ent-FishIpcDefibPads = chassis defibrillator pads
     .desc = Integrated shock paddles from an IPC chassis module.
     .suffix = Fish
 
+fish-ipc-module-toggle-name = Toggle { $module }
+fish-ipc-module-toggle-desc = Enable or disable this module. While off it does nothing and draws no power.
+fish-ipc-module-toggled-off = Module is off.
 fish-ipc-module-panel-closed = Open the chassis panel first.
 fish-ipc-module-locked = The chassis is locked.
 fish-ipc-module-too-many = This chassis already has the maximum number of modules ({ $max }).

@@ -69,6 +69,8 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         SubscribeLocalEvent<FishIpcToolHandModuleComponent, FishIpcModuleInstalledEvent>(OnToolInstall);
         SubscribeLocalEvent<FishIpcToolHandModuleComponent, FishIpcModuleUninstalledEvent>(OnToolUninstall);
+        SubscribeLocalEvent<FishIpcToolHandModuleComponent, FishIpcModulePowerToggledEvent>(OnToolPower);
+        SubscribeLocalEvent<FishIpcDefibModuleComponent, FishIpcModulePowerToggledEvent>(OnDefibPower);
     }
 
     private void OnDefibInstall(Entity<FishIpcDefibModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
@@ -92,6 +94,12 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         if (!TryGetInstalledModule<FishIpcDefibModuleComponent>(host.Owner, out var module))
             return;
+
+        if (TryComp<FishIpcModulePowerToggleComponent>(module.Owner, out var power) && !power.Enabled)
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-toggled-off"), host, host);
+            return;
+        }
 
         args.Handled = true;
 
@@ -285,6 +293,12 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         if (!TryGetInstalledModule<FishIpcJumpstarterModuleComponent>(host.Owner, out var module))
             return;
 
+        if (TryComp<FishIpcModulePowerToggleComponent>(module.Owner, out var power) && !power.Enabled)
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-toggled-off"), host, host);
+            return;
+        }
+
         if (!_mobState.IsCritical(host.Owner))
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-not-crit"), host, host);
@@ -315,6 +329,25 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         _mobState.ChangeMobState(host.Owner, MobState.Alive);
         _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-success"), host, host, PopupType.Medium);
+    }
+
+    private void OnToolPower(Entity<FishIpcToolHandModuleComponent> ent, ref FishIpcModulePowerToggledEvent args)
+    {
+        if (args.Enabled)
+        {
+            var installed = new FishIpcModuleInstalledEvent(args.Host);
+            OnToolInstall(ent, ref installed);
+            return;
+        }
+
+        var removed = new FishIpcModuleUninstalledEvent(args.Host);
+        OnToolUninstall(ent, ref removed);
+    }
+
+    private void OnDefibPower(Entity<FishIpcDefibModuleComponent> ent, ref FishIpcModulePowerToggledEvent args)
+    {
+        if (!args.Enabled)
+            DeactivatePads(ent);
     }
 
     private void OnToolInstall(Entity<FishIpcToolHandModuleComponent> ent, ref FishIpcModuleInstalledEvent args)

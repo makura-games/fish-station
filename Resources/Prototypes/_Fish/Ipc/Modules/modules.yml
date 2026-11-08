@@ -5,7 +5,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleWireInterface
   name: IPC wire interface module
-  description: A diagnostic interface that highlights chassis wiring. Barely draws power, but occupies a module slot.
+  description: Draws 0.05 J/s. Examining a panel reports whether it is open or closed. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -13,13 +13,14 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.05
+  - type: FishIpcModulePowerToggle
   - type: FishIpcWireInterfaceModule
 
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleApcAdapter
   name: IPC APC adapter module
-  description: Accelerates chassis charging from APCs and compatible sources. Still finite.
+  description: Draws 0.1 J/s. APC charge do-after time is multiplied by 0.55. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -27,13 +28,14 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.1
+  - type: FishIpcModulePowerToggle
   - type: FishIpcApcAdapterModule
 
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleVocalMod
   name: IPC vocal modulator module
-  description: Keeps built-in radio online even when the chassis is power-starved.
+  description: Draws 0.15 J/s. Built-in radio keeps working after the battery dies. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -41,13 +43,14 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.15
+  - type: FishIpcModulePowerToggle
   - type: FishIpcVocalModModule
 
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleToolHand
   name: IPC tool-hand module
-  description: Mounts a single integrated crowbar into a free hand. Not a full toolset.
+  description: Draws 0.2 J/s. While on, places a crowbar in a free hand. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -55,6 +58,7 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.2
+  - type: FishIpcModulePowerToggle
   - type: FishIpcToolHandModule
     toolPrototype: Crowbar
 
@@ -62,7 +66,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleMedHud
   name: IPC medical optics module
-  description: Built-in medical HUD. Occupies the vision module slot.
+  description: Draws 0.35 J/s. Vision slot health bars and health icons. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -78,7 +82,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleSecHud
   name: IPC security optics module
-  description: Built-in security HUD. Occupies the vision module slot.
+  description: Draws 0.35 J/s. Vision slot job, mindshield and criminal icons. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -94,7 +98,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleMeson
   name: IPC meson optics module
-  description: Built-in welding eye protection. Occupies the vision module slot.
+  description: Draws 0.25 J/s. Vision slot welder eye protection. The chassis already has it. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -110,7 +114,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleNightVision
   name: IPC night vision module
-  description: Low-light optics for the chassis. Occupies the vision module slot.
+  description: Draws 0.55 J/s. Vision slot green phosphor and a lighting lift. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -127,7 +131,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleNanoRepair
   name: IPC nanorepair module
-  description: Microscopic repair drones slowly mend chassis damage while hungrily draining the battery.
+  description: Draws 1.2 J/s above 10% charge. Brute -0.15/s, heat and shock -0.2/s. Not with reactive repair.
   suffix: Fish
   components:
   - type: Sprite
@@ -150,7 +154,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleReactiveRepair
   name: IPC reactive repair module
-  description: Faster micro-repairs than nanorepair, still hungry. Mutually exclusive with nanorepair.
+  description: Draws 1.6 J/s above 12% charge. Brute -0.35/s, heat and shock -0.4/s. Not with nanorepair.
   suffix: Fish
   components:
   - type: Sprite
@@ -174,7 +178,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleEmpScreen
   name: IPC EMP screen module
-  description: Partial EMP shielding for the chassis. Not full immunity.
+  description: Draws 0.45 J/s. EMP damage times 0.4, no full EMP disable. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -182,13 +186,14 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.45
+  - type: FishIpcModulePowerToggle
   - type: FishIpcEmpScreenModule
 
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleMagneticJoints
   name: IPC magnetic joints module
-  description: Magnetic couplings resist limb amputation. EMP temporarily disables the effect.
+  description: Draws 0.4 J/s. 65% chance to cancel amputation. EMP disables it. Not with sealed joints.
   suffix: Fish
   components:
   - type: Sprite
@@ -203,7 +208,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleSealedJoints
   name: IPC sealed joints module
-  description: Sealed couplings block amputation. EMP locks the chassis hard. Mutually exclusive with magnetic joints.
+  description: Draws 0.5 J/s. Blocks amputation. EMP stuns for 12 s. Not with magnetic joints.
   suffix: Fish
   components:
   - type: Sprite
@@ -218,7 +223,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleJumpstarter
   name: IPC jumpstarter module
-  description: Capacitor dump that can claw a chassis out of critical — not death. Long cooldown.
+  description: Draws 0.2 J/s. Crit pulse costs 30% charge, 180 s cooldown. Does not clear lethal damage. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -226,13 +231,14 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.2
+  - type: FishIpcModulePowerToggle
   - type: FishIpcJumpstarterModule
 
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleDefib
   name: IPC defibrillator module
-  description: Integrated defibrillator pads. Consumes a huge slice of the battery per zap.
+  description: Draws 0.25 J/s. Zap costs 40% charge, 4 s, 90 s cooldown, -40 asphyxiation. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -240,13 +246,14 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.25
+  - type: FishIpcModulePowerToggle
   - type: FishIpcDefibModule
 
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleRadFilter
   name: IPC radiation filter module
-  description: Cuts radiation and related cellular damage at the cost of constant drain.
+  description: Draws 0.6 J/s. Radiation and cellular damage times 0.35. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -254,5 +261,6 @@
     state: generic
   - type: FishIpcModule
     passiveDrainPerSecond: 0.6
+  - type: FishIpcModulePowerToggle
   - type: FishIpcRadFilterModule
 # Fish-end

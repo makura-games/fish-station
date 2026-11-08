@@ -6,6 +6,8 @@ using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Content.Shared.Whitelist;
 using Content.Shared.Wires;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Utility;
 
@@ -21,6 +23,10 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private LockSystem _lock = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+
+    // У боргов отдельного звука установки модуля нет — тот же щелчок, что у слота карты.
+    private static readonly SoundSpecifier ModuleInsertSound = new SoundPathSpecifier("/Audio/Machines/id_insert.ogg");
 
     public override void Initialize()
     {
@@ -146,6 +152,7 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         if (!TryComp<FishIpcModuleComponent>(args.Entity, out var module) || module.Installed)
             return;
 
+        _audio.PlayPredicted(ModuleInsertSound, host, null);
         InstallModule(host, (args.Entity, module));
     }
 

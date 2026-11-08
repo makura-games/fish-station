@@ -17,6 +17,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
 {
     [Dependency] private FishIpcRadioSystem _radio = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private MetaDataSystem _meta = default!;
 
     public override void Initialize()
     {
@@ -48,6 +49,9 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
 
         SubscribeLocalEvent<FishIpcPassiveHealModuleComponent, FishIpcModuleInstalledEvent>(OnHealInstall);
         SubscribeLocalEvent<FishIpcPassiveHealModuleComponent, FishIpcModuleUninstalledEvent>(OnHealUninstall);
+
+        SubscribeLocalEvent<FishIpcModulePowerToggleComponent, FishIpcModuleInstalledEvent>(OnPowerToggleInstall);
+        SubscribeLocalEvent<FishIpcModulePowerToggleComponent, FishIpcModuleUninstalledEvent>(OnPowerToggleUninstall);
 
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcModuleToggleActionEvent>(OnModuleToggle);
 
@@ -178,6 +182,25 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         ent.Comp.ToggleActionEntity = null;
     }
 
+    private void OnPowerToggleInstall(Entity<FishIpcModulePowerToggleComponent> ent, ref FishIpcModuleInstalledEvent args)
+    {
+        _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
+        if (ent.Comp.ToggleActionEntity is not { } action)
+            return;
+
+        _actions.SetToggled(action, ent.Comp.Enabled);
+        _actions.SetEntityIcon(action, ent.Owner);
+        var meta = MetaData(action);
+        _meta.SetEntityName(action, Loc.GetString("fish-ipc-module-toggle-name", ("module", Name(ent.Owner))), meta);
+        _meta.SetEntityDescription(action, Loc.GetString("fish-ipc-module-toggle-desc"), meta);
+    }
+
+    private void OnPowerToggleUninstall(Entity<FishIpcModulePowerToggleComponent> ent, ref FishIpcModuleUninstalledEvent args)
+    {
+        _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
+        ent.Comp.ToggleActionEntity = null;
+    }
+
     private void OnModuleToggle(Entity<FishIpcModuleHostComponent> host, ref FishIpcModuleToggleActionEvent args)
     {
         if (args.Handled)
@@ -239,7 +262,76 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 args.Handled = true;
                 return;
             }
+
+            if (TryComp<FishIpcModulePowerToggleComponent>(uid, out var power) &&
+                power.ToggleActionEntity == action)
+            {
+                SetModulePower((uid, power), host.Owner, !power.Enabled);
+                args.Handled = true;
+                return;
+            }
         }
+    }
+
+    private void SetModulePower(Entity<FishIpcModulePowerToggleComponent> module, EntityUid host, bool enabled)
+    {
+        module.Comp.Enabled = enabled;
+        Dirty(module);
+        if (module.Comp.ToggleActionEntity is { } action)
+            _actions.SetToggled(action, enabled);
+
+        ApplyPowerEffects(module.Owner, host, enabled);
+    }
+
+    /// <summary>Включает или снимает эффект модулей, у которых эффект — это компонент хоста.</summary>
+    private void ApplyPowerEffects(EntityUid module, EntityUid host, bool enabled)
+    {
+        if (HasComp<FishIpcEmpScreenModuleComponent>(module))
+        {
+            if (enabled)
+                EnsureComp<FishIpcEmpScreenHostComponent>(host);
+            else
+                RemComp<FishIpcEmpScreenHostComponent>(host);
+        }
+
+        if (HasComp<FishIpcRadFilterModuleComponent>(module))
+        {
+            if (enabled)
+                EnsureComp<FishIpcRadFilterHostComponent>(host);
+            else
+                RemComp<FishIpcRadFilterHostComponent>(host);
+        }
+
+        if (HasComp<FishIpcWireInterfaceModuleComponent>(module))
+        {
+            if (enabled)
+                EnsureComp<FishIpcWireInterfaceHostComponent>(host);
+            else
+                RemComp<FishIpcWireInterfaceHostComponent>(host);
+        }
+
+        if (HasComp<FishIpcVocalModModuleComponent>(module))
+        {
+            if (enabled)
+                EnsureComp<FishIpcVocalModHostComponent>(host);
+            else
+                RemComp<FishIpcVocalModHostComponent>(host);
+
+            if (TryComp<FishIpcComponent>(host, out var ipc))
+                _radio.SetRadioEnabled((host, ipc), !ipc.PowerDown);
+        }
+
+        if (HasComp<FishIpcApcAdapterModuleComponent>(module) &&
+            TryComp<FishIpcApcAdapterHostComponent>(host, out var apc) &&
+            TryComp<FishBatteryDrinkerComponent>(host, out var drinker) &&
+            apc.StoredDrinkSpeed is { } speed)
+        {
+            drinker.DrinkSpeed = enabled ? speed * apc.DrinkSpeedFactor : speed;
+            Dirty(host, drinker);
+        }
+
+        var ev = new FishIpcModulePowerToggledEvent(host, enabled);
+        RaiseLocalEvent(module, ref ev);
     }
 
     private void ApplyVision(EntityUid host, FishIpcVisionKind kind, bool add)
