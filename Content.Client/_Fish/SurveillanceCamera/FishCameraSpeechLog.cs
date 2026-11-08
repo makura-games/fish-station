@@ -8,7 +8,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.SurveillanceCamera.UI;
 
-public sealed class FishCameraSpeechLog : Control
+public sealed partial class FishCameraSpeechLog : Control
 {
     [Dependency] private IEntityManager _entMan = default!;
 
