@@ -1,0 +1,17 @@
+- type: latheRecipe
+  id: FishCameraUpgradeRecipe
+  result: FishCameraUpgrade
+  completetime: 5
+  materials:
+    Steel: 300
+    Glass: 300
+    Plastic: 200
+
+- type: latheRecipe
+  id: FishMasterHandheldCameraRecipe
+  result: MasterHandheldCamera
+  completetime: 8
+  materials:
+    Steel: 500
+    Glass: 300
+    Plastic: 300

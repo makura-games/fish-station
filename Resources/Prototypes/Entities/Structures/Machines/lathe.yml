@@ -441,6 +441,7 @@
     - SecurityDynamicSunrise # Sunrise-Add
     - SecurityDynamicSunriseClothing # Sunrise-Add
     - SecurityDynamicSunriseMech # Sunrise-Add
+    - FishSecurityCameraHearing # Fish-edit
   - type: EmagLatheRecipes
     emagStaticPacks:
     - SyndicateAmmoStatic

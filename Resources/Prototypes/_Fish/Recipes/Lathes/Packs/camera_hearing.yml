@@ -1,0 +1,6 @@
+# Подключён к SecurityTechFab в ванильном lathe.yml маркированной строкой Fish-edit.
+- type: latheRecipePack
+  id: FishSecurityCameraHearing
+  recipes:
+  - FishCameraUpgradeRecipe
+  - FishMasterHandheldCameraRecipe
