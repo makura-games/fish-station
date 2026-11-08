@@ -9,7 +9,11 @@
       storagebase: !type:AllSelector
         children:
         - id: FishWeaponRifleDarkScarHBiocode
+        - id: FishMagazineScarHSP
+          amount: 1
+        - id: FishMagazineLargeScarHSP
+          amount: 1
         - id: FishMagazineScarHFMJ
-          amount: 2
+          amount: 1
         - id: FishMagazineLargeScarHFMJ
-          amount: 2
+          amount: 1
