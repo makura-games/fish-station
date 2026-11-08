@@ -1,8 +1,10 @@
 using Content.Server.Chat.Systems;
 using Content.Shared._Fish.CameraHearing;
 using Content.Shared.Chat;
+using Content.Shared.Interaction;
 using Content.Shared.Examine;
 using Content.Shared.Mind.Components;
+using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Silicons.StationAi;
@@ -22,6 +24,7 @@ public sealed partial class FishCameraHearingSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private ExamineSystemShared _examine = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     private readonly List<EntityUid> _heardBy = new();
 
@@ -32,11 +35,30 @@ public sealed partial class FishCameraHearingSystem : EntitySystem
         SubscribeLocalEvent<EntitySpokeEvent>(OnSpoke);
         SubscribeLocalEvent<ExpandICChatRecipientsEvent>(OnExpandRecipients);
         SubscribeLocalEvent<BorgChassisComponent, ComponentInit>(OnBorgInit);
+        SubscribeLocalEvent<FishCameraUpgradeComponent, AfterInteractEvent>(OnUpgradeInteract);
     }
 
     private void OnBorgInit(Entity<BorgChassisComponent> ent, ref ComponentInit args)
     {
         EnsureComp<FishCameraHearingComponent>(ent);
+    }
+
+    private void OnUpgradeInteract(Entity<FishCameraUpgradeComponent> ent, ref AfterInteractEvent args)
+    {
+        if (args.Handled || !args.CanReach || args.Target is not { } target || !HasComp<SurveillanceCameraComponent>(target))
+            return;
+
+        args.Handled = true;
+
+        if (HasComp<FishCameraHearingComponent>(target))
+        {
+            _popup.PopupEntity(Loc.GetString(ent.Comp.AlreadyUpgradedPopup), target, args.User);
+            return;
+        }
+
+        AddComp<FishCameraHearingComponent>(target);
+        _popup.PopupEntity(Loc.GetString(ent.Comp.UpgradedPopup), target, args.User);
+        QueueDel(ent);
     }
 
     private void OnSpoke(EntitySpokeEvent ev)

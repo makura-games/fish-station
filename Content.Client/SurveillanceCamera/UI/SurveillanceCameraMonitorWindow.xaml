@@ -65,9 +65,7 @@
             <Control VerticalExpand="True" Margin="5" Name="CameraViewBox">
                 <viewport:ScalingViewport Name="CameraView" MinSize="500 500" MouseFilter="Ignore"/>
                 <TextureRect MinSize="500 500" Name="CameraViewBackground" />
-                <!-- Fish-start -->
-                <local:FishCameraSpeechLog Name="SpeechLog" MinSize="500 500" MouseFilter="Ignore"/>
-                <!-- Fish-end -->
+                <local:FishCameraSpeechLog Name="SpeechLog" MinSize="500 500" MouseFilter="Ignore"/> <!-- Fish-edit -->
             </Control>
         </BoxContainer>
     </BoxContainer>

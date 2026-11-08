@@ -15,3 +15,9 @@
     Steel: 500
     Glass: 300
     Plastic: 300
+
+- type: latheRecipePack
+  id: FishSecurityCameraHearing
+  recipes:
+  - FishCameraUpgradeRecipe
+  - FishMasterHandheldCameraRecipe

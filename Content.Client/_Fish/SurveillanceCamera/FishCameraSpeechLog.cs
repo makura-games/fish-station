@@ -3,6 +3,7 @@ using Content.Client.Chat.UI;
 using Content.Client.Viewport;
 using Content.Shared.Chat;
 using Robust.Client.UserInterface;
+using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Client.SurveillanceCamera.UI;
@@ -20,6 +21,7 @@ public sealed class FishCameraSpeechLog : Control
     {
         IoCManager.InjectDependencies(this);
         MouseFilter = MouseFilterMode.Ignore;
+        RectClipContent = true;
     }
 
     public void AddLine(ScalingViewport viewport, NetEntity speaker, string name, string message, bool whisper)
