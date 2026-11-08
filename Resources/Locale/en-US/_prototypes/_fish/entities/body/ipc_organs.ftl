@@ -51,7 +51,7 @@ ent-OrganIpcPosibrain = positronic brain
     .suffix = IPC
 
 ent-OrganIpcEyes = optical sensors
-    .desc = Robotic optical sensors. They are not damaged by welding.
+    .desc = Robotic optical sensors. They do not block welding or flashes by themselves.
     .suffix = IPC
 
 ent-OrganIpcEars = microphone

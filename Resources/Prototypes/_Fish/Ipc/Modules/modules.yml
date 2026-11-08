@@ -98,7 +98,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleMeson
   name: IPC meson optics module
-  description: Draws 0.25 J/s. Vision slot welder eye protection. The chassis already has it. Toggleable.
+  description: Draws 0.25 J/s. Vision slot. While on, protects eyes from welding. While off, it does not. Does not block flashes.
   suffix: Fish
   components:
   - type: Sprite

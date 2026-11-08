@@ -102,7 +102,7 @@
   parent: [ OrganBaseEyes, OrganIpc ]
   id: OrganIpcEyes
   name: optical sensors
-  description: Robotic optical sensors. They are not damaged by welding.
+  description: Robotic optical sensors. Welding and flashes are not blocked unless a module provides that protection.
   components:
   - type: Sprite
     sprite: _Fish/Mobs/Species/Ipc/organs.rsi
@@ -114,8 +114,6 @@
       layers:
       - Eyes
       group: Ipc
-  - type: FlashImmunity
-    showInExamine: false
 
 - type: entity
   parent: [ OrganBaseEars, OrganIpc ]

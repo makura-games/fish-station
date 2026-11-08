@@ -27,7 +27,7 @@ ent-FishIpcModuleSecHud = IPC security optics module
     .suffix = Fish
 
 ent-FishIpcModuleMeson = IPC meson optics module
-    .desc = Draws 0.25 J/s. Vision slot: adds welder eye protection. The chassis already has it. Toggleable.
+    .desc = Draws 0.25 J/s. Vision slot. While on, protects the eyes from welding. While off, it does not. Does not show walls and does not block flashes.
     .suffix = Fish
 
 ent-FishIpcModuleNightVision = IPC night vision module

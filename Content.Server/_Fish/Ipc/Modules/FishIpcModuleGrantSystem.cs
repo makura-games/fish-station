@@ -348,6 +348,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 ToggleComp<ShowCriminalRecordIconsComponent>(host, add);
                 break;
             case FishIpcVisionKind.Meson:
+                // Защита глаз от сварки только пока модуль включён. Вспышки мезон не закрывает.
                 ToggleComp<EyeProtectionComponent>(host, add);
                 break;
             case FishIpcVisionKind.NightVision:
