@@ -1426,7 +1426,7 @@ public sealed class CentCommSupplyTest
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var client = pair.Client;
-        CentCommSupplyWindow? window = null;
+        CentCommSupplyWindow window = null!;
         var firstStation = new NetEntity(1);
         var secondStation = new NetEntity(2);
         var selectionId = Guid.Empty;

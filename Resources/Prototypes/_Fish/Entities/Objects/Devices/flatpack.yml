@@ -93,3 +93,19 @@
     - state: overlay
       color: "#9FED58"
     - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGravityGeneratorFlatpack
+  name: gravity generator flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: GravityGenerator
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
