@@ -23,6 +23,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
+using Robust.Shared.Physics.Dynamics;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -53,9 +54,9 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     [Dependency] private StationSystem _station = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
 
-    private readonly Dictionary<Guid, TimeSpan> _recentOrders = new();
+
     private readonly HashSet<Guid> _acceptedOrders = new();
-    private readonly HashSet<EntityUid> _staticIntersecting = new();
+    private readonly HashSet<EntityUid> _intersecting = new();
     private readonly List<PendingOrder> _pendingOrders = new();
     private readonly List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> _pads = new();
 
@@ -67,43 +68,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplySelectStationMessage>(OnSelectStation);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplyOrderMessage>(OnOrder);
-    }
-
-    /// <summary>
-    /// Clears pending and recently accepted orders when the round restarts.
-    /// </summary>
-    private void OnRoundRestart(RoundRestartCleanupEvent ev)
-    {
-        foreach (var order in _pendingOrders)
-            RollbackCrates(order.Crates);
-
-        _pendingOrders.Clear();
-        _recentOrders.Clear();
-        _acceptedOrders.Clear();
-    }
-
-    /// <summary>
-    /// Sends the current console state when the UI is opened.
-    /// </summary>
-    private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
-    {
-        UpdateUi(ent);
-    }
-
-    /// <summary>
-    /// Routes station selection requests to the public selection API.
-    /// </summary>
-    private void OnSelectStation(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplySelectStationMessage args)
-    {
-        TrySelectStation(ent, args.Actor, args.Station, args.SelectionId);
-    }
-
-    /// <summary>
-    /// Routes order requests to the public order API.
-    /// </summary>
-    private void OnOrder(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyOrderMessage args)
-    {
-        TryPlaceOrder(ent, args.Actor, args.OrderId, args.Station, args.Entries);
     }
 
     public override void Update(float frameTime)
@@ -127,7 +91,19 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                 continue;
             }
 
-            var freePallets = GetFreeBuyPallets(order.Station);
+            // Fish-start: отмена просроченного заказа на повторных попытках
+            if (order.FirstAttemptDone && now >= order.ExpireAt)
+            {
+                RollbackCrates(order.Crates);
+                _pendingOrders.RemoveAt(i);
+                NotifyDeliveryTimeout(order);
+                continue;
+            }
+
+            order.FirstAttemptDone = true;
+            // Fish-end
+
+            var freePallets = GetFreeBuyPallets(order.Station, order.CratePrototype);
             if (freePallets.Count < order.Crates.Count)
             {
                 if (now >= order.ExpireAt)
@@ -155,7 +131,45 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Attempts to select an orderable station and records the request identifier.
+    /// Clears pending and recently accepted orders when the round restarts.
+    /// </summary>
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        foreach (var order in _pendingOrders)
+            RollbackCrates(order.Crates);
+
+        _pendingOrders.Clear();
+
+        _acceptedOrders.Clear();
+    }
+
+    /// <summary>
+    /// Sends the current console state when the UI is opened.
+    /// </summary>
+    private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        UpdateUi(ent);
+    }
+
+    /// <summary>
+    /// Routes station selection requests to the public selection API.
+    /// </summary>
+    private void OnSelectStation(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplySelectStationMessage args)
+    {
+        TrySelectStation(ent, args.Actor, args.Station, args.SelectionId);
+    }
+
+    /// <summary>
+    /// Routes order requests to the public order API.
+    /// </summary>
+    private void OnOrder(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyOrderMessage args)
+    {
+        TryPlaceOrder(ent, args.Actor, args.OrderId, args.Station, args.Entries);
+    }
+
+
+    /// <summary>
+    /// Attempts to select an orderable station and records the request identifier on success.
     /// </summary>
     public bool TrySelectStation(
         Entity<CentCommSupplyConsoleComponent> ent,
@@ -163,12 +177,10 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         NetEntity stationNet,
         Guid selectionId)
     {
-        ent.Comp.LastStationSelectionId = selectionId;
-
         if (!CanSelectStation(ent, actor, stationNet, out var error))
         {
             if (error != null)
-                Fail(ent, actor, error);
+                Fail(ent, actor, error, stationSelectionId: selectionId);
 
             return false;
         }
@@ -250,7 +262,21 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Validates an order without changing console or order state.
+    /// Validates whether an order can be placed without modifying console or order state.
+    /// </summary>
+    public bool CanPlaceOrder(
+        Entity<CentCommSupplyConsoleComponent> ent,
+        EntityUid actor,
+        Guid orderId,
+        NetEntity stationNet,
+        List<CentCommSupplyOrderEntry>? entries,
+        out string? error)
+    {
+        return CanPlaceOrder(ent, actor, orderId, stationNet, entries, out _, out error);
+    }
+
+    /// <summary>
+    /// Validates an order and computes the order plan without changing console or order state.
     /// </summary>
     private bool CanPlaceOrder(
         Entity<CentCommSupplyConsoleComponent> ent,
@@ -270,10 +296,15 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             return false;
         }
 
-        if (orderId == Guid.Empty
-            || _recentOrders.ContainsKey(orderId)
-            || _acceptedOrders.Contains(orderId))
+        if (orderId == Guid.Empty)
         {
+            error = Loc.GetString("centcomm-supply-error-bad-config");
+            return false;
+        }
+
+        if (_acceptedOrders.Contains(orderId))
+        {
+            error = Loc.GetString("centcomm-supply-error-duplicate");
             return false;
         }
 
@@ -398,7 +429,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         }
 
         orderPlan.RequiredCrates = (int) requiredCratesLong;
-        var freePallets = GetFreeBuyPallets(station);
+        var freePallets = GetFreeBuyPallets(station, ent.Comp.CratePrototype);
         if (freePallets.Count < orderPlan.RequiredCrates)
         {
             error = Loc.GetString("centcomm-supply-error-no-pallets",
@@ -487,8 +518,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         var now = _timing.CurTime;
 
         _acceptedOrders.Add(orderId);
-        _recentOrders[orderId] = now;
-        PruneRecentOrders();
+
+
         _pendingOrders.Add(new PendingOrder
         {
             Console = ent.Owner,
@@ -498,6 +529,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             ExpireAt = now + deliveryDelay + deliveryTimeout,
             OrderNumber = orderNumber,
             PaperPrototype = paperPrototype,
+            CratePrototype = ent.Comp.CratePrototype,
             StationName = stationName,
             Contents = string.Join("\n", plan.ProductSummary),
             DeliverySound = ent.Comp.DeliverySound,
@@ -532,7 +564,11 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// <summary>
     /// Sends the current console state to the client.
     /// </summary>
-    private void UpdateUi(Entity<CentCommSupplyConsoleComponent> ent, string? status = null, bool orderPlaced = false)
+    private void UpdateUi(
+        Entity<CentCommSupplyConsoleComponent> ent,
+        string? status = null,
+        bool orderPlaced = false,
+        Guid? stationSelectionId = null)
     {
         if (TerminatingOrDeleted(ent.Owner))
             return;
@@ -571,7 +607,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             selected is { } selectedStation ? GetNetEntity(selectedStation) : null,
             ent.Comp.MaxCratesPerOrder,
             ent.Comp.MaxProductsPerOrder,
-            ent.Comp.LastStationSelectionId,
+            stationSelectionId ?? ent.Comp.LastStationSelectionId,
             status,
             orderPlaced);
 
@@ -707,7 +743,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// Returns all free buying pallets belonging to a station.
     /// </summary>
     private List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> GetFreeBuyPallets(
-        EntityUid station)
+        EntityUid station,
+        EntProtoId? crateProtoId = null)
     {
         var result = new List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)>();
 
@@ -720,7 +757,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             if (pallets.Count == 0)
                 continue;
 
-            result.AddRange(GetFreeCargoPallets(grid, pallets));
+            result.AddRange(GetFreeCargoPallets(grid, pallets, crateProtoId));
         }
 
         return result;
@@ -751,13 +788,15 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Filters out pallets occupied by dynamic entities or static obstacles that would block a crate.
+    /// Filters out pallets occupied by dynamic or static obstacles with hard fixtures that would physically block a crate.
     /// </summary>
     private List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> GetFreeCargoPallets(
         EntityUid gridUid,
-        List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> pallets)
+        List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> pallets,
+        EntProtoId? crateProtoId = null)
     {
         var result = new List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)>();
+        var (crateLayer, crateMask) = GetCrateCollisionLayerAndMask(crateProtoId);
 
         foreach (var pallet in pallets)
         {
@@ -766,26 +805,18 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                 pallet.Transform.LocalPosition,
                 pallet.Transform.LocalRotation);
 
-            if (_lookup.AnyLocalEntitiesIntersecting(
-                    gridUid,
-                    aabb,
-                    LookupFlags.Dynamic,
-                    pallet.Entity))
-            {
-                continue;
-            }
-
-            _staticIntersecting.Clear();
+            // Fish-start: проверка действительных коллизионных препятствий для ящика
+            _intersecting.Clear();
             _lookup.GetLocalEntitiesIntersecting(
                 gridUid,
                 aabb,
-                _staticIntersecting,
-                LookupFlags.Static);
+                _intersecting,
+                LookupFlags.Dynamic | LookupFlags.Static);
 
             var blocked = false;
-            foreach (var uid in _staticIntersecting)
+            foreach (var uid in _intersecting)
             {
-                if (uid == pallet.Entity || !HasCrateBlockingFixture(uid))
+                if (uid == pallet.Entity || !HasCrateBlockingFixture(uid, crateLayer, crateMask))
                     continue;
 
                 blocked = true;
@@ -796,32 +827,90 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                 continue;
 
             result.Add(pallet);
+            // Fish-end
         }
 
         return result;
     }
 
     /// <summary>
-    /// Checks whether a static entity has a hard fixture that can physically block a crate.
+    /// Checks whether an entity has a hard fixture that can physically block a crate.
     /// </summary>
-    private bool HasCrateBlockingFixture(EntityUid uid)
+    private bool HasCrateBlockingFixture(EntityUid uid, int crateLayer, int crateMask)
     {
         if (!TryComp<FixturesComponent>(uid, out var fixtures))
             return false;
 
-        var crateMask = (int) CollisionGroup.CrateMask;
-        var crateLayer = (int) CollisionGroup.MachineLayer;
-
         foreach (var fixture in fixtures.Fixtures.Values)
         {
+            // Fish-edit: проверка встречных сочетаний слоя и маски через логическое ИЛИ
             if (fixture.Hard &&
-                (fixture.CollisionLayer & crateMask) != 0 &&
-                (fixture.CollisionMask & crateLayer) != 0)
+                (((fixture.CollisionLayer & crateMask) != 0) ||
+                 ((fixture.CollisionMask & crateLayer) != 0)))
             {
                 return true;
             }
         }
 
+        return false;
+    }
+
+    /// <summary>
+    /// Resolves collision layer and mask from the configured crate prototype, falling back to defaults.
+    /// </summary>
+    private (int Layer, int Mask) GetCrateCollisionLayerAndMask(EntProtoId? crateProtoId)
+    {
+        var defaultLayer = (int) CollisionGroup.MachineLayer;
+        var defaultMask = (int) CollisionGroup.CrateMask;
+
+        if (crateProtoId == null || !_prototypes.TryIndex(crateProtoId.Value, out EntityPrototype? crateProto))
+            return (defaultLayer, defaultMask);
+
+        if (TryGetPrototypeFixtures(crateProto, out var fixtures) && fixtures.Count > 0)
+        {
+            var layer = 0;
+            var mask = 0;
+            foreach (var fixture in fixtures.Values)
+            {
+                if (!fixture.Hard)
+                    continue;
+
+                layer |= fixture.CollisionLayer;
+                mask |= fixture.CollisionMask;
+            }
+
+            if (layer != 0 || mask != 0)
+                return (layer != 0 ? layer : defaultLayer, mask != 0 ? mask : defaultMask);
+        }
+
+        return (defaultLayer, defaultMask);
+    }
+
+    /// <summary>
+    /// Traverses prototype inheritance to find fixtures declared on the prototype or any of its parents.
+    /// </summary>
+    private bool TryGetPrototypeFixtures(EntityPrototype proto, out Dictionary<string, Fixture> fixtures)
+    {
+        if (proto.TryComp<FixturesComponent>(out var fixturesComp, EntityManager.ComponentFactory)
+            && fixturesComp.Fixtures.Count > 0)
+        {
+            fixtures = fixturesComp.Fixtures;
+            return true;
+        }
+
+        if (proto.Parents != null)
+        {
+            foreach (var parentId in proto.Parents)
+            {
+                if (_prototypes.TryIndex(parentId, out EntityPrototype? parentProto)
+                    && TryGetPrototypeFixtures(parentProto, out fixtures))
+                {
+                    return true;
+                }
+            }
+        }
+
+        fixtures = default!;
         return false;
     }
 
@@ -842,25 +931,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         return true;
     }
 
-    /// <summary>
-    /// Limits the recent-order cache while preserving accepted order identifiers.
-    /// </summary>
-    private void PruneRecentOrders()
-    {
-        if (_recentOrders.Count <= 512)
-            return;
-
-        foreach (var (orderId, _) in _recentOrders.OrderBy(pair => pair.Value).ToList())
-        {
-            if (_recentOrders.Count <= 512)
-                break;
-
-            if (_acceptedOrders.Contains(orderId))
-                continue;
-
-            _recentOrders.Remove(orderId);
-        }
-    }
 
     /// <summary>
     /// Notifies the ordering actor that delivery timed out.
@@ -869,17 +939,21 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     {
         Log.Warning($"CentComm supply order #{order.OrderNumber} timed out waiting for free cargo pallets.");
 
-        if (TerminatingOrDeleted(order.Console)
-            || !TryComp<CentCommSupplyConsoleComponent>(order.Console, out var component))
+        var message = Loc.GetString("centcomm-supply-error-delivery-timeout");
+        CentCommSupplyConsoleComponent? component = null;
+        var consoleValid = !TerminatingOrDeleted(order.Console)
+            && TryComp(order.Console, out component);
+
+        // Fish-start: уведомление игрока даже при удалении консоли
+        if (!TerminatingOrDeleted(order.Actor))
         {
-            return;
+            var popupTarget = consoleValid ? order.Console : order.Actor;
+            _popup.PopupEntity(message, popupTarget, order.Actor, PopupType.MediumCaution);
         }
 
-        var message = Loc.GetString("centcomm-supply-error-delivery-timeout");
-        if (!TerminatingOrDeleted(order.Actor))
-            _popup.PopupEntity(message, order.Console, order.Actor, PopupType.MediumCaution);
-
-        UpdateUi((order.Console, component), message);
+        if (consoleValid)
+            UpdateUi((order.Console, component!), message);
+        // Fish-end
     }
 
     /// <summary>
@@ -902,10 +976,14 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// <summary>
     /// Shows an error to the actor and sends it to the console UI.
     /// </summary>
-    private void Fail(Entity<CentCommSupplyConsoleComponent> ent, EntityUid actor, string message)
+    private void Fail(
+        Entity<CentCommSupplyConsoleComponent> ent,
+        EntityUid actor,
+        string message,
+        Guid? stationSelectionId = null)
     {
         _popup.PopupEntity(message, ent.Owner, actor, PopupType.MediumCaution);
-        UpdateUi(ent, message);
+        UpdateUi(ent, message, stationSelectionId: stationSelectionId);
     }
 
     private sealed class PendingOrder
@@ -917,6 +995,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         public TimeSpan ExpireAt;
         public int OrderNumber;
         public EntProtoId PaperPrototype;
+        public EntProtoId CratePrototype;
+        public bool FirstAttemptDone;
         public string StationName = string.Empty;
         public string Contents = string.Empty;
         public SoundSpecifier? DeliverySound;

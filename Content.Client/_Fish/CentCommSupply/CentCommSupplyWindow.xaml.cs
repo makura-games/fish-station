@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Fish.CentCommSupply;
@@ -183,7 +183,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
                 _pendingStationSelectionId = Guid.Empty;
                 _stationSelectionPending = false;
             }
-            else if (acknowledged || !pendingAvailable)
+            else if (acknowledged || !pendingAvailable || !string.IsNullOrWhiteSpace(state.StatusMessage)) // Fish-edit: сброс ожидания при ошибке сервера
             {
                 _pendingStationSelection = null;
                 _pendingStationSelectionId = Guid.Empty;

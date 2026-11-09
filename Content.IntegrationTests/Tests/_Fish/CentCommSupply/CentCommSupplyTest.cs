@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Content.Server._Fish.CentCommSupply;
 using Content.Server.Access.Systems;
+using Content.Server.Cargo.Components;
 using Content.Server.GameTicking;
 using Content.Server.Station.Systems;
 using Content.Shared._Fish.CentCommSupply;
@@ -81,10 +82,11 @@ public sealed class CentCommSupplyTest
             Assert.That(names, Does.Contain("Dev"));
         });
 
+        var selectionId = Guid.NewGuid();
         await server.WaitPost(() =>
         {
             targetNet = entMan.GetNetEntity(target);
-            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid())
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, selectionId)
             {
                 Actor = actor,
             });
@@ -97,6 +99,7 @@ public sealed class CentCommSupplyTest
                 CentCommSupplyUiKey.Key,
                 out var state), Is.True);
             Assert.That(state!.SelectedStation, Is.EqualTo((NetEntity?) targetNet));
+            Assert.That(state.LastStationSelectionId, Is.EqualTo(selectionId)); // Fish-edit: проверка LastStationSelectionId
 
             var existingQuery = entMan.AllEntityQueryEnumerator<EntityStorageComponent>();
             while (existingQuery.MoveNext(out var uid, out _))
@@ -330,10 +333,11 @@ public sealed class CentCommSupplyTest
             bus.RaiseLocalEvent(console, new BoundUIOpenedEvent(CentCommSupplyUiKey.Key, console, actor));
         });
 
+        var selectionId = Guid.NewGuid();
         await server.WaitPost(() =>
         {
             targetNet = entMan.GetNetEntity(target);
-            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = actor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, selectionId) { Actor = actor });
         });
 
         await server.WaitAssertion(() =>
@@ -343,10 +347,23 @@ public sealed class CentCommSupplyTest
                 CentCommSupplyUiKey.Key,
                 out var state), Is.True);
             Assert.That(state!.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-access")));
+            Assert.That(state.LastStationSelectionId, Is.EqualTo(selectionId)); // Fish-edit: проверка ответа с selectionId
         });
 
         await server.WaitPost(() =>
         {
+            // Fish-start: сброс устаревшего UI-state перед отправкой нового запроса заказа
+            ui.SetUiState(console, CentCommSupplyUiKey.Key, new CentCommSupplyBoundUserInterfaceState(
+                new List<CentCommSupplyProductEntry>(),
+                new Dictionary<NetEntity, string>(),
+                null,
+                6,
+                8,
+                null,
+                null,
+                false));
+            // Fish-end
+
             var entries = new List<CentCommSupplyOrderEntry>
             {
                 new("FishCentCommSupplyMedicalBundle", 1),
@@ -421,10 +438,11 @@ public sealed class CentCommSupplyTest
             bus.RaiseLocalEvent(console, new BoundUIOpenedEvent(CentCommSupplyUiKey.Key, console, actor));
         });
 
+        var selectionId = Guid.NewGuid();
         await server.WaitPost(() =>
         {
             targetNet = entMan.GetNetEntity(target);
-            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = actor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, selectionId) { Actor = actor });
         });
 
         await server.WaitAssertion(() =>
@@ -435,6 +453,7 @@ public sealed class CentCommSupplyTest
                 out var state), Is.True);
             Assert.That(state!.StatusMessage, Is.Null);
             Assert.That(state!.SelectedStation, Is.EqualTo((NetEntity?) targetNet));
+            Assert.That(state.LastStationSelectionId, Is.EqualTo(selectionId)); // Fish-edit: проверка LastStationSelectionId
 
             existingCrates.UnionWith(GetNewCrates(entMan, new HashSet<EntityUid>()));
         });
@@ -461,6 +480,177 @@ public sealed class CentCommSupplyTest
 
             Assert.That(delivered, Is.Not.Empty,
                 "CentComm supply order was not delivered with CentralCommand access");
+        });
+
+        await server.WaitPost(() =>
+        {
+            if (entMan.EntityExists(actor))
+                entMan.DeleteEntity(actor);
+
+            if (entMan.EntityExists(target))
+                entMan.DeleteEntity(target);
+
+            mapSystem.DeleteMap(consoleMapId);
+            mapSystem.DeleteMap(devMapId);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task StationSelectionRejectsInvalidStation()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var protoMan = server.ProtoMan;
+        var ticker = server.System<GameTicker>();
+        var stationSystem = server.System<StationSystem>();
+        var mapSystem = server.System<MapSystem>();
+        var ui = server.System<UserInterfaceSystem>();
+        var accessSystem = server.System<AccessSystem>();
+        var loc = server.ResolveDependency<ILocalizationManager>();
+        var bus = entMan.EventBus;
+
+        EntityUid console = default;
+        EntityUid target = default;
+        MapId devMapId = default;
+        MapId consoleMapId = default;
+        EntityUid actor = default;
+
+        await server.WaitPost(() =>
+        {
+            var map = protoMan.Index<GameMapPrototype>(MapProto);
+            var grids = ticker.LoadGameMap(map, out devMapId, DeserializationOptions.Default with { InitializeMaps = true });
+            target = stationSystem.GetOwningStation(grids[0])
+                ?? throw new InvalidOperationException("Loaded Dev map has no owning station");
+        });
+
+        await server.WaitPost(() =>
+        {
+            var consoleMap = mapSystem.CreateMap(out consoleMapId);
+            console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
+            actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
+            bus.RaiseLocalEvent(console, new BoundUIOpenedEvent(CentCommSupplyUiKey.Key, console, actor));
+        });
+
+        var invalidSelectionId = Guid.NewGuid();
+        await server.WaitPost(() =>
+        {
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(NetEntity.Invalid, invalidSelectionId) { Actor = actor });
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(ui.TryGetUiState<CentCommSupplyBoundUserInterfaceState>(
+                console,
+                CentCommSupplyUiKey.Key,
+                out var state), Is.True);
+            Assert.That(state!.LastStationSelectionId, Is.EqualTo(invalidSelectionId));
+            Assert.That(state.SelectedStation, Is.Not.EqualTo((NetEntity?) NetEntity.Invalid));
+            Assert.That(state.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-invalid-station")));
+        });
+
+        await server.WaitPost(() =>
+        {
+            if (entMan.EntityExists(actor))
+                entMan.DeleteEntity(actor);
+
+            if (entMan.EntityExists(target))
+                entMan.DeleteEntity(target);
+
+            mapSystem.DeleteMap(consoleMapId);
+            mapSystem.DeleteMap(devMapId);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task OrderTimesOutWhenPalletsOccupied()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var protoMan = server.ProtoMan;
+        var ticker = server.System<GameTicker>();
+        var stationSystem = server.System<StationSystem>();
+        var mapSystem = server.System<MapSystem>();
+        var ui = server.System<UserInterfaceSystem>();
+        var accessSystem = server.System<AccessSystem>();
+        var loc = server.ResolveDependency<ILocalizationManager>();
+        var bus = entMan.EventBus;
+
+        EntityUid console = default;
+        EntityUid target = default;
+        MapId devMapId = default;
+        MapId consoleMapId = default;
+        EntityUid actor = default;
+        var targetNet = NetEntity.Invalid;
+        var delay = TimeSpan.FromSeconds(1);
+        var timeout = TimeSpan.FromSeconds(1);
+
+        await server.WaitPost(() =>
+        {
+            var map = protoMan.Index<GameMapPrototype>(MapProto);
+            var grids = ticker.LoadGameMap(map, out devMapId, DeserializationOptions.Default with { InitializeMaps = true });
+            target = stationSystem.GetOwningStation(grids[0])
+                ?? throw new InvalidOperationException("Loaded Dev map has no owning station");
+        });
+
+        await server.WaitPost(() =>
+        {
+            var consoleMap = mapSystem.CreateMap(out consoleMapId);
+            console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
+            var consoleComp = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
+            consoleComp.DeliveryDelay = delay;
+            consoleComp.DeliveryTimeout = timeout;
+            actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
+            bus.RaiseLocalEvent(console, new BoundUIOpenedEvent(CentCommSupplyUiKey.Key, console, actor));
+        });
+
+        await server.WaitPost(() =>
+        {
+            targetNet = entMan.GetNetEntity(target);
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = actor });
+        });
+
+        await server.WaitPost(() =>
+        {
+            var entries = new List<CentCommSupplyOrderEntry>
+            {
+                new("FishCentCommSupplyMedicalBundle", 1),
+            };
+            bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(Guid.NewGuid(), targetNet, entries)
+            {
+                Actor = actor,
+            });
+
+            // Block buy cargo pallets with solid obstacle crates after order is queued
+            var query = entMan.AllEntityQueryEnumerator<CargoPalletComponent, TransformComponent>();
+            while (query.MoveNext(out _, out var pallet, out var xform))
+            {
+                if ((pallet.PalletType & BuySellType.Buy) != 0)
+                {
+                    entMan.SpawnEntity("CrateCommandSecure", xform.Coordinates);
+                }
+            }
+        });
+
+        var tickPeriod = server.Timing.TickPeriod;
+        var totalWait = delay + timeout + TimeSpan.FromSeconds(6);
+        var ticks = Math.Max(1, (int) Math.Ceiling(totalWait.TotalSeconds / tickPeriod.TotalSeconds));
+        await server.WaitRunTicks(ticks);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(ui.TryGetUiState<CentCommSupplyBoundUserInterfaceState>(
+                console,
+                CentCommSupplyUiKey.Key,
+                out var state), Is.True);
+            Assert.That(state!.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-delivery-timeout")));
         });
 
         await server.WaitPost(() =>

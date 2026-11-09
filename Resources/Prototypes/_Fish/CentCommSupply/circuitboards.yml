@@ -1,7 +1,7 @@
 - type: entity
   parent: BaseComputerCircuitboard
   id: FishCentCommSupplyComputerCircuitboard
-  name: CentComm supply console board
+  name: CentComm console board  # совпадение с FTL и лимит в 3 слова
   suffix: Fish
   description: A computer circuit board for a CentComm supply console.
   components:

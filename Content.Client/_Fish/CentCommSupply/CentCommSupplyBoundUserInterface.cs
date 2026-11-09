@@ -23,6 +23,7 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
     {
         base.Open();
 
+        _orderPending = false; // Fish-edit: сброс ожидания при открытии окна
         _window = this.CreateWindow<CentCommSupplyWindow>();
         _window.OnStationSelected += (station, selectionId) =>
         {
