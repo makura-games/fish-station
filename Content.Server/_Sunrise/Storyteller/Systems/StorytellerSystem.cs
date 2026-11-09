@@ -2619,25 +2619,27 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             var targetProtoExists = ProtoMan.TryIndex<EntityPrototype>(targetId, out var targetProto);
             var targetMetaExists = ProtoMan.TryIndex<StorytellerMetadataPrototype>(targetId, out var targetMeta);
 
-            var canTriggerTarget = targetProtoExists && targetMetaExists
-                && !IsTargetMajorPermanentlyDisallowed(targetId)
-                && (entity.Comp.MajorThreatBudget + entity.Comp.TargetMajorBudget >= targetMeta!.ThreatCost)
-                && IsTargetMajorEligibleExceptStrength(targetProto!, targetMeta!, entity.Comp, metrics)
-                && metrics.StationStrength >= targetMeta.MinStationStrength;
-
-            if (canTriggerTarget)
+            if (!targetProtoExists || !targetMetaExists || IsTargetMajorPermanentlyDisallowed(targetId))
             {
-                Log.Info($"Storyteller draining major budget before Peak exit: triggering TargetMajorEvent '{targetId}'");
-                TriggerEvent(entity, targetProto!, targetMeta!);
+                ReassignOrRefundTargetMajor(entity.Comp);
             }
             else
             {
-                // Если цель не может сработать перед выходом из Peak, возвращаем её буфер в общий MajorThreatBudget
-                entity.Comp.MajorThreatBudget += entity.Comp.TargetMajorBudget;
-                entity.Comp.TargetMajorBudget = 0f;
-                entity.Comp.TargetMajorCost = 0f;
-                entity.Comp.TargetMajorEvent = null;
-                Log.Info("Storyteller target major could not trigger before Peak exit; refunded target buffer to MajorThreatBudget.");
+                var combinedBudget = entity.Comp.MajorThreatBudget + entity.Comp.TargetMajorBudget;
+                var canTriggerTarget = combinedBudget >= targetMeta!.ThreatCost
+                    && IsTargetMajorEligibleExceptStrength(targetProto!, targetMeta!, entity.Comp, metrics)
+                    && metrics.StationStrength >= targetMeta!.MinStationStrength;
+
+                if (canTriggerTarget)
+                {
+                    Log.Info($"Storyteller draining major budget before Peak exit: triggering TargetMajorEvent '{targetId}'");
+                    TriggerEvent(entity, targetProto!, targetMeta!);
+                }
+                else
+                {
+                    // При временной недоступности цели сохраняем её и буфер для повторной попытки после снятия ограничений
+                    Log.Info($"Storyteller target major '{targetId}' temporarily unavailable before Peak exit; retaining target and buffer ({entity.Comp.TargetMajorBudget}/{targetMeta!.ThreatCost}).");
+                }
             }
         }
 
