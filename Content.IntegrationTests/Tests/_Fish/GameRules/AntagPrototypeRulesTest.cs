@@ -3,7 +3,7 @@ using Content.IntegrationTests.Fixtures;
 using Content.Shared.Roles;
 using NUnit.Framework;
 
-namespace Content.IntegrationTests.Tests.GameRules;
+namespace Content.IntegrationTests.Tests._Fish.GameRules;
 
 [TestFixture]
 public sealed class AntagPrototypeRulesTest : GameTest
@@ -37,7 +37,7 @@ public sealed class AntagPrototypeRulesTest : GameTest
             {
                 Assert.That(antags.TryGetValue(id, out var antag), Is.True, id);
                 var hasWikiRules = AntagIdsWithWikiRules.Contains(id);
-                Assert.That(antag.Rules, hasWikiRules ? Is.Not.Null.And.Not.Empty : Is.Null, antag.ID);
+                Assert.That(antag.Rules, hasWikiRules ? Is.Not.Empty : Is.Empty, antag.ID);
             }
         });
     }

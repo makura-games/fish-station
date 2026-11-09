@@ -1,3 +1,4 @@
+using Robust.Shared.Localization;
 using Robust.Shared.Serialization;
 
 #pragma warning disable IDE0130 // Необходимо сохранить исходное пространство имён частичного типа.
@@ -9,5 +10,5 @@ public sealed partial class AntagPrototype
     /// Локализационный ключ с правилами этой роли.
     /// </summary>
     [DataField]
-    public string Rules = string.Empty;
+    public LocId Rules = string.Empty;
 }
