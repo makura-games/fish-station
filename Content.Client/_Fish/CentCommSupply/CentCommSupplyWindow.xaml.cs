@@ -28,17 +28,16 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private string? _category;
     private NetEntity? _selectedStation;
-    private NetEntity? _pendingStationSelection;
-    private NetEntity? _stationSelectionPrevious;
-    private Guid _pendingStationSelectionId;
+    private Guid? _pendingStationSelectionId;
+    private Guid? _pendingOrderId;
     private CentCommSupplyProductEntry? _pendingProduct;
     private int _maxProductsPerOrder = int.MaxValue;
-    private bool _stationSelectionPending;
-    private bool _orderPending;
+    private bool StationSelectionPending => _pendingStationSelectionId.HasValue;
+    private bool OrderPending => _pendingOrderId.HasValue;
     private string? _orderLimitMessage;
 
     public event Func<NetEntity, Guid, bool>? OnStationSelected;
-    public event Func<NetEntity, List<CentCommSupplyOrderEntry>, bool>? OnOrderPressed;
+    public event Func<Guid, NetEntity, List<CentCommSupplyOrderEntry>, bool>? OnOrderPressed;
 
     public CentCommSupplyWindow()
     {
@@ -67,11 +66,17 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         OrderButton.OnPressed += _ => SubmitOrder();
     }
 
-    public void UpdateState(CentCommSupplyBoundUserInterfaceState state)
+    public void UpdateState(CentCommSupplyUserStateMessage state)
     {
         _maxProductsPerOrder = Math.Max(1, state.MaxProductsPerOrder);
 
-        UpdateStations(state);
+        if (StationSelectionPending && state.LastStationSelectionId == _pendingStationSelectionId)
+            _pendingStationSelectionId = null;
+
+        if (!StationSelectionPending)
+            _selectedStation = state.SelectedStation;
+
+        UpdateStations(state.AvailableStations);
 
         _products.Clear();
         _products.AddRange(state.Products);
@@ -85,14 +90,11 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         PopulateProducts();
         PopulateOrder();
 
-        if (state.OrderPlaced)
+        if (OrderPending && state.OrderId == _pendingOrderId)
         {
-            _orderPending = false;
-            ClearOrder();
-        }
-        else if (_orderPending && !string.IsNullOrWhiteSpace(state.StatusMessage))
-        {
-            _orderPending = false;
+            _pendingOrderId = null;
+            if (state.OrderPlaced)
+                ClearOrder();
         }
 
         if (!string.IsNullOrWhiteSpace(state.StatusMessage))
@@ -114,63 +116,25 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
     /// </summary>
     public void SelectStation(NetEntity station)
     {
-        if (_orderPending || _stationSelectionPending)
+        if (OrderPending || StationSelectionPending)
             return;
 
         if (!_stationEntities.Contains(station) || _selectedStation == station)
             return;
 
-        _stationSelectionPrevious = _selectedStation;
+        var previousSelection = _selectedStation;
         var selectionId = Guid.NewGuid();
         _selectedStation = station;
-        _pendingStationSelection = station;
         _pendingStationSelectionId = selectionId;
-        _stationSelectionPending = true;
         UpdateStationSelector();
+        UpdateOrderButton();
 
         if (OnStationSelected?.Invoke(station, selectionId) == true)
             return;
 
-        _selectedStation = _stationSelectionPrevious;
-        _stationSelectionPrevious = null;
-        _pendingStationSelection = null;
-        _pendingStationSelectionId = Guid.Empty;
-        _stationSelectionPending = false;
+        _selectedStation = previousSelection;
+        _pendingStationSelectionId = null;
         RestoreStationSelectorSelection();
-    }
-
-    /// <summary>
-    /// Applies the server response for the matching station selection request.
-    /// </summary>
-    public void OnStationSelectionResult(Guid selectionId, bool accepted, NetEntity? station, string? error)
-    {
-        if (!_stationSelectionPending || selectionId != _pendingStationSelectionId)
-            return;
-
-        _pendingStationSelection = null;
-        _pendingStationSelectionId = Guid.Empty;
-        _stationSelectionPending = false;
-
-        if (accepted && station is { } acceptedStation && _stationEntities.Contains(acceptedStation))
-        {
-            if (_stationSelectionPrevious != acceptedStation)
-                ClearOrder();
-
-            _selectedStation = acceptedStation;
-        }
-        else
-        {
-            _selectedStation = _stationSelectionPrevious;
-        }
-
-        _stationSelectionPrevious = null;
-        RestoreStationSelectorSelection();
-
-        if (!string.IsNullOrWhiteSpace(error))
-        {
-            StatusLabel.Visible = true;
-            StatusLabel.Text = error;
-        }
     }
 
     protected override void Dispose(bool disposing)
@@ -183,74 +147,18 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         _orderMenu.Dispose();
     }
 
-    private void UpdateStations(CentCommSupplyBoundUserInterfaceState state)
+    private void UpdateStations(Dictionary<NetEntity, string> stations)
     {
-        var previousSelection = _selectedStation;
-        var wasPending = _stationSelectionPending;
-
         StationSelector.Clear();
         _stationEntities.Clear();
 
-        foreach (var (station, name) in state.AvailableStations)
+        foreach (var (station, name) in stations)
         {
             _stationEntities.Add(station);
             StationSelector.AddItem(name);
         }
 
-        if (_stationEntities.Count == 0)
-        {
-            _selectedStation = null;
-            _pendingStationSelection = null;
-            _stationSelectionPrevious = null;
-            _pendingStationSelectionId = Guid.Empty;
-            _stationSelectionPending = false;
-            UpdateStationSelector();
-            ClearOrder();
-            return;
-        }
-
-        var serverSelected = state.SelectedStation;
-
-        if (_stationSelectionPending)
-        {
-            var pending = _pendingStationSelection;
-            if (pending is { } pendingStation && !_stationEntities.Contains(pendingStation))
-            {
-                _pendingStationSelection = null;
-                _stationSelectionPrevious = null;
-                _pendingStationSelectionId = Guid.Empty;
-                _stationSelectionPending = false;
-                _selectedStation = serverSelected is { } selected && _stationEntities.Contains(selected)
-                    ? selected
-                    : _stationEntities[0];
-                ClearOrder();
-            }
-            else
-            {
-                // Fish-edit: общий state не должен сбрасывать ожидание чужого запроса
-                _selectedStation = pending;
-            }
-        }
-        else
-        {
-            _selectedStation = serverSelected is { } selected && _stationEntities.Contains(selected)
-                ? selected
-                : _stationEntities[0];
-        }
-
-        if (!wasPending && _selectedStation != previousSelection)
-            ClearOrder();
-
-        var selectedIndex = _selectedStation is { } current
-            ? _stationEntities.IndexOf(current)
-            : -1;
-
-        if (selectedIndex < 0)
-            selectedIndex = 0;
-
-        _selectedStation = _stationEntities[selectedIndex];
-        StationSelector.SelectId(selectedIndex);
-        UpdateStationSelector();
+        RestoreStationSelectorSelection();
     }
 
     private void PopulateCategories()
@@ -347,7 +255,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void OpenOrderMenu(CentCommSupplyProductEntry product)
     {
-        if (_orderPending || _stationSelectionPending)
+        if (OrderPending || StationSelectionPending)
             return;
 
         if (!_productsById.TryGetValue(product.PrototypeId, out var current))
@@ -361,7 +269,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void AddPendingProduct()
     {
-        if (_orderPending || _stationSelectionPending)
+        if (OrderPending || StationSelectionPending)
             return;
 
         if (_pendingProduct is not { } pending)
@@ -396,7 +304,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void RemoveProduct(string productId)
     {
-        if (_orderPending || _stationSelectionPending)
+        if (OrderPending || StationSelectionPending)
             return;
 
         if (!_order.Remove(productId))
@@ -408,7 +316,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void SubmitOrder()
     {
-        if (_orderPending || _stationSelectionPending)
+        if (OrderPending || StationSelectionPending)
             return;
 
         if (_selectedStation is not { } station)
@@ -429,13 +337,16 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         foreach (var (productId, quantity) in _order)
             entries.Add(new CentCommSupplyOrderEntry(productId, quantity));
 
-        _orderPending = true;
+        var orderId = Guid.NewGuid();
+        _pendingOrderId = orderId;
+        UpdateStationSelector();
         UpdateOrderButton();
 
-        if (OnOrderPressed?.Invoke(station, entries) == true)
+        if (OnOrderPressed?.Invoke(orderId, station, entries) == true)
             return;
 
-        _orderPending = false;
+        _pendingOrderId = null;
+        UpdateStationSelector();
         UpdateOrderButton();
     }
 
@@ -484,8 +395,8 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         }
 
         _orderLimitMessage = limitMessage;
-        OrderButton.Disabled = _orderPending
-            || _stationSelectionPending
+        OrderButton.Disabled = OrderPending
+            || StationSelectionPending
             || _selectedStation == null
             || _order.Count == 0
             || limitMessage != null;
@@ -521,8 +432,8 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private void UpdateStationSelector()
     {
-        StationSelector.Disabled = _orderPending
-            || _stationSelectionPending
+        StationSelector.Disabled = OrderPending
+            || StationSelectionPending
             || _stationEntities.Count == 0;
     }
 

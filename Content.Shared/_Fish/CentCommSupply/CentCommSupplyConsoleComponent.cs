@@ -71,10 +71,10 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     public SoundSpecifier? ApproveSound = new SoundPathSpecifier("/Audio/Effects/Cargo/ping.ogg");
 
     /// <summary>
-    /// Station currently selected in the console.
+    /// Состояние консоли для каждого игрока с открытым интерфейсом.
     /// </summary>
     [ViewVariables]
-    public EntityUid? SelectedStation;
+    public readonly Dictionary<EntityUid, CentCommSupplyUserStateMessage> UserStates = new();
 
     /// <summary>
     /// Earliest time the next order can be placed.

@@ -1,9 +1,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishGasMinerOxygenFlatpack
-  name: gas miner oxygen flatpack
+  name: O2 gas miner flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing an O2 gas miner.
   components:
   - type: Flatpack
     entity: GasMinerOxygen
@@ -17,9 +17,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishGasMinerNitrogenFlatpack
-  name: gas miner nitrogen flatpack
+  name: N2 gas miner flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing an N2 gas miner.
   components:
   - type: Flatpack
     entity: GasMinerNitrogen
@@ -33,9 +33,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishGasMinerCarbonDioxideFlatpack
-  name: gas miner dioxide flatpack
+  name: CO2 gas miner flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing a CO2 gas miner.
   components:
   - type: Flatpack
     entity: GasMinerCarbonDioxide
@@ -49,9 +49,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishGasMinerPlasmaFlatpack
-  name: gas miner plasma flatpack
+  name: plasma gas miner flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing a plasma gas miner.
   components:
   - type: Flatpack
     entity: GasMinerPlasma
@@ -65,9 +65,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishVendingMachineChemicalsFlatpack
-  name: vending machine chemicals flatpack
+  name: ChemVend flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing a ChemVend vending machine.
   components:
   - type: Flatpack
     entity: VendingMachineChemicals
@@ -81,9 +81,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishVendingMachineBoozeFlatpack
-  name: vending machine booze flatpack
+  name: Booze-O-Mat flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing a Booze-O-Mat vending machine.
   components:
   - type: Flatpack
     entity: VendingMachineBooze
@@ -99,7 +99,7 @@
   id: FishGravityGeneratorFlatpack
   name: gravity generator flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing a gravity generator.
   components:
   - type: Flatpack
     entity: GravityGenerator

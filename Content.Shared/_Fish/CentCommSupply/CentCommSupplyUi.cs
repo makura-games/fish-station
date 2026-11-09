@@ -10,10 +10,16 @@ public enum CentCommSupplyUiKey : byte
 }
 
 /// <summary>
-/// Current state of the CentComm supply console.
+/// Запрос состояния после открытия интерфейса на клиенте.
 /// </summary>
 [Serializable, NetSerializable]
-public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceState
+public sealed class CentCommSupplyStateRequestMessage : BoundUserInterfaceMessage;
+
+/// <summary>
+/// Состояние консоли для игрока, которому адресован ответ.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class CentCommSupplyUserStateMessage : BoundUserInterfaceMessage
 {
     public readonly List<CentCommSupplyProductEntry> Products;
     public readonly Dictionary<NetEntity, string> AvailableStations;
@@ -21,16 +27,20 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
     public readonly int MaxCratesPerOrder;
     public readonly int MaxProductsPerOrder;
     public readonly string? StatusMessage;
+    public readonly Guid? LastStationSelectionId;
+    public readonly Guid? OrderId;
     public readonly bool OrderPlaced;
 
-    public CentCommSupplyBoundUserInterfaceState(
+    public CentCommSupplyUserStateMessage(
         List<CentCommSupplyProductEntry> products,
         Dictionary<NetEntity, string> availableStations,
         NetEntity? selectedStation,
         int maxCratesPerOrder,
         int maxProductsPerOrder,
         string? statusMessage,
-        bool orderPlaced)
+        bool orderPlaced,
+        Guid? lastStationSelectionId = null,
+        Guid? orderId = null)
     {
         Products = products;
         AvailableStations = availableStations;
@@ -38,6 +48,8 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
         MaxCratesPerOrder = maxCratesPerOrder;
         MaxProductsPerOrder = maxProductsPerOrder;
         StatusMessage = statusMessage;
+        LastStationSelectionId = lastStationSelectionId;
+        OrderId = orderId;
         OrderPlaced = orderPlaced;
     }
 }
@@ -76,30 +88,6 @@ public sealed class CentCommSupplySelectStationMessage : BoundUserInterfaceMessa
     {
         Station = station;
         SelectionId = selectionId;
-    }
-}
-
-/// <summary>
-/// Per-user response to a station selection request.
-/// </summary>
-[Serializable, NetSerializable]
-public sealed class CentCommSupplyStationSelectionResultMessage : BoundUserInterfaceMessage
-{
-    public readonly Guid SelectionId;
-    public readonly bool Accepted;
-    public readonly NetEntity? Station;
-    public readonly string? Error;
-
-    public CentCommSupplyStationSelectionResultMessage(
-        Guid selectionId,
-        bool accepted,
-        NetEntity? station,
-        string? error)
-    {
-        SelectionId = selectionId;
-        Accepted = accepted;
-        Station = station;
-        Error = error;
     }
 }
 

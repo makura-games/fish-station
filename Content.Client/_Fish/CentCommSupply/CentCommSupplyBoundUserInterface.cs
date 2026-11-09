@@ -2,7 +2,6 @@ using System;
 using Content.Shared._Fish.CentCommSupply;
 using Content.Shared.ActionBlocker;
 using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.XAML;
 using Robust.Client.Player;
 
 namespace Content.Client._Fish.CentCommSupply;
@@ -13,7 +12,6 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
     [Dependency] private IPlayerManager _player = default!;
 
     private CentCommSupplyWindow? _window;
-    private bool _orderPending;
 
     public CentCommSupplyBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
@@ -23,7 +21,6 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
     {
         base.Open();
 
-        _orderPending = false; // Fish-edit: сброс ожидания при открытии окна
         _window = this.CreateWindow<CentCommSupplyWindow>();
         _window.OnStationSelected += (station, selectionId) =>
         {
@@ -33,42 +30,23 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
             SendMessage(new CentCommSupplySelectStationMessage(station, selectionId));
             return true;
         };
-        _window.OnOrderPressed += (station, entries) =>
+        _window.OnOrderPressed += (orderId, station, entries) =>
         {
-            if (_orderPending || !CanInteract())
+            if (!CanInteract())
                 return false;
 
-            _orderPending = true;
-            SendMessage(new CentCommSupplyOrderMessage(Guid.NewGuid(), station, entries));
+            SendMessage(new CentCommSupplyOrderMessage(orderId, station, entries));
             return true;
         };
+        SendMessage(new CentCommSupplyStateRequestMessage());
     }
 
     protected override void ReceiveMessage(BoundUserInterfaceMessage message)
     {
         base.ReceiveMessage(message);
 
-        if (message is CentCommSupplyStationSelectionResultMessage result)
-        {
-            _window?.OnStationSelectionResult(
-                result.SelectionId,
-                result.Accepted,
-                result.Station,
-                result.Error);
-        }
-    }
-
-    protected override void UpdateState(BoundUserInterfaceState state)
-    {
-        base.UpdateState(state);
-
-        if (state is not CentCommSupplyBoundUserInterfaceState cast)
-            return;
-
-        if (cast.OrderPlaced || !string.IsNullOrWhiteSpace(cast.StatusMessage))
-            _orderPending = false;
-
-        _window?.UpdateState(cast);
+        if (message is CentCommSupplyUserStateMessage state)
+            _window?.UpdateState(state);
     }
 
     /// <summary>

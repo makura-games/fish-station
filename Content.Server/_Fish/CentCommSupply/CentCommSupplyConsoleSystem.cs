@@ -67,7 +67,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIOpenedEvent>(OnUiOpened);
+        SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplyStateRequestMessage>(OnStateRequested);
+        SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIClosedEvent>(OnUiClosed);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplySelectStationMessage>(OnSelectStation);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplyOrderMessage>(OnOrder);
     }
@@ -85,12 +86,14 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         _acceptedOrders.Clear();
     }
 
-    /// <summary>
-    /// Sends the current console state when the UI is opened.
-    /// </summary>
-    private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
+    private void OnStateRequested(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyStateRequestMessage args)
     {
-        UpdateUi(ent);
+        UpdateUi(ent, args.Actor);
+    }
+
+    private void OnUiClosed(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIClosedEvent args)
+    {
+        ent.Comp.UserStates.Remove(args.Actor);
     }
 
     /// <summary>
@@ -122,16 +125,11 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         if (!CanSelectStation(ent, actor, stationNet, out var error))
         {
             var message = error ?? Loc.GetString("centcomm-supply-error-invalid-station");
-            SendStationSelectionResult(ent, actor, selectionId, false, null, message);
-
-            if (error != null)
-                Fail(ent, actor, error);
-
+            Fail(ent, actor, message, selectionId: selectionId);
             return false;
         }
 
-        DoSelectStation(ent, GetEntity(stationNet));
-        SendStationSelectionResult(ent, actor, selectionId, true, stationNet, null);
+        UpdateUi(ent, actor, selectionId: selectionId, requestedStation: stationNet);
         return true;
     }
 
@@ -178,7 +176,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         if (!CanPlaceOrder(ent, actor, orderId, stationNet, entries, out var plan, out var error))
         {
             if (error != null)
-                Fail(ent, actor, error);
+                Fail(ent, actor, error, orderId: orderId);
 
             return false;
         }
@@ -186,7 +184,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         if (!TryDoPlaceOrder(ent, actor, orderId, plan!, out error))
         {
             if (error != null)
-                Fail(ent, actor, error);
+                Fail(ent, actor, error, orderId: orderId);
 
             return false;
         }
@@ -271,35 +269,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Applies a validated station selection and updates the UI.
-    /// </summary>
-    private void DoSelectStation(
-        Entity<CentCommSupplyConsoleComponent> ent,
-        EntityUid station)
-    {
-        ent.Comp.SelectedStation = station;
-        UpdateUi(ent);
-    }
-
-    /// <summary>
-    /// Sends a station selection result to the requesting user only.
-    /// </summary>
-    private void SendStationSelectionResult(
-        Entity<CentCommSupplyConsoleComponent> ent,
-        EntityUid actor,
-        Guid selectionId,
-        bool accepted,
-        NetEntity? station,
-        string? error)
-    {
-        _ui.ServerSendUiMessage(
-            ent.Owner,
-            CentCommSupplyUiKey.Key,
-            new CentCommSupplyStationSelectionResultMessage(selectionId, accepted, station, error),
-            actor);
-    }
-
-    /// <summary>
     /// Validates an order and computes the order plan without changing console or order state.
     /// </summary>
     private bool CanPlaceOrder(
@@ -341,7 +310,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         }
 
         var station = GetEntity(stationNet);
-        if (ent.Comp.SelectedStation != station)
+        if (!ent.Comp.UserStates.TryGetValue(actor, out var state) || state.SelectedStation != stationNet)
         {
             error = Loc.GetString("centcomm-supply-error-invalid-station");
             return false;
@@ -560,7 +529,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             Crates = crates,
         });
 
-        ent.Comp.SelectedStation = plan.Station;
         ent.Comp.NextOrderTime = now + ent.Comp.OrderCooldown;
         _audio.PlayPvs(ent.Comp.ApproveSound, ent.Owner);
 
@@ -579,7 +547,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
         var accepted = Loc.GetString("centcomm-supply-order-accepted");
         _popup.PopupEntity(accepted, ent.Owner, actor, PopupType.Medium);
-        UpdateUi(ent, accepted, orderPlaced: true);
+        UpdateUi(ent, actor, accepted, orderId: orderId, orderPlaced: true);
 
         error = null;
         return true;
@@ -590,7 +558,11 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// </summary>
     private void UpdateUi(
         Entity<CentCommSupplyConsoleComponent> ent,
+        EntityUid actor,
         string? status = null,
+        Guid? selectionId = null,
+        NetEntity? requestedStation = null,
+        Guid? orderId = null,
         bool orderPlaced = false)
     {
         if (TerminatingOrDeleted(ent.Owner))
@@ -606,7 +578,11 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             available[GetNetEntity(station)] = name;
         }
 
-        var selected = ResolveSelectedStation(ent, stations, available);
+        ent.Comp.UserStates.TryGetValue(actor, out var previous);
+        var selected = requestedStation ?? previous?.SelectedStation;
+        if (selected == null || !available.ContainsKey(selected.Value))
+            selected = stations.Count > 0 ? GetNetEntity(stations[0]) : null;
+
         var products = new List<CentCommSupplyProductEntry>();
 
         foreach (var product in _prototypes.EnumeratePrototypes<CentCommSupplyProductPrototype>()
@@ -624,16 +600,19 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                 Math.Max(1, product.MaxQuantity)));
         }
 
-        var state = new CentCommSupplyBoundUserInterfaceState(
+        var state = new CentCommSupplyUserStateMessage(
             products,
             available,
-            selected is { } selectedStation ? GetNetEntity(selectedStation) : null,
+            selected,
             ent.Comp.MaxCratesPerOrder,
             ent.Comp.MaxProductsPerOrder,
             status,
-            orderPlaced);
+            orderPlaced,
+            selectionId ?? previous?.LastStationSelectionId,
+            orderId);
 
-        _ui.SetUiState(ent.Owner, CentCommSupplyUiKey.Key, state);
+        ent.Comp.UserStates[actor] = state;
+        _ui.ServerSendUiMessage(ent.Owner, CentCommSupplyUiKey.Key, state, actor);
     }
 
     /// <summary>
@@ -692,33 +671,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         {
             Log.Warning($"Failed to attach CentComm supply invoice to {ToPrettyString(crate)}.");
         }
-    }
-
-    /// <summary>
-    /// Resolves the station that should be selected in the console UI.
-    /// </summary>
-    private EntityUid? ResolveSelectedStation(
-        Entity<CentCommSupplyConsoleComponent> ent,
-        List<EntityUid> stations,
-        Dictionary<NetEntity, string> available)
-    {
-        if (ent.Comp.SelectedStation is { } selected
-            && available.ContainsKey(GetNetEntity(selected)))
-        {
-            return selected;
-        }
-
-        foreach (var station in stations)
-        {
-            if (!available.ContainsKey(GetNetEntity(station)))
-                continue;
-
-            ent.Comp.SelectedStation = station;
-            return station;
-        }
-
-        ent.Comp.SelectedStation = null;
-        return null;
     }
 
     /// <summary>
@@ -928,8 +880,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         if (!TerminatingOrDeleted(order.Actor))
             _popup.PopupEntity(message, order.Actor, order.Actor, PopupType.MediumCaution);
 
-        if (consoleValid)
-            UpdateUi((order.Console, component!), message);
+        if (consoleValid && component!.UserStates.ContainsKey(order.Actor))
+            UpdateUi((order.Console, component), order.Actor, message);
         // Fish-end
     }
 
@@ -956,10 +908,12 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     private void Fail(
         Entity<CentCommSupplyConsoleComponent> ent,
         EntityUid actor,
-        string message)
+        string message,
+        Guid? selectionId = null,
+        Guid? orderId = null)
     {
         _popup.PopupEntity(message, ent.Owner, actor, PopupType.MediumCaution);
-        UpdateUi(ent, message);
+        UpdateUi(ent, actor, message, selectionId: selectionId, orderId: orderId);
     }
 
     private readonly struct BlockingFixtureCallback : IFixtureQueryCallback<bool>
