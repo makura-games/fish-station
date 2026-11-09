@@ -32,7 +32,10 @@ public sealed partial class FishCameraSpeechLog : Control
         _viewport = viewport;
 
         if (_bubbles.Remove(uid.Value, out var old))
+        {
+            old.OnDied -= OnBubbleDied;
             RemoveChild(old);
+        }
 
         var wrapped = $"[BubbleHeader]{FormattedMessage.EscapeText(name)}[/BubbleHeader][BubbleContent]{FormattedMessage.EscapeText(message)}[/BubbleContent]";
         var chatMessage = new ChatMessage(whisper ? ChatChannel.Whisper : ChatChannel.Local, message, wrapped, speaker, null);
@@ -68,7 +71,9 @@ public sealed partial class FishCameraSpeechLog : Control
 
         foreach (var (speaker, bubble) in _bubbles)
         {
-            if (!_entMan.EntityExists(speaker))
+            bubble.Visible = _entMan.EntityExists(speaker);
+
+            if (!bubble.Visible)
                 continue;
 
             var offset = (-eye.Rotation).ToWorldVec() * -HeadOffset;
@@ -76,7 +81,9 @@ public sealed partial class FishCameraSpeechLog : Control
             var local = (screen - GlobalPixelPosition) / UIScale;
 
             bubble.Measure(Vector2Helpers.Infinity);
-            bubble.Arrange(UIBox2.FromDimensions(local - new Vector2(bubble.ContentSize.X / 2f, bubble.ContentSize.Y), bubble.DesiredSize));
+
+            var size = bubble.DesiredSize;
+            bubble.Arrange(UIBox2.FromDimensions(local - new Vector2(size.X / 2f, size.Y), size));
         }
 
         return finalSize;

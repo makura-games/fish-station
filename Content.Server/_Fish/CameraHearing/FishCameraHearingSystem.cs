@@ -10,6 +10,7 @@ using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.SurveillanceCamera;
 using Content.Shared.SurveillanceCamera.Components;
+using Content.Shared.Xenoborgs.Components;
 using Robust.Shared.Player;
 
 namespace Content.Server._Fish.CameraHearing;
@@ -40,6 +41,9 @@ public sealed partial class FishCameraHearingSystem : EntitySystem
 
     private void OnBorgInit(Entity<BorgChassisComponent> ent, ref ComponentInit args)
     {
+        if (!HasComp<BorgTransponderComponent>(ent) || HasComp<XenoborgComponent>(ent))
+            return;
+
         EnsureComp<FishCameraHearingComponent>(ent);
     }
 
