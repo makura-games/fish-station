@@ -269,7 +269,8 @@ public sealed partial class PrisonerManagementConsoleSystem : EntitySystem
                 var incar = entry.Value;
 
                 // Permanent prisoners (threshold or negative cell index) stay indefinitely
-                if (incar.SentenceMinutes >= threshold || cellIdx < 0)
+                // Fish-edit: порог <= 0 не превращает любой срок в перму
+                if (cellIdx < 0 || (threshold > 0 && incar.SentenceMinutes >= threshold))
                     continue;
 
                 if (curTime >= incar.StartTime + TimeSpan.FromMinutes(incar.SentenceMinutes))
