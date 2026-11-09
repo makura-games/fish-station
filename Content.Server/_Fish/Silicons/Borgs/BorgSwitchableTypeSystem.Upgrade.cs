@@ -53,6 +53,8 @@ public sealed partial class BorgSwitchableTypeSystem
         "StationAiVision",
         // Механика отдыха Mk2: действие, блок движения и пониженный расход в rest.
         "BorgRest",
+        // Исправление хотбара состояния киборга
+        "StatusIcon"
     ];
 
     /// <summary>
