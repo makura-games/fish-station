@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseComputerCircuitboard
+  parent: [ BaseComputerCircuitboard, BaseCentcommContraband ]
   id: FishCentCommSupplyComputerCircuitboard
   name: CentComm console board  # совпадение с FTL и лимит в 3 слова
   suffix: Fish

@@ -20,7 +20,6 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
     public readonly NetEntity? SelectedStation;
     public readonly int MaxCratesPerOrder;
     public readonly int MaxProductsPerOrder;
-    public readonly Guid? LastStationSelectionId;
     public readonly string? StatusMessage;
     public readonly bool OrderPlaced;
 
@@ -30,7 +29,6 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
         NetEntity? selectedStation,
         int maxCratesPerOrder,
         int maxProductsPerOrder,
-        Guid? lastStationSelectionId,
         string? statusMessage,
         bool orderPlaced)
     {
@@ -39,7 +37,6 @@ public sealed class CentCommSupplyBoundUserInterfaceState : BoundUserInterfaceSt
         SelectedStation = selectedStation;
         MaxCratesPerOrder = maxCratesPerOrder;
         MaxProductsPerOrder = maxProductsPerOrder;
-        LastStationSelectionId = lastStationSelectionId;
         StatusMessage = statusMessage;
         OrderPlaced = orderPlaced;
     }
@@ -79,6 +76,30 @@ public sealed class CentCommSupplySelectStationMessage : BoundUserInterfaceMessa
     {
         Station = station;
         SelectionId = selectionId;
+    }
+}
+
+/// <summary>
+/// Per-user response to a station selection request.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class CentCommSupplyStationSelectionResultMessage : BoundUserInterfaceMessage
+{
+    public readonly Guid SelectionId;
+    public readonly bool Accepted;
+    public readonly NetEntity? Station;
+    public readonly string? Error;
+
+    public CentCommSupplyStationSelectionResultMessage(
+        Guid selectionId,
+        bool accepted,
+        NetEntity? station,
+        string? error)
+    {
+        SelectionId = selectionId;
+        Accepted = accepted;
+        Station = station;
+        Error = error;
     }
 }
 

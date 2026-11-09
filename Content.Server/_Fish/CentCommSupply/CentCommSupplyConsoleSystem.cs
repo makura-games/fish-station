@@ -13,7 +13,6 @@ using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Labels.Components;
 using Content.Shared.Paper;
-using Content.Shared.Physics;
 using Content.Shared.Popups;
 using Content.Shared.Station.Components;
 using Content.Shared.Storage.Components;
@@ -22,8 +21,10 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Dynamics;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -55,8 +56,9 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     [Dependency] private UserInterfaceSystem _ui = default!;
 
 
+    private static readonly TimeSpan DeliveryRetryInterval = TimeSpan.FromSeconds(5);
+
     private readonly HashSet<Guid> _acceptedOrders = new();
-    private readonly HashSet<EntityUid> _intersecting = new();
     private readonly List<PendingOrder> _pendingOrders = new();
     private readonly List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> _pads = new();
 
@@ -68,6 +70,142 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplySelectStationMessage>(OnSelectStation);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplyOrderMessage>(OnOrder);
+    }
+
+    /// <summary>
+    /// Clears pending and recently accepted orders when the round restarts.
+    /// </summary>
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        foreach (var order in _pendingOrders)
+            RollbackCrates(order.Crates);
+
+        _pendingOrders.Clear();
+
+        _acceptedOrders.Clear();
+    }
+
+    /// <summary>
+    /// Sends the current console state when the UI is opened.
+    /// </summary>
+    private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        UpdateUi(ent);
+    }
+
+    /// <summary>
+    /// Routes station selection requests to the public selection API.
+    /// </summary>
+    private void OnSelectStation(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplySelectStationMessage args)
+    {
+        TrySelectStation(ent, args.Actor, args.Station, args.SelectionId);
+    }
+
+    /// <summary>
+    /// Routes order requests to the public order API.
+    /// </summary>
+    private void OnOrder(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyOrderMessage args)
+    {
+        TryPlaceOrder(ent, args.Actor, args.OrderId, args.Station, args.Entries);
+    }
+
+
+    /// <summary>
+    /// Attempts to select an orderable station and acknowledges the request to the caller.
+    /// </summary>
+    public bool TrySelectStation(
+        Entity<CentCommSupplyConsoleComponent> ent,
+        EntityUid actor,
+        NetEntity stationNet,
+        Guid selectionId)
+    {
+        if (!CanSelectStation(ent, actor, stationNet, out var error))
+        {
+            var message = error ?? Loc.GetString("centcomm-supply-error-invalid-station");
+            SendStationSelectionResult(ent, actor, selectionId, false, null, message);
+
+            if (error != null)
+                Fail(ent, actor, error);
+
+            return false;
+        }
+
+        DoSelectStation(ent, GetEntity(stationNet));
+        SendStationSelectionResult(ent, actor, selectionId, true, stationNet, null);
+        return true;
+    }
+
+    /// <summary>
+    /// Checks whether the actor may select the requested station.
+    /// </summary>
+    public bool CanSelectStation(
+        Entity<CentCommSupplyConsoleComponent> ent,
+        EntityUid actor,
+        NetEntity stationNet,
+        out string? error)
+    {
+        if (!_access.IsAllowed(actor, ent.Owner))
+        {
+            error = Loc.GetString("centcomm-supply-error-access");
+            return false;
+        }
+
+        var station = GetEntity(stationNet);
+        var owningStation = _station.GetOwningStation(ent.Owner);
+        if (station == owningStation
+            || !TryComp<StationDataComponent>(station, out var data)
+            || !HasBuyPallets(data)
+            || !TryComp<StationCargoOrderDatabaseComponent>(station, out _))
+        {
+            error = Loc.GetString("centcomm-supply-error-invalid-station");
+            return false;
+        }
+
+        error = null;
+        return true;
+    }
+
+    /// <summary>
+    /// Attempts to validate, pack and queue an order.
+    /// </summary>
+    public bool TryPlaceOrder(
+        Entity<CentCommSupplyConsoleComponent> ent,
+        EntityUid actor,
+        Guid orderId,
+        NetEntity stationNet,
+        List<CentCommSupplyOrderEntry>? entries)
+    {
+        if (!CanPlaceOrder(ent, actor, orderId, stationNet, entries, out var plan, out var error))
+        {
+            if (error != null)
+                Fail(ent, actor, error);
+
+            return false;
+        }
+
+        if (!TryDoPlaceOrder(ent, actor, orderId, plan!, out error))
+        {
+            if (error != null)
+                Fail(ent, actor, error);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Validates whether an order can be placed without modifying console or order state.
+    /// </summary>
+    public bool CanPlaceOrder(
+        Entity<CentCommSupplyConsoleComponent> ent,
+        EntityUid actor,
+        Guid orderId,
+        NetEntity stationNet,
+        List<CentCommSupplyOrderEntry>? entries,
+        out string? error)
+    {
+        return CanPlaceOrder(ent, actor, orderId, stationNet, entries, out _, out error);
     }
 
     public override void Update(float frameTime)
@@ -114,7 +252,9 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                     continue;
                 }
 
-                order.DeliverAt = now + TimeSpan.FromSeconds(5);
+                // Fish-edit: не планировать попытку позже срока истечения заказа
+                var retryAt = now + DeliveryRetryInterval;
+                order.DeliverAt = retryAt < order.ExpireAt ? retryAt : order.ExpireAt;
                 continue;
             }
 
@@ -131,148 +271,32 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Clears pending and recently accepted orders when the round restarts.
-    /// </summary>
-    private void OnRoundRestart(RoundRestartCleanupEvent ev)
-    {
-        foreach (var order in _pendingOrders)
-            RollbackCrates(order.Crates);
-
-        _pendingOrders.Clear();
-
-        _acceptedOrders.Clear();
-    }
-
-    /// <summary>
-    /// Sends the current console state when the UI is opened.
-    /// </summary>
-    private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
-    {
-        UpdateUi(ent);
-    }
-
-    /// <summary>
-    /// Routes station selection requests to the public selection API.
-    /// </summary>
-    private void OnSelectStation(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplySelectStationMessage args)
-    {
-        TrySelectStation(ent, args.Actor, args.Station, args.SelectionId);
-    }
-
-    /// <summary>
-    /// Routes order requests to the public order API.
-    /// </summary>
-    private void OnOrder(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyOrderMessage args)
-    {
-        TryPlaceOrder(ent, args.Actor, args.OrderId, args.Station, args.Entries);
-    }
-
-
-    /// <summary>
-    /// Attempts to select an orderable station and records the request identifier on success.
-    /// </summary>
-    public bool TrySelectStation(
-        Entity<CentCommSupplyConsoleComponent> ent,
-        EntityUid actor,
-        NetEntity stationNet,
-        Guid selectionId)
-    {
-        if (!CanSelectStation(ent, actor, stationNet, out var error))
-        {
-            if (error != null)
-                Fail(ent, actor, error, stationSelectionId: selectionId);
-
-            return false;
-        }
-
-        DoSelectStation(ent, GetEntity(stationNet), selectionId);
-        return true;
-    }
-
-    /// <summary>
-    /// Checks whether the actor may select the requested station.
-    /// </summary>
-    public bool CanSelectStation(
-        Entity<CentCommSupplyConsoleComponent> ent,
-        EntityUid actor,
-        NetEntity stationNet,
-        out string? error)
-    {
-        if (!_access.IsAllowed(actor, ent.Owner))
-        {
-            error = Loc.GetString("centcomm-supply-error-access");
-            return false;
-        }
-
-        var station = GetEntity(stationNet);
-        var owningStation = _station.GetOwningStation(ent.Owner);
-        if (station == owningStation
-            || !TryComp<StationDataComponent>(station, out var data)
-            || !HasBuyPallets(data)
-            || !TryComp<StationCargoOrderDatabaseComponent>(station, out _))
-        {
-            error = Loc.GetString("centcomm-supply-error-invalid-station");
-            return false;
-        }
-
-        error = null;
-        return true;
-    }
-
-    /// <summary>
     /// Applies a validated station selection and updates the UI.
     /// </summary>
     private void DoSelectStation(
         Entity<CentCommSupplyConsoleComponent> ent,
-        EntityUid station,
-        Guid selectionId)
+        EntityUid station)
     {
         ent.Comp.SelectedStation = station;
-        ent.Comp.LastStationSelectionId = selectionId;
         UpdateUi(ent);
     }
 
     /// <summary>
-    /// Attempts to validate, pack and queue an order.
+    /// Sends a station selection result to the requesting user only.
     /// </summary>
-    public bool TryPlaceOrder(
+    private void SendStationSelectionResult(
         Entity<CentCommSupplyConsoleComponent> ent,
         EntityUid actor,
-        Guid orderId,
-        NetEntity stationNet,
-        List<CentCommSupplyOrderEntry>? entries)
+        Guid selectionId,
+        bool accepted,
+        NetEntity? station,
+        string? error)
     {
-        if (!CanPlaceOrder(ent, actor, orderId, stationNet, entries, out var plan, out var error))
-        {
-            if (error != null)
-                Fail(ent, actor, error);
-
-            return false;
-        }
-
-        if (!TryDoPlaceOrder(ent, actor, orderId, plan!, out error))
-        {
-            if (error != null)
-                Fail(ent, actor, error);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Validates whether an order can be placed without modifying console or order state.
-    /// </summary>
-    public bool CanPlaceOrder(
-        Entity<CentCommSupplyConsoleComponent> ent,
-        EntityUid actor,
-        Guid orderId,
-        NetEntity stationNet,
-        List<CentCommSupplyOrderEntry>? entries,
-        out string? error)
-    {
-        return CanPlaceOrder(ent, actor, orderId, stationNet, entries, out _, out error);
+        _ui.ServerSendUiMessage(
+            ent.Owner,
+            CentCommSupplyUiKey.Key,
+            new CentCommSupplyStationSelectionResultMessage(selectionId, accepted, station, error),
+            actor);
     }
 
     /// <summary>
@@ -298,13 +322,13 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
         if (orderId == Guid.Empty)
         {
-            error = Loc.GetString("centcomm-supply-error-bad-config");
+            error = Loc.GetString("centcomm-supply-error-invalid-order-id");
             return false;
         }
 
         if (_acceptedOrders.Contains(orderId))
         {
-            error = Loc.GetString("centcomm-supply-error-duplicate");
+            error = Loc.GetString("centcomm-supply-error-order-already-accepted");
             return false;
         }
 
@@ -567,8 +591,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     private void UpdateUi(
         Entity<CentCommSupplyConsoleComponent> ent,
         string? status = null,
-        bool orderPlaced = false,
-        Guid? stationSelectionId = null)
+        bool orderPlaced = false)
     {
         if (TerminatingOrDeleted(ent.Owner))
             return;
@@ -607,7 +630,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             selected is { } selectedStation ? GetNetEntity(selectedStation) : null,
             ent.Comp.MaxCratesPerOrder,
             ent.Comp.MaxProductsPerOrder,
-            stationSelectionId ?? ent.Comp.LastStationSelectionId,
             status,
             orderPlaced);
 
@@ -744,20 +766,21 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// </summary>
     private List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> GetFreeBuyPallets(
         EntityUid station,
-        EntProtoId? crateProtoId = null)
+        EntProtoId crateProtoId)
     {
         var result = new List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)>();
 
         if (!TryComp<StationDataComponent>(station, out var data))
             return result;
 
+        var crateFixtures = GetCrateHardFixtures(crateProtoId, out var noLocalRotation);
         foreach (var grid in data.Grids)
         {
             var pallets = GetCargoPallets(grid, BuySellType.Buy);
             if (pallets.Count == 0)
                 continue;
 
-            result.AddRange(GetFreeCargoPallets(grid, pallets, crateProtoId));
+            result.AddRange(GetFreeCargoPallets(grid, pallets, crateFixtures, noLocalRotation));
         }
 
         return result;
@@ -788,130 +811,87 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Filters out pallets occupied by dynamic or static obstacles with hard fixtures that would physically block a crate.
+    /// Filters out pallets whose footprint is occupied by a fixture that can physically block the crate.
     /// </summary>
     private List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> GetFreeCargoPallets(
         EntityUid gridUid,
         List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> pallets,
-        EntProtoId? crateProtoId = null)
+        List<Fixture> crateFixtures,
+        bool noLocalRotation)
     {
-        var result = new List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)>();
-        var (crateLayer, crateMask) = GetCrateCollisionLayerAndMask(crateProtoId);
+        if (crateFixtures.Count == 0)
+            return pallets;
 
+        var result = new List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)>();
         foreach (var pallet in pallets)
         {
-            var aabb = _lookup.GetAABBNoContainer(
-                pallet.Entity,
+            var palletTransform = new Transform(
                 pallet.Transform.LocalPosition,
-                pallet.Transform.LocalRotation);
-
-            // Fish-start: проверка действительных коллизионных препятствий для ящика
-            _intersecting.Clear();
-            _lookup.GetLocalEntitiesIntersecting(
-                gridUid,
-                aabb,
-                _intersecting,
-                LookupFlags.Dynamic | LookupFlags.Static);
+                noLocalRotation ? Angle.Zero : pallet.Transform.LocalRotation);
 
             var blocked = false;
-            foreach (var uid in _intersecting)
+            foreach (var crateFixture in crateFixtures)
             {
-                if (uid == pallet.Entity || !HasCrateBlockingFixture(uid, crateLayer, crateMask))
-                    continue;
+                var filter = new QueryFilter
+                {
+                    LayerBits = crateFixture.CollisionLayer,
+                    MaskBits = crateFixture.CollisionMask,
+                };
+                var query = new FixtureQueryArgs(filter);
+                var state = false;
 
-                blocked = true;
-                break;
+                for (var childIndex = 0; childIndex < crateFixture.Shape.ChildCount; childIndex++)
+                {
+                    _lookup.ForEachLocalFixtureIntersecting(
+                        gridUid,
+                        crateFixture.Shape,
+                        childIndex,
+                        palletTransform,
+                        ref state,
+                        new BlockingFixtureCallback(pallet.Entity),
+                        query);
+
+                    if (state)
+                        break;
+                }
+
+                if (state)
+                {
+                    blocked = true;
+                    break;
+                }
             }
 
-            if (blocked)
-                continue;
-
-            result.Add(pallet);
-            // Fish-end
+            if (!blocked)
+                result.Add(pallet);
         }
 
         return result;
     }
 
     /// <summary>
-    /// Checks whether an entity has a hard fixture that can physically block a crate.
+    /// Returns the configured crate's hard fixtures and whether its transform can rotate locally.
     /// </summary>
-    private bool HasCrateBlockingFixture(EntityUid uid, int crateLayer, int crateMask)
+    private List<Fixture> GetCrateHardFixtures(EntProtoId crateProtoId, out bool noLocalRotation)
     {
-        if (!TryComp<FixturesComponent>(uid, out var fixtures))
-            return false;
+        var result = new List<Fixture>();
+        noLocalRotation = false;
 
+        if (!_prototypes.TryIndex(crateProtoId, out EntityPrototype? crateProto)
+            || !crateProto.TryComp<FixturesComponent>(out var fixtures, EntityManager.ComponentFactory))
+        {
+            return result;
+        }
+
+        noLocalRotation = crateProto.TryComp<TransformComponent>(out var transform, EntityManager.ComponentFactory)
+            && transform.NoLocalRotation;
         foreach (var fixture in fixtures.Fixtures.Values)
         {
-            // Fish-edit: проверка встречных сочетаний слоя и маски через логическое ИЛИ
-            if (fixture.Hard &&
-                (((fixture.CollisionLayer & crateMask) != 0) ||
-                 ((fixture.CollisionMask & crateLayer) != 0)))
-            {
-                return true;
-            }
+            if (fixture.Hard)
+                result.Add(fixture);
         }
 
-        return false;
-    }
-
-    /// <summary>
-    /// Resolves collision layer and mask from the configured crate prototype, falling back to defaults.
-    /// </summary>
-    private (int Layer, int Mask) GetCrateCollisionLayerAndMask(EntProtoId? crateProtoId)
-    {
-        var defaultLayer = (int) CollisionGroup.MachineLayer;
-        var defaultMask = (int) CollisionGroup.CrateMask;
-
-        if (crateProtoId == null || !_prototypes.TryIndex(crateProtoId.Value, out EntityPrototype? crateProto))
-            return (defaultLayer, defaultMask);
-
-        if (TryGetPrototypeFixtures(crateProto, out var fixtures) && fixtures.Count > 0)
-        {
-            var layer = 0;
-            var mask = 0;
-            foreach (var fixture in fixtures.Values)
-            {
-                if (!fixture.Hard)
-                    continue;
-
-                layer |= fixture.CollisionLayer;
-                mask |= fixture.CollisionMask;
-            }
-
-            if (layer != 0 || mask != 0)
-                return (layer != 0 ? layer : defaultLayer, mask != 0 ? mask : defaultMask);
-        }
-
-        return (defaultLayer, defaultMask);
-    }
-
-    /// <summary>
-    /// Traverses prototype inheritance to find fixtures declared on the prototype or any of its parents.
-    /// </summary>
-    private bool TryGetPrototypeFixtures(EntityPrototype proto, out Dictionary<string, Fixture> fixtures)
-    {
-        if (proto.TryComp<FixturesComponent>(out var fixturesComp, EntityManager.ComponentFactory)
-            && fixturesComp.Fixtures.Count > 0)
-        {
-            fixtures = fixturesComp.Fixtures;
-            return true;
-        }
-
-        if (proto.Parents != null)
-        {
-            foreach (var parentId in proto.Parents)
-            {
-                if (_prototypes.TryIndex(parentId, out EntityPrototype? parentProto)
-                    && TryGetPrototypeFixtures(parentProto, out fixtures))
-                {
-                    return true;
-                }
-            }
-        }
-
-        fixtures = default!;
-        return false;
+        return result;
     }
 
     /// <summary>
@@ -946,10 +926,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
         // Fish-start: уведомление игрока даже при удалении консоли
         if (!TerminatingOrDeleted(order.Actor))
-        {
-            var popupTarget = consoleValid ? order.Console : order.Actor;
-            _popup.PopupEntity(message, popupTarget, order.Actor, PopupType.MediumCaution);
-        }
+            _popup.PopupEntity(message, order.Actor, order.Actor, PopupType.MediumCaution);
 
         if (consoleValid)
             UpdateUi((order.Console, component!), message);
@@ -979,11 +956,29 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     private void Fail(
         Entity<CentCommSupplyConsoleComponent> ent,
         EntityUid actor,
-        string message,
-        Guid? stationSelectionId = null)
+        string message)
     {
         _popup.PopupEntity(message, ent.Owner, actor, PopupType.MediumCaution);
-        UpdateUi(ent, message, stationSelectionId: stationSelectionId);
+        UpdateUi(ent, message);
+    }
+
+    private readonly struct BlockingFixtureCallback : IFixtureQueryCallback<bool>
+    {
+        private readonly EntityUid _pallet;
+
+        public BlockingFixtureCallback(EntityUid pallet)
+        {
+            _pallet = pallet;
+        }
+
+        public bool Invoke(ref bool state, in FixtureProxy fixture)
+        {
+            if (fixture.Entity == _pallet)
+                return true;
+
+            state = true;
+            return false;
+        }
     }
 
     private sealed class PendingOrder

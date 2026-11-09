@@ -44,6 +44,20 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
         };
     }
 
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+
+        if (message is CentCommSupplyStationSelectionResultMessage result)
+        {
+            _window?.OnStationSelectionResult(
+                result.SelectionId,
+                result.Accepted,
+                result.Station,
+                result.Error);
+        }
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

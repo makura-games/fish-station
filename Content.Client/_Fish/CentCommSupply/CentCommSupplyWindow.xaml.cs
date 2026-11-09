@@ -15,8 +15,8 @@ namespace Content.Client._Fish.CentCommSupply;
 [GenerateTypedNameReferences]
 public sealed partial class CentCommSupplyWindow : FancyWindow
 {
-    [Dependency] private IEntityManager _entityManager = default!;
-    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IEntityManager _entity = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
 
     private readonly SpriteSystem _sprite;
     private readonly List<NetEntity> _stationEntities = new();
@@ -29,6 +29,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
     private string? _category;
     private NetEntity? _selectedStation;
     private NetEntity? _pendingStationSelection;
+    private NetEntity? _stationSelectionPrevious;
     private Guid _pendingStationSelectionId;
     private CentCommSupplyProductEntry? _pendingProduct;
     private int _maxProductsPerOrder = int.MaxValue;
@@ -43,42 +44,17 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        _sprite = _entityManager.System<SpriteSystem>();
+        _sprite = _entity.System<SpriteSystem>();
 
         _orderMenu = new CentCommSupplyOrderMenu();
         _orderMenu.SubmitButton.OnPressed += _ => AddPendingProduct();
 
         StationSelector.OnItemSelected += args =>
         {
-            if (_orderPending || _stationSelectionPending)
-                return;
-
             if (args.Id < 0 || args.Id >= _stationEntities.Count)
                 return;
 
-            var station = _stationEntities[args.Id];
-            if (_selectedStation == station)
-                return;
-
-            var previousSelection = _selectedStation;
-            var selectionId = Guid.NewGuid();
-            _selectedStation = station;
-            _pendingStationSelection = station;
-            _pendingStationSelectionId = selectionId;
-            _stationSelectionPending = true;
-            UpdateStationSelector();
-
-            if (OnStationSelected?.Invoke(station, selectionId) == true)
-            {
-                ClearOrder();
-                return;
-            }
-
-            _selectedStation = previousSelection;
-            _pendingStationSelection = null;
-            _pendingStationSelectionId = Guid.Empty;
-            _stationSelectionPending = false;
-            RestoreStationSelectorSelection();
+            SelectStation(_stationEntities[args.Id]);
         };
 
         SearchBar.OnTextChanged += _ => PopulateProducts();
@@ -133,6 +109,70 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         UpdateOrderButton();
     }
 
+    /// <summary>
+    /// Requests a station change and waits for the per-user server acknowledgement.
+    /// </summary>
+    public void SelectStation(NetEntity station)
+    {
+        if (_orderPending || _stationSelectionPending)
+            return;
+
+        if (!_stationEntities.Contains(station) || _selectedStation == station)
+            return;
+
+        _stationSelectionPrevious = _selectedStation;
+        var selectionId = Guid.NewGuid();
+        _selectedStation = station;
+        _pendingStationSelection = station;
+        _pendingStationSelectionId = selectionId;
+        _stationSelectionPending = true;
+        UpdateStationSelector();
+
+        if (OnStationSelected?.Invoke(station, selectionId) == true)
+            return;
+
+        _selectedStation = _stationSelectionPrevious;
+        _stationSelectionPrevious = null;
+        _pendingStationSelection = null;
+        _pendingStationSelectionId = Guid.Empty;
+        _stationSelectionPending = false;
+        RestoreStationSelectorSelection();
+    }
+
+    /// <summary>
+    /// Applies the server response for the matching station selection request.
+    /// </summary>
+    public void OnStationSelectionResult(Guid selectionId, bool accepted, NetEntity? station, string? error)
+    {
+        if (!_stationSelectionPending || selectionId != _pendingStationSelectionId)
+            return;
+
+        _pendingStationSelection = null;
+        _pendingStationSelectionId = Guid.Empty;
+        _stationSelectionPending = false;
+
+        if (accepted && station is { } acceptedStation && _stationEntities.Contains(acceptedStation))
+        {
+            if (_stationSelectionPrevious != acceptedStation)
+                ClearOrder();
+
+            _selectedStation = acceptedStation;
+        }
+        else
+        {
+            _selectedStation = _stationSelectionPrevious;
+        }
+
+        _stationSelectionPrevious = null;
+        RestoreStationSelectorSelection();
+
+        if (!string.IsNullOrWhiteSpace(error))
+        {
+            StatusLabel.Visible = true;
+            StatusLabel.Text = error;
+        }
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
@@ -161,6 +201,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         {
             _selectedStation = null;
             _pendingStationSelection = null;
+            _stationSelectionPrevious = null;
             _pendingStationSelectionId = Guid.Empty;
             _stationSelectionPending = false;
             UpdateStationSelector();
@@ -173,19 +214,10 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
         if (_stationSelectionPending)
         {
             var pending = _pendingStationSelection;
-            var pendingAvailable = pending is { } pendingStation && _stationEntities.Contains(pendingStation);
-            var acknowledged = state.LastStationSelectionId == _pendingStationSelectionId;
-
-            if (pendingAvailable && serverSelected == pending)
-            {
-                _selectedStation = pending;
-                _pendingStationSelection = null;
-                _pendingStationSelectionId = Guid.Empty;
-                _stationSelectionPending = false;
-            }
-            else if (acknowledged || !pendingAvailable || !string.IsNullOrWhiteSpace(state.StatusMessage)) // Fish-edit: сброс ожидания при ошибке сервера
+            if (pending is { } pendingStation && !_stationEntities.Contains(pendingStation))
             {
                 _pendingStationSelection = null;
+                _stationSelectionPrevious = null;
                 _pendingStationSelectionId = Guid.Empty;
                 _stationSelectionPending = false;
                 _selectedStation = serverSelected is { } selected && _stationEntities.Contains(selected)
@@ -195,6 +227,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
             }
             else
             {
+                // Fish-edit: общий state не должен сбрасывать ожидание чужого запроса
                 _selectedStation = pending;
             }
         }
@@ -511,7 +544,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
     private Texture? GetIcon(string prototypeId)
     {
-        if (!_prototypeManager.TryIndex<CentCommSupplyProductPrototype>(prototypeId, out var prototype)
+        if (!_prototype.TryIndex<CentCommSupplyProductPrototype>(prototypeId, out var prototype)
             || prototype.Icon == null)
         {
             return null;

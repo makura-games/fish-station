@@ -1,0 +1,95 @@
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerOxygenFlatpack
+  name: gas miner oxygen flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: GasMinerOxygen
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerNitrogenFlatpack
+  name: gas miner nitrogen flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: GasMinerNitrogen
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerCarbonDioxideFlatpack
+  name: gas miner dioxide flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: GasMinerCarbonDioxide
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerPlasmaFlatpack
+  name: gas miner plasma flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: GasMinerPlasma
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineChemicalsFlatpack
+  name: vending machine chemicals flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: VendingMachineChemicals
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#52B4E9"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineBoozeFlatpack
+  name: vending machine booze flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: VendingMachineBooze
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#9FED58"
+    - state: icon-default
