@@ -30,6 +30,7 @@
     eyes: ClothingEyesHudSecurity
     ears: ClothingHeadsetAltDeathSquad # Sunrise-edit
     gloves: ClothingHandsPowerGlovesUplinkNTERTEpsilon # Fish-edit
+    # gloves: ClothingHandsGlovesCombat # Fish-edit - Исходная экипировка до замены перчаток
     outerClothing: ClothingOuterHardsuitDeathsquad
     shoes: ClothingShoesBootsMagAdv
     id: DeathsquadPDA
@@ -56,6 +57,7 @@
     - BoxErtBaseKit
     # Sunrise-end
   inhand: [] # Fish-edit - Перчатки надеваются в слот рук
+  # - ClothingHandsPowerGlovesUplinkNTERTEpsilon # Fish-edit - Перенесено в слот перчаток
 
 - type: chameleonOutfit
   id: DeathSquadChameleonOutfit

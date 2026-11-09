@@ -50,6 +50,7 @@
     eyes: ClothingEyesHudMedSec
     neck: Whistle
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmberLeader # Fish-edit
+    # gloves: ClothingHandsGlovesCombat # Fish-edit - Исходная экипировка до замены перчаток
     outerClothing: ClothingOuterHardsuitERTLeader
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
@@ -158,6 +159,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedical
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit
+    # gloves: ClothingHandsGlovesCombat # Fish-edit - Исходная экипировка до замены перчаток
     outerClothing: ClothingOuterHardsuitERTChaplain
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
@@ -239,6 +241,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudDiagnostic
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit
+    # gloves: ClothingHandsGlovesCombat # Fish-edit - Исходная экипировка до замены перчаток
     outerClothing: ClothingOuterHardsuitERTEngineer
     id: ERTEngineerPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
@@ -337,6 +340,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudSecurity
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit
+    # gloves: ClothingHandsGlovesCombat # Fish-edit - Исходная экипировка до замены перчаток
     neck: SecurityWhistle
     outerClothing: ClothingOuterHardsuitERTSecurity
     id: ERTSecurityPDA
@@ -372,6 +376,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudSecurity
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit
+    # gloves: ClothingHandsGlovesCombat # Fish-edit - Исходная экипировка до замены перчаток
     outerClothing: ClothingOuterHardsuitERTSecurity
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
@@ -532,6 +537,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedical
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit
+    # gloves: ClothingHandsGlovesCombat # Fish-edit - Исходная экипировка до замены перчаток
     outerClothing: ClothingOuterHardsuitERTMedical
     id: ERTMedicPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
