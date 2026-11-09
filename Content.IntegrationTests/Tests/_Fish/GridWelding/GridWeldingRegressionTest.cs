@@ -11,6 +11,7 @@ using Content.Shared.Friction;
 using Content.Shared.GameTicking;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Item.ItemToggle;
+using Content.Shared.Movement.Components;
 using Content.Shared.Pinpointer;
 using Content.Shared.Stunnable;
 using Content.Shared.Tools.Systems;
@@ -21,12 +22,56 @@ using Robust.Shared.Maths;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Fish.GridWelding;
 
 [TestFixture]
 public sealed class GridWeldingRegressionTest
 {
+    /// <summary>Updates movement references before the first selected fragment is consumed by a static station.</summary>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task WeldingOccupiedFragmentIntoStaticGridUpdatesMovement(bool quarterTurn)
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings());
+        var server = pair.Server;
+        var entities = server.EntMan;
+        WeldingScene scene = default;
+        var started = false;
+
+        await server.WaitPost(() =>
+        {
+            scene = CreateScene(pair, quarterTurn: quarterTurn);
+            entities.System<SharedPhysicsSystem>().SetBodyType(scene.Second, BodyType.Static);
+            entities.System<SharedTransformSystem>().SetCoordinates(scene.User, scene.FirstClick);
+            // До начала сварки камера уже привязана к обломку, на котором стоит игрок.
+            var mover = entities.GetComponent<InputMoverComponent>(scene.User);
+            mover.RelativeEntity = scene.First;
+            started = StartWelding(entities, scene);
+        });
+        await server.WaitAssertion(() =>
+        {
+            AssertReady(scene);
+            Assert.That(started, Is.True);
+        });
+
+        await WaitForMerge(pair, scene.First);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entities.EntityExists(scene.Second), Is.True);
+            Assert.That(entities.GetComponent<TransformComponent>(scene.User).GridUid, Is.EqualTo(scene.Second));
+            var mover = entities.GetComponent<InputMoverComponent>(scene.User);
+            Assert.That(mover.RelativeEntity, Is.EqualTo(scene.Second),
+                "Movement must stop referencing the consumed fragment before the camera interpolation delay expires.");
+            var state = (InputMoverComponentState) entities.GetComponentState(entities.EventBus, mover, null, GameTick.Zero)!;
+            Assert.That(state.RelativeEntity, Is.EqualTo(entities.GetNetEntity(scene.Second)));
+        });
+
+        await server.WaitPost(() => entities.DeleteEntity(scene.Map));
+        await pair.CleanReturnAsync();
+    }
+
     [TestPrototypes]
     private const string Prototypes = """
         - type: entity

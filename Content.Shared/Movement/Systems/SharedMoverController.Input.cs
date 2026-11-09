@@ -28,6 +28,7 @@ namespace Content.Shared.Movement.Systems
 
         private void InitializeInput()
         {
+            InitializeGridWeldingMovement(); // Fish-edit: обновляем ссылки движения до удаления объединённого грида
             var moveUpCmdHandler = new MoverDirInputCmdHandler(this, Direction.North);
             var moveLeftCmdHandler = new MoverDirInputCmdHandler(this, Direction.West);
             var moveRightCmdHandler = new MoverDirInputCmdHandler(this, Direction.East);
