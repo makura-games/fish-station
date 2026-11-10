@@ -100,8 +100,8 @@
   components:
   - type: Sprite
     layers:
-    - sprite: Clothing/Eyes/Glasses/thermal.rsi
-      state: icon
+    - sprite: _Starlight/Objects/Specific/Medical/implants.rsi
+      state: eyes_thermal
       map: ["enum.ActionVisuals.Icon"]
     - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
       state: on

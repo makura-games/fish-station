@@ -118,8 +118,8 @@
   suffix: Fish
   components:
   - type: Sprite
-    sprite: Clothing/Eyes/Glasses/thermal.rsi
-    state: icon
+    sprite: _Starlight/Objects/Specific/Medical/implants.rsi
+    state: eyes_thermal
   - type: FishIpcModule
     passiveDrainPerSecond: 0.55
     exclusionGroup: vision
