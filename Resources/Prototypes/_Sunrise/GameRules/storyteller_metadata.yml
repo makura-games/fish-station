@@ -375,7 +375,7 @@
   maxStress: 80
 
 - type: storytellerMetadata
-  id: DerelictSyndicateReaperCyborgSpawn
+  id: FishDerelictSyndicateReaperCyborgSpawn
   threatType: MinorCalm
   threatCost: 25
   minStationStrength: 30

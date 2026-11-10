@@ -32,7 +32,7 @@
   id: SyndicatePaiDoorHack
   name: syndicate-pai-listing-door-name
   description: syndicate-pai-listing-door-desc
-  icon: { sprite: Objects/Tools/access_breaker.rsi, state: icon }
+  icon: { sprite: Objects/Tools/access_breaker.rsi, state: syndi-icon }
   productAction: ActionSyndicatePaiDoorHack
   applyToMob: true
   cost:

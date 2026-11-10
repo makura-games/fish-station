@@ -1,9 +1,9 @@
 using System.Threading;
-using Content.Server.AlertLevel;
 using Content.Server.Chat.Systems;
 using Content.Shared.Access;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
+using Content.Shared.AlertLevel;
 using Content.Shared.GameTicking;
 using Content.Shared.Station.Components;
 using Robust.Shared.Prototypes;
@@ -15,6 +15,7 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
 {
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private AccessReaderSystem _accessReader = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!;
 
     private readonly Dictionary<EntityUid, StationAccessState> _stationStates = [];
 
@@ -22,7 +23,7 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<AlertLevelChangedEvent>(OnAlertLevelChanged);
+        SubscribeLocalEvent<SunriseAlertLevelChangedEvent>(OnAlertLevelChanged);
         SubscribeLocalEvent<AdditionalAlertLevelChangedEvent>(OnAdditionalAlertLevelChanged);
         SubscribeLocalEvent<AlertLevelComponent, EntityTerminatingEvent>(OnStationTerminating);
 
@@ -33,11 +34,11 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
     /// <summary>
     /// Schedules an update of temporary access groups after an alert level change.
     /// </summary>
-    private void OnAlertLevelChanged(AlertLevelChangedEvent ev)
+    private void OnAlertLevelChanged(ref SunriseAlertLevelChangedEvent ev)
     {
         // Это случай первичного установления кода(зеленый) по умолчанию
         // Чтобы в начале раунда не слышать, что доступы изменились на зеленый
-        if (ev.PreviousLevel == string.Empty)
+        if (ev.PreviousLevel == default)
         {
             GetStationState(ev.Station, ev.AlertLevel).PrimaryLevel = ev.AlertLevel;
             return;
@@ -46,32 +47,33 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
         if (!TryComp<AlertLevelComponent>(ev.Station, out var alert))
             return;
 
-        if (alert.AlertLevels == null)
+        if (!_alertLevel.TryGetLevel((ev.Station, alert), out var currentLevelId)
+            || currentLevelId is not { } currentLevel)
+        {
             return;
+        }
 
         var state = GetStationState(ev.Station, ev.PreviousLevel);
         CancelUpdate(state, ev.PreviousLevel);
 
-        if (!alert.AlertLevels.Levels.TryGetValue(alert.CurrentLevel, out var currentLevelDetail)
+        if (!ProtoMan.Resolve(currentLevel, out var currentLevelDetail)
             || currentLevelDetail.ExtendedAccessOptions is not { } options)
         {
-            state.PrimaryLevel = alert.CurrentLevel;
+            state.PrimaryLevel = currentLevel;
             ApplyAccessUpdate((ev.Station, alert), state, announceAccessGrant: false);
             return;
         }
 
-        ScheduleAccessUpdate((ev.Station, alert), state, alert.CurrentLevel, options, isAdditional: false);
+        ScheduleAccessUpdate((ev.Station, alert), state, currentLevel, options, isAdditional: false);
     }
 
-    private void OnAdditionalAlertLevelChanged(AdditionalAlertLevelChangedEvent ev)
+    private void OnAdditionalAlertLevelChanged(ref AdditionalAlertLevelChangedEvent ev)
     {
-        if (!TryComp<AlertLevelComponent>(ev.Station, out var alert)
-            || alert.AlertLevels == null)
-        {
+        if (!TryComp<AlertLevelComponent>(ev.Station, out var alert))
             return;
-        }
 
-        var state = GetStationState(ev.Station, alert.CurrentLevel);
+        var primaryLevel = alert.CurrentAlertLevel;
+        var state = GetStationState(ev.Station, primaryLevel);
 
         // Отозванные временные доступы должны исчезать сразу, а не после задержки их выдачи.
         if (!ev.Enabled)
@@ -82,7 +84,7 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
             return;
         }
 
-        if (alert.AlertLevels.Levels.TryGetValue(ev.AlertLevel, out var detail)
+        if (ProtoMan.Resolve(ev.AlertLevel, out var detail)
             && detail.ExtendedAccessOptions is { } options)
         {
             ScheduleAccessUpdate((ev.Station, alert), state, ev.AlertLevel, options, isAdditional: true);
@@ -97,7 +99,7 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
     private void ScheduleAccessUpdate(
         Entity<AlertLevelComponent> station,
         StationAccessState state,
-        string level,
+        ProtoId<AlertLevelPrototype> level,
         ExtendedAccessOptions options,
         bool isAdditional,
         bool announceAccessGrant = true)
@@ -112,10 +114,10 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
             () => AfterDelay(station, level, token, isAdditional, announceAccessGrant),
             token.Token);
 
-        if (announceAccessGrant && options.Announcement != null)
+        if (announceAccessGrant && options.Announcement is { } announcement)
         {
             // В строке локализации оповещения обязательно должно быть указан параметр для времени
-            var message = Loc.GetString(options.Announcement, ("time", options.Delay.TotalSeconds));
+            var message = Loc.GetString(announcement, ("time", options.Delay.TotalSeconds));
 
             _chat.DispatchStationAnnouncement(station,
                 message,
@@ -129,7 +131,7 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
     /// </summary>
     private void AfterDelay(
         Entity<AlertLevelComponent> station,
-        string level,
+        ProtoId<AlertLevelPrototype> level,
         CancellationTokenSource token,
         bool isAdditional,
         bool announceAccessGrant)
@@ -159,7 +161,7 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
         }
         else
         {
-            if (station.Comp.CurrentLevel != level)
+            if (station.Comp.CurrentAlertLevel != level)
                 return;
 
             state.PrimaryLevel = level;
@@ -184,17 +186,17 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
                 sender: Loc.GetString("access-system-sender"));
         }
 
-        var activeLevels = new List<string> { state.PrimaryLevel };
+        var activeLevels = new List<string> { state.PrimaryLevel.Id };
         foreach (var level in state.AdditionalLevels)
         {
             if (station.Comp.ActiveAdditionalLevels.Contains(level))
-                activeLevels.Add(level);
+                activeLevels.Add(level.Id);
         }
 
         var globalGroups = new HashSet<ProtoId<AccessGroupPrototype>>();
         foreach (var level in activeLevels)
         {
-            if (station.Comp.AlertLevels!.Levels.TryGetValue(level, out var detail)
+            if (ProtoMan.Resolve(new ProtoId<AlertLevelPrototype>(level), out var detail)
                 && detail.ExtendedAccessOptions?.AccessGroup is { } group)
             {
                 globalGroups.Add(group);
@@ -212,13 +214,13 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
 
             _accessReader.UpdateAccess(
                 (uid, reader),
-                state.PrimaryLevel,
+                state.PrimaryLevel.Id,
                 activeLevels,
                 globalGroups);
         }
     }
 
-    private StationAccessState GetStationState(EntityUid station, string primaryLevel)
+    private StationAccessState GetStationState(EntityUid station, ProtoId<AlertLevelPrototype> primaryLevel)
     {
         if (_stationStates.TryGetValue(station, out var state))
             return state;
@@ -228,7 +230,7 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
         return state;
     }
 
-    private static void CancelUpdate(StationAccessState state, string level)
+    private static void CancelUpdate(StationAccessState state, ProtoId<AlertLevelPrototype> level)
     {
         if (!state.Tokens.Remove(level, out var token))
             return;
@@ -266,10 +268,10 @@ public sealed partial class ExtendedAccessSystem : EntitySystem
         state.Tokens.Clear();
     }
 
-    private sealed class StationAccessState(string primaryLevel)
+    private sealed class StationAccessState(ProtoId<AlertLevelPrototype> primaryLevel)
     {
-        public string PrimaryLevel = primaryLevel;
-        public readonly HashSet<string> AdditionalLevels = [];
-        public readonly Dictionary<string, CancellationTokenSource> Tokens = [];
+        public ProtoId<AlertLevelPrototype> PrimaryLevel = primaryLevel;
+        public readonly HashSet<ProtoId<AlertLevelPrototype>> AdditionalLevels = [];
+        public readonly Dictionary<ProtoId<AlertLevelPrototype>, CancellationTokenSource> Tokens = [];
     }
 }

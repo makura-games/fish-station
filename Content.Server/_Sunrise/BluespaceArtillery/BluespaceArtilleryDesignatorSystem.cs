@@ -24,7 +24,7 @@ public sealed partial class BluespaceArtilleryDesignatorSystem : SharedBluespace
 {
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private ExplosionSystem _explosion = default!;
-    [Dependency] private IMapManager _mapManager = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedChargesSystem _charges = default!;
@@ -180,7 +180,7 @@ public sealed partial class BluespaceArtilleryDesignatorSystem : SharedBluespace
         {
             DeleteMarker(markerUid);
 
-            if (!_mapManager.MapExists(mapCoords.MapId))
+            if (!_mapSystem.MapExists(mapCoords.MapId))
                 return;
 
             _explosion.QueueExplosion(

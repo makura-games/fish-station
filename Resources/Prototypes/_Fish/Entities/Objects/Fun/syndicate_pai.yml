@@ -100,8 +100,11 @@
   description: Open the Syndicate pAI medical suite.
   components:
   - type: Action
-    icon: { sprite: Objects/Specific/Medical/syndihypo.rsi, state: hypo }
     itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Objects/Specific/Medical/syndihypo.rsi
+    layers:
+    - state: hypo
   - type: InstantAction
     event: !type:SyndicatePaiOpenMedicalEvent
 
@@ -112,9 +115,12 @@
   description: Instantly open a health scan of your bound master.
   components:
   - type: Action
-    icon: { sprite: Objects/Specific/Medical/healthanalyzer.rsi, state: icon }
     itemIconStyle: NoItem
     useDelay: 1
+  - type: Sprite
+    sprite: Objects/Specific/Medical/healthanalyzer.rsi
+    layers:
+    - state: icon
   - type: InstantAction
     event: !type:SyndicatePaiScanOwnerEvent
 
@@ -129,9 +135,12 @@
   - type: AutoRecharge
     rechargeDuration: 300
   - type: Action
-    icon: { sprite: Objects/Tools/access_breaker.rsi, state: icon }
     itemIconStyle: NoItem
     useDelay: 1
+  - type: Sprite
+    sprite: Objects/Tools/access_breaker.rsi
+    layers:
+    - state: syndi-icon
   - type: InstantAction
     event: !type:SyndicatePaiDoorHackEvent
 
@@ -142,7 +151,10 @@
   description: Remotely access and edit the station criminal records database.
   components:
   - type: Action
-    icon: { sprite: _Sunrise/Objects/Devices/handheld_criminal_records_monitor.rsi, state: icon }
     itemIconStyle: NoItem
+  - type: Sprite
+    sprite: _Sunrise/Objects/Devices/handheld_criminal_records_monitor.rsi
+    layers:
+    - state: icon
   - type: InstantAction
     event: !type:SyndicatePaiOpenSecRecordsEvent

@@ -41,8 +41,10 @@
   components:
   - type: Sprite
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_black.rsi
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.4
+  # Fish-end
   - type: Clothing
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_black.rsi
   - type: Fiber
@@ -63,8 +65,10 @@
   components:
   - type: Sprite
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_green.rsi
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.4
+  # Fish-end
   - type: Clothing
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_green.rsi
   - type: Fiber
@@ -85,8 +89,10 @@
   components:
   - type: Sprite
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_orange.rsi
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.4
+  # Fish-end
   - type: Clothing
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_orange.rsi
   - type: Fiber
@@ -107,8 +113,10 @@
   components:
   - type: Sprite
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_red.rsi
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.4
+  # Fish-end
   - type: Clothing
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_red.rsi
   - type: Fiber
@@ -129,8 +137,10 @@
   components:
   - type: Sprite
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_blue.rsi
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.4
+  # Fish-end
   - type: Clothing
     sprite: _Sunrise/Clothing/Hands/Gloves/nitrile_blue.rsi
   - type: Fiber
@@ -165,7 +175,7 @@
     sprite: _Sunrise/Clothing/Hands/Gloves/christmas_gloves_long.rsi
 
 - type: entity
-  parent: [ ClothingHandsBase, BaseEngineeringContraband ]
+  parent: [ ClothingHandsBase, BaseEngineeringContraband, BaseSlicingRefinable ]
   id: InsulatedGlovesAtmos
   name: insulated gloves atmos
   description: Insulated gloves made especially for atmospheric technicians.
@@ -177,11 +187,9 @@
   - type: Insulated
     preventOpperatinGuns: true
   - type: TemperatureProtection
-    heatingCoefficient: 1.050
-    coolingCoefficient: 0.2
-  - type: Butcherable
-    butcheringType: Knife
-    spawned:
+    coefficient: 0.2
+  - type: ToolRefinable
+    refineResult:
     - id: ClothingHandsGlovesFingerlessInsulated
   - type: Fiber
     fiberMaterial: fibers-insulative

@@ -1,0 +1,20 @@
+- type: entity
+  parent: BaseDerelictCyborgSpawn
+  id: FishDerelictSyndicateReaperCyborgSpawn
+  components:
+  - type: StationEvent
+    weight: 1
+    earliestStart: 25
+    minimumPlayers: 15
+  - type: AntagSpawner
+    prototype: FishPlayerBorgSyndicateReaperDerelictGhostRole
+  - type: AntagSelection
+    antags:
+    - !type:FixedAntagCount
+      proto: FishDerelictSyndicateReaperCyborg
+
+- type: antagSpecifier
+  parent: BaseAntagSpecifier
+  id: FishDerelictSyndicateReaperCyborg
+  pickPlayer: false
+  spawnerPrototype: FishSpawnPointGhostDerelictSyndicateReaperCyborg

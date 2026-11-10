@@ -125,7 +125,7 @@ public sealed partial class RemoteHolopadSystem : EntitySystem
         if (!HasComp<EyeComponent>(actor))
             return false;
 
-        var linkedReceiver = telephone.LinkedTelephones.FirstOrDefault().Owner;
+        var linkedReceiver = telephone.LinkedTelephones.FirstOrDefault();
         if (linkedReceiver == default || TerminatingOrDeleted(linkedReceiver))
             return false;
 

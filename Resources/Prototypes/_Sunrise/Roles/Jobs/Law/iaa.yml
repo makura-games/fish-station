@@ -19,7 +19,9 @@
   startingGear: IAAGear
   icon: "JobIconFishIAA" #Fish-edit
   supervisors: job-supervisors-oversight #Fish-edit
-  displayWeight: 40
+  # Fish-start: displayWeight удален из JobPrototype (настраивается через jobWeight)
+  # displayWeight: 40
+  # Fish-end
   alternativeTitles:
   - job-alt-title-inspector
   access:
