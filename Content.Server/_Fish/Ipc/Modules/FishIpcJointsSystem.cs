@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Emp;
 using Content.Shared.Popups;
@@ -57,7 +58,7 @@ public sealed partial class FishIpcJointsSystem : EntitySystem
 
     private void OnSealedAmputation(Entity<FishIpcSealedJointsHostComponent> ent, ref FishIpcAmputationAttemptEvent args)
     {
-        if (args.Cancelled || ent.Comp.EmpDisabled || !ent.Comp.ModuleEnabled)
+        if (args.Cancelled || ent.Comp.EmpDisabled || !ent.Comp.ModuleEnabled || !ChassisPowered(ent.Owner))
             return;
 
         args.Cancelled = true;
@@ -66,7 +67,7 @@ public sealed partial class FishIpcJointsSystem : EntitySystem
 
     private void OnMagneticAmputation(Entity<FishIpcMagneticJointsHostComponent> ent, ref FishIpcAmputationAttemptEvent args)
     {
-        if (args.Cancelled || ent.Comp.EmpDisabled || !ent.Comp.ModuleEnabled)
+        if (args.Cancelled || ent.Comp.EmpDisabled || !ent.Comp.ModuleEnabled || !ChassisPowered(ent.Owner))
             return;
 
         if (!_random.Prob(ent.Comp.ResistChance))
@@ -93,5 +94,10 @@ public sealed partial class FishIpcJointsSystem : EntitySystem
         Dirty(ent);
         _stun.TryUpdateStunDuration(ent.Owner, ent.Comp.EmpStunDuration);
         _popup.PopupEntity(Loc.GetString("fish-ipc-module-joints-emp-sealed"), ent, ent, PopupType.LargeCaution);
+    }
+
+    private bool ChassisPowered(EntityUid uid)
+    {
+        return !TryComp<FishIpcComponent>(uid, out var ipc) || !ipc.PowerDown;
     }
 }

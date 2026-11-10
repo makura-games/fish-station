@@ -1,4 +1,3 @@
-using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
@@ -38,7 +37,7 @@ public sealed partial class FishIpcPassiveHealSystem : EntitySystem
             if (TerminatingOrDeleted(host) || _mobState.IsDead(host))
                 continue;
 
-            if (TryComp<FishIpcComponent>(host, out var ipc) && ipc.PowerDown)
+            if (!_modules.IsChassisPowered(host))
                 continue;
 
             var fraction = _modules.GetHostChargeFraction(host);

@@ -1,4 +1,5 @@
 using Content.Shared._Fish.Ipc;
+using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Alert;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
@@ -152,6 +153,9 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
         _ipcRadio.SetRadioEnabled((uid, ipc), false);
         _moveMod.RefreshMovementSpeedModifiers(uid);
         _popup.PopupEntity(Loc.GetString("silicon-power-low"), uid, uid);
+
+        var ev = new FishIpcChassisPowerChangedEvent(false);
+        RaiseLocalEvent(uid, ref ev);
     }
 
     private void PowerUp(EntityUid uid, FishIpcComponent ipc)
@@ -163,5 +167,8 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
         Dirty(uid, ipc);
         _ipcRadio.SetRadioEnabled((uid, ipc), true);
         _moveMod.RefreshMovementSpeedModifiers(uid);
+
+        var ev = new FishIpcChassisPowerChangedEvent(true);
+        RaiseLocalEvent(uid, ref ev);
     }
 }

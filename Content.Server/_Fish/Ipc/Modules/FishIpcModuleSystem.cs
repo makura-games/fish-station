@@ -58,11 +58,23 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
     }
 
     /// <summary>
+    /// Шасси запитано: не power-down и в батарее есть заряд.
+    /// При нуле модули не дают эффект и не активируются.
+    /// </summary>
+    public bool IsChassisPowered(EntityUid host)
+    {
+        if (TerminatingOrDeleted(host) || !TryComp<FishIpcComponent>(host, out var ipc) || ipc.PowerDown)
+            return false;
+
+        return GetHostChargeFraction(host) > 0f;
+    }
+
+    /// <summary>
     /// Списать заряд с батареи хоста для активного эффекта модуля.
     /// </summary>
     public bool TryConsumeModuleCharge(EntityUid host, float joules, float minChargeFraction = 0f)
     {
-        if (TerminatingOrDeleted(host) || joules <= 0f)
+        if (TerminatingOrDeleted(host) || joules <= 0f || !IsChassisPowered(host))
             return false;
 
         if (!_powerCell.TryGetBatteryFromSlot(host, out var battery))

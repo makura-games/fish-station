@@ -17,5 +17,12 @@ public sealed partial class FishIpcModuleToggleActionEvent : InstantActionEvent;
 [ByRefEvent]
 public readonly record struct FishIpcModulePowerToggledEvent(EntityUid Host, bool Enabled);
 
+/// <summary>
+/// Батарея шасси села или снова появился заряд.
+/// Эффекты модулей слушателя должны совпасть с <see cref="Powered"/>, тумблер не сбрасывается.
+/// </summary>
+[ByRefEvent]
+public readonly record struct FishIpcChassisPowerChangedEvent(bool Powered);
+
 [Serializable, NetSerializable]
 public sealed partial class FishIpcDefibDoAfterEvent : SimpleDoAfterEvent;

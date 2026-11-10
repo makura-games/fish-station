@@ -59,6 +59,7 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcDefibActionEvent>(OnDefibAction);
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcJumpstarterActionEvent>(OnJumpAction);
+        SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcChassisPowerChangedEvent>(OnChassisPower);
 
         SubscribeLocalEvent<FishIpcDefibPadsComponent, AfterInteractEvent>(OnPadsInteract);
         SubscribeLocalEvent<FishIpcDefibPadsComponent, ComponentShutdown>(OnPadsShutdown);
@@ -98,6 +99,12 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         if (TryComp<FishIpcModulePowerToggleComponent>(module.Owner, out var power) && !power.Enabled)
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-toggled-off"), host, host);
+            return;
+        }
+
+        if (!_modules.IsChassisPowered(host.Owner))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-need-charge"), host, host, PopupType.SmallCaution);
             return;
         }
 
@@ -299,6 +306,12 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
             return;
         }
 
+        if (!_modules.IsChassisPowered(host.Owner))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-need-charge"), host, host, PopupType.SmallCaution);
+            return;
+        }
+
         if (!_mobState.IsCritical(host.Owner))
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-not-crit"), host, host);
@@ -331,17 +344,24 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-success"), host, host, PopupType.Medium);
     }
 
+    private void OnChassisPower(Entity<FishIpcModuleHostComponent> host, ref FishIpcChassisPowerChangedEvent args)
+    {
+        if (host.Comp.ModuleContainer is not { } container)
+            return;
+
+        foreach (var uid in container.ContainedEntities)
+        {
+            if (TryComp<FishIpcToolHandModuleComponent>(uid, out var tool))
+                SyncTool((uid, tool), host.Owner);
+
+            if (!args.Powered && TryComp<FishIpcDefibModuleComponent>(uid, out var defib))
+                DeactivatePads((uid, defib));
+        }
+    }
+
     private void OnToolPower(Entity<FishIpcToolHandModuleComponent> ent, ref FishIpcModulePowerToggledEvent args)
     {
-        if (args.Enabled)
-        {
-            var installed = new FishIpcModuleInstalledEvent(args.Host);
-            OnToolInstall(ent, ref installed);
-            return;
-        }
-
-        var removed = new FishIpcModuleUninstalledEvent(args.Host);
-        OnToolUninstall(ent, ref removed);
+        SyncTool(ent, args.Host);
     }
 
     private void OnDefibPower(Entity<FishIpcDefibModuleComponent> ent, ref FishIpcModulePowerToggledEvent args)
@@ -352,16 +372,36 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
     private void OnToolInstall(Entity<FishIpcToolHandModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
     {
+        SyncTool(ent, args.Host);
+    }
+
+    private void SyncTool(Entity<FishIpcToolHandModuleComponent> ent, EntityUid host)
+    {
+        var running = _modules.IsChassisPowered(host)
+            && TryComp<FishIpcModuleComponent>(ent.Owner, out var module) && module.Installed
+            && (!TryComp<FishIpcModulePowerToggleComponent>(ent.Owner, out var power) || power.Enabled);
+
+        if (!running)
+        {
+            DespawnTool(ent);
+            return;
+        }
+
+        SpawnTool(ent, host);
+    }
+
+    private void SpawnTool(Entity<FishIpcToolHandModuleComponent> ent, EntityUid host)
+    {
         if (ent.Comp.SpawnedTool is { } existing && !TerminatingOrDeleted(existing))
             return;
 
-        var tool = Spawn(ent.Comp.ToolPrototype, Transform(args.Host).Coordinates);
+        var tool = Spawn(ent.Comp.ToolPrototype, Transform(host).Coordinates);
         EnsureComp<UnremoveableComponent>(tool);
         // Модуль уже установлен — инструмент обязан попасть в руку (иначе «пустой» апгрейд).
-        if (!_hands.TryForcePickupAnyHand(args.Host, tool, checkActionBlocker: false))
+        if (!_hands.TryForcePickupAnyHand(host, tool, checkActionBlocker: false))
         {
             QueueDel(tool);
-            _popup.PopupEntity(Loc.GetString("fish-ipc-module-tool-no-hand"), args.Host, args.Host);
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-tool-no-hand"), host, host);
             ent.Comp.SpawnedTool = null;
             return;
         }
@@ -370,6 +410,11 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
     }
 
     private void OnToolUninstall(Entity<FishIpcToolHandModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
+    {
+        DespawnTool(ent);
+    }
+
+    private void DespawnTool(Entity<FishIpcToolHandModuleComponent> ent)
     {
         if (ent.Comp.SpawnedTool is not { } tool)
             return;
@@ -402,7 +447,7 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
     }
 
     private bool HasEnoughCharge(EntityUid host, float fraction) =>
-        _modules.GetHostChargeFraction(host) >= fraction;
+        _modules.IsChassisPowered(host) && _modules.GetHostChargeFraction(host) >= fraction;
 
     private float GetChargeCost(EntityUid host, float fraction)
     {

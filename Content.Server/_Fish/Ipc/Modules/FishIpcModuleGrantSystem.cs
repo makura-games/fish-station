@@ -17,6 +17,7 @@ namespace Content.Server._Fish.Ipc.Modules;
 public sealed partial class FishIpcModuleGrantSystem : EntitySystem
 {
     [Dependency] private FishIpcRadioSystem _radio = default!;
+    [Dependency] private FishIpcModuleSystem _modules = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
@@ -50,83 +51,54 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         SubscribeLocalEvent<FishIpcModulePowerToggleComponent, FishIpcModuleUninstalledEvent>(OnPowerToggleUninstall);
 
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcModuleToggleActionEvent>(OnModuleToggle);
+        SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcChassisPowerChangedEvent>(OnChassisPower);
 
         SubscribeLocalEvent<FishIpcRadFilterHostComponent, DamageModifyEvent>(OnRadModify);
         SubscribeLocalEvent<FishIpcWireInterfaceHostComponent, ExaminedEvent>(OnWireExamineHost);
     }
 
     private void OnEmpScreenInstall(Entity<FishIpcEmpScreenModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
-        EnsureComp<FishIpcEmpScreenHostComponent>(args.Host);
+        SyncModuleEffects(ent.Owner, args.Host);
 
     private void OnEmpScreenUninstall(Entity<FishIpcEmpScreenModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
-        RemComp<FishIpcEmpScreenHostComponent>(args.Host);
+        SyncModuleEffects(ent.Owner, args.Host);
 
-    private void OnApcInstall(Entity<FishIpcApcAdapterModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
-    {
-        var host = EnsureComp<FishIpcApcAdapterHostComponent>(args.Host);
-        if (!TryComp<FishBatteryDrinkerComponent>(args.Host, out var drinker))
-            return;
+    private void OnApcInstall(Entity<FishIpcApcAdapterModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
+        SyncModuleEffects(ent.Owner, args.Host);
 
-        // Адаптер ускоряет do-after, порция остаётся 5% за цикл.
-        host.StoredDrinkSpeed ??= drinker.DrinkSpeed;
-        drinker.DrinkSpeed = host.StoredDrinkSpeed.Value * host.DrinkSpeedFactor;
-        Dirty(args.Host, drinker);
-    }
-
-    private void OnApcUninstall(Entity<FishIpcApcAdapterModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
-    {
-        if (TryComp<FishIpcApcAdapterHostComponent>(args.Host, out var host) &&
-            TryComp<FishBatteryDrinkerComponent>(args.Host, out var drinker))
-        {
-            if (host.StoredDrinkSpeed is { } speed)
-                drinker.DrinkSpeed = speed;
-            Dirty(args.Host, drinker);
-        }
-
-        RemComp<FishIpcApcAdapterHostComponent>(args.Host);
-    }
+    private void OnApcUninstall(Entity<FishIpcApcAdapterModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
+        SyncModuleEffects(ent.Owner, args.Host);
 
     private void OnRadInstall(Entity<FishIpcRadFilterModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
-        EnsureComp<FishIpcRadFilterHostComponent>(args.Host);
+        SyncModuleEffects(ent.Owner, args.Host);
 
     private void OnRadUninstall(Entity<FishIpcRadFilterModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
-        RemComp<FishIpcRadFilterHostComponent>(args.Host);
+        SyncModuleEffects(ent.Owner, args.Host);
 
-    private void OnVocalInstall(Entity<FishIpcVocalModModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
-    {
-        EnsureComp<FishIpcVocalModHostComponent>(args.Host);
-        if (TryComp<FishIpcComponent>(args.Host, out var ipc))
-            _radio.SetRadioEnabled((args.Host, ipc), !ipc.PowerDown);
-    }
+    private void OnVocalInstall(Entity<FishIpcVocalModModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
+        SyncModuleEffects(ent.Owner, args.Host);
 
-    private void OnVocalUninstall(Entity<FishIpcVocalModModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
-    {
-        RemComp<FishIpcVocalModHostComponent>(args.Host);
-        if (TryComp<FishIpcComponent>(args.Host, out var ipc))
-            _radio.SetRadioEnabled((args.Host, ipc), !ipc.PowerDown);
-    }
+    private void OnVocalUninstall(Entity<FishIpcVocalModModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
+        SyncModuleEffects(ent.Owner, args.Host);
 
     private void OnWireInstall(Entity<FishIpcWireInterfaceModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
-        EnsureComp<FishIpcWireInterfaceHostComponent>(args.Host);
+        SyncModuleEffects(ent.Owner, args.Host);
 
     private void OnWireUninstall(Entity<FishIpcWireInterfaceModuleComponent> ent, ref FishIpcModuleUninstalledEvent args) =>
-        RemComp<FishIpcWireInterfaceHostComponent>(args.Host);
+        SyncModuleEffects(ent.Owner, args.Host);
 
     private void OnVisionInstall(Entity<FishIpcVisionModuleComponent> ent, ref FishIpcModuleInstalledEvent args)
     {
-        if (ent.Comp.Enabled)
-            ApplyVision(args.Host, ent.Comp.Kind, add: true);
-
         _actions.AddAction(args.Host, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction);
         if (ent.Comp.ToggleActionEntity is { } action)
             _actions.SetToggled(action, ent.Comp.Enabled);
+
+        SyncModuleEffects(ent.Owner, args.Host);
     }
 
     private void OnVisionUninstall(Entity<FishIpcVisionModuleComponent> ent, ref FishIpcModuleUninstalledEvent args)
     {
-        if (ent.Comp.Enabled)
-            ApplyVision(args.Host, ent.Comp.Kind, add: false);
-
+        SyncModuleEffects(ent.Owner, args.Host);
         _actions.RemoveAction(args.Host, ent.Comp.ToggleActionEntity);
         ent.Comp.ToggleActionEntity = null;
     }
@@ -188,7 +160,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
             {
                 vision.Enabled = !vision.Enabled;
                 Dirty(uid, vision);
-                ApplyVision(host.Owner, vision.Kind, vision.Enabled);
+                SyncModuleEffects(uid, host.Owner);
                 _actions.SetToggled(action, vision.Enabled);
                 NotifyModuleToggle(host.Owner, uid, vision.Enabled);
                 args.Handled = true;
@@ -219,58 +191,109 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         if (module.Comp.ToggleActionEntity is { } action)
             _actions.SetToggled(action, enabled);
 
-        ApplyPowerEffects(module.Owner, host, enabled);
+        SyncModuleEffects(module.Owner, host);
+
+        var ev = new FishIpcModulePowerToggledEvent(host, enabled);
+        RaiseLocalEvent(module.Owner, ref ev);
     }
 
-    /// <summary>Включает или снимает эффект модулей, у которых эффект — это компонент хоста.</summary>
-    private void ApplyPowerEffects(EntityUid module, EntityUid host, bool enabled)
+    private void OnChassisPower(Entity<FishIpcModuleHostComponent> host, ref FishIpcChassisPowerChangedEvent args)
     {
+        if (host.Comp.ModuleContainer is not { } container)
+            return;
+
+        foreach (var module in container.ContainedEntities)
+            SyncModuleEffects(module, host.Owner);
+    }
+
+    /// <summary>
+    /// Эффект есть только если модуль установлен, тумблер включён и шасси запитано.
+    /// Тумблер при разряде не сбрасывается: заряд вернулся — эффект возвращается.
+    /// </summary>
+    private void SyncModuleEffects(EntityUid module, EntityUid host)
+    {
+        var active = IsModuleRunning(module, host);
+
         if (HasComp<FishIpcEmpScreenModuleComponent>(module))
-        {
-            if (enabled)
-                EnsureComp<FishIpcEmpScreenHostComponent>(host);
-            else
-                RemComp<FishIpcEmpScreenHostComponent>(host);
-        }
+            SetHostComp<FishIpcEmpScreenHostComponent>(host, active);
 
         if (HasComp<FishIpcRadFilterModuleComponent>(module))
-        {
-            if (enabled)
-                EnsureComp<FishIpcRadFilterHostComponent>(host);
-            else
-                RemComp<FishIpcRadFilterHostComponent>(host);
-        }
+            SetHostComp<FishIpcRadFilterHostComponent>(host, active);
 
         if (HasComp<FishIpcWireInterfaceModuleComponent>(module))
-        {
-            if (enabled)
-                EnsureComp<FishIpcWireInterfaceHostComponent>(host);
-            else
-                RemComp<FishIpcWireInterfaceHostComponent>(host);
-        }
+            SetHostComp<FishIpcWireInterfaceHostComponent>(host, active);
 
         if (HasComp<FishIpcVocalModModuleComponent>(module))
         {
-            if (enabled)
-                EnsureComp<FishIpcVocalModHostComponent>(host);
-            else
-                RemComp<FishIpcVocalModHostComponent>(host);
-
+            SetHostComp<FishIpcVocalModHostComponent>(host, active);
             if (TryComp<FishIpcComponent>(host, out var ipc))
                 _radio.SetRadioEnabled((host, ipc), !ipc.PowerDown);
         }
 
-        if (HasComp<FishIpcApcAdapterModuleComponent>(module) &&
-            TryComp<FishIpcApcAdapterHostComponent>(host, out var apc) &&
-            TryComp<FishBatteryDrinkerComponent>(host, out var drinker) &&
-            apc.StoredDrinkSpeed is { } speed)
+        if (HasComp<FishIpcApcAdapterModuleComponent>(module))
+            SyncApc(module, host, active);
+
+        if (TryComp<FishIpcVisionModuleComponent>(module, out var vision))
+            ApplyVision(host, vision.Kind, active);
+    }
+
+    private bool IsModuleRunning(EntityUid module, EntityUid host)
+    {
+        if (!TryComp<FishIpcModuleComponent>(module, out var installed) || !installed.Installed)
+            return false;
+
+        if (!_modules.IsChassisPowered(host))
+            return false;
+
+        if (TryComp<FishIpcModulePowerToggleComponent>(module, out var power) && !power.Enabled)
+            return false;
+
+        if (TryComp<FishIpcPassiveHealModuleComponent>(module, out var heal) && !heal.Enabled)
+            return false;
+
+        if (TryComp<FishIpcVisionModuleComponent>(module, out var vision) && !vision.Enabled)
+            return false;
+
+        return true;
+    }
+
+    private void SetHostComp<T>(EntityUid host, bool active) where T : Component, new()
+    {
+        if (active)
+            EnsureComp<T>(host);
+        else
+            RemComp<T>(host);
+    }
+
+    private void SyncApc(EntityUid module, EntityUid host, bool active)
+    {
+        if (!TryComp<FishIpcModuleComponent>(module, out var installed) || !installed.Installed)
         {
-            drinker.DrinkSpeed = enabled ? speed * apc.DrinkSpeedFactor : speed;
-            Dirty(host, drinker);
+            RestoreApcSpeed(host);
+            RemComp<FishIpcApcAdapterHostComponent>(host);
+            return;
         }
 
-        var ev = new FishIpcModulePowerToggledEvent(host, enabled);
-        RaiseLocalEvent(module, ref ev);
+        if (!TryComp<FishBatteryDrinkerComponent>(host, out var drinker))
+            return;
+
+        var apc = EnsureComp<FishIpcApcAdapterHostComponent>(host);
+        // Первый захват — базовая скорость, до множителя адаптера.
+        apc.StoredDrinkSpeed ??= drinker.DrinkSpeed;
+        var speed = apc.StoredDrinkSpeed.Value;
+        drinker.DrinkSpeed = active ? speed * apc.DrinkSpeedFactor : speed;
+        Dirty(host, drinker);
+    }
+
+    private void RestoreApcSpeed(EntityUid host)
+    {
+        if (!TryComp<FishIpcApcAdapterHostComponent>(host, out var apc) ||
+            !TryComp<FishBatteryDrinkerComponent>(host, out var drinker) ||
+            apc.StoredDrinkSpeed is not { } speed)
+            return;
+
+        drinker.DrinkSpeed = speed;
+        Dirty(host, drinker);
     }
 
     private void ApplyVision(EntityUid host, FishIpcVisionKind kind, bool add)
