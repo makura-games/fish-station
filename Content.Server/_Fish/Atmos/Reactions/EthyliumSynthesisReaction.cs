@@ -41,6 +41,9 @@ public sealed partial class EthyliumSynthesisReaction : IGasReactionEffect
         if (produce < 0.12f)
             return ReactionResult.NoReaction;
 
+        // Не даём реакции превратить весь объём за один тик.
+        produce = MathF.Min(produce, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         // расход реагентов
         mixture.AdjustMoles(Gas.Nitrogen,   -produce / efficiency);
         mixture.AdjustMoles(Gas.WaterVapor, -produce / efficiency);

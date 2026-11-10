@@ -1,3 +1,5 @@
+using Content.Shared.AlertLevel;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 #pragma warning disable IDE0130 // Пространство имён соответствует расширяемому upstream-контракту.
@@ -5,6 +7,21 @@ namespace Content.Shared.Communications;
 
 public sealed partial class CommunicationsConsoleInterfaceState
 {
+    /// <summary>
+    /// Selectable primary alert levels available through this console.
+    /// </summary>
+    public readonly List<ProtoId<AlertLevelPrototype>>? AlertLevels;
+
+    /// <summary>
+    /// Primary alert level currently active on the target station.
+    /// </summary>
+    public readonly ProtoId<AlertLevelPrototype>? CurrentAlert;
+
+    /// <summary>
+    /// Remaining alert-level change cooldown in seconds.
+    /// </summary>
+    public readonly float CurrentAlertDelay;
+
     /// <summary>
     /// Additional alert levels available through this console.
     /// </summary>
@@ -30,7 +47,7 @@ public sealed class CommunicationsConsoleAdditionalAlertLevelState
     /// <summary>
     /// Prototype identifier of the alert level.
     /// </summary>
-    public readonly string Level;
+    public readonly ProtoId<AlertLevelPrototype> Level;
 
     /// <summary>
     /// Whether the alert level is currently active.
@@ -45,7 +62,7 @@ public sealed class CommunicationsConsoleAdditionalAlertLevelState
     /// <summary>
     /// Creates a state entry for an additional alert level.
     /// </summary>
-    public CommunicationsConsoleAdditionalAlertLevelState(string level, bool enabled, bool selectable)
+    public CommunicationsConsoleAdditionalAlertLevelState(ProtoId<AlertLevelPrototype> level, bool enabled, bool selectable)
     {
         Level = level;
         Enabled = enabled;
@@ -62,7 +79,7 @@ public sealed class CommunicationsConsoleSetAdditionalAlertLevelMessage : BoundU
     /// <summary>
     /// Prototype identifier of the requested alert level.
     /// </summary>
-    public readonly string Level;
+    public readonly ProtoId<AlertLevelPrototype> Level;
 
     /// <summary>
     /// Requested active state.
@@ -72,7 +89,7 @@ public sealed class CommunicationsConsoleSetAdditionalAlertLevelMessage : BoundU
     /// <summary>
     /// Creates a request to explicitly enable or disable an additional alert level.
     /// </summary>
-    public CommunicationsConsoleSetAdditionalAlertLevelMessage(string level, bool enabled)
+    public CommunicationsConsoleSetAdditionalAlertLevelMessage(ProtoId<AlertLevelPrototype> level, bool enabled)
     {
         Level = level;
         Enabled = enabled;
@@ -122,5 +139,10 @@ public sealed class CommunicationsConsoleSelectAlertStationMessage : BoundUserIn
     public CommunicationsConsoleSelectAlertStationMessage(NetEntity station)
     {
         Station = station;
+        NameUnused();
+    }
+
+    private static void NameUnused()
+    {
     }
 }

@@ -16,7 +16,7 @@ using Content.Shared.Cargo;
 using Content.Shared.Cargo.Components;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking.Components;
-using Content.Shared.Ghost;
+using Content.Shared.Ghost.Components;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -51,7 +51,7 @@ using Content.Shared.CombatMode.Pacification;
 using Content.Shared.Fluids.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
-using Content.Server.AlertLevel;
+using Content.Shared.AlertLevel;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Atmos.Monitor;
 using Content.Shared.Station.Components;
@@ -113,7 +113,6 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
 
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private DamageableSystem _damageableSystem = default!;
-    [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private SharedMindSystem _mindSystem = default!;
@@ -131,6 +130,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
     [Dependency] private IComponentFactory _componentFactory = default!;
     [Dependency] private SharedContainerSystem _containerSystem = default!;
     [Dependency] private SharedTransformSystem _transformSystem = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!;
     [Dependency] private EntityQuery<TransformComponent> _xformQuery = default!;
     [Dependency] private EntityQuery<MobStateComponent> _mobStateQuery = default!;
 
@@ -152,7 +152,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnPlayerJoinedLobby);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
-        SubscribeLocalEvent<AlertLevelChangedEvent>(OnAlertLevelChanged);
+        SubscribeLocalEvent<SunriseAlertLevelChangedEvent>(OnAlertLevelChanged);
         SubscribeLocalEvent<GameRuleEndedEvent>(OnStorytellerChildRuleEnded);
     }
 
@@ -186,10 +186,10 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         if (!query.MoveNext(out var uid, out var comp))
             return false;
 
-        if (!_protoManager.TryIndex<EntityPrototype>(eventId, out var proto))
+        if (!ProtoMan.TryIndex<EntityPrototype>(eventId, out var proto))
             return false;
 
-        if (!_protoManager.TryIndex<StorytellerMetadataPrototype>(eventId, out var metadata))
+        if (!ProtoMan.TryIndex<StorytellerMetadataPrototype>(eventId, out var metadata))
             return false;
 
         TriggerEvent((uid, comp), proto, metadata);
@@ -220,7 +220,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         }
 
         // Fish-edit: первая Relaxation берёт длительности из YAML типа, а не хардкод 15–30
-        if (_protoManager.TryIndex<StorytellerTypePrototype>(component.StorytellerType.ToString(), out var typeProto))
+        if (ProtoMan.TryIndex<StorytellerTypePrototype>(component.StorytellerType.ToString(), out var typeProto))
         {
             component.GlobalEventCooldownMinutes = typeProto.GlobalEventCooldownMinutes;
             component.HelpfulEventCooldownMinutes = typeProto.HelpfulEventCooldownMinutes;
@@ -257,7 +257,11 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         var query = EntityQueryEnumerator<AlertLevelComponent, MainStationComponent>();
         while (query.MoveNext(out var stationUid, out var alertComp, out _))
         {
-            RecordAlertLevelChange(component, stationUid, alertComp.CurrentLevel);
+            if (_alertLevel.TryGetLevel((stationUid, alertComp), out var currentLevel) &&
+                currentLevel is { } level)
+            {
+                RecordAlertLevelChange(component, stationUid, level.Id);
+            }
         }
     }
 
@@ -267,7 +271,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
 
         var budgetModifier = 1f;
         var maxBudgetModifier = 1f;
-        if (_protoManager.TryIndex<StorytellerTypePrototype>(component.StorytellerType.ToString(), out var typeProto))
+        if (ProtoMan.TryIndex<StorytellerTypePrototype>(component.StorytellerType.ToString(), out var typeProto))
         {
             budgetModifier = typeProto.BudgetModifier;
             maxBudgetModifier = typeProto.MaxBudgetModifier;
@@ -304,10 +308,18 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         }
         // Fish-end
 
+        // Fish-start - после 65 минут смены форсируем стейт Peak на максимальную продолжительность
+        if (!component.HourPeakForced && GameTicker.RoundDuration() >= TimeSpan.FromMinutes(65))
+        {
+            ForceHourPeakState((uid, component));
+        }
+        // Fish-end
+
         // Check pacing state transitions
         if (Timing.CurTime >= component.StateTransitionTime)
         {
-            TransitionPacingState(component);
+            // Fish-edit: передача Entity<StorytellerRuleComponent>
+            TransitionPacingState((uid, component));
         }
 
         // Periodic evaluation
@@ -322,8 +334,11 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         }
     }
 
-    private void TransitionPacingState(StorytellerRuleComponent comp)
+    // Fish-start - смена сигнатуры на Entity для вызова TriggerEvent
+    private void TransitionPacingState(Entity<StorytellerRuleComponent> entity)
     {
+        var comp = entity.Comp;
+    // Fish-end
         var oldState = comp.PacingState;
 
         var durationMult = 1f;
@@ -336,7 +351,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         var recMin = 10f;
         var recMax = 20f;
 
-        if (_protoManager.TryIndex<StorytellerTypePrototype>(comp.StorytellerType.ToString(), out var typeProto))
+        if (ProtoMan.TryIndex<StorytellerTypePrototype>(comp.StorytellerType.ToString(), out var typeProto))
         {
             durationMult = typeProto.DurationMultiplier;
             relMin = typeProto.RelaxationMinMinutes;
@@ -358,8 +373,15 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             case StorytellerPacingState.BuildUp:
                 comp.PacingState = StorytellerPacingState.Peak;
                 comp.StateTransitionTime = Timing.CurTime + TimeSpan.FromMinutes(_random.NextFloat(pkMin, pkMax) * durationMult);
+                // Fish-start - по достижению Peak форсируем выбранного антага
+                comp.LastMajorEventTime = TimeSpan.Zero;
+                TryTriggerTargetMajorEvent(entity, CalculateStationMetrics(comp));
+                // Fish-end
                 break;
             case StorytellerPacingState.Peak:
+                // Fish-start - перед сменой с Peak пытаемся потратить все очки бюджета Major
+                DrainMajorThreatBudget(entity);
+                // Fish-end
                 comp.PacingState = StorytellerPacingState.Recovery;
                 comp.StateTransitionTime = Timing.CurTime + TimeSpan.FromMinutes(_random.NextFloat(recMin, recMax) * durationMult);
                 break;
@@ -371,6 +393,32 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
 
         LogStorytellerState(comp, oldState);
     }
+
+    // Fish-start - принудительный перевод в Peak на максимальную длительность после 1 часа раунда
+    private void ForceHourPeakState(Entity<StorytellerRuleComponent> entity)
+    {
+        var comp = entity.Comp;
+        comp.HourPeakForced = true;
+        var oldState = comp.PacingState;
+
+        var durationMult = 1f;
+        var pkMax = 24f;
+
+        if (ProtoMan.TryIndex<StorytellerTypePrototype>(comp.StorytellerType.ToString(), out var typeProto))
+        {
+            durationMult = typeProto.DurationMultiplier;
+            pkMax = typeProto.PeakMaxMinutes;
+        }
+
+        comp.PacingState = StorytellerPacingState.Peak;
+        comp.StateTransitionTime = Timing.CurTime + TimeSpan.FromMinutes(pkMax * durationMult);
+        comp.LastMajorEventTime = TimeSpan.Zero;
+        LogStorytellerState(comp, oldState);
+
+        // При переходе в Peak сразу пробуем форсировать целевого антагониста
+        TryTriggerTargetMajorEvent(entity, CalculateStationMetrics(comp));
+    }
+    // Fish-end
 
     private void EvaluateStoryteller(Entity<StorytellerRuleComponent> entity)
     {
@@ -461,6 +509,17 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         if (Timing.CurTime - entity.Comp.LastMajorEventTime < TimeSpan.FromMinutes(entity.Comp.MajorEventCooldownMinutes))
             return;
 
+        // Fish-start - во время Peak при наличии целевого антагониста стараемся форсировать его вызов без ожидания шанса броска
+        if (entity.Comp.PacingState == StorytellerPacingState.Peak &&
+            entity.Comp.StorytellerType is StorytellerType.Classic or StorytellerType.Insane &&
+            entity.Comp.TargetMajorEvent != null &&
+            !entity.Comp.TargetMajorTriggered)
+        {
+            if (TryTriggerTargetMajorEvent(entity, metrics))
+                return;
+        }
+        // Fish-end
+
         var rollChance = 0f;
         switch (entity.Comp.PacingState)
         {
@@ -481,45 +540,6 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
 
         if (rollChance <= 0f || !_random.Prob(rollChance))
             return;
-
-        // Fish-start - проверка целевого крупного антагониста после 1 часа
-        var roundDuration = GameTicker.RoundDuration();
-        if (entity.Comp.TargetMajorEvent != null &&
-            !entity.Comp.TargetMajorTriggered &&
-            roundDuration >= TimeSpan.FromHours(1) &&
-            entity.Comp.PacingState == StorytellerPacingState.Peak &&
-            entity.Comp.StorytellerType is StorytellerType.Classic or StorytellerType.Insane)
-        {
-            var targetId = entity.Comp.TargetMajorEvent.Value.Id;
-            if (!_protoManager.TryIndex<EntityPrototype>(targetId, out var targetProto) ||
-                !_protoManager.TryIndex<StorytellerMetadataPrototype>(targetId, out var targetMeta))
-            {
-                ReassignOrRefundTargetMajor(entity.Comp);
-            }
-            else if (IsTargetMajorPermanentlyDisallowed(targetId))
-            {
-                // Если цель окончательно заблокирована историей событий (например, взаимное исключение правил)
-                ReassignOrRefundTargetMajor(entity.Comp);
-            }
-            else
-            {
-                var combinedBudget = entity.Comp.MajorThreatBudget + entity.Comp.TargetMajorBudget;
-                if (combinedBudget >= targetMeta.ThreatCost)
-                {
-                    // Проверяем все остальные ограничения цели (игроки, лимиты, стресс) кроме силы станции
-                    if (IsTargetMajorEligibleExceptStrength(targetProto, targetMeta, entity.Comp, metrics))
-                    {
-                        // Если силы станции не хватает для целевого антагониста - запускаем укрепляющие события
-                        if (metrics.StationStrength < targetMeta.MinStationStrength)
-                        {
-                            if (TryTriggerStrengthBoostingEvent(entity, metrics))
-                                return;
-                        }
-                    }
-                }
-            }
-        }
-        // Fish-end
 
         var eligibleEvents = GetEligibleHeuristicEvents(entity.Comp, metrics, isMajor: true);
         if (eligibleEvents.Count == 0)
@@ -873,7 +893,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             alertLevelStress = CalculateAlertLevelStress(comp);
         }
 
-        _protoManager.TryIndex<StorytellerTypePrototype>(comp?.StorytellerType.ToString() ?? string.Empty, out var storytellerType);
+        ProtoMan.TryIndex<StorytellerTypePrototype>(comp?.StorytellerType.ToString() ?? string.Empty, out var storytellerType);
         var armedCrewScore = CountArmedCrewNotAntags();
         var strength = CalculateNormalizedStationStrength(
             aliveCount,
@@ -1090,10 +1110,10 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
 
     private float GetMaterialStrengthWeight(ProtoId<MaterialPrototype> materialId)
     {
-        if (_protoManager.TryIndex<StorytellerMaterialWeightPrototype>(materialId, out var weightOverride))
+        if (ProtoMan.TryIndex<StorytellerMaterialWeightPrototype>(materialId, out var weightOverride))
             return weightOverride.Weight;
 
-        if (!_protoManager.TryIndex(materialId, out MaterialPrototype? proto))
+        if (!ProtoMan.TryIndex(materialId, out MaterialPrototype? proto))
             return MaterialStrengthUnknownFallback;
 
         if (proto.StorytellerStrengthWeight > 0f)
@@ -1191,12 +1211,12 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         var currentDuration = GameTicker.RoundDuration();
 
         // Query all rule prototypes with storyteller metadata
-        foreach (var proto in _protoManager.EnumeratePrototypes<EntityPrototype>())
+        foreach (var proto in ProtoMan.EnumeratePrototypes<EntityPrototype>())
         {
             if (proto.Abstract)
                 continue;
 
-            if (!_protoManager.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
+            if (!ProtoMan.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
                 continue;
 
             var isEventMajor = metadata.ThreatType is StorytellerThreatType.MajorAntag or StorytellerThreatType.MajorCalm;
@@ -1330,19 +1350,27 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         return result;
     }
 
+    // Fish-start - вспомогательный метод вычисления веса события
+    private float GetEventWeight(EntityPrototype proto, StorytellerMetadataPrototype metadata)
+    {
+        var baseWeight = 10f;
+        if (proto.TryGetComponent<StationEventComponent>(out var stationEvent, EntityManager.ComponentFactory))
+        {
+            baseWeight = stationEvent.Weight;
+        }
+
+        return baseWeight * metadata.WeightModifier;
+    }
+    // Fish-end
+
     private (EntityPrototype, StorytellerMetadataPrototype)? PickEventFromEligible(
         Dictionary<EntityPrototype, StorytellerMetadataPrototype> available)
     {
         var totalWeight = 0f;
         foreach (var (proto, metadata) in available)
         {
-            var baseWeight = 10f;
-            if (proto.TryGetComponent<StationEventComponent>(out var stationEvent, EntityManager.ComponentFactory))
-            {
-                baseWeight = stationEvent.Weight;
-            }
-
-            var weight = baseWeight * metadata.WeightModifier;
+            // Fish-edit: использование GetEventWeight
+            var weight = GetEventWeight(proto, metadata);
             totalWeight += weight;
         }
 
@@ -1352,13 +1380,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         var roll = _random.NextFloat(totalWeight);
         foreach (var (proto, metadata) in available)
         {
-            var baseWeight = 10f;
-            if (proto.TryGetComponent<StationEventComponent>(out var stationEvent, EntityManager.ComponentFactory))
-            {
-                baseWeight = stationEvent.Weight;
-            }
-
-            var weight = baseWeight * metadata.WeightModifier;
+            // Fish-edit: использование GetEventWeight
+            var weight = GetEventWeight(proto, metadata);
             roll -= weight;
             if (roll <= 0f)
             {
@@ -1697,7 +1720,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
                         var damage = melee.Damage.GetTotal().Float();
 
                         if (HasComp<Content.Shared.Weapons.Melee.EnergySword.EnergySwordComponent>(uid) ||
-                            HasComp<Content.Shared.Stunnable.StunbatonComponent>(uid) ||
+                            HasComp<Content.Shared.Damage.Components.StaminaDamageOnHitRequiresToggleComponent>(uid) ||
                             (damage >= 20f && !HasComp<Content.Shared.Tools.Components.ToolComponent>(uid)))
                         {
                             weight = 0.5f;
@@ -1789,7 +1812,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
                     {
                         isAntag = true;
                         var stressVal = 4f; // Default fallback
-                        if (roleComp.AntagPrototype != null && _protoManager.TryIndex(roleComp.AntagPrototype, out var antagProto))
+                        if (roleComp.AntagPrototype != null && ProtoMan.TryIndex(roleComp.AntagPrototype, out var antagProto))
                         {
                             stressVal = antagProto.StorytellerStress;
                         }
@@ -1892,7 +1915,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         _maxResearchStorytellerScore = 1f;
         _totalTechnologyCount = 0;
 
-        foreach (var tech in _protoManager.EnumeratePrototypes<Content.Shared.Research.Prototypes.TechnologyPrototype>())
+        foreach (var tech in ProtoMan.EnumeratePrototypes<Content.Shared.Research.Prototypes.TechnologyPrototype>())
         {
             if (tech.Hidden)
                 continue;
@@ -1913,7 +1936,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         };
 
         var disciplineMult = 1f;
-        if (_protoManager.TryIndex(tech.Discipline, out Content.Shared.Research.Prototypes.TechDisciplinePrototype? discipline))
+        if (ProtoMan.TryIndex(tech.Discipline, out Content.Shared.Research.Prototypes.TechDisciplinePrototype? discipline))
             disciplineMult = discipline.StorytellerUsefulness;
 
         return tierWeight * disciplineMult;
@@ -1943,7 +1966,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         var totalScore = 0f;
         foreach (var techId in uniqueTechs)
         {
-            if (!_protoManager.TryIndex<Content.Shared.Research.Prototypes.TechnologyPrototype>(techId, out var techProto))
+            if (!ProtoMan.TryIndex<Content.Shared.Research.Prototypes.TechnologyPrototype>(techId, out var techProto))
                 continue;
 
             totalScore += GetTechnologyStorytellerWeight(techProto);
@@ -1955,7 +1978,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
     private Dictionary<string, int> GetCrewDistribution()
     {
         var dist = new Dictionary<string, int>();
-        foreach (var dept in _protoManager.EnumeratePrototypes<DepartmentPrototype>())
+        foreach (var dept in ProtoMan.EnumeratePrototypes<DepartmentPrototype>())
         {
             dist[dept.ID] = 0;
         }
@@ -2013,12 +2036,12 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
 
         var reasons = new Dictionary<string, int>();
 
-        foreach (var proto in _protoManager.EnumeratePrototypes<EntityPrototype>())
+        foreach (var proto in ProtoMan.EnumeratePrototypes<EntityPrototype>())
         {
             if (proto.Abstract)
                 continue;
 
-            if (!_protoManager.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
+            if (!ProtoMan.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
                 continue;
 
             if (comp.StorytellerType == StorytellerType.Calm &&
@@ -2167,7 +2190,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         }
     }
 
-    private void OnAlertLevelChanged(AlertLevelChangedEvent ev)
+    private void OnAlertLevelChanged(ref SunriseAlertLevelChangedEvent ev)
     {
         if (!HasComp<MainStationComponent>(ev.Station))
             return;
@@ -2175,7 +2198,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         var query = EntityQueryEnumerator<StorytellerRuleComponent>();
         while (query.MoveNext(out _, out var comp))
         {
-            RecordAlertLevelChange(comp, ev.Station, ev.AlertLevel);
+            RecordAlertLevelChange(comp, ev.Station, ev.AlertLevel.Id);
         }
     }
 
@@ -2245,16 +2268,25 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             double totalDuration = 0;
 
             var defaultLevel = "green";
-            if (TryComp<AlertLevelComponent>(station, out var alertComp) && alertComp.AlertLevels != null && !string.IsNullOrEmpty(alertComp.AlertLevels.DefaultLevel))
+            string? currentLevel = null;
+            if (TryComp<AlertLevelComponent>(station, out var alertComp))
             {
-                defaultLevel = alertComp.AlertLevels.DefaultLevel;
+                if (_alertLevel.TryGetDefaultLevel((station, alertComp), out var defaultAlertLevel) &&
+                    defaultAlertLevel is { } resolvedDefaultLevel)
+                {
+                    defaultLevel = resolvedDefaultLevel.Id;
+                }
+
+                if (_alertLevel.TryGetLevel((station, alertComp), out var currentAlertLevel) &&
+                    currentAlertLevel is { } resolvedCurrentLevel)
+                {
+                    currentLevel = resolvedCurrentLevel.Id;
+                }
             }
 
             if (history.Count == 0)
             {
-                var currentLevel = defaultLevel;
-                if (alertComp != null)
-                    currentLevel = alertComp.CurrentLevel;
+                currentLevel ??= defaultLevel;
 
                 if (currentLevel.Equals(defaultLevel, StringComparison.OrdinalIgnoreCase))
                 {
@@ -2338,12 +2370,12 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
     private List<(EntProtoId id, float cost)> GetEligibleTargetMajorCandidates(StorytellerRuleComponent comp)
     {
         var candidates = new List<(EntProtoId id, float cost)>();
-        foreach (var proto in _protoManager.EnumeratePrototypes<EntityPrototype>())
+        foreach (var proto in ProtoMan.EnumeratePrototypes<EntityPrototype>())
         {
             if (proto.Abstract)
                 continue;
 
-            if (!_protoManager.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
+            if (!ProtoMan.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
                 continue;
 
             if (metadata.ThreatType != StorytellerThreatType.MajorAntag)
@@ -2361,11 +2393,17 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
 
     private bool IsTargetMajorPermanentlyDisallowed(string targetId)
     {
-        if (targetId == AssaultOpsRuleId && (IsMajorRuleExecutedOrActive(NukeopsRuleId) || IsMajorRuleExecutedOrActive(LoneOpsSpawnRuleId)))
-            return true;
-
-        if ((targetId == NukeopsRuleId || targetId == LoneOpsSpawnRuleId) && IsMajorRuleExecutedOrActive(AssaultOpsRuleId))
-            return true;
+        // Fish-start - взаимное исключение между AssaultOps, Nukeops и LoneOpsSpawn
+        if (targetId is AssaultOpsRuleId or NukeopsRuleId or LoneOpsSpawnRuleId)
+        {
+            if (targetId != AssaultOpsRuleId && IsMajorRuleExecutedOrActive(AssaultOpsRuleId))
+                return true;
+            if (targetId != NukeopsRuleId && IsMajorRuleExecutedOrActive(NukeopsRuleId))
+                return true;
+            if (targetId != LoneOpsSpawnRuleId && IsMajorRuleExecutedOrActive(LoneOpsSpawnRuleId))
+                return true;
+        }
+        // Fish-end
 
         if (IsMajorRuleExecutedOrActive(targetId))
             return true;
@@ -2382,6 +2420,15 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         // Взаимные исключения правил
         if (IsTargetMajorPermanentlyDisallowed(proto.ID))
             return false;
+
+        // Fish-start - проверка активности правила и запрет первого часа для Classic
+        if (GameTicker.IsGameRuleActive(proto.ID))
+            return false;
+
+        // Classic не вызывает MajorAntag в течение первого часа раунда
+        if (comp.StorytellerType == StorytellerType.Classic && GameTicker.RoundDuration() < TimeSpan.FromHours(1))
+            return false;
+        // Fish-end
 
         // Стресс команды
         if (comp.CrewStress > metadata.MaxStress)
@@ -2506,6 +2553,132 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         entity.Comp.LastMajorEventTime = Timing.CurTime;
         entity.Comp.LastStrengthBoostingEventTime = Timing.CurTime;
         return true;
+    }
+    // Fish-end
+
+    // Fish-start - попытка форсированного вызова целевого крупного антагониста в Peak
+    private bool TryTriggerTargetMajorEvent(Entity<StorytellerRuleComponent> entity, StationMetrics metrics)
+    {
+        if (!_cfg.GetCVar(CCVars.EventsEnabled) || _roundEnd.IsRoundEndRequested())
+            return false;
+
+        if (entity.Comp.TargetMajorEvent == null || entity.Comp.TargetMajorTriggered)
+            return false;
+
+        if (entity.Comp.StorytellerType is not (StorytellerType.Classic or StorytellerType.Insane))
+            return false;
+
+        var roundDuration = GameTicker.RoundDuration();
+        if (entity.Comp.StorytellerType == StorytellerType.Classic && roundDuration < TimeSpan.FromHours(1))
+            return false;
+
+        var targetId = entity.Comp.TargetMajorEvent.Value.Id;
+        if (!ProtoMan.TryIndex<EntityPrototype>(targetId, out var targetProto) ||
+            !ProtoMan.TryIndex<StorytellerMetadataPrototype>(targetId, out var targetMeta))
+        {
+            ReassignOrRefundTargetMajor(entity.Comp);
+            return false;
+        }
+
+        if (IsTargetMajorPermanentlyDisallowed(targetId))
+        {
+            ReassignOrRefundTargetMajor(entity.Comp);
+            return false;
+        }
+
+        var combinedBudget = entity.Comp.MajorThreatBudget + entity.Comp.TargetMajorBudget;
+        if (combinedBudget < targetMeta.ThreatCost)
+            return false;
+
+        if (!IsTargetMajorEligibleExceptStrength(targetProto, targetMeta, entity.Comp, metrics))
+            return false;
+
+        // Если силы станции не хватает - целевой антагонист пока не может быть вызван
+        if (metrics.StationStrength < targetMeta.MinStationStrength)
+            return false;
+
+        // Сила станции достаточна и все условия выполнены: форсируем вызов целевого антагониста!
+        Log.Info($"Storyteller forcing TargetMajorEvent '{targetId}' on Peak (combined budget {combinedBudget}, cost {targetMeta.ThreatCost}, station strength {metrics.StationStrength})");
+        TriggerEvent(entity, targetProto, targetMeta);
+        return true;
+    }
+    // Fish-end
+
+    // Fish-start - попытка потратить все очки бюджета Major перед сменой с Peak на другую фазу
+    private void DrainMajorThreatBudget(Entity<StorytellerRuleComponent> entity)
+    {
+        if (!_cfg.GetCVar(CCVars.EventsEnabled) || _roundEnd.IsRoundEndRequested())
+            return;
+
+        var metrics = CalculateStationMetrics(entity.Comp);
+
+        // Если целевой антагонист ещё не сработал: пробуем вызвать его прямо сейчас
+        if (entity.Comp.TargetMajorEvent != null && !entity.Comp.TargetMajorTriggered)
+        {
+            var targetId = entity.Comp.TargetMajorEvent.Value.Id;
+            var targetProtoExists = ProtoMan.TryIndex<EntityPrototype>(targetId, out var targetProto);
+            var targetMetaExists = ProtoMan.TryIndex<StorytellerMetadataPrototype>(targetId, out var targetMeta);
+
+            if (!targetProtoExists || !targetMetaExists || IsTargetMajorPermanentlyDisallowed(targetId))
+            {
+                ReassignOrRefundTargetMajor(entity.Comp);
+            }
+            else
+            {
+                var combinedBudget = entity.Comp.MajorThreatBudget + entity.Comp.TargetMajorBudget;
+                var canTriggerTarget = combinedBudget >= targetMeta!.ThreatCost
+                    && IsTargetMajorEligibleExceptStrength(targetProto!, targetMeta!, entity.Comp, metrics)
+                    && metrics.StationStrength >= targetMeta!.MinStationStrength;
+
+                if (canTriggerTarget)
+                {
+                    Log.Info($"Storyteller draining major budget before Peak exit: triggering TargetMajorEvent '{targetId}'");
+                    TriggerEvent(entity, targetProto!, targetMeta!);
+                }
+                else
+                {
+                    // При временной недоступности цели сохраняем её и буфер для повторной попытки после снятия ограничений
+                    Log.Info($"Storyteller target major '{targetId}' temporarily unavailable before Peak exit; retaining target and buffer ({entity.Comp.TargetMajorBudget}/{targetMeta!.ThreatCost}).");
+                }
+            }
+        }
+
+        // Жадный сброс бюджета Major: выбираем самые дорогие из доступных крупных событий, пока есть бюджет
+        const int maxIterations = 5;
+        for (var i = 0; i < maxIterations; i++)
+        {
+            if (entity.Comp.MajorThreatBudget <= 0f)
+                break;
+
+            // Обновляем метрики станции и стресс команды перед проверкой доступности
+            metrics = CalculateStationMetrics(entity.Comp);
+            entity.Comp.CrewStress = CalculateCrewStress(ref metrics);
+
+            var eligible = GetEligibleHeuristicEvents(entity.Comp, metrics, isMajor: true);
+            var majorAntags = eligible
+                .Where(kv => kv.Value.ThreatType == StorytellerThreatType.MajorAntag
+                    && kv.Value.ThreatCost <= entity.Comp.MajorThreatBudget
+                    && GetEventWeight(kv.Key, kv.Value) > 0f)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+            if (majorAntags.Count == 0)
+                break;
+
+            var maxCost = majorAntags.Values.Max(m => m.ThreatCost);
+            if (maxCost <= 0f)
+                break;
+
+            var candidates = majorAntags
+                .Where(kv => MathF.Abs(kv.Value.ThreatCost - maxCost) < 0.01f)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+            var selected = PickEventFromEligible(candidates);
+            if (selected == null)
+                break;
+
+            Log.Info($"Storyteller draining major budget before Peak exit: triggering '{selected.Value.Item1.ID}' (cost {selected.Value.Item2.ThreatCost}, remaining major budget {entity.Comp.MajorThreatBudget})");
+            TriggerEvent(entity, selected.Value.Item1, selected.Value.Item2);
+        }
     }
     // Fish-end
 }

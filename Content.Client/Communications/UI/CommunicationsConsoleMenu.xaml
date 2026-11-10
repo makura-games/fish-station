@@ -1,126 +1,57 @@
-<controls:FancyWindow xmlns="https://spacestation14.io"
+<comms:CommunicationsConsoleMenu xmlns="https://spacestation14.io"
+    xmlns:comms="clr-namespace:Content.Client.Communications.UI"
+    xmlns:widgets="clr-namespace:Content.Client.Communications.UI.Widgets"
+    xmlns:sunriseWidgets="clr-namespace:Content.Client._Sunrise.Communications.UI.Widgets"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    Title="{Loc 'comms-console-menu-title'}"
-    MinSize="400 300">
+    MinSize="450 710" SetSize="450 710"
+    Title="{Loc 'comms-console-menu-title'}">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12">
+        <PanelContainer StyleClasses="PanelDark" VerticalExpand="True">
+            <widgets:MessagingControls Name="MessagingControls" VerticalExpand="True" />
+        </PanelContainer>
 
-    <!-- Main Container -->
-    <BoxContainer Orientation="Vertical"
-        HorizontalExpand="False"
-        VerticalExpand="True"
-        Margin="6 6 6 5">
+        <controls:HSpacer Spacing="12" />
 
-        <BoxContainer Orientation="Vertical"
-                      Margin="0 2">
-
-            <controls:StripeBack>
-                <BoxContainer Orientation="Horizontal">
-                    <Label HorizontalExpand="True" Text="{Loc 'comms-console-menu-announcement-header'}"
-                           Name="AnnouncementLabel" VAlign="Center"
-                           StyleClasses="LabelHeading" Align="Center"/>
-                </BoxContainer>
-            </controls:StripeBack>
-
-            <TextEdit Name="MessageInput"
-                      VerticalExpand="True"
-                      HorizontalExpand="True"
-                      VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"
-                      MinHeight="100"/>
-
-            <Button Name="AnnounceButton"
-                    Access="Public"
-                    Text="{Loc 'comms-console-menu-announcement-button'}"
-                    ToolTip="{Loc 'comms-console-menu-announcement-button-tooltip'}"
-                    StyleClasses="OpenLeft"
-                    Margin="0 0 1 0"
-                    Disabled="True"/>
-
-            <Button Name="BroadcastButton"
-                    Access="Public"
-                    Text="{Loc 'comms-console-menu-broadcast-button'}"
-                    ToolTip="{Loc 'comms-console-menu-broadcast-button-tooltip'}"
-                    StyleClasses="OpenBoth"/>
-        </BoxContainer>
-
-        <BoxContainer Orientation="Vertical"
-                      Margin="0 2">
-
-            <!-- Sunrise added start - выбор станции для удалённого управления кодами -->
-            <BoxContainer Name="AlertStationSelectorContainer"
-                          Orientation="Horizontal"
-                          Margin="0 0 0 4"
-                          Visible="False">
-                <Label Text="{Loc 'comms-console-menu-alert-station'}"
-                       VAlign="Center"
-                       Margin="0 0 6 0"/>
-                <OptionButton Name="AlertStationButton"
-                              HorizontalExpand="True"/>
-            </BoxContainer>
-            <!-- Sunrise added end -->
-
-            <controls:StripeBack>
-                <BoxContainer Orientation="Horizontal">
-                    <Label HorizontalExpand="True" Text="{Loc 'comms-console-menu-alert-level-header'}"
-                           Name="AlertLevelLabel" VAlign="Center"
-                           StyleClasses="LabelHeading" Align="Center"/>
-                </BoxContainer>
-            </controls:StripeBack>
-
-            <OptionButton Name="AlertLevelButton"
-                          Access="Public"
-                          ToolTip="{Loc 'comms-console-menu-alert-level-button-tooltip'}"
-                          StyleClasses="OpenRight"/>
-
-            <!-- Sunrise added start - дополнительные коды -->
-            <BoxContainer Name="AdditionalAlertLevelsSection" Orientation="Vertical" Margin="0 4 0 0">
-                <controls:StripeBack>
-                    <Label HorizontalExpand="True"
-                           Text="{Loc 'comms-console-menu-additional-alert-level-header'}"
+        <PanelContainer StyleClasses="BackgroundPanelDark">
+            <!-- Sunrise edit start - выбор станции и дополнительные коды тревоги -->
+            <BoxContainer Orientation="Vertical" Margin="0 12 0 12">
+                <BoxContainer Name="AlertStationSelectorContainer"
+                              Orientation="Horizontal"
+                              Margin="9 0 9 4"
+                              Visible="False">
+                    <Label Text="{Loc 'comms-console-menu-alert-station'}"
                            VAlign="Center"
-                           StyleClasses="LabelHeading"
-                           Align="Center"/>
-                </controls:StripeBack>
-                <GridContainer Name="AdditionalAlertLevelsContainer" Columns="2"/>
+                           Margin="0 0 6 0"/>
+                    <OptionButton Name="AlertStationButton"
+                                  HorizontalExpand="True"/>
+                </BoxContainer>
+                <widgets:AlertLevelControls Name="AlertLevelControls" />
+                <BoxContainer Name="AdditionalAlertLevelsSection" Orientation="Vertical" Margin="9 4 9 0">
+                    <controls:StripeBack>
+                        <Label HorizontalExpand="True"
+                               Text="{Loc 'comms-console-menu-additional-alert-level-header'}"
+                               VAlign="Center"
+                               StyleClasses="LabelHeading"
+                               Align="Center"/>
+                    </controls:StripeBack>
+                    <GridContainer Name="AdditionalAlertLevelsContainer" Columns="2"/>
+                </BoxContainer>
             </BoxContainer>
-            <!-- Sunrise added end -->
-        </BoxContainer>
+            <!-- Sunrise edit end -->
+        </PanelContainer>
 
-        <BoxContainer Orientation="Vertical"
-                      Margin="0 2">
+        <controls:HSpacer Spacing="12" />
 
-            <controls:StripeBack>
-                <BoxContainer Orientation="Horizontal">
-                    <Label HorizontalExpand="True" Text="{Loc 'comms-console-menu-relay-header'}"
-                           Name="RelayLabel" VAlign="Center"
-                           StyleClasses="LabelHeading" Align="Center"/>
-                </BoxContainer>
-            </controls:StripeBack>
+        <!-- Sunrise-Start: сохраняем управление ретрансляцией. -->
+        <PanelContainer StyleClasses="BackgroundPanelDark">
+            <sunriseWidgets:RelayControls Name="RelayControls" Margin="0 12 0 12" />
+        </PanelContainer>
 
-            <Button Name="RelayButton"
-                    Access="Public"
-                    Text="{Loc 'comms-console-menu-relay-button'}"
-                    ToolTip="{Loc 'comms-console-menu-relay-button-tooltip'}"
-                    StyleClasses="OpenBoth"/>
-            <RichTextLabel Name="RelayStatusLabel"/>
-        </BoxContainer>
+        <controls:HSpacer Spacing="12" />
+        <!-- Sunrise-End -->
 
-        <BoxContainer Orientation="Vertical"
-                      Margin="0 2">
-
-            <controls:StripeBack>
-                <BoxContainer Orientation="Horizontal">
-                    <Label HorizontalExpand="True" Text="{Loc 'comms-console-menu-emergency-header'}"
-                           Name="EmergencyLabel" VAlign="Center"
-                           StyleClasses="LabelHeading" Align="Center"/>
-                </BoxContainer>
-            </controls:StripeBack>
-
-            <RichTextLabel Name="CountdownLabel"/>
-
-            <Button Name="EmergencyShuttleButton"
-                    Access="Public"
-                    Text="Placeholder Text"
-                    ToolTip="{Loc 'comms-console-menu-emergency-shuttle-button-tooltip'}"/>
-        </BoxContainer>
+        <PanelContainer StyleClasses="BackgroundPanelDark">
+            <widgets:ShuttleControls Name="ShuttleControls" Margin="0 12 0 12"/>
+        </PanelContainer>
     </BoxContainer>
-</controls:FancyWindow>
+</comms:CommunicationsConsoleMenu>

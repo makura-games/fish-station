@@ -47,7 +47,6 @@ public sealed class TransparentTileGridCollisionTest
         var server = pair.Server;
 
         var entMan = server.EntMan;
-        var mapMan = server.MapMan;
         var mapSys = entMan.System<SharedMapSystem>();
         var physSys = entMan.System<SharedPhysicsSystem>();
         var doorSys = entMan.System<SharedDoorSystem>();
@@ -67,8 +66,8 @@ public sealed class TransparentTileGridCollisionTest
         await server.WaitAssertion(() =>
         {
             var mapId = testMap.MapId;
-            gridA = mapMan.CreateGridEntity(mapId);
-            gridB = mapMan.CreateGridEntity(mapId);
+            gridA = mapSys.CreateGridEntity(mapId);
+            gridB = mapSys.CreateGridEntity(mapId);
 
             mapSys.SetTile(gridA, gridA, Vector2i.Zero, new Tile(steelId));
             mapSys.SetTile(gridB, gridB, Vector2i.Zero, new Tile(transparentId));
@@ -80,6 +79,10 @@ public sealed class TransparentTileGridCollisionTest
             var physicsB = entMan.GetComponent<PhysicsComponent>(gridB);
             physSys.SetBodyType(gridA, BodyType.Dynamic, body: physicsA);
             physSys.SetBodyType(gridB, BodyType.Dynamic, body: physicsB);
+
+            var broadphase = entMan.System<SharedBroadphaseSystem>();
+            broadphase.RegenerateContacts(gridA, physicsA);
+            broadphase.RegenerateContacts(gridB, physicsB);
         });
 
         await server.WaitRunTicks(5);

@@ -33,7 +33,7 @@
   description: A computer used to make world wide announcements. Requires Central Command access.
   components:
   - type: CommunicationsConsole
-    allowedAlertLevels: [green, blue, violet, yellow, red, gamma, delta, sierra]
+    allowedAlertLevels: [Green, Blue, Violet, Yellow, Red, Gamma, DeltaNuke, Sierra]
   - type: AccessReader
     access: [["CentralCommand"]]
   - type: ActivatableUIRequiresAccess
@@ -46,7 +46,7 @@
   description: A Central Command communications computer with access to the Epsilon alert level.
   components:
   - type: CommunicationsConsole
-    allowedAlertLevels: [green, blue, violet, yellow, red, gamma, delta, sierra, epsilon]
+    allowedAlertLevels: [Green, Blue, Violet, Yellow, Red, Gamma, DeltaNuke, Sierra, Epsilon]
 
 - type: entity
   parent: CentcommComputerComms

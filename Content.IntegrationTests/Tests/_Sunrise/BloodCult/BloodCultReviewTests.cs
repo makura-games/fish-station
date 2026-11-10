@@ -10,13 +10,18 @@ using Content.Server._Sunrise.BloodCult.Runes.Systems;
 using Content.Shared._Sunrise.BloodCult.Components;
 using Content.Shared._Sunrise.BloodCult.Runes;
 using Content.Shared._Sunrise.BloodCult.UI;
-using Content.Shared._Sunrise.NightVision.Components;
+// Fish-start: использование ванильного NightVision вместо удаленного ToggleableNightVision
+// using Content.Shared._Sunrise.NightVision.Components;
+// using Content.Shared._Fish.Vision;
+using Content.Shared.Overlays;
+// Fish-end
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Damage;
 using Content.Shared.DoAfter;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Timing;
+using Content.Shared.Timing.Systems;
 using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -106,8 +111,10 @@ public sealed class BloodCultReviewTests
         {
             Assert.Multiple(() =>
             {
-                Assert.That(server.EntMan.HasComponent<ToggleableNightVisionComponent>(cultist), Is.False);
-                Assert.That(server.EntMan.HasComponent<ToggleableNightVisionComponent>(construct), Is.True);
+                // Fish-start: проверка ванильного NightVision
+                Assert.That(server.EntMan.HasComponent<NightVisionComponent>(cultist), Is.False);
+                Assert.That(server.EntMan.HasComponent<NightVisionComponent>(construct), Is.True);
+                // Fish-end
             });
         });
 

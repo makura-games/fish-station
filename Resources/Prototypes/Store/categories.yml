@@ -110,7 +110,7 @@
   id: PAIAbilities
   name: store-category-abilities
 
-# FIsh edit - магазин модулей Syndicate pAI
+# Fish-edit - магазин модулей Syndicate pAI
 - type: storeCategory
   id: SyndicatePAIModules
   name: store-category-syndicate-pai-modules
