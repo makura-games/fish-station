@@ -209,7 +209,7 @@
     - innerclothing
 
 - type: entity
-  parent: [ ChangelingFleshClothingBase, AllowSuitStorageGuitars] #Fish-edit
+  parent: [ ChangelingFleshClothingBase, FishAllowSuitStorageGuitars] #Fish-edit
   id: ChangelingFleshClothingOuter
   name: changeling flesh vest
   components:

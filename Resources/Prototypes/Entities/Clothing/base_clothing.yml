@@ -83,7 +83,7 @@
  #Fish-Start
 - type: entity
   abstract: true
-  id: AllowSuitStorageGuitars
+  id: FishAllowSuitStorageGuitars
   components:
   - type: AllowSuitStorage
     whitelist:
