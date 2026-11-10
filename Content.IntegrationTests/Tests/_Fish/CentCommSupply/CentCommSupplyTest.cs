@@ -1471,7 +1471,7 @@ public sealed class CentCommSupplyTest
             Guid? responseSelectionId = null,
             Guid? responseOrderId = null,
             bool orderPlaced = false,
-            string? status = null)
+            string status = null)
         {
             return new CentCommSupplyUserStateMessage(
                 [new CentCommSupplyProductEntry(product, "Medical bundle", null, "Medical", 1)],

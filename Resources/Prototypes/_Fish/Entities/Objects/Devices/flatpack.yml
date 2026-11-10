@@ -109,3 +109,35 @@
     - state: overlay
       color: "#EFB341"
     - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineAmmoFlatpack
+  name: vending machine flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: VendingMachineAmmo
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#DE3A3A"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineMedicalSecurityFlatpack
+  name: vending machine flatpack
+  suffix: Fish
+  description: A flatpack.
+  components:
+  - type: Flatpack
+    entity: VendingMachineMedicalSecurity
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#DE3A3A"
+    - state: icon-default

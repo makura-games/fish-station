@@ -74,6 +74,8 @@
         children:
         - id: SecurityTechFabCircuitboard
         - id: CargoRequestSecurityComputerCircuitboard
+        - id: SunriseCriminalRecordsComputerCircuitboard  # Fish-edit
+        - id: ComputerPrisonerManagementCircuitboard  # Fish-edit
 
 - type: entity
   parent: ToteBase
