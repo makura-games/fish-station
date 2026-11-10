@@ -40,6 +40,9 @@ public sealed partial class FishIpcPassiveHealSystem : EntitySystem
             if (!_modules.IsChassisPowered(host))
                 continue;
 
+            if (_damageable.GetTotalDamage(host) <= 0)
+                continue;
+
             var fraction = _modules.GetHostChargeFraction(host);
             if (fraction < module.MinChargeFraction)
                 continue;

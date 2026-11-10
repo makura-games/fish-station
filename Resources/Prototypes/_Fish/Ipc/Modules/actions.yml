@@ -32,50 +32,81 @@
   - type: InstantAction
     event: !type:FishIpcJumpstarterActionEvent
 
+# Включённое состояние — зелёная рамка поверх иконки. Базовый визуализатор прячет Icon.
 - type: entity
+  abstract: true
   parent: BaseToggleAction
+  id: FishBaseIpcToggleAction
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: GenericVisualizer
+    visuals:
+      enum.ActionState.Toggled:
+        enum.ActionVisuals.Icon:
+          True: { visible: true }
+          False: { visible: true }
+        enum.ActionVisuals.IconToggled:
+          True: { visible: true }
+          False: { visible: false }
+      enum.LimitedChargesState.HasCharges:
+        enum.ActionVisuals.Icon:
+          True: { color: White }
+          False: { color: DimGray }
+        enum.ActionVisuals.IconToggled:
+          True: { color: White }
+          False: { color: DimGray }
+  - type: InstantAction
+    event: !type:FishIpcModuleToggleActionEvent
+
+- type: entity
+  parent: FishBaseIpcToggleAction
   id: FishActionIpcToggleRepair
   name: Toggle chassis repair
   description: Enable or disable the installed repair module.
   components:
-  - type: Action
-    useDelay: 0.5
-    itemIconStyle: NoItem
   - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: InstantAction
-    event: !type:FishIpcModuleToggleActionEvent
+    layers:
+    - sprite: Objects/Specific/Robotics/borgmodule.rsi
+      state: generic
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
 
 - type: entity
-  parent: BaseToggleAction
+  parent: FishBaseIpcToggleAction
   id: FishActionIpcToggleVision
   name: Toggle chassis optics
   description: Enable or disable the installed vision module.
   components:
-  - type: Action
-    useDelay: 0.5
-    itemIconStyle: NoItem
   - type: Sprite
-    sprite: Clothing/Eyes/Hud/med.rsi
-    state: icon
-  - type: InstantAction
-    event: !type:FishIpcModuleToggleActionEvent
+    layers:
+    - sprite: Clothing/Eyes/Hud/med.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
 
 - type: entity
-  parent: BaseToggleAction
+  parent: FishBaseIpcToggleAction
   id: FishActionIpcToggleModule
   name: Toggle chassis module
   description: Enable or disable this chassis module.
   components:
-  - type: Action
-    useDelay: 0.5
-    itemIconStyle: NoItem
   - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: InstantAction
-    event: !type:FishIpcModuleToggleActionEvent
+    layers:
+    - sprite: Objects/Specific/Robotics/borgmodule.rsi
+      state: generic
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
 
 - type: entity
   parent: BaseItem

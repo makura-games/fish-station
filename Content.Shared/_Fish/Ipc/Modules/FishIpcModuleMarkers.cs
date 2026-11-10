@@ -2,7 +2,6 @@ using Content.Shared.Damage;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared._Fish.Ipc.Modules;
 
@@ -25,42 +24,6 @@ public sealed partial class FishIpcEmpScreenHostComponent : Component
     /// <summary>Не выставлять Disabled на EmpPulse при установленном экране.</summary>
     [DataField]
     public bool BlockDisable = true;
-}
-
-/// <summary>Маркер хоста: магнитные суставы (сложнее ампутировать, EMP глушит).</summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-public sealed partial class FishIpcMagneticJointsHostComponent : Component
-{
-    /// <summary>Шанс отменить ампутацию (0–1), пока эффект активен.</summary>
-    [DataField]
-    public float ResistChance = 0.65f;
-
-    [DataField, AutoNetworkedField]
-    public bool EmpDisabled;
-
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
-    public TimeSpan EmpDisabledUntil;
-
-    /// <summary>Выключено action-тогглом модуля.</summary>
-    [DataField, AutoNetworkedField]
-    public bool ModuleEnabled = true;
-}
-
-/// <summary>Маркер хоста: герметичные суставы (блокируют ампутацию, EMP = долгий стан).</summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-public sealed partial class FishIpcSealedJointsHostComponent : Component
-{
-    [DataField]
-    public TimeSpan EmpStunDuration = TimeSpan.FromSeconds(12);
-
-    [DataField, AutoNetworkedField]
-    public bool EmpDisabled;
-
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField]
-    public TimeSpan EmpDisabledUntil;
-
-    [DataField, AutoNetworkedField]
-    public bool ModuleEnabled = true;
 }
 
 /// <summary>Маркер хоста: ускоренная зарядка от ЛКП.</summary>
@@ -231,32 +194,6 @@ public sealed partial class FishIpcToolHandModuleComponent : Component
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FishIpcEmpScreenModuleComponent : Component;
-
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-public sealed partial class FishIpcMagneticJointsModuleComponent : Component
-{
-    [DataField]
-    public EntProtoId ToggleAction = "FishActionIpcToggleMagneticJoints";
-
-    [DataField, AutoNetworkedField]
-    public bool Enabled = true;
-
-    [ViewVariables]
-    public EntityUid? ToggleActionEntity;
-}
-
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-public sealed partial class FishIpcSealedJointsModuleComponent : Component
-{
-    [DataField]
-    public EntProtoId ToggleAction = "FishActionIpcToggleSealedJoints";
-
-    [DataField, AutoNetworkedField]
-    public bool Enabled = true;
-
-    [ViewVariables]
-    public EntityUid? ToggleActionEntity;
-}
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class FishIpcApcAdapterModuleComponent : Component;

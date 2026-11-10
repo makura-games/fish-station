@@ -19,8 +19,9 @@ public sealed partial class FishIpcEmpSystem : EntitySystem
         SubscribeLocalEvent<FishIpcComponent, EmpPulseEvent>(OnEmp);
     }
 
-    private void OnEmp(EntityUid uid, FishIpcComponent component, ref EmpPulseEvent args)
+    private void OnEmp(Entity<FishIpcComponent> ent, ref EmpPulseEvent args)
     {
+        var uid = ent.Owner;
         args.Affected = true;
 
         var mult = 1f;

@@ -35,17 +35,20 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
         SubscribeLocalEvent<FishDeadStartupButtonComponent, FishDeadStartupDoAfterEvent>(OnDoAfter);
     }
 
-    private void AddVerb(EntityUid uid, FishDeadStartupButtonComponent component, GetVerbsEvent<AlternativeVerb> args)
+    private void AddVerb(Entity<FishDeadStartupButtonComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
+        var uid = ent.Owner;
+        var component = ent.Comp;
         if (!_mobState.IsDead(uid) || !args.CanAccess || !args.CanInteract || args.Hands == null)
             return;
 
+        var user = args.User;
         args.Verbs.Add(new AlternativeVerb
         {
             Act = () =>
             {
                 _audio.PlayPvs(component.Sound, uid);
-                _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, component.DoAfterDelay,
+                _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, component.DoAfterDelay,
                     new FishDeadStartupDoAfterEvent(), uid, uid)
                 {
                     BreakOnDamage = true,
@@ -58,8 +61,10 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
         });
     }
 
-    private void OnDoAfter(EntityUid uid, FishDeadStartupButtonComponent component, FishDeadStartupDoAfterEvent args)
+    private void OnDoAfter(Entity<FishDeadStartupButtonComponent> ent, ref FishDeadStartupDoAfterEvent args)
     {
+        var uid = ent.Owner;
+        var component = ent.Comp;
         if (args.Cancelled || args.Handled
             || !TryComp<MobStateComponent>(uid, out var mobState)
             || !_mobState.IsDead(uid, mobState)

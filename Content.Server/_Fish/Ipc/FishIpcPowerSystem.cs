@@ -97,7 +97,11 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
                 if (!_nextWarn.TryGetValue(uid, out var next) || now >= next)
                 {
                     _nextWarn[uid] = now + TimeSpan.FromSeconds(20);
-                    _popup.PopupEntity(Loc.GetString("robot-charge-low-percent", ("percent", (int)(level * 100))), uid, uid);
+                    // round(level*100) при крошечном заряде даёт 0, хотя шкала уже 1.
+                    var shownPercent = (int) MathF.Round(level * 100f);
+                    if (shownPercent < 1)
+                        shownPercent = 1;
+                    _popup.PopupEntity(Loc.GetString("robot-charge-low-percent", ("percent", shownPercent)), uid, uid);
                 }
             }
         }

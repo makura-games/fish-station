@@ -187,16 +187,6 @@ public sealed partial class SurgerySystem : SharedSurgerySystem
             return;
         }
 
-        // Fish-start: модули суставов КПБ могут отменить ампутацию
-        var fishAmp = new Content.Shared._Fish.Ipc.Modules.FishIpcAmputationAttemptEvent(args.User, args.Part);
-        RaiseLocalEvent(args.Body, ref fishAmp);
-        if (fishAmp.Cancelled)
-        {
-            args.IsCancelled = true;
-            return;
-        }
-        // Fish-end
-
         args.IsCancelled = !_limbSystem.Amputate((args.Body, body), args.Part);
     }
 

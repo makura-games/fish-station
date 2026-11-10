@@ -20,8 +20,10 @@ public sealed partial class FishIpcElectrocuteChargeSystem : EntitySystem
         SubscribeLocalEvent<FishIpcComponent, ElectrocutedEvent>(OnElectrocuted);
     }
 
-    private void OnElectrocuted(EntityUid uid, FishIpcComponent component, ElectrocutedEvent args)
+    private void OnElectrocuted(Entity<FishIpcComponent> ent, ref ElectrocutedEvent args)
     {
+        var uid = ent.Owner;
+        var component = ent.Comp;
         if (!component.BatteryPowered || !_powerCell.TryGetBatteryFromSlot(uid, out var batteryEnt))
             return;
 
