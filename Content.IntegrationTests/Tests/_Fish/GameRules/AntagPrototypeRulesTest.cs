@@ -8,7 +8,7 @@ namespace Content.IntegrationTests.Tests._Fish.GameRules;
 [TestFixture]
 public sealed class AntagPrototypeRulesTest : GameTest
 {
-    private static readonly string[] AntagIds =
+    private static readonly string[] _antagIds =
     [
         "AbductorVictim", "AssaultCommander", "AssaultOperative", "BloodCultist", "Changeling", "Dragon",
         "FleshCultist", "FleshCultistLeader", "Fugitive", "GenericAntagonist", "GenericFreeAgent",
@@ -18,7 +18,7 @@ public sealed class AntagPrototypeRulesTest : GameTest
         "Xenoborg", "Zombie"
     ];
 
-    private static readonly string[] AntagIdsWithWikiRules =
+    private static readonly string[] _antagIdsWithWikiRules =
     [
         "BloodCultist", "Changeling", "Dragon", "InitialInfected", "LoneAbductorAntag", "Nukeops",
         "NukeopsCommander", "NukeopsMedic", "Thief", "Traitor", "TraitorSleeper", "Zombie"
@@ -33,11 +33,11 @@ public sealed class AntagPrototypeRulesTest : GameTest
 
         await Pair.Server.WaitAssertion(() =>
         {
-            foreach (var id in AntagIds)
+            foreach (var id in _antagIds)
             {
                 Assert.That(antags.TryGetValue(id, out var antag), Is.True, id);
-                var hasWikiRules = AntagIdsWithWikiRules.Contains(id);
-                Assert.That(antag.Rules, hasWikiRules ? Is.Not.Empty : Is.Empty, antag.ID);
+                var hasWikiRules = _antagIdsWithWikiRules.Contains(id);
+                Assert.That(antag.Rules?.Id ?? string.Empty, hasWikiRules ? Is.Not.Empty : Is.Empty, antag.ID);
             }
         });
     }

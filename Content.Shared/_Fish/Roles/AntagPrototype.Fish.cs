@@ -10,5 +10,5 @@ public sealed partial class AntagPrototype
     /// Локализационный ключ с правилами этой роли.
     /// </summary>
     [DataField]
-    public LocId Rules = string.Empty;
+    public LocId? Rules;
 }

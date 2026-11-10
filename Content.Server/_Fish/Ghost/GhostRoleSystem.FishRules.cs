@@ -17,7 +17,7 @@ public sealed partial class GhostRoleSystem
         var rules = new List<string>();
         foreach (var antagId in antags)
         {
-            var locId = ProtoMan.Index(antagId).Rules;
+            var locId = ProtoMan.Index(antagId).Rules?.Id;
             if (string.IsNullOrWhiteSpace(locId))
                 continue;
 
