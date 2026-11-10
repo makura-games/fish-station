@@ -7,8 +7,12 @@ using Content.Shared.Chat.Prototypes;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Overlays;
+using Content.Shared.Speech.Components;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.IntegrationTests.Tests._Fish.Ipc;
 
@@ -208,8 +212,13 @@ public sealed class FishIpcReviewFixesTest : FishIpcGameTest
 
         await Server.WaitAssertion(() =>
         {
-            var sounds = SProtoMan.Index(IpcVoice);
+            var vocal = SComp<VocalComponent>(ipc);
+            Assert.That(vocal.EmoteSounds, Is.EqualTo(IpcVoice));
+
+            var sounds = SProtoMan.Index(vocal.EmoteSounds!.Value);
             var chat = Server.System<ChatSystem>();
+            var audio = Server.System<SharedAudioSystem>();
+            var resources = Server.ResolveDependency<IResourceManager>();
 
             Assert.Multiple(() =>
             {
@@ -217,8 +226,11 @@ public sealed class FishIpcReviewFixesTest : FishIpcGameTest
                 {
                     Assert.That(SProtoMan.TryIndex<EmotePrototype>(id, out var emote), Is.True, id);
                     Assert.That(chat.AllowedToUseEmote(ipc, emote!), Is.True, id);
-                    Assert.That(sounds.Sounds.ContainsKey(id), Is.True, id);
-                    Assert.That(sounds.Sounds[id], Is.Not.Null, id);
+                    Assert.That(sounds.Sounds.TryGetValue(id, out var spec), Is.True, id);
+                    var path = audio.GetAudioPath(audio.ResolveSound(spec!));
+                    Assert.That(path, Is.Not.Null.And.Not.Empty, id);
+                    Assert.That(resources.ContentFileExists(new ResPath(path!)), Is.True, path);
+                    Assert.That(chat.TryPlayEmoteSound(ipc, sounds, id), Is.True, id);
                 }
             });
         });

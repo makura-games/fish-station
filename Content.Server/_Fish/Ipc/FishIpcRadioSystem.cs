@@ -1,9 +1,13 @@
 using Content.Server.Radio.EntitySystems;
 using Content.Shared._Fish.Ipc;
 using Content.Shared.Chat;
+using Content.Shared.Chat.Prototypes;
+using Content.Shared.Humanoid;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
 using Content.Shared.Speech;
+using Content.Shared.Speech.Components;
+using Content.Shared.Speech.EntitySystems;
 using Content.Shared.Starlight.Medical.Surgery;
 using Robust.Shared.Prototypes;
 
@@ -16,12 +20,16 @@ namespace Content.Server._Fish.Ipc;
 public sealed partial class FishIpcRadioSystem : EntitySystem
 {
     private static readonly ProtoId<RadioChannelPrototype> BinaryChannel = "Binary";
+    private static readonly ProtoId<EmoteSoundsPrototype> IpcVoice = "UnisexIpc";
+
+    [Dependency] private VocalSystem _vocal = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<FishIpcComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<FishIpcComponent, VoiceChangedEvent>(OnVoiceChanged, after: [typeof(VocalSystem)]);
         SubscribeLocalEvent<FishIpcComponent, EncryptionChannelsChangedEvent>(OnKeysChanged);
         SubscribeLocalEvent<FishIpcComponent, GetDefaultRadioChannelEvent>(OnGetDefault);
         SubscribeLocalEvent<FishIpcComponent, EntitySpokeEvent>(OnSpoke, before: [typeof(RadioSystem)]);
@@ -31,8 +39,23 @@ public sealed partial class FishIpcRadioSystem : EntitySystem
     {
         // Приказ: хирургия на КПБ выключена, модули остаются.
         RemCompDeferred<SurgeryTargetComponent>(ent.Owner);
+        LockIpcVoice(ent);
 
         SetRadioEnabled(ent, !ent.Comp.PowerDown);
+    }
+
+    private void OnVoiceChanged(Entity<FishIpcComponent> ent, ref VoiceChangedEvent args)
+    {
+        // Профиль человека затирает UnisexIpc: у Buzz-Two и Ping тогда нет ключа.
+        LockIpcVoice(ent);
+    }
+
+    private void LockIpcVoice(Entity<FishIpcComponent> ent)
+    {
+        if (!TryComp<VocalComponent>(ent, out var vocal) || vocal.EmoteSounds == IpcVoice)
+            return;
+
+        _vocal.SetEmoteSounds((ent.Owner, vocal), IpcVoice);
     }
 
     private void OnKeysChanged(Entity<FishIpcComponent> ent, ref EncryptionChannelsChangedEvent args)

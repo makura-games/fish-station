@@ -20,15 +20,39 @@
       path: /Audio/_Fish/Voice/Ipc/pai_whistle.ogg
     Crying:
       path: /Audio/_Fish/Voice/Ipc/cry_robot_1.ogg
-    # Fish-edit: критовые сбои — Бип буп, Пинг, Тяжело кашлять, Предсмертный хрип
+    # Fish-edit: Paradise machine — Бип буп, Пинг, кашель шасси, предсмертный хрип
     Buzz-Two:
-      path: /Audio/_Fish/Voice/Ipc/beep_500.ogg
+      collection: FishIpcBuzzTwo
     Ping:
-      path: /Audio/_Fish/Voice/Ipc/beep_2000.ogg
+      collection: FishIpcPing
     SevereCough:
-      path: /Audio/_Fish/Voice/Ipc/whirr2.ogg
+      collection: FishIpcMachineCough
     DefaultDeathgasp:
-      path: /Audio/_Fish/Voice/Ipc/whirr3.ogg
+      collection: FishIpcDeathgasp
+
+- type: soundCollection
+  id: FishIpcBuzzTwo
+  files:
+  - /Audio/_Fish/Voice/Ipc/paradise/buzz-two.ogg
+
+- type: soundCollection
+  id: FishIpcPing
+  files:
+  - /Audio/_Fish/Voice/Ipc/paradise/ping.ogg
+
+- type: soundCollection
+  id: FishIpcMachineCough
+  files:
+  - /Audio/_Fish/Voice/Ipc/paradise/m_machine_cougha.ogg
+  - /Audio/_Fish/Voice/Ipc/paradise/m_machine_coughb.ogg
+  - /Audio/_Fish/Voice/Ipc/paradise/m_machine_coughc.ogg
+  - /Audio/_Fish/Voice/Ipc/paradise/f_machine_cougha.ogg
+  - /Audio/_Fish/Voice/Ipc/paradise/f_machine_coughb.ogg
+
+- type: soundCollection
+  id: FishIpcDeathgasp
+  files:
+  - /Audio/_Fish/Voice/Ipc/paradise/borg_deathsound.ogg
 
 - type: soundCollection
   id: FishIpcBuzzes

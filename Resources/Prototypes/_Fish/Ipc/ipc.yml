@@ -26,6 +26,8 @@
       Heart: OrganIpcCell
   - type: HumanoidProfile
     species: Ipc
+    # Fish-edit: дефолт компонента — MaleHuman, у него нет Buzz-Two и Ping
+    voice: UnisexIpc
 
 - type: entity
   parent:
@@ -269,4 +271,5 @@
   components:
   - type: HumanoidProfile
     species: Ipc
+    voice: UnisexIpc
 # Fish-end

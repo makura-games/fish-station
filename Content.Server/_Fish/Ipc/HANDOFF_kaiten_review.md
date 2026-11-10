@@ -18,7 +18,9 @@
 
 Причина: `FishEmitBuzzWhileDamagedSystem` в крите или при уроне ≥ 40 играл `FishIpcBuzzes` каждые 6 с и спамил popup.
 
-Решение: бузз только на получение урона (дельта ≥ 1, кулдаун 5 с), крит-brute по центу его не запускает. В крите раз в 30–50 с одна случайная эмоция: `Buzz-Two`, `Ping`, `SevereCough`, `DefaultDeathgasp`, с `ignoreActionBlocker`. Звуки добавлены в `UnisexIpc`. Описания не менялись.
+Решение: бузз только на получение урона (дельта ≥ 1, кулдаун 5 с), крит-brute по центу его не запускает. В крите раз в 30–50 с одна случайная эмоция: `Buzz-Two`, `Ping`, `SevereCough`, `DefaultDeathgasp`, с `ignoreActionBlocker`.
+
+Звуки этих четырёх: сначала стояли чужие `beep_500`/`whirr`, это не сэмплы эмоций. Кашель Paradise ещё и стерео, `PlayPvs` его не играет. Взяты оригиналы Paradise (`sound/machines/buzz-two.ogg`, `ping.ogg`, `sound/voice/borg_deathsound.ogg`, `m_/f_machine_cough*.ogg`), кашель сведён в моно. Голос КПБ принудительно `UnisexIpc`, иначе профиль `MaleHuman` оставляет Бип буп и Пинг без ключа.
 
 ## Ревью после пунктов 1–3
 
