@@ -30,7 +30,7 @@ public sealed partial class FishEmitBuzzWhileDamagedSystem : EntitySystem
         SubscribeLocalEvent<FishEmitBuzzWhileDamagedComponent, DamageChangedEvent>(OnDamage);
     }
 
-    private void OnDamage(Entity<FishEmitBuzzWhileDamagedComponent> ent, DamageChangedEvent args)
+    private void OnDamage(Entity<FishEmitBuzzWhileDamagedComponent> ent, ref DamageChangedEvent args)
     {
         if (!args.DamageIncreased || args.DamageDelta == null || _mobState.IsDead(ent))
             return;

@@ -1,4 +1,5 @@
 using Content.Server.Chat.Systems;
+using Content.Shared._Fish.Ipc;
 using Content.Server.EUI;
 using Content.Server.Ghost;
 using Content.Shared._Fish.Ipc.Modules;
@@ -59,7 +60,8 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcDefibActionEvent>(OnDefibAction);
         SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcJumpstarterActionEvent>(OnJumpAction);
-        SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcChassisPowerChangedEvent>(OnChassisPower);
+        // На FishIpcModuleHostComponent это событие уже слушает GrantSystem: движок пускает одну подписку.
+        SubscribeLocalEvent<FishIpcComponent, FishIpcChassisPowerChangedEvent>(OnChassisPower);
 
         SubscribeLocalEvent<FishIpcDefibPadsComponent, AfterInteractEvent>(OnPadsInteract);
         SubscribeLocalEvent<FishIpcDefibPadsComponent, ComponentShutdown>(OnPadsShutdown);
@@ -344,15 +346,15 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-success"), host, host, PopupType.Medium);
     }
 
-    private void OnChassisPower(Entity<FishIpcModuleHostComponent> host, ref FishIpcChassisPowerChangedEvent args)
+    private void OnChassisPower(Entity<FishIpcComponent> ent, ref FishIpcChassisPowerChangedEvent args)
     {
-        if (host.Comp.ModuleContainer is not { } container)
+        if (!TryComp<FishIpcModuleHostComponent>(ent, out var host) || host.ModuleContainer is not { } container)
             return;
 
         foreach (var uid in container.ContainedEntities)
         {
             if (TryComp<FishIpcToolHandModuleComponent>(uid, out var tool))
-                SyncTool((uid, tool), host.Owner);
+                SyncTool((uid, tool), ent.Owner);
 
             if (!args.Powered && TryComp<FishIpcDefibModuleComponent>(uid, out var defib))
                 DeactivatePads((uid, defib));

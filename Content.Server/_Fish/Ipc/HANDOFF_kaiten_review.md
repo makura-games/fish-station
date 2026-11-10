@@ -29,3 +29,8 @@
 - Клиентский алерт батареи не снимал противоположный алерт. Снимает.
 - Суставы без прототипов и install («без суставов — лимбов нет»). Не возвращал.
 - Вокальный модуль больше не держит рацию при нуле — так просил ревью. Описание не менял.
+
+## Тесты
+
+`dotnet test Content.IntegrationTests --filter FullyQualifiedName~FishIpc`: 32 passed, 0 failed.
+YAMLLinter: No errors found.
