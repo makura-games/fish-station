@@ -14,8 +14,8 @@ ent-FishIpcModuleVocalMod = IPC vocal modulator module
     .desc = Built-in radio keeps working even when the battery is dead. Toggleable.
     .suffix = Fish
 
-ent-FishIpcModuleToolHand = IPC tool-hand module
-    .desc = While on, puts a crowbar in a free hand. Toggleable.
+ent-FishIpcModuleToolHand = IPC multitool hand module
+    .desc = While on, puts a multitool in a free hand. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleMedHud = IPC medical optics module
@@ -69,6 +69,9 @@ ent-FishActionIpcToggleRepair = Toggle chassis repair
 
 ent-FishActionIpcToggleVision = Toggle chassis optics
     .desc = Enable or disable the installed vision module.
+
+ent-FishActionIpcToggleThermal = Toggle chassis thermals
+    .desc = Enable or disable thermal vision.
 
 ent-FishActionIpcToggleModule = Toggle chassis module
     .desc = Enable or disable this module. A status popup appears.

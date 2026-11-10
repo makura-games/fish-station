@@ -246,12 +246,15 @@ public sealed partial class IngestionSystem : EntitySystem
         var food = args.Ingested;
         var forceFed = args.User != entity.Owner;
 
-        // Fish-start: КПБ не ест таблетки и не пьёт из бутылок
+        // Fish-start: КПБ не ест и не пьёт. Таблетка — про лечение, бургер — про еду.
         if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(entity))
         {
             if (args.Ingest)
             {
-                _popup.PopupEntity(Loc.GetString("fish-ipc-not-organic"), entity, args.User, PopupType.SmallCaution);
+                var medicine = HasComp<Content.Shared.Chemistry.Components.PillComponent>(food)
+                    || HasComp<Content.Shared.Medical.Healing.HealingComponent>(food);
+                var key = medicine ? "fish-ipc-not-organic" : "fish-ipc-no-eat";
+                _popup.PopupEntity(Loc.GetString(key), entity, args.User, PopupType.SmallCaution);
                 args.Handled = true;
             }
 

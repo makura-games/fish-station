@@ -186,7 +186,7 @@ public sealed partial class FishIpcJumpstarterModuleComponent : Component
 public sealed partial class FishIpcToolHandModuleComponent : Component
 {
     [DataField]
-    public EntProtoId ToolPrototype = "Crowbar";
+    public EntProtoId ToolPrototype = "Multitool";
 
     [ViewVariables]
     public EntityUid? SpawnedTool;

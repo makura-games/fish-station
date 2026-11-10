@@ -35,6 +35,9 @@ public sealed partial class FishEmitBuzzWhileDamagedSystem : EntitySystem
         if (!args.DamageIncreased || args.DamageDelta == null || _mobState.IsDead(ent))
             return;
 
+        if (TryComp<FishIpcComponent>(ent.Owner, out var ipc) && ipc.SuppressDamageBuzz)
+            return;
+
         if (PositiveDamage(args.DamageDelta).Float() < ent.Comp.DamageBuzzThreshold)
             return;
 

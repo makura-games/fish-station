@@ -263,12 +263,22 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
         });
 
         await Server.WaitPost(() => Hurt(ipc, "Blunt", 90));
+        await RunSeconds(1);
+
+        await Server.WaitAssertion(() =>
+        {
+            // Первая секунда крита ещё не набрала целую единицу: облака 0.01 нет.
+            Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(110f));
+        });
+
         await RunSeconds(5);
 
         await Server.WaitAssertion(() =>
         {
             Assert.That(SComp<MobStateComponent>(ipc).CurrentState, Is.EqualTo(MobState.Critical));
-            Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(110f + 2f).Within(0.15f));
+            var gained = Damage(ipc, "Blunt") - 110f;
+            Assert.That(gained, Is.EqualTo(2f).Within(1.01f));
+            Assert.That(gained, Is.EqualTo(MathF.Round(gained)).Within(0.02f));
         });
     }
 

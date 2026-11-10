@@ -59,10 +59,8 @@ public sealed partial class FishIpcComponent : Component
     public Dictionary<int, float> SpeedModifierThresholds = new()
     {
         [10] = 1f,
-        [8] = 1f,
-        [5] = 0.85f,
-        [3] = 0.55f,
-        [1] = 0.35f,
+        [2] = 1f,
+        [1] = 0.65f,
         [0] = 0.2f,
     };
 
@@ -77,4 +75,10 @@ public sealed partial class FishIpcComponent : Component
     /// </summary>
     [ViewVariables]
     public float CritBruteRemainder;
+
+    /// <summary>
+    /// Пока истина, урон наносит сам крит-тик и жужжание от удара его не считает.
+    /// </summary>
+    [ViewVariables]
+    public bool SuppressDamageBuzz;
 }

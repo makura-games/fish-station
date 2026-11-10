@@ -14,8 +14,8 @@ ent-FishIpcModuleVocalMod = модуль вокального модулятор
     .desc = Встроенная рация работает даже при севшей батарее. Можно выключить.
     .suffix = Fish
 
-ent-FishIpcModuleToolHand = модуль инструмент-руки КПБ
-    .desc = Пока включён — в свободную руку вылезает лом. Можно выключить.
+ent-FishIpcModuleToolHand = модуль руки-мультитула КПБ
+    .desc = Пока включён — в свободную руку вылезает мультитул. Можно выключить.
     .suffix = Fish
 
 ent-FishIpcModuleMedHud = модуль медицинской оптики КПБ
@@ -69,6 +69,9 @@ ent-FishActionIpcToggleRepair = переключить ремонт шасси
 
 ent-FishActionIpcToggleVision = переключить оптику шасси
     .desc = Включить или выключить установленный модуль зрения.
+
+ent-FishActionIpcToggleThermal = переключить термалы шасси
+    .desc = Включить или выключить термальное зрение.
 
 ent-FishActionIpcToggleModule = переключить модуль шасси
     .desc = Включить или выключить модуль. Всплывёт статус.

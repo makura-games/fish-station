@@ -196,12 +196,11 @@
     chargeThresholdMid: 0.8
     chargeThresholdLow: 0.35
     chargeThresholdCritical: 0.1
+    # Выше ~15% заряда скорость как у человека. Замедление только на критическом остатке и при нуле.
     speedModifierThresholds:
       10: 1
-      8: 1
-      5: 0.85
-      3: 0.55
-      1: 0.35
+      2: 1
+      1: 0.65
       0: 0.2
   - type: FishIpcModuleHost
     maxModules: 3

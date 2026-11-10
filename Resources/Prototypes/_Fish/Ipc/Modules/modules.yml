@@ -49,8 +49,8 @@
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleToolHand
-  name: IPC tool-hand module
-  description: Draws 0.2 J/s. While on, places a crowbar in a free hand. Toggleable.
+  name: IPC multitool hand module
+  description: Draws 0.2 J/s. While on, places a multitool in a free hand. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -60,7 +60,7 @@
     passiveDrainPerSecond: 0.2
   - type: FishIpcModulePowerToggle
   - type: FishIpcToolHandModule
-    toolPrototype: Crowbar
+    toolPrototype: Multitool
 
 - type: entity
   parent: FishBaseIpcModule
@@ -118,13 +118,14 @@
   suffix: Fish
   components:
   - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
+    sprite: Clothing/Eyes/Glasses/thermal.rsi
+    state: icon
   - type: FishIpcModule
     passiveDrainPerSecond: 0.55
     exclusionGroup: vision
   - type: FishIpcVisionModule
     kind: Thermal
+    toggleAction: FishActionIpcToggleThermal
 
 # --- repair split: физ / мех ---
 - type: entity

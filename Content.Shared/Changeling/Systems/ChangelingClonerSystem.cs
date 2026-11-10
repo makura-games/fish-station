@@ -135,6 +135,14 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         if (!HasComp<HumanoidProfileComponent>(target))
             return false; // cloning only works for humanoids at the moment
 
+        // Fish-start: у КПБ нет ДНК, образец не снимается
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-no-dna"), target, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
+
         var args = new DoAfterArgs(EntityManager, user, ent.Comp.DoAfter, new ClonerDrawDoAfterEvent(), ent, target: target, used: ent)
         {
             BreakOnDamage = true,
@@ -170,6 +178,14 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
 
         if (!HasComp<HumanoidProfileComponent>(target))
             return false; // cloning only works for humanoids at the moment
+
+        // Fish-start: в шасси КПБ ДНК не вкалывают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-no-dna"), target, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
 
         var args = new DoAfterArgs(EntityManager, user, ent.Comp.DoAfter, new ClonerInjectDoAfterEvent(), ent, target: target, used: ent)
         {
@@ -208,6 +224,10 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         if (!HasComp<HumanoidProfileComponent>(target))
             return; // cloning only works for humanoids at the moment
 
+        // Fish-edit: завершённый do-after не снимает ДНК с КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+            return;
+
         _adminLogger.Add(LogType.Identity,
             $"{user} is using {ent.Owner} to draw DNA from {target}.");
 
@@ -237,6 +257,10 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
 
         if (!HasComp<HumanoidProfileComponent>(target))
             return; // cloning only works for humanoids at the moment
+
+        // Fish-edit: завершённый do-after не переписывает шасси КПБ чужой ДНК
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+            return;
 
         if (!ProtoMan.Resolve(ent.Comp.Settings, out var settings))
             return;

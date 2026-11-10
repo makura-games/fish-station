@@ -6,6 +6,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
 using Content.Shared.Speech;
+using Content.Shared.Forensics.Components;
 using Content.Shared.Speech.Components;
 using Content.Shared.Speech.EntitySystems;
 using Content.Shared.Starlight.Medical.Surgery;
@@ -39,6 +40,7 @@ public sealed partial class FishIpcRadioSystem : EntitySystem
     {
         // Приказ: хирургия на КПБ выключена, модули остаются.
         RemCompDeferred<SurgeryTargetComponent>(ent.Owner);
+        RemComp<DnaComponent>(ent.Owner);
         LockIpcVoice(ent);
 
         SetRadioEnabled(ent, !ent.Comp.PowerDown);

@@ -94,6 +94,22 @@
 
 - type: entity
   parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleThermal
+  name: Toggle chassis thermals
+  description: Enable or disable the installed thermal vision module.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Clothing/Eyes/Glasses/thermal.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
   id: FishActionIpcToggleModule
   name: Toggle chassis module
   description: Enable or disable this chassis module.
