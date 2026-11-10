@@ -20,6 +20,15 @@
       path: /Audio/_Fish/Voice/Ipc/pai_whistle.ogg
     Crying:
       path: /Audio/_Fish/Voice/Ipc/cry_robot_1.ogg
+    # Fish-edit: критовые сбои — Бип буп, Пинг, Тяжело кашлять, Предсмертный хрип
+    Buzz-Two:
+      path: /Audio/_Fish/Voice/Ipc/beep_500.ogg
+    Ping:
+      path: /Audio/_Fish/Voice/Ipc/beep_2000.ogg
+    SevereCough:
+      path: /Audio/_Fish/Voice/Ipc/whirr2.ogg
+    DefaultDeathgasp:
+      path: /Audio/_Fish/Voice/Ipc/whirr3.ogg
 
 - type: soundCollection
   id: FishIpcBuzzes
