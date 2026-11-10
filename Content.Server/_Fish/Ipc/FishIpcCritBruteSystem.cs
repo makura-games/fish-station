@@ -12,10 +12,10 @@ public sealed partial class FishIpcCritBruteSystem : EntitySystem
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private DamageableSystem _damageable = default!;
 
-    /// <summary>Базовый blunt/с при crit. В урон уходит целыми единицами, без спама 0.01.</summary>
+    /// <summary>Базовый blunt/с при crit. В урон уходит пачкой по 10, раз в 25 с.</summary>
     private const float CritBrutePerSecond = 0.4f;
 
-    private const float CritChunk = 1f;
+    private const float CritChunk = 10f;
 
     public override void Update(float frameTime)
     {
@@ -28,7 +28,7 @@ public sealed partial class FishIpcCritBruteSystem : EntitySystem
                 continue;
             }
 
-            // 0.4/с копятся и уходят пачками по 1, иначе каждый кадр всплывает −0.01.
+            // 0.4/с копятся и уходят пачкой по 10 раз в 25 с, иначе всплывает цифра каждый удар.
             ipc.CritBruteRemainder += CritBrutePerSecond * frameTime;
             if (ipc.CritBruteRemainder < CritChunk)
                 continue;

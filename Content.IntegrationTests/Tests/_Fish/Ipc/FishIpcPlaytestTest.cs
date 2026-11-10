@@ -139,10 +139,10 @@ public sealed class FishIpcPlaytestTest : FishIpcGameTest
         {
             DisableDamageVariance();
             ipc = SSpawn("MobIpc");
-            Hurt(ipc, "Blunt", 198f);
+            Hurt(ipc, "Blunt", 190f);
         });
 
-        await RunSeconds(6f);
+        await RunSeconds(26f);
 
         await Server.WaitAssertion(() =>
         {
