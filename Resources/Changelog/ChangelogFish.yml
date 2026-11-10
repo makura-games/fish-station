@@ -1555,3 +1555,26 @@
     message: Изменено наполнение кейса с SCAR-H, в комплект идут все доступные типы боеприпасов.
   id: 156
   url: https://github.com/makura-games/fish-station/pull/622
+- author: KrytoiChuvaaak
+  time: '2026-11-09T09:51:05.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фелинидам возвращено ночное зрение.
+  id: 157
+  url: https://github.com/makura-games/fish-station/pull/609
+- author: Kaiten
+  time: '2026-11-09T09:50:28.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Теперь рассказчик после часа смены переходит форсированно в активную фазу. При этом он старается заспавнить выбранного им антагониста сразу, а не рандомить каждую минуту.
+  - type: Tweak
+    message: Под конец активной фазы рассказчик старается потратить все оставшиеся у него очки на дозыв антагов. в теории это позволит избежать ситуаций, где рассказчик выбирает одного ниндзю и решает что этого хватит на фазу, теперь к слабым антагам он будет подкидывать других слабых или сильного, если бюджет накопиться за это время.
+  id: 158
+  url: https://github.com/makura-games/fish-station/pull/638
+- author: Kaiten
+  time: '2026-11-09T10:05:39.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: чиним секрет
+  id: 159
+  url: https://github.com/makura-games/fish-station/pull/636
