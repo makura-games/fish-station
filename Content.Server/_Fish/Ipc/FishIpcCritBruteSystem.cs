@@ -37,7 +37,8 @@ public sealed partial class FishIpcCritBruteSystem : EntitySystem
             {
                 DamageDict = { ["Blunt"] = apply }
             };
-            _damageable.TryChangeDamage(uid, damage, true, false);
+            // Порция 0.01 без ignoreVariance обнуляется разбросом урона (до −30%).
+            _damageable.TryChangeDamage(uid, damage, ignoreResistances: true, interruptsDoAfters: false, ignoreVariance: true);
         }
     }
 }

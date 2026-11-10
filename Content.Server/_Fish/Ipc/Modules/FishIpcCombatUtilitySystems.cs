@@ -252,7 +252,7 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
             return;
         }
 
-        _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, true, origin: host);
+        _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, ignoreResistances: true, origin: host, ignoreVariance: true);
 
         var failed = true;
         if (_mobState.IsDead(target) &&
@@ -330,7 +330,7 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         if (module.Comp.ActionEntity is { } action)
             _actions.SetCooldown(action, module.Comp.Cooldown);
 
-        _damageable.TryChangeDamage(host.Owner, module.Comp.HealOnUse, true, origin: host.Owner);
+        _damageable.TryChangeDamage(host.Owner, module.Comp.HealOnUse, ignoreResistances: true, origin: host.Owner, ignoreVariance: true);
 
         if (TryComp<MobThresholdsComponent>(host.Owner, out var thresholds) &&
             _mobThreshold.TryGetThresholdForState(host.Owner, MobState.Dead, out var deadThreshold, thresholds) &&

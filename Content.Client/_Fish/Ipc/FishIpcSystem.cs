@@ -62,10 +62,12 @@ public sealed partial class FishIpcSystem : SharedFishIpcSystem
     {
         if (!_powerCell.TryGetBatteryFromSlot(ent.Owner, out var battery))
         {
+            _clientAlerts.ClearAlert(ent.Owner, ent.Comp.BatteryAlert);
             _clientAlerts.ShowAlert(ent.Owner, ent.Comp.NoBatteryAlert);
             return;
         }
 
+        _clientAlerts.ClearAlert(ent.Owner, ent.Comp.NoBatteryAlert);
         var chargeLevel = (short) MathF.Round(_battery.GetChargeLevel(battery.Value.AsNullable()) * 10f);
         if (chargeLevel == 0 && _powerCell.HasDrawCharge((ent.Owner, null, null)))
             chargeLevel = 1;

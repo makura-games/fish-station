@@ -33,7 +33,6 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<FishDeadStartupButtonComponent, GetVerbsEvent<AlternativeVerb>>(AddVerb);
         SubscribeLocalEvent<FishDeadStartupButtonComponent, FishDeadStartupDoAfterEvent>(OnDoAfter);
-        SubscribeLocalEvent<FishDeadStartupButtonComponent, MobStateChangedEvent>(OnMobStateChanged);
     }
 
     private void AddVerb(EntityUid uid, FishDeadStartupButtonComponent component, GetVerbsEvent<AlternativeVerb> args)
@@ -71,10 +70,14 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
         if (_damageable.GetTotalDamage(uid) < criticalThreshold)
         {
             _mobState.ChangeMobState(uid, MobState.Alive, mobState);
+            _popup.PopupEntity(Loc.GetString("fish-ipc-startup-success", ("target", uid)), uid);
+            _audio.PlayPvs(component.Sound, uid);
 
             // Как у дефиба: предложить призраку вернуться в тело.
+            // Успех только здесь: любой переход в Alive (jumpstarter, хил) — не перезапуск.
             if (_mind.TryGetMind(uid, out _, out var mindComp) &&
-                _player.TryGetSessionById(mindComp.UserId, out var playerSession) &&
+                mindComp.UserId is { } userId &&
+                _player.TryGetSessionById(userId, out var playerSession) &&
                 mindComp.CurrentEntity != uid)
             {
                 _eui.OpenEui(new ReturnToBodyEui(mindComp, _mind, _player), playerSession);
@@ -87,14 +90,5 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
         }
 
         args.Handled = true;
-    }
-
-    private void OnMobStateChanged(EntityUid uid, FishDeadStartupButtonComponent component, MobStateChangedEvent args)
-    {
-        if (args.NewMobState != MobState.Alive)
-            return;
-
-        _popup.PopupEntity(Loc.GetString("fish-ipc-startup-success", ("target", uid)), uid);
-        _audio.PlayPvs(component.Sound, uid);
     }
 }

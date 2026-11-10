@@ -52,6 +52,8 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
     public FishWeldResult TryStartWeld(Entity<FishWeldingHealingComponent> tool, EntityUid user, EntityUid target)
     {
         if (!TryComp<FishWeldingHealableComponent>(target, out _)
+            || !TryComp<ItemToggleComponent>(tool, out var toggle)
+            || !toggle.Activated
             || !TryComp<InjurableComponent>(target, out var injurable)
             || injurable.DamageContainer is null
             || !tool.Comp.DamageContainers.Contains(injurable.DamageContainer.Value)
@@ -94,7 +96,7 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
                 return;
         }
 
-        _damageable.TryChangeDamage(uid, healing.Damage, true, false, origin: args.User);
+        _damageable.TryChangeDamage(uid, healing.Damage, ignoreResistances: true, interruptsDoAfters: false, origin: args.User, ignoreVariance: true);
         _popup.PopupEntity(Loc.GetString("comp-repairable-repair", ("target", uid), ("tool", used)), uid, args.User);
 
         if (!HasDamage(uid, healing))
