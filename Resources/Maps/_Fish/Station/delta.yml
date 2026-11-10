@@ -230454,12 +230454,6 @@ entities:
     - type: Transform
       parent: 2
       pos: 55.5,29.5
-    - type: ContainerContainer
-      containers:
-        stash: !type:ContainerSlot
-          ent: 29825
-          showEnts: False
-          occludes: True
   - uid: 29826
     components:
     - type: Transform
