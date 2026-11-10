@@ -1,5 +1,4 @@
 using Content.Shared.Damage;
-using Content.Shared.FixedPoint;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -109,9 +108,12 @@ public sealed partial class FishIpcPassiveHealModuleComponent : Component
     [ViewVariables]
     public EntityUid? ToggleActionEntity;
 
-    /// <summary>Накопитель дробного хила между тиками FixedPoint2.</summary>
+    /// <summary>
+    /// Накопитель дробного хила между тиками.
+    /// Float, не FixedPoint2: на 30 тиках порция меньше 0.01 обрезается в ноль ещё до применения.
+    /// </summary>
     [ViewVariables]
-    public Dictionary<string, FixedPoint2> Accumulator = new();
+    public Dictionary<string, float> Accumulator = new();
 }
 
 /// <summary>Модуль: выдаёт HUD/зрение на хост при установке.</summary>

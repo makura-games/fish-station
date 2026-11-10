@@ -27,7 +27,7 @@ public sealed partial class FishIpcPassiveHealSystem : EntitySystem
     private void TickHeal(float frameTime)
     {
         var query = EntityQueryEnumerator<FishIpcPassiveHealModuleComponent, FishIpcModuleComponent>();
-        while (query.MoveNext(out var uid, out var healComp, out var module))
+        while (query.MoveNext(out _, out var healComp, out var module))
         {
             if (!module.Installed || module.InstalledEntity is not { } host)
                 continue;
@@ -45,43 +45,44 @@ public sealed partial class FishIpcPassiveHealSystem : EntitySystem
             if (fraction < module.MinChargeFraction)
                 continue;
 
-            AccumulateAndApply(uid, healComp, host, frameTime);
+            AccumulateAndApply(healComp, host, frameTime);
         }
     }
 
     private void AccumulateAndApply(
-        EntityUid moduleUid,
         FishIpcPassiveHealModuleComponent healComp,
         EntityUid host,
         float frameTime)
     {
+        var toApply = new DamageSpecifier();
+
         foreach (var (key, perSecond) in healComp.HealPerSecond.DamageDict)
         {
-            if (!healComp.Accumulator.TryGetValue(key, out var acc))
-                acc = FixedPoint2.Zero;
+            // FixedPoint2 * dt на 30 тиках даёт < 1 цента и обнуляется. Копим во float.
+            healComp.Accumulator.TryGetValue(key, out var acc);
+            acc += perSecond.Float() * frameTime;
 
-            acc += perSecond * frameTime;
-            healComp.Accumulator[key] = acc;
-        }
-
-        var toApply = new DamageSpecifier();
-        var dirty = false;
-
-        foreach (var (key, acc) in healComp.Accumulator)
-        {
-            // FixedPoint2 шаг ≈ 0.01 — ждём накопления заметной порции.
-            if (FixedPoint2.Abs(acc) < FixedPoint2.New(0.01))
+            var cents = (int) MathF.Truncate(acc * 100f);
+            if (cents == 0)
+            {
+                healComp.Accumulator[key] = acc;
                 continue;
+            }
 
-            toApply.DamageDict[key] = acc;
-            healComp.Accumulator[key] = FixedPoint2.Zero;
-            dirty = true;
+            var apply = cents / 100f;
+            healComp.Accumulator[key] = acc - apply;
+            toApply.DamageDict[key] = FixedPoint2.New(apply);
         }
 
-        if (!dirty)
+        if (toApply.Empty)
             return;
 
-        _damageable.TryChangeDamage(host, toApply, ignoreResistances: true, interruptsDoAfters: false);
-        Dirty(moduleUid, healComp);
+        // Разброс урона (до −30%) съедает порцию 0.01. Ремонт — ровный поток.
+        _damageable.TryChangeDamage(
+            host,
+            toApply,
+            ignoreResistances: true,
+            interruptsDoAfters: false,
+            ignoreVariance: true);
     }
 }
