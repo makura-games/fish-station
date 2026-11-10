@@ -25,10 +25,10 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         var rules = new List<string>();
         foreach (var role in mind.MindRoleContainer.ContainedEntities)
         {
-            if (!TryComp<MindRoleComponent>(role, out var roleComp) || roleComp.AntagPrototype is not { } antagId)
+            if (!TryComp<MindRoleComponent>(role, out var mindRole) || mindRole.AntagPrototype is not { } antagId)
                 continue;
 
-            var locId = ProtoMan.Index(antagId).Rules;
+            var locId = ProtoMan.Index(antagId).Rules?.Id;
             if (!string.IsNullOrWhiteSpace(locId) && !rules.Contains(locId))
                 rules.Add(locId);
         }
