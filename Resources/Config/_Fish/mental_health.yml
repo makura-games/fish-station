@@ -1,4 +1,4 @@
-# Конфигурация психического здоровья Fish.
+# Здесь резисты к крови и врагам для профессий, если не указано то, используется default
 stress_resists:
   default:
     blood: 0
@@ -45,6 +45,7 @@ stress_resists:
   Antag:
     blood: 80
     enemies: 80
+# Здесь добавить прототипы и звуки, которые будут показываться при психозе
 psychosis:
   hallucination_mob_prototypes:
     - MobMouse
