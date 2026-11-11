@@ -4,6 +4,7 @@
   description: job-description-blueshield-operative
   playTimeTracker: JobRepresentativeBlueShield
   requirements:
+   - !type:DiscordRoleRequirement
    - !type:DepartmentTimeRequirement
      department: BlueShield
      time: 62000 # 20 hrs
