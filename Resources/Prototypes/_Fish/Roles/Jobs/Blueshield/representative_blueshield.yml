@@ -31,7 +31,7 @@
    eyes: ClothingEyesGlassesBlueShield
    # head через BlueShieldHead loadout # Fish-edit
    # outerClothing: ClothingOuterArmorBlueShield # Fish-edit - commented out, managed via loadout
-   id: BlueShieldOperativePDA
+   id: FishRepresentativeBlueShieldPDA
    ears: ClothingHeadsetBlueShield # Fish-edit
    gloves: ClothingHandsGlovesCombat
   storage:
