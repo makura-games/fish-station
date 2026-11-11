@@ -17,3 +17,19 @@
    - CentcommSectoralJudge
   weight: 55
   primary: false
+
+- type: department
+  id: FishBlueShieldPlayTime
+  name: department-Blueshield
+  description: department-Blueshield-description
+  color: "#0f4e81"
+  roles:
+  - BlueShieldOfficer
+  - BlueShieldOfficerFish
+  - RepresentativeBlueShield
+  - CentcommBlueShield
+  - BlueShieldOperative
+  primary: false
+  editorHidden: true
+  manifestHidden: true
+  ignoreForDepartmentFallback: true

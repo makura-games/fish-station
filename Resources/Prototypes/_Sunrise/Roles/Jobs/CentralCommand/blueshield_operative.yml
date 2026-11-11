@@ -14,7 +14,7 @@
   startingGear: BlueShieldOperativeGear
   icon: NTR_operative # Fish-edit
   supervisors: job-supervisors-centcom
-  setPreference: false # Fish-edit: скрыть альтернативную роль оперативника из выбора приоритета
+  setPreference: true # Fish-edit
   overrideConsoleVisibility: false # Fish-edit
   accessGroups:
   - AllAccess

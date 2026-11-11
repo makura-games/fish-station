@@ -6,7 +6,7 @@
   requirements:
    - !type:DiscordRoleRequirement
    - !type:DepartmentTimeRequirement
-     department: BlueShield
+     department: FishBlueShieldPlayTime
      time: 62000 # 20 hrs
    - !type:DepartmentTimeRequirement
      department: Command
