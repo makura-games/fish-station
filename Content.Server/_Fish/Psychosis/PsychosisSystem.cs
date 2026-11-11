@@ -1,4 +1,3 @@
-using System.Linq;
 using Content.Server._Fish.MentalHealth;
 using Content.Server.Radiation.Components;
 using Content.Shared._Fish.Psychosis;
@@ -40,7 +39,9 @@ public sealed partial class PsychosisSystem : EntitySystem
             }
 
             var oldLevel = psychosis.Current;
-            foreach (var source in psychosis.Sources.Keys.ToArray())
+            var sources = new string[psychosis.Sources.Count];
+            psychosis.Sources.Keys.CopyTo(sources, 0);
+            foreach (var source in sources)
             {
                 var nextValue = MathF.Max(0f, psychosis.Sources[source] - 0.5f * frameTime);
                 if (nextValue <= 0f)
@@ -49,7 +50,11 @@ public sealed partial class PsychosisSystem : EntitySystem
                     psychosis.Sources[source] = nextValue;
             }
 
-            psychosis.Current = Math.Clamp(psychosis.Sources.Values.Sum(), 0f, 100f);
+            var current = 0f;
+            foreach (var value in psychosis.Sources.Values)
+                current += value;
+
+            psychosis.Current = Math.Clamp(current, 0f, 100f);
             var reachedZero = oldLevel > 0f && psychosis.Current == 0f;
             if (Math.Abs(oldLevel - psychosis.Current) < 0.001f && !reachedZero)
                 continue;

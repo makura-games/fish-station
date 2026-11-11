@@ -1,5 +1,5 @@
 - type: reaction
-  id: Nootropil
+  id: FishNootropil
   reactants:
     Mannitol:
       amount: 1
@@ -8,10 +8,10 @@
     Water:
       amount: 1
   products:
-    Nootropil: 3
+    FishNootropil: 3
     
 - type: reaction
-  id: Detox
+  id: FishDetox
   reactants:
     Ethanol:
       amount: 1
@@ -20,4 +20,4 @@
     Mercury:
       amount: 1
   products:
-    Detox: 3
+    FishDetox: 3

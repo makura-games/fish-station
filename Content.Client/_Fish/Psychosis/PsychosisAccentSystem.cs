@@ -1,3 +1,4 @@
+using System.Text;
 using Content.Shared._Fish.Psychosis;
 using Content.Shared.Chat;
 using Content.Shared.Popups;
@@ -31,12 +32,12 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
 
         SubscribeLocalEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
         _chatController = _ui.GetUIController<ChatUIController>();
-        _chatController.MessageAdded += OnChatMessageAdded;
+        _chatController.MessagePreparing += OnChatMessagePreparing;
     }
 
     public override void Shutdown()
     {
-        _chatController.MessageAdded -= OnChatMessageAdded;
+        _chatController.MessagePreparing -= OnChatMessagePreparing;
         base.Shutdown();
     }
 
@@ -57,7 +58,7 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
     /// <summary>
     /// Искажает локальные и радиосообщения в соответствии с текущим уровнем психоза.
     /// </summary>
-    private void OnChatMessageAdded(ChatMessage message)
+    private void OnChatMessagePreparing(ChatMessage message)
     {
         if (_currentPsychosisLevel <= 0)
             return;
@@ -65,18 +66,72 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
         if (message.Channel != ChatChannel.Local && message.Channel != ChatChannel.Radio)
             return;
 
-        string newText;
-        if (_currentPsychosisLevel < 33)
-            newText = DistortLight(message.Message);
-        else if (_currentPsychosisLevel < 66)
-            newText = DistortMedium(message.Message);
-        else
-            newText = DistortHeavy(message.Message);
+        if (string.IsNullOrEmpty(message.Message))
+            return;
 
-        var oldText = FormattedMessage.EscapeText(message.Message);
-        var escapedText = FormattedMessage.EscapeText(newText);
-        message.WrappedMessage = message.WrappedMessage.Replace(oldText, escapedText, StringComparison.Ordinal);
-        message.Message = newText;
+        var wrapped = FormattedMessage.FromMarkupPermissive(message.WrappedMessage);
+        var wrappedText = wrapped.ToString();
+        var body = message.Message;
+        var bodyStart = wrappedText.LastIndexOf(body, StringComparison.Ordinal);
+        if (bodyStart < 0)
+        {
+            body = FormattedMessage.RemoveMarkupPermissive(message.Message);
+            bodyStart = wrappedText.LastIndexOf(body, StringComparison.Ordinal);
+        }
+
+        if (bodyStart < 0)
+            return;
+
+        var bodyEnd = bodyStart + body.Length;
+        var wrappedBuilder = new StringBuilder(message.WrappedMessage.Length);
+        var bodyBuilder = new StringBuilder(body.Length);
+        var textOffset = 0;
+
+        foreach (var node in wrapped)
+        {
+            if (!node.IsPlainText)
+            {
+                wrappedBuilder.Append(node);
+                continue;
+            }
+
+            var text = node.Value.StringValue ?? string.Empty;
+            var textEnd = textOffset + text.Length;
+            var overlapStart = Math.Max(textOffset, bodyStart);
+            var overlapEnd = Math.Min(textEnd, bodyEnd);
+            if (overlapStart < overlapEnd)
+            {
+                var prefixLength = overlapStart - textOffset;
+                var bodyLength = overlapEnd - overlapStart;
+                var prefix = text[..prefixLength];
+                var bodyText = text.Substring(prefixLength, bodyLength);
+                var suffix = text[(overlapEnd - textOffset)..];
+                var distorted = Distort(bodyText);
+
+                wrappedBuilder.Append(FormattedMessage.EscapeText(prefix));
+                wrappedBuilder.Append(FormattedMessage.EscapeText(distorted));
+                wrappedBuilder.Append(FormattedMessage.EscapeText(suffix));
+                bodyBuilder.Append(distorted);
+            }
+            else
+            {
+                wrappedBuilder.Append(FormattedMessage.EscapeText(text));
+            }
+
+            textOffset = textEnd;
+        }
+
+        message.WrappedMessage = wrappedBuilder.ToString();
+        message.Message = bodyBuilder.ToString();
+    }
+
+    private string Distort(string text)
+    {
+        if (_currentPsychosisLevel < 33)
+            return DistortLight(text);
+        if (_currentPsychosisLevel < 66)
+            return DistortMedium(text);
+        return DistortHeavy(text);
     }
 
     /// <summary>

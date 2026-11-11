@@ -8,6 +8,7 @@ using Robust.Client.Player;
 using Robust.Client.Graphics;
 using Robust.Shared.Audio;
 using Robust.Shared.IoC;
+using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Player;
@@ -97,6 +98,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        if (!_timing.IsFirstTimePredicted)
+            return;
 
         // Обновление существующих галлюцинаций: плавное исчезновение, удаление по таймеру/дистанции
         var playerEntity = _player.LocalSession?.AttachedEntity;
@@ -208,7 +212,8 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         var max = viewport.TopRight;
 
         // Случайная точка в этом прямоугольнике, но не слишком близко к игроку (минимум 2 тайла)
-        var playerPos = Transform(player).WorldPosition;
+        var playerXform = Transform(player);
+        var playerPos = playerXform.WorldPosition;
         var randomPos = new Vector2(
             _random.NextFloat(min.X, max.X),
             _random.NextFloat(min.Y, max.Y)
@@ -221,9 +226,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         }
 
         // Создание сущности
-        var hallucination = _entityManager.CreateEntityUninitialized(protoId, Transform(player).Coordinates);
-        var xform = _entityManager.GetComponent<TransformComponent>(hallucination);
-        xform.WorldPosition = randomPos;
+        var hallucination = _entityManager.CreateEntityUninitialized(
+            protoId,
+            new MapCoordinates(randomPos, playerXform.MapID));
 
         if (_entityManager.HasComponent<PhysicsComponent>(hallucination))
             _entityManager.RemoveComponent<PhysicsComponent>(hallucination);

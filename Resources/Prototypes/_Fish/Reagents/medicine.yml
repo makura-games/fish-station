@@ -1,5 +1,5 @@
 - type: reagent
-  id: Nootropil
+  id: FishNootropil
   name: reagent-name-nootropil
   desc: reagent-desc-nootropil
   group: Medicine
@@ -10,12 +10,12 @@
     Bloodstream:
       effects:
       - !type:ChemRestoreNeuro
-        sourceId: Nootropil
+        sourceId: FishNootropil
         restorePerUnit: 5
         addictionPerDose: 8
 
 - type: reagent
-  id: Detox
+  id: FishDetox
   name: reagent-name-detox
   desc: reagent-desc-detox
   group: Medicine

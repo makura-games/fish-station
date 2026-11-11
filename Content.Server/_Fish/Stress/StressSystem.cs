@@ -20,6 +20,7 @@ using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Maths;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
@@ -68,7 +69,10 @@ public sealed partial class StressSystem : EntitySystem
             stress.Current <= MentalHealthConstants.StressThresholdHigh)
             return;
 
-        args.Spread *= 1.35f;
+        if (args.Spread == Angle.Zero)
+            args.Spread = Angle.FromDegrees(5f);
+        else
+            args.Spread *= 1.35f;
     }
 
     /// <summary>
@@ -213,6 +217,8 @@ public sealed partial class StressSystem : EntitySystem
                 var previousHostiles = GetSeenSet(_nearbyHostiles, uid);
                 if (!previousHostiles.Contains(target))
                 {
+                    AddEnemyAdaptation(uid, stress, 1f);
+
                     if (!_startledHostiles.TryGetValue(uid, out var startled))
                     {
                         startled = new Dictionary<EntityUid, TimeSpan>();
@@ -307,6 +313,21 @@ public sealed partial class StressSystem : EntitySystem
             return;
 
         stress.AdaptationBlood += adaptation;
+        ApplyAdaptationNeuroLoss(uid, stress, adaptation);
+    }
+
+    /// <summary>
+    /// Увеличивает адаптацию к врагам и применяет связанную постоянную потерю нейронов.
+    /// </summary>
+    private void AddEnemyAdaptation(EntityUid uid, StressComponent stress, float amount)
+    {
+        var totalAdaptation = stress.AdaptationBlood + stress.AdaptationEnemies;
+        var maximumAdaptation = MathF.Min(stress.AdaptationMax, 20f);
+        var adaptation = MathF.Min(amount, MathF.Max(0f, maximumAdaptation - totalAdaptation));
+        if (adaptation <= 0f)
+            return;
+
+        stress.AdaptationEnemies += adaptation;
         ApplyAdaptationNeuroLoss(uid, stress, adaptation);
     }
 

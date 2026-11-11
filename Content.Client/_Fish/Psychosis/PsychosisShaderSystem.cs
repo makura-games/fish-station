@@ -25,6 +25,7 @@ public sealed partial class PsychosisShaderSystem : EntitySystem
         SubscribeNetworkEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
         SubscribeLocalEvent<PsychosisComponent, ComponentStartup>(OnPsychosisStartup);
         SubscribeLocalEvent<PsychosisComponent, AfterAutoHandleStateEvent>(OnPsychosisState);
+        SubscribeLocalEvent<PsychosisComponent, ComponentShutdown>(OnPsychosisShutdown);
         SubscribeLocalEvent<LocalPlayerAttachedEvent>(OnLocalPlayerAttached);
         SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnLocalPlayerDetached);
     }
@@ -57,6 +58,12 @@ public sealed partial class PsychosisShaderSystem : EntitySystem
     {
         if (_player.LocalSession?.AttachedEntity == ent.Owner)
             ApplyLevel(ent.Owner, ent.Comp.Current, true);
+    }
+
+    private void OnPsychosisShutdown(Entity<PsychosisComponent> ent, ref ComponentShutdown args)
+    {
+        if (_player.LocalSession?.AttachedEntity == ent.Owner)
+            ApplyLevel(ent.Owner, 0f, true);
     }
 
     private void OnLocalPlayerAttached(LocalPlayerAttachedEvent ev)

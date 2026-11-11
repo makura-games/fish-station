@@ -1,11 +1,9 @@
 using Content.Shared._Fish.Psychosis;
-using Content.Shared.Audio;
 using Robust.Client.Audio;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.IoC;
 using Robust.Shared.Player;
-using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.Psychosis;
@@ -38,7 +36,7 @@ public sealed partial class SoundEchoSystem : EntitySystem
     /// </summary>
     private void OnAudioInit(Entity<AudioComponent> ent, ref ComponentInit args)
     {
-        if (_currentPsychosisLevel <= 66f || _creatingEcho)
+        if (_currentPsychosisLevel <= 66f || _creatingEcho || string.IsNullOrWhiteSpace(ent.Comp.FileName))
             return;
 
         if (HasComp<EchoSoundComponent>(ent))

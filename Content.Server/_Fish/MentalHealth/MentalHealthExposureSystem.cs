@@ -3,6 +3,7 @@ using Content.Shared._Fish.Neuro;
 using Content.Shared._Fish.Stress;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.MentalHealth;
@@ -110,7 +111,12 @@ public sealed partial class MentalHealthExposureSystem : EntitySystem
             if (!withdrawal)
                 continue;
 
+            var wasHigh = stress.Current > MentalHealthConstants.StressThresholdHigh;
             stress.Current = Math.Clamp(stress.Current + 2f, 0f, MentalHealthConstants.StressMax);
+            var isHigh = stress.Current > MentalHealthConstants.StressThresholdHigh;
+            if (wasHigh != isHigh)
+                RaiseNetworkEvent(new StressEffectsEvent(GetNetEntity(uid), isHigh), Filter.Entities(uid));
+
             Dirty(uid, stress);
 
             if (!TryComp<NeuroComponent>(uid, out var neuro))

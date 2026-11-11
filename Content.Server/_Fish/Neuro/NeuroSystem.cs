@@ -45,7 +45,8 @@ public sealed partial class NeuroSystem : EntitySystem
 
     private float _regenTimer;
     private readonly Dictionary<EntityUid, TimeSpan> _criticalAlertCooldowns = new();
-    private readonly Dictionary<EntityUid, TimeSpan> _nextStumble = new();
+    private readonly Dictionary<EntityUid, (int Severity, TimeSpan Deadline)> _nextStumble = new();
+    private readonly Dictionary<EntityUid, string> _originalSpeechMessages = new();
 
     public override void Initialize()
     {
@@ -64,18 +65,32 @@ public sealed partial class NeuroSystem : EntitySystem
         if (args.Cancelled || args.IcChatType == null)
             return;
 
+        var originalMessage = args.Message;
+        var prefixLength = GetSpeechPrefixLength(originalMessage);
+        var originalBody = originalMessage[prefixLength..];
         if (ent.Comp.Current < MentalHealthConstants.NeuroCritical)
         {
             args.Cancelled = true;
+            return;
         }
-        else if (ent.Comp.Current < MentalHealthConstants.NeuroModerate)
+
+        if (args.ProcessUserInput &&
+            (args.IcChatType == InGameICChatType.Speak || args.IcChatType == InGameICChatType.Whisper))
         {
-            args.Message = DistortSeverely(args.Message);
+            _originalSpeechMessages[ent] = originalBody;
+        }
+
+        var distortedBody = originalBody;
+        if (ent.Comp.Current < MentalHealthConstants.NeuroModerate)
+        {
+            distortedBody = DistortSeverely(originalBody);
         }
         else if (ent.Comp.Current < MentalHealthConstants.NeuroMild)
         {
-            args.Message = DistortMildly(args.Message);
+            distortedBody = DistortMildly(originalBody);
         }
+
+        args.Message = originalMessage[..prefixLength] + distortedBody;
     }
 
     /// <summary>
@@ -108,7 +123,14 @@ public sealed partial class NeuroSystem : EntitySystem
         if (!TryComp<NeuroComponent>(ev.Source, out var neuro))
             return;
 
-        var message = ev.Message;
+        var message = _originalSpeechMessages.Remove(ev.Source, out var originalMessage)
+            ? originalMessage
+            : ev.Message;
+        ApplyForbiddenWordPenalty(ev.Source, neuro, message);
+    }
+
+    private void ApplyForbiddenWordPenalty(EntityUid uid, NeuroComponent neuro, string message)
+    {
         int found = 0;
         foreach (var word in _config.ForbiddenWords)
         {
@@ -122,11 +144,11 @@ public sealed partial class NeuroSystem : EntitySystem
                 loss += _random.NextFloat(1f, 2f);
 
             neuro.Current = Math.Max(0f, neuro.Current - loss);
-            Dirty(ev.Source, neuro);
-            ApplyNeuroEffects(ev.Source, neuro);
+            Dirty(uid, neuro);
+            ApplyNeuroEffects(uid, neuro);
             RaiseNetworkEvent(
                 new NeuroAlertEvent("fish-neuro-muddling"),
-                Filter.Entities(ev.Source));
+                Filter.Entities(uid));
         }
     }
 
@@ -225,15 +247,34 @@ public sealed partial class NeuroSystem : EntitySystem
         }
 
         var now = _timing.CurTime;
-        if (_nextStumble.TryGetValue(uid, out var next) && now < next)
-            return;
-
-        var (minimum, maximum) = neuro.Current switch
+        var (severity, minimum, maximum) = neuro.Current switch
         {
-            < MentalHealthConstants.NeuroCritical => (4f, 8f),
-            < MentalHealthConstants.NeuroModerate => (20f, 40f),
-            _ => (60f, 120f),
+            < MentalHealthConstants.NeuroCritical => (0, 4f, 8f),
+            < MentalHealthConstants.NeuroModerate => (1, 20f, 40f),
+            _ => (2, 60f, 120f),
         };
+
+        if (_nextStumble.TryGetValue(uid, out var schedule))
+        {
+            if (severity < schedule.Severity)
+            {
+                _nextStumble[uid] = (
+                    severity,
+                    now + TimeSpan.FromSeconds(_random.NextFloat(minimum, maximum)));
+                return;
+            }
+
+            if (severity > schedule.Severity)
+            {
+                _nextStumble[uid] = (severity, schedule.Deadline);
+                if (now < schedule.Deadline)
+                    return;
+            }
+            else if (now < schedule.Deadline)
+            {
+                return;
+            }
+        }
 
         _stun.TryKnockdown(
             uid,
@@ -241,7 +282,9 @@ public sealed partial class NeuroSystem : EntitySystem
             refresh: false,
             autoStand: true,
             drop: false);
-        _nextStumble[uid] = now + TimeSpan.FromSeconds(_random.NextFloat(minimum, maximum));
+        _nextStumble[uid] = (
+            severity,
+            now + TimeSpan.FromSeconds(_random.NextFloat(minimum, maximum)));
     }
 
     /// <summary>
@@ -266,6 +309,20 @@ public sealed partial class NeuroSystem : EntitySystem
     {
         _criticalAlertCooldowns.Remove(ent);
         _nextStumble.Remove(ent);
+        _originalSpeechMessages.Remove(ent);
+    }
+
+    private static int GetSpeechPrefixLength(string message)
+    {
+        if (message.Length == 0)
+            return 0;
+
+        return message[0] switch
+        {
+            SharedChatSystem.RadioCommonPrefix or SharedChatSystem.LocalPrefix => 1,
+            SharedChatSystem.RadioChannelPrefix or SharedChatSystem.RadioChannelAltPrefix => Math.Min(2, message.Length),
+            _ => 0,
+        };
     }
 
     /// <summary>

@@ -5,7 +5,7 @@ namespace Content.Shared._Fish.Neuro;
 public sealed partial class ChemRestoreNeuro : EntityEffectBase<ChemRestoreNeuro>
 {
     [DataField]
-    public string SourceId = "Nootropil";
+    public string SourceId = "FishNootropil";
 
     [DataField]
     public float RestorePerUnit = 1f;

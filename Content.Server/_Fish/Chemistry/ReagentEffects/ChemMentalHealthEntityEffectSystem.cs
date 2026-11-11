@@ -4,6 +4,7 @@ using Content.Shared._Fish.Neuro;
 using Content.Shared._Fish.Stress;
 using Content.Shared.EntityEffects;
 using Robust.Shared.IoC;
+using Robust.Shared.Player;
 
 namespace Content.Server._Fish.Chemistry.ReagentEffects;
 
@@ -19,11 +20,16 @@ public sealed partial class ChemMentalHealthEntityEffectSystem
     {
         var effect = args.Effect;
         var multiplier = _exposure.RecordDose(entity, effect.SubstanceId, effect.AddictionPerDose);
+        var wasHigh = entity.Comp.Current > MentalHealthConstants.StressThresholdHigh;
 
         entity.Comp.Current = Math.Clamp(
             entity.Comp.Current + effect.StressPerUnit * args.Scale * multiplier,
             0f,
             MentalHealthConstants.StressMax);
+        var isHigh = entity.Comp.Current > MentalHealthConstants.StressThresholdHigh;
+        if (wasHigh != isHigh)
+            RaiseNetworkEvent(new StressEffectsEvent(GetNetEntity(entity), isHigh), Filter.Entities(entity));
+
         Dirty(entity);
 
         if (!TryComp<NeuroComponent>(entity, out var neuro))

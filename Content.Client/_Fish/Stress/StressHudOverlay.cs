@@ -2,6 +2,7 @@ using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.Maths;
 using System.Numerics;
+using Content.Client.Stylesheets.Palette;
 
 namespace Content.Client._Fish.Stress;
 
@@ -33,9 +34,10 @@ public sealed class StressHudOverlay : Overlay
         var handle = args.ScreenHandle;
 
         handle.DrawRect(new UIBox2(min, max), new Color(0, 0, 0, 0.65f));
-        var fillMax = new Vector2(min.X + width * Math.Clamp(_stress.Value / 100f, 0f, 1f), max.Y);
+        var stressRatio = Math.Clamp(_stress.Value / 100f, 0f, 1f);
+        var fillMax = new Vector2(min.X + width * stressRatio, max.Y);
         handle.DrawRect(
             new UIBox2(min, fillMax),
-            Color.InterpolateBetween(Color.Green, Color.Red, Math.Clamp(_stress.Value / 100f, 0f, 1f)));
+            Color.InterpolateBetween(Palettes.Status.Good, Palettes.Status.Critical, stressRatio));
     }
 }

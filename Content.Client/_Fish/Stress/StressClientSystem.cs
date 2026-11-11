@@ -1,8 +1,10 @@
 using System.Numerics;
+using Content.Shared.CCVar;
 using Content.Shared._Fish.Stress;
 using Content.Shared.Popups;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Graphics;
@@ -15,6 +17,7 @@ public sealed partial class StressClientSystem : EntitySystem
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private IEyeManager _eyeManager = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private StressOverlay _overlay = default!;
     private StressHudOverlay _hudOverlay = default!;
@@ -84,6 +87,12 @@ public sealed partial class StressClientSystem : EntitySystem
     /// </summary>
     private void UpdateCameraShake(float frameTime, float intensity)
     {
+        if (!_cfg.GetCVar(FishCVars.EnableStressEffects))
+        {
+            RestoreCameraShake();
+            return;
+        }
+
         var eye = _eyeManager.CurrentEye;
         if (_shakeEye != null && !ReferenceEquals(_shakeEye, eye))
             RestoreCameraShake();

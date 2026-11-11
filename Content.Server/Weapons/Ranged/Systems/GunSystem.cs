@@ -168,12 +168,19 @@ public sealed partial class GunSystem : SharedGunSystem
         {
             if (TryComp<ProjectileSpreadComponent>(ammoEnt, out var ammoSpreadComp))
             {
-                // Fish-edit: передаём стрелка для расчёта стрессового разброса.
-                var spreadEvent = new GunGetAmmoSpreadEvent(ammoSpreadComp.Spread, user);
-                RaiseLocalEvent(gun, ref spreadEvent);
+                // Fish-start: сохраняем штатный нулевой разброс боеприпасов с компонентом разброса.
+                var spread = ammoSpreadComp.Spread;
+                if (spread != Angle.Zero)
+                {
+                    // Fish-edit: передаём стрелка для расчёта стрессового разброса.
+                    var spreadEvent = new GunGetAmmoSpreadEvent(spread, user);
+                    RaiseLocalEvent(gun, ref spreadEvent);
+                    spread = spreadEvent.Spread;
+                }
 
-                var angles = LinearSpread(mapAngle - spreadEvent.Spread / 2,
-                    mapAngle + spreadEvent.Spread / 2, ammoSpreadComp.Count);
+                var angles = LinearSpread(mapAngle - spread / 2,
+                    mapAngle + spread / 2, ammoSpreadComp.Count);
+                // Fish-end
 
                 ShootOrThrow(ammoEnt, angles[0].ToVec(), gunVelocity, gun, user);
                 shotProjectiles.Add(ammoEnt);
@@ -187,8 +194,24 @@ public sealed partial class GunSystem : SharedGunSystem
             }
             else
             {
-                ShootOrThrow(ammoEnt, mapDirection, gunVelocity, gun, user);
+                // Fish-start: применяем стрессовый разброс к одиночному снаряду без ProjectileSpreadComponent.
+                var direction = mapDirection;
+                if (HasComp<ProjectileComponent>(ammoEnt))
+                {
+                    var spreadEvent = new GunGetAmmoSpreadEvent(Angle.Zero, user);
+                    RaiseLocalEvent(gun, ref spreadEvent);
+                    if (spreadEvent.Spread != Angle.Zero)
+                    {
+                        var maxOffset = (float) spreadEvent.Spread.Degrees / 2f;
+                        var offset = Random.NextFloat(-maxOffset, maxOffset);
+                        var directionAngle = mapDirection.ToAngle() + Angle.FromDegrees(offset);
+                        direction = directionAngle.ToVec() * mapDirection.Length();
+                    }
+                }
+
+                ShootOrThrow(ammoEnt, direction, gunVelocity, gun, user);
                 shotProjectiles.Add(ammoEnt);
+                // Fish-end
             }
 
             MuzzleFlash(gun, ammoComp, mapDirection.ToAngle(), user);
