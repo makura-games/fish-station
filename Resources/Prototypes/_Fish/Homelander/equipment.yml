@@ -1,0 +1,53 @@
+- type: entity
+  parent: ClothingOuterHardsuitDeathsquadFish
+  id: FishClothingOuterHardsuitHomelander
+  name: Patriot's armored suit
+  description: A reinforced suit styled after the Patriot's costume.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Homelander/suit.rsi
+  - type: Clothing
+    sprite: _Fish/Homelander/suit.rsi
+  - type: Reflect
+    slotFlags: OUTERCLOTHING
+    reflects:
+    - NonEnergy
+    reflectProb: 0.75
+    reflectingInHands: false
+
+- type: entity
+  parent: ClothingNeckBase
+  id: FishClothingNeckHomelander
+  name: Patriot's cape
+  description: The Patriot's cape.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Homelander/cape.rsi
+  - type: Clothing
+    sprite: _Fish/Homelander/cape.rsi
+
+- type: entity
+  parent: ClothingHandsGlovesCombat
+  id: FishClothingHandsHomelander
+  name: Patriot's gloves
+  description: The Patriot's gloves.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Homelander/gloves.rsi
+  - type: Clothing
+    sprite: _Fish/Homelander/gloves.rsi
+
+- type: entity
+  parent: ClothingShoesBootsCombat
+  id: FishClothingShoesHomelander
+  name: Patriot's boots
+  description: The Patriot's boots.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Homelander/boots.rsi
+  - type: Clothing
+    sprite: _Fish/Homelander/boots.rsi

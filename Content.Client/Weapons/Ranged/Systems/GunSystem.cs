@@ -1,3 +1,4 @@
+using Content.Client._Fish.Homelander; // Fish-edit
 using System.Numerics;
 using Content.Client.Animations;
 using Content.Client.Gameplay;
@@ -33,6 +34,7 @@ namespace Content.Client.Weapons.Ranged.Systems;
 
 public sealed partial class GunSystem : SharedGunSystem
 {
+    [Dependency] private HomelanderSystem _homelander = default!; // Fish-edit
     [Dependency] private AnimationPlayerSystem _animPlayer = default!;
     [Dependency] private IEyeManager _eyeManager = default!;
     [Dependency] private IInputManager _inputManager = default!;
@@ -186,7 +188,8 @@ public sealed partial class GunSystem : SharedGunSystem
 
         var useKey = gun.UseKey ? EngineKeyFunctions.Use : EngineKeyFunctions.UseSecondary;
 
-        if (_inputSystem.CmdStates.GetState(useKey) != BoundKeyState.Down && !gun.BurstActivated)
+        var laserUsesSecondary = !gun.UseKey && _homelander.IsLaserActive(entity); // Fish-edit
+        if ((laserUsesSecondary || _inputSystem.CmdStates.GetState(useKey) != BoundKeyState.Down) && !gun.BurstActivated) // Fish-edit
         {
             if (gun.ShotCounter != 0)
                 RaisePredictiveEvent(new RequestStopShootEvent { Gun = GetNetEntity(gunUid) });

@@ -66,6 +66,11 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
 
     private void OnComponentRemove(Entity<WingFlightComponent> ent, ref ComponentRemove args)
     {
+        // Fish-start
+        if (TerminatingOrDeleted(ent))
+            return;
+        // Fish-end
+
         if (ent.Comp.ActionEntity != null)
             _actions.RemoveAction(ent.Owner, ent.Comp.ActionEntity);
 
@@ -106,7 +111,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
             return false;
         }
 
-        if (!_stamina.TryTakeStamina(ent, ent.Comp.ActivationStaminaDamage, stamina, visual: true))
+        if (!_stamina.TryTakeStamina(ent, ent.Comp.ActivationStaminaDamage, stamina, visual: true, ignoreResist: ent.Comp.IgnoreStaminaResistance)) // Fish-edit
         {
             _popup.PopupEntity(Loc.GetString("wing-flight-popup-activation-blocked"), ent, ent, PopupType.Small);
             return false;
@@ -146,7 +151,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
 
     private void UpdateMarkings(Entity<WingFlightComponent> ent, bool enable)
     {
-        if (!HasComp<VisualBodyComponent>(ent))
+        if (!ent.Comp.UpdateWingMarkings || !HasComp<VisualBodyComponent>(ent)) // Fish-edit
             return;
 
         if (!_sunriseMarking.TryGetLayerMarkings(ent, HumanoidVisualLayers.Tail, out var markings) ||
@@ -248,7 +253,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
                 }
 
                 var staminaCost = ent.Comp.SustainStaminaPerSecond * frameTime;
-                if (!_stamina.TryTakeStamina(ent, staminaCost, stamina, visual: false))
+                if (!_stamina.TryTakeStamina(ent, staminaCost, stamina, visual: false, ignoreResist: ent.Comp.IgnoreStaminaResistance)) // Fish-edit
                 {
                     toDisable.Add(ent);
                     SetScaleImmediate(ent, staminaPercent);

@@ -1,0 +1,76 @@
+- type: entity
+  parent: BaseAction
+  id: FishActionHomelanderScream
+  name: Scream
+  description: Let out a terrifying scream.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 10
+    icon: { sprite: _Fish/Homelander/actions.rsi, state: scream }
+  - type: InstantAction
+    event: !type:HomelanderScreamEvent
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionHomelanderLaser
+  name: Eye lasers
+  description: Toggle eye lasers. Right-click while active to fire.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 0.5
+    icon: { sprite: _Fish/Homelander/actions.rsi, state: laser }
+    iconOn: { sprite: _Fish/Homelander/actions.rsi, state: laser-active }
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionHomelanderFlight
+  name: Flight
+  description: Fly at the cost of stamina.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    checkCanInteract: false
+    useDelay: 1.5
+    icon: { sprite: _Fish/Homelander/actions.rsi, state: flight }
+    iconOn: { sprite: _Fish/Homelander/actions.rsi, state: flight-active }
+
+- type: entity
+  parent: RedLightLaser
+  id: FishHomelanderEyeRay
+  name: eye laser
+  suffix: Fish
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: HitscanBasicVisuals
+    bullet:
+      sprite: { sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi, state: beam }
+      scale: 1, 0.45
+
+- type: entity
+  id: FishHomelanderEyeGun
+  name: eye laser emitter
+  suffix: Fish
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Gun
+    minAngle: 0
+    maxAngle: 0
+    angleIncrease: 0
+    fireRate: 2
+    soundGunshot:
+      collection: syndi_plasma
+      params:
+        volume: -2
+  - type: Battery
+    maxCharge: 100
+    startingCharge: 100
+  - type: BatteryAmmoProvider
+    proto: FishHomelanderEyeRay
+    fireCost: 10
+  - type: BatterySelfRecharger
+    autoRechargeRate: 20

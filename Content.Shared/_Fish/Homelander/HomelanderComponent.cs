@@ -1,0 +1,29 @@
+using Content.Shared.Actions;
+using Robust.Shared.GameStates;
+using Robust.Shared.Map;
+using Robust.Shared.Serialization;
+
+namespace Content.Shared._Fish.Homelander;
+
+[RegisterComponent, NetworkedComponent]
+public sealed partial class HomelanderComponent : Component
+{
+    public EntityUid? ScreamAction;
+    public EntityUid? LaserAction;
+    public EntityUid? Laser;
+}
+
+public sealed partial class HomelanderScreamEvent : InstantActionEvent;
+
+[Serializable, NetSerializable]
+public enum HomelanderVisuals : byte
+{
+    LaserActive,
+    Anger,
+}
+
+[Serializable, NetSerializable]
+public sealed class HomelanderFireEvent(NetCoordinates coordinates) : EntityEventArgs
+{
+    public NetCoordinates Coordinates { get; } = coordinates;
+}

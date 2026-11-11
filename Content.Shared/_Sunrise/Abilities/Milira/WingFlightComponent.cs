@@ -19,6 +19,14 @@ public sealed partial class WingFlightComponent : Component
     [DataField]
     public EntProtoId Action = "ActionToggleFlight";
 
+    // Fish-start
+    [DataField]
+    public bool IgnoreStaminaResistance;
+
+    [DataField]
+    public bool UpdateWingMarkings = true;
+    // Fish-end
+
     /// <summary>
     /// Суффикс маркинга, используемый при активном полёте.
     /// </summary>
