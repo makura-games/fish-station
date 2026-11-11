@@ -7,14 +7,14 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.MentalHealth;
 
-public sealed class MentalHealthExposureSystem : EntitySystem
+public sealed partial class MentalHealthExposureSystem : EntitySystem
 {
     private static readonly TimeSpan DoseInterval = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan ToleranceRecoveryInterval = TimeSpan.FromMinutes(30);
     private static readonly TimeSpan AddictionRecoveryInterval = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan WithdrawalInterval = TimeSpan.FromSeconds(10);
 
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public float RecordDose(EntityUid uid, string substanceId, float addictionPerDose)
     {

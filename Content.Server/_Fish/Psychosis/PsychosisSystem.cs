@@ -12,9 +12,9 @@ namespace Content.Server._Fish.Psychosis;
 /// <summary>
 /// Управляет уровнем психоза и отправляет обновления клиенту.
 /// </summary>
-public sealed class PsychosisSystem : EntitySystem
+public sealed partial class PsychosisSystem : EntitySystem
 {
-    [Dependency] private readonly MentalHealthConfigSystem _config = default!;
+    [Dependency] private MentalHealthConfigSystem _config = default!;
 
     public override void Initialize()
     {

@@ -11,10 +11,10 @@ namespace Content.Server._Fish.Stress;
 /// <summary>
 /// Применяет случайные импульсы к персонажу при наличии StressTremorComponent.
 /// </summary>
-public sealed class StressTremorSystem : EntitySystem
+public sealed partial class StressTremorSystem : EntitySystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly PhysicsSystem _physics = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private PhysicsSystem _physics = default!;
 
     private float _accumulator;
 

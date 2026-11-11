@@ -14,10 +14,10 @@ namespace Content.Server._Fish.MentalHealth;
 /// <summary>
 /// Загружает настройки системы психического здоровья.
 /// </summary>
-public sealed class MentalHealthConfigSystem : EntitySystem
+public sealed partial class MentalHealthConfigSystem : EntitySystem
 {
-    [Dependency] private readonly IResourceManager _res = default!;
-    [Dependency] private readonly ILogManager _log = default!;
+    [Dependency] private IResourceManager _res = default!;
+    [Dependency] private ILogManager _log = default!;
 
     private ISawmill _sawmill = default!;
     public Dictionary<string, (float blood, float enemies)> StressResists = new();

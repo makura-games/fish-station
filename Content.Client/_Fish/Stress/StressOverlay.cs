@@ -8,9 +8,9 @@ using Robust.Shared.Enums;
 
 namespace Content.Client._Fish.Stress;
 
-public sealed class StressOverlay : Overlay
+public sealed partial class StressOverlay : Overlay
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private float _intensity; // 0..1
 

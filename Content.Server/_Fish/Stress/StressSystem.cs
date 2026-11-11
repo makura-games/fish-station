@@ -24,15 +24,15 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Stress;
 
-public sealed class StressSystem : EntitySystem
+public sealed partial class StressSystem : EntitySystem
 {
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly JobSystem _jobs = default!;
-    [Dependency] private readonly MentalHealthConfigSystem _config = default!;
-    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
-    [Dependency] private readonly VomitSystem _vomit = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private JobSystem _jobs = default!;
+    [Dependency] private MentalHealthConfigSystem _config = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
+    [Dependency] private VomitSystem _vomit = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private float _updateTimer;
     private readonly Dictionary<EntityUid, HashSet<EntityUid>> _seenCorpses = new();

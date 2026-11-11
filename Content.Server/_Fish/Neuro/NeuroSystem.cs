@@ -25,7 +25,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Neuro;
 
-public sealed class NeuroSystem : EntitySystem
+public sealed partial class NeuroSystem : EntitySystem
 {
     private static readonly ProtoId<DamageTypePrototype> AsphyxiationDamageType = "Asphyxiation";
     private static readonly ProtoId<DamageTypePrototype> PoisonDamageType = "Poison";
@@ -37,12 +37,12 @@ public sealed class NeuroSystem : EntitySystem
     private static readonly char[] ReplacementEnglishVowels = "aeiou".ToCharArray();
     private static readonly string[] MildAdditions = { "!", "?", "😨" };
 
-    [Dependency] private readonly MentalHealthConfigSystem _config = default!;
-    [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
-    [Dependency] private readonly MovementModStatusSystem _movementMod = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!;
+    [Dependency] private MentalHealthConfigSystem _config = default!;
+    [Dependency] private StatusEffectsSystem _statusEffects = default!;
+    [Dependency] private MovementModStatusSystem _movementMod = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
 
     private float _regenTimer;
     private readonly Dictionary<EntityUid, TimeSpan> _criticalAlertCooldowns = new();

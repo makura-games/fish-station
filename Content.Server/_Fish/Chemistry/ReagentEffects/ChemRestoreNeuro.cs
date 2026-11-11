@@ -5,10 +5,10 @@ using Robust.Shared.IoC;
 
 namespace Content.Server._Fish.Chemistry.ReagentEffects;
 
-public sealed class ChemRestoreNeuroEntityEffectSystem
+public sealed partial class ChemRestoreNeuroEntityEffectSystem
     : EntityEffectSystem<NeuroComponent, ChemRestoreNeuro>
 {
-    [Dependency] private readonly MentalHealthExposureSystem _exposure = default!;
+    [Dependency] private MentalHealthExposureSystem _exposure = default!;
 
     protected override void Effect(Entity<NeuroComponent> entity, ref EntityEffectEvent<ChemRestoreNeuro> args)
     {

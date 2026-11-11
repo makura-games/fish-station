@@ -11,11 +11,10 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.Psychosis;
 
-public sealed class SoundEchoSystem : EntitySystem
+public sealed partial class SoundEchoSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly AudioSystem _audio = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private AudioSystem _audio = default!;
 
     private float _currentPsychosisLevel;
     private bool _creatingEcho;

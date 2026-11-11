@@ -15,12 +15,12 @@ namespace Content.Client._Fish.Psychosis;
 /// Искажает входящие сообщения чата в зависимости от уровня психоза игрока.
 /// Три уровня: лёгкий, средний, тяжёлый.
 /// </summary>
-public sealed class PsychosisAccentSystem : EntitySystem
+public sealed partial class PsychosisAccentSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IUserInterfaceManager _ui = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     private float _currentPsychosisLevel;
     private ChatUIController _chatController = default!;

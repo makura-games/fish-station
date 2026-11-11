@@ -11,11 +11,11 @@ namespace Content.Client._Fish.Neuro;
 /// <summary>
 /// Применяет визуальные эффекты (шейдеры) при низких нейронах.
 /// </summary>
-public sealed class NeuroEffectsSystem : EntitySystem
+public sealed partial class NeuroEffectsSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IOverlayManager _overlayManager = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     private NeuroOverlay _overlay = new();
 

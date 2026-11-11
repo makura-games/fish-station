@@ -6,9 +6,9 @@ using Robust.Shared.IoC;
 
 namespace Content.Server._Fish.Chemistry.ReagentEffects;
 
-public sealed class ChemPsychosisEntityEffectSystem : EntityEffectSystem<PsychosisComponent, ChemPsychosis>
+public sealed partial class ChemPsychosisEntityEffectSystem : EntityEffectSystem<PsychosisComponent, ChemPsychosis>
 {
-    [Dependency] private readonly PsychosisSystem _psychosis = default!;
+    [Dependency] private PsychosisSystem _psychosis = default!;
 
     protected override void Effect(Entity<PsychosisComponent> entity, ref EntityEffectEvent<ChemPsychosis> args)
     {
@@ -16,7 +16,7 @@ public sealed class ChemPsychosisEntityEffectSystem : EntityEffectSystem<Psychos
     }
 }
 
-public sealed class ChemReducePsychosisEntityEffectSystem
+public sealed partial class ChemReducePsychosisEntityEffectSystem
     : EntityEffectSystem<PsychosisComponent, ChemReducePsychosis>
 {
     protected override void Effect(Entity<PsychosisComponent> entity, ref EntityEffectEvent<ChemReducePsychosis> args)

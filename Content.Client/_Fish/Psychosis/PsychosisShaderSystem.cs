@@ -10,10 +10,10 @@ namespace Content.Client._Fish.Psychosis;
 /// <summary>
 /// Применяет шейдеры психоза на основе уровня.
 /// </summary>
-public sealed class PsychosisShaderSystem : EntitySystem
+public sealed partial class PsychosisShaderSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IOverlayManager _overlayManager = default!;
 
     private PsychosisOverlay _overlay = new();
 

@@ -9,12 +9,12 @@ using Robust.Shared.Graphics;
 
 namespace Content.Client._Fish.Stress;
 
-public sealed class StressClientSystem : EntitySystem
+public sealed partial class StressClientSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly IEyeManager _eyeManager = default!;
+    [Dependency] private IOverlayManager _overlayManager = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private IEyeManager _eyeManager = default!;
 
     private StressOverlay _overlay = default!;
     private StressHudOverlay _hudOverlay = default!;

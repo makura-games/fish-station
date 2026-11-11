@@ -10,11 +10,11 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.Psychosis;
 
-public sealed class PsychosisOverlay : Overlay
+public sealed partial class PsychosisOverlay : Overlay
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private float _intensity; // 0..1
     private ShaderInstance? _shader;

@@ -9,10 +9,10 @@ using Robust.Shared.Random;
 
 namespace Content.Client._Fish.Neuro;
 
-public sealed class NeuroOverlay : Overlay
+public sealed partial class NeuroOverlay : Overlay
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private float _intensity; // 0..1
 

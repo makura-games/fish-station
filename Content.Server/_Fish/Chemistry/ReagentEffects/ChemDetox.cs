@@ -6,9 +6,9 @@ using Robust.Shared.IoC;
 
 namespace Content.Server._Fish.Chemistry.ReagentEffects;
 
-public sealed class ChemDetoxEntityEffectSystem : EntityEffectSystem<TransformComponent, ChemDetox>
+public sealed partial class ChemDetoxEntityEffectSystem : EntityEffectSystem<TransformComponent, ChemDetox>
 {
-    [Dependency] private readonly MentalHealthExposureSystem _exposure = default!;
+    [Dependency] private MentalHealthExposureSystem _exposure = default!;
 
     protected override void Effect(Entity<TransformComponent> entity, ref EntityEffectEvent<ChemDetox> args)
     {
