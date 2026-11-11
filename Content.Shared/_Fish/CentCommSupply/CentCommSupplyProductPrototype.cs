@@ -13,13 +13,13 @@ public sealed partial class CentCommSupplyProductPrototype : IPrototype
     public string ID { get; private set; } = default!;
 
     /// <summary>
-    /// Localized product name shown in the console.
+    /// Переопределение названия первого предмета в составе товара.
     /// </summary>
-    [DataField(required: true)]
-    public LocId Name = string.Empty;
+    [DataField]
+    public LocId? Name;
 
     /// <summary>
-    /// Optional localized product description.
+    /// Переопределение описания первого предмета в составе товара.
     /// </summary>
     [DataField]
     public LocId? Description;
@@ -28,10 +28,10 @@ public sealed partial class CentCommSupplyProductPrototype : IPrototype
     /// Localized category used to filter products in the console.
     /// </summary>
     [DataField]
-    public LocId Category = "centcomm-supply-category-general";
+    public LocId Category = "centcomm-supply-category-other";
 
     /// <summary>
-    /// Icon displayed for the product in the console.
+    /// Переопределение иконки первого предмета в составе товара.
     /// </summary>
     [DataField]
     public SpriteSpecifier? Icon;
@@ -65,6 +65,16 @@ public sealed partial class CentCommSupplyProductPrototype : IPrototype
     /// </summary>
     [DataField]
     public int SortOrder = 100;
+
+    public string GetName(EntityPrototype entity)
+    {
+        return Name is { } name ? Loc.GetString(name) : entity.Name;
+    }
+
+    public string GetDescription(EntityPrototype entity)
+    {
+        return Description is { } description ? Loc.GetString(description) : entity.Description;
+    }
 }
 
 [DataDefinition]

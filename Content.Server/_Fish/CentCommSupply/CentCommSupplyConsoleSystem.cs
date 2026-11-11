@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Administration.Logs;
 using Content.Server.Cargo.Components;
@@ -11,7 +12,9 @@ using Content.Shared.Access.Systems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
+using Content.Shared.Gravity;
 using Content.Shared.Labels.Components;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Paper;
 using Content.Shared.Popups;
 using Content.Shared.Station.Components;
@@ -42,6 +45,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private EntityStorageSystem _storage = default!;
     [Dependency] private GameTicker _gameTicker = default!;
+    [Dependency] private SharedGravitySystem _gravity = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
@@ -68,6 +72,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplyStateRequestMessage>(OnStateRequested);
+        SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIClosedEvent>(OnUiClosed);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplySelectStationMessage>(OnSelectStation);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplyOrderMessage>(OnOrder);
@@ -91,9 +96,16 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         UpdateUi(ent, args.Actor);
     }
 
+    private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        if (Equals(args.UiKey, CentCommSupplyUiKey.Key))
+            UpdateUi(ent, args.Actor, opening: true);
+    }
+
     private void OnUiClosed(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIClosedEvent args)
     {
-        ent.Comp.UserStates.Remove(args.Actor);
+        if (Equals(args.UiKey, CentCommSupplyUiKey.Key))
+            ent.Comp.UserStates.Remove(args.Actor);
     }
 
     /// <summary>
@@ -367,21 +379,21 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                 return false;
             }
 
-            if (entry.Quantity < 1 || entry.Quantity > product.MaxQuantity)
-            {
-                error = Loc.GetString("centcomm-supply-error-invalid-quantity",
-                    ("product", Loc.GetString(product.Name)));
-                return false;
-            }
-
-            if (!IsProductValid(product))
+            if (!TryGetProductEntity(product, out var productEntity))
             {
                 error = Loc.GetString("centcomm-supply-error-invalid-product");
                 return false;
             }
 
+            var productName = product.GetName(productEntity);
+            if (entry.Quantity < 1 || entry.Quantity > product.MaxQuantity)
+            {
+                error = Loc.GetString("centcomm-supply-error-invalid-quantity", ("product", productName));
+                return false;
+            }
+
             orderPlan.ProductSummary.Add(Loc.GetString("centcomm-supply-paper-product",
-                ("product", Loc.GetString(product.Name))));
+                ("product", productName)));
             orderPlan.ProductSummary.Add(Loc.GetString("centcomm-supply-paper-quantity",
                 ("quantity", entry.Quantity)));
 
@@ -483,6 +495,10 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                     error = Loc.GetString("centcomm-supply-error-pack-failed");
                     return false;
                 }
+
+                // При переносе ящика на станцию пауза питомца снимется вместе с переходом на активную карту.
+                if (HasComp<MobStateComponent>(item))
+                    _meta.SetEntityPaused(item, true);
             }
         }
 
@@ -563,7 +579,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         Guid? selectionId = null,
         NetEntity? requestedStation = null,
         Guid? orderId = null,
-        bool orderPlaced = false)
+        bool orderPlaced = false,
+        bool opening = false)
     {
         if (TerminatingOrDeleted(ent.Owner))
             return;
@@ -579,9 +596,10 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         }
 
         ent.Comp.UserStates.TryGetValue(actor, out var previous);
+        var defaultStation = stations.Count > 0 ? GetNetEntity(stations[0]) : (NetEntity?) null;
         var selected = requestedStation ?? previous?.SelectedStation;
         if (selected == null || !available.ContainsKey(selected.Value))
-            selected = stations.Count > 0 ? GetNetEntity(stations[0]) : null;
+            selected = defaultStation;
 
         var products = new List<CentCommSupplyProductEntry>();
 
@@ -589,13 +607,13 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                      .OrderBy(product => product.SortOrder)
                      .ThenBy(product => product.ID))
         {
-            if (!product.Enabled || !IsProductValid(product))
+            if (!product.Enabled || !TryGetProductEntity(product, out var productEntity))
                 continue;
 
             products.Add(new CentCommSupplyProductEntry(
                 product.ID,
-                Loc.GetString(product.Name),
-                product.Description is { } description ? Loc.GetString(description) : null,
+                product.GetName(productEntity),
+                product.GetDescription(productEntity),
                 Loc.GetString(product.Category),
                 Math.Max(1, product.MaxQuantity)));
         }
@@ -612,6 +630,18 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             orderId);
 
         ent.Comp.UserStates[actor] = state;
+        if (opening)
+        {
+            var catalog = new CentCommSupplyUserStateMessage(products,
+                available,
+                defaultStation,
+                ent.Comp.MaxCratesPerOrder,
+                ent.Comp.MaxProductsPerOrder,
+                null,
+                false);
+            _ui.SetUiState(ent.Owner, CentCommSupplyUiKey.Key, new CentCommSupplyCatalogState(catalog));
+        }
+
         _ui.ServerSendUiMessage(ent.Owner, CentCommSupplyUiKey.Key, state, actor);
     }
 
@@ -634,6 +664,16 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             _transform.SetCoordinates(crate,
                 new EntityCoordinates(pallet.Transform.ParentUid, pallet.Transform.LocalPosition));
             _transform.SetLocalRotation(crate, pallet.Transform.LocalRotation);
+
+            // При переносе ящика родитель груза не меняется, поэтому гравитацию нужно пересчитать явно.
+            if (TryComp<EntityStorageComponent>(crate, out var storage))
+            {
+                foreach (var cargo in storage.Contents.ContainedEntities)
+                {
+                    if (TryComp<GravityAffectedComponent>(cargo, out var gravity))
+                        _gravity.RefreshWeightless((cargo, gravity));
+                }
+            }
         }
 
         foreach (var crate in order.Crates)
@@ -847,20 +887,25 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
-    /// Checks that a product has a positive quantity and valid contents.
+    /// Проверяет состав товара и возвращает первый предмет для карточки каталога.
     /// </summary>
-    private bool IsProductValid(CentCommSupplyProductPrototype product)
+    private bool TryGetProductEntity(
+        CentCommSupplyProductPrototype product,
+        [NotNullWhen(true)] out EntityPrototype? productEntity)
     {
+        productEntity = null;
         if (product.MaxQuantity <= 0 || product.Contents == null || product.Contents.Count == 0)
             return false;
 
         foreach (var content in product.Contents)
         {
-            if (content.Amount <= 0 || !_prototypes.HasIndex(content.Id))
+            if (content.Amount <= 0 || !_prototypes.TryIndex(content.Id, out EntityPrototype? entity) || entity.Abstract)
                 return false;
+
+            productEntity ??= entity;
         }
 
-        return true;
+        return productEntity != null;
     }
 
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
@@ -8,17 +9,24 @@ using Content.Server._Fish.CentCommSupply;
 using Content.Server.Access.Systems;
 using Content.Server.Cargo.Components;
 using Content.Server.GameTicking;
+using Content.Server.Gravity;
 using Content.Server.Station.Systems;
+using Content.Server.Storage.EntitySystems;
 using Content.Shared._Fish.CentCommSupply;
 using Content.Shared.Access;
 using Content.Shared.Access.Components;
 using Content.Shared.Interaction.Components;
+using Content.Shared.Gravity;
 using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Maps;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Paper;
 using Content.Shared.Physics;
 using Content.Shared.Storage.Components;
 using NUnit.Framework;
+using Robust.Client.Graphics;
+using Robust.Client.UserInterface.Controls;
 using Robust.Server.GameObjects;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.GameObjects;
@@ -27,6 +35,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Physics.Collision.Shapes;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.UnitTesting;
@@ -37,6 +46,73 @@ namespace Content.IntegrationTests.Tests._Fish.CentCommSupply;
 public sealed class CentCommSupplyTest
 {
     private const string MapProto = "Dev";
+    private const string MedicalBundleProduct = "FishCentCommSupplyClothingBackpackDuffelNanotrasenMedicalBundleFilled";
+    private static readonly EntProtoId ConsolePrototype = "FishCentCommSupplyConsole";
+    private static readonly EntProtoId DeliveryCratePrototype = "FishCrateCentCommSupply";
+
+    [Test]
+    public async Task QuantityButtonsUseNewProductLimitImmediately()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        await pair.Client.WaitAssertion(() =>
+        {
+            var menu = new CentCommSupplyOrderMenu();
+            menu.SetProduct(new CentCommSupplyProductEntry("single", "Single", null, "Test", 1));
+            Assert.That(menu.Amount.Children.OfType<Button>().Where(button => button.Text.StartsWith("+")),
+                Is.All.Matches<Button>(button => button.Disabled));
+            menu.SetProduct(new CentCommSupplyProductEntry("multiple", "Multiple", null, "Test", 5));
+            Assert.That(menu.Amount.Children.OfType<Button>().Where(button => button.Text.StartsWith("+")),
+                Is.All.Matches<Button>(button => !button.Disabled));
+        });
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task CatalogProductsFitInDeliveryCrate()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var storage = server.System<EntityStorageSystem>();
+        var lookup = server.System<EntityLookupSystem>();
+        var unpackable = new List<string>();
+        var checkedProducts = 0;
+
+        await server.WaitPost(() =>
+        {
+            var console = server.ProtoMan.Index(ConsolePrototype);
+            if (!console.TryComp<CentCommSupplyConsoleComponent>(out var consoleComponent, entMan.ComponentFactory))
+                throw new InvalidOperationException("The CentComm supply console component is missing");
+
+            foreach (var product in server.ProtoMan.EnumeratePrototypes<CentCommSupplyProductPrototype>())
+            {
+                if (!product.Enabled)
+                    continue;
+
+                checkedProducts++;
+                var crate = entMan.SpawnEntity(consoleComponent.CratePrototype, MapCoordinates.Nullspace);
+                var crateStorage = entMan.GetComponent<EntityStorageComponent>(crate);
+                crateStorage.DeleteContentsOnDestruction = true;
+                foreach (var entry in product.Contents)
+                {
+                    var entity = entMan.SpawnEntity(entry.Id, MapCoordinates.Nullspace);
+                    var canInsert = storage.CanInsert(entity, crate, crateStorage);
+                    if (canInsert && storage.Insert(entity, crate, crateStorage))
+                        continue;
+
+                    var size = lookup.GetAABBNoContainer(entity, Vector2.Zero, Angle.Zero).Size;
+                    unpackable.Add($"{product.ID}: CanInsert={canInsert}, size={size}, maxSize={crateStorage.MaxSize}");
+                    entMan.DeleteEntity(entity);
+                }
+
+                entMan.DeleteEntity(crate);
+            }
+        });
+
+        Assert.That(checkedProducts, Is.Positive);
+        Assert.That(unpackable, Is.Empty);
+        await pair.CleanReturnAsync();
+    }
 
     [Test]
     public async Task OrderDeliversToSelectedStation()
@@ -66,6 +142,9 @@ public sealed class CentCommSupplyTest
             var grids = ticker.LoadGameMap(map, out devMapId, DeserializationOptions.Default with { InitializeMaps = true });
             target = stationSystem.GetOwningStation(grids[0])
                 ?? throw new InvalidOperationException("Loaded Dev map has no owning station");
+            var destinationMap = mapSystem.GetMap(devMapId);
+            entMan.EnsureComponent<GravityComponent>(destinationMap);
+            server.System<GravitySystem>().EnableGravity(destinationMap);
         });
 
         await server.WaitPost(() =>
@@ -73,7 +152,7 @@ public sealed class CentCommSupplyTest
             var consoleMap = mapSystem.CreateMap(out consoleMapId);
             console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
             var consoleComponent = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
-            consoleComponent.DeliveryDelay = TimeSpan.Zero;
+            consoleComponent.DeliveryDelay = TimeSpan.FromSeconds(1);
             consoleComponent.DeliveryTimeout = TimeSpan.Zero;
             actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
             GrantCentralCommandAccess(entMan, accessSystem, actor);
@@ -107,7 +186,7 @@ public sealed class CentCommSupplyTest
             while (existingQuery.MoveNext(out var uid, out _))
             {
                 var meta = entMan.GetComponent<MetaDataComponent>(uid);
-                if (meta.EntityPrototype?.ID == "CrateCommandSecure")
+                if (meta.EntityPrototype?.ID == DeliveryCratePrototype.Id)
                     existingCrates.Add(uid);
             }
         });
@@ -116,10 +195,17 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
-                new("FishCentCommSupplyAsh12Duffel", 1),
-                new("FishCentCommSupplyAsh12Slug", 1),
-                new("FishCentCommSupplyAsh12Blueprint", 1),
+                new(MedicalBundleProduct, 1),
+                new("FishCentCommSupplyClothingBackpackDuffelWeaponAsh12BlueShield", 1),
+                new("FishCentCommSupplyVendingMachineAmmoFlatpack", 1),
+                new("FishCentCommSupplyBlueprintMagAsh12Basic", 1),
+                new("FishCentCommSupplyLockerDetectiveFilled", 1),
+                new("FishCentCommSupplyMechPaddyFilled", 1),
+                new("FishCentCommSupplyMobBandito", 1),
+                new("FishCentCommSupplyMobRaccoonMorticia", 1),
+                new("FishCentCommSupplyMobFoxRenault", 1),
+                new("FishCentCommSupplyMobCatRuntime", 1),
+                new("FishCentCommSupplyMobCorgi", 1),
             };
             bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(Guid.NewGuid(), targetNet, entries)
             {
@@ -127,7 +213,25 @@ public sealed class CentCommSupplyTest
             });
         });
 
-        await server.WaitRunTicks(2);
+        var pets = new List<EntityUid>();
+        EntityUid mech = default;
+        await server.WaitAssertion(() =>
+        {
+            var state = GetUserState(entMan, console, actor);
+            Assert.That(state.OrderPlaced, Is.True, state.StatusMessage);
+            var contents = GetNewCrates(entMan, existingCrates)
+                .SelectMany(crate => entMan.GetComponent<EntityStorageComponent>(crate).Contents.ContainedEntities)
+                .ToList();
+            mech = contents.Single(entity =>
+                entMan.GetComponent<MetaDataComponent>(entity).EntityPrototype?.ID == "MechPaddyFilled");
+            pets.AddRange(contents.Where(entity => entity != mech && entMan.HasComponent<MobStateComponent>(entity)));
+            Assert.That(pets, Has.Count.EqualTo(5));
+            foreach (var pet in pets)
+                Assert.That(entMan.GetComponent<MetaDataComponent>(pet).EntityPaused, Is.True);
+        });
+        // Воспроизводим состояние, закэшированное до смены карты родительского ящика.
+        await server.WaitPost(() => entMan.GetComponent<GravityAffectedComponent>(mech).Weightless = true);
+        await server.WaitRunTicks(SecondsToTicks(server.Timing.TickPeriod, 1) + 1);
 
         await server.WaitAssertion(() =>
         {
@@ -138,11 +242,17 @@ public sealed class CentCommSupplyTest
             while (query.MoveNext(out var uid, out _))
             {
                 var meta = entMan.GetComponent<MetaDataComponent>(uid);
-                if (meta.EntityPrototype?.ID == "CrateCommandSecure" && !existingCrates.Contains(uid))
+                if (meta.EntityPrototype?.ID == DeliveryCratePrototype.Id && !existingCrates.Contains(uid))
                     crates.Add(uid);
             }
 
             Assert.That(crates, Is.Not.Empty, state.StatusMessage);
+            foreach (var pet in pets)
+            {
+                Assert.That(entMan.GetComponent<MetaDataComponent>(pet).EntityPaused, Is.False);
+                Assert.That(entMan.GetComponent<MobStateComponent>(pet).CurrentState, Is.EqualTo(MobState.Alive));
+            }
+            Assert.That(server.System<GravitySystem>().IsWeightless(mech), Is.False);
 
             var products = new List<string>();
             foreach (var crate in crates)
@@ -168,9 +278,35 @@ public sealed class CentCommSupplyTest
             {
                 "ClothingBackpackDuffelNanotrasenMedicalBundleFilled",
                 "FishClothingBackpackDuffelWeaponAsh12BlueShield",
-                "MagazineAsh12Slug",
+                "FishVendingMachineAmmoFlatpack",
                 "BlueprintMagAsh12Basic",
+                "LockerDetectiveFilled",
+                "MechPaddyFilled",
+                "MobBandito",
+                "MobRaccoonMorticia",
+                "MobFoxRenault",
+                "MobCatRuntime",
+                "MobCorgi",
             }));
+        });
+
+        await server.WaitPost(() =>
+        {
+            var storage = server.System<EntityStorageSystem>();
+            foreach (var crate in GetNewCrates(entMan, existingCrates))
+                storage.OpenStorage(crate);
+        });
+        await server.WaitRunTicks(2);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.HasComponent<InsideEntityStorageComponent>(mech), Is.False);
+            Assert.That(entMan.GetComponent<PhysicsComponent>(mech).CanCollide, Is.True);
+            Assert.That(server.System<GravitySystem>().IsWeightless(mech), Is.False);
+            foreach (var pet in pets)
+            {
+                Assert.That(entMan.HasComponent<InsideEntityStorageComponent>(pet), Is.False);
+                Assert.That(entMan.GetComponent<MobStateComponent>(pet).CurrentState, Is.EqualTo(MobState.Alive));
+            }
         });
 
         await server.WaitPost(() =>
@@ -244,7 +380,7 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(Guid.NewGuid(), targetNet, entries)
             {
@@ -350,7 +486,7 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(orderId, targetNet, entries)
             {
@@ -440,7 +576,7 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(Guid.NewGuid(), targetNet, entries)
             {
@@ -635,7 +771,7 @@ public sealed class CentCommSupplyTest
             existingCrates.UnionWith(GetNewCrates(entMan, existingCrates));
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             bus.RaiseLocalEvent(console, new CentCommSupplyOrderMessage(Guid.NewGuid(), targetNet, entries)
             {
@@ -753,7 +889,7 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             placed = system.TryPlaceOrder(consoleEnt, actor, orderId, targetNet, entries);
             expireAt = server.Timing.CurTime + timeout;
@@ -874,7 +1010,7 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             placed = system.TryPlaceOrder(consoleEnt, actor, Guid.NewGuid(), targetNet, entries);
 
@@ -968,7 +1104,7 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             emptyIdResult = system.TryPlaceOrder(consoleEnt, actor, Guid.Empty, targetNet, entries);
         });
@@ -987,7 +1123,7 @@ public sealed class CentCommSupplyTest
         {
             var entries = new List<CentCommSupplyOrderEntry>
             {
-                new("FishCentCommSupplyMedicalBundle", 1),
+                new(MedicalBundleProduct, 1),
             };
             acceptedResult = system.TryPlaceOrder(consoleEnt, actor, orderId, targetNet, entries);
             duplicateResult = system.TryPlaceOrder(consoleEnt, actor, orderId, targetNet, entries);
@@ -1071,7 +1207,7 @@ public sealed class CentCommSupplyTest
         var obstacles = new List<EntityUid>();
         var entries = new List<CentCommSupplyOrderEntry>
         {
-            new("FishCentCommSupplyMedicalBundle", 1),
+            new(MedicalBundleProduct, 1),
         };
 
         bool CanOrder()
@@ -1257,7 +1393,7 @@ public sealed class CentCommSupplyTest
         await server.WaitPost(() =>
         {
             ClearObstacles();
-            consoleEnt.Comp.CratePrototype = "CrateCommandSecure";
+            consoleEnt.Comp.CratePrototype = DeliveryCratePrototype;
 
             if (entMan.EntityExists(actor))
                 entMan.DeleteEntity(actor);
@@ -1278,7 +1414,13 @@ public sealed class CentCommSupplyTest
         await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true, Dirty = true });
         var server = pair.Server;
         var client = pair.Client;
-        await server.WaitPost(() => server.CfgMan.SetCVar(Robust.Shared.CVars.NetPVS, true));
+        await server.WaitPost(() =>
+        {
+            server.CfgMan.SetCVar(Robust.Shared.CVars.NetPVS, true);
+            server.ResolveDependency<ILocalizationManager>().SetCulture(CultureInfo.GetCultureInfo("en-US"));
+        });
+        await client.WaitPost(() =>
+            client.ResolveDependency<ILocalizationManager>().SetCulture(CultureInfo.GetCultureInfo("ru-RU")));
         var clientOptions = client.ClientOptions!;
         var observerOptions = new RobustIntegrationTest.ClientIntegrationOptions
         {
@@ -1384,6 +1526,10 @@ public sealed class CentCommSupplyTest
                 .TryGetOpenUi<CentCommSupplyBoundUserInterface>(clientConsole, CentCommSupplyUiKey.Key, out var bui), Is.True);
             requesterWindow = GetPrivateField<CentCommSupplyWindow>(bui!, "_window");
             Assert.That(GetPrivateField<NetEntity?>(requesterWindow, "_selectedStation"), Is.EqualTo(firstNet));
+            var products = GetPrivateField<Dictionary<string, CentCommSupplyProductEntry>>(requesterWindow, "_productsById");
+            Assert.That(products["FishCentCommSupplyWeaponLauncherRL5"].Name, Is.EqualTo("РЛ-5"));
+            var icons = GetPrivateField<Dictionary<string, List<Texture>>>(requesterWindow, "_productIcons");
+            Assert.That(icons["FishCentCommSupplyLockerDetectiveFilled"].Count, Is.GreaterThan(1));
         });
         await observer.WaitAssertion(() =>
         {
@@ -1409,12 +1555,12 @@ public sealed class CentCommSupplyTest
 
         await client.WaitPost(() =>
         {
-            GetPrivateField<Dictionary<string, int>>(requesterWindow, "_order").Add("FishCentCommSupplyMedicalBundle", 1);
+            GetPrivateField<Dictionary<string, int>>(requesterWindow, "_order").Add(MedicalBundleProduct, 1);
             requesterWindow.SelectStation(secondNet);
         });
         await observer.WaitPost(() =>
         {
-            GetPrivateField<Dictionary<string, int>>(observerWindow, "_order").Add("FishCentCommSupplyMedicalBundle", 1);
+            GetPrivateField<Dictionary<string, int>>(observerWindow, "_order").Add(MedicalBundleProduct, 1);
         });
         await RunTicks(20);
 
@@ -1429,6 +1575,7 @@ public sealed class CentCommSupplyTest
 
         await client.WaitAssertion(() =>
         {
+            Assert.That(requesterWindow.IsOpen, Is.True);
             Assert.That(GetPrivateField<Guid?>(requesterWindow, "_pendingOrderId"), Is.Null);
             Assert.That(GetPrivateField<Dictionary<string, int>>(requesterWindow, "_order"), Is.Empty);
         });
@@ -1437,6 +1584,25 @@ public sealed class CentCommSupplyTest
             Assert.That(GetPrivateField<NetEntity?>(observerWindow, "_selectedStation"), Is.EqualTo(firstNet));
             Assert.That(GetPrivateField<Dictionary<string, int>>(observerWindow, "_order"), Has.Count.EqualTo(1));
             Assert.That(observerReceivedUpdate, Is.False, "A console update reached another viewer");
+        });
+
+        var transform = server.System<SharedTransformSystem>();
+        await server.WaitPost(() => transform.SetMapCoordinates(requester, new MapCoordinates(0, 0, firstMap)));
+        await RunTicks(20);
+        await server.WaitAssertion(() => Assert.That(ui.IsUiOpen(console, CentCommSupplyUiKey.Key, requester), Is.False));
+        await server.WaitPost(() =>
+            transform.SetMapCoordinates(requester, new MapCoordinates(0, 0, consoleMap)));
+        await RunTicks(20);
+        await server.WaitPost(() => ui.OpenUi(console, CentCommSupplyUiKey.Key, requester));
+        await RunTicks(20);
+        await client.WaitAssertion(() =>
+        {
+            var clientConsole = client.EntMan.GetEntity(consoleNet);
+            Assert.That(client.System<Robust.Client.GameObjects.UserInterfaceSystem>()
+                .TryGetOpenUi<CentCommSupplyBoundUserInterface>(clientConsole, CentCommSupplyUiKey.Key, out var bui), Is.True);
+            var reopened = GetPrivateField<CentCommSupplyWindow>(bui!, "_window");
+            Assert.That(reopened.IsOpen, Is.True);
+            Assert.That(GetPrivateField<Dictionary<string, CentCommSupplyProductEntry>>(reopened, "_productsById"), Is.Not.Empty);
         });
 
         await server.WaitPost(() =>
@@ -1465,7 +1631,7 @@ public sealed class CentCommSupplyTest
         var secondStation = new NetEntity(2);
         var selectionId = Guid.Empty;
         var orderId = Guid.Empty;
-        const string product = "FishCentCommSupplyMedicalBundle";
+        const string product = MedicalBundleProduct;
 
         CentCommSupplyUserStateMessage CreateState(
             Guid? responseSelectionId = null,
@@ -1580,7 +1746,7 @@ public sealed class CentCommSupplyTest
         while (query.MoveNext(out var uid, out _))
         {
             var meta = entMan.GetComponent<MetaDataComponent>(uid);
-            if (meta.EntityPrototype?.ID == "CrateCommandSecure" && !existing.Contains(uid))
+            if (meta.EntityPrototype?.ID == DeliveryCratePrototype.Id && !existing.Contains(uid))
                 crates.Add(uid);
         }
 

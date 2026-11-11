@@ -20,7 +20,7 @@
         </BoxContainer>
 
         <BoxContainer>
-            <TextureRect Name="Icon"
+            <LayeredTextureRect Name="Icon"
                          Access="Public"
                          MinSize="32 32"
                          Margin="4"

@@ -1,55 +1,1182 @@
 - type: centCommSupplyProduct
-  id: FishCentCommSupplyMedicalBundle
+  id: FishCentCommSupplyModsuitCore
   suffix: Fish
-  name: centcomm-supply-product-medical-bundle-name
-  description: centcomm-supply-product-medical-bundle-desc
-  category: centcomm-supply-category-medical
-  icon:
-    sprite: _Sunrise/Clothing/Back/Duffels/nanotrasen.rsi
-    state: icon
-  maxQuantity: 4
-  sortOrder: 10
+  category: centcomm-supply-category-other
+  maxQuantity: 3
+  sortOrder: 1
   contents:
-  - id: ClothingBackpackDuffelNanotrasenMedicalBundleFilled
+  - id: ModsuitCore
 
 - type: centCommSupplyProduct
-  id: FishCentCommSupplyAsh12Duffel
+  id: FishCentCommSupplyClothingModsuitNanoTrasenRepresentative
   suffix: Fish
-  name: centcomm-supply-product-ash12-duffel-name
-  description: centcomm-supply-product-ash12-duffel-desc
-  category: centcomm-supply-category-weapons
-  icon:
-    sprite: _Sunrise/Clothing/Back/Duffels/military.rsi
-    state: icon
+  category: centcomm-supply-category-other
+  maxQuantity: 1
+  sortOrder: 2
+  contents:
+  - id: ClothingModsuitNanoTrasenRepresentative
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyPlushiePresent
+  suffix: Fish
+  category: centcomm-supply-category-other
+  maxQuantity: 50
+  sortOrder: 3
+  contents:
+  - id: PlushiePresent
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingOuterCoatIAA
+  suffix: Fish
+  category: centcomm-supply-category-other
+  maxQuantity: 1
+  sortOrder: 4
+  contents:
+  - id: ClothingOuterCoatIAA
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingUniformJumpsuitNtrepFormal
+  suffix: Fish
+  name: centcomm-supply-product-ntrep-formal-name
+  category: centcomm-supply-category-other
+  maxQuantity: 1
+  sortOrder: 5
+  contents:
+  - id: ClothingUniformJumpsuitNtrepFormal
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponParticleDecelerator
+  suffix: Fish
+  category: centcomm-supply-category-other
+  maxQuantity: 15
+  sortOrder: 6
+  contents:
+  - id: WeaponParticleDecelerator
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyDawInstrument
+  suffix: Fish
+  category: centcomm-supply-category-other
+  maxQuantity: 3
+  sortOrder: 7
+  contents:
+  - id: DawInstrument
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyLockerDetectiveFilled
+  suffix: Fish
+  category: centcomm-supply-category-security
   maxQuantity: 2
+  sortOrder: 8
+  contents:
+  - id: LockerDetectiveFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyHandheldBrigmedicCrewMonitor
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 2
+  sortOrder: 9
+  contents:
+  - id: HandheldBrigmedicCrewMonitor
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponAdvancedTaser
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 6
+  sortOrder: 10
+  contents:
+  - id: WeaponAdvancedTaser
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyGlockBox
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 6
+  sortOrder: 11
+  contents:
+  - id: GlockBox
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponEnergyGunPistol
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 4
+  sortOrder: 12
+  contents:
+  - id: WeaponEnergyGunPistol
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponEnergyShotgun
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 1
+  sortOrder: 13
+  contents:
+  - id: WeaponEnergyShotgun
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySecBreachingHammer
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 1
+  sortOrder: 14
+  contents:
+  - id: SecBreachingHammer
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingHandsGlovesCombat
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 3
+  sortOrder: 15
+  contents:
+  - id: ClothingHandsGlovesCombat
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingShoesSwat
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 3
+  sortOrder: 16
+  contents:
+  - id: ClothingShoesSwat
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingOuterHardsuitSecurity
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 6
+  sortOrder: 17
+  contents:
+  - id: ClothingOuterHardsuitSecurity
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMechPaddyFilled
+  suffix: Fish
+  category: centcomm-supply-category-security
+  maxQuantity: 1
+  sortOrder: 18
+  contents:
+  - id: MechPaddyFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBlueShieldModsuit
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 2
+  sortOrder: 19
+  contents:
+  - id: ClothingBlueShieldModsuit
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingOuterHardsuitBlueShield
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 4
   sortOrder: 20
+  contents:
+  - id: ClothingOuterHardsuitBlueShield
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponMultiphaseGun
+  suffix: Fish
+  name: centcomm-supply-product-multiphase-gun-name
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 21
+  contents:
+  - id: WeaponMultiphaseGun
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackDuffelWeaponAsh12BlueShield
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 22
   contents:
   - id: FishClothingBackpackDuffelWeaponAsh12BlueShield
 
 - type: centCommSupplyProduct
-  id: FishCentCommSupplyAsh12Slug
+  id: FishCentCommSupplyEnergyDomeGeneratorBackpackNT
   suffix: Fish
-  name: centcomm-supply-product-ash12-slug-name
-  description: centcomm-supply-product-ash12-slug-desc
-  category: centcomm-supply-category-ammo
-  icon:
-    sprite: _Sunrise/Objects/Weapons/Guns/Ammunition/Magazines/ash12.rsi
-    state: base
-  maxQuantity: 10
-  sortOrder: 30
+  name: centcomm-supply-product-bastion-name
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 23
   contents:
-  - id: MagazineAsh12Slug
+  - id: EnergyDomeGeneratorBackpackNT
 
 - type: centCommSupplyProduct
-  id: FishCentCommSupplyAsh12Blueprint
+  id: FishCentCommSupplyPortableRecharger
   suffix: Fish
-  name: centcomm-supply-product-ash12-blueprint-name
-  description: centcomm-supply-product-ash12-blueprint-desc
-  category: centcomm-supply-category-blueprints
-  icon:
-    sprite: _Sunrise/Objects/Tools/blueprints.rsi
-    state: icon-base
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 24
+  contents:
+  - id: PortableRecharger
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBlueprintMagAsh12Basic
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 25
+  contents:
+  - id: BlueprintMagAsh12Basic
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingShoesBootsMagERT
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 4
+  sortOrder: 26
+  contents:
+  - id: ClothingShoesBootsMagERT
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyPowerCellNanoTrasen
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 4
+  sortOrder: 27
+  contents:
+  - id: PowerCellNanoTrasen
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingEyesNVDMedSec
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 2
+  sortOrder: 28
+  contents:
+  - id: ClothingEyesNVDMedSec
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingEyesGlassesThermalSec
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 2
+  sortOrder: 29
+  contents:
+  - id: ClothingEyesGlassesThermalSec
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyHandheldBSOCrewMonitor
+  suffix: Fish
+  name: centcomm-supply-product-blue-shield-monitor-name
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 4
+  sortOrder: 30
+  contents:
+  - id: HandheldBSOCrewMonitor
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyAdvancedDefibrillatorCompact
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 2
+  sortOrder: 31
+  contents:
+  - id: AdvancedDefibrillatorCompact
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingHeadHelmetTSF
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 2
+  sortOrder: 32
+  contents:
+  - id: ClothingHeadHelmetTSF
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingHeadHelmetTSFMARSOC
+  suffix: Fish
+  name: centcomm-supply-product-marsoc-helmet-name
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 33
+  contents:
+  - id: ClothingHeadHelmetTSFMARSOC
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingMaskGasNTRGLead
+  suffix: Fish
+  category: centcomm-supply-category-ntr
+  maxQuantity: 2
+  sortOrder: 34
+  contents:
+  - id: ClothingMaskGasNTRGLead
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackNTRG
+  suffix: Fish
+  category: centcomm-supply-category-ntr
+  maxQuantity: 2
+  sortOrder: 35
+  contents:
+  - id: ClothingBackpackNTRG
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingOuterArmorNTRG
+  suffix: Fish
+  category: centcomm-supply-category-ntr
+  maxQuantity: 2
+  sortOrder: 36
+  contents:
+  - id: ClothingOuterArmorNTRG
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingOuterHardsuitNTRG
+  suffix: Fish
+  category: centcomm-supply-category-ntr
+  maxQuantity: 2
+  sortOrder: 37
+  contents:
+  - id: ClothingOuterHardsuitNTRG
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingNeckCloakNTRG
+  suffix: Fish
+  category: centcomm-supply-category-ntr
+  maxQuantity: 2
+  sortOrder: 38
+  contents:
+  - id: ClothingNeckCloakNTRG
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponDisablerSMG
+  suffix: Fish
+  category: centcomm-supply-category-ntr
+  maxQuantity: 2
+  sortOrder: 39
+  contents:
+  - id: WeaponDisablerSMG
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponPistolN1984
+  suffix: Fish
+  name: centcomm-supply-product-n1984-name
+  category: centcomm-supply-category-ntr
   maxQuantity: 2
   sortOrder: 40
   contents:
-  - id: BlueprintMagAsh12Basic
+  - id: WeaponPistolN1984
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampCMO
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 41
+  contents:
+  - id: RubberStampCMO
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampHos
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 42
+  contents:
+  - id: RubberStampHos
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampHop
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 43
+  contents:
+  - id: RubberStampHop
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampCaptain
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 44
+  contents:
+  - id: RubberStampCaptain
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampIAA
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 45
+  contents:
+  - id: RubberStampIAA
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampQm
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 46
+  contents:
+  - id: RubberStampQm
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampLawyer
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 47
+  contents:
+  - id: RubberStampLawyer
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampRd
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 48
+  contents:
+  - id: RubberStampRd
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampAdj
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 49
+  contents:
+  - id: RubberStampAdj
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampSeniorCMO
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 50
+  contents:
+  - id: RubberStampSeniorCMO
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampSeniorCE
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 51
+  contents:
+  - id: RubberStampSeniorCE
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampSeniorRD
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 52
+  contents:
+  - id: RubberStampSeniorRD
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampPath
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 53
+  contents:
+  - id: RubberStampPath
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampPsychologist
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 54
+  contents:
+  - id: RubberStampPsychologist
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampChaplain
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 55
+  contents:
+  - id: RubberStampChaplain
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampWarden
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 56
+  contents:
+  - id: RubberStampWarden
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampDetective
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 57
+  contents:
+  - id: RubberStampDetective
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampMagistrat
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 58
+  contents:
+  - id: RubberStampMagistrat
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampCommanderBlueShield
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 59
+  contents:
+  - id: RubberStampCommanderBlueShield
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampCE
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 60
+  contents:
+  - id: RubberStampCE
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampSeniorHos
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 61
+  contents:
+  - id: RubberStampSeniorHos
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampClown
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 62
+  contents:
+  - id: RubberStampClown
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampApproved
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 63
+  contents:
+  - id: RubberStampApproved
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampDenied
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 64
+  contents:
+  - id: RubberStampDenied
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampMime
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 65
+  contents:
+  - id: RubberStampMime
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampNtrep
+  suffix: Fish
+  name: centcomm-supply-product-ntrep-stamp-name
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 66
+  contents:
+  - id: RubberStampNtrep
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyRubberStampVeto
+  suffix: Fish
+  category: centcomm-supply-category-rubber-stamp
+  maxQuantity: 1
+  sortOrder: 67
+  contents:
+  - id: RubberStampVeto
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMobRaccoonMorticia
+  suffix: Fish
+  name: centcomm-supply-product-morticia-name
+  category: centcomm-supply-category-heads-pets
+  maxQuantity: 1
+  sortOrder: 68
+  contents:
+  - id: MobRaccoonMorticia
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMobFoxRenault
+  suffix: Fish
+  name: centcomm-supply-product-renault-name
+  category: centcomm-supply-category-heads-pets
+  maxQuantity: 1
+  sortOrder: 69
+  contents:
+  - id: MobFoxRenault
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMobCatRuntime
+  suffix: Fish
+  name: centcomm-supply-product-runtime-name
+  category: centcomm-supply-category-heads-pets
+  maxQuantity: 1
+  sortOrder: 70
+  contents:
+  - id: MobCatRuntime
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMobCorgi
+  suffix: Fish
+  name: centcomm-supply-product-corgi-name
+  category: centcomm-supply-category-heads-pets
+  maxQuantity: 1
+  sortOrder: 71
+  contents:
+  - id: MobCorgi
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMobBandito
+  suffix: Fish
+  name: centcomm-supply-product-bandito-name
+  category: centcomm-supply-category-heads-pets
+  maxQuantity: 1
+  sortOrder: 72
+  contents:
+  - id: MobBandito
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyVendingMachineChemicalsFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 73
+  contents:
+  - id: FishVendingMachineChemicalsFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyVendingMachineBoozeFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 74
+  contents:
+  - id: FishVendingMachineBoozeFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyVendingMachineAmmoFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 75
+  contents:
+  - id: FishVendingMachineAmmoFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyResearchAndDevelopmentServerFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 5
+  sortOrder: 76
+  contents:
+  - id: ResearchAndDevelopmentServerFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyGasMinerOxygenFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 77
+  contents:
+  - id: FishGasMinerOxygenFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyGasMinerNitrogenFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 78
+  contents:
+  - id: FishGasMinerNitrogenFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyGasMinerCarbonDioxideFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 79
+  contents:
+  - id: FishGasMinerCarbonDioxideFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyGasMinerPlasmaFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 80
+  contents:
+  - id: FishGasMinerPlasmaFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyGravityGeneratorFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-flatpacks
+  maxQuantity: 1
+  sortOrder: 81
+  contents:
+  - id: FishGravityGeneratorFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBible
+  suffix: Fish
+  category: centcomm-supply-category-holy
+  maxQuantity: 2
+  sortOrder: 82
+  contents:
+  - id: Bible
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBibleNanoTrasen
+  suffix: Fish
+  category: centcomm-supply-category-holy
+  maxQuantity: 2
+  sortOrder: 83
+  contents:
+  - id: BibleNanoTrasen
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxShotgunHoly
+  suffix: Fish
+  category: centcomm-supply-category-holy
+  maxQuantity: 8
+  sortOrder: 84
+  contents:
+  - id: BoxShotgunHoly
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 5
+  sortOrder: 85
+  contents:
+  - id: MedkitFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitBruteFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 4
+  sortOrder: 86
+  contents:
+  - id: MedkitBruteFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitBurnFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 4
+  sortOrder: 87
+  contents:
+  - id: MedkitBurnFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitToxinFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 4
+  sortOrder: 88
+  contents:
+  - id: MedkitToxinFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitRadiationFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 4
+  sortOrder: 89
+  contents:
+  - id: MedkitRadiationFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitOxygenFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 4
+  sortOrder: 90
+  contents:
+  - id: MedkitOxygenFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitAdvancedFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 2
+  sortOrder: 91
+  contents:
+  - id: MedkitAdvancedFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedkitCombatFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 2
+  sortOrder: 92
+  contents:
+  - id: MedkitCombatFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackDuffelNanotrasenMedicalBundleFilled
+  suffix: Fish
+  category: centcomm-supply-category-medical
+  maxQuantity: 1
+  sortOrder: 93
+  contents:
+  - id: ClothingBackpackDuffelNanotrasenMedicalBundleFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetSteel
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 94
+  contents:
+  - id: SheetSteel
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetGlass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 95
+  contents:
+  - id: SheetGlass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetPlastic
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 96
+  contents:
+  - id: SheetPlastic
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetPlasteel
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 97
+  contents:
+  - id: SheetPlasteel
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyIngotSilver
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 98
+  contents:
+  - id: IngotSilver
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyIngotGold
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 99
+  contents:
+  - id: IngotGold
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetPlasma
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 100
+  contents:
+  - id: SheetPlasma
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetUranium
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 101
+  contents:
+  - id: SheetUranium
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMaterialDiamond1
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 30
+  sortOrder: 102
+  contents:
+  - id: MaterialDiamond1
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetRGlass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 103
+  contents:
+  - id: SheetRGlass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetUGlass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 104
+  contents:
+  - id: SheetUGlass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetRUGlass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 105
+  contents:
+  - id: SheetRUGlass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetPGlass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 106
+  contents:
+  - id: SheetPGlass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetRPGlass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 107
+  contents:
+  - id: SheetRPGlass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetPaper
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 108
+  contents:
+  - id: SheetPaper
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetOfficePaper
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 109
+  contents:
+  - id: SheetOfficePaper
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetBrass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 110
+  contents:
+  - id: SheetBrass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySheetClockworkGlass
+  suffix: Fish
+  category: centcomm-supply-category-materials
+  maxQuantity: 5
+  sortOrder: 111
+  contents:
+  - id: SheetClockworkGlass
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMedicalScannerMachineCircuitboard
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 112
+  contents:
+  - id: MedicalScannerMachineCircuitboard
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyCloningConsoleComputerCircuitboard
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 113
+  contents:
+  - id: CloningConsoleComputerCircuitboard
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyCloningPodMachineCircuitboard
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 114
+  contents:
+  - id: CloningPodMachineCircuitboard
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyObrStationComputerCircuitboard
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 115
+  contents:
+  - id: ObrStationComputerCircuitboard
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxQMCircuitboards
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 116
+  contents:
+  - id: BoxQMCircuitboards
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxCECircuitboards
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 117
+  contents:
+  - id: BoxCECircuitboards
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxRDCircuitboards
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 118
+  contents:
+  - id: BoxRDCircuitboards
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxCMOCircuitboards
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 119
+  contents:
+  - id: BoxCMOCircuitboards
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxHoSCircuitboards
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 120
+  contents:
+  - id: BoxHoSCircuitboards
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxHoPCircuitboards
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 121
+  contents:
+  - id: BoxHoPCircuitboards
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBoxCaptainCircuitboards
+  suffix: Fish
+  category: centcomm-supply-category-circuitboard
+  maxQuantity: 1
+  sortOrder: 122
+  contents:
+  - id: BoxCaptainCircuitboards
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyBluespaceArtilleryDesignator
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 123
+  contents:
+  - id: BluespaceArtilleryDesignator
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySunriseWeaponDisposableRocketLauncher
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 3
+  sortOrder: 124
+  contents:
+  - id: SunriseWeaponDisposableRocketLauncher
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySunriseWeaponDisposableRocketLauncherSmoke
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 9
+  sortOrder: 125
+  contents:
+  - id: SunriseWeaponDisposableRocketLauncherSmoke
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplySunriseWeaponDisposableRocketLauncherEmp
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 3
+  sortOrder: 126
+  contents:
+  - id: SunriseWeaponDisposableRocketLauncherEmp
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponEnergySniper
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 127
+  contents:
+  - id: WeaponEnergySniper
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponLauncherRL5
+  suffix: Fish
+  name: centcomm-supply-product-rl5-name
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 128
+  contents:
+  - id: WeaponLauncherRL5
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponLightMachineGunM492
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 129
+  contents:
+  - id: WeaponLightMachineGunM492
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponRifleM90GrenadeLauncher
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 2
+  sortOrder: 130
+  contents:
+  - id: WeaponRifleM90GrenadeLauncher

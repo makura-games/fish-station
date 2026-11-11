@@ -113,9 +113,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishVendingMachineAmmoFlatpack
-  name: vending machine flatpack
+  name: liberation station flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing a Liberation Station vending machine.
   components:
   - type: Flatpack
     entity: VendingMachineAmmo
@@ -129,9 +129,9 @@
 - type: entity
   parent: BaseFlatpack
   id: FishVendingMachineMedicalSecurityFlatpack
-  name: vending machine flatpack
+  name: NanoMed Security flatpack
   suffix: Fish
-  description: A flatpack.
+  description: A flatpack used for constructing a NanoMed Security vending machine.
   components:
   - type: Flatpack
     entity: VendingMachineMedicalSecurity

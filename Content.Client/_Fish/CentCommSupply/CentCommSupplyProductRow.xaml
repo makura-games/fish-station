@@ -10,7 +10,7 @@
         <BoxContainer Orientation="Horizontal"
                       HorizontalExpand="True"
                       Margin="4 0">
-            <TextureRect Name="Icon"
+            <LayeredTextureRect Name="Icon"
                          Access="Public"
                          MinSize="32 32"
                          Stretch="KeepAspectCentered"

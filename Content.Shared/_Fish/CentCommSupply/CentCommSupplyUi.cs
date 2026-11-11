@@ -16,6 +16,15 @@ public enum CentCommSupplyUiKey : byte
 public sealed class CentCommSupplyStateRequestMessage : BoundUserInterfaceMessage;
 
 /// <summary>
+/// Общий каталог при открытии окна. Подтверждения и выбор игрока передаются отдельно.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed class CentCommSupplyCatalogState(CentCommSupplyUserStateMessage catalog) : BoundUserInterfaceState
+{
+    public readonly CentCommSupplyUserStateMessage Catalog = catalog;
+}
+
+/// <summary>
 /// Состояние консоли для игрока, которому адресован ответ.
 /// </summary>
 [Serializable, NetSerializable]

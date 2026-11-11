@@ -12,6 +12,7 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
     [Dependency] private IPlayerManager _player = default!;
 
     private CentCommSupplyWindow? _window;
+    private CentCommSupplyUserStateMessage? _privateState;
 
     public CentCommSupplyBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
@@ -38,7 +39,18 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
             SendMessage(new CentCommSupplyOrderMessage(orderId, station, entries));
             return true;
         };
+        if (_privateState is { } state)
+            _window.UpdateState(state);
+
         SendMessage(new CentCommSupplyStateRequestMessage());
+    }
+
+    protected override void UpdateState(BoundUserInterfaceState state)
+    {
+        base.UpdateState(state);
+
+        if (_privateState == null && state is CentCommSupplyCatalogState catalog)
+            _window?.UpdateState(catalog.Catalog);
     }
 
     protected override void ReceiveMessage(BoundUserInterfaceMessage message)
@@ -46,7 +58,10 @@ public sealed partial class CentCommSupplyBoundUserInterface : BoundUserInterfac
         base.ReceiveMessage(message);
 
         if (message is CentCommSupplyUserStateMessage state)
+        {
+            _privateState = state;
             _window?.UpdateState(state);
+        }
     }
 
     /// <summary>

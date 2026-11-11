@@ -20,7 +20,7 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     /// Maximum number of distinct products in one order.
     /// </summary>
     [DataField]
-    public int MaxProductsPerOrder = 8;
+    public int MaxProductsPerOrder = 30;
 
     /// <summary>
     /// Delay between successful orders.
@@ -32,7 +32,7 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     /// Crate prototype used to pack ordered items.
     /// </summary>
     [DataField]
-    public EntProtoId CratePrototype = "CrateCommandSecure";
+    public EntProtoId CratePrototype = "FishCrateCentCommSupply";
 
     /// <summary>
     /// Delay between accepting an order and delivering its crates to the station.
@@ -73,12 +73,14 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     /// <summary>
     /// Состояние консоли для каждого игрока с открытым интерфейсом.
     /// </summary>
+    [NonSerialized]
     [ViewVariables]
     public readonly Dictionary<EntityUid, CentCommSupplyUserStateMessage> UserStates = new();
 
     /// <summary>
     /// Earliest time the next order can be placed.
     /// </summary>
+    [NonSerialized]
     [ViewVariables]
     public TimeSpan NextOrderTime;
 }

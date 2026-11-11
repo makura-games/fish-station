@@ -25,7 +25,7 @@ public sealed partial class CentCommSupplyOrderMenu : DefaultWindow
         Description.SetMessage(FormattedMessage.FromUnformatted(description));
         Description.Visible = !string.IsNullOrWhiteSpace(description);
 
-        Amount.Value = 1;
         Amount.IsValid = value => value >= 1 && value <= product.MaxQuantity;
+        Amount.Value = 1;
     }
 }

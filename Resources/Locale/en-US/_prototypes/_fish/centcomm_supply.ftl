@@ -5,3 +5,6 @@ ent-FishCentCommSupplyConsole = CentComm supply console
 ent-FishCentCommSupplyComputerCircuitboard = CentComm console board
     .desc = A computer circuit board for a CentComm supply console.
     .suffix = Fish
+ent-FishCrateCentCommSupply = CentComm supply crate
+    .desc = A secure crate for Central Command supplies.
+    .suffix = Fish

@@ -19,7 +19,7 @@
       state: salary_key
   - type: CentCommSupplyConsole
     maxCratesPerOrder: 6
-    maxProductsPerOrder: 8
+    maxProductsPerOrder: 30
   - type: ActivatableUI
     key: enum.CentCommSupplyUiKey.Key
   - type: ActivatableUIRequiresAccess
