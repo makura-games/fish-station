@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
@@ -44,7 +45,8 @@ public sealed class AntagPrototypeRulesTest : GameTest
                 .EnumeratePrototypes<AntagPrototype>()
                 .ToDictionary(prototype => prototype.ID);
 
-            Assert.That(antags.Keys, Is.EquivalentTo(_antagIds));
+            // В пуле могут оставаться тестовые прототипы из других фикстур.
+            Assert.That(antags.Keys.Where(id => !id.StartsWith("AntagTagTest", StringComparison.Ordinal)), Is.EquivalentTo(_antagIds));
 
             foreach (var id in _antagIds)
             {
