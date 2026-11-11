@@ -1,0 +1,18 @@
+- type: reagent
+  id: Deliriumine
+  name: reagent-name-deliriumine
+  desc: reagent-desc-deliriumine
+  group: Toxins
+  physicalDesc: reagent-physical-desc-vile
+  contrabandSeverity: Syndicate
+  color: "#493430"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Poison: 2
+      - !type:ChemPsychosis
+        sourceId: Deliriumine
+        amountPerUnit: 20

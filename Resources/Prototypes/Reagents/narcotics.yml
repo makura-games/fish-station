@@ -293,6 +293,12 @@
   metabolisms:
     Bloodstream:
       effects:
+      # FIsh edit: стимуляторы снимают стресс и формируют зависимость.
+      - !type:ChemMentalHealth
+        substanceId: SpaceDrugs
+        stressPerUnit: -4
+        neuroPerUnit: -0.5
+        addictionPerDose: 8
       - !type:ModifyStatusEffect
         effectProto: StatusEffectSeeingRainbow
         type: Add
@@ -545,4 +551,3 @@
         effectProto: StatusEffectSeeingRainbow
         type: Add
         time: 5
-

@@ -1,0 +1,40 @@
+light_mode unshaded;
+
+uniform highp float intensity;
+uniform highp float time;
+uniform highp vec2 screen_size;
+
+highp vec2 distort(highp vec2 uv, highp float amount)
+{
+    highp vec2 center = uv - 0.5;
+    return uv + center * dot(center, center) * amount;
+}
+
+void fragment()
+{
+    highp float strength = clamp(intensity, 0.0, 1.0);
+    highp vec2 uv = distort(UV, strength * 0.3);
+    uv.x += sin(uv.y * 50.0 + time * 20.0) * 0.002 * strength;
+    uv.y += cos(uv.x * 50.0 + time * 18.0) * 0.002 * strength;
+
+    highp float chromatic = strength * 0.02;
+    highp vec4 color;
+    color.r = zTexture(uv + vec2(chromatic, 0.0)).r;
+    color.g = zTexture(uv).g;
+    color.b = zTexture(uv - vec2(chromatic, 0.0)).b;
+    color.a = 1.0;
+
+    highp float luminance = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+    color.rgb = mix(vec3(luminance), color.rgb, 1.0 + strength * 0.8);
+    color.rgb = (color.rgb - 0.5) * (1.0 + strength * 1.5) + 0.5;
+    color.rgb += vec3(0.7, 0.3, -0.5) * sin(uv.x * 10.0 + uv.y * 8.0 + time) * strength * 0.1;
+
+    if (strength > 0.7)
+    {
+        highp float pixel_size = mix(1.0, 8.0, (strength - 0.7) * 3.0);
+        highp vec2 pixel_uv = floor(uv * screen_size / pixel_size) * pixel_size / screen_size;
+        color = zTexture(pixel_uv);
+    }
+
+    COLOR = color;
+}

@@ -59,5 +59,12 @@ namespace Content.Shared.CCVar
         /// </summary>
         public static readonly CVarDef<int> AchievementsMaxDbUpsertsPerRound =
             CVarDef.Create("fish.achievements.max_db_upserts_per_round", 15, CVar.SERVERONLY);
+			
+		public static readonly CVarDef<bool> EnableStressEffects =
+			CVarDef.Create("fish.mental_health.stress_effects", true, CVar.CLIENTONLY);
+		public static readonly CVarDef<bool> EnablePsychosisEffects =
+			CVarDef.Create("fish.mental_health.psychosis_effects", true, CVar.CLIENTONLY);
+		public static readonly CVarDef<bool> EnableNeuroEffects =
+			CVarDef.Create("fish.mental_health.neuro_effects", true, CVar.CLIENTONLY);
     }
 }

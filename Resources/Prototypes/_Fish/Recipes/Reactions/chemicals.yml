@@ -1,0 +1,17 @@
+- type: reaction
+  id: Deliriumine
+  impact: Medium
+  minTemp: 423
+  maxTemp: 443
+  reactants:
+    Vestine:
+      amount: 3
+    Ethanol:
+      amount: 1
+    Phenol:
+      amount: 1
+    Ephedrine:
+     amount: 1
+     catalyst: true
+  products:
+    Deliriumine: 3

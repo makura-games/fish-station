@@ -1,0 +1,55 @@
+# Конфигурация психического здоровья Fish.
+stress_resists:
+  default:
+    blood: 0
+    enemies: 0
+  MedicalDoctor:
+    blood: 30
+    enemies: 10
+  Paramedic:
+    blood: 30
+    enemies: 10
+  Chemist:
+    blood: 30
+    enemies: 10
+  SecurityOfficer:
+    blood: 15
+    enemies: 30
+  Detective:
+    blood: 15
+    enemies: 30
+  Warden:
+    blood: 15
+    enemies: 30
+  Captain:
+    blood: 20
+    enemies: 20
+  HeadOfSecurity:
+    blood: 20
+    enemies: 20
+  ChiefMedicalOfficer:
+    blood: 20
+    enemies: 20
+  ResearchDirector:
+    blood: 20
+    enemies: 20
+  ChiefEngineer:
+    blood: 20
+    enemies: 20
+  NuclearOperative:
+    blood: 80
+    enemies: 80
+  SyndicateAgent:
+    blood: 80
+    enemies: 80
+  Antag:
+    blood: 80
+    enemies: 80
+psychosis:
+  hallucination_mob_prototypes:
+    - MobMouse
+    - MobSlimePerson
+  hallucination_corpse_prototypes: []
+  hallucination_item_prototypes: []
+  hallucination_sounds:
+    - /Audio/Effects/thudswoosh.ogg

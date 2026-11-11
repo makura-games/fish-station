@@ -1,0 +1,4 @@
+- type: entity
+  parent: StatusEffectSlowdown
+  id: NeuroCriticalSlowdownStatusEffect
+  name: neuro critical slowdown

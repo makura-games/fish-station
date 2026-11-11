@@ -350,6 +350,14 @@
   metabolisms:
     Bloodstream:
       effects:
+      # FIsh edit: токсин усиливает психоз и стресс.
+      - !type:ChemMentalHealth
+        substanceId: MindbreakerToxin
+        stressPerUnit: 5
+        neuroPerUnit: -2
+      - !type:ChemPsychosis
+        sourceId: MindbreakerToxin
+        amountPerUnit: 20
       - !type:ModifyStatusEffect
         effectProto: StatusEffectSeeingRainbow
         type: Add

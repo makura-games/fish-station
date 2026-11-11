@@ -1,2 +1,17 @@
 
 
+- type: reagent
+  id: Nootropil
+  name: reagent-name-nootropil
+  desc: reagent-desc-nootropil
+  group: Medicine
+  physicalDesc: reagent-physical-desc-chalky
+  flavor: medicine
+  color: "#b7d7e8"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ChemRestoreNeuro
+        sourceId: Nootropil
+        restorePerUnit: 5
+        addictionPerDose: 8
