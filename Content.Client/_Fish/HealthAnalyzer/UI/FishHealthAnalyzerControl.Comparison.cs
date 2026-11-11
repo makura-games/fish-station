@@ -25,9 +25,6 @@ public sealed partial class FishHealthAnalyzerControl
         InitializeSection(ReagentsHeading, "health-analyzer-window-reagents-title");
     }
 
-    /// <summary>
-    /// Настраивает заголовок сворачиваемого раздела и его локализованное состояние.
-    /// </summary>
     private static void InitializeSection(CollapsibleHeading heading, string title)
     {
         heading.Label.AddStyleClass(HealthAnalyzerSheetlet.SectionTitle);
@@ -56,9 +53,6 @@ public sealed partial class FishHealthAnalyzerControl
         DamageTrendLabel.Visible = _canCompareDamage;
     }
 
-    /// <summary>
-    /// Сохраняет последние показания одного пациента для сравнения со следующим сканированием.
-    /// </summary>
     private void SaveDamageComparison(
         FixedPoint2 total,
         IReadOnlyDictionary<ProtoId<DamageGroupPrototype>, FixedPoint2> groups,
@@ -78,9 +72,6 @@ public sealed partial class FishHealthAnalyzerControl
         _hasPreviousScan = true;
     }
 
-    /// <summary>
-    /// Показывает направление изменения общего урона и выбирает цвет показателя.
-    /// </summary>
     private void UpdateDamageTrend(Label label, FixedPoint2 delta)
     {
         label.Visible = _canCompareDamage;

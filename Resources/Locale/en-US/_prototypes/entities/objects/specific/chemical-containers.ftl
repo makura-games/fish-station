@@ -1,8 +1,5 @@
 ent-Jug = jug
     .desc = Used to contain a very large amount of chemicals or solutions. Chugging is extremely ill-advised.
-ent-FishDetoxJug = detox jug
-    .desc = A jug containing detox medication.
-    .suffix = Fish
 ent-JugCarbon = { ent-Jug }
     .suffix = carbon
     .desc = { ent-Jug.desc }

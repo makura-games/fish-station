@@ -26,9 +26,6 @@ public sealed class HealthAnalyzerEffects : Control
         RectClipContent = true;
     }
 
-    /// <summary>
-    /// Включает или выключает эффекты активного сканирования.
-    /// </summary>
     public void SetScanActive(bool scanActive)
     {
         _scanActive = scanActive;
@@ -42,9 +39,6 @@ public sealed class HealthAnalyzerEffects : Control
         _accentColor = color;
     }
 
-    /// <summary>
-    /// Запускает анимацию прохода сканирования, если предыдущая уже завершена.
-    /// </summary>
     public void TriggerScan()
     {
         // Частые обновления данных не должны прерывать текущий проход полосы.
@@ -55,9 +49,6 @@ public sealed class HealthAnalyzerEffects : Control
         _scanVisible = true;
     }
 
-    /// <summary>
-    /// Обновляет время анимаций сканирования и мигания интерфейса.
-    /// </summary>
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
@@ -72,9 +63,6 @@ public sealed class HealthAnalyzerEffects : Control
             _scanVisible = false;
     }
 
-    /// <summary>
-    /// Рисует линии сканирования, проход луча и рамку активного анализатора.
-    /// </summary>
     protected override void Draw(DrawingHandleScreen handle)
     {
         base.Draw(handle);
@@ -93,9 +81,6 @@ public sealed class HealthAnalyzerEffects : Control
             DrawActiveBorder(handle, width, height);
     }
 
-    /// <summary>
-    /// Рисует фоновые горизонтальные линии поверх панели анализатора.
-    /// </summary>
     private void DrawScanlines(DrawingHandleScreen handle, float width, float height)
     {
         var spacing = Math.Max(3f, ScanlineSpacing * UIScale);
@@ -105,9 +90,6 @@ public sealed class HealthAnalyzerEffects : Control
             handle.DrawLine(new Vector2(0f, y), new Vector2(width, y), color);
     }
 
-    /// <summary>
-    /// Рисует движущуюся полосу текущего прохода сканирования.
-    /// </summary>
     private void DrawScan(DrawingHandleScreen handle, float width, float height)
     {
         var progress = Math.Clamp(_scanElapsed / ScanDuration, 0f, 1f);
@@ -119,9 +101,6 @@ public sealed class HealthAnalyzerEffects : Control
         handle.DrawLine(new Vector2(0f, y), new Vector2(width, y), accent.WithAlpha(0.48f));
     }
 
-    /// <summary>
-    /// Рисует пульсирующую рамку, обозначающую активный сканер.
-    /// </summary>
     private void DrawActiveBorder(DrawingHandleScreen handle, float width, float height)
     {
         var pulse = (MathF.Sin(_elapsed * 2.2f) + 1f) * 0.5f;

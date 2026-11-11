@@ -145,9 +145,6 @@ public sealed class HealthAnalyzerSheetlet : Sheetlet<PalettedStylesheet>
     }
 
     // Fish-start - палитры и панели для плавной смены состояния интерфейса
-    /// <summary>
-    /// Возвращает палитру для выбранного состояния интерфейса анализатора.
-    /// </summary>
     public static ColorPalette GetPalette(HealthAnalyzerTheme theme)
     {
         return theme switch
@@ -159,9 +156,6 @@ public sealed class HealthAnalyzerSheetlet : Sheetlet<PalettedStylesheet>
         };
     }
 
-    /// <summary>
-    /// Создаёт стиль панели по её семантическому классу или возвращает null для обычных панелей.
-    /// </summary>
     public static StyleBoxFlat? CreateThemedPanel(PanelContainer panel, ColorPalette palette)
     {
         if (panel.HasStyleClass(StyleClass.BackgroundPanel))
