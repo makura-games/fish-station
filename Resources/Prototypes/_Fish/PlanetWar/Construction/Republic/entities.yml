@@ -1749,7 +1749,7 @@
   parent: GatewayCore
   id: GatewayCoreJob
   components:
-  # FIsh edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
+  # Fish-edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
   - type: PlanetWarGateway
     team: Core
 

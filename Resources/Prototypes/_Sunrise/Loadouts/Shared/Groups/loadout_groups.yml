@@ -165,6 +165,8 @@
   - NanoTrasenRepresentativeJumpsuit
   - NanoTrasenRepresentativeJumpskirt
   - NanoTrasenRepresentativeJumpsuitFormal
+  - FishNTRepresentativeJumpsuit # Fish-edit
+  - FishNTRepresentativeJumpskirt # Fish-edit
 
 - type: loadoutGroup
   id: NanoTrasenRepresentativeOuterClothing
@@ -193,7 +195,15 @@
   maxLimit: 1
   loadouts:
   - NTRepresentativeCloak
-  # Fish-end
+
+- type: loadoutGroup
+  id: FishNanoTrasenRepresentativeGloves
+  name: loadout-group-nanotrasenrepresentative-gloves
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - FishNTRepresentativeGloves
+# Fish-end
 
 - type: loadoutGroup
   id: BlueShieldHead
@@ -243,7 +253,7 @@
   - BlueShieldMantle
   - BlueShieldCoat
 
-# FIsh edit start
+# Fish-start
 # - type: loadoutGroup
 #   id: BlueShieldBra
 #   name: loadout-group-blueshield-bra
@@ -266,9 +276,9 @@
 #   - PurpleBra
 #   - BlackBra
 #   - BlueShieldBra
-# FIsh edit end
+# Fish-end
 
-# FIsh edit start
+# Fish-start
 # - type: loadoutGroup
 #   id: BlueShieldPants
 #   name: loadout-group-blueshield-pants
@@ -302,7 +312,7 @@
 #   - BlackWomanPants
 #   - BlueShieldThong
 #   - BlueShieldBoxers
-# FIsh edit end
+# Fish-end
 
 # Fish-start
 - type: loadoutGroup
@@ -340,7 +350,7 @@
   - BlackBra
   - AdjutantBra
 
-# FIsh edit start
+# Fish-start
 # - type: loadoutGroup
 #   id: AdjutantPants
 #   name: loadout-group-adj-pants
@@ -374,7 +384,7 @@
 #   - BlackWomanPants
 #   - AdjutantThong
 #   - AdjutantBoxers
-# FIsh edit end
+# Fish-end
 
 - type: loadoutGroup
   id: BlueshieldGun
@@ -417,7 +427,7 @@
   loadouts:
   - CorporateLaw
 
-# FIsh edit start
+# Fish-start
 # - type: loadoutGroup
 #   id: CentCommOperatorJumpsuit
 #   name: loadout-group-centcomm-operator-jumpsuit
@@ -426,16 +436,16 @@
 #   - CentCommOfficerJumpskirt
 #   - CentCommOfficialJumpsuit
 #   - CentCommOfficialJumpskirt
-# FIsh edit end
+# Fish-end
 
-# FIsh edit start
+# Fish-start
 # - type: loadoutGroup
 #   id: CentCommOperatorHats
 #   name: loadout-group-centcomm-operator-head-hat
 #   loadouts:
 #   - HeadHatBeretCentcomNaval
-# # - HeadHatCentcomcap #Fish-Edit
-# FIsh edit end
+# # - HeadHatCentcomcap #Fish-edit
+# Fish-end
 
 - type: loadoutGroup
   id: ChiefEngineerBackpack
@@ -889,7 +899,7 @@
   - SunriseScarfCyan
   - SunriseScarfBlue
   - SunriseStethoscope
-  - ParamedicCape # Fish-Edit
+  - ParamedicCape # Fish-edit
 
 - type: loadoutGroup
   id: SunriseParamedicMask
@@ -1585,6 +1595,7 @@
   loadouts:
   - ComMaidBackpackSatchelLeather
   - ComMaidModsuit
+  - FishComMaidDuffel #Fish-edit
 
 - type: loadoutGroup
   id: ComMaidNeck

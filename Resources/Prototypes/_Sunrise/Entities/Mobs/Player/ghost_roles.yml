@@ -30,7 +30,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     belt:
     - Handcuffs
     - Handcuffs
@@ -69,7 +69,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     belt:
     - Handcuffs
     - Handcuffs
@@ -95,7 +95,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: PouchAmmoLarge
+    pocket2: PouchAmmoFilledPistol40
   inhand:
   - WeaponPistolM1911
   - WeaponRifleLecterXL8
@@ -109,7 +109,7 @@
     - HoloprojectorField
     - WeaponAdvancedTaser
     - DoorRemoteOmni
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     - MagazineMagnumFMJ
     - MagazineMagnum
     - MagazineMagnum
@@ -471,7 +471,7 @@
     - LightReplacer
     - BoxCleanerGrenades
     - CrowbarRed
-#fish-start
+#Fish-start
 - type: entity
   id: RandomHumanoidSpawnerCBURNLeader
   name: CBURN Leader
@@ -516,4 +516,4 @@
       - NamesMilitaryFirstLeader
       - NamesMilitaryLast
       nameFormat: name-format-ert
-#fish-end
+#Fish-end

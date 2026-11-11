@@ -61,10 +61,10 @@ public abstract partial class SharedToolSystem
             $"{ToPrettyString(args.User):player} used {ToPrettyString(ent)} to edit the tile at {coords}");
         args.Handled = true;
 
-        // Fish-Edit start: broadcast для achievements (без duplicate ToolTileCompatible subscription)
+        // Fish-start: broadcast для achievements (без duplicate ToolTileCompatible subscription)
         var fishEv = new FishTilePriedEvent(args.User, gridUid, args.GridTile, ent, tileDef.ID);
         RaiseLocalEvent(ref fishEv);
-        // Fish-Edit end
+        // Fish-end
     }
 
     private bool UseToolOnTile(Entity<ToolTileCompatibleComponent?, ToolComponent?> ent, EntityUid user, EntityCoordinates clickLocation)

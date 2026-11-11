@@ -7,8 +7,10 @@
   components:
   - type: Sprite
     sprite: Clothing/Head/Hoods/Bio/general.rsi
+  # Fish-start: To remove - иммунитет к болезни
   - type: DiseaseImmuneClothing
     prob: 0.3
+  # Fish-end
   - type: Clothing
     sprite: Clothing/Head/Hoods/Bio/general.rsi
   - type: BreathMask

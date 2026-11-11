@@ -1,4 +1,6 @@
+# Fish-start: To remove - функционал разумной болезни
 guide-entry-disease = Разумная болезнь
+# Fish-end
 guide-entry-expeditions = Экспедиции
 guide-entry-expedition-pirates = Пираты
 guide-entry-expedition-soviets = Коммунисты

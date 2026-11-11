@@ -29,9 +29,9 @@ public struct HealthAnalyzerUiState
     public bool? ScanMode;
     public bool? Bleeding;
     public bool? Unrevivable;
-    // FIsh edit start - передача реагентов в интерфейс анализатора
+    // Fish-start - передача реагентов в интерфейс анализатора
     public List<ReagentQuantity> Reagents = [];
-    // FIsh edit end
+    // Fish-end
     // Sunrise-Edit start - add hunger and thirst levels to UI state
     public float? HungerLevel;
     public float? ThirstLevel;
@@ -56,9 +56,9 @@ public struct HealthAnalyzerUiState
         ScanMode = scanMode;
         Bleeding = bleeding;
         Unrevivable = unrevivable;
-        // FIsh edit start - сохранение реагентов в состоянии интерфейса
+        // Fish-start - сохранение реагентов в состоянии интерфейса
         Reagents = reagents ?? [];
-        // FIsh edit end
+        // Fish-end
         // Sunrise-Edit start - assign hunger and thirst
         HungerLevel = hungerLevel;
         ThirstLevel = thirstLevel;

@@ -152,7 +152,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 EquipRoleName(jobEntity, loadout, roleProto!);
             }
 
-            // FIsh edit start - экипировка jobEntity через startingGear (Sunrise), не только Loadout MapInit
+            // Fish-start - экипировка jobEntity через startingGear (Sunrise), не только Loadout MapInit
             if (prototype.StartingGear != null)
             {
                 var startingGear = ProtoMan.Index(prototype.StartingGear.Value);
@@ -163,7 +163,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             {
                 EquipRoleLoadout(jobEntity, loadout, roleProto!);
             }
-            // FIsh edit end
+            // Fish-end
 
             DoJobSpecials(job, jobEntity);
             _identity.QueueIdentityUpdate(jobEntity);

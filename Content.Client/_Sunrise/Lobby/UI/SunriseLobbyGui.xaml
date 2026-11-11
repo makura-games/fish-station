@@ -399,7 +399,7 @@
                                         MinWidth="40"
                                         Name="CallVoteButton"
                                         StyleClasses="ButtonBig" />
-                                    <!-- ===== FISH EDIT START: ACHIEVEMENTS ===== -->
+                                    <!-- ===== Fish-start: ACHIEVEMENTS ===== -->
                                     <Button
                                         Access="Public"
                                         HorizontalExpand="True"
@@ -407,7 +407,7 @@
                                         Name="AchievementsButton"
                                         StyleClasses="ButtonBig"
                                         Text="{Loc 'fish-achievements-button'}" />
-                                    <!-- ===== FISH EDIT END: ACHIEVEMENTS ===== -->
+                                    <!-- ===== Fish-end: ACHIEVEMENTS ===== -->
                                     <Button
                                         Access="Public"
                                         HorizontalExpand="True"

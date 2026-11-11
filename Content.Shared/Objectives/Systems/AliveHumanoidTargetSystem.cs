@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Content.Shared._Fish.DmArena; // Fish-edit
 using Content.Shared.Humanoid;
 using Content.Shared.Mind;
 using Content.Shared.Mobs.Systems;
@@ -14,6 +15,11 @@ public sealed partial class AliveHumanoidTargetSystem : MindTargetSystem<MindCom
         mind = entity;
         if (entity.Comp.CurrentEntity is not { } humanoid)
             return false;
+
+        // Fish-start
+        if (HasComp<DmArenaFighterComponent>(humanoid))
+            return false;
+        // Fish-end
 
         return _mobState.IsAlive(humanoid) && HasComp<HumanoidProfileComponent>(humanoid);
     }

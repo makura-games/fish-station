@@ -37,10 +37,10 @@
       collection: Weh
     Hew:
       collection: Hew
-    # Fish start
+    # Fish-start
     Fox:
       collection: Fox
-    # Fish end
+    # Fish-end
     Gasp:
       collection: MaleGasp
     DefaultDeathgasp:
@@ -90,10 +90,10 @@
       collection: Weh
     Hew:
       collection: Hew
-    # Fish start
+    # Fish-start
     Fox:
       collection: Fox
-    # Fish end
+    # Fish-end
     Gasp:
       collection: FemaleGasp
     DefaultDeathgasp:

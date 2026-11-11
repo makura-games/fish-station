@@ -18,6 +18,7 @@ using Content.Server.Hands.Systems;
 using Content.Server.Mind;
 using Content.Server.Pinpointer;
 using Content.Server.Popups;
+using Content.Server.Storage.EntitySystems; // Fish-edit
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Sunrise.BloodCult.Systems;
 using Content.Shared.Actions;
@@ -80,6 +81,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         [Dependency] private IRobustRandom _random = default!;
         [Dependency] private SharedRoleSystem _roleSystem = default!;
         [Dependency] private ItemSlotsSystem _slotsSystem = default!;
+        [Dependency] private StorageSystem _storageSystem = default!; // Fish-edit
         [Dependency] private StatusEffectsSystem _statusEffectsSystem = default!;
         [Dependency] private SharedStunSystem _stunSystem = default!;
         [Dependency] private StutteringSystem _stuttering = default!;

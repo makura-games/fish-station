@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 ent-ActionInfect = Infect
     .desc = Attempt to infect a target. Uses charges.
 ent-ActionDiseaseShop = Disease Shop

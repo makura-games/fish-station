@@ -893,9 +893,9 @@ SpawnPointShipwreckHecate: null
 SpawnPointShipwreckTraveller: null
 SpawnMobGolemCult: null
 SpawnMobRobotMedical: null
-# WindoorCommandLocked: null  # Fish-Edit 
+# WindoorCommandLocked: null  # Fish-edit
 
-# WindoorSecurityLocked: null # Fish-Edit 
+# WindoorSecurityLocked: null # Fish-edit
 SpawnMobRobotStandard: null
 OilJar`Ghee: null
 Painting`MothBigCatch: null
@@ -1226,7 +1226,7 @@ BlueprintMagAsh12Flare: null
 ClothingBackpackDuffelWeaponRifleAsh12: Ash12Box
 WeaponRifleM90GrenadeLauncherBiocode: WeaponRifleM90GrenadeLauncher
 ClothingOuterEliteHardsuitUSSP: null
-# GasMinerPlasma: null # Fish-Edit 
+# GasMinerPlasma: null # Fish-edit
 # 2026-08-14
 ClothingBackpackSyndieDL6902Filled: PowerpackDL6902
 MMGKit: null
@@ -1322,6 +1322,7 @@ ClothingHandsPowerGlovesUplinkNTERTGamma: null
 ClothingHandsPowerGlovesUplinkNTERTGammaLeader: null
 ClothingHandsPowerGlovesUplinkNTERTCBURN: null
 ClothingHandsPowerGlovesUplinkNTERTEpsilon: null
+DrinkDarkRedRumBottleFull: DrinkRedRumBottleFull
 # 2026-09-10
 ClothingOuterArmorBlueShield: null
 
@@ -1635,23 +1636,14 @@ DrinkWaterJug: JugWater
 #2026-09-05
 AsimovCircuitBoard: CrewsimovCircuitBoard
 
-# region Fish-Start
+# region Fish-start
 BigRedThruster: ThrusterLarge
 BigThruster: ThrusterLarge
 HugeRedThruster: ThrusterLarge
 HugeThruster: ThrusterLarge
 RustedThruster: Thruster
-FishGyroscope01K: Gyroscope
-FishGyroscope05K: Gyroscope
-FishGyroscope1K: Gyroscope
-FishGyroscope5K: Gyroscope
-FishGyroscope10K: Gyroscope
-FishGyroscope20K: Gyroscope
-FishGyroscope50K: Gyroscope
-FishGyroscope100K: Gyroscope
-FishGyroscope200K: Gyroscope
 HighSecCommandLocked: AirlockCommandLocked
 HighSecCentralCommandLocked: AirlockCentralCommandLocked
 HighSecArmoryLocked: AirlockArmoryLocked
 HighSecCaptainLocked: AirlockCaptainLocked
-# region Fish-End
+# region Fish-end
