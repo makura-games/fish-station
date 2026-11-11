@@ -1,5 +1,3 @@
-
-
 - type: reagent
   id: Nootropil
   name: reagent-name-nootropil
@@ -17,9 +15,9 @@
         addictionPerDose: 8
 
 - type: reagent
-  id: FishDetox
-  name: reagent-name-fish-detox
-  desc: reagent-desc-fish-detox
+  id: Detox
+  name: reagent-name-detox
+  desc: reagent-desc-detox
   group: Medicine
   physicalDesc: reagent-physical-desc-crystalline
   flavor: medicine

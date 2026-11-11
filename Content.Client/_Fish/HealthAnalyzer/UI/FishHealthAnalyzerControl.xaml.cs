@@ -59,9 +59,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         InitializeSections(); // независимое сворачивание разделов
     }
 
-    /// <summary>
-    /// Заполняет интерфейс диагностическими данными из последнего сообщения сканера.
-    /// </summary>
     public void Populate(HealthAnalyzerUiState state)
     {
         var target = _entityManager.GetEntity(state.TargetEntity);
@@ -223,9 +220,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         SaveDamageComparison(totalDamage, damageSortedGroups, damagePerType);
     }
 
-    /// <summary>
-    /// Возвращает локализованное название состояния пациента.
-    /// </summary>
     private static string GetStatus(MobState mobState)
     {
         return mobState switch
@@ -237,9 +231,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         };
     }
 
-    /// <summary>
-    /// Выбирает цвет температуры пациента по её клиническому диапазону.
-    /// </summary>
     private void SetTemperatureStyle(float temperature)
     {
         if (float.IsNaN(temperature))
@@ -258,9 +249,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         SetStatusStyle(TemperatureLabel, style);
     }
 
-    /// <summary>
-    /// Выбирает цвет процентного показателя по его значению.
-    /// </summary>
     private void SetPercentageStyle(Label label, float? percentage)
     {
         if (!percentage.HasValue || float.IsNaN(percentage.Value))
@@ -279,9 +267,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         SetStatusStyle(label, style);
     }
 
-    /// <summary>
-    /// Выбирает цвет общего урона с учётом состояния пациента.
-    /// </summary>
     private void SetDamageStyle(FixedPoint2 totalDamage, MobState mobState)
     {
         var style = mobState switch
@@ -296,9 +281,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         SetStatusStyle(DamageLabel, style);
     }
 
-    /// <summary>
-    /// Обновляет семантический стиль и плавный переход цвета диагностической метки.
-    /// </summary>
     private void SetStatusStyle(Label label, string style)
     {
         label.RemoveStyleClass(StyleClass.StatusGood);
@@ -335,9 +317,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
     }
 
     // плавная смена цветов основных показателей
-    /// <summary>
-    /// Обновляет активные переходы цвета диагностических показателей.
-    /// </summary>
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
@@ -361,9 +340,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
             _statusColorTransitions.Remove(label);
     }
 
-    /// <summary>
-    /// Преобразует класс статуса интерфейса в соответствующий цвет палитры.
-    /// </summary>
     private static Color GetStatusColor(string style)
     {
         return style switch
@@ -385,9 +361,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
     }
 
     // список посторонних реагентов в кровотоке
-    /// <summary>
-    /// Отображает обнаруженные в кровотоке реагенты и предупреждения об их дозах.
-    /// </summary>
     private void DrawReagents()
     {
         ReagentsListContainer.RemoveAllChildren();
@@ -444,9 +417,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         }
     }
 
-    /// <summary>
-    /// Отображает группы и типы урона пациента, включая динамику между сканированиями.
-    /// </summary>
     private void DrawDiagnosticGroups(
         Dictionary<ProtoId<DamageGroupPrototype>, FixedPoint2> groups,
         IReadOnlyDictionary<ProtoId<DamageTypePrototype>, FixedPoint2> damageDict)
@@ -511,9 +481,6 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
         }
     }
 
-    /// <summary>
-    /// Возвращает первый кадр указанного состояния спрайта или состояния-запасного варианта.
-    /// </summary>
     private Texture GetTexture(string texture)
     {
         var rsiPath = new ResPath("/Textures/Objects/Devices/health_analyzer.rsi");

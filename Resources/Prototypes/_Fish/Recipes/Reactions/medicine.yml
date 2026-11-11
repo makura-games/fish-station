@@ -1,0 +1,23 @@
+- type: reaction
+  id: Nootropil
+  reactants:
+    Mannitol:
+      amount: 1
+    Diethylamine:
+      amount: 1
+    Water:
+      amount: 1
+  products:
+    Nootropil: 3
+    
+- type: reaction
+  id: Detox
+  reactants:
+    Ethanol:
+      amount: 1
+    Hydroxide:
+      amount: 1
+    Mercury:
+      amount: 1
+  products:
+    Detox: 3
