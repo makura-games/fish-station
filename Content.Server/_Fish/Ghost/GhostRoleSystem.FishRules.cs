@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Content.Server.Ghost.Roles.Components;
 using Content.Shared.Roles;
 using Robust.Shared.Prototypes;
@@ -9,10 +8,10 @@ namespace Content.Server.Ghost.Roles;
 
 public sealed partial class GhostRoleSystem
 {
-    private string GetFishRoleRules(GhostRoleComponent role, List<ProtoId<AntagPrototype>> antags)
+    private string GetFishRoleRules(List<ProtoId<AntagPrototype>> antags)
     {
         if (antags.Count == 0)
-            return role.RoleRules;
+            return string.Empty;
 
         var rules = new List<string>();
         foreach (var antagId in antags)

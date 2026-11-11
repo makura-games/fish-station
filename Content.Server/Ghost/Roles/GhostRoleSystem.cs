@@ -718,8 +718,8 @@ public sealed partial class GhostRoleSystem : EntitySystem
                 PrototypeId = prototypeId, // Sunrise-Sponsors
                 Name = role.RoleName,
                 Description = role.RoleDescription,
-                // Fish-edit: показываем правила связанных ролей антагониста.
-                Rules = GetFishRoleRules(role, antags),
+                // Fish-edit: показываем только правила из антаг-прототипов.
+                Rules = GetFishRoleRules(antags),
                 RolePrototypes = (jobs, antags),
                 Kind = kind,
                 RafflePlayerCount = rafflePlayerCount,

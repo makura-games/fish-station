@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using Content.Server.Antag;
 using Content.Server.Mind;
 using Content.Shared._Fish.Antag;
+using Content.Shared.GameTicking;
+using Content.Shared.Mind;
+using Content.Shared.Roles;
 using Content.Shared.Roles.Components;
 using Robust.Shared.Player;
 
@@ -10,18 +13,72 @@ namespace Content.Server._Fish.Antag;
 public sealed partial class FishAntagRulesServerSystem : EntitySystem
 {
     [Dependency] private MindSystem _mind = default!;
+    [Dependency] private ISharedPlayerManager _player = default!;
+
+    private readonly Dictionary<EntityUid, HashSet<string>> _shownRules = new();
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<AfterAntagEntitySelectedEvent>(OnAntagSelected);
+        SubscribeLocalEvent<RoleAddedEvent>(OnRoleAdded);
+        SubscribeLocalEvent<RoleRemovedEvent>(OnRoleRemoved);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
     }
 
     private void OnAntagSelected(ref AfterAntagEntitySelectedEvent args)
     {
-        if (args.Session is not { } session || !_mind.TryGetMind(session, out _, out var mind))
+        if (args.Session is not { } session || !_mind.TryGetMind(session, out var mindId, out var mind))
             return;
 
+        ShowNewRules(mindId, mind, session);
+    }
+
+    private void OnRoleAdded(RoleAddedEvent args)
+    {
+        if (args.Mind.UserId is not { } userId || !_player.TryGetSessionById(userId, out var session))
+            return;
+
+        ShowNewRules(args.MindId, args.Mind, session);
+    }
+
+    private void OnRoleRemoved(RoleRemovedEvent args)
+    {
+        if (!_shownRules.TryGetValue(args.MindId, out var shownRules))
+            return;
+
+        shownRules.IntersectWith(GetMindRules(args.Mind));
+        if (shownRules.Count == 0)
+            _shownRules.Remove(args.MindId);
+    }
+
+    private void OnRoundRestartCleanup(RoundRestartCleanupEvent args)
+    {
+        _shownRules.Clear();
+    }
+
+    private void ShowNewRules(EntityUid mindId, MindComponent mind, ICommonSession session)
+    {
+        var rules = GetMindRules(mind);
+        if (rules.Count == 0)
+            return;
+
+        if (!_shownRules.TryGetValue(mindId, out var shownRules))
+            _shownRules.Add(mindId, shownRules = new HashSet<string>());
+
+        var newRules = new List<string>();
+        foreach (var rule in rules)
+        {
+            if (shownRules.Add(rule))
+                newRules.Add(rule);
+        }
+
+        if (newRules.Count > 0)
+            RaiseNetworkEvent(new FishAntagRulesEvent([.. newRules]), session);
+    }
+
+    private List<string> GetMindRules(MindComponent mind)
+    {
         var rules = new List<string>();
         foreach (var role in mind.MindRoleContainer.ContainedEntities)
         {
@@ -33,7 +90,6 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
                 rules.Add(locId);
         }
 
-        if (rules.Count > 0)
-            RaiseNetworkEvent(new FishAntagRulesEvent([.. rules]), session);
+        return rules;
     }
 }
