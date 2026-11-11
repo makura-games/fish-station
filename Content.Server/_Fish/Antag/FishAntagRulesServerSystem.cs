@@ -66,15 +66,15 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         if (!_shownRules.TryGetValue(mindId, out var shownRules))
             _shownRules.Add(mindId, shownRules = new HashSet<string>());
 
-        var newRules = new List<string>();
+        var hasNewRules = false;
         foreach (var rule in rules)
         {
             if (shownRules.Add(rule))
-                newRules.Add(rule);
+                hasNewRules = true;
         }
 
-        if (newRules.Count > 0)
-            RaiseNetworkEvent(new FishAntagRulesEvent([.. newRules]), session);
+        if (hasNewRules)
+            RaiseNetworkEvent(new FishAntagRulesEvent([.. rules]), session);
     }
 
     private List<string> GetMindRules(MindComponent mind)
