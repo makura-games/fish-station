@@ -20,13 +20,12 @@
         </BoxContainer>
 
         <BoxContainer>
-            <LayeredTextureRect Name="Icon"
-                         Access="Public"
-                         MinSize="32 32"
-                         Margin="4"
-                         Stretch="KeepAspectCentered"
-                         RectClipContent="True"
-                         VerticalAlignment="Center"/>
+            <PanelContainer Name="Icon"
+                            Access="Public"
+                            MinSize="32 32"
+                            Margin="4"
+                            RectClipContent="True"
+                            VerticalAlignment="Center"/>
 
             <PanelContainer StyleClasses="LowDivider" Margin="4 0"/>
 

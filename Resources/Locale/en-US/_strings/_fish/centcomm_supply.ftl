@@ -68,6 +68,9 @@ centcomm-supply-category-spec-ops = Special Operations
 
 centcomm-supply-product-ntrep-formal-name = { ent-ClothingUniformJumpsuitNtrepFormal }
 centcomm-supply-product-rl5-name = { ent-WeaponLauncherRL5 }
+centcomm-supply-product-p90-bundle-name = { ent-ClothingBackpackDuffelWeaponSubMachineGunP90Filled }
+centcomm-supply-product-skm24-bundle-name = { ent-ClothingBackpackDuffelWeaponRifleSKM24Filled }
+centcomm-supply-product-skm28-bundle-name = { ent-ClothingBackpackDuffelWeaponRifleSKM28Filled }
 centcomm-supply-product-n1984-name = { ent-WeaponPistolN1984 }
 centcomm-supply-product-multiphase-gun-name = { ent-WeaponMultiphaseGun }
 centcomm-supply-product-marsoc-helmet-name = { ent-ClothingHeadHelmetTSFMARSOC }

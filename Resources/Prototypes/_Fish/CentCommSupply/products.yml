@@ -65,6 +65,7 @@
 - type: centCommSupplyProduct
   id: FishCentCommSupplyLockerDetectiveFilled
   suffix: Fish
+  useEntityPreview: true
   category: centcomm-supply-category-security
   maxQuantity: 2
   sortOrder: 8
@@ -299,6 +300,44 @@
   sortOrder: 33
   contents:
   - id: ClothingHeadHelmetTSFMARSOC
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyPinpointerNuclear
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 2
+  sortOrder: 131
+  contents:
+  - id: PinpointerNuclear
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyMindShieldImplanter
+  suffix: Fish
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 9
+  sortOrder: 132
+  contents:
+  - id: MindShieldImplanter
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackDuffelWeaponRifleSKM24Filled
+  suffix: Fish
+  name: centcomm-supply-product-skm24-bundle-name
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 133
+  contents:
+  - id: ClothingBackpackDuffelWeaponRifleSKM24Filled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackDuffelWeaponRifleSKM28Filled
+  suffix: Fish
+  name: centcomm-supply-product-skm28-bundle-name
+  category: centcomm-supply-category-blue-shield
+  maxQuantity: 1
+  sortOrder: 134
+  contents:
+  - id: ClothingBackpackDuffelWeaponRifleSKM28Filled
 
 - type: centCommSupplyProduct
   id: FishCentCommSupplyClothingMaskGasNTRGLead
@@ -675,15 +714,6 @@
   sortOrder: 74
   contents:
   - id: FishVendingMachineBoozeFlatpack
-
-- type: centCommSupplyProduct
-  id: FishCentCommSupplyVendingMachineAmmoFlatpack
-  suffix: Fish
-  category: centcomm-supply-category-flatpacks
-  maxQuantity: 1
-  sortOrder: 75
-  contents:
-  - id: FishVendingMachineAmmoFlatpack
 
 - type: centCommSupplyProduct
   id: FishCentCommSupplyResearchAndDevelopmentServerFlatpack
@@ -1180,3 +1210,49 @@
   sortOrder: 130
   contents:
   - id: WeaponRifleM90GrenadeLauncher
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponPulseCarbine
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 2
+  sortOrder: 135
+  contents:
+  - id: WeaponPulseCarbine
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyTacticalAxe
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 2
+  sortOrder: 136
+  contents:
+  - id: TacticalAxe
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackDuffelWeaponSubMachineGunP90Filled
+  suffix: Fish
+  name: centcomm-supply-product-p90-bundle-name
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 2
+  sortOrder: 137
+  contents:
+  - id: ClothingBackpackDuffelWeaponSubMachineGunP90Filled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyVendingMachineAmmoFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 138
+  contents:
+  - id: FishVendingMachineAmmoFlatpack
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyVendingMachineChemicalsNanotrasenFlatpack
+  suffix: Fish
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 139
+  contents:
+  - id: FishVendingMachineChemicalsNanotrasenFlatpack

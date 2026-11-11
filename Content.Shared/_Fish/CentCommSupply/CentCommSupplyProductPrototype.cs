@@ -37,6 +37,12 @@ public sealed partial class CentCommSupplyProductPrototype : IPrototype
     public SpriteSpecifier? Icon;
 
     /// <summary>
+    /// Использовать предпросмотр сущности для спрайтов, которые меняются визуализаторами.
+    /// </summary>
+    [DataField]
+    public bool UseEntityPreview;
+
+    /// <summary>
     /// Entities spawned for one unit of this product.
     /// </summary>
     [DataField(required: true)]

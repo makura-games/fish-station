@@ -14,7 +14,6 @@ using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Gravity;
 using Content.Shared.Labels.Components;
-using Content.Shared.Mobs.Components;
 using Content.Shared.Paper;
 using Content.Shared.Popups;
 using Content.Shared.Station.Components;
@@ -55,16 +54,18 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     [Dependency] private PaperSystem _paper = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
 
 
-    private static readonly TimeSpan DeliveryRetryInterval = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan _deliveryRetryInterval = TimeSpan.FromSeconds(5);
 
     private readonly HashSet<Guid> _acceptedOrders = new();
     private readonly List<PendingOrder> _pendingOrders = new();
     private readonly List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> _pads = new();
+    private MapId? _stagingMap;
 
     public override void Initialize()
     {
@@ -89,6 +90,11 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         _pendingOrders.Clear();
 
         _acceptedOrders.Clear();
+
+        if (_stagingMap is { } stagingMap)
+            _map.DeleteMap(stagingMap);
+
+        _stagingMap = null;
     }
 
     private void OnStateRequested(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyStateRequestMessage args)
@@ -263,7 +269,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                 }
 
                 // Fish-edit: не планировать попытку позже срока истечения заказа
-                var retryAt = now + DeliveryRetryInterval;
+                var retryAt = now + _deliveryRetryInterval;
                 order.DeliverAt = retryAt < order.ExpireAt ? retryAt : order.ExpireAt;
                 continue;
             }
@@ -464,7 +470,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         }
 
         var crates = new List<EntityUid>(plan.RequiredCrates);
-        var consoleCoords = MapCoordinates.Nullspace;
+        var stagingCoords = GetStagingCoordinates();
         EntityUid? currentCrate = null;
         EntityStorageComponent? currentStorage = null;
 
@@ -476,7 +482,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                     || currentStorage == null
                     || currentStorage.Contents.ContainedEntities.Count >= currentStorage.Capacity)
                 {
-                    currentCrate = Spawn(ent.Comp.CratePrototype, consoleCoords);
+                    currentCrate = Spawn(ent.Comp.CratePrototype, stagingCoords);
                     crates.Add(currentCrate.Value);
                     if (!TryComp<EntityStorageComponent>(currentCrate.Value, out currentStorage))
                     {
@@ -486,7 +492,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                     }
                 }
 
-                var item = Spawn(id, consoleCoords);
+                var item = Spawn(id, stagingCoords);
                 if (!_storage.CanInsert(item, currentCrate.Value, currentStorage)
                     || !_storage.Insert(item, currentCrate.Value, currentStorage))
                 {
@@ -495,10 +501,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                     error = Loc.GetString("centcomm-supply-error-pack-failed");
                     return false;
                 }
-
-                // При переносе ящика на станцию пауза питомца снимется вместе с переходом на активную карту.
-                if (HasComp<MobStateComponent>(item))
-                    _meta.SetEntityPaused(item, true);
             }
         }
 
@@ -643,6 +645,19 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         }
 
         _ui.ServerSendUiMessage(ent.Owner, CentCommSupplyUiKey.Key, state, actor);
+    }
+
+    private MapCoordinates GetStagingCoordinates()
+    {
+        if (_stagingMap is not { } mapId || !_map.MapExists(mapId))
+        {
+            // На инициализированной карте работают обработчики наполнения, а пауза сохраняет груз до доставки.
+            _map.CreateMap(out mapId);
+            _map.SetPaused(mapId, true);
+            _stagingMap = mapId;
+        }
+
+        return new MapCoordinates(0, 0, mapId);
     }
 
     /// <summary>

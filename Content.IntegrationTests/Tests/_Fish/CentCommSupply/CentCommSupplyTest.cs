@@ -5,11 +5,13 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Content.Client._Fish.CentCommSupply;
+using Content.Client.Storage.Visualizers;
 using Content.Server._Fish.CentCommSupply;
 using Content.Server.Access.Systems;
 using Content.Server.Cargo.Components;
 using Content.Server.GameTicking;
 using Content.Server.Gravity;
+using Content.Server.Physics.Controllers;
 using Content.Server.Station.Systems;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared._Fish.CentCommSupply;
@@ -19,11 +21,14 @@ using Content.Shared.Interaction.Components;
 using Content.Shared.Gravity;
 using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Maps;
+using Content.Shared.Mech.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Movement.Components;
 using Content.Shared.Paper;
 using Content.Shared.Physics;
 using Content.Shared.Storage.Components;
+using Content.Shared.Vehicle.Systems;
 using NUnit.Framework;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
@@ -47,8 +52,8 @@ public sealed class CentCommSupplyTest
 {
     private const string MapProto = "Dev";
     private const string MedicalBundleProduct = "FishCentCommSupplyClothingBackpackDuffelNanotrasenMedicalBundleFilled";
-    private static readonly EntProtoId ConsolePrototype = "FishCentCommSupplyConsole";
-    private static readonly EntProtoId DeliveryCratePrototype = "FishCrateCentCommSupply";
+    private static readonly EntProtoId _consolePrototype = "FishCentCommSupplyConsole";
+    private static readonly EntProtoId _deliveryCratePrototype = "FishCrateCentCommSupply";
 
     [Test]
     public async Task QuantityButtonsUseNewProductLimitImmediately()
@@ -80,7 +85,7 @@ public sealed class CentCommSupplyTest
 
         await server.WaitPost(() =>
         {
-            var console = server.ProtoMan.Index(ConsolePrototype);
+            var console = server.ProtoMan.Index(_consolePrototype);
             if (!console.TryComp<CentCommSupplyConsoleComponent>(out var consoleComponent, entMan.ComponentFactory))
                 throw new InvalidOperationException("The CentComm supply console component is missing");
 
@@ -186,7 +191,7 @@ public sealed class CentCommSupplyTest
             while (existingQuery.MoveNext(out var uid, out _))
             {
                 var meta = entMan.GetComponent<MetaDataComponent>(uid);
-                if (meta.EntityPrototype?.ID == DeliveryCratePrototype.Id)
+                if (meta.EntityPrototype?.ID == _deliveryCratePrototype.Id)
                     existingCrates.Add(uid);
             }
         });
@@ -228,9 +233,9 @@ public sealed class CentCommSupplyTest
             Assert.That(pets, Has.Count.EqualTo(5));
             foreach (var pet in pets)
                 Assert.That(entMan.GetComponent<MetaDataComponent>(pet).EntityPaused, Is.True);
+            Assert.That(entMan.GetComponent<MetaDataComponent>(mech).EntityPaused, Is.True);
+            Assert.That(server.System<GravitySystem>().IsWeightless(mech), Is.True);
         });
-        // Воспроизводим состояние, закэшированное до смены карты родительского ящика.
-        await server.WaitPost(() => entMan.GetComponent<GravityAffectedComponent>(mech).Weightless = true);
         await server.WaitRunTicks(SecondsToTicks(server.Timing.TickPeriod, 1) + 1);
 
         await server.WaitAssertion(() =>
@@ -242,7 +247,7 @@ public sealed class CentCommSupplyTest
             while (query.MoveNext(out var uid, out _))
             {
                 var meta = entMan.GetComponent<MetaDataComponent>(uid);
-                if (meta.EntityPrototype?.ID == DeliveryCratePrototype.Id && !existingCrates.Contains(uid))
+                if (meta.EntityPrototype?.ID == _deliveryCratePrototype.Id && !existingCrates.Contains(uid))
                     crates.Add(uid);
             }
 
@@ -302,11 +307,35 @@ public sealed class CentCommSupplyTest
             Assert.That(entMan.HasComponent<InsideEntityStorageComponent>(mech), Is.False);
             Assert.That(entMan.GetComponent<PhysicsComponent>(mech).CanCollide, Is.True);
             Assert.That(server.System<GravitySystem>().IsWeightless(mech), Is.False);
+            var mechComponent = entMan.GetComponent<MechComponent>(mech);
+            Assert.That(mechComponent.BatterySlot.ContainedEntity, Is.Not.Null,
+                "The delivered Paddy must have its factory-installed power cell.");
+            Assert.That(mechComponent.Energy > 0, Is.True);
             foreach (var pet in pets)
             {
                 Assert.That(entMan.HasComponent<InsideEntityStorageComponent>(pet), Is.False);
                 Assert.That(entMan.GetComponent<MobStateComponent>(pet).CurrentState, Is.EqualTo(MobState.Alive));
             }
+        });
+
+        Vector2 start = default;
+        await server.WaitPost(() =>
+        {
+            var transform = server.System<SharedTransformSystem>();
+            var coordinates = entMan.GetComponent<TransformComponent>(mech).Coordinates;
+            var pilot = entMan.SpawnEntity("MobHuman", coordinates);
+            Assert.That(server.System<VehicleSystem>().TryEnter(mech, pilot), Is.True);
+            var mover = entMan.GetComponent<InputMoverComponent>(mech);
+            Assert.That(mover.CanMove, Is.True);
+            start = transform.GetWorldPosition(mech);
+            server.System<MoverController>().SetVelocityDirection((mech, mover), Direction.North, 0, true);
+        });
+        await server.WaitRunTicks(10);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(Vector2.Distance(server.System<SharedTransformSystem>().GetWorldPosition(mech), start),
+                Is.GreaterThan(0.05f), "The unpacked Paddy must move with a pilot on board.");
+            Assert.That(server.System<GravitySystem>().IsWeightless(mech), Is.False);
         });
 
         await server.WaitPost(() =>
@@ -1393,7 +1422,7 @@ public sealed class CentCommSupplyTest
         await server.WaitPost(() =>
         {
             ClearObstacles();
-            consoleEnt.Comp.CratePrototype = DeliveryCratePrototype;
+            consoleEnt.Comp.CratePrototype = _deliveryCratePrototype;
 
             if (entMan.EntityExists(actor))
                 entMan.DeleteEntity(actor);
@@ -1528,8 +1557,23 @@ public sealed class CentCommSupplyTest
             Assert.That(GetPrivateField<NetEntity?>(requesterWindow, "_selectedStation"), Is.EqualTo(firstNet));
             var products = GetPrivateField<Dictionary<string, CentCommSupplyProductEntry>>(requesterWindow, "_productsById");
             Assert.That(products["FishCentCommSupplyWeaponLauncherRL5"].Name, Is.EqualTo("РЛ-5"));
-            var icons = GetPrivateField<Dictionary<string, List<Texture>>>(requesterWindow, "_productIcons");
-            Assert.That(icons["FishCentCommSupplyLockerDetectiveFilled"].Count, Is.GreaterThan(1));
+            var preview = requesterWindow.FindControl<BoxContainer>("Products").Children
+                .OfType<CentCommSupplyProductRow>()
+                .SelectMany(row => row.Icon.Children.OfType<EntityPrototypeView>())
+                .Single();
+            Assert.That(preview.Entity, Is.Not.Null);
+            var previewEntity = preview.Entity.Value;
+            Assert.That(client.EntMan.GetComponent<MetaDataComponent>(previewEntity.Owner).EntityPrototype?.ID,
+                Is.EqualTo("LockerDetectiveFilled"));
+
+            var spriteSystem = client.System<Robust.Client.GameObjects.SpriteSystem>();
+            Assert.That(spriteSystem.TryGetLayer((previewEntity.Owner, previewEntity.Comp1),
+                StorageVisualLayers.Base, out var cabinet, true), Is.True);
+            Assert.That(cabinet!.State, Is.EqualTo(new RSI.StateId("cabinet")));
+            Assert.That(spriteSystem.TryGetLayer((previewEntity.Owner, previewEntity.Comp1),
+                StorageVisualLayers.Door, out var door, true), Is.True);
+            Assert.That(door!.State, Is.EqualTo(new RSI.StateId("cabinet_door")));
+            Assert.That(door.Visible, Is.True);
         });
         await observer.WaitAssertion(() =>
         {
@@ -1746,7 +1790,7 @@ public sealed class CentCommSupplyTest
         while (query.MoveNext(out var uid, out _))
         {
             var meta = entMan.GetComponent<MetaDataComponent>(uid);
-            if (meta.EntityPrototype?.ID == DeliveryCratePrototype.Id && !existing.Contains(uid))
+            if (meta.EntityPrototype?.ID == _deliveryCratePrototype.Id && !existing.Contains(uid))
                 crates.Add(uid);
         }
 

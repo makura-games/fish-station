@@ -222,11 +222,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
                 },
             };
 
-            var icon = GetIcon(product.PrototypeId);
-            if (icon != null)
-                row.Icon.Textures = icon;
-            else
-                row.Icon.Visible = false;
+            PopulateIcon(row.Icon, product.PrototypeId);
 
             var selectedProduct = product;
             row.MainButton.OnPressed += _ => OpenOrderMenu(selectedProduct);
@@ -245,11 +241,7 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
             var row = new CentCommSupplyOrderRow(product, quantity);
 
-            var icon = GetIcon(product.PrototypeId);
-            if (icon != null)
-                row.Icon.Textures = icon;
-            else
-                row.Icon.Visible = false;
+            PopulateIcon(row.Icon, product.PrototypeId);
 
             row.Remove.OnPressed += _ => RemoveProduct(productId);
             Order.AddChild(row);
@@ -475,19 +467,38 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
             entry.MaxQuantity);
     }
 
-    private List<Texture>? GetIcon(string prototypeId)
+    private void PopulateIcon(PanelContainer container, string prototypeId)
     {
-        if (_productIcons.TryGetValue(prototypeId, out var cached))
+        if (!_prototype.TryIndex<CentCommSupplyProductPrototype>(prototypeId, out var prototype))
+        {
+            container.Visible = false;
+            return;
+        }
+
+        if (prototype.Icon == null && prototype.UseEntityPreview && prototype.Contents.Count > 0)
+        {
+            var preview = new EntityPrototypeView(prototype.Contents[0].Id, _entity);
+            container.AddChild(preview);
+            return;
+        }
+
+        var textures = GetIcon(prototype);
+        if (textures is { Count: > 0 })
+            container.AddChild(new LayeredTextureRect { Textures = textures, Stretch = TextureRect.StretchMode.KeepAspectCentered });
+        else
+            container.Visible = false;
+    }
+
+    private List<Texture>? GetIcon(CentCommSupplyProductPrototype prototype)
+    {
+        if (_productIcons.TryGetValue(prototype.ID, out var cached))
             return cached;
 
-        if (!_prototype.TryIndex<CentCommSupplyProductPrototype>(prototypeId, out var prototype))
-            return null;
-
         if (prototype.Icon is { } icon)
-            return _productIcons[prototypeId] = new List<Texture> { _sprite.Frame0(icon) };
+            return _productIcons[prototype.ID] = new List<Texture> { _sprite.Frame0(icon) };
 
         return prototype.Contents.Count > 0 && _prototype.TryIndex(prototype.Contents[0].Id, out var entity)
-            ? _productIcons[prototypeId] = _sprite.GetPrototypeTextures(entity).Select(layer => layer.Default).ToList()
+            ? _productIcons[prototype.ID] = _sprite.GetPrototypeTextures(entity).Select(layer => layer.Default).ToList()
             : null;
     }
 }

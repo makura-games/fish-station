@@ -10,11 +10,7 @@
         <BoxContainer Orientation="Horizontal"
                       HorizontalExpand="True"
                       Margin="4 0">
-            <LayeredTextureRect Name="Icon"
-                         Access="Public"
-                         MinSize="32 32"
-                         Stretch="KeepAspectCentered"
-                         RectClipContent="True"/>
+            <PanelContainer Name="Icon" Access="Public" MinSize="32 32" RectClipContent="True"/>
 
             <Label Name="ProductName"
                    Access="Public"

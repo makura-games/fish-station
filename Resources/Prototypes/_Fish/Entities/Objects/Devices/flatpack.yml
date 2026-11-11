@@ -80,6 +80,22 @@
 
 - type: entity
   parent: BaseFlatpack
+  id: FishVendingMachineChemicalsNanotrasenFlatpack
+  name: Nanotrasen ChemVend flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a Nanotrasen ChemVend vending machine.
+  components:
+  - type: Flatpack
+    entity: VendingMachineChemicalsNanotrasen
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#536EB5"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
   id: FishVendingMachineBoozeFlatpack
   name: Booze-O-Mat flatpack
   suffix: Fish
