@@ -10,6 +10,9 @@ public sealed partial class ChemRestoreNeuroEntityEffectSystem
 {
     [Dependency] private MentalHealthExposureSystem _exposure = default!;
 
+    /// <summary>
+    /// Восстанавливает нейроны с учётом накопленной толерантности.
+    /// </summary>
     protected override void Effect(Entity<NeuroComponent> entity, ref EntityEffectEvent<ChemRestoreNeuro> args)
     {
         var maximum = entity.Comp.Max - entity.Comp.PermanentLoss;

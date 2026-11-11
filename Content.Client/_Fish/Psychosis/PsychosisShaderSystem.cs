@@ -31,6 +31,9 @@ public sealed partial class PsychosisShaderSystem : EntitySystem
         _overlayManager.RemoveOverlay(_overlay);
     }
 
+    /// <summary>
+    /// Передаёт уровень психоза локального игрока экранному overlay.
+    /// </summary>
     private void OnPsychosisUpdate(PsychosisUpdateEvent ev)
     {
         if (GetEntity(ev.Uid) != _player.LocalSession?.AttachedEntity)

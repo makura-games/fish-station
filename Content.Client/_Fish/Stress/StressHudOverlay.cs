@@ -16,6 +16,9 @@ public sealed class StressHudOverlay : Overlay
         _stress = value;
     }
 
+    /// <summary>
+    /// Отображает шкалу стресса в нижней части игрового экрана.
+    /// </summary>
     protected override void Draw(in OverlayDrawArgs args)
     {
         if (_stress == null)

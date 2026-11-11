@@ -30,6 +30,9 @@ public sealed partial class FishHealthAnalyzerControl
         return HealthAnalyzerMedicationSafety.FindThreshold(reagent.ID, metabolism.Effects);
     }
 
+    /// <summary>
+    /// Добавляет предупреждения о превышении или приближении к порогу дозы реагента.
+    /// </summary>
     private void DrawMedicationAlerts()
     {
         foreach (var (id, amount) in _medicationAmounts)
@@ -52,6 +55,9 @@ public sealed partial class FishHealthAnalyzerControl
         }
     }
 
+    /// <summary>
+    /// Создаёт форматированную строку предупреждения с учётом режима сканирования.
+    /// </summary>
     private RichTextLabel CreateMedicationText(string text, string style = StyleClass.LabelWeak)
     {
         var label = new RichTextLabel
@@ -66,6 +72,9 @@ public sealed partial class FishHealthAnalyzerControl
         return label;
     }
 
+    /// <summary>
+    /// Добавляет к строке реагента сведения о распознанном пороге дозировки.
+    /// </summary>
     private void AddMedicationSafety(BoxContainer container, ReagentPrototype reagent, FixedPoint2 amount)
     {
         var threshold = GetMedicationThreshold(reagent);
@@ -93,6 +102,9 @@ public sealed partial class FishHealthAnalyzerControl
         container.AddChild(label);
     }
 
+    /// <summary>
+    /// Оборачивает строку реагента и добавляет к ней сведения о безопасности дозы.
+    /// </summary>
     private void AddReagentSafetyRow(BoxContainer row, ReagentPrototype reagent, FixedPoint2 amount)
     {
         var entry = new BoxContainer { Orientation = LayoutOrientation.Vertical, SeparationOverride = 2 };

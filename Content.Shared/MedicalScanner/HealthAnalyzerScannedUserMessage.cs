@@ -51,8 +51,8 @@ public struct HealthAnalyzerUiState
         bool? unrevivable,
         float? hungerLevel = null,
         float? thirstLevel = null,
-        List<ReagentQuantity>? reagents = null,
-        float? neuroLevel = null)
+        List<ReagentQuantity>? reagents = null, // Fish-edit: сохраняем совместимость с показанием реагентов
+        float? neuroLevel = null) // Fish-edit: добавляем уровень нейронов в данные сканера
     {
         TargetEntity = targetEntity;
         Temperature = temperature;

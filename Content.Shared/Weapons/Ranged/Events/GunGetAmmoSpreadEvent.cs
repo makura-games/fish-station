@@ -6,5 +6,5 @@
 /// <param name="Spread">The spread of the ammo, can be changed by handlers.</param>
 /// <param name="Shooter">Сущность, выпустившая выстрел, если она известна.</param>
 [ByRefEvent]
-// FIsh edit: передаём стрелка для стрессового разброса.
+// Fish-edit: передаём стрелка для стрессового разброса.
 public record struct GunGetAmmoSpreadEvent(Angle Spread, EntityUid? Shooter);

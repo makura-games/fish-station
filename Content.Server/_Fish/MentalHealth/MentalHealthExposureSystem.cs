@@ -16,6 +16,9 @@ public sealed partial class MentalHealthExposureSystem : EntitySystem
 
     [Dependency] private IGameTiming _timing = default!;
 
+    /// <summary>
+    /// Записывает дозу вещества и возвращает множитель эффекта с учётом толерантности.
+    /// </summary>
     public float RecordDose(EntityUid uid, string substanceId, float addictionPerDose)
     {
         var component = EnsureComp<MentalHealthExposureComponent>(uid);
@@ -52,6 +55,9 @@ public sealed partial class MentalHealthExposureSystem : EntitySystem
         return 1f - state.TolerancePenalty;
     }
 
+    /// <summary>
+    /// Уменьшает накопленную зависимость от всех веществ у сущности.
+    /// </summary>
     public void ReduceAddiction(EntityUid uid, float amount)
     {
         if (amount <= 0f || !TryComp<MentalHealthExposureComponent>(uid, out var exposure))
@@ -65,6 +71,9 @@ public sealed partial class MentalHealthExposureSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Восстанавливает толерантность и зависимость, применяя симптомы отмены.
+    /// </summary>
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -112,6 +121,9 @@ public sealed partial class MentalHealthExposureSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Постепенно возвращает штраф толерантности к нейтральному значению.
+    /// </summary>
     private static void RecoverTolerance(MentalHealthSubstanceState state, TimeSpan now)
     {
         var intervals = (int) ((now - state.LastToleranceDecay).Ticks / ToleranceRecoveryInterval.Ticks);
@@ -124,6 +136,9 @@ public sealed partial class MentalHealthExposureSystem : EntitySystem
         state.LastToleranceDecay += TimeSpan.FromTicks(ToleranceRecoveryInterval.Ticks * intervals);
     }
 
+    /// <summary>
+    /// Снижает накопленную зависимость после прекращения приёма вещества.
+    /// </summary>
     private static void RecoverAddiction(MentalHealthSubstanceState state, TimeSpan now)
     {
         if (now - state.LastDose < DoseInterval)

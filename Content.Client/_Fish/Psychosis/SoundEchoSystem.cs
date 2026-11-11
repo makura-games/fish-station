@@ -24,23 +24,31 @@ public sealed partial class SoundEchoSystem : EntitySystem
         base.Initialize();
 
         SubscribeNetworkEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
-        SubscribeLocalEvent<AudioComponent, ComponentStartup>(OnAudioStartup);
+        SubscribeLocalEvent<AudioComponent, ComponentInit>(OnAudioInit);
     }
 
+    /// <summary>
+    /// Сохраняет текущий уровень психоза локального игрока для звуковых эффектов.
+    /// </summary>
     private void OnPsychosisUpdate(PsychosisUpdateEvent ev)
     {
         if (GetEntity(ev.Uid) == _player.LocalSession?.AttachedEntity)
             _currentPsychosisLevel = ev.Level;
     }
 
-    private void OnAudioStartup(EntityUid uid, AudioComponent comp, ComponentStartup args)
+    /// <summary>
+    /// Создаёт затухающие повторы звука при высоком уровне психоза.
+    /// </summary>
+    private void OnAudioInit(Entity<AudioComponent> ent, ref ComponentInit args)
     {
         if (_currentPsychosisLevel <= 66f || _creatingEcho)
             return;
 
-        if (HasComp<EchoSoundComponent>(uid))
+        if (HasComp<EchoSoundComponent>(ent))
             return;
 
+        var uid = ent.Owner;
+        var fileName = ent.Comp.FileName;
         for (int i = 1; i <= 3; i++)
         {
             float delay = 0.2f * i;
@@ -53,7 +61,7 @@ public sealed partial class SoundEchoSystem : EntitySystem
                 _creatingEcho = true;
                 try
                 {
-                    var sound = _audio.ResolveSound(new SoundPathSpecifier(comp.FileName));
+                    var sound = _audio.ResolveSound(new SoundPathSpecifier(fileName));
                     var echo = _audio.PlayEntity(sound, Filter.Local(), uid, false, echoParams);
                     if (echo is { } echoData)
                         EnsureComp<EchoSoundComponent>(echoData.Entity);

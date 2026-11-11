@@ -18,6 +18,9 @@ public sealed partial class StressTremorSystem : EntitySystem
 
     private float _accumulator;
 
+    /// <summary>
+    /// Обновляет эффекты дрожи для сущностей с высоким стрессом.
+    /// </summary>
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -38,6 +41,9 @@ public sealed partial class StressTremorSystem : EntitySystem
             _accumulator = 0f;
     }
 
+    /// <summary>
+    /// Применяет небольшое случайное смещение к физической скорости сущности.
+    /// </summary>
     private void ApplyTremorImpulse(EntityUid uid, float intensity, PhysicsComponent physics)
     {
         if (physics.BodyType != BodyType.Dynamic)

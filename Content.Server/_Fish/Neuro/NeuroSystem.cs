@@ -11,7 +11,6 @@ using Content.Shared.CombatMode;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Drunk;
-using Content.Shared.Interaction.Events;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Stunnable;
 using Content.Shared.StatusEffectNew;
@@ -29,7 +28,7 @@ public sealed partial class NeuroSystem : EntitySystem
 {
     private static readonly ProtoId<DamageTypePrototype> AsphyxiationDamageType = "Asphyxiation";
     private static readonly ProtoId<DamageTypePrototype> PoisonDamageType = "Poison";
-    private static readonly EntProtoId CriticalSlowdown = "NeuroCriticalSlowdownStatusEffect";
+    private static readonly EntProtoId CriticalSlowdown = "FishNeuroCriticalSlowdownStatusEffect";
     private static readonly EntProtoId ModerateSlowdown = "FishNeuroModerateSlowdownStatusEffect";
     private static readonly string RussianVowels = "аеёиоуыэюяАЕЁИОУЫЭЮЯ";
     private static readonly char[] ReplacementRussianVowels = "аеёиоуыэюя".ToCharArray();
@@ -52,39 +51,36 @@ public sealed partial class NeuroSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<EntitySpokeEvent>(OnEntitySpoke);
-        SubscribeLocalEvent<ActorComponent, TrySendChatMessageEvent>(OnTrySendChatMessage);
-        SubscribeLocalEvent<NeuroComponent, InteractionAttemptEvent>(OnInteractionAttempt);
+        SubscribeLocalEvent<NeuroComponent, TrySendChatMessageEvent>(OnTrySendChatMessage);
         SubscribeLocalEvent<NeuroComponent, DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<NeuroComponent, ComponentShutdown>(OnNeuroShutdown);
     }
 
-    private void OnTrySendChatMessage(Entity<ActorComponent> ent, ref TrySendChatMessageEvent args)
+    /// <summary>
+    /// Ограничивает отправку и искажает речь в зависимости от уровня нейронов.
+    /// </summary>
+    private void OnTrySendChatMessage(Entity<NeuroComponent> ent, ref TrySendChatMessageEvent args)
     {
-        if (args.Cancelled ||
-            args.IcChatType == null ||
-            !TryComp<NeuroComponent>(ent.Owner, out var neuro))
+        if (args.Cancelled || args.IcChatType == null)
             return;
 
-        if (neuro.Current < MentalHealthConstants.NeuroCritical)
+        if (ent.Comp.Current < MentalHealthConstants.NeuroCritical)
         {
             args.Cancelled = true;
         }
-        else if (neuro.Current < MentalHealthConstants.NeuroModerate)
+        else if (ent.Comp.Current < MentalHealthConstants.NeuroModerate)
         {
             args.Message = DistortSeverely(args.Message);
         }
-        else if (neuro.Current < MentalHealthConstants.NeuroMild)
+        else if (ent.Comp.Current < MentalHealthConstants.NeuroMild)
         {
             args.Message = DistortMildly(args.Message);
         }
     }
 
-    private void OnInteractionAttempt(Entity<NeuroComponent> ent, ref InteractionAttemptEvent args)
-    {
-        if (ent.Comp.Current < MentalHealthConstants.NeuroCritical)
-            args.Cancelled = true;
-    }
-
+    /// <summary>
+    /// Преобразует прирост удушающего и токсического урона в потерю нейронов.
+    /// </summary>
     private void OnDamageChanged(Entity<NeuroComponent> ent, ref DamageChangedEvent args)
     {
         if (!args.DamageIncreased || args.DamageDelta == null)
@@ -104,6 +100,9 @@ public sealed partial class NeuroSystem : EntitySystem
             RaiseNetworkEvent(new NeuroAlertEvent("fish-neuro-muddling"), Filter.Entities(ent));
     }
 
+    /// <summary>
+    /// Снижает уровень нейронов за запрещённые слова в сообщении.
+    /// </summary>
     private void OnEntitySpoke(EntitySpokeEvent ev)
     {
         if (!TryComp<NeuroComponent>(ev.Source, out var neuro))
@@ -131,6 +130,9 @@ public sealed partial class NeuroSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Восстанавливает нейроны и поддерживает эффекты, зависящие от их уровня.
+    /// </summary>
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -161,6 +163,9 @@ public sealed partial class NeuroSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Обновляет критическое состояние и временные эффекты по уровню нейронов.
+    /// </summary>
     private void ApplyNeuroEffects(EntityUid uid, NeuroComponent neuro)
     {
         if (neuro.Current < MentalHealthConstants.NeuroCritical)
@@ -208,6 +213,9 @@ public sealed partial class NeuroSystem : EntitySystem
         UpdateStumble(uid, neuro);
     }
 
+    /// <summary>
+    /// Применяет спотыкание с интервалом, соответствующим тяжести потери нейронов.
+    /// </summary>
     private void UpdateStumble(EntityUid uid, NeuroComponent neuro)
     {
         if (neuro.Current >= MentalHealthConstants.NeuroMild)
@@ -236,6 +244,9 @@ public sealed partial class NeuroSystem : EntitySystem
         _nextStumble[uid] = now + TimeSpan.FromSeconds(_random.NextFloat(minimum, maximum));
     }
 
+    /// <summary>
+    /// Отправляет повторное предупреждение при критически низком уровне нейронов.
+    /// </summary>
     private void UpdateCriticalAlert(EntityUid uid, NeuroComponent neuro)
     {
         if (neuro.Current >= MentalHealthConstants.NeuroCritical)
@@ -251,12 +262,15 @@ public sealed partial class NeuroSystem : EntitySystem
         RaiseNetworkEvent(new NeuroAlertEvent("fish-neuro-critical"), Filter.Entities(uid));
     }
 
-    private void OnNeuroShutdown(EntityUid uid, NeuroComponent component, ComponentShutdown args)
+    private void OnNeuroShutdown(Entity<NeuroComponent> ent, ref ComponentShutdown args)
     {
-        _criticalAlertCooldowns.Remove(uid);
-        _nextStumble.Remove(uid);
+        _criticalAlertCooldowns.Remove(ent);
+        _nextStumble.Remove(ent);
     }
 
+    /// <summary>
+    /// Подсчитывает вхождения слова, ограниченные границами слов и без учёта регистра.
+    /// </summary>
     private static int CountOccurrences(string message, string word)
     {
         if (string.IsNullOrWhiteSpace(word))
@@ -283,6 +297,9 @@ public sealed partial class NeuroSystem : EntitySystem
         return count;
     }
 
+    /// <summary>
+    /// Добавляет редкие эмоциональные символы к сообщению при лёгкой потере нейронов.
+    /// </summary>
     private string DistortMildly(string message)
     {
         var result = new StringBuilder(message.Length + 8);
@@ -296,6 +313,9 @@ public sealed partial class NeuroSystem : EntitySystem
         return result.ToString();
     }
 
+    /// <summary>
+    /// Случайно заменяет гласные в сообщении при критической потере нейронов.
+    /// </summary>
     private string DistortSeverely(string message)
     {
         var result = message.ToCharArray();

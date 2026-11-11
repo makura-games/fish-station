@@ -78,6 +78,9 @@ public static class HealthAnalyzerMedicationSafety
         return amount * 5 >= threshold.Value * 4 ? MedicationRisk.NearThreshold : MedicationRisk.None;
     }
 
+    /// <summary>
+    /// Определяет, относится ли эффект к распознаваемым вредным последствиям для пациента.
+    /// </summary>
     private static bool IsHarmful(EntityEffect effect)
     {
         return effect switch

@@ -53,6 +53,9 @@ public sealed partial class StressSystem : EntitySystem
         SubscribeLocalEvent<GunComponent, GunGetAmmoSpreadEvent>(OnGunGetAmmoSpread);
     }
 
+    /// <summary>
+    /// Увеличивает разброс оружия стрелка с высоким уровнем стресса.
+    /// </summary>
     private void OnGunGetAmmoSpread(Entity<GunComponent> ent, ref GunGetAmmoSpreadEvent args)
     {
         if (args.Shooter is not { } shooter ||
@@ -63,19 +66,29 @@ public sealed partial class StressSystem : EntitySystem
         args.Spread *= 1.35f;
     }
 
-    private void OnStartup(EntityUid uid, StressComponent component, ComponentStartup args)
+    /// <summary>
+    /// Применяет сопротивления стрессу, заданные для текущей роли сущности.
+    /// </summary>
+    private void OnStartup(Entity<StressComponent> ent, ref ComponentStartup args)
     {
-        ApplyRoleResists(uid, component);
+        ApplyRoleResists(ent, ent.Comp);
     }
 
+    /// <summary>
+    /// Применяет сопротивления стрессу после выбора роли игрока.
+    /// </summary>
     private void OnPlayerSpawn(PlayerSpawnCompleteEvent ev)
     {
         if (TryComp<StressComponent>(ev.Mob, out var stress))
             ApplyRoleResists(ev.Mob, stress, ev.JobId);
     }
 
-    private void OnShutdown(EntityUid uid, StressComponent component, ComponentShutdown args)
+    /// <summary>
+    /// Удаляет временные данные стресса после снятия компонента.
+    /// </summary>
+    private void OnShutdown(Entity<StressComponent> ent, ref ComponentShutdown args)
     {
+        var uid = ent.Owner;
         _seenCorpses.Remove(uid);
         _seenBloodPuddles.Remove(uid);
         _seenBloodPuddleCounts.Remove(uid);
@@ -86,6 +99,9 @@ public sealed partial class StressSystem : EntitySystem
         _vomitCooldowns.Remove(uid);
     }
 
+    /// <summary>
+    /// Назначает сопротивления стрессорам на основе роли сущности.
+    /// </summary>
     private void ApplyRoleResists(EntityUid entity, StressComponent stress, string? jobId = null)
     {
         var roleId = jobId;
@@ -109,6 +125,9 @@ public sealed partial class StressSystem : EntitySystem
         Dirty(entity, stress);
     }
 
+    /// <summary>
+    /// Обновляет стресс от травмирующих источников и враждебных существ поблизости.
+    /// </summary>
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -226,6 +245,9 @@ public sealed partial class StressSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Возвращает сохранённый набор наблюдавшихся сущностей, создавая его при необходимости.
+    /// </summary>
     private static HashSet<EntityUid> GetSeenSet(
         Dictionary<EntityUid, HashSet<EntityUid>> seenByEntity,
         EntityUid uid)
@@ -238,6 +260,9 @@ public sealed partial class StressSystem : EntitySystem
         return seen;
     }
 
+    /// <summary>
+    /// Увеличивает адаптацию к крови и применяет связанную постоянную потерю нейронов.
+    /// </summary>
     private void AddBloodAdaptation(EntityUid uid, StressComponent stress, float amount)
     {
         var totalAdaptation = stress.AdaptationBlood + stress.AdaptationEnemies;
@@ -250,6 +275,9 @@ public sealed partial class StressSystem : EntitySystem
         ApplyAdaptationNeuroLoss(uid, stress, adaptation);
     }
 
+    /// <summary>
+    /// Обрабатывает рвоту при продолжительном высоком стрессе от травмирующих источников.
+    /// </summary>
     private void UpdateHighStressEffects(EntityUid uid, float stress, TimeSpan now, bool sawTraumaSource)
     {
         if (stress <= MentalHealthConstants.StressThresholdHigh || !sawTraumaSource)
@@ -279,6 +307,9 @@ public sealed partial class StressSystem : EntitySystem
         return baseStress * (1f - totalResist / 100f);
     }
 
+    /// <summary>
+    /// Переносит часть адаптации в постоянную потерю нейронов, не превышая их максимум.
+    /// </summary>
     private void ApplyAdaptationNeuroLoss(EntityUid uid, StressComponent stress, float adaptation)
     {
         if (adaptation <= 0f || !TryComp<NeuroComponent>(uid, out var neuro))

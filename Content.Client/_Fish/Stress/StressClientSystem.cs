@@ -42,6 +42,9 @@ public sealed partial class StressClientSystem : EntitySystem
         _overlayManager.RemoveOverlay(_hudOverlay);
     }
 
+    /// <summary>
+    /// Обновляет визуальное состояние стресса и показывает предупреждение игроку.
+    /// </summary>
     private void OnStressEffects(StressEffectsEvent ev)
     {
         if (GetEntity(ev.Uid) != _player.LocalSession?.AttachedEntity)
@@ -53,6 +56,9 @@ public sealed partial class StressClientSystem : EntitySystem
             _popup.PopupClient(Loc.GetString("fish-stress-critical"), entity, entity);
     }
 
+    /// <summary>
+    /// Обновляет шкалу стресса и интенсивность визуальных и камерных эффектов.
+    /// </summary>
     public override void FrameUpdate(float frameTime)
     {
         base.FrameUpdate(frameTime);
@@ -73,6 +79,9 @@ public sealed partial class StressClientSystem : EntitySystem
         UpdateCameraShake(frameTime, target);
     }
 
+    /// <summary>
+    /// Применяет дрожь камеры, сохраняя посторонние смещения её позиции.
+    /// </summary>
     private void UpdateCameraShake(float frameTime, float intensity)
     {
         var eye = _eyeManager.CurrentEye;
@@ -98,6 +107,9 @@ public sealed partial class StressClientSystem : EntitySystem
         _appliedCameraShake = shake;
     }
 
+    /// <summary>
+    /// Убирает только смещение, добавленное эффектом стресса.
+    /// </summary>
     private void RestoreCameraShake()
     {
         if (_shakeEye == null)

@@ -48,6 +48,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         SubscribeNetworkEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
     }
 
+    /// <summary>
+    /// Удаляет созданные клиентом сущности галлюцинаций при завершении системы.
+    /// </summary>
     public override void Shutdown()
     {
         base.Shutdown();
@@ -56,6 +59,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         _hallucinations.Clear();
     }
 
+    /// <summary>
+    /// Сохраняет полученные от сервера списки прототипов и звуков для галлюцинаций.
+    /// </summary>
     private void OnConfig(PsychosisConfigEvent ev)
     {
         _mobPrototypes = ev.MobPrototypes;
@@ -64,6 +70,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         _sounds = ev.Sounds;
     }
 
+    /// <summary>
+    /// Обновляет уровень психоза, только если событие относится к локальному игроку.
+    /// </summary>
     private void OnPsychosisUpdate(PsychosisUpdateEvent ev)
     {
         if (GetEntity(ev.Uid) != _player.LocalSession?.AttachedEntity)
@@ -71,6 +80,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         _currentPsychosisLevel = ev.Level;
     }
 
+    /// <summary>
+    /// Обновляет время жизни галлюцинаций и создаёт новые визуальные и звуковые эффекты.
+    /// </summary>
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -152,6 +164,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Создаёт случайную визуальную галлюцинацию в пределах видимой области игрока.
+    /// </summary>
     private void TryCreateVisualHallucination(EntityUid player)
     {
 		// Выбор категории
@@ -223,6 +238,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
 
     }
 
+    /// <summary>
+    /// Проигрывает случайный звук галлюцинации локальному игроку.
+    /// </summary>
     private void PlayRandomSound(EntityUid player)
     {
         if (_sounds.Count == 0)
@@ -232,6 +250,9 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         _audio.PlayGlobal(soundPath, Filter.Local(), false, AudioParams.Default.WithVolume(-6f));
     }
 
+    /// <summary>
+    /// Сокращает оставшееся время жизни галлюцинации для её плавного исчезновения.
+    /// </summary>
     private void StartFadeAndDelete(EntityUid uid, HallucinationComponent comp, TimeSpan currentTime)
     {
         // Устанавливаем оставшееся время жизни равным FadeDuration

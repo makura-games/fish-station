@@ -49,6 +49,8 @@ public sealed partial class GunSystem : SharedGunSystem
         args.Price += price * ent.Comp.UnspawnedCount;
     }
 
+    // Fish-edit: документируем изменённый обработчик выстрела.
+    /// <inheritdoc/>
     public override void Shoot(Entity<GunComponent> gun, List<(EntityUid? Entity, IShootable Shootable)> ammo,
         EntityCoordinates fromCoordinates, EntityCoordinates toCoordinates, out bool userImpulse, EntityUid? user = null, bool throwItems = false)
     {

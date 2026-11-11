@@ -33,6 +33,9 @@ public sealed partial class NeuroEffectsSystem : EntitySystem
         _overlayManager.RemoveOverlay(_overlay);
     }
 
+    /// <summary>
+    /// Показывает локальному игроку предупреждение о состоянии нейронов.
+    /// </summary>
     private void OnNeuroAlert(NeuroAlertEvent ev)
     {
         var entity = _player.LocalSession?.AttachedEntity;
@@ -42,6 +45,9 @@ public sealed partial class NeuroEffectsSystem : EntitySystem
         _popup.PopupClient(Loc.GetString(ev.Message), entity.Value, entity.Value);
     }
 
+    /// <summary>
+    /// Рассчитывает интенсивность нейронного визуального эффекта по синхронизированному значению.
+    /// </summary>
     public override void FrameUpdate(float frameTime)
     {
         base.FrameUpdate(frameTime);

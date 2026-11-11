@@ -1,6 +1,7 @@
 - type: entity
   parent: StatusEffectSlowdown
-  id: NeuroCriticalSlowdownStatusEffect
+  id: FishNeuroCriticalSlowdownStatusEffect
+  suffix: Fish
   name: neuro critical slowdown
 
 - type: entity

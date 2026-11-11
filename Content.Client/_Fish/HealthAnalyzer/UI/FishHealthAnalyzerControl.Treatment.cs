@@ -66,6 +66,9 @@ public sealed partial class FishHealthAnalyzerControl
         ["Cellular"] = "Doxarubixadone",
     };
 
+    /// <summary>
+    /// Формирует рекомендации по лечению на основе доступных показаний анализатора.
+    /// </summary>
     private void DrawTreatmentAssistant(
         EntityUid target,
         MobState mobState,
@@ -345,6 +348,9 @@ public sealed partial class FishHealthAnalyzerControl
         AddTreatmentText("health-analyzer-window-treatment-warning", "LabelSubText");
     }
 
+    /// <summary>
+    /// Добавляет препарат для конкретного типа урона, если такой урон обнаружен.
+    /// </summary>
     private void AddDeadDamageTreatment(
         List<TreatmentRecommendation> recommendations,
         HashSet<ProtoId<ReagentPrototype>> addedReagents,
@@ -362,6 +368,9 @@ public sealed partial class FishHealthAnalyzerControl
             _prototypes.Index<DamageTypePrototype>(damageType).LocalizedName);
     }
 
+    /// <summary>
+    /// Показывает предупреждение о специализированном лечении обнаруженного типа урона.
+    /// </summary>
     private void AddSpecializedTreatmentNotice(
         IReadOnlyDictionary<ProtoId<DamageTypePrototype>, FixedPoint2> damageTypes,
         ProtoId<DamageTypePrototype> damageType)
@@ -403,6 +412,9 @@ public sealed partial class FishHealthAnalyzerControl
         }
     }
 
+    /// <summary>
+    /// Добавляет рекомендацию или объединяет пояснение с уже добавленной рекомендацией того же препарата.
+    /// </summary>
     internal static void AddRecommendation(
         List<TreatmentRecommendation> recommendations,
         HashSet<ProtoId<ReagentPrototype>> addedReagents,
@@ -426,6 +438,9 @@ public sealed partial class FishHealthAnalyzerControl
         }
     }
 
+    /// <summary>
+    /// Отображает одну рекомендацию по реагенту и условию его применения.
+    /// </summary>
     private void DrawTreatmentRecommendation(TreatmentRecommendation recommendation)
     {
         if (!_prototypes.TryIndex<ReagentPrototype>(recommendation.Reagent, out var prototype))
@@ -441,6 +456,9 @@ public sealed partial class FishHealthAnalyzerControl
         DrawRecommendation(message, recommendation.Condition, activeAmount, prototype);
     }
 
+    /// <summary>
+    /// Создаёт карточку рекомендации по лечению с названием и пояснением.
+    /// </summary>
     private void DrawRecommendation(
         FormattedMessage name,
         string condition,
@@ -502,6 +520,9 @@ public sealed partial class FishHealthAnalyzerControl
         TreatmentListContainer.AddChild(panel);
     }
 
+    /// <summary>
+    /// Добавляет локализованное текстовое сообщение в раздел рекомендаций.
+    /// </summary>
     private void AddTreatmentText(string locId, string? styleClass = null, params (string, object)[] args)
     {
         var label = new RichTextLabel

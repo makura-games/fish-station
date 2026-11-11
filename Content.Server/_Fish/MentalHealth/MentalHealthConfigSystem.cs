@@ -34,6 +34,9 @@ public sealed partial class MentalHealthConfigSystem : EntitySystem
         LoadConfig();
     }
 
+    /// <summary>
+    /// Загружает настройки стрессоустойчивости, галлюцинаций и запрещённых слов.
+    /// </summary>
     private void LoadConfig()
     {
         var path = new ResPath("/Config/_Fish/mental_health.yml");
@@ -96,6 +99,9 @@ public sealed partial class MentalHealthConfigSystem : EntitySystem
 		}
     }
 
+    /// <summary>
+    /// Читает строковую последовательность из YAML-узла или возвращает пустой список.
+    /// </summary>
     private static List<string> ReadStringList(YamlMappingNode mapping, string key)
     {
 		return mapping.Children.TryGetValue(new YamlScalarNode(key), out var node)

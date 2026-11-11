@@ -259,9 +259,11 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
             unrevivable = true;
 
+        // Fish-start - передаём синхронизированный уровень нейронов в медицинский сканер
         float? neuroLevel = TryComp<NeuroComponent>(entity, out var neuro)
             ? neuro.Current
             : null;
+        // Fish-end
 
         // Sunrise-Edit start - collect hunger, thirst, and raise analyze event
         // Collect hunger and thirst data as percentages
@@ -297,7 +299,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             hungerLevel,
             thirstLevel,
             reagents, // Fish-edit - посторонние реагенты в показаниях
-            neuroLevel
+            neuroLevel // Fish-edit: добавляем уровень нейронов в состояние интерфейса
         );
         // Sunrise-Edit end
     }

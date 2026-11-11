@@ -23,6 +23,9 @@ public sealed partial class NeuroOverlay : Overlay
         _intensity = Math.Clamp(value, 0f, 1f);
     }
 
+    /// <summary>
+    /// Рисует цветовые искажения и шум при низком уровне нейронов.
+    /// </summary>
     protected override void Draw(in OverlayDrawArgs args)
     {
         if (_intensity <= 0.01f || !_cfg.GetCVar(FishCVars.EnableNeuroEffects))

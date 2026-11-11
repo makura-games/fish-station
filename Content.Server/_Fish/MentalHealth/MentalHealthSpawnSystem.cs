@@ -19,6 +19,9 @@ public sealed class MentalHealthSpawnSystem : EntitySystem
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawn);
     }
 
+    /// <summary>
+    /// Добавляет компоненты психического здоровья сущности, созданной для игрока.
+    /// </summary>
     private void OnPlayerSpawn(PlayerSpawnCompleteEvent ev)
     {
         var uid = ev.Mob;

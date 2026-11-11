@@ -21,6 +21,9 @@ public sealed partial class StressOverlay : Overlay
         _intensity = Math.Clamp(value, 0f, 1f);
     }
 
+    /// <summary>
+    /// Рисует затемнение по краям экрана пропорционально уровню стресса.
+    /// </summary>
     protected override void Draw(in OverlayDrawArgs args)
     {
         if (_intensity <= 0.01f || !_cfg.GetCVar(FishCVars.EnableStressEffects))

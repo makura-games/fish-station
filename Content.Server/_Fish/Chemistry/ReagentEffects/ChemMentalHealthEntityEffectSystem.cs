@@ -12,6 +12,9 @@ public sealed partial class ChemMentalHealthEntityEffectSystem
 {
     [Dependency] private MentalHealthExposureSystem _exposure = default!;
 
+    /// <summary>
+    /// Применяет влияние дозы препарата на стресс, нейроны и толерантность.
+    /// </summary>
     protected override void Effect(Entity<StressComponent> entity, ref EntityEffectEvent<ChemMentalHealth> args)
     {
         var effect = args.Effect;

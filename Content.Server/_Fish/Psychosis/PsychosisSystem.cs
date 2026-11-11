@@ -22,6 +22,9 @@ public sealed partial class PsychosisSystem : EntitySystem
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawn);
     }
 
+    /// <summary>
+    /// Уменьшает активные источники психоза и рассылает изменения уровня клиентам.
+    /// </summary>
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -55,6 +58,9 @@ public sealed partial class PsychosisSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Добавляет уровень психоза к именованному источнику сущности.
+    /// </summary>
     public void AddSource(EntityUid uid, string source, float amount)
     {
         if (amount <= 0f || string.IsNullOrWhiteSpace(source))
@@ -68,6 +74,9 @@ public sealed partial class PsychosisSystem : EntitySystem
         Dirty(uid, psychosis);
     }
 
+    /// <summary>
+    /// Отправляет клиенту игрока конфигурацию доступных галлюцинаций.
+    /// </summary>
     private void OnPlayerSpawn(PlayerSpawnCompleteEvent ev)
     {
         RaiseNetworkEvent(new PsychosisConfigEvent(

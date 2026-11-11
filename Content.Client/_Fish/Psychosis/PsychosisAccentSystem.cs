@@ -40,6 +40,9 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
         base.Shutdown();
     }
 
+    /// <summary>
+    /// Обновляет психоз локального игрока и показывает сообщение при его начале.
+    /// </summary>
     private void OnPsychosisUpdate(PsychosisUpdateEvent ev)
     {
         if (GetEntity(ev.Uid) != _player.LocalSession?.AttachedEntity)
@@ -54,6 +57,9 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
         _currentPsychosisLevel = ev.Level;
     }
 
+    /// <summary>
+    /// Искажает локальные и радиосообщения в соответствии с текущим уровнем психоза.
+    /// </summary>
     private void OnChatMessageAdded(ChatMessage message)
     {
         if (_currentPsychosisLevel <= 0)

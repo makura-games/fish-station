@@ -47,6 +47,9 @@ public sealed partial class HealthAnalyzerWindow
         LayoutContainer.SetAnchorPreset(EffectsLayer, LayoutContainer.LayoutPreset.Wide);
     }
 
+    /// <summary>
+    /// Синхронизирует тему и визуальные эффекты окна с текущим состоянием сканирования.
+    /// </summary>
     private void UpdateFishInterface()
     {
         SetTheme(HealthAnalyzer.IsScanActive, HealthAnalyzer.PatientState);
@@ -55,6 +58,9 @@ public sealed partial class HealthAnalyzerWindow
             EffectsLayer.TriggerScan();
     }
 
+    /// <summary>
+    /// Выбирает палитру окна по режиму анализатора и состоянию пациента.
+    /// </summary>
     private void SetTheme(bool scanActive, MobState patientState)
     {
         var theme = !scanActive
@@ -79,6 +85,9 @@ public sealed partial class HealthAnalyzerWindow
         EffectsLayer.SetAccentColor(_displayPalette.Base);
     }
 
+    /// <summary>
+    /// Плавно интерполирует цвета интерфейса к палитре нового состояния пациента.
+    /// </summary>
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
@@ -94,6 +103,9 @@ public sealed partial class HealthAnalyzerWindow
         EffectsLayer.SetAccentColor(_displayPalette.Base);
     }
 
+    /// <summary>
+    /// Применяет палитру рекурсивно, сохраняя семантические цвета активных показателей.
+    /// </summary>
     private static void ApplyPalette(Control control, ColorPalette palette, bool inactive)
     {
         if (control is PanelContainer panel &&
@@ -116,6 +128,9 @@ public sealed partial class HealthAnalyzerWindow
             ApplyPalette(child, palette, inactive);
     }
 
+    /// <summary>
+    /// Проверяет, несёт ли метка семантический статусный цвет.
+    /// </summary>
     private static bool HasSemanticStatus(Label label)
     {
         return label.HasStyleClass(StyleClass.StatusGood) ||
@@ -125,6 +140,9 @@ public sealed partial class HealthAnalyzerWindow
                label.HasStyleClass(StyleClass.StatusCritical);
     }
 
+    /// <summary>
+    /// Интерполирует все цвета палитры между исходным и целевым состоянием.
+    /// </summary>
     private static ColorPalette InterpolatePalette(ColorPalette source, ColorPalette target, float amount)
     {
         return source with
@@ -139,6 +157,9 @@ public sealed partial class HealthAnalyzerWindow
         };
     }
 
+    /// <summary>
+    /// Запускает плавное появление окна анализатора.
+    /// </summary>
     protected override void Opened()
     {
         base.Opened();

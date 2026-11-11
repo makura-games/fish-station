@@ -10,6 +10,9 @@ public sealed partial class ChemPsychosisEntityEffectSystem : EntityEffectSystem
 {
     [Dependency] private PsychosisSystem _psychosis = default!;
 
+    /// <summary>
+    /// Добавляет психоз от метаболизируемого источника.
+    /// </summary>
     protected override void Effect(Entity<PsychosisComponent> entity, ref EntityEffectEvent<ChemPsychosis> args)
     {
         _psychosis.AddSource(entity, args.Effect.SourceId, args.Effect.AmountPerUnit * args.Scale);
@@ -19,6 +22,9 @@ public sealed partial class ChemPsychosisEntityEffectSystem : EntityEffectSystem
 public sealed partial class ChemReducePsychosisEntityEffectSystem
     : EntityEffectSystem<PsychosisComponent, ChemReducePsychosis>
 {
+    /// <summary>
+    /// Уменьшает интенсивность активных источников психоза.
+    /// </summary>
     protected override void Effect(Entity<PsychosisComponent> entity, ref EntityEffectEvent<ChemReducePsychosis> args)
     {
         var amount = args.Effect.ReducePerUnit * args.Scale;
