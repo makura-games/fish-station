@@ -17,3 +17,11 @@ ent-FishMagazineLargeScarHEmpty = SCAR-H large magazine (.308 any)
 ent-FishMagazineScarHAP = SCAR-H magazine (.308 AP)
     .suffix = Fish
     .desc = A 20-round magazine designed specifically for heavy-duty rifles. Uses .308 AP rounds.
+
+ent-FishMagazineScarHSP = SCAR-H magazine (.308 SP)
+    .suffix = Fish
+    .desc = A 20-round magazine designed specifically for heavy-duty rifles. Uses .308 SP rounds.
+
+ent-FishMagazineLargeScarHSP = SCAR-H magazine (.308 SP)
+    .suffix = Fish
+    .desc = A 30-round magazine designed specifically for heavy-duty rifles. Uses .308 SP rounds.
