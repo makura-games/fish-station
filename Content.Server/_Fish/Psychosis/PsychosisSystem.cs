@@ -15,6 +15,12 @@ public sealed partial class PsychosisSystem : EntitySystem
 {
     [Dependency] private MentalHealthConfigSystem _config = default!;
 
+    private const float ModeratePsychosisThreshold = 33f;
+    private const float HighPsychosisThreshold = 66f;
+    private const float LowPsychosisDecayPerSecond = 0.5f;
+    private const float ModeratePsychosisDecayPerSecond = 0.05f;
+    private const float HighPsychosisDecayPerSecond = 0.005f;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -39,11 +45,12 @@ public sealed partial class PsychosisSystem : EntitySystem
             }
 
             var oldLevel = psychosis.Current;
+            var decayPerSecond = GetDecayPerSecond(oldLevel);
             var sources = new string[psychosis.Sources.Count];
             psychosis.Sources.Keys.CopyTo(sources, 0);
             foreach (var source in sources)
             {
-                var nextValue = MathF.Max(0f, psychosis.Sources[source] - 0.5f * frameTime);
+                var nextValue = MathF.Max(0f, psychosis.Sources[source] - decayPerSecond * frameTime);
                 if (nextValue <= 0f)
                     psychosis.Sources.Remove(source);
                 else
@@ -79,6 +86,16 @@ public sealed partial class PsychosisSystem : EntitySystem
             0f,
             100f);
         Dirty(uid, psychosis);
+    }
+
+    private static float GetDecayPerSecond(float psychosisLevel)
+    {
+        return psychosisLevel switch
+        {
+            < ModeratePsychosisThreshold => LowPsychosisDecayPerSecond,
+            < HighPsychosisThreshold => ModeratePsychosisDecayPerSecond,
+            _ => HighPsychosisDecayPerSecond,
+        };
     }
 
     /// <summary>

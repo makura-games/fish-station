@@ -1608,6 +1608,10 @@
       - !type:AdjustReagent
         reagent: MindbreakerToxin
         amount: -3.0
+      # Fish-start: галоперидол снижает психоз как антипсихотическое средство
+      - !type:ChemReducePsychosis
+        reducePerUnit: 1
+      # Fish-end
 
 - type: reagent
   id: Heparin

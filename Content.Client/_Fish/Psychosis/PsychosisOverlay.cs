@@ -21,10 +21,16 @@ public sealed partial class PsychosisOverlay : Overlay
     private static readonly ProtoId<ShaderPrototype> Shader = "FishPsychosis";
 
     public override OverlaySpace Space => OverlaySpace.ScreenSpace;
+    public override bool RequestScreenTexture => true;
 
     public void SetIntensity(float value)
     {
         _intensity = Math.Clamp(value, 0f, 1f);
+    }
+
+    protected override bool BeforeDraw(in OverlayDrawArgs args)
+    {
+        return _intensity > 0.01f && _cfg.GetCVar(FishCVars.EnablePsychosisEffects);
     }
 
     /// <summary>
@@ -32,13 +38,14 @@ public sealed partial class PsychosisOverlay : Overlay
     /// </summary>
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if (_intensity <= 0.01f || !_cfg.GetCVar(FishCVars.EnablePsychosisEffects))
+        if (ScreenTexture == null)
             return;
 
         _shader ??= _prototypeManager.Index(Shader).InstanceUnique();
         var handle = args.ScreenHandle;
         var screenSize = args.Viewport.Size;
 
+        _shader.SetParameter("SCREEN_TEXTURE", ScreenTexture);
         _shader.SetParameter("intensity", _intensity);
         _shader.SetParameter("time", (float) _timing.CurTime.TotalSeconds);
         _shader.SetParameter("screen_size", screenSize);

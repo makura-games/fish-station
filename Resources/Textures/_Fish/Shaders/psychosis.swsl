@@ -1,5 +1,6 @@
 light_mode unshaded;
 
+uniform sampler2D SCREEN_TEXTURE;
 uniform highp float intensity;
 uniform highp float time;
 uniform highp vec2 screen_size;
@@ -16,13 +17,14 @@ void fragment()
     highp vec2 uv = distort(UV, strength * 0.3);
     uv.x += sin(uv.y * 50.0 + time * 20.0) * 0.002 * strength;
     uv.y += cos(uv.x * 50.0 + time * 18.0) * 0.002 * strength;
+    uv = clamp(uv, vec2(0.0), vec2(1.0));
 
     highp float chromatic = strength * 0.02;
     highp vec4 color;
-    color.r = zTexture(uv + vec2(chromatic, 0.0)).r;
-    color.g = zTexture(uv).g;
-    color.b = zTexture(uv - vec2(chromatic, 0.0)).b;
-    color.a = 1.0;
+    color.r = zTextureSpec(SCREEN_TEXTURE, clamp(uv + vec2(chromatic, 0.0), vec2(0.0), vec2(1.0))).r;
+    color.g = zTextureSpec(SCREEN_TEXTURE, uv).g;
+    color.b = zTextureSpec(SCREEN_TEXTURE, clamp(uv - vec2(chromatic, 0.0), vec2(0.0), vec2(1.0))).b;
+    color.a = zTextureSpec(SCREEN_TEXTURE, uv).a;
 
     highp float luminance = dot(color.rgb, vec3(0.299, 0.587, 0.114));
     color.rgb = mix(vec3(luminance), color.rgb, 1.0 + strength * 0.8);
@@ -33,7 +35,7 @@ void fragment()
     {
         highp float pixel_size = mix(1.0, 8.0, (strength - 0.7) * 3.0);
         highp vec2 pixel_uv = floor(uv * screen_size / pixel_size) * pixel_size / screen_size;
-        color = zTexture(pixel_uv);
+        color = zTextureSpec(SCREEN_TEXTURE, clamp(pixel_uv, vec2(0.0), vec2(1.0)));
     }
 
     COLOR = color;

@@ -63,7 +63,7 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
         if (_currentPsychosisLevel <= 0)
             return;
 
-        if (message.Channel != ChatChannel.Local && message.Channel != ChatChannel.Radio)
+        if ((message.Channel & ChatChannel.IC) == 0)
             return;
 
         if (string.IsNullOrEmpty(message.Message))
@@ -175,23 +175,7 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
     /// </summary>
     private string DistortHeavy(string text)
     {
-        var chars = text.ToCharArray();
-        for (int i = 0; i < chars.Length; i++)
-        {
-            if (char.IsLetter(chars[i]))
-            {
-                // Случайная буква русского или английского алфавита
-                chars[i] = _random.Prob(0.5f)
-                    ? (char)_random.Next('а', 'я' + 1)
-                    : (char)_random.Next('a', 'z' + 1);
-            }
-            else if (char.IsDigit(chars[i]))
-            {
-                chars[i] = (char)_random.Next('0', '9' + 1);
-            }
-            // Знаки препинания остаются для структуры
-        }
-        return new string(chars);
+        return PsychosisTextDistortion.DistortToNonsense(text, _random);
     }
 
     /// <summary>
