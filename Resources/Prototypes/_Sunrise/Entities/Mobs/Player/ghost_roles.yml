@@ -12,6 +12,7 @@
     eyes: ClothingEyesHudMedSec
     neck: SecurityWhistle
     outerClothing: ClothingOuterArmorAmberNewCom
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmberLeader
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
@@ -30,7 +31,6 @@
     - HoloprojectorField
     - WeaponAdvancedTaser
     - BluespaceArtilleryDesignator
-    - ClothingHandsPowerGlovesUplinkNTERTAmberLeader
     belt:
     - Handcuffs
     - Handcuffs
@@ -51,6 +51,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedSec
     neck: SecurityWhistle
+    gloves: ClothingHandsPowerGlovesUplinkNTERTRedLeader
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
@@ -69,7 +70,6 @@
     - HoloprojectorField
     - WeaponAdvancedTaser
     - BluespaceArtilleryDesignator
-    - ClothingHandsPowerGlovesUplinkNTERTRedLeader
     belt:
     - Handcuffs
     - Handcuffs
@@ -90,6 +90,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedSec
     neck: ClothingNeckMantleERTLeader
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGammaLeader
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
@@ -113,7 +114,6 @@
     - MagazineMagnum
     - MagazineMagnum
     - MagazineMagnum
-    - ClothingHandsPowerGlovesUplinkNTERTGammaLeader
     belt:
     - Handcuffs
     - Handcuffs
@@ -137,13 +137,13 @@
     eyes: ClothingEyesHudSecurity
     neck: HandheldCamera
     outerClothing: ClothingOuterArmorAmberNewSec
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltSecurityFilled
     pocket1: SecurityWhistle
     pocket2: WeaponMiniEnergyGun
   inhand:
-  - ClothingHandsPowerGlovesUplinkNTERTAmber
   - BoxZiptie
   storage:
     back:
@@ -171,6 +171,7 @@
     neck: HandheldCamera
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTRed
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: PouchAmmoFilledPistol40
@@ -190,7 +191,6 @@
     - CableDetStack
     - BoxDetonator
     - MedkitCombatFilled
-    - ClothingHandsPowerGlovesUplinkNTERTRed
 
 - type: startingGear
   id: ERTSecurityGearGamma
@@ -204,6 +204,7 @@
     neck: HandheldCamera
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: SpeedLoaderMagnumSP
@@ -223,7 +224,6 @@
     - CableDetStack
     - BoxDetonator
     - MedkitCombatFilled
-    - ClothingHandsPowerGlovesUplinkNTERTGamma
 
 # Chaplain
 - type: startingGear
@@ -239,8 +239,8 @@
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltSecurityFilledERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
     pocket1: LanternFlash
-    pocket2: ClothingHandsPowerGlovesUplinkNTERTAmber
   inhand:
   - WeaponShotgunKammerer
   storage:
@@ -267,8 +267,8 @@
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltSecurityFilledERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
     pocket1: LanternFlash
-    pocket2: ClothingHandsPowerGlovesUplinkNTERTRed
   inhand:
   - WeaponShotgunEnforcer
   storage:
@@ -295,13 +295,13 @@
     eyes: ClothingEyesHudDiagnosticERT
     neck: HandheldCamera
     outerClothing: ClothingOuterArmorAmberNewEng
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
     id: ERTEngineerPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltChiefEngineerFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: PouchMaterial
   inhand:
-  - ClothingHandsPowerGlovesUplinkNTERTAmber
   - RCD
   storage:
     back:
@@ -330,11 +330,11 @@
     neck: HandheldCamera
     id: ERTEngineerPDA
     ears: ClothingHeadsetAltERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
     belt: ClothingBeltChiefEngineerFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: PouchMaterial
   inhand:
-  - ClothingHandsPowerGlovesUplinkNTERTRed
   - RCDRecharging
   storage:
     back:
@@ -367,7 +367,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMedicalFilled
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: ClothingHandsPowerGlovesUplinkNTERTAmber
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
   inhand:
   - LauncherSyringeAuto
   - AdvancedDefibrillatorCompact
@@ -400,7 +400,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMedicalElite
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: ClothingHandsPowerGlovesUplinkNTERTRed
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
   inhand:
   - LauncherSyringeAuto
   - AdvancedDefibrillator
@@ -432,6 +432,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudSecurity
     outerClothing: ClothingOuterArmorAmberNewJan
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
     id: ERTJanitorPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltJanitorFilled
@@ -439,7 +440,6 @@
     pocket2: HoloprojectorField
   inhand:
   - WeaponLauncherHydra
-  - ClothingHandsPowerGlovesUplinkNTERTAmber
   storage:
     back:
     - BoxErtBaseKit
@@ -459,6 +459,7 @@
     id: ERTJanitorPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltJanitorFilled
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
     pocket1: Holoprojector
     pocket2: HoloprojectorField
   inhand:
@@ -470,7 +471,6 @@
     - LightReplacer
     - BoxCleanerGrenades
     - CrowbarRed
-    - ClothingHandsPowerGlovesUplinkNTERTRed
 #fish-start
 - type: entity
   id: RandomHumanoidSpawnerCBURNLeader
