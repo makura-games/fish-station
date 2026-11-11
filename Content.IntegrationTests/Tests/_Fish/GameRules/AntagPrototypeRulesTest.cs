@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared.Roles;
@@ -18,26 +19,36 @@ public sealed class AntagPrototypeRulesTest : GameTest
         "Xenoborg", "Zombie"
     ];
 
-    private static readonly string[] _antagIdsWithWikiRules =
-    [
-        "BloodCultist", "Changeling", "Dragon", "InitialInfected", "LoneAbductorAntag", "Nukeops",
-        "NukeopsCommander", "NukeopsMedic", "Thief", "Traitor", "TraitorSleeper", "Zombie"
-    ];
+    private static readonly Dictionary<string, string> _antagRulesFromWiki = new()
+    {
+        ["BloodCultist"] = "fish-antag-rules-blood-cultist",
+        ["Changeling"] = "fish-antag-rules-changeling",
+        ["Dragon"] = "fish-antag-rules-cosmic-dragon",
+        ["InitialInfected"] = "fish-antag-rules-zombie",
+        ["LoneAbductorAntag"] = "fish-antag-rules-abductor",
+        ["Nukeops"] = "fish-antag-rules-nukeops",
+        ["NukeopsCommander"] = "fish-antag-rules-nukeops",
+        ["NukeopsMedic"] = "fish-antag-rules-nukeops",
+        ["Thief"] = "fish-antag-rules-thief",
+        ["Traitor"] = "fish-antag-rules-traitor",
+        ["TraitorSleeper"] = "fish-antag-rules-traitor",
+        ["Zombie"] = "fish-antag-rules-zombie",
+    };
 
     [Test]
     public async Task AntagonistPrototypeRulesMatchVerifiedWikiSources()
     {
-        var antags = Pair.Server.ProtoMan
-            .EnumeratePrototypes<AntagPrototype>()
-            .ToDictionary(prototype => prototype.ID);
-
         await Pair.Server.WaitAssertion(() =>
         {
+            var antags = Pair.Server.ProtoMan
+                .EnumeratePrototypes<AntagPrototype>()
+                .ToDictionary(prototype => prototype.ID);
+
             foreach (var id in _antagIds)
             {
                 Assert.That(antags.TryGetValue(id, out var antag), Is.True, id);
-                var hasWikiRules = _antagIdsWithWikiRules.Contains(id);
-                Assert.That(antag.Rules?.Id ?? string.Empty, hasWikiRules ? Is.Not.Empty : Is.Empty, antag.ID);
+                var expectedRules = _antagRulesFromWiki.GetValueOrDefault(id, string.Empty);
+                Assert.That(antag.Rules?.Id ?? string.Empty, Is.EqualTo(expectedRules), antag.ID);
             }
         });
     }
