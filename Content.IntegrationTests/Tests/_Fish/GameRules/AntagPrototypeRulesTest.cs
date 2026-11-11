@@ -44,6 +44,8 @@ public sealed class AntagPrototypeRulesTest : GameTest
                 .EnumeratePrototypes<AntagPrototype>()
                 .ToDictionary(prototype => prototype.ID);
 
+            Assert.That(antags.Keys, Is.EquivalentTo(_antagIds));
+
             foreach (var id in _antagIds)
             {
                 Assert.That(antags.TryGetValue(id, out var antag), Is.True, id);
