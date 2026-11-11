@@ -107,17 +107,22 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         // We'll get the effects relative to the grid / map of the firer
         // Look you could probably optimise this a bit with redundant transforms at this point.
 
+        Angle originRotation; // Fish-edit
         var gridUid = fromXform.GridUid;
         if (gridUid != fromCoordinates.EntityId && TryComp(gridUid, out TransformComponent? gridXform))
         {
             var (_, gridRot, gridInvMatrix) = _transform.GetWorldPositionRotationInvMatrix(gridXform);
             var map = _transform.ToMapCoordinates(fromCoordinates);
             fromCoordinates = new EntityCoordinates(gridUid.Value, Vector2.Transform(map.Position, gridInvMatrix));
+            originRotation = gridRot; // Fish-edit
             shotAngle -= gridRot;
         }
         else
         {
-            shotAngle -= _transform.GetWorldRotation(fromXform);
+            // Fish-start
+            originRotation = _transform.GetWorldRotation(fromXform);
+            shotAngle -= originRotation;
+            // Fish-end
         }
 
         // Sunrise edit start - custom bullet visuals with color and scale
@@ -133,6 +138,17 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         }
         // Sunrise edit end
 
+        // Fish-start
+        if (travelSprite != null && vizComp.TravelOriginOffset is { } offset)
+        {
+            var start = (-originRotation).RotateVec(offset);
+            var end = shotAngle.ToVec() * distance;
+            var beam = end - start;
+            var midpoint = fromCoordinates.Offset((start + end) / 2);
+            sprites.Add((GetNetCoordinates(midpoint), beam.ToAngle(), travelSprite, beam.Length(), color, scale));
+        }
+        else
+        // Fish-end
         if (distance >= 1f)
         {
             if (vizComp.MuzzleFlash != null)

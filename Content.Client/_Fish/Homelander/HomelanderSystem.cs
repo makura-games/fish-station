@@ -27,13 +27,13 @@ public sealed partial class HomelanderSystem : EntitySystem
             active;
     }
 
-    public bool TryFire(EntityUid? user, EntityCoordinates coordinates)
+    public bool TryFire(EntityUid? user, EntityCoordinates coordinates, EntityUid target)
     {
         if (!IsLaserActive(user))
             return false;
 
         if (coordinates.IsValid(EntityManager))
-            RaiseNetworkEvent(new HomelanderFireEvent(GetNetCoordinates(coordinates)));
+            RaiseNetworkEvent(new HomelanderFireEvent(GetNetCoordinates(coordinates), GetNetEntity((EntityUid?) target)));
 
         return true;
     }
@@ -52,7 +52,7 @@ public sealed partial class HomelanderSystem : EntitySystem
 
             layer = _sprite.LayerMapReserve(sprite, HomelanderVisuals.Anger);
             _sprite.LayerSetRsi(sprite, layer, SpritePath, "anger");
-            _sprite.LayerSetOffset(sprite, layer, new Vector2(0.28f, 0.33f));
+            _sprite.LayerSetOffset(sprite, layer, new Vector2(0.37f, 0.43f));
         }
 
         _sprite.LayerSetVisible(sprite, layer, active);

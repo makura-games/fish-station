@@ -2,6 +2,9 @@ using System.Numerics;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Fish.Homelander;
 using Content.Shared.Actions;
+using Content.Shared.Body;
+using Content.Shared.Humanoid;
+using Content.Shared._Sunrise.Humanoid;
 using Content.Shared.Toggleable;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Audio;
@@ -26,11 +29,16 @@ public sealed partial class HomelanderSystem : EntitySystem
     [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private GunSystem _guns = default!;
+    [Dependency] private SunriseHumanoidMarkingSystem _markings = default!;
+
+    private const string Hair = "HumanHairCombed";
+    private static readonly Color HairColor = Color.FromHex("#C2A476");
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<HomelanderComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<HomelanderComponent, MapInitEvent>(OnMapInit, after: [typeof(InitialBodySystem)]);
         SubscribeLocalEvent<HomelanderComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<HomelanderComponent, HomelanderScreamEvent>(OnScream);
         SubscribeLocalEvent<HomelanderComponent, ToggleActionEvent>(OnToggle);
@@ -43,6 +51,14 @@ public sealed partial class HomelanderSystem : EntitySystem
         _actions.AddAction(entity, ref entity.Comp.LaserAction, LaserAction, entity);
         _containers.EnsureContainer<ContainerSlot>(entity, LaserSlot);
         TrySpawnInContainer(LaserPrototype, entity, LaserSlot, out entity.Comp.Laser);
+    }
+
+    private void OnMapInit(Entity<HomelanderComponent> entity, ref MapInitEvent args)
+    {
+        if (_markings.SetMarkingId(entity, HumanoidVisualLayers.Hair, 0, Hair))
+            _markings.SetAllMarkingColors(entity, HumanoidVisualLayers.Hair, HairColor);
+        else
+            _markings.AddMarking(entity, HumanoidVisualLayers.Hair, Hair, HairColor);
     }
 
     private void OnShutdown(Entity<HomelanderComponent> entity, ref ComponentShutdown args)
@@ -99,6 +115,7 @@ public sealed partial class HomelanderSystem : EntitySystem
             return;
         }
 
-        _guns.AttemptShoot(user, laser, gun, target);
+        TryGetEntity(ev.Target, out var clicked);
+        _guns.AttemptShoot(user, laser, gun, target, clicked);
     }
 }

@@ -98,7 +98,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
         if (_standing.IsDown(ent.Owner))
             return false;
 
-        if (!TryComp<StaminaComponent>(ent, out var stamina))
+        if (!ent.Comp.UsesStamina || !TryComp<StaminaComponent>(ent, out var stamina)) // Fish-edit
         {
             Activate(ent, 1f);
             return true;
@@ -111,7 +111,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
             return false;
         }
 
-        if (!_stamina.TryTakeStamina(ent, ent.Comp.ActivationStaminaDamage, stamina, visual: true, ignoreResist: ent.Comp.IgnoreStaminaResistance)) // Fish-edit
+        if (!_stamina.TryTakeStamina(ent, ent.Comp.ActivationStaminaDamage, stamina, visual: true))
         {
             _popup.PopupEntity(Loc.GetString("wing-flight-popup-activation-blocked"), ent, ent, PopupType.Small);
             return false;
@@ -242,7 +242,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
             Entity<WingFlightComponent> ent = (uid, flightComp);
             var staminaPercent = GetStaminaPercent(stamina);
 
-            if (ent.Comp.FlightEnabled)
+            if (ent.Comp.FlightEnabled && ent.Comp.UsesStamina) // Fish-edit
             {
                 if (staminaPercent <= ent.Comp.AutoDisableThreshold)
                 {
@@ -253,7 +253,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
                 }
 
                 var staminaCost = ent.Comp.SustainStaminaPerSecond * frameTime;
-                if (!_stamina.TryTakeStamina(ent, staminaCost, stamina, visual: false, ignoreResist: ent.Comp.IgnoreStaminaResistance)) // Fish-edit
+                if (!_stamina.TryTakeStamina(ent, staminaCost, stamina, visual: false))
                 {
                     toDisable.Add(ent);
                     SetScaleImmediate(ent, staminaPercent);

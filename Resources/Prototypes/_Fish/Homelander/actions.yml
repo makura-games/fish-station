@@ -29,7 +29,7 @@
   parent: BaseToggleAction
   id: FishActionHomelanderFlight
   name: Flight
-  description: Fly at the cost of stamina.
+  description: Take flight or land.
   suffix: Fish
   components:
   - type: Action
@@ -47,9 +47,12 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: HitscanBasicVisuals
-    bullet:
-      sprite: { sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi, state: beam }
-      scale: 1, 0.45
+    travelOriginOffset: 0, 0.31
+    travelFlash: { sprite: _Fish/Homelander/actions.rsi, state: eye-beam }
+  - type: HitscanBasicDamage
+    damage:
+      types:
+        Heat: 18
 
 - type: entity
   id: FishHomelanderEyeGun
@@ -61,7 +64,7 @@
     minAngle: 0
     maxAngle: 0
     angleIncrease: 0
-    fireRate: 2
+    fireRate: 4
     soundGunshot:
       collection: syndi_plasma
       params:
@@ -71,6 +74,6 @@
     startingCharge: 100
   - type: BatteryAmmoProvider
     proto: FishHomelanderEyeRay
-    fireCost: 10
+    fireCost: 5
   - type: BatterySelfRecharger
     autoRechargeRate: 20

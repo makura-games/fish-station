@@ -23,7 +23,8 @@ public enum HomelanderVisuals : byte
 }
 
 [Serializable, NetSerializable]
-public sealed class HomelanderFireEvent(NetCoordinates coordinates) : EntityEventArgs
+public sealed class HomelanderFireEvent(NetCoordinates coordinates, NetEntity? target) : EntityEventArgs
 {
     public NetCoordinates Coordinates { get; } = coordinates;
+    public NetEntity? Target { get; } = target;
 }

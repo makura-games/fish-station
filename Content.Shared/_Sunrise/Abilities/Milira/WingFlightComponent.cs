@@ -21,7 +21,7 @@ public sealed partial class WingFlightComponent : Component
 
     // Fish-start
     [DataField]
-    public bool IgnoreStaminaResistance;
+    public bool UsesStamina = true;
 
     [DataField]
     public bool UpdateWingMarkings = true;

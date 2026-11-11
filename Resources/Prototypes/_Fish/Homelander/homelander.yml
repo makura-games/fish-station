@@ -8,7 +8,10 @@
   - type: Homelander
   - type: WingFlight
     action: FishActionHomelanderFlight
-    ignoreStaminaResistance: true
+    usesStamina: false
+    speedModifier: 1.85
+    frictionModifier: 0.8
+    inertiaDuration: 0
     updateWingMarkings: false
     maxScaleMultiplier: 1
   - type: Loadout

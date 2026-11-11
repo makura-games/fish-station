@@ -172,7 +172,7 @@ namespace Content.Client.ContextMenu.UI
                 return false;
 
             // Fish-start
-            if (_homelander.TryFire(args.Session?.AttachedEntity, args.Coordinates))
+            if (_homelander.TryFire(args.Session?.AttachedEntity, args.Coordinates, args.EntityUid))
                 return true;
             // Fish-end
 

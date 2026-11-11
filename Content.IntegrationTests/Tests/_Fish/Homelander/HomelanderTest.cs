@@ -3,10 +3,12 @@ using Content.Server.Weapons.Ranged.Systems;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Fish.Homelander;
 using Content.Shared._Sunrise.Abilities.Milira;
+using Content.Shared._Sunrise.Humanoid;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.Inventory;
+using Content.Shared.Humanoid;
 using Content.Shared.Weapons.Reflect;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.GameObjects;
@@ -25,6 +27,10 @@ public sealed class HomelanderTest : GameTest
         var appearance = server.System<SharedAppearanceSystem>();
         var inventory = server.System<InventorySystem>();
         var guns = server.System<GunSystem>();
+        var markings = server.System<SunriseHumanoidMarkingSystem>();
+
+        WingFlightComponent? activeFlight = null;
+        StaminaComponent? activeStamina = null;
 
         await server.WaitAssertion(() =>
         {
@@ -38,6 +44,8 @@ public sealed class HomelanderTest : GameTest
                 Is.EqualTo("FishClothingOuterHardsuitHomelander"));
             Assert.That(server.EntMan.HasComponent<ReflectComponent>(suit.Value), Is.True);
             Assert.That(abilities.Laser, Is.Not.Null);
+            Assert.That(markings.TryGetLayerMarkings(patriot, HumanoidVisualLayers.Hair, out var hair), Is.True);
+            Assert.That(hair[0].MarkingId.Id, Is.EqualTo("HumanHairCombed"));
 
             var scream = GetAction(abilities.ScreamAction);
             actions.PerformAction(patriot, scream, predicted: false);
@@ -55,7 +63,9 @@ public sealed class HomelanderTest : GameTest
             var previousStaminaDamage = stamina.StaminaDamage;
             actions.PerformAction(patriot, GetAction(flight.ActionEntity));
             Assert.That(flight.FlightEnabled, Is.True);
-            Assert.That(stamina.StaminaDamage - previousStaminaDamage, Is.GreaterThan(10f));
+            Assert.That(stamina.StaminaDamage, Is.EqualTo(previousStaminaDamage));
+            activeFlight = flight;
+            activeStamina = stamina;
 
             actions.PerformAction(patriot, laser);
             Assert.That(appearance.TryGetData<bool>(patriot, HomelanderVisuals.LaserActive, out active) && active,
@@ -67,6 +77,13 @@ public sealed class HomelanderTest : GameTest
                 Assert.That(action, Is.Not.Null);
                 return (action!.Value, server.EntMan.GetComponent<ActionComponent>(action.Value));
             }
+        });
+
+        await server.WaitRunTicks(120);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(activeFlight!.FlightEnabled, Is.True);
+            Assert.That(activeStamina!.StaminaDamage, Is.Zero);
         });
     }
 }
