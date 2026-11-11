@@ -6,6 +6,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Components;
+using Robust.Shared.Enums;
 using Robust.Shared.Player;
 
 namespace Content.Server._Fish.Antag;
@@ -22,6 +23,7 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<AfterAntagEntitySelectedEvent>(OnAntagSelected);
         SubscribeLocalEvent<RoleAddedEvent>(OnRoleAdded);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
         SubscribeLocalEvent<RoleRemovedEvent>(OnRoleRemoved);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
     }
@@ -42,6 +44,14 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         ShowNewRules(args.MindId, args.Mind, session);
     }
 
+    private void OnPlayerAttached(PlayerAttachedEvent args)
+    {
+        if (!_mind.TryGetMind(args.Player, out var mindId, out var mind))
+            return;
+
+        ShowNewRules(mindId, mind, args.Player);
+    }
+
     private void OnRoleRemoved(RoleRemovedEvent args)
     {
         if (!_shownRules.TryGetValue(args.MindId, out var shownRules))
@@ -59,6 +69,9 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
 
     private void ShowNewRules(EntityUid mindId, MindComponent mind, ICommonSession session)
     {
+        if (session.Status is SessionStatus.Disconnected or SessionStatus.Zombie)
+            return;
+
         var rules = GetMindRules(mind);
         if (rules.Count == 0)
             return;
