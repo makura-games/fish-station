@@ -2,3 +2,9 @@
   parent: StatusEffectSlowdown
   id: NeuroCriticalSlowdownStatusEffect
   name: neuro critical slowdown
+
+- type: entity
+  parent: StatusEffectSlowdown
+  id: FishNeuroModerateSlowdownStatusEffect
+  suffix: Fish
+  name: neuro moderate slowdown

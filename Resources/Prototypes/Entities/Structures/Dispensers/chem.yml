@@ -67,3 +67,6 @@
         - id: JugSilicon
         - id: JugSodium
         - id: JugSulfur
+        # Fish-start - доступность средства детоксикации в химическом диспенсере
+        - id: FishDetoxJug
+        # Fish-end

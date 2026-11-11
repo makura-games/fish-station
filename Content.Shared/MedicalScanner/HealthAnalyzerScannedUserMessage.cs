@@ -36,6 +36,9 @@ public struct HealthAnalyzerUiState
     public float? HungerLevel;
     public float? ThirstLevel;
     // Sunrise-Edit end
+    // Fish-start - когнитивный показатель доступен только при медицинском сканировании
+    public float? NeuroLevel;
+    // Fish-end
 
     public HealthAnalyzerUiState() {}
 
@@ -48,7 +51,8 @@ public struct HealthAnalyzerUiState
         bool? unrevivable,
         float? hungerLevel = null,
         float? thirstLevel = null,
-        List<ReagentQuantity>? reagents = null)
+        List<ReagentQuantity>? reagents = null,
+        float? neuroLevel = null)
     {
         TargetEntity = targetEntity;
         Temperature = temperature;
@@ -63,5 +67,8 @@ public struct HealthAnalyzerUiState
         HungerLevel = hungerLevel;
         ThirstLevel = thirstLevel;
         // Sunrise-Edit end
+        // Fish-start - сохранение показателя нейронов в данных сканера
+        NeuroLevel = neuroLevel;
+        // Fish-end
     }
 }

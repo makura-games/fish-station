@@ -166,9 +166,9 @@ public sealed partial class GunSystem : SharedGunSystem
         {
             if (TryComp<ProjectileSpreadComponent>(ammoEnt, out var ammoSpreadComp))
             {
-                // FIsh edit: передаём стрелка для расчёта стрессового разброса.
+                // Fish-edit: передаём стрелка для расчёта стрессового разброса.
                 var spreadEvent = new GunGetAmmoSpreadEvent(ammoSpreadComp.Spread, user);
-                RaiseLocalEvent(gunUid, ref spreadEvent);
+                RaiseLocalEvent(gun, ref spreadEvent);
 
                 var angles = LinearSpread(mapAngle - spreadEvent.Spread / 2,
                     mapAngle + spreadEvent.Spread / 2, ammoSpreadComp.Count);

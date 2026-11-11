@@ -13,6 +13,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Drunk;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Movement.Systems;
+using Content.Shared.Stunnable;
 using Content.Shared.StatusEffectNew;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
@@ -29,6 +30,7 @@ public sealed class NeuroSystem : EntitySystem
     private static readonly ProtoId<DamageTypePrototype> AsphyxiationDamageType = "Asphyxiation";
     private static readonly ProtoId<DamageTypePrototype> PoisonDamageType = "Poison";
     private static readonly EntProtoId CriticalSlowdown = "NeuroCriticalSlowdownStatusEffect";
+    private static readonly EntProtoId ModerateSlowdown = "FishNeuroModerateSlowdownStatusEffect";
     private static readonly string RussianVowels = "аеёиоуыэюяАЕЁИОУЫЭЮЯ";
     private static readonly char[] ReplacementRussianVowels = "аеёиоуыэюя".ToCharArray();
     private static readonly string EnglishVowels = "aeiouAEIOU";
@@ -40,9 +42,11 @@ public sealed class NeuroSystem : EntitySystem
     [Dependency] private readonly MovementModStatusSystem _movementMod = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly SharedStunSystem _stun = default!;
 
     private float _regenTimer;
     private readonly Dictionary<EntityUid, TimeSpan> _criticalAlertCooldowns = new();
+    private readonly Dictionary<EntityUid, TimeSpan> _nextStumble = new();
 
     public override void Initialize()
     {
@@ -184,11 +188,52 @@ public sealed class NeuroSystem : EntitySystem
                 CriticalSlowdown,
                 TimeSpan.FromSeconds(1.5),
                 0.35f);
+            _statusEffects.TryRemoveStatusEffect(uid, ModerateSlowdown);
+        }
+        else if (neuro.Current < MentalHealthConstants.NeuroModerate)
+        {
+            _statusEffects.TryRemoveStatusEffect(uid, CriticalSlowdown);
+            _movementMod.TryAddMovementSpeedModDuration(
+                uid,
+                ModerateSlowdown,
+                TimeSpan.FromSeconds(1.5),
+                0.65f);
         }
         else
         {
             _statusEffects.TryRemoveStatusEffect(uid, CriticalSlowdown);
+            _statusEffects.TryRemoveStatusEffect(uid, ModerateSlowdown);
         }
+
+        UpdateStumble(uid, neuro);
+    }
+
+    private void UpdateStumble(EntityUid uid, NeuroComponent neuro)
+    {
+        if (neuro.Current >= MentalHealthConstants.NeuroMild)
+        {
+            _nextStumble.Remove(uid);
+            return;
+        }
+
+        var now = _timing.CurTime;
+        if (_nextStumble.TryGetValue(uid, out var next) && now < next)
+            return;
+
+        var (minimum, maximum) = neuro.Current switch
+        {
+            < MentalHealthConstants.NeuroCritical => (4f, 8f),
+            < MentalHealthConstants.NeuroModerate => (20f, 40f),
+            _ => (60f, 120f),
+        };
+
+        _stun.TryKnockdown(
+            uid,
+            TimeSpan.FromSeconds(0.2),
+            refresh: false,
+            autoStand: true,
+            drop: false);
+        _nextStumble[uid] = now + TimeSpan.FromSeconds(_random.NextFloat(minimum, maximum));
     }
 
     private void UpdateCriticalAlert(EntityUid uid, NeuroComponent neuro)
@@ -209,6 +254,7 @@ public sealed class NeuroSystem : EntitySystem
     private void OnNeuroShutdown(EntityUid uid, NeuroComponent component, ComponentShutdown args)
     {
         _criticalAlertCooldowns.Remove(uid);
+        _nextStumble.Remove(uid);
     }
 
     private static int CountOccurrences(string message, string word)

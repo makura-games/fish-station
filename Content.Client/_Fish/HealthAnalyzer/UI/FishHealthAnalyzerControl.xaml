@@ -157,6 +157,17 @@
                     </BoxContainer>
                 </BoxContainer>
             </PanelContainer>
+
+            <PanelContainer HorizontalExpand="True" StyleClasses="HealthAnalyzerMetricCard">
+                <BoxContainer Margin="8 5" Orientation="Vertical">
+                    <Label
+                        Text="{Loc 'fish-health-analyzer-neuro-level'}"
+                        StyleClasses="HealthAnalyzerMetricKey" />
+                    <Label
+                        Name="NeuroLabel"
+                        StyleClasses="HealthAnalyzerMetricValue" />
+                </BoxContainer>
+            </PanelContainer>
         </GridContainer>
     </BoxContainer>
 

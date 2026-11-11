@@ -15,3 +15,17 @@
         sourceId: Nootropil
         restorePerUnit: 5
         addictionPerDose: 8
+
+- type: reagent
+  id: FishDetox
+  name: reagent-name-fish-detox
+  desc: reagent-desc-fish-detox
+  group: Medicine
+  physicalDesc: reagent-physical-desc-crystalline
+  flavor: medicine
+  color: "#b9d1c2"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ChemDetox
+        addictionReductionPerUnit: 5

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Content.Server._Fish.MentalHealth;
 using Content.Server.Roles.Jobs;
 using Content.Shared.Chemistry.EntitySystems;
@@ -40,6 +39,7 @@ public sealed class StressSystem : EntitySystem
     private readonly Dictionary<EntityUid, HashSet<EntityUid>> _seenBloodPuddles = new();
     private readonly Dictionary<EntityUid, int> _seenBloodPuddleCounts = new();
     private readonly Dictionary<EntityUid, HashSet<EntityUid>> _nearbyHostiles = new();
+    private readonly Dictionary<EntityUid, HashSet<EntityUid>> _currentHostiles = new();
     private readonly Dictionary<EntityUid, Dictionary<EntityUid, TimeSpan>> _startledHostiles = new();
     private readonly Dictionary<EntityUid, TimeSpan> _highStressStarted = new();
     private readonly Dictionary<EntityUid, TimeSpan> _vomitCooldowns = new();
@@ -80,6 +80,7 @@ public sealed class StressSystem : EntitySystem
         _seenBloodPuddles.Remove(uid);
         _seenBloodPuddleCounts.Remove(uid);
         _nearbyHostiles.Remove(uid);
+        _currentHostiles.Remove(uid);
         _startledHostiles.Remove(uid);
         _highStressStarted.Remove(uid);
         _vomitCooldowns.Remove(uid);
@@ -125,8 +126,10 @@ public sealed class StressSystem : EntitySystem
             var wasHigh = stress.Current > MentalHealthConstants.StressThresholdHigh;
             var stressDelta = 0f;
             var nearby = _lookup.GetEntitiesInRange(xform.Coordinates, 7f);
-            var currentHostiles = new HashSet<EntityUid>();
+            var currentHostiles = GetSeenSet(_currentHostiles, uid);
+            currentHostiles.Clear();
             var now = _timing.CurTime;
+            var sawTraumaSource = false;
 
             foreach (var target in nearby)
             {
@@ -137,9 +140,19 @@ public sealed class StressSystem : EntitySystem
                              mobState.CurrentState == MobState.Dead;
                 var isHostile = TryComp<NpcFactionMemberComponent>(target, out var factions) &&
                                 factions.HostileFactions.Count > 0;
-                var hasBloodPuddle = TryComp<PuddleComponent>(target, out var puddle) &&
-                                     _solutions.TryGetSolution(target, puddle.SolutionName, out _, out var solution) &&
-                                     solution.Contents.Any(reagent => reagent.Reagent.Prototype == "Blood" && reagent.Quantity > 0);
+                var hasBloodPuddle = false;
+                if (TryComp<PuddleComponent>(target, out var puddle) &&
+                    _solutions.TryGetSolution(target, puddle.SolutionName, out _, out var solution))
+                {
+                    foreach (var reagent in solution.Contents)
+                    {
+                        if (reagent.Reagent.Prototype != "Blood" || reagent.Quantity <= 0)
+                            continue;
+
+                        hasBloodPuddle = true;
+                        break;
+                    }
+                }
 
                 if ((!isDead && !isHostile && !hasBloodPuddle) ||
                     !_interaction.InRangeUnobstructed(uid, target, 7f))
@@ -147,6 +160,7 @@ public sealed class StressSystem : EntitySystem
 
                 if (isDead)
                 {
+                    sawTraumaSource = true;
                     stressDelta += GetStressFromSource(2f, stress.ResistBlood, stress.AdaptationBlood);
                     if (GetSeenSet(_seenCorpses, uid).Add(target))
                         AddBloodAdaptation(uid, stress, 1f);
@@ -154,6 +168,7 @@ public sealed class StressSystem : EntitySystem
 
                 if (hasBloodPuddle)
                 {
+                    sawTraumaSource = true;
                     stressDelta += GetStressFromSource(2f, stress.ResistBlood, stress.AdaptationBlood);
                     if (GetSeenSet(_seenBloodPuddles, uid).Add(target))
                     {
@@ -194,7 +209,8 @@ public sealed class StressSystem : EntitySystem
             }
 
             var seenHostiles = GetSeenSet(_nearbyHostiles, uid);
-            seenHostiles.IntersectWith(currentHostiles);
+            seenHostiles.Clear();
+            seenHostiles.UnionWith(currentHostiles);
             stress.Current = Math.Clamp(
                 stress.Current + stressDelta * elapsed,
                 0f,
@@ -205,7 +221,7 @@ public sealed class StressSystem : EntitySystem
             if (wasHigh != isHigh)
                 RaiseNetworkEvent(new StressEffectsEvent(GetNetEntity(uid), isHigh), Filter.Entities(uid));
 
-            UpdateHighStressEffects(uid, stress.Current, now);
+            UpdateHighStressEffects(uid, stress.Current, now, sawTraumaSource);
             Dirty(uid, stress);
         }
     }
@@ -225,7 +241,8 @@ public sealed class StressSystem : EntitySystem
     private void AddBloodAdaptation(EntityUid uid, StressComponent stress, float amount)
     {
         var totalAdaptation = stress.AdaptationBlood + stress.AdaptationEnemies;
-        var adaptation = MathF.Min(amount, MathF.Max(0f, stress.AdaptationMax - totalAdaptation));
+        var maximumAdaptation = MathF.Min(stress.AdaptationMax, 20f);
+        var adaptation = MathF.Min(amount, MathF.Max(0f, maximumAdaptation - totalAdaptation));
         if (adaptation <= 0f)
             return;
 
@@ -233,9 +250,9 @@ public sealed class StressSystem : EntitySystem
         ApplyAdaptationNeuroLoss(uid, stress, adaptation);
     }
 
-    private void UpdateHighStressEffects(EntityUid uid, float stress, TimeSpan now)
+    private void UpdateHighStressEffects(EntityUid uid, float stress, TimeSpan now, bool sawTraumaSource)
     {
-        if (stress <= MentalHealthConstants.StressThresholdHigh)
+        if (stress <= MentalHealthConstants.StressThresholdHigh || !sawTraumaSource)
         {
             _highStressStarted.Remove(uid);
             return;
@@ -247,7 +264,7 @@ public sealed class StressSystem : EntitySystem
             return;
         }
 
-        if (now - started < TimeSpan.FromSeconds(3) ||
+        if (now - started < TimeSpan.FromSeconds(1.5) ||
             (_vomitCooldowns.TryGetValue(uid, out var cooldown) && now < cooldown))
             return;
 

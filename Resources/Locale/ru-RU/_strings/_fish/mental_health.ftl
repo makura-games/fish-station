@@ -4,3 +4,6 @@ fish-stress-critical = Паника нарастает.
 fish-psychosis-onset = Вы чувствуете, что реальность начинает искажаться.
 reagent-name-nootropil = ноотропил
 reagent-desc-nootropil = Препарат для поддержки когнитивных функций.
+reagent-name-fish-detox = детоксол
+reagent-desc-fish-detox = Препарат для снижения химической зависимости.
+fish-health-analyzer-neuro-level = Нейроны

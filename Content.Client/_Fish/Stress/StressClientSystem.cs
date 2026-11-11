@@ -5,6 +5,7 @@ using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
+using Robust.Shared.Graphics;
 
 namespace Content.Client._Fish.Stress;
 
@@ -13,9 +14,13 @@ public sealed class StressClientSystem : EntitySystem
     [Dependency] private readonly IOverlayManager _overlayManager = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly IEyeManager _eyeManager = default!;
 
     private StressOverlay _overlay = default!;
     private StressHudOverlay _hudOverlay = default!;
+    private IEye? _shakeEye;
+    private Vector2 _appliedCameraShake;
+    private float _shakePhase;
 
     public override void Initialize()
     {
@@ -31,6 +36,7 @@ public sealed class StressClientSystem : EntitySystem
 
     public override void Shutdown()
     {
+        RestoreCameraShake();
         base.Shutdown();
         _overlayManager.RemoveOverlay(_overlay);
         _overlayManager.RemoveOverlay(_hudOverlay);
@@ -57,11 +63,48 @@ public sealed class StressClientSystem : EntitySystem
         {
             _overlay.SetIntensity(0f);
             _hudOverlay.SetStress(null);
+            UpdateCameraShake(frameTime, 0f);
             return;
         }
 
         float target = stress.Current > 75f ? (stress.Current - 75f) / 25f : 0f;
         _overlay.SetIntensity(target);
         _hudOverlay.SetStress(stress.Current);
+        UpdateCameraShake(frameTime, target);
+    }
+
+    private void UpdateCameraShake(float frameTime, float intensity)
+    {
+        var eye = _eyeManager.CurrentEye;
+        if (_shakeEye != null && !ReferenceEquals(_shakeEye, eye))
+            RestoreCameraShake();
+
+        if (intensity <= 0f)
+        {
+            RestoreCameraShake();
+            return;
+        }
+
+        _shakeEye ??= eye;
+        _shakePhase += frameTime * 24f;
+        var previousShake = _appliedCameraShake;
+        var externalOffset = eye.Offset - previousShake;
+        var amplitude = Math.Clamp(intensity, 0f, 1f) * 0.1f;
+        var shake = new Vector2(
+            MathF.Sin(_shakePhase),
+            MathF.Cos(_shakePhase * 1.37f)) * amplitude;
+
+        eye.Offset = externalOffset + shake;
+        _appliedCameraShake = shake;
+    }
+
+    private void RestoreCameraShake()
+    {
+        if (_shakeEye == null)
+            return;
+
+        _shakeEye.Offset -= _appliedCameraShake;
+        _shakeEye = null;
+        _appliedCameraShake = Vector2.Zero;
     }
 }

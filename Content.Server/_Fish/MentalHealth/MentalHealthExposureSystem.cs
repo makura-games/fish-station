@@ -52,6 +52,19 @@ public sealed class MentalHealthExposureSystem : EntitySystem
         return 1f - state.TolerancePenalty;
     }
 
+    public void ReduceAddiction(EntityUid uid, float amount)
+    {
+        if (amount <= 0f || !TryComp<MentalHealthExposureComponent>(uid, out var exposure))
+            return;
+
+        foreach (var state in exposure.Substances.Values)
+        {
+            state.Addiction = Math.Max(0f, state.Addiction - amount);
+            if (state.Addiction <= 50f)
+                state.NextWithdrawal = TimeSpan.Zero;
+        }
+    }
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
