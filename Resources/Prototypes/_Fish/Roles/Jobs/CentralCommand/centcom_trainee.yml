@@ -5,14 +5,14 @@
   playTimeTracker: JobCentCommTrainee
   requirements:
     - !type:DiscordRoleRequirement
-  weight: 30
+  # weight: 30
   setPreference: true
   startingGear: CentCommTraineeGear
   icon: "JobIconNanotrasenTrainee"
   overrideConsoleVisibility: false
   supervisors: job-supervisors-centcom
   radioBold: true
-  canBeAntag: false
+  # canBeAntag: false # Fish-edit
   alwaysUseSpawner: true
   accessGroups:
   - AllAccess

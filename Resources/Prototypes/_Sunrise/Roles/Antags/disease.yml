@@ -1,3 +1,4 @@
+# Fish-edit: To remove - прототипы разумной болезни
 - type: entity
   id: MobDisease
   name: sensible disease
@@ -37,6 +38,7 @@
   - type: MovementIgnoreGravity
   - type: GravityAffected
   - type: Damageable
+  - type: Injurable
     damageContainer: Biological
   - type: Examiner
   - type: NoSlip
@@ -72,7 +74,7 @@
     actions:
       ActionInfect: 3
       ActionDiseaseInfo: 999
-  - type: Muted
+  # - type: Muted
 
 - type: sickIcon
   id: SmartDiseaseIcon
@@ -106,4 +108,10 @@
     - state: green
     - sprite: _Sunrise/Interface/Misc/antag_preview.rsi
       state: test
+
+- type: antagSpecifier
+  parent: BaseAntagSpecifier
+  id: Disease
+  pickPlayer: false
+  spawnerPrototype: SpawnPointGhostDisease
 

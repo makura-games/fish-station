@@ -17,10 +17,10 @@ namespace Content.Client._Sunrise.Latejoin;
 [GenerateTypedNameReferences]
 public sealed partial class SRLateJoinGui : FancyWindow
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IConsoleHost _consoleHost = default!;
-    [Dependency] private readonly JobRequirementsManager _playManager = default!;
-    [Dependency] private readonly IClientPreferencesManager _preferencesManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IConsoleHost _consoleHost = default!;
+    [Dependency] private JobRequirementsManager _playManager = default!;
+    [Dependency] private IClientPreferencesManager _preferencesManager = default!;
 
     private ClientGameTicker _gameTicker;
 
@@ -89,8 +89,10 @@ public sealed partial class SRLateJoinGui : FancyWindow
         var departments = new List<DepartmentPrototype>();
         foreach (var department in _prototypeManager.EnumeratePrototypes<DepartmentPrototype>())
         {
-            if (department.EditorHidden)
-                continue;
+            // Fish-start - разрешаем отделы в LateJoin, даже если они скрыты в лобби через EditorHidden (например, PlanetWar)
+            // if (department.EditorHidden)
+            //     continue;
+            // Fish-end
 
             departments.Add(department);
         }

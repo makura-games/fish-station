@@ -12,12 +12,12 @@ namespace Content.Server.Ghost.Roles;
 /// <summary>
 /// This handles logic and interaction related to <see cref="ToggleableGhostRoleComponent"/>
 /// </summary>
-public sealed class ToggleableGhostRoleSystem : EntitySystem
+public sealed partial class ToggleableGhostRoleSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedMindSystem _mind = default!;
-    [Dependency] private readonly BiocodeSystem _biocodeSystem = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private BiocodeSystem _biocodeSystem = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -39,10 +39,10 @@ public sealed class ToggleableGhostRoleSystem : EntitySystem
         {
             if (!_biocodeSystem.CanUse(args.User, biocodedComponent.Factions))
             {
-                // FIsh edit start - понятный отказ при активации Z без фракции
+                // Fish-start - понятный отказ при активации Z без фракции
                 _popup.PopupEntity(Loc.GetString("item-biocode-refused"), uid, args.User);
                 args.Handled = true;
-                // FIsh edit end
+                // Fish-end
                 return;
             }
         }

@@ -1,4 +1,4 @@
-﻿using Content.Server.Administration;
+using Content.Server.Administration;
 using Content.Server.Chat.Systems;
 using Content.Server.Ghost;
 using Content.Server.Popups;
@@ -6,10 +6,13 @@ using Content.Shared.Chat;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Speech.Muting;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Players;
 using Robust.Server.Console;
 using Robust.Shared.Player;
-using Content.Shared.Speech.Muting;
+// Fish-edit: Дубликат using закомментирован
+// using Content.Shared.Speech.Muting;
 using Content.Shared._Fish.Achievements.Events;
 
 namespace Content.Server.Mobs;
@@ -17,14 +20,16 @@ namespace Content.Server.Mobs;
 /// <summary>
 ///     Handles performing crit-specific actions.
 /// </summary>
-public sealed class CritMobActionsSystem : EntitySystem
+public sealed partial class CritMobActionsSystem : EntitySystem
 {
-    [Dependency] private readonly ChatSystem _chat = default!;
-    [Dependency] private readonly DeathgaspSystem _deathgasp = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly QuickDialogSystem _quickDialog = default!;
-    [Dependency] private readonly GhostSystem _ghostSystem = default!;
+    [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private DeathgaspSystem _deathgasp = default!;
+    [Dependency] private IServerConsoleHost _host = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private PopupSystem _popupSystem = default!;
+    [Dependency] private QuickDialogSystem _quickDialog = default!;
+    [Dependency] private StatusEffectsSystem _statusEffects = default!;
+    [Dependency] private GhostSystem _ghostSystem = default!; // Sunrise edit
 
     private const int MaxLastWordsLength = 30;
 
@@ -47,10 +52,10 @@ public sealed class CritMobActionsSystem : EntitySystem
         if (actor.PlayerSession.GetMind() is { } mindId)
             _ghostSystem.OpenAcceptEui(mindId, actor.PlayerSession);
 
-        // Fish-Edit start: broadcast для achievements
+        // Fish-start: broadcast для achievements
         var fishSuccumbEv = new FishCritSuccumbEvent(uid);
         RaiseLocalEvent(ref fishSuccumbEv);
-        // Fish-Edit end
+        // Fish-end
 
         args.Handled = true;
     }
@@ -60,7 +65,7 @@ public sealed class CritMobActionsSystem : EntitySystem
         if (!_mobState.IsCritical(uid))
             return;
 
-        if (HasComp<MutedComponent>(uid))
+        if (_statusEffects.HasEffectComp<MutedStatusEffectComponent>(uid))
         {
             _popupSystem.PopupEntity(Loc.GetString("fake-death-muted"), uid, uid);
             return;

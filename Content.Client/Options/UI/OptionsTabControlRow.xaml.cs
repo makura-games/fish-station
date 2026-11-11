@@ -48,14 +48,14 @@ namespace Content.Client.Options.UI;
 [GenerateTypedNameReferences]
 public sealed partial class OptionsTabControlRow : Control
 {
-    [Dependency] private readonly ILocalizationManager _loc = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private ILocalizationManager _loc = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private ValueList<BaseOption> _options;
 
-    // FIsh edit - уведомление табов после reset/default/initialize
+    // Fish-edit - уведомление табов после reset/default/initialize
     internal event Action? ValuesReset;
-    // FIsh edit end
+    // Fish-end
 
     public OptionsTabControlRow()
     {
@@ -189,9 +189,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.LoadValue();
         }
 
-        // FIsh edit
+        // Fish-edit
         ValuesReset?.Invoke();
-        // FIsh edit end
+        // Fish-end
         UpdateButtonState();
     }
 
@@ -258,9 +258,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.LoadValue();
         }
 
-        // FIsh edit
+        // Fish-edit
         ValuesReset?.Invoke();
-        // FIsh edit end
+        // Fish-end
         UpdateButtonState();
     }
 
@@ -271,9 +271,9 @@ public sealed partial class OptionsTabControlRow : Control
             option.ResetToDefault();
         }
 
-        // FIsh edit
+        // Fish-edit
         ValuesReset?.Invoke();
-        // FIsh edit end
+        // Fish-end
         UpdateButtonState();
     }
 

@@ -12,7 +12,7 @@ using static Robust.Client.UserInterface.Controls.BoxContainer;
 
 namespace Content.Client._Fish.Arcade.Minesweeper;
 
-public sealed class MinesweeperMenu : DefaultWindow
+public sealed partial class MinesweeperMenu : DefaultWindow
 {
 
     private const int CellSize = 32;
@@ -40,9 +40,9 @@ public sealed class MinesweeperMenu : DefaultWindow
         Color.FromHex("#A0A0A0"),
     };
 
-    [Dependency] private readonly IEntityManager _entMan = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private IEntityManager _entMan = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPlayerManager _player = default!;
 
     private readonly Texture _flagTexture;
     private readonly Texture _mineTexture;

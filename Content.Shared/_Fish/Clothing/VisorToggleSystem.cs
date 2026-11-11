@@ -10,12 +10,12 @@ namespace Content.Shared._Fish.Clothing;
 /// <summary>
 /// Keeps the visor fold state synchronized with the standard clothing toggle action.
 /// </summary>
-public sealed class VisorToggleSystem : EntitySystem
+public sealed partial class VisorToggleSystem : EntitySystem
 {
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
-    [Dependency] private readonly FoldableSystem _foldable = default!;
-    [Dependency] private readonly ItemToggleSystem _itemToggle = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private FoldableSystem _foldable = default!;
+    [Dependency] private ItemToggleSystem _itemToggle = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public override void Initialize()
     {

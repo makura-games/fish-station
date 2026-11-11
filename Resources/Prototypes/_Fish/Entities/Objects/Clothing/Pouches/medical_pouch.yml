@@ -1,0 +1,100 @@
+# Базовые варианты носятся в карманах; доступ в медицинские пояса даёт только тег FishPouchMedical у отдельных вариантов.
+- type: entity
+  parent: [BaseClothingBeltSounds, ClothingBeltStorageBase, ContentsExplosionResistanceBase]
+  id: FishPouchMedical
+  name: medical pouch
+  suffix: Fish
+  description: A pouch for carrying medicine bottles.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical.rsi
+    scale: 0.75, 0.75
+    layers:
+    - state: icon
+  - type: Appearance
+  - type: Item
+    size: Normal
+    shape:
+    - 0,0,1,1
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - pocket
+  - type: Storage
+    maxItemSize: Small
+    grid:
+    - 0,0,4,1
+    whitelist:
+      tags:
+      - Bottle
+  - type: ExplosionResistance
+    damageCoefficient: 0.01
+    worn: false # защита не передаётся владельцу
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalParamedic
+  name: paramedic medical pouch
+  description: A red and white pouch for carrying medicine bottles.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_paramedic.rsi
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalNanotrasen
+  name: Nanotrasen medical pouch
+  description: A dark medical pouch for carrying medicine bottles. Made for professionals.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_nanotrasen.rsi
+  - type: Tag
+    tags:
+    - WhitelistChameleon # сохраняем тег одежды при переопределении списка тегов
+    - FishPouchMedical
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalBrigmedic
+  name: brigmedic medical pouch
+  description: A pouch for carrying medicine bottles, issued to brigmedics.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_brigmedic.rsi
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalBluespace
+  name: bluespace medical pouch
+  description: A compact pouch for medicine bottles. Bluespace technology provides more room than its exterior suggests.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_bluespace.rsi
+    scale: 1, 1
+  - type: Item
+    size: Small
+    shape:
+    - 0,0,0,1
+  - type: Storage
+    grid:
+    - 0,0,6,2
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - FishPouchMedical
+
+- type: entity
+  parent: FishPouchMedical
+  id: FishPouchMedicalSyndicate
+  name: syndicate medical pouch
+  description: A blood-red pouch for carrying medicine bottles and more.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Pouches/medical_syndicate.rsi
+  - type: Storage
+    grid:
+    - 0,0,7,1
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - FishPouchMedical

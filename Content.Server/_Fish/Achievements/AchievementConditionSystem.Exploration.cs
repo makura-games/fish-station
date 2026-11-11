@@ -33,7 +33,7 @@ public sealed partial class AchievementConditionSystem
         SubscribeLocalEvent<FishCritSuccumbEvent>(OnFishCritSuccumb);
         SubscribeLocalEvent<AchievementTrackedComponent, EmoteEvent>(OnEmote);
         SubscribeLocalEvent<FishAiLawChangedEvent>(OnFishAiLawChanged);
-        SubscribeLocalEvent<BloodstreamComponent, SolutionContainerChangedEvent>(OnBloodstreamChanged);
+        SubscribeLocalEvent<AchievementTrackedComponent, SolutionChangedEvent>(OnBloodstreamChanged);
         SubscribeLocalEvent<ChasmFallingComponent, ComponentInit>(OnChasmFalling);
         SubscribeLocalEvent<ActorComponent, BeingGibbedEvent>(OnBeingGibbed);
     }
@@ -132,15 +132,15 @@ public sealed partial class AchievementConditionSystem
                 EventKey: $"law:{GetNetEntity(siliconUid)}:{suffix}"));
     }
 
-    private void OnBloodstreamChanged(EntityUid uid, BloodstreamComponent component, SolutionContainerChangedEvent args)
+    private void OnBloodstreamChanged(EntityUid uid, AchievementTrackedComponent component, ref SolutionChangedEvent args)
     {
-        if (args.SolutionId != BloodstreamComponent.DefaultBloodSolutionName)
+        if (args.Solution.Comp.Id != BloodstreamComponent.DefaultBloodSolutionName)
             return;
 
         if (!TryComp<ActorComponent>(uid, out var actor))
             return;
 
-        foreach (var reagentQuantity in args.Solution.Contents)
+        foreach (var reagentQuantity in args.Solution.Comp.Solution.Contents)
         {
             if (reagentQuantity.Quantity <= FixedPoint2.Zero)
                 continue;

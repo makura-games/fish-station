@@ -1,30 +1,33 @@
 using Content.Server.GameTicking;
 using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
-using Content.Server.Ghost.Roles.Events;
 using Content.Server.Station.Systems;
 using Content.Shared._Fish.GhostRoles.Components;
+using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Preferences;
+using Content.Shared.Roles;
 using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.GhostRoles;
 
 /// <summary>
 /// Спавнит персонажа игрока из профиля при взятии ghost role через <see cref="GhostRoleProfileSpawnerComponent"/>.
 /// </summary>
-public sealed class GhostRoleProfileSpawnerSystem : EntitySystem
+public sealed partial class GhostRoleProfileSpawnerSystem : EntitySystem
 {
-    [Dependency] private readonly GameTicker _gameTicker = default!;
-    [Dependency] private readonly GhostRoleSystem _ghostRole = default!;
-    [Dependency] private readonly SharedMindSystem _mindSystem = default!;
-    [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
-    [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
-    [Dependency] private readonly StationSystem _stations = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
+    [Dependency] private GameTicker _gameTicker = default!;
+    [Dependency] private GhostRoleSystem _ghostRole = default!;
+    [Dependency] private SharedMindSystem _mindSystem = default!;
+    [Dependency] private NpcFactionSystem _npcFaction = default!;
+    [Dependency] private StationSpawningSystem _stationSpawning = default!;
+    [Dependency] private StationSystem _stations = default!;
+    [Dependency] private TransformSystem _transform = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
     public override void Initialize()
     {
@@ -63,6 +66,13 @@ public sealed class GhostRoleProfileSpawnerSystem : EntitySystem
             mob = _stationSpawning.SpawnPlayerMob(coords, null, profile, station);
         }
 
+        // Fish: экипировка через startingGear (Sunrise), а не Loadout MapInit на мобе
+        if (ent.Comp.StartingGear is { } gearId &&
+            _prototypes.TryIndex(gearId, out StartingGearPrototype? gear))
+        {
+            _stationSpawning.EquipStartingGear(mob, gear, raiseEvent: true);
+        }
+
         _transform.AttachToGridOrMap(mob);
 
         // Prepend role/job name to entity name (e.g. "Строитель Имя Фамилия (уникальный номер)")
@@ -74,7 +84,8 @@ public sealed class GhostRoleProfileSpawnerSystem : EntitySystem
         if (ent.Comp.Factions.Count > 0)
             _npcFaction.AddFactions((mob, null), ent.Comp.Factions);
 
-        RaiseLocalEvent(mob, new GhostRoleSpawnerUsedEvent(ent, mob));
+        var spawnedEvent = new GhostRoleSpawnerUsedEvent(ent, mob);
+        RaiseLocalEvent(mob, ref spawnedEvent);
 
         if (ghostRole.MakeSentient)
             _mindSystem.MakeSentient(mob, ghostRole.AllowMovement, ghostRole.AllowSpeech);

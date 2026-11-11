@@ -1,14 +1,14 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server._Sunrise.BloodCult.Items.Components;
-using Content.Server.Body.Components;
-using Content.Server.Body.Systems;
 using Content.Server.Hands.Systems;
 using Content.Server.Popups;
 using Content.Shared._Sunrise.BloodCult.Components;
 using Content.Shared._Sunrise.BloodCult.Items;
 using Content.Shared.Body.Components;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
@@ -21,7 +21,8 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
-using Content.Shared.Timing;
+using Content.Shared.Timing.Components;
+using Content.Shared.Timing.Systems;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -34,19 +35,18 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Sunrise.BloodCult.Items.Systems;
 
-public sealed class CultBloodSpellSystem : EntitySystem
+public sealed partial class CultBloodSpellSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
-    [Dependency] private readonly BloodstreamSystem _bloodstreamSystem = default!;
-    [Dependency] private readonly DamageableSystem _damageableSystem = default!;
-    [Dependency] private readonly HandsSystem _handsSystem = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutionSystem = default!;
-    [Dependency] private readonly TransformSystem _transformSystem = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly UseDelaySystem _useDelay = default!;
+    [Dependency] private SharedAudioSystem _audioSystem = default!;
+    [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
+    [Dependency] private DamageableSystem _damageableSystem = default!;
+    [Dependency] private HandsSystem _handsSystem = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private PopupSystem _popupSystem = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionSystem = default!;
+    [Dependency] private TransformSystem _transformSystem = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private UseDelaySystem _useDelay = default!;
 
     public override void Initialize()
     {
@@ -225,9 +225,16 @@ public sealed class CultBloodSpellSystem : EntitySystem
             {
                 if (bloodSolution.Volume > 250)
                 {
-                    var blood = bloodSolution.SplitSolutionWithOnly(
-                        100,
-                        "Blood");
+                    // Берём реагенты крови вида цели (Blood, Slime и т.д.), а не только "Blood".
+                    var bloodReagentIds = bloodstreamComponent.BloodReferenceSolution.Contents
+                        .Select(r => (ProtoId<ReagentPrototype>)r.Reagent.Prototype)
+                        .Distinct()
+                        .ToArray();
+
+                    if (bloodReagentIds.Length == 0)
+                        bloodReagentIds = ["Blood"];
+
+                    var blood = bloodSolution.SplitSolutionWithOnly(100, bloodReagentIds);
                     cultistComponent.BloodCharges += blood.Volume / 2;
                     _popupSystem.PopupEntity($"Собрано {blood.Volume / 2} зарядов",
                         args.User,
@@ -279,7 +286,8 @@ public sealed class CultBloodSpellSystem : EntitySystem
 
             foreach (var puddleSolutionContent in puddleSolution.Value.Comp.Solution.Contents.ToList())
             {
-                if (puddleSolutionContent.Reagent.Prototype != "Blood")
+                // Кровь культиста: обычная Blood и расовые аналоги (Slime и т.п.).
+                if (!IsCultBloodReagent(puddleSolutionContent.Reagent.Prototype))
                     continue;
 
                 var amount = _solutionSystem.RemoveReagent(
@@ -291,7 +299,7 @@ public sealed class CultBloodSpellSystem : EntitySystem
 
                 var blood = new Solution();
                 blood.AddReagent(puddleSolutionContent.Reagent, amount);
-                absorbBlood.AddSolution(blood, _prototypeManager);
+                absorbBlood.AddSolution(blood, ProtoMan);
                 Spawn("CultTileSpawnEffect", Transform(puddle).Coordinates);
             }
         }
@@ -307,6 +315,18 @@ public sealed class CultBloodSpellSystem : EntitySystem
         _audioSystem.PlayPvs(bloodSpell.BloodAbsorbSound, user, bloodSpell.BloodAbsorbSound.Params);
         absorbBlood.RemoveAllSolution();
         return getCharges;
+    }
+
+    /// <summary>
+    /// Реагенты, считающиеся кровью для blood rites (включая расовые аналоги).
+    /// </summary>
+    public static bool IsCultBloodReagent(string reagentId)
+    {
+        return reagentId is "Blood"
+            or "Slime"
+            or "CopperBlood" // арахниды
+            or "FluorosulfuricAcidHumanoidXeno" // ксено / части яутжа
+            or "FluorosulfuricAcidPredator"; // яутжа
     }
 
     private bool HealCultist(EntityUid target,
@@ -370,7 +390,7 @@ public sealed class CultBloodSpellSystem : EntitySystem
                 if (!bloodSpell.HealingGroups.Contains(damageGroup))
                     continue;
 
-                var damageGroupSpecifier = _prototypeManager.Index<DamageGroupPrototype>(damageGroup);
+                var damageGroupSpecifier = ProtoMan.Index<DamageGroupPrototype>(damageGroup);
 
                 var totalDamageInGroup = FixedPoint2.Zero;
 

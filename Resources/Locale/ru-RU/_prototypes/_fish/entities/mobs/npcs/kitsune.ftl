@@ -4,11 +4,10 @@ ent-MobKitsunePlayerFox = Девятихвостая лиса
     .desc = Девятихвостая лиса. Результат ритуалов трансформации Кицунэ.
 
 ent-MacKitsune = Урист МакКицунэ
-    .desc = { ent-BaseSpeciesMobOrganic.desc }
 
 ent-MobKitsunePrime = Прайм-Кицунэ
+    .desc = { "" }
     .suffix = АДМЕМЫ
-    .desc = { ent-MacKitsune.desc }
 
 ent-ActionKitsuneTransform = Трансформация в лису
     .desc = Превратитесь в девятихвостую лису, получив 9 урона рубящего типа. Занимает 5 секунд. Длительность: 4 минуты. Перезарядка: 15 секунд.

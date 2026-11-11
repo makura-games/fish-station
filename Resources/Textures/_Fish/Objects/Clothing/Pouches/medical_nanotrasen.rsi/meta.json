@@ -1,0 +1,14 @@
+{
+    "version":  1,
+    "license":  "CC-BY-SA-3.0",
+    "copyright":  "Created by NekutGit (https://github.com/NekutGit), using ChatGPT examples and sketches as references.",
+    "size":  {
+                 "x":  32,
+                 "y":  32
+             },
+    "states":  [
+                   {
+                       "name":  "icon"
+                   }
+               ]
+}

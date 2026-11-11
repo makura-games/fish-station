@@ -4,10 +4,10 @@
   description: job-description-corebase
   playTimeTracker: OverAllCoreBase
   setPreference: true
-  weight: 2
+# weight: 2
   jobEntity: MobHumanCoreP0WMF5
+  startingGear: CoreGearP0
   icon: "IconCoreBase"
-  canBeAntag: false
   access:
   - AssCoreBase
   alwaysUseSpawner: true
@@ -20,10 +20,10 @@
   description: job-description-corepc0i5
   playTimeTracker: OverAllCorePC0I5
   setPreference: true
-  weight: 5
+# weight: 5
   jobEntity: MobHumanCorePC0I5WMF5
+  startingGear: CoreGearPC0I5
   icon: "IconCorePC0I5"
-  canBeAntag: false
   access:
   - AssCoreBase
   - AssCorePC0I5
@@ -39,10 +39,10 @@
   description: job-description-corepm1
   playTimeTracker: OverAllCorePM1
   setPreference: true
-  weight: 3
+# weight: 3
   jobEntity: MobHumanCorePM1WMF5
+  startingGear: CoreGearPM1
   icon: "IconCorePM1"
-  canBeAntag: false
   access:
   - AssCoreBase
   - AssCorePM1
@@ -56,10 +56,10 @@
   description: job-description-corepe1
   playTimeTracker: OverAllCorePE1
   setPreference: true
-  weight: 4
+# weight: 4
   jobEntity: MobHumanCorePE1WMF5
+  startingGear: CoreGearPE1
   icon: "IconCorePE1"
-  canBeAntag: false
   access:
   - AssCoreBase
   - AssCorePE1

@@ -8,11 +8,10 @@
       department: Security
       time: 62000 # 20 hrs
     - !type:AgeRequirement
-      requiredAge: 30
+      requiredAge: 29
   startingGear: BlueShieldOfficerGear
   icon: JobIconBlueShield
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   alternativeTitles:
   - job-alt-title-bodyguard
   access:
@@ -43,7 +42,7 @@
     - Mining
   special:
     - !type:AddImplantSpecial
-      implants: [ MindShieldImplant, BluespaceImplant ] # Fish edit
+      implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ]
 
 - type: startingGear
   id: BlueShieldOfficerGear
@@ -51,12 +50,13 @@
     shoes: ClothingShoesBootsBlueShieldFilled
     eyes: ClothingEyesGlassesBlueShield
     id: BlueShieldOfficerPDA
-    # outerClothing: ClothingOuterArmorBlueShield # Fish edit - commented out, managed via loadout
-    ears: ClothingHeadsetAltCommand
+    # outerClothing: ClothingOuterArmorBlueShield # Fish-edit - commented out, managed via loadout
+    # ears: ClothingHeadsetAltCommand # Fish-edit
+    ears: ClothingHeadsetBlueShield # Fish-edit
     gloves: ClothingHandsGlovesCombat
   storage:
     back:
-    - FishUplinkNTERTBlueShield # Fish edit
+    - FishUplinkNTERTBlueShield # Fish-edit
     # - HandheldBSOCrewMonitor
 
 - type: chameleonOutfit
@@ -66,7 +66,6 @@
   equipment:
     shoes: ClothingShoesBootsBlueShieldFilled
     eyes: ClothingEyesGlassesBlueShield
-    outerClothing: ClothingOuterArmorBlueShield
+    #outerClothing: ClothingOuterArmorBlueShield # Fish-edit - commented out, managed via loadout
     gloves: ClothingHandsGlovesCombat
-    # outerClothing: ClothingOuterArmorBlueShield # Fish edit - commented out, managed via loadout
 

@@ -1,0 +1,55 @@
+- type: entity
+  id: FishSkyLightning
+  name: lightning strike
+  description: A blinding bolt of lightning descending from the sky.
+  suffix: Radius 3.5
+  components:
+  - type: Icon
+    sprite: Effects/lightning.rsi
+    state: lightning_1
+  - type: Sprite
+    sprite: Effects/lightning.rsi
+    drawdepth: Effects
+    noRot: true
+    layers:
+    - state: lightning_1
+      shader: unshaded
+      map: [enum.SkyLightningLayers.Bolt]
+  - type: Appearance
+  - type: AnimationPlayer
+  - type: SkyLightningVisuals
+    halfHeight: 6
+    revealDuration: 0.12
+  - type: SkyLightning
+    radius: 3.5
+    shockDamage: 40
+    stunDuration: 2
+    maxTilt: 8
+  - type: TriggerOnSpawn
+  - type: TimerTrigger
+    delay: 0.12
+    keyOut: lightning-impact
+    examinable: false
+    popup: null
+  - type: ExplosionOnTrigger
+    keysIn: [lightning-impact]
+    explosionType: Default
+    # Уменьшаем урон, сохраняя примерный радиус взрыва 3,5 тайла.
+    totalIntensity: 11.25
+    intensitySlope: 0.25
+    maxTileIntensity: 1
+    maxTileBreak: 0
+    canCreateVacuum: false
+  - type: PointLight
+    color: "#BBDDFF"
+    radius: 4
+    energy: 0
+    castShadows: false
+  - type: EmitSoundOnTrigger
+    keysIn: [lightning-impact]
+    positional: true
+    sound:
+      path: /Audio/Effects/Lightning/lightningbolt.ogg
+  - type: Tag
+    tags:
+    - HideContextMenu

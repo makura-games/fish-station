@@ -37,6 +37,7 @@
     intensitySlope: 1
     maxIntensity: 2
     canCreateVacuum: false
+    maxTileBreak: 0
   - type: WhitelistTriggerCondition
     userBlacklist:
       components:
@@ -82,7 +83,7 @@
         types:
           Heat: -0.4
     - type: MobThresholds
-      currentThresholdState : Alive
+# #   currentThresholdState : Alive
       thresholds:
         0: Alive
         500: Dead
@@ -124,6 +125,7 @@
       intensitySlope: 3
       totalIntensity: 3
       canCreateVacuum: false
+      maxTileBreak: 0
     - type: BatteryAmmoProvider
       proto: BulletPistolTraceSP
       fireCost: 100
@@ -204,7 +206,7 @@
       types:
         Heat: -0.4
   - type: MobThresholds
-    currentThresholdState : Alive
+#   currentThresholdState : Alive
     thresholds:
       0: Alive
       500: Dead
@@ -246,6 +248,7 @@
     intensitySlope: 3
     totalIntensity: 3
     canCreateVacuum: false
+    maxTileBreak: 0
   - type: BatteryAmmoProvider
     proto: PulseWM
     fireCost: 200
@@ -288,8 +291,10 @@
  #   requireInSpace: false
   - type: Blindable
     isBlind: false
-  - type: ToggleableNightVision
-    effect: EffectNightVisioCoreDron
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    lightingColor: "#0000e326"
   #- type: ShowJobIcons
   - type: SpawnOnTrigger
     proto: GrenadeFlashEffect
@@ -309,9 +314,12 @@
 #  - type: Muted
   - type: GhostRole
     name: pw-vehicles-republic-markerdroncore-name
-    description: pw-vehicles-republic-markerdroncore-desc-1
+    description: pw-vehicles-republic-markerdroncore-desc
     raffle:
       settings: WM
+  - type: PlanetWarBriefing
+    briefingText: pw-briefing-republic-droncore
+    briefingColor: "#0000e3"
   - type: CombatMode
     toggleMouseRotator: true
   - type: StepTrigger
@@ -346,9 +354,18 @@
     weightless: True
   - type: IntrinsicRadioReceiver
   - type: Damageable
-    damageContainer: Inorganic
     damageModifierSet: DronShockWeaknessWM
+  - type: Injurable
+    damageContainer: Inorganic
   - type: PlanetWarStunDrone
+  # Fish-edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
+  - type: ContainerContainer
+    containers:
+      cluster-payload: !type:Container
+  - type: ProjectileGrenade
+    fillPrototype: PelletClusterLethal
+    capacity: 30
+    triggerKey: trigger
   - type: MovementSpeedModifier
     baseWalkSpeed : 15
     baseSprintSpeed : 12
@@ -425,9 +442,12 @@
     - LandmineImplantCoreWM
   - type: GhostRole
     name: pw-vehicles-republic-markerdroncoreturretmine-name
-    description: pw-construction-republic-mobhumancorep0-desc
+    description: pw-vehicles-republic-markerdroncoreturretmine-desc
     raffle:
       settings: WM
+  - type: PlanetWarBriefing
+    briefingText: pw-briefing-republic-droncoreturretmine
+    briefingColor: "#0000e3"
   - type: Sprite
     sprite: /Textures/_Fish/PlanetWar/WM2/33xSprait.rsi
     noRot: false
@@ -449,6 +469,7 @@
     totalIntensity: 8
     intensitySlope: 1
     maxIntensity: 8
+    maxTileBreak: 0
   - type: MovementSpeedModifier
     baseWalkSpeed : 15
     baseSprintSpeed : 9

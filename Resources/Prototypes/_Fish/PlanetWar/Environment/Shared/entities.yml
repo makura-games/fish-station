@@ -4,7 +4,7 @@
   id: CannabisSeedsWM
   components:
     - type: Seed
-      seedId: cannabisWM
+      plantId: cannabisWM
     - type: PhysicalComposition
       materialComposition:
         MoneyWarMizMaterial: 20
@@ -15,12 +15,11 @@
   parent: LeavesCannabis
   id: LeavesCannabisWM
   components:
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        reagents:
-        - ReagentId: THCPW
-          Quantity: 10
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: THCPW
+        Quantity: 10
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 100
@@ -68,7 +67,7 @@
   id: CottonSeedsWM
   components:
     - type: Seed
-      seedId: cottonWM
+      plantId: cottonWM
     - type: PhysicalComposition
       materialComposition:
         MoneyWarMizMaterial: 20
@@ -86,14 +85,13 @@
       - cotton
   - type: Edible
     requiresSpecialDigestion: true
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        reagents:
-        - ReagentId: FiberPW
-          Quantity: 10
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: FiberPW
+        Quantity: 10
   - type: Produce
-    seedId: cottonWM
+    plantId: cottonWM
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 100
@@ -160,9 +158,11 @@
   parent: ActionActivateSmokeGrenadeImplant
   components:
   - type: Action
-    icon:
-      sprite: /Textures/Actions/Implants/implants.rsi
-      state: explosive
+
+  - type: Sprite
+    sprite: Actions/Implants/implants.rsi
+    layers:
+    - state: explosive
   - type: LimitedCharges
     maxCharges: 1
   - type: AutoRecharge
@@ -175,10 +175,11 @@
   parent: ActionActivateSmokeGrenadeImplant
   components:
   - type: Action
-    icon:
-      sprite: Objects/Misc/landmine.rsi
-      state: landmine
     useDelay: 1
+  - type: Sprite
+    sprite: Objects/Misc/landmine.rsi
+    layers:
+    - state: landmine
   - type: LimitedCharges
     maxCharges: 2
   - type: AutoRecharge

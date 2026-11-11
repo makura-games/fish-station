@@ -1,0 +1,27 @@
+# Обычный подсумок открывается отдельной технологией T2 биохимии FishMedicalPouches.
+- type: latheRecipe
+  id: FishPouchMedical
+  result: FishPouchMedical
+  completetime: 4
+  materials:
+    Durathread: 1000
+    Plastic: 1000
+    Steel: 250
+
+- type: latheRecipe
+  id: FishPouchMedicalBluespace # открывается технологией T3 BluespaceChemistry
+  result: FishPouchMedicalBluespace
+  completetime: 4
+  materials:
+    Durathread: 1000
+    Plastic: 500
+    Steel: 500
+    Plasma: 500
+    Silver: 50
+
+# Динамический набор мед-фаба делает рецепты доступными после соответствующих исследований.
+- type: latheRecipePack
+  id: FishMedicalPouchesDynamic
+  recipes:
+  - FishPouchMedical
+  - FishPouchMedicalBluespace

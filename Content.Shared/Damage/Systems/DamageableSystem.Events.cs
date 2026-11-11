@@ -4,6 +4,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
+using Content.Shared.Radiation.Components; // Fish-edit: RadiationImmunityComponent — иммунитет к облучению (газ Крипиум)
 using Content.Shared.Radiation.Events;
 using Content.Shared.Rejuvenate;
 using Robust.Shared.GameStates;
@@ -23,9 +24,7 @@ public sealed partial class DamageableSystem
         SubscribeLocalEvent<DamageableComponent, RejuvenateEvent>(OnRejuvenate);
         SubscribeLocalEvent<DamageableComponent, ComponentHandleState>(DamageableHandleState);
         SubscribeLocalEvent<DamageableComponent, ComponentGetState>(DamageableGetState);
-
-        _appearanceQuery = GetEntityQuery<AppearanceComponent>();
-        _damageableQuery = GetEntityQuery<DamageableComponent>();
+        SubscribeLocalEvent<InjurableComponent, DamageDealtEvent>(OnDamageDealt);
 
         _config.OnValueChanged(SunriseCCVars.DamagePositiveVariance, UpdatePositiveVariance, true); // Sunrise-Edit
         _config.OnValueChanged(SunriseCCVars.DamageNegativeVariance, UpdateNegativeVariance, true); // Sunrise-Edit
@@ -163,7 +162,7 @@ public sealed partial class DamageableSystem
     {
         _supportedTypesByContainer.Clear();
 
-        foreach (var proto in _prototypeManager.EnumeratePrototypes<DamageContainerPrototype>())
+        foreach (var proto in ProtoMan.EnumeratePrototypes<DamageContainerPrototype>())
         {
             var set = new HashSet<ProtoId<DamageTypePrototype>>();
             _supportedTypesByContainer[proto.ID] = set;
@@ -175,7 +174,7 @@ public sealed partial class DamageableSystem
 
             foreach (var groupId in proto.SupportedGroups)
             {
-                var group = _prototypeManager.Index(groupId);
+                var group = ProtoMan.Index(groupId);
                 foreach (var type in group.DamageTypes)
                 {
                     set.Add(type);
@@ -189,12 +188,18 @@ public sealed partial class DamageableSystem
     /// </summary>
     private void DamageableInit(Entity<DamageableComponent> ent, ref ComponentInit _)
     {
-        ent.Comp.Damage.GetDamagePerGroup(_prototypeManager, ent.Comp.DamagePerGroup);
+        ent.Comp.Damage.GetDamagePerGroup(ProtoMan, ent.Comp.DamagePerGroup);
         ent.Comp.TotalDamage = ent.Comp.Damage.GetTotal();
     }
 
     private void OnIrradiated(Entity<DamageableComponent> ent, ref OnIrradiatedEvent args)
     {
+        // Fish-start - иммунитет к облучению (газ Крипиум): новое облучение не накапливается,
+        // уже полученный радиационный урон при этом не лечится.
+        if (HasComp<RadiationImmunityComponent>(ent.Owner))
+            return;
+        // Fish-end
+
         var damageValue = FixedPoint2.New(args.TotalRads);
 
         // Radiation should really just be a damage group instead of a list of types.
@@ -219,9 +224,8 @@ public sealed partial class DamageableSystem
     {
         args.State = new DamageableComponentState(
             _netMan.IsServer ? ent.Comp.Damage : ent.Comp.Damage.Clone(),
-            ent.Comp.DamageContainerID,
             ent.Comp.DamageModifierSetId,
-            ent.Comp.HealthBarThreshold
+            ent.Comp.Displacement
         );
     }
 
@@ -230,9 +234,8 @@ public sealed partial class DamageableSystem
         if (args.Current is not DamageableComponentState state)
             return;
 
-        ent.Comp.DamageContainerID = state.DamageContainerId;
         ent.Comp.DamageModifierSetId = state.ModifierSetId;
-        ent.Comp.HealthBarThreshold = state.HealthBarThreshold;
+        ent.Comp.Displacement = state.Displacement;
 
         // Has the damage actually changed?
         var newDamage = state.Damage.Clone();
@@ -245,6 +248,34 @@ public sealed partial class DamageableSystem
         ent.Comp.Damage = newDamage;
 
         OnEntityDamageChanged(ent, delta);
+    }
+
+    private void OnDamageDealt(Entity<InjurableComponent> ent, ref DamageDealtEvent args)
+    {
+        if (!_damageableQuery.TryGetComponent(ent, out var damageable))
+            return;
+
+        var damageDone = new DamageSpecifier();
+
+        damageDone.DamageDict.EnsureCapacity(args.Damage.DamageDict.Count);
+
+        var dict = damageable.Damage.DamageDict;
+        foreach (var (type, value) in args.Damage.DamageDict)
+        {
+            if (!SupportsType(ent.Comp.DamageContainer, type))
+                continue;
+
+            var oldValue = dict.GetValueOrDefault(type);
+            var newValue = FixedPoint2.Max(FixedPoint2.Zero, oldValue + value);
+            if (newValue == oldValue)
+                continue;
+
+            dict[type] = newValue;
+            damageDone.DamageDict[type] = newValue - oldValue;
+        }
+
+        if (!damageDone.Empty)
+            OnEntityDamageChanged((ent, damageable), damageDone, args.InterruptsDoAfters, args.Origin);
     }
 }
 
@@ -292,6 +323,16 @@ public sealed class DamageModifyEvent(DamageSpecifier damage, EntityUid? origin 
     // Sunrise edit end
 }
 
+/// <summary>
+/// Event raised when an entity with <see cref="DamageableComponent" /> has taken some amount of damage.
+/// </summary>
+/// <param name="Damage">The amount of damage the entity is being subject to.</param>
+/// <param name="Origin">The originator of the damage</param>
+/// <param name="InterruptsDoAfters">If the damage being dealt will interrupt do-afters</param>
+[ByRefEvent]
+public readonly record struct DamageDealtEvent(DamageSpecifier Damage, EntityUid? Origin, bool InterruptsDoAfters);
+
+[Obsolete("Will be replaced with damage-model specific events; general 'took damage' can be served by DamageDealtEvent")]
 public sealed class DamageChangedEvent : EntityEventArgs
 {
     /// <summary>

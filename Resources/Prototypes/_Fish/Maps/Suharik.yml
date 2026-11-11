@@ -14,12 +14,6 @@
         nameGenerator:
           !type:NanotrasenNameGenerator
           prefixCreator: 'TS'
-      - type: SpawnGridAndDockToStation
-        grids:
-        - gridPath: /Maps/_Fish/Shuttles/mining.yml
-          priorityTag: DockMining
-        - gridPath: /Maps/_Fish/Shuttles/security_jay.yml
-          priorityTag: DockFishSecurity
       - type: StationEmergencyShuttle
         emergencyShuttlePath: /Maps/_Fish/Shuttles/emergency_gate.yml
       - type: StationGoal
@@ -54,7 +48,6 @@
         - Saboteurs
         - Furs
         - Crew
-        - CleaningUp
         - HumanitarianAid
         - PersonnelRecovery
         - CrewEducation
@@ -92,7 +85,7 @@
           SeniorPhysician: [ 1, 1 ]
           Chemist: [ 3, 3 ]
           MedicalDoctor: [ 4, 4 ]
-          Paramedic: [ 1, 1 ]
+          Paramedic: [ 3, 3 ]
           MedicalIntern: [ 4, 4 ]
           Psychologist: [ 1, 1 ]
           MedicalPathologist: [ 1, 1 ]

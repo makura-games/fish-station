@@ -1,203 +1,237 @@
 - type: gas
   id: Zenthium
   name: gases-zenthium
-  specificHeat: 10
+  abbreviation: gas-zenthium-abbreviation
+  molarHeatCapacity: 10
   heatCapacityRatio: 1.4
   molarMass: 12
-  color: 00FFFF
+  color: '#00FFFF'
   reagent: Zenthium
   pricePerMole: 6.5
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: nitriumGas  
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: nitriumGas
 
 - type: gas
   id: Krypium
   name: gases-krypium
-  specificHeat: 8
+  abbreviation: gas-krypium-abbreviation
+  molarHeatCapacity: 8
   heatCapacityRatio: 1.3
   molarMass: 28
-  color: 82005d
+  color: '#82005D'
   reagent: Krypium
   pricePerMole: 8.5
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Prallium
   name: gases-prallium
-  specificHeat: 12
+  abbreviation: gas-prallium-abbreviation
+  molarHeatCapacity: 12
   heatCapacityRatio: 1.4
   molarMass: 32
-  color: a0ffff
+  color: '#A0FFFF'
   reagent: Prallium
   pricePerMole: 8.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Chaoson
   name: gases-chaoson
-  specificHeat: 8
+  abbreviation: gas-chaoson-abbreviation
+  molarHeatCapacity: 8
   heatCapacityRatio: 1.4
   molarMass: 18
-  color: ff69b4
+  color: '#FF69B4'
   reagent: Chaoson
   pricePerMole: 1.5
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Garodin
   name: gases-garodin
-  specificHeat: 10
+  abbreviation: gas-garodin-abbreviation
+  molarHeatCapacity: 10
   heatCapacityRatio: 1.35
   molarMass: 24
-  color: f0bb29
+  color: '#F0BB29'
   reagent: Garodin
   pricePerMole: 1.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Baratrium
   name: gases-baratrium
-  specificHeat: 20
+  abbreviation: gas-baratrium-abbreviation
+  molarHeatCapacity: 20
   heatCapacityRatio: 1.2
   molarMass: 26
-  color: 3300eb
+  color: '#3300EB'
   reagent: Baratrium
   pricePerMole: 5.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Ethylium
   name: gases-ethylium
-  specificHeat: 16
+  abbreviation: gas-ethylium-abbreviation
+  molarHeatCapacity: 16
   heatCapacityRatio: 1.4
   molarMass: 28
-  color: ff1493
+  color: '#FF1493'
   reagent: Ethylium
   pricePerMole: 10.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Zimmera
   name: gases-zimmera
-  specificHeat: 15
+  abbreviation: gas-zimmera-abbreviation
+  molarHeatCapacity: 15
   heatCapacityRatio: 1.35
   molarMass: 35
-  color: 8a2be2
+  color: '#8A2BE2'
   reagent: Zimmera
   pricePerMole: 5.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Framel
   name: gases-framel
-  specificHeat: 12
+  abbreviation: gas-framel-abbreviation
+  molarHeatCapacity: 12
   heatCapacityRatio: 1.4
   molarMass: 42
-  color: 00ffaa
+  color: '#00FFAA'
   reagent: Framel
   pricePerMole: 10.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Klemennon
   name: gases-klemennon
-  specificHeat: 12
+  abbreviation: gas-klemennon-abbreviation
+  molarHeatCapacity: 12
   heatCapacityRatio: 1.3
   molarMass: 38
-  color: 0062b8
+  color: '#0062B8'
   reagent: Klemennon
   pricePerMole: 12.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: ProtoUltimium
   name: gases-proto-ultimium
-  specificHeat: 20
+  abbreviation: gas-proto-ultimium-abbreviation
+  molarHeatCapacity: 20
   heatCapacityRatio: 1.25
   molarMass: 52
-  color: b85959
+  color: '#B85959'
   reagent: ProtoUltimium
   pricePerMole: 1.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: ZimmerousFrezonite
   name: gases-zimmerousfrezonite
-  specificHeat: 30
+  abbreviation: gas-zimmerous-frezonite-abbreviation
+  molarHeatCapacity: 30
   heatCapacityRatio: 1.2
   molarMass: 68
-  color: 5ea1b4
+  color: '#5EA1B4'
   reagent: ZimmerousFrezonite
   pricePerMole: 2.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: AntiUltimium
   name: gases-anti-ultimium
-  specificHeat: 60
+  abbreviation: gas-anti-ultimium-abbreviation
+  molarHeatCapacity: 60
   heatCapacityRatio: 1.15
   molarMass: 88
-  color: 1a1a1a
+  color: '#1A1A1A'
   reagent: AntiUltimium
   pricePerMole: 100.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Ultimium
   name: gases-ultimium
-  specificHeat: 60
+  abbreviation: gas-ultimium-abbreviation
+  molarHeatCapacity: 60
   heatCapacityRatio: 1.18
   molarMass: 92
-  color: 62ff43
+  color: '#62FF43'
   reagent: Ultimium
   pricePerMole: 220.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Permafrost
   name: gases-permafrost
-  specificHeat: 400
+  abbreviation: gas-permafrost-abbreviation
+  molarHeatCapacity: 400
   heatCapacityRatio: 1.18
   molarMass: 92
-  color: 43ddff
+  color: '#43DDFF'
   reagent: Permafrost
   pricePerMole: 2.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: Riminon
   name: gases-riminon
-  specificHeat: 12
+  abbreviation: gas-riminon-abbreviation
+  molarHeatCapacity: 12
   heatCapacityRatio: 1.18
   molarMass: 420
-  color: a5f2ff
+  color: '#A5F2FF'
   reagent: Riminon
   pricePerMole: 6.9
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz
 
 - type: gas
   id: AxoNoblium
   name: gases-axonoblium
-  specificHeat: 10
+  abbreviation: gas-axo-noblium-abbreviation
+  molarHeatCapacity: 10
   heatCapacityRatio: 1.35
   molarMass: 48
-  color: ff4500
+  color: '#FF4500'
   reagent: AxoNoblium
   pricePerMole: 6.0
-  gasOverlaySprite: /Textures/_Sunrise/Effects/atmospherics.rsi
-  gasOverlayState: bz
+  gasOverlaySprite:
+    sprite: /Textures/_Sunrise/Effects/atmospherics.rsi
+    state: bz

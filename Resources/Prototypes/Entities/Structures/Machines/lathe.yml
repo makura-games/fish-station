@@ -1,6 +1,6 @@
 - type: entity
   id: BaseLathe
-  parent: [ BaseMachinePowered, ConstructibleMachine ]
+  parent: [ BaseMachinePowered, ConstructibleMachine, BaseConstructibleMachineDestructible ]
   abstract: true
   name: lathe
   components:
@@ -29,15 +29,11 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
+        damage: 175
       behaviors:
       - !type:PlaySoundBehavior
         sound:
           collection: MetalBreak
-      - !type:ChangeConstructionNodeBehavior
-        node: machineFrame
-      - !type:DoActsBehavior
-        acts: ["Destruction"]
   - type: WiresPanel
   - type: ActivatableUI
     key: enum.LatheUiKey.Key
@@ -72,16 +68,20 @@
     modifiers:
       SpaceLube: 0.25
       SpaceGlue: 5
-  - type: SolutionContainerManager
+  - type: SolutionManager
     solutions:
-      lube:
-        maxVol: 250
+    - SolutionLatheLube
   - type: Spillable
     solution: lube
   - type: RefillableSolution
     solution: lube
   - type: ExaminableSolution
     solution: lube
+
+- type: entity
+  parent: [SolutionLube, SolutionLarge]
+  id: SolutionLatheLube # Its own prototype since some lathes might interface with solutions in other ways
+  categories: [ HideSpawnMenu ]
 
 - type: entity
   abstract: true
@@ -149,7 +149,7 @@
     emagStaticPacks:
     - SecurityStaticSunrise # Sunrise-Add
     - SyndicateAmmoStatic
-    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish edit - убрано в техфаб СБ
+    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish-edit - убрано в техфаб СБ
   - type: BlueprintReceiver
     whitelist:
       tags:
@@ -229,8 +229,8 @@
     - NightVisionDevice
     # Sunrise-End
   - type: EmagLatheRecipes
-    emagStaticPacks:
-    - SyndicateBorgModulesEmagSunrise # Sunrise-Add
+    # emagStaticPacks: # Fish-edit
+    # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish-edit
     emagDynamicPacks:
     # - SecurityAmmo # Sunrise-edit
     - SecurityExplosives
@@ -350,6 +350,7 @@
     - MedicalCyberlimbDynamic
     - MedicalCyberOrgansDynamic
     # Sunrise-end
+    - FishBorgModules # Fish-edit: рецепт апгрейд-модуля борга до Mk2
   - type: MaterialStorage
     whitelist: *StandardMaterialWhitelist
   - type: OreSiloClient
@@ -537,6 +538,7 @@
     - Chemistry
     - SurgeryDynamicSunrise # Sunrise-Add
     - MedicalDynamicSunrise # Sunrise-Add
+    - FishMedicalPouchesDynamic # Fish-edit: рецепты подсумков открываются исследованиями T2 и T3
     - MedicalCyberlimbDynamic # Sunrise-Add
     - MedicalCyberOrgansDynamic # Sunrise-Add
     - MedicalImplantDynamic # Sunrise-Add
@@ -552,6 +554,7 @@
   - type: OreSiloClient
   - type: LatheAnnouncing
     channels: [Medical]
+  - type: AmbientMusicMarkerMedical
 
 - type: entity
   parent: BaseLathe
@@ -589,7 +592,7 @@
     - Carpets
     - Bedsheets
     - UniformStaticSunrise # Sunrise-Add
-    - UniformStaticFish # FIsh edit - белый берет СИ в принтере униформы
+    - UniformStaticFish # Fish-edit - белый берет СИ в принтере униформы
   - type: EmagLatheRecipes
     emagStaticPacks:
     - ClothingCentComm
@@ -671,11 +674,11 @@
       whitelist:
         tags:
           - Ore
-    # Fish added start - добавлен магнит для сбора руды с пола
+    # Fish-start - добавлен магнит для сбора руды с пола
     - type: OreProcessorMagnet
       range: 3
       duration: 2
-    # Fish added end
+    # Fish-end
     - type: Lathe
       idleState: icon
       runningState: building
@@ -739,8 +742,6 @@
   name: cutter machine
   description: This is a cutter. It cuts. Add variety to your station floor with eye-pleasing patterns! Don't stick your fingers in.
   components:
-  - type: Transform
-    noRot: false
   - type: Sprite
     sprite: Structures/Machines/cuttermachine.rsi
     snapCardinals: true
@@ -763,10 +764,15 @@
     - FloorSteelTilesStatic
     - FloorWhiteTilesStatic
     - FloorMaintsTilesStatic
+    - FloorIndustrialTilesStatic
     - FloorWoodTilesStatic
     - FloorConcreteTilesStatic
     - CircuitFloorsStatic
     - FloorMarbleTilesStatic
+    - FloorShuttleTilesStatic
+    - PlasticTilesStatic
+    - CarpetTilesStatic
+    - PreciousTilesStatic
     - SunriseFloorTilesStatic # Sunrise-Edit
     dynamicPacks:
     - FauxTiles

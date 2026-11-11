@@ -1,6 +1,6 @@
 - type: technology
   id: EnergyBarriers
-  name: research-technology-energy_barriers
+  name: research-technology-energy-barriers
   icon:
     sprite: _Sunrise/Objects/Tools/EnergyDome/reinhardt.rsi
     state: icon
@@ -9,6 +9,23 @@
   cost: 6000
   recipeUnlocks:
   - EnergyDomeDirectionalTurtle
+  radioChannels:
+  - Security
+
+- type: technology
+  id: SunriseHolographicLightCrystallization
+  name: research-technology-holographic-light-crystallization
+  icon:
+    sprite: _Starlight/Objects/Weapons/Melee/cybershield.rsi
+    state: shield-icon
+  discipline: Arsenal
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+  - SunriseEnergyShieldSec
+  technologyPrerequisites:
+  - AdvancedRiotControl
+  - EnergyBarriers
   radioChannels:
   - Security
 
@@ -124,6 +141,9 @@
   - MagazinePistolHighCapacityAP
   - MagazineBoxHeavyRifleAP
   - MagazineRifleHeavyAP
+  technologyPrerequisites:
+  - SunriseFullMetalJacketAmmunition
+  - UraniumMunitions
   radioChannels:
   - Security
 
@@ -229,7 +249,6 @@
 #  recipeUnlocks:
 #  - BaseMagazinePistolCaselessRifleExtended
 #  - MagazinePPSH41Extended
-#  - MagazineMP5Extended
 #  - MagazineMP7Extended
 #  - MagazineRifleExtended
 #  - MagazineDragunovExtended
@@ -251,13 +270,14 @@
   - LecterUpgrade
   - DrozdUpgrade
   - ClothingHeadHelmetPubg
-  # FIsh edit start - цветные варианты Алтына
+  # Fish-start - цветные варианты Алтына
   - FishClothingHeadHelmetPubgBlack
   - FishClothingHeadHelmetPubgGreen
-  # FIsh edit end
+  # Fish-end
   - VestSecUpgradeBullet
   - VestSecUpgradeRiot
   - VestSecUpgradeReflective
+  - PouchAmmo
   technologyPrerequisites:
   - AdvancedRiotControl
   radioChannels:
@@ -275,7 +295,6 @@
   recipeUnlocks:
   - VestSecUpgradeBulletHeavy
   - VestSecUpgradeWeb
-  - LecterMk3Upgrade
   technologyPrerequisites:
   - CombatEquipment
   radioChannels:

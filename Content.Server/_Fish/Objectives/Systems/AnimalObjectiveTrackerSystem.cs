@@ -12,17 +12,17 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Objectives.Systems;
 
-public sealed class AnimalObjectiveTrackerSystem : EntitySystem
+public sealed partial class AnimalObjectiveTrackerSystem : EntitySystem
 {
     private static readonly ProtoId<TagPrototype> PaperTag = "Paper";
     private static readonly TimeSpan LocationScanInterval = TimeSpan.FromSeconds(1);
     private const float LocationVisitRange = 6f;
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly TurfSystem _turf = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private TagSystem _tag = default!;
 
     private EntityQuery<EdibleComponent> _edibleQuery;
     private TimeSpan _nextLocationScan;

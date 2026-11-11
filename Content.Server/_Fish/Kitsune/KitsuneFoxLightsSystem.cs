@@ -13,14 +13,14 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.Kitsune
 {
-    public sealed class KitsuneFoxLightsSystem : EntitySystem
+    public sealed partial class KitsuneFoxLightsSystem : EntitySystem
     {
-        [Dependency] private readonly IGameTiming _timing = default!;
-        [Dependency] private readonly SharedTransformSystem _transform = default!;
-        [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-        [Dependency] private readonly DamageableSystem _damageable = default!;
-        [Dependency] private readonly SharedAudioSystem _audio = default!;
-        [Dependency] private readonly SharedPopupSystem _popup = default!;
+        [Dependency] private IGameTiming _timing = default!;
+        [Dependency] private SharedTransformSystem _transform = default!;
+        [Dependency] private SharedDoAfterSystem _doAfter = default!;
+        [Dependency] private DamageableSystem _damageable = default!;
+        [Dependency] private SharedAudioSystem _audio = default!;
+        [Dependency] private SharedPopupSystem _popup = default!;
 
         public override void Initialize()
         {
@@ -50,7 +50,7 @@ namespace Content.Server._Fish.Kitsune
                 BreakOnMove = false,
                 BreakOnDamage = false,
                 NeedHand = false,
-                Broadcast = true // FIsh edit: necessary for broadcast system subscription to run since component is deleted in update
+                Broadcast = true // Fish-edit: necessary for broadcast system subscription to run since component is deleted in update
             };
 
             _doAfter.TryStartDoAfter(doAfterArgs);

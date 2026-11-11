@@ -6,9 +6,9 @@ using System.Numerics;
 
 namespace Content.Client.Holopad;
 
-public sealed class HolopadBoundUserInterface : BoundUserInterface
+public sealed partial class HolopadBoundUserInterface : BoundUserInterface
 {
-    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private ISharedPlayerManager _playerManager = default!;
 
     [ViewVariables]
     private HolopadWindow? _window;
@@ -24,7 +24,6 @@ public sealed class HolopadBoundUserInterface : BoundUserInterface
 
         _window = this.CreateWindow<HolopadWindow>();
         _window.Title = Loc.GetString("holopad-window-title", ("title", EntMan.GetComponent<MetaDataComponent>(Owner).EntityName));
-
         if (this.UiKey is not HolopadUiKey)
         {
             Close();

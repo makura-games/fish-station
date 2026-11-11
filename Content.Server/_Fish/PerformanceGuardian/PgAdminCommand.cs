@@ -8,9 +8,9 @@ namespace Content.Server._Fish.PerformanceGuardian;
 /// Admin command: hints the client to open Performance Guardian (requires Debug).
 /// </summary>
 [AdminCommand(AdminFlags.Debug)]
-public sealed class PgAdminCommand : LocalizedEntityCommands
+public sealed partial class PgAdminCommand : LocalizedEntityCommands
 {
-    [Dependency] private readonly PerformanceGuardianSystem _guardian = default!;
+    [Dependency] private PerformanceGuardianSystem _guardian = default!;
 
     public override string Command => "perfguardian";
 
@@ -28,9 +28,9 @@ public sealed class PgAdminCommand : LocalizedEntityCommands
 }
 
 [AdminCommand(AdminFlags.Debug)]
-public sealed class PgAdminCommandAlias : LocalizedEntityCommands
+public sealed partial class PgAdminCommandAlias : LocalizedEntityCommands
 {
-    [Dependency] private readonly PerformanceGuardianSystem _guardian = default!;
+    [Dependency] private PerformanceGuardianSystem _guardian = default!;
 
     public override string Command => "pg";
 

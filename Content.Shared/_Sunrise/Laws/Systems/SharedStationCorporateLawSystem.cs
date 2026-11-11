@@ -7,11 +7,10 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Sunrise.Laws.Systems;
 
-public abstract class SharedStationCorporateLawSystem : EntitySystem
+public abstract partial class SharedStationCorporateLawSystem : EntitySystem
 {
-    [Dependency] private readonly SharedStationSystem _station = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly IConfigurationManager _config = default!;
+    [Dependency] private SharedStationSystem _station = default!;
+    [Dependency] private IConfigurationManager _config = default!;
 
     public Entity<StationCorporateLawComponent>? GetStationLawset(EntityUid uid)
     {
@@ -61,7 +60,7 @@ public abstract class SharedStationCorporateLawSystem : EntitySystem
 
         // Fallback to CVar
         var lawsetId = _config.GetCVar(SunriseCCVars.SunriseCCVars.CorporateLawSet);
-        if (_proto.TryIndex<CorporateLawsetPrototype>(lawsetId, out var proto))
+        if (ProtoMan.TryIndex<CorporateLawsetPrototype>(lawsetId, out var proto))
         {
             provisions = proto.Provisions;
             articles = proto.Articles;
@@ -70,10 +69,11 @@ public abstract class SharedStationCorporateLawSystem : EntitySystem
         }
         else
         {
+            // Fish-edit: без набора законов не подставляем запасной порог пермы (раньше 50 ломало 5xx → 60)
             provisions = new();
             articles = new();
             circumstances = new();
-            permanentThreshold = 50;
+            permanentThreshold = -1;
         }
     }
 
@@ -86,7 +86,7 @@ public abstract class SharedStationCorporateLawSystem : EntitySystem
 
         foreach (var sId in sections)
         {
-            if (_proto.TryIndex(sId, out var section) && section.Entries.Contains(lawId))
+            if (ProtoMan.TryIndex(sId, out var section) && section.Entries.Contains(lawId))
                 return true;
         }
 
@@ -104,7 +104,7 @@ public abstract class SharedStationCorporateLawSystem : EntitySystem
         // Check Articles
         foreach (var sectionId in component.Articles)
         {
-            if (_proto.TryIndex(sectionId, out var section) && section.Entries.Contains(lawId))
+            if (ProtoMan.TryIndex(sectionId, out var section) && section.Entries.Contains(lawId))
                 return true;
         }
 

@@ -76,3 +76,13 @@
     state: runic
   - type: Stack
     count: 10
+
+- type: entity
+  parent: CultRunicMetal
+  id: CultRunicMetal30
+  suffix: 30
+  components:
+  - type: Sprite
+    state: runic
+  - type: Stack
+    count: 30

@@ -7,9 +7,9 @@ using Robust.Shared.Console;
 namespace Content.Server._Fish.RoundEnd
 {
     [AdminCommand(AdminFlags.Admin)]
-    public sealed class LobbyPopupSetMessageCommand : LocalizedCommands
+    public sealed partial class LobbyPopupSetMessageCommand : LocalizedCommands
     {
-        [Dependency] private readonly IConfigurationManager _configManager = default!;
+        [Dependency] private IConfigurationManager _configManager = default!;
 
         public override string Command => "lobbypopupsetmessage";
 

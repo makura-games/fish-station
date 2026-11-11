@@ -116,7 +116,7 @@
     sprite: _Sunrise/Clothing/Ears/Headsets/command.rsi
 
 - type: entity
-  parent: ClothingHeadset
+  parent: [ClothingHeadset, BaseCommandContraband]
   id: ClothingHeadsetBlueShieldEnsign
   name: blue shield ensign headset
   description:
@@ -142,8 +142,9 @@
     containers:
       key_slots:
       - EncryptionKeyBlueShield
-      - EncryptionKeyStationMaster # Fish edit
+      - EncryptionKeyStationMaster # Fish-edit
       - EncryptionKeyCommon
+      - EncryptionKeyCommand # Cause we dont have Ensign on station.
   - type: Sprite
     sprite: _Sunrise/Clothing/Ears/Headsets/command.rsi
   - type: Clothing

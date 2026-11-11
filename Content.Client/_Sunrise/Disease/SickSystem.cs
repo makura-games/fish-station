@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
@@ -9,17 +10,27 @@ using Robust.Shared.Prototypes;
 using Content.Shared._Sunrise.Disease;
 using Content.Shared.Ghost;
 namespace Content.Client._Sunrise.Disease;
-public sealed class SickSystem : EntitySystem
+public sealed partial class SickSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<SickComponent, GetStatusIconsEvent>(OnGetStatusIconsGlobal);
         SubscribeNetworkEvent<UpdateInfectionsEvent>(OnUpdateInfect);
+        SubscribeNetworkEvent<ClientInfectEvent>(OnClientInfect); // Fish-edit
+    }
+
+    private void OnClientInfect(ClientInfectEvent args) // Fish-edit
+    {
+        var uid = GetEntity(args.Infected);
+        if (Exists(uid))
+        {
+            EnsureComp<SickComponent>(uid).Inited = true;
+        }
     }
 
     private void OnUpdateInfect(UpdateInfectionsEvent args)
@@ -38,10 +49,9 @@ public sealed class SickSystem : EntitySystem
         if (_mobState.IsDead(uid) || HasComp<ActiveNPCComponent>(uid))
             return;
 
-        if (!component.Inited)
-            return;
-
+        // Fish-start - отображаем иконку болезни сразу при наличии компонента
         var iconId = "SmartDiseaseIcon";
+        // Fish-end
         args.StatusIcons.Add(_prototype.Index<SickIconPrototype>(iconId));
     }
 }

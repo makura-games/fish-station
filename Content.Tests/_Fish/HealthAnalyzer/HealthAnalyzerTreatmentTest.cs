@@ -52,6 +52,40 @@ public sealed class HealthAnalyzerTreatmentTest
             Is.EqualTo(new[] { firstReagent, secondReagent }));
     }
 
+    [TestCase(10, "Hyronalin")]
+    [TestCase(30, "Arithrazine")]
+    public void RadiationUsesActualRadiationMedicine(int total, string expectedReagent)
+    {
+        var damage = new Dictionary<ProtoId<DamageTypePrototype>, FixedPoint2>
+        {
+            ["Radiation"] = total,
+        };
+
+        var treatments = FishHealthAnalyzerControl.GetDamageTreatments(
+            "Toxin", total, new ProtoId<DamageTypePrototype>[] { "Poison", "Radiation" }, damage,
+            new HashSet<ProtoId<DamageTypePrototype>>()).ToArray();
+
+        Assert.That(treatments.Select(treatment => treatment.Reagent.Id),
+            Is.EqualTo(new[] { expectedReagent }));
+    }
+
+    [Test]
+    public void MinorPoisonAndRadiationUseDifferentMedicines()
+    {
+        var damage = new Dictionary<ProtoId<DamageTypePrototype>, FixedPoint2>
+        {
+            ["Poison"] = 10,
+            ["Radiation"] = 10,
+        };
+
+        var treatments = FishHealthAnalyzerControl.GetDamageTreatments(
+            "Toxin", 20, new ProtoId<DamageTypePrototype>[] { "Poison", "Radiation" }, damage,
+            new HashSet<ProtoId<DamageTypePrototype>>()).ToArray();
+
+        Assert.That(treatments.Select(treatment => treatment.Reagent.Id),
+            Is.EqualTo(new[] { "Dylovene", "Hyronalin" }));
+    }
+
     [Test]
     public void UndamagedAndBandagedTypesAreSkipped()
     {

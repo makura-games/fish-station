@@ -13,10 +13,10 @@ public sealed partial class ObrCallSystem
 {
     public static readonly ProtoId<ObrCallSettingsPrototype> DefaultSettingsId = "DefaultObrCallSettings";
 
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     /// <summary>
     /// Ищет безопасную точку ~arrivalDistance от станции и отправляет шаттл туда через FTL (без стыковки).
@@ -161,7 +161,7 @@ public sealed partial class ObrCallSystem
     {
         // Другие сетки (станция, астероиды, шаттлы) — пересечение запрещено.
         var grids = new List<Entity<MapGridComponent>>();
-        _mapManager.FindGridsIntersecting(mapId, worldBox, ref grids, includeMap: false);
+        _mapSystem.FindGridsIntersecting(mapId, worldBox, ref grids, includeMap: false);
         foreach (var grid in grids)
         {
             if (grid.Owner == shuttleUid)

@@ -5,11 +5,9 @@
   name: bottle (unknown pathogen)
   components:
   - type: Label
-    currentLabel: reagent-name-unknown-pathogen
-  - type: SolutionContainerManager
-    solutions:
-      drink:
-        maxVol: 30
-        reagents:
-        - ReagentId: UnknownPathogen
-          Quantity: 30
+    localizedLabel: reagent-name-unknown-pathogen
+  - type: Solution
+    solution:
+      reagents:
+      - ReagentId: UnknownPathogen
+        Quantity: 30

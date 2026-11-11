@@ -11,13 +11,12 @@ using Robust.Shared.Utility;
 
 namespace Content.Server.Trigger.Systems;
 
-public sealed class RattleOnTriggerSystem : EntitySystem
+public sealed partial class RattleOnTriggerSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly RadioSystem _radio = default!;
-    [Dependency] private readonly NavMapSystem _navMap = default!;
-    [Dependency] private readonly MessengerServerSystem _messenger = default!;
-    [Dependency] private readonly StationSystem _station = default!;
+    [Dependency] private RadioSystem _radio = default!;
+    [Dependency] private NavMapSystem _navMap = default!;
+    [Dependency] private MessengerServerSystem _messenger = default!;
+    [Dependency] private StationSystem _station = default!;
 
     public override void Initialize()
     {
@@ -51,7 +50,8 @@ public sealed class RattleOnTriggerSystem : EntitySystem
 
         // Sunrise-Start
         var sentToMessenger = false;
-        if (_messenger.GetServerEntity(_station.GetOwningStation(ent.Owner)) is var (server, _) &&
+        if (ent.Comp.SendToMessenger && // Fish-edit
+            _messenger.GetServerEntity(_station.GetOwningStation(ent.Owner)) is var (server, _) &&
             _messenger.GetGroupIdByRadioChannel(ent.Comp.RadioChannel) is { } groupId)
         {
             _messenger.SendSystemMessageToGroup(server, groupId, message);
@@ -59,7 +59,7 @@ public sealed class RattleOnTriggerSystem : EntitySystem
         }
 
         if (!sentToMessenger)
-            _radio.SendRadioMessage(ent.Owner, message, _prototypeManager.Index(ent.Comp.RadioChannel), ent.Owner);
+            _radio.SendRadioMessage(ent.Owner, message, ProtoMan.Index(ent.Comp.RadioChannel), ent.Owner);
         // Sunrise-End
     }
 }

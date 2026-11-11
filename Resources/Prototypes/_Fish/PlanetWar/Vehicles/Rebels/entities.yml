@@ -33,9 +33,12 @@
   #  requireInSpace: false
   - type: GhostRole
     name: pw-vehicles-rebels-dronarm-name-1
-    description: pw-vehicles-rebels-dronarm-desc-1
+    description: pw-vehicles-rebels-dronarm-desc
     raffle:
       settings: WM
+  - type: PlanetWarBriefing
+    briefingText: pw-briefing-rebels-dronarm
+    briefingColor: "#e50000"
   - type: StepTrigger
     blacklist:
       components:
@@ -135,7 +138,7 @@
   components:
   - type: GhostRole
     name: pw-vehicles-rebels-dronarm-name-1
-    description: pw-construction-rebels-mobhumanarmp0-desc
+    description: pw-vehicles-rebels-dronarm-desc
     raffle:
       settings: WM
   - type: GhostRoleMobSpawner
@@ -151,7 +154,7 @@
   components:
   - type: GhostRole
     name: pw-vehicles-rebels-markerdronarmturretmine-name
-    description: pw-construction-rebels-mobhumanarmp0-desc
+    description: pw-vehicles-rebels-markerdronarmturretmine-desc
     raffle:
       settings: WM
   - type: GhostRoleMobSpawner
@@ -203,14 +206,22 @@
     airtight: false
     startingEquipment:
       - WeaponMechCombatMGWM
-    mechToPilotDamageMultiplier: 0.01
     maxEquipmentAmount: 1
-    pilotWhitelist:
-      components:
-        - Thruster
     pilotBlacklist:
       components:
         - ScaleVisuals
+  - type: Vehicle
+    transferDamageModifier:
+      coefficients:
+        Blunt: 0.01
+        Slash: 0.01
+        Piercing: 0.01
+        Cold: 0.01
+        Heat: 0.01
+        Shock: 0.01
+    operatorWhitelist:
+      components:
+        - Thruster
   - type: MeleeWeapon
     attackRate: 0.3
     range: 1.5
@@ -219,7 +230,7 @@
         Blunt: 80
         Structural: 120
   - type: MobThresholds
-    currentThresholdState : Alive
+#   currentThresholdState : Alive
     thresholds:
       0: Alive
       1000: Critical
@@ -329,7 +340,7 @@
     baseState: armgruz
     openState: armgruz
     brokenState: armgruz
-    mechToPilotDamageMultiplier: 0.1
+#   mechToPilotDamageMultiplier: 0.1
     maxEquipmentAmount: 2
     startingEquipment: 
       - WeaponMechCombatLightWM

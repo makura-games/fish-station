@@ -12,10 +12,10 @@
   icon: "JobIconCentcommSectoralJudge"
   overrideConsoleVisibility: false
   supervisors: job-supervisors-supremecourt
-  canBeAntag: false
+  # canBeAntag: false # Fish-edit
   setPreference: true
   radioBold: true
-  displayWeight: 75
+  # displayWeight: 75
   alwaysUseSpawner: true
   accessGroups:
   - AllAccess

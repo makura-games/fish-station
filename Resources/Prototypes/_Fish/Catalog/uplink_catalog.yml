@@ -1,0 +1,35 @@
+# Агентам подсумок стоит 3 ТК; аплинки оперативников исключены, чтобы не показывать им вторую позицию.
+- type: listing
+  id: FishUplinkMedicalPouch
+  productEntity: FishPouchMedicalSyndicate
+  cost:
+    Telecrystal: 3
+  categories:
+  - UplinkChemicals
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1 # один подсумок на аплинк
+  - !type:StoreWhitelistCondition
+    blacklist:
+      tags:
+      - NukeOpsUplink
+      - LoneOpsUplink
+      - AssaultOpsUplink
+
+# Ядерным оперативникам (включая одиночных) и диверсионному отряду подсумок дешевле за 1 ТК.
+- type: listing
+  id: FishUplinkMedicalPouchOperatives
+  productEntity: FishPouchMedicalSyndicate
+  cost:
+    Telecrystal: 1
+  categories:
+  - UplinkChemicals
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1 # бесплатная выдача также ограничена одним подсумком на аплинк
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - NukeOpsUplink
+      - LoneOpsUplink
+      - AssaultOpsUplink

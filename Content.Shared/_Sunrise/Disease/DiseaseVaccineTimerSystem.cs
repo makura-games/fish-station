@@ -1,13 +1,14 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 namespace Content.Shared._Sunrise.Disease;
 using Robust.Shared.Timing;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 
-public sealed class DiseaseVaccineTimerSystem : SharedSickSystem
+public sealed partial class DiseaseVaccineTimerSystem : SharedSickSystem
 {
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _movementSpeed = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private MovementSpeedModifierSystem _movementSpeed = default!;
     public override void Initialize()
     {
         base.Initialize();

@@ -13,15 +13,15 @@
    - !type:AgeRequirement
      requiredAge: 25
   startingGear: RepresentativeBlueShieldGear
-  icon: JobIconBlueShield
+  icon: NTR_operative
 
   supervisors: job-supervisors-representative
-  canBeAntag: false
+  # canBeAntag: false # Fish-edit
   accessGroups:
   - AllAccess
   special:
    - !type:AddImplantSpecial
-     implants: [ MindShieldImplant, BluespaceImplant ]
+     implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ] # Fish-edit
 
 - type: startingGear
   id: RepresentativeBlueShieldGear
@@ -29,9 +29,9 @@
    shoes: ClothingShoesBootsBlueShieldFilled
    eyes: ClothingEyesGlassesBlueShield
    # head через BlueShieldHead loadout # Fish-edit
-   # outerClothing: ClothingOuterArmorBlueShield # Fish edit - commented out, managed via loadout
+   # outerClothing: ClothingOuterArmorBlueShield # Fish-edit - commented out, managed via loadout
    id: BlueShieldOperativePDA
-   ears: ClothingHeadsetBlueShield # Fish edit
+   ears: ClothingHeadsetBlueShield # Fish-edit
    gloves: ClothingHandsGlovesCombat
   storage:
    back:

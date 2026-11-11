@@ -42,7 +42,11 @@ cult-cultists-not-found = Культисты не обнаружены.
 cult-blood-boil-rune-need-minimum = Необходимо минимум 3 культиста.
 cult-blood-boil-rune-no-targets = Нет целей.
 cult-teleport-rune-default-label = безымянная метка
-cult-cant-draw-rune = Нельзя рисовать руну в космосе.
+cult-cant-draw-rune = Нельзя рисовать руну вне станции.
+cult-teleport-interrupted = Телепортация прервана.
+cult-summon-ritual-interrupted = Ритуал призыва прерван.
+cult-summon-ritual-started = Вы начинаете ритуал призыва...
+cult-borg-destroyed = Борг разрушен силой культа!
 chat-manager-cult-channel-name = Культ
 chat-manager-send-cult-chat-wrap-message = [bold]\[{ $channelName }\] { $player }: { $message }[/bold]
 hud-chatbox-select-channel-Cult = Культ
@@ -55,3 +59,7 @@ summon-button-label = { $label } ({ $mobState }; { $distance } м)
 teleport-button-label = { $label } ({ $distance } м)
 revived-cultist-desc = Культист крови, душа которого сгинула в вечном мраке.
 tile-has-rune = На этом тайле уже есть руна!
+
+# Fish-start
+cult-rune-not-on-station = Руны можно рисовать только на территории станции.
+# Fish-end

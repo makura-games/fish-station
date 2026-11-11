@@ -5,7 +5,7 @@
   color: "#FF5297"
   weight: 80
   roles:
-    - OversightOfficer # fish-add
+    - OversightOfficer # Fish-edit
     - Magistrat
     - IAA
     - Lawyer
@@ -16,11 +16,14 @@
   name: department-Blueshield
   description: department-Blueshield-description
   color: "#0f4e81"
+  editorHidden: true # Fish-edit: скрыть отдел из меню выбора ролей
   roles:
-    - BlueShieldEnsign
     - BlueShieldOfficer
-    # - BlueShieldOperative #Fish-edit
-    - RepresentativeBlueShield #Fish-add
+    - BlueShieldEnsign # Fish-edit
+    - BlueShieldOperative # Fish-edit
+    - BlueShieldOfficerFish # Fish-edit
+    - CentcommBlueShield # Fish-edit
+    - RepresentativeBlueShield #Fish-edit
   primary: false
   weight: 50
 
@@ -79,6 +82,7 @@
   - CentcommChef #Fish-edit
   - CentcommMedicalDoctor #Fish-edit
   - CentcommBartender #Fish-edit
+  - BlueShieldEnsign # Fish-edit
   weight: 120
 
 - type: department

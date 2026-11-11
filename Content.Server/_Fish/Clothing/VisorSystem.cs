@@ -12,9 +12,9 @@ namespace Content.Server._Fish.Clothing;
 /// <summary>
 /// Applies closed-visor protection and manages the wearer's overlay state.
 /// </summary>
-public sealed class VisorSystem : EntitySystem
+public sealed partial class VisorSystem : EntitySystem
 {
-    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private InventorySystem _inventory = default!;
 
     public override void Initialize()
     {

@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 
 using Content.Shared.EntityEffects;
@@ -7,7 +8,7 @@ namespace Content.Shared._Sunrise.Disease;
 
 public sealed partial class GiveDiseaseImmunityEntityEffectSystem : EntityEffectSystem<TransformComponent, GiveDiseaseImmunity>
 {
-    [Dependency] private readonly EntityManager _entityManager = default!;
+    [Dependency] private EntityManager _entityManager = default!;
 
     protected override void Effect(Entity<TransformComponent> entity, ref EntityEffectEvent<GiveDiseaseImmunity> args)
     {

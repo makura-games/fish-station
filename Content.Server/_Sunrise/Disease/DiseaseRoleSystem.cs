@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
@@ -9,6 +10,7 @@ using Content.Shared.Charges.Systems;
 using Robust.Shared.Prototypes;
 using Content.Shared.FixedPoint;
 using Content.Shared.Popups;
+using Content.Shared.Store;
 using Content.Shared.Store.Components;
 using Content.Shared.Zombies;
 using Robust.Shared.Timing;
@@ -21,15 +23,15 @@ namespace Content.Server._Sunrise.Disease;
 
 using Robust.Server.GameObjects;
 
-public sealed class DiseaseRoleSystem : SharedDiseaseRoleSystem
+public sealed partial class DiseaseRoleSystem : SharedDiseaseRoleSystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedActionsSystem _actionsSystem = default!;
-    [Dependency] private readonly StoreSystem _store = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedChargesSystem _sharedCharges = default!;
-    [Dependency] private readonly AudioSystem _audio = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedActionsSystem _actionsSystem = default!;
+    [Dependency] private StoreSystem _store = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedChargesSystem _sharedCharges = default!;
+    [Dependency] private AudioSystem _audio = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
 
     private static readonly List<string> _bloodReagents = new()
     {
@@ -38,7 +40,7 @@ public sealed class DiseaseRoleSystem : SharedDiseaseRoleSystem
         "DiseaseBloodThird"
     };
 
-    [ValidatePrototypeId<EntityPrototype>] private const string DiseaseShopId = "ActionDiseaseShop";
+    private static readonly EntProtoId DiseaseShopId = "ActionDiseaseShop";
 
     public override void Initialize()
     {
@@ -78,14 +80,22 @@ public sealed class DiseaseRoleSystem : SharedDiseaseRoleSystem
                 return;
             }
 
+            // Fish-start - Защита блокирует заражение при полной защите, иначе шанс
             var protection = GetDiseaseProtectionCoefficient(args.Target);
-            if (protection < 1.0f)
+            if (protection <= 0.0f)
+            {
+                _popup.PopupEntity(Loc.GetString("disease-infect-protected"), args.Performer, args.Performer);
+                return;
+            }
+
+            if (!_random.Prob(protection))
             {
                 _popup.PopupEntity(Loc.GetString("disease-infect-protected"), args.Performer, args.Performer);
                 return;
             }
 
             OnInfect(args, 1.0f);
+            // Fish-end
 
             if (args.Handled)
             {
@@ -321,7 +331,7 @@ public sealed class DiseaseRoleSystem : SharedDiseaseRoleSystem
         {
             if (TryComp<StoreComponent>(uid, out var store))
             {
-                bool f = _store.TryAddCurrency(new Dictionary<string, FixedPoint2>
+                bool f = _store.TryAddCurrency(new Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2>
                     {
                         {diseaseComp.CurrencyPrototype, value}
                     }, uid);
@@ -338,7 +348,7 @@ public sealed class DiseaseRoleSystem : SharedDiseaseRoleSystem
             {
                 if (store.Balance[diseaseComp.CurrencyPrototype] >= value)
                 {
-                    _store.TryAddCurrency(new Dictionary<string, FixedPoint2>
+                    _store.TryAddCurrency(new Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2>
                     {
                         {diseaseComp.CurrencyPrototype, -value}
                     }, uid);

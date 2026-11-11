@@ -1,0 +1,23 @@
+# Fish-start - Spooky clown mask
+- type: entity
+  parent: ClothingMaskClownBase
+  id: FishClothingMaskClownSpooky
+  suffix: ADMEME
+  name: spooky clown mask
+  description: This old mask looks very scary.
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Mask/spooky_clown.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Mask/spooky_clown.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+# Fish-end

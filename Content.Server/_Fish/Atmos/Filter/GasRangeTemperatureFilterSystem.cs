@@ -21,15 +21,15 @@ using Content.Shared.Atmos.Components;
 namespace Content.Server.Atmos.Piping.Trinary.EntitySystems;
 
 [UsedImplicitly]
-public sealed class GasRangeTemperatureFilterSystem : EntitySystem
+public sealed partial class GasRangeTemperatureFilterSystem : EntitySystem
 {
     [Dependency] private UserInterfaceSystem _userInterface = default!;
     [Dependency] private IAdminLogManager _adminLogger = default!;
-    [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
-    [Dependency] private readonly SharedAmbientSoundSystem _ambientSound = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly NodeContainerSystem _nodeContainer = default!;
+    [Dependency] private AtmosphereSystem _atmosphere = default!;
+    [Dependency] private SharedAmbientSoundSystem _ambientSound = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private NodeContainerSystem _nodeContainer = default!;
     private const float MaxAllowedTemperature = 100000f;
 
     public override void Initialize()

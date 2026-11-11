@@ -1,2 +1,3 @@
+# Fish-edit: To remove - локализация разумной болезни
 ent-MobDisease = sensible disease
-    .desc = plague inc 2.0
+    .desc = Plague inc 2.0.

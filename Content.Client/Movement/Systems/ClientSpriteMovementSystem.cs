@@ -1,3 +1,4 @@
+using Content.Shared._Fish.BorgRest; // Fish-edit
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Robust.Client.GameObjects;
@@ -7,17 +8,14 @@ namespace Content.Client.Movement.Systems;
 /// <summary>
 /// Controls the switching of motion and standing still animation
 /// </summary>
-public sealed class ClientSpriteMovementSystem : SharedSpriteMovementSystem
+public sealed partial class ClientSpriteMovementSystem : SharedSpriteMovementSystem
 {
-    [Dependency] private readonly SpriteSystem _sprite = default!;
-
-    private EntityQuery<SpriteComponent> _spriteQuery;
+    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private EntityQuery<SpriteComponent> _spriteQuery = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-
-        _spriteQuery = GetEntityQuery<SpriteComponent>();
 
         SubscribeLocalEvent<SpriteMovementComponent, AfterAutoHandleStateEvent>(OnAfterAutoHandleState);
     }
@@ -26,6 +24,12 @@ public sealed class ClientSpriteMovementSystem : SharedSpriteMovementSystem
     {
         if (!_spriteQuery.TryGetComponent(ent, out var sprite))
             return;
+
+        // Fish-edit: пока борг Mk2 отдыхает (BorgRest), BlockMovement уже запрещает движение,
+        // но ввод WASD всё равно взводит IsMoving (SharedMoverController.Input) и перекрывает
+        // rest-кадр тела кадром ходьбы/стойки. Не применяем слои движения, пока идёт отдых.
+        if (TryComp<BorgRestComponent>(ent.Owner, out var rest) && rest.IsResting)  // Fish-edit
+            return;  // Fish-edit
 
         if (ent.Comp.IsMoving)
         {

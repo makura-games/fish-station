@@ -20,17 +20,17 @@ namespace Content.Server._Sunrise.BluespaceArtillery;
 /// <summary>
 /// Серверная логика наведения и запуска блюспейс-артиллерии.
 /// </summary>
-public sealed class BluespaceArtilleryDesignatorSystem : SharedBluespaceArtilleryDesignatorSystem
+public sealed partial class BluespaceArtilleryDesignatorSystem : SharedBluespaceArtilleryDesignatorSystem
 {
-    [Dependency] private readonly ChatSystem _chat = default!;
-    [Dependency] private readonly ExplosionSystem _explosion = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
-    [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedChargesSystem _charges = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private ExplosionSystem _explosion = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedChargesSystem _charges = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
@@ -144,13 +144,19 @@ public sealed class BluespaceArtilleryDesignatorSystem : SharedBluespaceArtiller
         var mode = ent.Comp.FireModes[modeIndex];
         var mapCoords = _transform.ToMapCoordinates(location);
 
-        _chat.DispatchGlobalAnnouncement(
+        // Fish-start
+        // Объявление и звук слышны только на карте, где вызван удар.
+        var mapFilter = Filter.BroadcastMap(mapCoords.MapId);
+
+        _chat.DispatchFilteredAnnouncement(
+            mapFilter,
             Loc.GetString(ent.Comp.Announcement),
-            Loc.GetString(ent.Comp.AnnouncementSender),
+            sender: Loc.GetString(ent.Comp.AnnouncementSender),
             playDefault: false,
             colorOverride: ent.Comp.AnnouncementColor);
 
-        _audio.PlayGlobal(ent.Comp.AnnouncementSound, Filter.Broadcast(), true);
+        _audio.PlayGlobal(ent.Comp.AnnouncementSound, mapFilter, true);
+        // Fish-end
 
         if (user != null)
         {
@@ -174,7 +180,7 @@ public sealed class BluespaceArtilleryDesignatorSystem : SharedBluespaceArtiller
         {
             DeleteMarker(markerUid);
 
-            if (!_mapManager.MapExists(mapCoords.MapId))
+            if (!_mapSystem.MapExists(mapCoords.MapId))
                 return;
 
             _explosion.QueueExplosion(

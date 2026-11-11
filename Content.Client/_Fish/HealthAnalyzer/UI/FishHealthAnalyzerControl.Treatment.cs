@@ -44,6 +44,12 @@ public sealed partial class FishHealthAnalyzerControl
         ["Genetic"] = "Doxarubixadone",
     };
 
+    private static readonly Dictionary<ProtoId<DamageTypePrototype>, ProtoId<ReagentPrototype>> BasicTypeTreatments = new()
+    {
+        ["Caustic"] = "Sigynate",
+        ["Radiation"] = "Hyronalin",
+    };
+
     private static readonly Dictionary<ProtoId<DamageTypePrototype>, ProtoId<ReagentPrototype>> AdvancedTreatments = new()
     {
         ["Blunt"] = "Bruizine",
@@ -215,6 +221,8 @@ public sealed partial class FishHealthAnalyzerControl
         if (!_entityManager.TryGetComponent<DamageableComponent>(target, out var damageable))
             return false;
 
+        _entityManager.TryGetComponent<InjurableComponent>(target, out var injurable);
+
         var bleedingCovered = false;
         foreach (var item in MinorInjuryTreatments)
         {
@@ -222,8 +230,8 @@ public sealed partial class FishHealthAnalyzerControl
                 !prototype.TryGetComponent<HealingComponent>(out var healing, _entityManager.ComponentFactory))
                 continue;
 
-            if (healing.DamageContainers != null && damageable.DamageContainerID is { } container &&
-                !healing.DamageContainers.Contains(container))
+            if (healing.DamageContainers != null &&
+                (injurable?.DamageContainer is not { } container || !healing.DamageContainers.Contains(container)))
                 continue;
 
             var conditions = new List<string>();
@@ -390,7 +398,7 @@ public sealed partial class FishHealthAnalyzerControl
             var reagent = groupDamage >= SevereDamageThreshold &&
                           AdvancedTreatments.TryGetValue(damageType, out var advancedReagent)
                 ? advancedReagent
-                : basicReagent;
+                : BasicTypeTreatments.GetValueOrDefault(damageType, basicReagent);
             yield return (damageType, reagent);
         }
     }

@@ -56,6 +56,9 @@
   id: SpawnPointBlueShieldEnsign
   parent: SpawnPointJobBase
   name: blue shield ensign
+  # Fish-start - hide from spawn menu
+  categories: [ HideSpawnMenu ]
+  # Fish-end
   components:
   - type: SpawnPoint
     job_id: BlueShieldEnsign
@@ -451,6 +454,7 @@
   name: blue shield operative
   components:
   - type: SpawnPoint
+    spawn_type: LateJoin
     job_id: BlueShieldOperative
   - type: Sprite
     sprite: _Sunrise/Markers/jobs.rsi

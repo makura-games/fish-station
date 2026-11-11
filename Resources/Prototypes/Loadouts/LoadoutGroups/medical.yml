@@ -50,6 +50,8 @@
   - ChiefMedicalOfficerJumpskirt
   - ChiefMedicalOfficerTurtleneckJumpsuit
   - ChiefMedicalOfficerTurtleneckJumpskirt
+  - SeniorPhysicianJumpsuit # Fish-edit - гардероб ведущего врача открыт для всех врачей
+  - SeniorPhysicianJumpskirt # Fish-edit
 
 - type: loadoutGroup
   id: ChiefMedicalOfficerOuterClothing
@@ -195,6 +197,7 @@
   minLimit: 0
   loadouts:
   - ParamedicHead
+  - SeniorPhysicianBeret # Fish-edit
 
 - type: loadoutGroup
   id: ParamedicJumpsuit
@@ -221,6 +224,7 @@
   - SunriseWinterColorCyan
   - SunriseWinterColorBlue
   - ClothingOuterHardsuitVoidParamedFish
+  - SeniorPhysicianLabCoat
 # Fish-end
 
 - type: loadoutGroup

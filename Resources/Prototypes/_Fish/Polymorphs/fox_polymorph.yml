@@ -1,0 +1,10 @@
+﻿- type: polymorph
+  id: FoxMorph
+  configuration:
+    entity: MobFox
+    forced: true
+    transferName: true
+    inventory: None
+    revertOnCrit: true
+    revertOnDeath: true
+    allowRepeatedMorphs: false

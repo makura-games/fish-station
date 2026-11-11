@@ -1,10 +1,14 @@
+// Fish-start
+using Content.Shared.Mind;
+using Content.Shared.Ghost;
+using Content.Shared.Ghost.Components;
+// Fish-end
 using System.Linq;
 using System.Numerics;
 using Content.Server._Sunrise.BloodCult.GameRule;
 using Content.Server._Sunrise.BloodCult.Objectives.Components;
 using Content.Server._Sunrise.BloodCult.Runes.Comps;
 using Content.Server.Atmos.Components;
-using Content.Server.Bible.Components;
 using Content.Server.Body.Components;
 using Content.Server.Chat.Systems;
 using Content.Server.Chemistry.Components;
@@ -12,14 +16,16 @@ using Content.Server.Ghost.Roles.Components;
 using Content.Server.Ghost.Roles.Raffles;
 using Content.Server.Nutrition.Components;
 using Content.Shared._Sunrise.BloodCult;
+using Content.Shared._Sunrise.BloodCult.Actions;
 using Content.Shared._Sunrise.BloodCult.Components;
 using Content.Shared._Sunrise.BloodCult.Items;
 using Content.Shared._Sunrise.BloodCult.Runes;
 using Content.Shared._Sunrise.BloodCult.UI;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Bible.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chat;
-using Content.Shared.Chemistry.Components.SolutionManager;
+using Content.Shared.Chemistry.Components;
 using Content.Shared.Coordinates;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Damage;
@@ -32,13 +38,14 @@ using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Maps;
 using Content.Shared.Mind.Components;
-using Content.Shared.Mindshield.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Popups;
 using Content.Shared.Projectiles;
 using Content.Shared.Rejuvenate;
+using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared.Station;
 using Content.Shared.Verbs;
 using Microsoft.EntityFrameworkCore;
 using Robust.Shared.Audio;
@@ -87,6 +94,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
             SubscribeLocalEvent<CultRuneSummoningProviderComponent, SummonCultistListWindowItemSelectedMessage>(
                 OnCultistSelected);
+            SubscribeLocalEvent<BloodCultistComponent, CultSummonRitualDoAfterEvent>(OnSummonRitualDoAfter);
 
             // Rune drawing/erasing
             SubscribeLocalEvent<BloodCultistComponent, CultDrawEvent>(OnDraw);
@@ -327,17 +335,11 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
         private void HandleCollision(EntityUid uid, CultRuneBaseComponent component, ref StartCollideEvent args)
         {
-            if (!TryComp<SolutionContainerManagerComponent>(args.OtherEntity, out var solution))
-            {
-                return;
-            }
-
-            if (!_solutionContainer.TryGetSolution((args.OtherEntity, solution),
-                    VaporComponent.SolutionName,
-                    out var vapor))
+            if (!HasComp<VaporComponent>(args.OtherEntity) ||
+                !TryComp<SolutionComponent>(args.OtherEntity, out var vapor))
                 return;
 
-            if (vapor.Value.Comp.Solution.Contents.Any(x => x.Reagent.Prototype == "Holywater"))
+            if (vapor.Solution.Contents.Any(x => x.Reagent.Prototype == "Holywater"))
             {
                 Del(uid);
             }
@@ -371,7 +373,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             };
 
             if (component.InvokersMinCount > 1 || component.GatherInvokers)
+            {
                 cultists = GatherCultists(uid, component.CultistGatheringRange);
+                cultists.Add(args.User); // Fish-edit: инициатор всегда включен в число вызывающих
+            }
 
             if (cultists.Count < component.InvokersMinCount)
             {
@@ -456,9 +461,19 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
             if (state.CurrentState != MobState.Dead)
             {
+                // Любой борг при попытке обращения уничтожается, а не становится культистом.
+                if (HasComp<BorgChassisComponent>(victim.Value))
+                {
+                    _popupSystem.PopupEntity(Loc.GetString("cult-borg-destroyed"), args.User, args.User);
+                    _gibbing.Gib(victim.Value);
+                    args.Result = true;
+                    return;
+                }
+
                 var hasMind = _mindSystem.TryGetMind(victim.Value, out var mindId, out var mind);
 
-                var canConvert = !HasComp<MindShieldComponent>(victim.Value)
+                _mindShield.GetMindshieldStatus(victim.Value, out var mindshielded, out _);
+                var canConvert = !mindshielded
                                       && !HasComp<BibleUserComponent>(victim.Value);
 
                 if (hasMind && canConvert )
@@ -486,6 +501,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             args.Result = result;
         }
 
+        /// <summary>
+        /// Sacrifices a target on a blood cult offering rune.
+        /// </summary>
         private bool Sacrifice(
             EntityUid rune,
             EntityUid target,
@@ -513,7 +531,13 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                     _cultistTargetsConditionSystem.RefresTitle(obj, rule.CultTargets, killCultistTargetsComponent);
                 }
 
-                _gibbing.Gib(target);
+                // Fish-start
+                if (!SpawnShard(target))
+                {
+                    _gibbing.Gib(target);
+                }
+                // Fish-end
+
                 _bloodCultRuleSystem.ChangeSacrificeCount(rule, rule.SacrificeCount + 1);
 
                 return true;
@@ -565,7 +589,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 return false;
             }
 
-            _bloodCultRuleSystem.MakeCultist(target, rule);
+            _bloodCultRuleSystem.MakeCultist(target, rule, giveStartingItems: false);
+            // Fish-start - При конвертации новому культисту выдаётся кинжал и локатор культа
+            GiveConvertedCultistItems(target, rule);
+            // Fish-end
             _stunSystem.TryAddParalyzeDuration(target, TimeSpan.FromSeconds(2f));
             HealCultist(target);
 
@@ -784,9 +811,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
             var ev = new SummonNarsieDoAfterEvent();
 
-            var argsDoAfterEvent = new DoAfterArgs(_entityManager, user, TimeSpan.FromSeconds(170), ev, user) //fish-edit
+            var argsDoAfterEvent = new DoAfterArgs(_entityManager, user, TimeSpan.FromSeconds(170), ev, user) //Fish-edit
             {
-                BreakOnMove = true
+                BreakOnMove = true,
+                MovementThreshold = 3f, // ритуал призыва Бога: до 3 тайлов
             };
 
             if (!_doAfterSystem.TryStartDoAfter(argsDoAfterEvent))
@@ -804,7 +832,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             var stream = _audio.PlayGlobal(_narsie40Sec,
                 Filter.Broadcast(),
                 false,
-                AudioParams.Default.WithLoop(false).WithVolume(0.1f)); //fish-edit
+                AudioParams.Default.WithLoop(false).WithVolume(0.1f)); //Fish-edit
 
             _playingStream = stream?.Entity;
 
@@ -833,7 +861,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 return;
 
             if (component.CultType == null ||
-                !_prototypeManager.TryIndex<BloodCultPrototype>($"{component.CultType.Value.ToString()}Cult", out var cultPrototype))
+                !ProtoMan.TryIndex<BloodCultPrototype>($"{component.CultType.Value.ToString()}Cult", out var cultPrototype))
                 return;
 
             _entityManager.SpawnEntity(cultPrototype.GodProto, transform.Value);
@@ -1054,16 +1082,72 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 return;
             }
 
-            _xform.SetCoordinates(target, xFormBase.Coordinates);
+            _popupSystem.PopupEntity(Loc.GetString("cult-summon-ritual-started"), args.Actor, args.Actor);
 
-            _audio.PlayPvs(_teleportInSound, xFormBase.Coordinates);
+            var ev = new CultSummonRitualDoAfterEvent
+            {
+                Target = GetNetEntity(target),
+                Rune = GetNetEntity(baseRune.Value),
+                Summoner = GetNetEntity(args.Actor),
+            };
+
+            // Кастует цель: удар/утаскивание цели отменяет ритуал. Допуск движения — 2 тайла.
+            var doAfter = new DoAfterArgs(_entityManager, target, TimeSpan.FromSeconds(2), ev, args.Actor)
+            {
+                BreakOnMove = true,
+                MovementThreshold = 2f,
+                BreakOnDamage = true,
+                CancelDuplicate = true,
+                NeedHand = false,
+            };
+
+            if (!_doAfterSystem.TryStartDoAfter(doAfter))
+                return;
 
             if (HasComp<CultRuneSummoningProviderComponent>(args.Actor))
             {
                 RemComp<CultRuneSummoningProviderComponent>(args.Actor);
             }
+        }
 
-            QueueDel(baseRune);
+        private void OnSummonRitualDoAfter(EntityUid uid, BloodCultistComponent component, CultSummonRitualDoAfterEvent args)
+        {
+            if (args.Cancelled || args.Handled)
+            {
+                if (args.Cancelled)
+                    _popupSystem.PopupEntity(Loc.GetString("cult-summon-ritual-interrupted"), uid, uid);
+                return;
+            }
+
+            args.Handled = true;
+
+            if (!TryGetEntity(args.Target, out var target) || !TryGetEntity(args.Rune, out var baseRune))
+            {
+                _popupSystem.PopupEntity(Loc.GetString("cult-summon-ritual-interrupted"), uid, uid);
+                return;
+            }
+
+            if (!TryComp(baseRune.Value, out TransformComponent? xFormBase))
+                return;
+
+            if (!Exists(target.Value) || !Exists(baseRune.Value))
+                return;
+
+            if (TryComp<PullableComponent>(target.Value, out var pullable) && pullable.BeingPulled)
+            {
+                _popupSystem.PopupEntity("Его кто-то держит!", uid, uid);
+                return;
+            }
+
+            if (TryComp<CuffableComponent>(target.Value, out var cuffs) && cuffs.CuffedHandCount > 0)
+            {
+                _popupSystem.PopupEntity("Он в наручниках!", uid, uid);
+                return;
+            }
+
+            _xform.SetCoordinates(target.Value, xFormBase.Coordinates);
+            _audio.PlayPvs(_teleportInSound, xFormBase.Coordinates);
+            QueueDel(baseRune.Value);
         }
 
         /*
@@ -1112,8 +1196,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 return false;
             }
 
-            var xformQuery = GetEntityQuery<TransformComponent>();
-            var xform = xformQuery.GetComponent(rune);
+            var xform = _xformQuery.GetComponent(rune);
 
             var projectileCount =
                 (int)MathF.Round(MathHelper.Lerp(component.MinProjectiles, component.MaxProjectiles, severity));
@@ -1148,10 +1231,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             while (projectileCount > 0)
             {
                 var target = _random.Pick(list);
-                var targetCoords = xformQuery.GetComponent(target).Coordinates.Offset(_random.NextVector2(0.5f));
-                var flammable = GetEntityQuery<FlammableComponent>();
+                var targetCoords = _xformQuery.GetComponent(target).Coordinates.Offset(_random.NextVector2(0.5f));
 
-                if (!flammable.TryGetComponent(target, out var fl))
+                if (!_flammableQuery.TryGetComponent(target, out var fl))
                     continue;
 
                 fl.FireStacks += _random.Next(1, 3);
@@ -1182,9 +1264,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
         {
             var mapPos = coords.ToMap(EntityManager, _xform);
 
-            var spawnCoords = _mapMan.TryFindGridAt(mapPos, out var gridUid, out _)
+            var spawnCoords = _map.TryFindGridAt(mapPos, out var gridUid, out _)
                 ? coords.WithEntityId(gridUid, EntityManager)
-                : new(_mapMan.GetMapEntityId(mapPos.MapId), mapPos.Position);
+                : new(_map.GetMapOrInvalid(mapPos.MapId), mapPos.Position);
 
             var ent = Spawn(component.ProjectilePrototype, spawnCoords);
             var direction = targetCoords.ToMapPos(EntityManager, _xform) - mapPos.Position;
@@ -1244,10 +1326,18 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
         private HashSet<EntityUid> GatherCultists(EntityUid uid, float range)
         {
-            var entities = _lookup.GetEntitiesInRange(uid, range, LookupFlags.Dynamic);
-            entities.RemoveWhere(x => !HasComp<BloodCultistComponent>(x) && !HasComp<ConstructComponent>(x));
+            var entities = _lookup.GetEntitiesInRange(uid, range, LookupFlags.Dynamic | LookupFlags.Sundries);
+            entities.RemoveWhere(x => !IsCultistEquivalent(x));
 
             return entities;
+        }
+
+        /// <summary>
+        /// Культист или конструкт — для подсчёта на рунах/ритуалах.
+        /// </summary>
+        public bool IsCultistEquivalent(EntityUid uid)
+        {
+            return HasComp<BloodCultistComponent>(uid) || HasComp<ConstructComponent>(uid);
         }
 
         private void SpawnRune(EntityUid uid, string? rune)
@@ -1264,33 +1354,65 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 // ыыыы
             }
 
-            var damageSpecifier = new DamageSpecifier(_prototypeManager.Index(SlashDamageType), 10);
+            var damageSpecifier = new DamageSpecifier(ProtoMan.Index(SlashDamageType), 10);
             _damageableSystem.TryChangeDamage(uid, damageSpecifier, true, false);
 
             _entityManager.SpawnEntity(rune, coords);
         }
 
+        // Fish-start - спавн камня души при жертвоприношении
+        /// <summary>
+        /// Creates a soul shard from the sacrifice target, transferring the victim's mind into it if valid,
+        /// and gibs the target.
+        /// </summary>
         private bool SpawnShard(EntityUid target)
         {
-            if (!_entityManager.TryGetComponent<MindContainerComponent>(target, out var mindComponent))
-                return false;
-
             var transform = CompOrNull<TransformComponent>(target)?.Coordinates;
 
             if (transform == null)
                 return false;
 
+            EntityUid? targetMindId = null;
+            MindComponent? targetMind = null;
+
+            if (_entityManager.TryGetComponent<MindContainerComponent>(target, out var mindComponent) && mindComponent.HasMind)
+            {
+                targetMindId = mindComponent.Mind;
+                if (targetMindId.HasValue)
+                    targetMind = _entityManager.GetComponent<MindComponent>(targetMindId.Value);
+            }
+
+            if (targetMindId != null && targetMind != null)
+            {
+                var currentEntity = targetMind.CurrentEntity;
+
+                if (currentEntity != null && currentEntity != target && currentEntity != targetMind.VisitingEntity)
+                {
+                    if (_entityManager.HasComponent<MobStateComponent>(currentEntity) && !_entityManager.HasComponent<GhostComponent>(currentEntity))
+                    {
+                        targetMindId = null;
+                        targetMind = null;
+                    }
+                }
+            }
+        // Fish-end
+
             var shard = _entityManager.SpawnEntity("SoulShardGhost", transform.Value);
 
-            if (mindComponent.Mind.HasValue)
-                _mindSystem.TransferTo(mindComponent.Mind.Value, shard);
+            if (targetMindId != null && targetMind != null)
+            {
+                _mindSystem.TransferTo(targetMindId.Value, shard, mind: targetMind);
+            }
 
             _gibbing.Gib(target);
 
             return true;
         }
 
-        private bool IsAllowedToDraw(EntityUid uid)
+        /// <summary>
+        /// Можно ли рисовать руну: любая грид+тайл (станция, шаттл, планетойд).
+        /// </summary>
+        public bool IsAllowedToDraw(EntityUid uid)
         {
             var transform = Transform(uid);
             var gridUid = transform.GridUid;
@@ -1308,13 +1430,36 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
                 return false;
             }
 
+            // Достаточно любой грид+тайл: станция, шаттл, планетойд экспедиции.
             return true;
         }
 
+        // Fish-start - Выдача кинжала и локатора при конвертации
+        private void GiveConvertedCultistItems(EntityUid cultist, BloodCultRuleComponent rule)
+        {
+            if (rule.CultType == null ||
+                !ProtoMan.TryIndex<BloodCultPrototype>($"{rule.CultType.Value.ToString()}Cult", out var cultPrototype))
+                return;
+
+            var coords = Transform(cultist).Coordinates;
+            _inventorySystem.TryGetSlotEntity(cultist, "back", out var backPack);
+
+            var itemsToGive = new[] { cultPrototype.DaggerProto, (EntProtoId)"BloodCultPinpointer" };
+            foreach (var itemProto in itemsToGive)
+            {
+                var item = Spawn(itemProto, coords);
+                if (backPack != null && _storageSystem.Insert(backPack.Value, item, out _))
+                    continue;
+                if (_handsSystem.TryPickupAnyHand(cultist, item))
+                    continue;
+            }
+        }
+        // Fish-end
+
         private void HealCultist(EntityUid player)
         {
-            var damageSpecifier = _prototypeManager.Index(BruteDamageGroup);
-            var damageSpecifier2 = _prototypeManager.Index(BurnDamageGroup);
+            var damageSpecifier = ProtoMan.Index(BruteDamageGroup);
+            var damageSpecifier2 = ProtoMan.Index(BurnDamageGroup);
 
             _damageableSystem.TryChangeDamage(player, new DamageSpecifier(damageSpecifier, -40));
             _damageableSystem.TryChangeDamage(player, new DamageSpecifier(damageSpecifier2, -40));
@@ -1345,6 +1490,9 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             return metres;
         }
 
+        /// <summary>
+        /// Validates that the entity is on a valid station grid tile where a rune can be placed.
+        /// </summary>
         public bool IsCorrectLocation(EntityUid uid, out EntityCoordinates coords)
         {
             coords = default;
@@ -1358,6 +1506,14 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
 
             if (!TryComp<MapGridComponent>(gridUid, out var mapGrid))
                 return false;
+
+            // Fish-start
+            if (_station.GetOwningStation(gridUid.Value) == null)
+            {
+                _popupSystem.PopupEntity(Loc.GetString("cult-rune-not-on-station"), uid, uid);
+                return false;
+            }
+            // Fish-end
 
             var position = _map.TileIndicesFor(gridUid.Value, mapGrid, transform.Coordinates);
 
@@ -1381,3 +1537,7 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
          */
     }
 }
+
+
+
+

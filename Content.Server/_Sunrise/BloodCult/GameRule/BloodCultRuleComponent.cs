@@ -39,6 +39,12 @@ public sealed partial class BloodCultRuleComponent : Component
 
     [DataField]
     public int SacrificeCount = 3;
+
+    /// <summary>
+    /// Начальный antag selection завершён — late join больше не получает стартовый металл.
+    /// </summary>
+    [ViewVariables]
+    public bool InitialSelectionComplete;
 }
 
 public enum CultWinCondition : byte

@@ -1,0 +1,36 @@
+- type: entity
+  id: FishBluespaceArtilleryConsole
+  parent: BaseComputerAiAccess
+  name: console bluespace artillery
+  description: Bluespace artillery control center. Requires a link to a cannon.
+  placement:
+    mode: SnapgridCenter
+  components:
+    - type: Sprite
+      sprite: _Fish/Structures/Machines/computers.rsi
+      layers:
+        - map: [ "computerLayerBody" ]
+          state: computer
+        - map: [ "computerLayerKeyboard" ]
+          state: generic_keyboard
+        - map: [ "computerLayerScreen" ]
+          state: bluespace_artillery
+        - map: [ "computerLayerKeys" ]
+          state: bluespace_artillery_keys
+        - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+          state: generic_panel_open
+    - type: Appearance
+    - type: DeviceList
+    - type: DeviceNetwork
+    - type: DeviceLinkSource
+      ports:
+        - Artillery
+    - type: ActivatableUI
+      key: enum.BluespaceArtilleryConsoleUiKey.Key
+    - type: UserInterface
+      interfaces:
+        enum.BluespaceArtilleryConsoleUiKey.Key:
+          type: BluespaceArtilleryConsoleBoundUserInterface
+    - type: BluespaceArtilleryConsole
+    - type: AccessReader
+      access: [["BluespaceArtilleryOperator"]]

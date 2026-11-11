@@ -64,13 +64,23 @@
     voice: NecoArcTwo
 
 - type: entity
+  abstract: true
+  parent: StructureHealthMachineMassive
   id: BaseMech
   save: false
-  abstract: true
   components:
   - type: MobMover
   - type: Mech
+  # Fish-start - разрешаем установку мозгов в базовые мехи.
+  - type: MechBrain
+    canInsertBrain: true
+  # Fish-end
   - type: MechAir
+  - type: Vehicle
+    canAttack: true
+  - type: ContainerVehicle
+    containerId: "mech-pilot-slot"
+  - type: ContainerVehicleEntry
   - type: AirFilter
     # everything except oxygen and nitrogen
     gases:
@@ -122,6 +132,10 @@
       enum.MechEquipmentSelectUiKey.Key:
         type: MechEquipmentSelectBoundUserInterface
       # Sunrise edit end
+      # Fish-start - интерфейс сканера массы для мехов с соответствующим действием.
+      enum.RadarConsoleUiKey.Key:
+        type: RadarConsoleBoundUserInterface
+      # Fish-end
   - type: MeleeWeapon
     hidden: true
     animation: WeaponArcMechDisabled # Sunrise-Edit
@@ -130,7 +144,7 @@
     damage:
       types:
         Blunt: 25 #thwack
-        Structural: 20
+        Structural: 9
     soundHit:
       collection: MetalThud
   - type: Puller
@@ -168,7 +182,6 @@
     - Alive
     - Critical
   - type: MobThresholds
-    currentThresholdState : Alive
     thresholds:
       0: Alive
       250: Critical
@@ -207,6 +220,8 @@
     rightBareFootState: [ footprint-suit-heavy ]
   # Sunrise-End
   - type: Damageable
+    damageModifierSet: SteelMod
+  - type: Injurable
     damageContainer: Mech
   - type: FootstepModifier
     footstepSoundCollection:
@@ -246,7 +261,7 @@
     radius: 18 # Sunrise-edit
     netsync: false
   - type: AccessReader
-  - type: DamageOverlay # Sunrise-Edit
+  - type: SunriseDamagePopup # Sunrise-Edit
   - type: ExplosionResistance # Sunrise-Edit
     damageCoefficient: 0.9 # Sunrise-Edit
   - type: ProtectedFromStepTriggers # Sunrise-added
@@ -277,10 +292,20 @@
     baseState: ripley
     openState: ripley-open
     brokenState: ripley-broken
-    mechToPilotDamageMultiplier: 0.75
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamageModifier:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.75
+        Cold: 0.75
+        Heat: 0.75
+        Shock: 0.75
+    operatorWhitelist:
       components:
         - HumanoidProfile
+  - type: VehicleHandBlocker
+    blockedHands: 2
   - type: MeleeWeapon
     hidden: true
     attackRate: 1
@@ -344,9 +369,10 @@
     baseState: ripleymkii
     openState: ripleymkii-open
     brokenState: ripleymkii-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -407,9 +433,11 @@
     baseState: clarke
     openState: clarke-open
     brokenState: clarke-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
+    mechMassScannerAction: FishActionMechMassScanner # Fish-edit - действие сканера массы.
     airtight: true
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -435,6 +463,11 @@
     autoRot: true
     radius: 8
     netsync: false
+  # Fish-start - добавляем радар для сканера массы Кларка.
+  - type: RadarConsole
+    maxRange: 256
+    followEntity: true
+  # Fish-end
   - type: Tag
     tags:
     - DoorBumpOpener
@@ -484,11 +517,14 @@
     baseState: honker
     openState: honker-open
     brokenState: honker-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true # Space Honks is real.
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - сохраняем прежнее отсутствие урона пилоту
+    operatorWhitelist:
       components:
       - HumanoidProfile
+  - type: VehicleHandBlocker
+    blockedHands: 2
   # sunrise start
   - type: Reflect
     reflectProb: 0.05
@@ -537,6 +573,10 @@
   name: HAMTR
   description: "An experimental mech which uses a brain–computer interface to connect directly to a hamsters brain."
   components:
+  # Fish-start - сохраняем кабину HAMTR только для хомяков.
+  - type: MechBrain
+    canInsertBrain: false
+  # Fish-end
   - type: FootprintEmitter # Sunrise-Add
     leftBareFootState: [ footprint-suit-heavy ]
     rightBareFootState: [ footprint-suit-heavy ]
@@ -555,10 +595,22 @@
     baseState: hamtr
     openState: hamtr-open
     brokenState: hamtr-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     maxEquipmentAmount: 2
     airtight: true
-    pilotWhitelist:
+    equipmentWhitelist:
+      tags:
+      - SmallMech
+  - type: Vehicle
+    requiresHands: false
+    transferDamageModifier:
+      coefficients:
+        Blunt: 0.2
+        Slash: 0.2
+        Piercing: 0.2
+        Cold: 0.2
+        Heat: 0.2
+        Shock: 0.2
+    operatorWhitelist:
       tags:
       - Hamster
   - type: MeleeWeapon
@@ -567,7 +619,6 @@
     damage:
       types:
         Blunt: 10 #thwack
-        Structural: 2
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.4
     baseSprintSpeed: 3.7
@@ -596,6 +647,10 @@
   name: Vim
   description: A miniature exosuit from Nanotrasen, developed to let the irreplaceable station pets live a little longer.
   components:
+  # Fish-start - сохраняем ограничения Vim на пилотов-животных.
+  - type: MechBrain
+    canInsertBrain: false
+  # Fish-end
   - type: FootprintEmitter # Sunrise-Add
   - type: Sprite
     drawdepth: Mobs
@@ -626,10 +681,18 @@
     openState: vim-open
     brokenState: vim-broken
     maxEquipmentAmount: 0
-    # keep mouse safe
-    mechToPilotDamageMultiplier: 0.1
     airtight: true
-    pilotWhitelist:
+  - type: Vehicle
+    requiresHands: false
+    transferDamageModifier:
+      coefficients:
+        Blunt: 0.1
+        Slash: 0.1
+        Piercing: 0.1
+        Cold: 0.1
+        Heat: 0.1
+        Shock: 0.1
+    operatorWhitelist:
       tags:
       - VimPilot
   - type: MeleeWeapon
@@ -638,7 +701,6 @@
     damage:
       types:
         Blunt: 10 #thwack
-        Structural: 2
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.25
     baseSprintSpeed: 3.6
@@ -652,7 +714,6 @@
     reflects:
     - NonEnergy
   - type: MobThresholds
-    currentThresholdState : Alive
     thresholds:
       0: Alive
       200: Critical
@@ -703,9 +764,10 @@
     baseState: base
     openState: base-open
     brokenState: base-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -786,9 +848,10 @@
     baseState: base
     openState: base-open
     brokenState: base-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -855,10 +918,11 @@
     baseState: marauder
     openState: marauder-open
     brokenState: marauder-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true
     maxEquipmentAmount: 4
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -885,7 +949,6 @@
     reflects:
     - NonEnergy
   - type: MobThresholds
-    currentThresholdState : Alive
     thresholds:
       0: Alive
       600: Critical
@@ -941,10 +1004,11 @@
     baseState: seraph
     openState: seraph-open
     brokenState: seraph-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true
     maxEquipmentAmount: 5
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -971,7 +1035,6 @@
     reflects:
     - NonEnergy
   - type: MobThresholds
-    currentThresholdState : Alive
     thresholds:
       0: Alive
       700: Critical
@@ -1029,10 +1092,11 @@
     baseState: darkgygax
     openState: darkgygax-open
     brokenState: darkgygax-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true
     maxEquipmentAmount: 4
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -1119,10 +1183,11 @@
     baseState: mauler
     openState: mauler-open
     brokenState: mauler-broken
-    mechToPilotDamageMultiplier: 0.0 # Sunrise edit
     airtight: true
     maxEquipmentAmount: 5
-    pilotWhitelist:
+  - type: Vehicle
+    transferDamage: false # Sunrise-Edit - этот мех не передаёт урон пилоту
+    operatorWhitelist:
       components:
         - HumanoidProfile
   - type: MeleeWeapon
@@ -1154,7 +1219,6 @@
     - FootstepSound
     - Mauler
   - type: MobThresholds
-    currentThresholdState : Alive
     thresholds:
       0: Alive
       600: Critical

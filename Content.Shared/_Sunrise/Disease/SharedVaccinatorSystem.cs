@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reaction;
@@ -20,16 +21,16 @@ namespace Content.Shared.Chemistry.EntitySystems;
 /// <summary>
 /// This handles <see cref="SolutionContainerMixerComponent"/>
 /// </summary>
-public abstract class SharedVaccinatorSystem : EntitySystem
+public abstract partial class SharedVaccinatorSystem : EntitySystem
 {
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solution = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedSolutionContainerSystem _solution = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
     /// <summary>
     /// A cache of all reactions indexed by at most ONE of their required reactants.
     /// I.e., even if a reaction has more than one reagent, it will only ever appear once in this dictionary.
@@ -153,13 +154,16 @@ public abstract class SharedVaccinatorSystem : EntitySystem
         {
             if (!_solution.TryGetFitsInDispenser(ent, out var soln, out _))
                 continue;
-            if (!printed)
+            if (!printed && _net.IsServer)
             {
                 if (!(_gameTiming.CurTime < comp.PrintReadyAt))
                 {
-                    RaiseNetworkEvent(new PaperInputTextMessageLigyb(soln.Value.Comp.Solution.Contents, GetNetEntity(uid)));
+                    // Fish-start: Локальное событие для сервера вместо сетевого события
+                    var ev = new VaccineMixFinishedEvent(soln.Value.Comp.Solution);
+                    RaiseLocalEvent(entity, ref ev);
                     printed = true;
                     comp.PrintReadyAt = _gameTiming.CurTime + comp.PrintCooldown;
+                    // Fish-end
                 }
             }
             _solution.UpdateChemicals(soln.Value, true, reactionMixer);
@@ -187,14 +191,10 @@ public abstract class SharedVaccinatorSystem : EntitySystem
 
 
 
-[Serializable, NetSerializable]
-public sealed class PaperInputTextMessageLigyb : EntityEventArgs
-{
-    public readonly List<ReagentQuantity> ReagentQuantity;
-    public readonly NetEntity Uid;
-    public PaperInputTextMessageLigyb(List<ReagentQuantity> reagentQuantity, NetEntity uid)
-    {
-        Uid = uid;
-        ReagentQuantity = reagentQuantity;
-    }
-}
+// Fish-start: Локальное событие завершения смешивания вакцины
+/// <summary>
+/// Локальное событие, вызываемое на сервере для печати отчета о вакцине.
+/// </summary>
+[ByRefEvent]
+public readonly record struct VaccineMixFinishedEvent(Solution Solution);
+// Fish-end

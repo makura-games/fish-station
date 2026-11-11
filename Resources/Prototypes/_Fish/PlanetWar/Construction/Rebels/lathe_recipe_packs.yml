@@ -21,6 +21,15 @@
   - 18MagArmLatheRecipe
   #- 19MagLatheRecipe
   - 199MagLatheRecipe
+  - BoxPistolWMLatheRecipe
+  - BoxLightRifleWMLatheRecipe
+  - BoxRifleWMLatheRecipe
+  - BoxHeavyRifleWMLatheRecipe
+  - BoxAntiMaterielWMLatheRecipe
+  - BoxMagnumWMLatheRecipe
+  - BoxMagnumFMJWMLatheRecipe
+  - BoxShotgunWMLatheRecipe
+  - BoxShotgunSlugWMLatheRecipe
 
 
 - type: latheRecipePack

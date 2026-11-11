@@ -50,6 +50,9 @@ spellbook-slip-desc = Learn the ancient ways of the Janitor and curse your targe
 spellbook-item-recall-name = Item Recall
 spellbook-item-recall-description = Mark a held item and summon it back at any time with just a snap of your fingers!
 
+spellbook-guardian-deck-name = Tarot Deck
+spellbook-guardian-deck-description = A bizarre deck of card that grants you a spectral guardian when used.
+
 # Equipment
 
 spellbook-wand-polymorph-door-name = Wand of Entrance
@@ -71,15 +74,16 @@ spellbook-staff-animation-name = Staff of Animation
 spellbook-staff-animation-description = Bring inanimate objects to life!
 
 # Events
-
 spellbook-event-summon-ghosts-name = Summon Ghosts
 spellbook-event-summon-ghosts-description = Who ya gonna call?
 
+# Fish-start: updated descriptions to reflect grid requirement
 spellbook-event-summon-guns-name = Summon Guns
-spellbook-event-summon-guns-description = AK47s for everyone! Places a random gun in front of everybody. Disables refunds when bought!
+spellbook-event-summon-guns-description = AK47s for everyone! Places a random gun in front of everybody on your current station or ship. Disables refunds when bought!
 
 spellbook-event-summon-magic-name = Summon Magic
-spellbook-event-summon-magic-description = Places a random magical item in front of everybody. Nothing could go wrong! Disables refunds when bought!
+spellbook-event-summon-magic-description = Places a random magical item in front of everybody on your current station or ship. Nothing could go wrong! Disables refunds when bought!
+# Fish-end
 
 # Upgrades
 spellbook-upgrade-fireball-name = Upgrade Fireball

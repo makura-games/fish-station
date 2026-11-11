@@ -1,4 +1,5 @@
 using Content.Shared.NPC.Prototypes;
+using Content.Shared.Roles;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Fish.GhostRoles.Components;
@@ -20,4 +21,10 @@ public sealed partial class GhostRoleProfileSpawnerComponent : Component
     /// </summary>
     [DataField]
     public string? Prototype;
+
+    /// <summary>
+    /// Стартовая экипировка роли (Sunrise startingGear). Если задана — выдаётся вместо Loadout на мобе.
+    /// </summary>
+    [DataField]
+    public ProtoId<StartingGearPrototype>? StartingGear;
 }

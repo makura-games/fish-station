@@ -1,4 +1,4 @@
-ent-ClothingHeadSoftsuitCBURN = CBURN шлем
+ent-ClothingHeadSoftsuitCBURN = шлем EVA РХБЗЗ
     .desc = Тяжёлый огнеупорный шлем, используемый подразделениями спецзачистки.
 ent-ClothingHeadHelmetPirate = абордажный EVA шлем
     .desc = Простой и стильный шлем EVA. Создан для скромных космических подвигов и абордажей. Имеет пару серьёзных трещин, но не переживай — изолента всё исправит.

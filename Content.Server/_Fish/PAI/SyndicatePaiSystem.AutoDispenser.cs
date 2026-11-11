@@ -14,10 +14,10 @@ namespace Content.Server._Fish.PAI;
 
 public sealed partial class SyndicatePaiSystem
 {
-    [Dependency] private readonly MobThresholdSystem _mobThresholds = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly SharedInteractionSystem _serverInteraction = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _serverSolutions = default!;
+    [Dependency] private MobThresholdSystem _mobThresholds = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private SharedInteractionSystem _serverInteraction = default!;
+    [Dependency] private SharedSolutionContainerSystem _serverSolutions = default!;
 
     private TimeSpan _nextAutoCheck;
 
@@ -76,8 +76,8 @@ public sealed partial class SyndicatePaiSystem
         if (!TryGetAutoHypo(ent, out var hypo) || hypo == null)
             return;
 
-        if (!TryComp<SolutionRegenerationComponent>(hypo.Value, out var regen) ||
-            !_serverSolutions.TryGetSolution(hypo.Value, regen.SolutionName, out _, out var solution))
+        if (!TryComp<SolutionRegenerationComponent>(hypo.Value, out _) ||
+            !TryGetHypoSolution(hypo.Value, out _, out var solution))
             return;
 
         // Экстренный гипо вводит весь резервуар (CurrentTransferAmount = null)

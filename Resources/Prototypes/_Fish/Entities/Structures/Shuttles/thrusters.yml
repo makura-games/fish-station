@@ -1,0 +1,71 @@
+- type: entity
+  id: FishGyroscope01K
+  parent: Gyroscope
+  suffix: 160K, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 160000
+
+- type: entity
+  id: FishGyroscope05K
+  parent: Gyroscope
+  suffix: 800K, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 800000
+    
+- type: entity
+  id: FishGyroscope1K
+  parent: Gyroscope
+  suffix: 1.6M, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 1600000
+
+- type: entity
+  id: FishGyroscope5K
+  parent: Gyroscope
+  suffix: 8M, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 8000000
+    
+- type: entity
+  id: FishGyroscope10K
+  parent: Gyroscope
+  suffix: 16M, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 16000000
+    
+- type: entity
+  id: FishGyroscope20K
+  parent: Gyroscope
+  suffix: 32M, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 32000000
+    
+- type: entity
+  id: FishGyroscope50K
+  parent: Gyroscope
+  suffix: 80M, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 80000000
+    
+- type: entity
+  id: FishGyroscope100K
+  parent: Gyroscope
+  suffix: 160M, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 160000000
+    
+- type: entity
+  id: FishGyroscope200K
+  parent: Gyroscope
+  suffix: 320M, Debug, Fish
+  components:
+  - type: Thruster
+    thrust: 320000000

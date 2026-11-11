@@ -29,7 +29,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTAmberLeader
     belt:
     - Handcuffs
@@ -68,7 +68,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTRedLeader
     belt:
     - Handcuffs
@@ -94,7 +94,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: PouchAmmo
+    pocket2: PouchAmmoFilledPistol40
   inhand:
   - WeaponPistolM1911
   - WeaponRifleLecterXL8
@@ -108,11 +108,7 @@
     - HoloprojectorField
     - WeaponAdvancedTaser
     - DoorRemoteOmni
-    - BluespaceArtilleryDesignator
-    - MagazineMagnumFMJ
-    - MagazineMagnum
-    - MagazineMagnum
-    - MagazineMagnum
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTGammaLeader
     belt:
     - Handcuffs
@@ -299,7 +295,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltChiefEngineerFilled
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: CableHVStack
+    pocket2: PouchMaterial
   inhand:
   - ClothingHandsPowerGlovesUplinkNTERTAmber
   - RCD
@@ -317,6 +313,7 @@
     - CableDetStack
     - MiningDrillDiamond
     - CyberGrenadeThrowerAtmos
+    - CableHVStack
 
 - type: startingGear
   id: ERTEngineerGearGamma
@@ -331,7 +328,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltChiefEngineerFilled
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: CableHVStack
+    pocket2: PouchMaterial
   inhand:
   - ClothingHandsPowerGlovesUplinkNTERTRed
   - RCDRecharging
@@ -348,6 +345,7 @@
     - CableDetStack
     - MiningDrillDiamond
     - CyberGrenadeThrowerAtmos
+    - CableHVStack
 # Medical
 
 - type: startingGear
@@ -383,6 +381,7 @@
     - CrowbarRed
     - PowerCellHigh
     - MedipenCaseERTMedic
+    - FishPouchMedicalNanotrasen # Fish-edit: подсумок медика ОБР «Амбер»
 
 - type: startingGear
   id: ERTMedicalGearGamma
@@ -414,6 +413,7 @@
     - ChemistryBottleOmnizine
     - CrowbarRed
     - MedipenCaseERTMedic
+    - FishPouchMedicalBluespace # Fish-edit: подсумок медика ОБР «Красный»
 
 # Janitor
 
@@ -467,3 +467,49 @@
     - BoxCleanerGrenades
     - CrowbarRed
     - ClothingHandsPowerGlovesUplinkNTERTRed
+#Fish-start
+- type: entity
+  id: RandomHumanoidSpawnerCBURNLeader
+  name: CBURN Leader
+  suffix: ERTRole
+  components:
+    - type: Sprite
+      sprite: Markers/jobs.rsi
+      state: cburn
+    - type: RandomHumanoidSpawner
+      settings: CBURNLeader
+- type: randomHumanoidSettings
+  id: CBURNLeader
+  parent: EventHumanoidCentcomm
+  speciesBlacklist:
+  - Diona
+  - Vox
+  - Felinid
+  - Moth
+  - Arachnid
+  - Reptilian
+  - Vulpkanin
+  - Swine
+  - Tajaran
+  - Demon
+  - SlimePerson
+  - Dwarf
+  - HumanoidXeno
+  - Predator
+  - Kitsune
+  components:
+    - type: Loadout
+      prototypes: [ CBURNLeaderGear ]
+      roleLoadout: [ RoleSurvivalExtended ]
+    - type: GhostRole
+      name: ghost-role-information-cburn-leader-name
+      description: ghost-role-information-cburn-leader-description
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstLeader
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
+#Fish-end

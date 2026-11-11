@@ -153,6 +153,7 @@
   - SunriseHatRedsoft
   - SunriseHatOrangesoft
   - SunriseHatCyansoft
+  - BeretSeniorPhysician # Fish-edit
 
 - type: loadoutGroup
   id: SunriseMedicalDoctorOuterClothing
@@ -165,6 +166,7 @@
   - SunriseWinterColorGreen
   - SunriseWinterColorCyan
   - MedicalDoctorWintercoat
+  - CoatLabSeniorPhysician # Fish-edit
 
 - type: loadoutGroup
   id: SunriseMedicalShoes
@@ -217,6 +219,7 @@
   - SunriseWinterColorOrange
   - SunriseWinterColorGreen
   - SunriseWinterColorCyan
+  - CoatLabSeniorPhysician # Fish-edit
 
 - type: loadoutGroup
   id: SunriseParamedicHead
@@ -235,6 +238,7 @@
   - SunriseHatCyansoft
   - SunriseHatBluesoft
   - MedicalHeadMirror
+  - BeretSeniorPhysician # Fish-edit
 
 - type: loadoutGroup
   id: SunriseParamedicOuterClothing
@@ -250,7 +254,8 @@
   - SunriseWinterColorGreen
   - SunriseWinterColorCyan
   - SunriseWinterColorBlue
-  - ClothingOuterHardsuitVoidParamedFish # Fish-Edit
+  - ClothingOuterHardsuitVoidParamedFish # Fish-edit
+  - CoatLabSeniorPhysician # Fish-edit
 
 - type: loadoutGroup
   id: SunriseParamedicShoes

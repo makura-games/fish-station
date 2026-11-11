@@ -3,6 +3,7 @@
   name: department-FractionCoreWM
   description: department-FractionCoreWM-description
   color: "#0000e3"
+  editorHidden: true
   roles:
   - JobCoreBase
   - JobCorePC0I5

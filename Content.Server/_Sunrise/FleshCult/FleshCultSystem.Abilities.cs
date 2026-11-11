@@ -5,6 +5,8 @@ using Content.Server.Construction.Components;
 using Content.Server.Traits.Assorted;
 using Content.Shared._Sunrise;
 using Content.Shared._Sunrise.FleshCult;
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Part;
@@ -24,6 +26,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
+using Content.Shared.Store;
 using Content.Shared.Traits.Assorted;
 using Robust.Shared.Audio;
 using Robust.Shared.Collections;
@@ -238,12 +241,19 @@ public sealed partial class FleshCultSystem
             {
                 foreach (var cont in _containerSystem.GetAllContainers(args.Args.Target.Value, container).ToArray())
                 {
+                    // Fish-start: Не выбрасывать служебный контейнер экшенов
+                    if (cont.ID == ActionsContainerComponent.ContainerId)
+                        continue;
+                    // Fish-end
+
                     foreach (var ent in cont.ContainedEntities.ToArray())
                     {
-                        if (HasComp<OrganComponent>(ent))
+                        // Fish-start: Не выбрасывать органы и действия наружу
+                        if (HasComp<OrganComponent>(ent) || HasComp<ActionComponent>(ent))
                         {
                             continue;
                         }
+                        // Fish-end
                         _containerSystem.Remove(ent, cont, force: true);
                         Transform(ent).Coordinates = coordinates;
                     }
@@ -268,7 +278,7 @@ public sealed partial class FleshCultSystem
                 }
             }
 
-            var bodyType = _prototypeManager.Index(SkeletonBodyType);
+            var bodyType = ProtoMan.Index(SkeletonBodyType);
             foreach (var (key, data) in bodyType.Layers)
             {
                 if (key != HumanoidVisualLayers.Head)
@@ -316,8 +326,12 @@ public sealed partial class FleshCultSystem
         if (TryComp<FleshCultistComponent>(uid, out var fleshCultistComponent))
         {
             fleshCultistComponent.Hunger += saturation;
-            _store.TryAddCurrency(new Dictionary<string, FixedPoint2>
-                { {StolenMutationPointPrototype, evolutionPoint} }, uid);
+            _store.TryAddCurrency(
+                new Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2>
+                {
+                    { StolenMutationPointPrototype, evolutionPoint },
+                },
+                uid);
         }
 
     }
@@ -369,7 +383,7 @@ public sealed partial class FleshCultSystem
                 var blood = new Solution();
                 blood.AddReagent(puddleSolutionContent.Reagent, amount);
 
-                absorbBlood.AddSolution(blood, _prototypeManager);
+                absorbBlood.AddSolution(blood, ProtoMan);
             }
         }
 
@@ -572,11 +586,11 @@ public sealed partial class FleshCultSystem
 
         var offsetValue = Vector2Helpers.Normalized(xform.LocalRotation.ToWorldVec());
         var targetCord = xform.Coordinates.Offset(offsetValue).SnapToGrid(EntityManager);
-        var tilerefs = Enumerable.ToArray(grid.GetLocalTilesIntersecting(
+        var tilerefs = Enumerable.ToArray(_mapSystem.GetLocalTilesIntersecting(xform.GridUid.Value, grid,
             new Box2(targetCord.Position + new Vector2(-radius, -radius), targetCord.Position + new Vector2(radius, radius))));
         foreach (var tileref in tilerefs)
         {
-            var tileCoordinates = grid.GridTileToLocal(tileref.GridIndices);
+            var tileCoordinates = _mapSystem.GridTileToLocal(xform.GridUid.Value, grid, tileref.GridIndices);
             foreach (var entity in _turf.GetEntitiesInTile(tileCoordinates))
             {
                 PhysicsComponent? physics = null; // We use this to check if it's impassable

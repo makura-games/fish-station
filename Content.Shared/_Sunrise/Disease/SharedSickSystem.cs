@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Shared.CCVar;
 using Content.Shared.Mind.Components;
@@ -17,10 +18,10 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Shared._Sunrise.Disease;
 using Robust.Shared.Random;
-public abstract class SharedSickSystem : EntitySystem
+public abstract partial class SharedSickSystem : EntitySystem
 {
 
-    [Dependency] private readonly IRobustRandom _robustRandom = default!;
+    [Dependency] private IRobustRandom _robustRandom = default!;
     public override void Initialize()
     {
         base.Initialize();

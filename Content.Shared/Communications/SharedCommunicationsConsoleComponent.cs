@@ -1,3 +1,5 @@
+using Content.Shared.AlertLevel;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Communications
@@ -8,50 +10,58 @@ namespace Content.Shared.Communications
     }
 
     [Serializable, NetSerializable]
-    public sealed class CommunicationsConsoleInterfaceState : BoundUserInterfaceState
+    public sealed partial class CommunicationsConsoleInterfaceState : BoundUserInterfaceState // Sunrise-Edit
     {
         public readonly bool CanAnnounce;
         public readonly bool CanBroadcast = true;
         public readonly bool CanCall;
         public readonly TimeSpan? ExpectedCountdownEnd;
         public readonly bool CountdownStarted;
-        public List<string>? AlertLevels;
-        public string CurrentAlert;
-        public float CurrentAlertDelay;
-        // Sunrise-Start
+        // Sunrise added start - состояние ретрансляции сообщений
         public readonly bool CanRelay;
         public readonly bool IsRelaying;
         public readonly float RelayCooldownRemaining;
         public readonly float RelayTimeRemaining;
-        // Sunrise-End
+        // Sunrise added end
 
-        public CommunicationsConsoleInterfaceState(bool canAnnounce, bool canCall, List<string>? alertLevels, string currentAlert, float currentAlertDelay, TimeSpan? expectedCountdownEnd = null, bool canRelay = false, bool isRelaying = false, float relayCooldownRemaining = 0f, float relayTimeRemaining = 0f) // Sunrise-Edit
+        public CommunicationsConsoleInterfaceState(
+            bool canAnnounce,
+            bool canCall,
+            List<ProtoId<AlertLevelPrototype>>? alertLevels = null, // Sunrise-Edit
+            ProtoId<AlertLevelPrototype>? currentAlert = null, // Sunrise-Edit
+            float currentAlertDelay = 0f, // Sunrise-Edit
+            TimeSpan? expectedCountdownEnd = null,
+            bool canRelay = false,
+            bool isRelaying = false,
+            float relayCooldownRemaining = 0f,
+            float relayTimeRemaining = 0f,
+            List<CommunicationsConsoleAdditionalAlertLevelState>? additionalAlertLevels = null,
+            List<CommunicationsConsoleAlertStationState>? alertStations = null,
+            NetEntity? selectedAlertStation = null) // Sunrise-Edit
         {
             CanAnnounce = canAnnounce;
             CanCall = canCall;
             ExpectedCountdownEnd = expectedCountdownEnd;
             CountdownStarted = expectedCountdownEnd != null;
+            // Sunrise added start - состояние кодов тревоги и ретрансляции сообщений
             AlertLevels = alertLevels;
             CurrentAlert = currentAlert;
             CurrentAlertDelay = currentAlertDelay;
-            // Sunrise-Start
+            AdditionalAlertLevels = additionalAlertLevels ?? [];
+            AlertStations = alertStations ?? [];
+            SelectedAlertStation = selectedAlertStation;
             CanRelay = canRelay;
             IsRelaying = isRelaying;
             RelayCooldownRemaining = relayCooldownRemaining;
             RelayTimeRemaining = relayTimeRemaining;
-            // Sunrise-End
+            // Sunrise added end
         }
     }
 
     [Serializable, NetSerializable]
-    public sealed class CommunicationsConsoleSelectAlertLevelMessage : BoundUserInterfaceMessage
+    public sealed class CommunicationsConsoleSelectAlertLevelMessage(ProtoId<AlertLevelPrototype> level) : BoundUserInterfaceMessage
     {
-        public readonly string Level;
-
-        public CommunicationsConsoleSelectAlertLevelMessage(string level)
-        {
-            Level = level;
-        }
+        public ProtoId<AlertLevelPrototype> Level = level;
     }
 
     [Serializable, NetSerializable]

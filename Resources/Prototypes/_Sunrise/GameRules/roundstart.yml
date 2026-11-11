@@ -1,3 +1,4 @@
+# Fish-start: To remove - функционал разумной болезни
 - type: entity
   id: DiseaseRule
   parent: BaseGameRule
@@ -18,11 +19,10 @@
     cost: 100
   - type: AntagSelection
     agentName: disease-agent-name
-    definitions:
-    - spawnerPrototype: SpawnPointGhostDisease
-      min: 1
-      max: 1
-      pickPlayer: false
+    antags:
+    - !type:FixedAntagCount
+      proto: Disease
+# Fish-end
 
 - type: entity
   id: Fugitive

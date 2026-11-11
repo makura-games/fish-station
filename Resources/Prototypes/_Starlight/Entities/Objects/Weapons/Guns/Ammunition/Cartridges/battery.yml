@@ -9,7 +9,7 @@
       - Cartridge
       - CartridgeBattery
   - type: CartridgeAmmo
-    proto: BulletLaserWindowPiercingMagnum
+    proto: BulletLaser # Fish-edit
   - type: Sprite
     sprite: _Starlight/Objects/Weapons/Guns/Ammunition/Casings/laser_casing.rsi
     scale: 0.80, 0.80
@@ -28,4 +28,4 @@
   parent: BaseCartridgeBattery
   components:
   - type: CartridgeAmmo
-    proto: BulletLaserWindowPiercingMagnum
+    proto: BulletLaser # Fish-edit

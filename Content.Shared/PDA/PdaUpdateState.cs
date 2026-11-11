@@ -1,4 +1,6 @@
+using Content.Shared.AlertLevel;
 using Content.Shared.CartridgeLoader;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.PDA
@@ -46,8 +48,16 @@ namespace Content.Shared.PDA
     {
         public string? ActualOwnerName;
         public string? IdOwner;
+        // Fish-start: возвращаем поле JobTitle для отображения должности в КПК
         public string? JobTitle;
-        public string? StationAlertLevel;
+        // Fish-end
+        // Sunrise edit start - типизированный идентификатор уровня тревоги
+        // public string? StationAlertLevel;
+        public ProtoId<AlertLevelPrototype>? StationAlertLevel;
+        // Sunrise edit end
+        /// Primary and additional station alert levels sent to the PDA interface.
+        /// </summary>
+        public List<PdaAlertLevelInfo>? StationAlertLevels; // Sunrise-Edit
         public Color StationAlertColor;
         public TimeSpan? EvacShuttleTime; // Sunrise-edit
         public EvacShuttleStatus EvacShuttleStatus; // Sunrise-edit

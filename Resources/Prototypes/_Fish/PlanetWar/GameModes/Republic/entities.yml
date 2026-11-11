@@ -29,6 +29,7 @@
   - type: Item
     size: Huge
   - type: Damageable
+  - type: Injurable
     damageContainer: Inorganic
   - type: Destructible
     thresholds:
@@ -62,6 +63,7 @@
       settings: LifeWM
   - type: GhostRoleProfileSpawner
     prototype: MobHumanCoreP0WM
+    startingGear: CoreGearP0
   - type: ExplosionResistance
     damageCoefficient: 0.00001
 
@@ -73,6 +75,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanCoreP0WM
+    startingGear: CoreGearP0
   - type: GhostRole
     name: pw-gamemodes-republic-longtime1reinforcementcore-name
     raffle:
@@ -89,6 +92,7 @@
     name: pw-construction-republic-mobhumancorepc0i5-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanCorePC0I5WM
+    startingGear: CoreGearPC0I5
 
 
 - type: entity
@@ -98,6 +102,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanCorePC0I5WM
+    startingGear: CoreGearPC0I5
   - type: GhostRole
     name: pw-gamemodes-republic-longtime4reinforcementcorepc0i5-name
     raffle:
@@ -114,6 +119,7 @@
     name: pw-construction-republic-mobhumancorep1-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanCoreP1WM
+    startingGear: CoreGearP1
 
 
 - type: entity
@@ -123,6 +129,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanCoreP1WM
+    startingGear: CoreGearP1
   - type: GhostRole
     name: pw-gamemodes-republic-longtime5reinforcementcorep1-name
     raffle:
@@ -139,6 +146,7 @@
     name: pw-construction-republic-mobhumancoreph5-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanCorePH5WM
+    startingGear: CoreGearPH5
 
 
 - type: entity
@@ -148,6 +156,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanCorePH5WM
+    startingGear: CoreGearPH5
   - type: GhostRole
     name: pw-gamemodes-republic-longtime6reinforcementcoreph5-name
     raffle:
@@ -164,6 +173,7 @@
     name: pw-construction-republic-mobhumancorepm1-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanCorePM1WM
+    startingGear: CoreGearPM1
 
 
 - type: entity
@@ -173,6 +183,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanCorePM1WM
+    startingGear: CoreGearPM1
   - type: GhostRole
     name: pw-gamemodes-republic-longtime3reinforcementcorepm1-name
     raffle:
@@ -189,6 +200,7 @@
     name: pw-construction-republic-mobhumancorepe1-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanCorePE1WM
+    startingGear: CoreGearPE1
 
 
 - type: entity
@@ -198,6 +210,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanCorePE1WM
+    startingGear: CoreGearPE1
   - type: GhostRole
     name: pw-gamemodes-republic-longtime2reinforcementcorepe1-name
     raffle:
@@ -214,6 +227,7 @@
     name: pw-construction-republic-mobhumancoreps4-name
   - type: GhostRoleProfileSpawner
     prototype: MobHumanCorePS4WM
+    startingGear: CoreGearPS4
 
 
 - type: entity
@@ -223,6 +237,7 @@
   components:
   - type: GhostRoleProfileSpawner
     prototype: LongTimeMobHumanCorePS4WM
+    startingGear: CoreGearPS4
   - type: GhostRole
     name: pw-gamemodes-republic-longtime7reinforcementcoreps4-name
     raffle:
@@ -377,6 +392,13 @@
   parent: MarkerBase
   id: MarkerStartItemGatewayCore
   components:
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape:
+            !type:PhysShapeAabb
+            bounds: "-0.5,-0.5,0.5,0.5"
+          hard: false
     - type: EntityTableSpawner
       deleteSpawnerAfterSpawn: true
       table: !type:AllSelector
