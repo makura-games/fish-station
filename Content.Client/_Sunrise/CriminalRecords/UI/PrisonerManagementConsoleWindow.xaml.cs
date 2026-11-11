@@ -60,7 +60,8 @@ public sealed partial class PrisonerManagementConsoleWindow : FancyWindow
             control.PermanentThreshold = threshold;
             control.SetupWaiting(record);
 
-            if (record.Sentence >= threshold)
+            // Fish-edit: при threshold <= 0 не считаем любой срок пермой
+            if (threshold > 0 && record.Sentence >= threshold)
                 control.OnActionPressed += () => OnStartIncarceration?.Invoke(record.RecordId, record.CaseId, -1);
             else
                 control.OnActionPressed += () => OpenCellSelection(record);

@@ -96,36 +96,7 @@
             SecurityBorg: [ 1, 1 ]
         - type: StationGoal
           goals:
-          - SolarPanels
-          - Artifacts
-          - Bank
-          - Zoo
-          - Tesla
-          - Containment
-          - WeaponsSecurity
-          - DormsBuild
           - Transit
-          - NukeRoom
-          - Permabrig
-          - Farm
-          - Delegates
-          - Cyborgs
-          - Testing
-          - Anomaly
-          - Replenishment
-          - IntelWeapons
-          - Reports
-          - Reconnaissance
-          - Saboteurs
-          - Furs
-          - Crew
-          - HumanitarianAid
-          - PersonnelRecovery
-          - CrewEducation
-          - SampleCollection
-          - Examination
-          - StationGoalPolymorph
-
 
 
 

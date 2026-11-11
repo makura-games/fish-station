@@ -6,6 +6,18 @@
   parent: BaseBorgChassisSyndicate
   suffix: Fish
   components:
+  - type: MeleeWeapon
+    altDisarm: false
+    soundHit:
+      collection: MetalThud
+    angle: 30
+    animation: WeaponArcFist
+    wideAnimation: WeaponArcFist
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 8
+        Structural: 5
   - type: Sprite
     sprite: _Sunrise/Mobs/Silicon/chassis.rsi
     layers:
@@ -21,8 +33,10 @@
     - map: ["jumpsuit"]
     - map: ["belt"]
     - map: ["id"]
-    - map: ["neck"]
+    - map: ["outerClothing"]
     - map: ["back"]
+    - map: ["neck"]
+    - map: ["suitstorage"]
     - map: ["head"]
     - map: ["pocket1"]
     - map: ["pocket2"]
@@ -83,19 +97,32 @@
     footstepSoundCollection:
       collection: Footstep2CyborgLegs
       params:
-        volume: -15
-  - type: Vocal
-    emoteSounds: Reaper
+        volume: -3
   - type: RandomMetadata
     nameSegments: [NamesBorg]
   - type: InnateItem
     entityTargetActions:
     - AccessBreaker
+  - type: Pierceable
+    level: Metal
+  - type: Damageable
+    damageModifierSet: FishBorgReaper
 
 - type: entity
   id: FishBorgChassisSyndicateReaperDerelict
   parent: BaseBorgChassisSyndicateDerelict
   components:
+  - type: MeleeWeapon
+    altDisarm: false
+    soundHit:
+      collection: MetalThud
+    angle: 30
+    animation: WeaponArcFist
+    wideAnimation: WeaponArcFist
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 6
   - type: Sprite
     sprite: _Sunrise/Mobs/Silicon/chassis.rsi
     layers:
@@ -147,6 +174,8 @@
     - AccessBreaker
   - type: Construction
     node: derelictcyborg
+  - type: Pierceable
+    level: Metal
 
 - type: startingGear
   id: FishSyndiReaperHardsuitGear

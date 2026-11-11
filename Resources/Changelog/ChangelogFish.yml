@@ -1372,3 +1372,209 @@
     description: Screenshot 2026-10-09 230651
   - url: https://github.com/user-attachments/assets/12717830-921f-414a-b30e-a113ad76eca8
     description: Screenshot 2026-10-09 233031
+- author: dan4ikk3
+  time: '2026-11-03T21:06:12.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен п90 и пп томпсон на дмарену
+  - type: Tweak
+    message: Улучшена UI составляющая
+  - type: Tweak
+    message: Изминен баланс ближнего оружия и щитов
+  - type: Tweak
+    message: Лечение на арене происходит в 2 раза быстрее обычного. Бинты, мази и другие.
+  - type: Add
+    message: 'Добавлены отладочные команды арены dmarena debug:
+
+      status показывает настройки, reset сбрасывает их,
+
+      combatlock включает блокировку боя,
+
+      refill включает пополнение боеприпасов,
+
+      item <id> <true|false> показывает или скрывает предмет в магазине,
+
+      cooldown <ckey> включает или снимает кулдаун возрождения,
+
+      rofls <ckey> превращает игрока в свинью.'
+  id: 139
+  url: https://github.com/makura-games/fish-station/pull/603
+- author: KrytoiChuvaaak
+  time: '2026-11-03T21:27:56.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Мобы экспедиций больше не могут стать гост-ролью и замечают игроков с большего расстояния.
+  id: 140
+  url: https://github.com/makura-games/fish-station/pull/580
+- author: NekutGit
+  time: '2026-11-03T21:40:18.0000000+00:00'
+  changes:
+  - type: Add
+    message: 'Для киборгов НаноТрейзен и Синдиката добавлен акцент речи: «я» заменяется на «юнит».'
+  - type: Add
+    message: Жнец-киборг Синдиката получил броню и базовый модуль.
+  - type: Tweak
+    message: Перевод жнец-киборгов теперь корректный.
+  - type: Tweak
+    message: 'Доступы киборгов станции были обновлены: доступен только «расширенный» доступ.'
+  - type: Fix
+    message: Модуль самопроизводства больше не могут носить лазерное оружие.
+  - type: Fix
+    message: Звуки передвижения для мед-киборга и жнец-киборга Синдиката снова слышно.
+  id: 141
+  url: https://github.com/makura-games/fish-station/pull/602
+- author: TiFeRi
+  time: '2026-11-03T21:40:48.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Замена базового прототипа снаряда в пускателе жезла.
+  id: 142
+  url: https://github.com/makura-games/fish-station/pull/604
+- author: Fynex_x
+  time: '2026-11-03T22:15:47.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено ПНВ для расы вульп.
+  - type: Remove
+    message: Удален ПНВ у расы филинидов.
+  id: 143
+  url: https://github.com/makura-games/fish-station/pull/599
+- author: Kaiten
+  time: '2026-11-04T21:07:01.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим санрайз
+  id: 144
+  url: https://github.com/makura-games/fish-station/pull/607
+- author: TiFeRi
+  time: '2026-11-05T21:51:35.0000000+00:00'
+  changes:
+  - type: Add
+    message: Дополнительные слова в борговый акцент.
+  id: 145
+  url: https://github.com/makura-games/fish-station/pull/619
+- author: TiFeRi
+  time: '2026-11-05T21:51:03.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фиксы шаттлов обр.
+  id: 146
+  url: https://github.com/makura-games/fish-station/pull/620
+- author: TiFeRi
+  time: '2026-11-06T12:26:58.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Актуализация целей станций
+  id: 147
+  url: https://github.com/makura-games/fish-station/pull/618
+- author: Kaiten
+  time: '2026-11-06T21:57:45.0000000+00:00'
+  changes:
+  - type: Fix
+    message: 28 набегов за месяц. Вы действовали наверняка, да?
+  id: 148
+  url: https://github.com/makura-games/fish-station/pull/623
+- author: Aura-Bazara
+  time: '2026-11-06T23:33:20.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен новый костюм/юбка/перчатки для ПНТ
+  id: 149
+  url: https://github.com/makura-games/fish-station/pull/601
+  media:
+  - url: https://github.com/user-attachments/assets/e751a789-ac2e-4ed5-bb83-0b7cee64113a
+    description: изображение
+  - url: https://github.com/user-attachments/assets/44576a1c-503a-4821-b99d-c9eca0268946
+    description: изображение
+- author: KrytoiChuvaaak
+  time: '2026-11-06T23:36:21.0000000+00:00'
+  changes:
+  - type: Add
+    message: Предметы можно передавать из рук в руки. Alt + ЛКМ по персонажу с предметом в руке протягивает ему предмет, Alt + ЛКМ по протягивающему забирает его.
+  id: 150
+  url: https://github.com/makura-games/fish-station/pull/595
+- author: Pythagorius-cra
+  time: '2026-11-07T00:05:36.0000000+00:00'
+  changes:
+  - type: Fix
+    message: 'Расчёт Fish корпоративного закона: сопротивление, рецидив+явка, крайняя необходимость и порог пермы согласованы с вики и консолями.'
+  id: 151
+  url: https://github.com/makura-games/fish-station/pull/625
+- author: KrytoiChuvaaak
+  time: '2026-11-08T11:57:07.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Деадмин больше не сбрасывается после переподключения или перезахода на сервер.
+  id: 152
+  url: https://github.com/makura-games/fish-station/pull/606
+- author: NekutGit
+  time: '2026-11-08T12:01:40.0000000+00:00'
+  changes:
+  - type: Add
+    message: Для жнецов-киборгов добавлены безоружные атаки руками.
+  - type: Add
+    message: Добавлены уникальные характеристики защиты жнецов-киборгов с учётом структурного урона.
+  - type: Add
+    message: Добавлено отображение ролей киборгов МК2 в гост-меню.
+  - type: Tweak
+    message: Синхронизированы инвентарь у жнецов-киборгов Синдиката и Ксеноборгов.
+  - type: Tweak
+    message: Верхние элементы одежды на киборгах МК2 больше не отображаются во время отдыха.
+  - type: Tweak
+    message: Хотбар состояния киборгов МК2 в диагностическом худе был уменьшен до нормального.
+  - type: Tweak
+    message: Звуки шагов киборгов МК2 изменены для соответствия с их спрайтами.
+  - type: Fix
+    message: Исправлена анимация жнеца-киборга Ксеноборгов без разума.
+  id: 153
+  url: https://github.com/makura-games/fish-station/pull/613
+- author: TiFeRi
+  time: '2026-11-08T12:03:20.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Возвращена возможность изучения множества Т3 технологий в РНД.
+  id: 154
+  url: https://github.com/makura-games/fish-station/pull/617
+- author: NekutGit
+  time: '2026-11-08T12:03:51.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Размер медицинского блюспейс-подсумка увеличен до 21 клеток.
+  - type: Fix
+    message: Исправлен размер медицинских подсумков в рюкзаке.
+  id: 155
+  url: https://github.com/makura-games/fish-station/pull/621
+- author: NekutGit
+  time: '2026-11-08T12:04:28.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлены два типа магазинов под патроны общего назначения (СП).
+  - type: Tweak
+    message: Скорострельность SCAR-H была увеличена.
+  - type: Tweak
+    message: Изменено наполнение кейса с SCAR-H, в комплект идут все доступные типы боеприпасов.
+  id: 156
+  url: https://github.com/makura-games/fish-station/pull/622
+- author: KrytoiChuvaaak
+  time: '2026-11-09T09:51:05.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фелинидам возвращено ночное зрение.
+  id: 157
+  url: https://github.com/makura-games/fish-station/pull/609
+- author: Kaiten
+  time: '2026-11-09T09:50:28.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Теперь рассказчик после часа смены переходит форсированно в активную фазу. При этом он старается заспавнить выбранного им антагониста сразу, а не рандомить каждую минуту.
+  - type: Tweak
+    message: Под конец активной фазы рассказчик старается потратить все оставшиеся у него очки на дозыв антагов. в теории это позволит избежать ситуаций, где рассказчик выбирает одного ниндзю и решает что этого хватит на фазу, теперь к слабым антагам он будет подкидывать других слабых или сильного, если бюджет накопиться за это время.
+  id: 158
+  url: https://github.com/makura-games/fish-station/pull/638
+- author: Kaiten
+  time: '2026-11-09T10:05:39.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: чиним секрет
+  id: 159
+  url: https://github.com/makura-games/fish-station/pull/636

@@ -9,6 +9,7 @@ using Content.Shared.Silicons.StationAi;
 using Content.Shared.SSDIndicator;
 using Content.Shared.Warps;
 using Robust.Shared.Prototypes;
+using Content.Shared.Silicons.Borgs;  // Fish-edit: нужен BorgTypePrototype для работы борга
 
 // Не менять
 namespace Content.Server.Ghost;
@@ -52,7 +53,8 @@ public sealed partial class GhostSystem
                 continue;
 
             var playerMind = mind.Mind ?? mind.LastMindStored;
-            TryGetPlayerJobInfo(playerMind, out var playerJobId, out var playerDepartmentId);
+            if (!TryGetPlayerJobInfo(playerMind, out var playerJobId, out var playerDepartmentId))  // Fish-edit: сначала пробуем обычную JobRole
+                TryGetBorgJobInfo(uid, out playerJobId, out playerDepartmentId);  // Fish-edit: для борга берём работу из borgType
 
             var hasAnyMind = playerMind != null;
 
@@ -96,6 +98,32 @@ public sealed partial class GhostSystem
 
         return true;
     }
+
+    // Fish-start
+    /// <summary>
+    /// Определяет работу борга по выбранному borgType, если у его разума нет JobRole.
+    /// </summary>
+    private bool TryGetBorgJobInfo(EntityUid uid,
+        [NotNullWhen(true)] out string? job, out string department)
+    {
+        department = ProtoMan.Index(UnknownDepartmentPrototype).ID;
+        job = null;
+
+        if (!TryComp<BorgSwitchableTypeComponent>(uid, out var switchable)
+            || !ProtoMan.TryIndex(switchable.SelectedBorgType, out BorgTypePrototype? borgType))
+        {
+            return false;
+        }
+
+        if (!_jobs.TryGetDepartment(borgType.Job, out var departmentPrototype))
+            return false;
+
+        job = borgType.Job.Id;
+        department = departmentPrototype.ID;
+
+        return true;
+    }
+    // Fish-end
 
     /// <summary>
     /// Создает список всех игроков с ролью антагониста для отображения в панели призрака

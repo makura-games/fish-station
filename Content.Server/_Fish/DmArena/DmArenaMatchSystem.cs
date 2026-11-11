@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Content.Server.Administration;
-using Content.Server.Administration.Logs;
 using Content.Server.EnergyDome;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
@@ -13,7 +11,6 @@ using Content.Server.Popups;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Systems;
 using Content.Server.Weapons.Ranged.Systems;
-using Content.Shared.Administration;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Dataset;
@@ -27,6 +24,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
+using Content.Shared.Medical.Healing;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -38,11 +36,14 @@ using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
+using Content.Shared.Stunnable;
 using Content.Shared.Tag;
+using Content.Shared.Throwing;
 using Content.Shared.Tools.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared._Fish.DmArena;
 using Robust.Server.Audio;
+using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Configuration;
@@ -80,9 +81,12 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     [Dependency] private DmArenaMindSwapSystem _mindSwap = default!;
     [Dependency] private GunSystem _gun = default!;
     [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
     [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedPointLightSystem _light = default!;
+    [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private TagSystem _tags = default!;
 
     private static readonly EntProtoId RulePrototype = "FishDmArenaRule";
@@ -95,8 +99,16 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private bool _wasOpen;
     private TimeSpan _openAfter;
     private TimeSpan _nextOpenCheck;
+    private TimeSpan _nextCountSync;
+    private TimeSpan _openCheckInterval;
+    private TimeSpan _countSyncInterval;
 
     private bool _refillOnKill;
+
+    public bool DebugCombatLock = true;
+    public readonly HashSet<string> DebugDisabledItems = new();
+    public readonly HashSet<NetUserId> DebugNoCooldown = new();
+    public readonly HashSet<NetUserId> DebugRofls = new();
 
     private readonly Dictionary<ICommonSession, DmArenaKitEui> _activeEuis = new();
 
@@ -106,6 +118,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaRefill, value => _refillOnKill = value, true);
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaEnabled, OnEnabledChanged, true);
+        Subs.CVar(_cfg, DmArenaConfigVars.DmArenaOpenCheckInterval, value => _openCheckInterval = TimeSpan.FromSeconds(value), true);
+        Subs.CVar(_cfg, DmArenaConfigVars.DmArenaCountSyncInterval, value => _countSyncInterval = TimeSpan.FromSeconds(value), true);
         Subs.CVar(_cfg, DmArenaConfigVars.DmArenaOpenDelay, value => _openAfter = TimeSpan.FromMinutes(value), true);
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundEnding);
@@ -131,6 +145,9 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         SubscribeLocalEvent<DmArenaFighterComponent, EntityTerminatingEvent>(OnFighterTerminating);
         SubscribeLocalEvent<DmArenaFighterComponent, DamageDealtEvent>(OnFighterDamaged);
         SubscribeLocalEvent<EnergyDomeComponent, DamageDealtEvent>(OnDomeDamaged);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
+        SubscribeLocalEvent<DmArenaFighterComponent, ThrowHitByEvent>(OnFighterThrownHit);
+        SubscribeLocalEvent<DmArenaFighterComponent, KnockDownAttemptEvent>(OnFighterKnockDown);
         SubscribeLocalEvent<DmArenaFighterComponent, IsUnequippingTargetAttemptEvent>(OnFighterUnequip);
 
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
@@ -145,10 +162,23 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     // Новый игрок не видел прошлых рассылок, отправляем ему текущее состояние
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
     {
+        if (args.NewStatus == SessionStatus.Disconnected)
+        {
+            DebugNoCooldown.Remove(args.Session.UserId);
+            DebugRofls.Remove(args.Session.UserId);
+            return;
+        }
+
         if (args.NewStatus != SessionStatus.InGame)
             return;
 
-        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CurrentRule?.Players.Count ?? 0, IsOpen), args.Session.Channel);
+        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Session.Channel);
+    }
+
+    private void OnPlayerAttached(PlayerAttachedEvent args)
+    {
+        if (HasComp<GhostComponent>(args.Entity))
+            RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), args.Player.Channel);
     }
 
     public override void Update(float frameTime)
@@ -157,8 +187,14 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         if (_timing.CurTime >= _nextOpenCheck)
         {
-            _nextOpenCheck = _timing.CurTime + TimeSpan.FromSeconds(1);
+            _nextOpenCheck = _timing.CurTime + _openCheckInterval;
             RefreshOpenState();
+        }
+
+        if (_timing.CurTime >= _nextCountSync)
+        {
+            _nextCountSync = _timing.CurTime + _countSyncInterval;
+            SendPlayerCount();
         }
 
         if (CurrentRule is not { Active: true } rule || _timing.CurTime < rule.NextCleanup)
@@ -166,6 +202,27 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         rule.NextCleanup = _timing.CurTime + rule.CleanupInterval;
         SweepLooseItems(rule);
+    }
+
+    public IEnumerable<string> ShopGearIds
+    {
+        get
+        {
+            var items = CurrentRule?.ShopItems;
+            if (items == null && _prototype.Index(RulePrototype).TryGetComponent<DmArenaRuleComponent>(out var rule, _componentFactory))
+                items = rule.ShopItems;
+
+            return items?.Select(x => x.Gear.Id) ?? Enumerable.Empty<string>();
+        }
+    }
+
+    public void ResetDebug()
+    {
+        DebugCombatLock = true;
+        DebugDisabledItems.Clear();
+        DebugNoCooldown.Clear();
+        DebugRofls.Clear();
+        _cfg.SetCVar(DmArenaConfigVars.DmArenaRefill, DmArenaConfigVars.DmArenaRefill.DefaultValue);
     }
 
     private bool IsOpen => _enabled
@@ -232,6 +289,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
     private void OnRoundEnding(RoundRestartCleanupEvent ev)
     {
         CloseEuis();
+        ResetDebug();
         _openedManually = false;
 
         if (CurrentRule is { } rule)
@@ -245,8 +303,9 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
             rule.Players.Clear();
             rule.Presets.Clear();
+            rule.LastLoadouts.Clear();
             rule.Active = false;
-            BroadcastPlayerCount(rule);
+            BroadcastPlayerCount();
         }
         else if (_ruleEntity == null)
         {
@@ -269,7 +328,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         ent.Comp.Active = true;
         ShieldArenaEntities(args.Map);
         MarkMapItems(args.Map);
-        BroadcastPlayerCount(ent.Comp);
+        BrightenLights(args.Map, ent.Comp.LightMultiplier);
+        BroadcastPlayerCount();
     }
 
     private void ShieldArenaEntities(MapId map)
@@ -279,6 +339,16 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         {
             if (xform.MapID == map)
                 ShieldEntity(uid);
+        }
+    }
+
+    private void BrightenLights(MapId map, float multiplier)
+    {
+        var lights = EntityQueryEnumerator<PointLightComponent, TransformComponent>();
+        while (lights.MoveNext(out var uid, out var light, out var xform))
+        {
+            if (xform.MapID == map)
+                _light.SetEnergy(uid, light.Energy * multiplier, light);
         }
     }
 
@@ -424,6 +494,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         }
 
         if (CurrentRule is { } current
+            && !DebugNoCooldown.Contains(session.UserId)
             && current.RespawnCooldowns.TryGetValue(session.UserId, out var until)
             && until > _timing.CurTime)
         {
@@ -492,6 +563,17 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         MarkCombat(ent, args.Origin);
     }
 
+    private void OnFighterThrownHit(Entity<DmArenaFighterComponent> ent, ref ThrowHitByEvent args)
+    {
+        ent.Comp.LastThrownHit = _timing.CurTime;
+    }
+
+    private void OnFighterKnockDown(Entity<DmArenaFighterComponent> ent, ref KnockDownAttemptEvent args)
+    {
+        if (!args.Drop && ent.Comp.LastThrownHit == _timing.CurTime)
+            args.Cancelled = true;
+    }
+
     private void OnDomeDamaged(Entity<EnergyDomeComponent> ent, ref DamageDealtEvent args)
     {
         if (ent.Comp.Generator is { } generator
@@ -507,7 +589,10 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
             return;
 
         if (!_mobState.IsCritical(victim))
+        {
+            victim.Comp.LastAttacker = attacker;
             victim.Comp.LastCombat = _timing.CurTime;
+        }
 
         if (!_mobState.IsCritical(attacker))
             other.LastCombat = _timing.CurTime;
@@ -524,7 +609,8 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private bool IsInCombat(Entity<DmArenaFighterComponent> ent)
     {
-        if (!TryGetFighterRule(ent, out var rule)
+        if (!DebugCombatLock
+            || !TryGetFighterRule(ent, out var rule)
             || _mobState.IsCritical(ent)
             || _timing.CurTime >= ent.Comp.LastCombat + rule.CombatLock)
             return false;
@@ -568,10 +654,21 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         var originalBody = mind.OwnedEntity != ghost ? mind.OwnedEntity : null;
         var ownerId = mind.UserId;
-        var mob = _stationSpawning.SpawnPlayerMob(spawnCoords, null, BuildArenaProfile(mind), null);
+        var profile = BuildArenaProfile(mind);
+        var rofls = DebugRofls.Contains(session.UserId);
+        var mob = rofls
+            ? Spawn(rule.RoflsPrototype, spawnCoords)
+            : _stationSpawning.SpawnPlayerMob(spawnCoords, null, profile, null);
+
+        if (rofls)
+        {
+            _mind.MakeSentient(mob);
+            if (profile != null)
+                _meta.SetEntityName(mob, profile.Name);
+        }
 
         // Выдача могла упасть: удаляем тело без владельца
-        if (!TryEquipLoadout(mob, rule, chosen, session))
+        if (!rofls && !TryEquipLoadout(mob, rule, chosen, session))
         {
             QueueDel(mob);
             return false;
@@ -594,8 +691,9 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         }
 
         rule.Players.Add(GetNetEntity(mob));
+        rule.LastLoadouts[session.UserId] = new List<int>(items);
         _activeEuis.Remove(session);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
         return true;
     }
 
@@ -625,6 +723,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
                 RestoreDependentSlots(mob, kept);
             }
 
+            ScaleHealingDelay(mob, rule.HealingDelayMultiplier);
             return true;
         }
         catch (Exception e)
@@ -632,6 +731,19 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
             Log.Error($"Failed to equip DM arena loadout for {session.Name} on {ToPrettyString(mob)}: {e}");
             return false;
         }
+    }
+
+    private void ScaleHealingDelay(EntityUid uid, float multiplier)
+    {
+        if (TryComp<HealingComponent>(uid, out var healing))
+        {
+            healing.Delay *= multiplier;
+            Dirty(uid, healing);
+        }
+
+        var children = Transform(uid).ChildEnumerator;
+        while (children.MoveNext(out var child))
+            ScaleHealingDelay(child, multiplier);
     }
 
     private List<(string Slot, EntityUid Item)> ClearReplacedSlots(EntityUid mob, ProtoId<StartingGearPrototype> gear)
@@ -693,7 +805,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
     private void StartRespawnCooldown(Entity<DmArenaFighterComponent> ent, DmArenaRuleComponent rule)
     {
-        if (CompOrNull<ActorComponent>(ent)?.PlayerSession is { } session)
+        if (CompOrNull<ActorComponent>(ent)?.PlayerSession is { } session && !DebugNoCooldown.Contains(session.UserId))
             rule.RespawnCooldowns[session.UserId] = _timing.CurTime + rule.RespawnCooldown;
     }
 
@@ -722,7 +834,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         ClearOriginalBodyMarker(ent);
         _mindSwap.TryRestoreAsGhost(ent);
         QueueDel(ent);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
     }
 
     private void OnSuicideAttempt(Entity<DmArenaFighterComponent> ent, ref SuicideGhostEvent args)
@@ -802,7 +914,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         if (TryGetFighterRule((current, fighter), out var rule))
         {
             rule.Players.Remove(GetNetEntity(current));
-            BroadcastPlayerCount(rule);
+            BroadcastPlayerCount();
         }
 
         _mindSwap.TryRestoreToOriginalBody(current);
@@ -879,7 +991,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         rule.Players.Remove(GetNetEntity(ent));
         QueueDel(ent);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
     }
 
     private void OnFighterTerminating(Entity<DmArenaFighterComponent> ent, ref EntityTerminatingEvent args)
@@ -889,7 +1001,7 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
 
         ClearOriginalBodyMarker(ent);
         _mindSwap.TryRestoreAsGhost(ent);
-        BroadcastPlayerCount(rule);
+        BroadcastPlayerCount();
     }
 
     private void ClearOriginalBodyMarker(EntityUid tempBody)
@@ -959,31 +1071,68 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         return points.Count > 0 ? _random.Pick(points) : null;
     }
 
-    private void BroadcastPlayerCount(DmArenaRuleComponent? rule = null)
+    private void BroadcastPlayerCount()
     {
-        rule ??= CurrentRule;
+        RefreshLoadouts();
+        SendPlayerCount();
+    }
 
+    public void RefreshLoadouts()
+    {
         foreach (var eui in _activeEuis.Values)
         {
             eui.StateDirty();
         }
+    }
 
-        RaiseNetworkEvent(new DmArenaPlayerCountEvent(rule?.Players.Count ?? 0, IsOpen), Filter.Broadcast());
+    private void SendPlayerCount()
+    {
+        RaiseNetworkEvent(new DmArenaPlayerCountEvent(CountFighters(), IsOpen), Filter.Broadcast());
+    }
+
+    private int CountFighters()
+    {
+        if (CurrentRule is not { } rule)
+            return 0;
+
+        var count = 0;
+        var fighters = EntityQueryEnumerator<DmArenaFighterComponent>();
+        while (fighters.MoveNext(out var uid, out _))
+        {
+            if (!Terminating(uid) && rule.Players.Contains(GetNetEntity(uid)))
+                count++;
+        }
+
+        return count;
     }
 
     public DmArenaKitEuiState GetLoadoutState(EntityUid ruleEntity, NetUserId userId)
     {
         if (!TryComp<DmArenaRuleComponent>(ruleEntity, out var rule))
-            return new DmArenaKitEuiState(new List<DmArenaStoreOption>(), new List<DmArenaStoreSetOption>(), 0, 0, null, string.Empty);
+            return new DmArenaKitEuiState(new List<DmArenaStoreOption>(), new List<DmArenaStoreSetOption>(), 0, 0, null, null, string.Empty);
 
-        var items = rule.ShopItems.Select((item, index) => BuildItemOption(item, index)).ToList();
+        var items = rule.ShopItems
+            .Select((item, index) => (item, index))
+            .Where(x => !DebugDisabledItems.Contains(x.item.Gear.Id))
+            .Select(x => BuildItemOption(x.item, x.index))
+            .ToList();
         var sets = rule.Sets
+            .Where(set => !set.Items.Any(gear => DebugDisabledItems.Contains(gear.Id)))
             .Select(set => BuildSetOption(rule, set))
             .Where(option => option.Items.Count > 0 && option.Cost <= rule.Budget)
             .ToList();
 
         rule.Presets.TryGetValue(userId, out var preset);
-        return new DmArenaKitEuiState(items, sets, rule.Players.Count, rule.Budget, preset, rule.Gear);
+        rule.LastLoadouts.TryGetValue(userId, out var last);
+        return new DmArenaKitEuiState(items, sets, CountFighters(), rule.Budget, Usable(rule, preset), Usable(rule, last), rule.Gear);
+    }
+
+    private List<int>? Usable(DmArenaRuleComponent rule, List<int>? indexes)
+    {
+        var usable = indexes != null && indexes.All(index =>
+            index >= 0 && index < rule.ShopItems.Count && !DebugDisabledItems.Contains(rule.ShopItems[index].Gear.Id));
+
+        return usable ? indexes : null;
     }
 
     private DmArenaStoreOption BuildItemOption(DmArenaStoreItem item, int index)
@@ -1062,6 +1211,9 @@ public sealed partial class DmArenaMatchSystem : EntitySystem
         foreach (var (index, count) in counts)
         {
             var item = rule.ShopItems[index];
+            if (DebugDisabledItems.Contains(item.Gear.Id))
+                return false;
+
             var gear = _prototype.Index(item.Gear);
 
             var equipable = gear.Equipment.Count > 0 || gear.Inhand.Count > 0;
