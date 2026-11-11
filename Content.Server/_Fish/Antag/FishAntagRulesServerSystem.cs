@@ -16,7 +16,7 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
     [Dependency] private MindSystem _mind = default!;
     [Dependency] private ISharedPlayerManager _player = default!;
 
-    private readonly Dictionary<EntityUid, HashSet<string>> _shownRules = new();
+    private readonly Dictionary<EntityUid, (ICommonSession Session, HashSet<string> Rules)> _shownRules = new();
 
     public override void Initialize()
     {
@@ -28,6 +28,9 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
     }
 
+    /// <summary>
+    /// Показывает правила антагониста после его выбора для игрока.
+    /// </summary>
     private void OnAntagSelected(ref AfterAntagEntitySelectedEvent args)
     {
         if (args.Session is not { } session || !_mind.TryGetMind(session, out var mindId, out var mind))
@@ -36,6 +39,9 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         ShowNewRules(mindId, mind, session);
     }
 
+    /// <summary>
+    /// Показывает правила, когда игрок получает новую роль.
+    /// </summary>
     private void OnRoleAdded(RoleAddedEvent args)
     {
         if (args.Mind.UserId is not { } userId || !_player.TryGetSessionById(userId, out var session))
@@ -44,6 +50,9 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         ShowNewRules(args.MindId, args.Mind, session);
     }
 
+    /// <summary>
+    /// Повторно показывает правила после подключения игрока к разуму.
+    /// </summary>
     private void OnPlayerAttached(PlayerAttachedEvent args)
     {
         if (!_mind.TryGetMind(args.Player, out var mindId, out var mind))
@@ -52,21 +61,30 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         ShowNewRules(mindId, mind, args.Player);
     }
 
+    /// <summary>
+    /// Удаляет учёт правил для ролей, которых больше нет у разума.
+    /// </summary>
     private void OnRoleRemoved(RoleRemovedEvent args)
     {
         if (!_shownRules.TryGetValue(args.MindId, out var shownRules))
             return;
 
-        shownRules.IntersectWith(GetMindRules(args.Mind));
-        if (shownRules.Count == 0)
+        shownRules.Rules.IntersectWith(GetMindRules(args.Mind));
+        if (shownRules.Rules.Count == 0)
             _shownRules.Remove(args.MindId);
     }
 
+    /// <summary>
+    /// Очищает учёт правил при перезапуске раунда.
+    /// </summary>
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent args)
     {
         _shownRules.Clear();
     }
 
+    /// <summary>
+    /// Отправляет текущей сессии ещё не показанные правила ролей разума.
+    /// </summary>
     private void ShowNewRules(EntityUid mindId, MindComponent mind, ICommonSession session)
     {
         if (session.Status is SessionStatus.Disconnected or SessionStatus.Zombie)
@@ -76,13 +94,16 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
         if (rules.Count == 0)
             return;
 
-        if (!_shownRules.TryGetValue(mindId, out var shownRules))
-            _shownRules.Add(mindId, shownRules = new HashSet<string>());
+        if (!_shownRules.TryGetValue(mindId, out var shownRules) || !ReferenceEquals(shownRules.Session, session))
+        {
+            shownRules = (session, new HashSet<string>());
+            _shownRules[mindId] = shownRules;
+        }
 
         var hasNewRules = false;
         foreach (var rule in rules)
         {
-            if (shownRules.Add(rule))
+            if (shownRules.Rules.Add(rule))
                 hasNewRules = true;
         }
 
@@ -90,6 +111,9 @@ public sealed partial class FishAntagRulesServerSystem : EntitySystem
             RaiseNetworkEvent(new FishAntagRulesEvent([.. rules]), session);
     }
 
+    /// <summary>
+    /// Собирает уникальные правила антагонистических ролей разума.
+    /// </summary>
     private List<string> GetMindRules(MindComponent mind)
     {
         var rules = new List<string>();

@@ -14,7 +14,7 @@ namespace Content.Client.UserInterface.Systems.Ghost.Controls.Roles
     {
         private SpriteSystem _spriteSystem;
         public event Action<GhostRoleInfo>? OnRoleSelected;
-        public event Action<GhostRoleInfo>? OnRoleRules; // Fish-edit: событие открытия правил роли.
+        public event Action<GhostRoleInfo>? OnRoleRules; // Sunrise-Edit
         public event Action<GhostRoleInfo>? OnRoleFollow;
 
         public GhostRoleButtonsBox(bool hasAccess, FormattedMessage? reason, IEnumerable<GhostRoleInfo> roles, SpriteSystem spriteSystem)
@@ -27,7 +27,7 @@ namespace Content.Client.UserInterface.Systems.Ghost.Controls.Roles
                 var button = new GhostRoleEntryButtons(role);
                 button.RulesButton.Visible = !string.IsNullOrWhiteSpace(role.Rules); // Fish-edit: скрываем кнопку, если правила не заданы.
                 button.RequestButton.OnPressed += _ => OnRoleSelected?.Invoke(role);
-                button.RulesButton.OnPressed += _ => OnRoleRules?.Invoke(role); // Fish-edit: открываем правила выбранной роли.
+                button.RulesButton.OnPressed += _ => OnRoleRules?.Invoke(role); // Sunrise-Edit
                 button.FollowButton.OnPressed += _ => OnRoleFollow?.Invoke(role);
 
                 if (!hasAccess)
