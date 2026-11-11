@@ -35,15 +35,15 @@
 - type: gamePresetPool
   id: AllPresetPool
   presets:
-    Nukeops: { min: 35, max: 200 }
+    Nukeops: { min: 40, max: 200 } # Fish-edit
     Traitor: { min: 5, max: 200 }
-    Zombie: { min: 35, max: 200 }
+    Zombie: { min: 40, max: 200 } # Fish-edit
     Survival: { min: 5, max: 200 }
-    Revolutionary: { min: 35, max: 200 }
+    Revolutionary: { min: 40, max: 200 } # Fish-edit
     Wizard: { min: 10, max: 200 }
-    BloodCult: { min: 35, max: 200 }
-    AssaultOps: { min: 35, max: 200 }
-    FleshCult: { min: 35, max: 200 }
+    BloodCult: { min: 40, max: 200 } # Fish-edit
+    AssaultOps: { min: 40, max: 200 } # Fish-edit
+    FleshCult: { min: 40, max: 200 } # Fish-edit
 
 # Fish-edit: Classic/Insane доступны на типичном онлайне
 - type: gamePresetPool
