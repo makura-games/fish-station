@@ -1,8 +1,8 @@
+using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
-using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Interaction.Events;
-using Content.Shared.Item.ItemToggle;
+using Content.Shared.FixedPoint;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
@@ -12,8 +12,8 @@ using Content.Shared.Tools.Systems;
 namespace Content.Shared._Fish.Ipc;
 
 /// <summary>
-/// Старт и завершение сварки КПБ. Самосварка — использование зажжённой горелки в руке,
-/// чужой ремонт — клик по шасси (серверный хук раньше Flammable).
+/// Старт и завершение сварки КПБ. Клик зажжённой горелкой по шасси.
+/// Использование в руке не перехватываем: Z всегда гасит горелку.
 /// </summary>
 public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
 {
@@ -27,26 +27,7 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<FishWeldingHealingComponent, UseInHandEvent>(OnUseInHand, before: [typeof(ItemToggleSystem)]);
         SubscribeLocalEvent<FishWeldingHealableComponent, FishSiliconRepairDoAfterEvent>(OnFinished);
-    }
-
-    private void OnUseInHand(Entity<FishWeldingHealingComponent> ent, ref UseInHandEvent args)
-    {
-        if (args.Handled)
-            return;
-
-        if (!TryComp<ItemToggleComponent>(ent, out var toggle) || !toggle.Activated)
-            return;
-
-        if (!ent.Comp.AllowSelfHeal)
-            return;
-
-        // Нет урона под сварку — не перехватываем, горелке можно погаснуть.
-        if (TryStartWeld((ent, ent.Comp), args.User, args.User) != FishWeldResult.Started)
-            return;
-
-        args.Handled = true;
     }
 
     public FishWeldResult TryStartWeld(Entity<FishWeldingHealingComponent> tool, EntityUid user, EntityUid target)
@@ -63,6 +44,9 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
 
         if (!HasDamage(target, tool.Comp))
             return FishWeldResult.NoDamage;
+
+        if (!WelderCanPay(tool, tool.Comp))
+            return FishWeldResult.Rejected;
 
         var delay = user == target
             ? tool.Comp.DoAfterDelay * tool.Comp.SelfHealPenalty
@@ -84,11 +68,8 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
 
         if (healing.RequireWelderFuel)
         {
-            if (!TryComp<WelderComponent>(used, out var welder)
-                || !_solution.TryGetSolution(used, welder.FuelSolutionName, out var solution))
+            if (!TryPayWelder(used, healing))
                 return;
-
-            _solution.RemoveReagent(solution.Value, welder.FuelReagent, healing.FuelCost);
         }
         else if (TryComp<StackComponent>(used, out var stack))
         {
@@ -99,7 +80,7 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
         _damageable.TryChangeDamage(uid, healing.Damage, ignoreResistances: true, interruptsDoAfters: false, origin: args.User, ignoreVariance: true);
         _popup.PopupEntity(Loc.GetString("comp-repairable-repair", ("target", uid), ("tool", used)), uid, args.User);
 
-        if (!HasDamage(uid, healing))
+        if (!HasDamage(uid, healing) || !WelderCanPay(used, healing))
             return;
 
         var nextDelay = args.User == uid
@@ -107,6 +88,39 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
             : healing.DoAfterDelay;
 
         _tool.UseTool(used, args.User, uid, nextDelay, healing.QualityNeeded, new FishSiliconRepairDoAfterEvent());
+    }
+
+    /// <summary>Горелка горит и топлива хватает на один проход. Иначе лечение не стартует и не повторяется.</summary>
+    private bool WelderCanPay(EntityUid tool, FishWeldingHealingComponent healing)
+    {
+        if (!healing.RequireWelderFuel)
+            return true;
+
+        if (!TryComp<ItemToggleComponent>(tool, out var toggle) || !toggle.Activated)
+            return false;
+
+        return TryGetWelderFuel(tool, out var solutionEnt, out var welder)
+            && solutionEnt.Comp.Solution.GetTotalPrototypeQuantity(welder.FuelReagent) >= healing.FuelCost;
+    }
+
+    private bool TryPayWelder(EntityUid tool, FishWeldingHealingComponent healing)
+    {
+        if (!WelderCanPay(tool, healing) || !TryGetWelderFuel(tool, out var solutionEnt, out var welder))
+            return false;
+
+        var removed = _solution.RemoveReagent(solutionEnt, welder.FuelReagent, healing.FuelCost);
+        return removed >= healing.FuelCost;
+    }
+
+    private bool TryGetWelderFuel(EntityUid tool, out Entity<SolutionComponent> solutionEnt, out WelderComponent welder)
+    {
+        solutionEnt = default;
+        if (!TryComp(tool, out welder!)
+            || !_solution.TryGetSolution(tool, welder.FuelSolutionName, out var resolved))
+            return false;
+
+        solutionEnt = resolved.Value;
+        return true;
     }
 
     private bool HasDamage(EntityUid target, FishWeldingHealingComponent healing)

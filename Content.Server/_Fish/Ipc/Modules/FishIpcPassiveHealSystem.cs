@@ -47,29 +47,34 @@ public sealed partial class FishIpcPassiveHealSystem : EntitySystem
             if (fraction < module.MinChargeFraction)
                 continue;
 
-            AccumulateAndApply(healComp, host, frameTime);
+            Accumulate(healComp, frameTime);
+            healComp.ApplyTimer += frameTime;
+            if (healComp.ApplyTimer < 1f)
+                continue;
+
+            healComp.ApplyTimer -= MathF.Floor(healComp.ApplyTimer);
+            Flush(healComp, host);
         }
     }
 
-    private void AccumulateAndApply(
-        FishIpcPassiveHealModuleComponent healComp,
-        EntityUid host,
-        float frameTime)
+    private static void Accumulate(FishIpcPassiveHealModuleComponent healComp, float frameTime)
+    {
+        foreach (var (key, perSecond) in healComp.HealPerSecond.DamageDict)
+        {
+            healComp.Accumulator.TryGetValue(key, out var acc);
+            healComp.Accumulator[key] = acc + perSecond.Float() * frameTime;
+        }
+    }
+
+    private void Flush(FishIpcPassiveHealModuleComponent healComp, EntityUid host)
     {
         var toApply = new DamageSpecifier();
 
-        foreach (var (key, perSecond) in healComp.HealPerSecond.DamageDict)
+        foreach (var (key, acc) in healComp.Accumulator)
         {
-            // FixedPoint2 * dt на 30 тиках даёт < 1 цента и обнуляется. Копим во float.
-            healComp.Accumulator.TryGetValue(key, out var acc);
-            acc += perSecond.Float() * frameTime;
-
             var cents = (int) MathF.Truncate(acc * 100f);
             if (cents == 0)
-            {
-                healComp.Accumulator[key] = acc;
                 continue;
-            }
 
             var apply = cents / 100f;
             healComp.Accumulator[key] = acc - apply;
@@ -79,7 +84,7 @@ public sealed partial class FishIpcPassiveHealSystem : EntitySystem
         if (toApply.Empty)
             return;
 
-        // Разброс урона (до −30%) съедает порцию 0.01. Ремонт — ровный поток.
+        // Разброс урона (до −30%) съедает порцию 0.01. Ремонт — ровный поток раз в секунду.
         _damageable.TryChangeDamage(
             host,
             toApply,

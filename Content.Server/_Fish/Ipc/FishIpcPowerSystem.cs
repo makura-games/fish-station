@@ -73,7 +73,15 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
             }
 
             if (!skipDrain && !ipc.PowerDown)
-                _powerCell.TryUseCharge((uid, slot), frameTime * ipc.DrainPerSecond);
+            {
+                ipc.ChassisDrainTimer += frameTime;
+                if (ipc.ChassisDrainTimer >= 1f)
+                {
+                    var seconds = MathF.Floor(ipc.ChassisDrainTimer);
+                    ipc.ChassisDrainTimer -= seconds;
+                    _powerCell.TryUseCharge((uid, slot), seconds * ipc.DrainPerSecond);
+                }
+            }
 
             var level = _battery.GetChargeLevel(batteryEnt.Value.AsNullable());
             var chargePercent = (short) MathF.Round(level * 10f);

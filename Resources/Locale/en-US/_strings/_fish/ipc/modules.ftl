@@ -98,6 +98,7 @@ fish-ipc-module-jumpstarter-not-crit = Jumpstarter only works in critical condit
 fish-ipc-module-jumpstarter-success = Jumpstarter pulse gets the chassis moving.
 fish-ipc-module-jumpstarter-fail = Not enough — damage is still lethal.
 fish-ipc-module-tool-no-hand = No free hand for the integrated tool.
+fish-ipc-module-defib-hands = The pads need both hands free.
 fish-ipc-module-wire-interface-self = Wire interface active: nearby panels give extra diagnostics.
 fish-ipc-module-wire-interface-panel-open = Wire interface: panel open.
 fish-ipc-module-wire-interface-panel-closed = Wire interface: panel closed.

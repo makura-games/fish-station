@@ -26,4 +26,11 @@ public sealed partial class FishIpcModuleHostComponent : Component
 
     [ViewVariables]
     public int ModuleCount => ModuleContainer.ContainedEntities.Count;
+
+    /// <summary>Секундный накопитель пассивного расхода модулей.</summary>
+    [ViewVariables]
+    public float PassiveDrainTimer;
+
+    [ViewVariables]
+    public float PassiveDrainPending;
 }

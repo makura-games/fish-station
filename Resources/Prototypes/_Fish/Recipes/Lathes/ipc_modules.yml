@@ -1,158 +1,158 @@
-# Fish-start: дорогие рецепты модулей КПБ
+# Fish-start: рецепты модулей КПБ
 - type: latheRecipe
   id: FishIpcModuleWireInterface
   result: FishIpcModuleWireInterface
-  completetime: 25
+  completetime: 5
   materials:
-    Steel: 1200
-    Glass: 800
-    Plastic: 600
-    Silver: 200
-    Gold: 100
+    Steel: 300
+    Glass: 200
+    Plastic: 150
+    Silver: 50
+    Gold: 25
 
 - type: latheRecipe
   id: FishIpcModuleApcAdapter
   result: FishIpcModuleApcAdapter
-  completetime: 30
+  completetime: 6
   materials:
-    Steel: 1400
-    Glass: 700
-    Plastic: 500
-    Silver: 250
-    Gold: 150
+    Steel: 350
+    Glass: 175
+    Plastic: 125
+    Silver: 62
+    Gold: 37
 
 - type: latheRecipe
   id: FishIpcModuleVocalMod
   result: FishIpcModuleVocalMod
-  completetime: 22
+  completetime: 4.4
   materials:
-    Steel: 900
-    Glass: 600
-    Plastic: 700
-    Silver: 150
+    Steel: 225
+    Glass: 150
+    Plastic: 175
+    Silver: 37
 
 - type: latheRecipe
   id: FishIpcModuleToolHand
   result: FishIpcModuleToolHand
-  completetime: 35
+  completetime: 7
   materials:
-    Steel: 1800
-    Glass: 400
-    Plastic: 400
-    Silver: 200
-    Gold: 100
+    Steel: 450
+    Glass: 100
+    Plastic: 100
+    Silver: 50
+    Gold: 25
 
 - type: latheRecipe
   id: FishIpcModuleMedHud
   result: FishIpcModuleMedHud
-  completetime: 40
+  completetime: 8
   materials:
-    Steel: 1000
-    Glass: 1200
-    Plastic: 800
-    Silver: 300
-    Gold: 200
+    Steel: 250
+    Glass: 300
+    Plastic: 200
+    Silver: 75
+    Gold: 50
 
 - type: latheRecipe
   id: FishIpcModuleSecHud
   result: FishIpcModuleSecHud
-  completetime: 40
+  completetime: 8
   materials:
-    Steel: 1000
-    Glass: 1200
-    Plastic: 800
-    Silver: 300
-    Gold: 200
+    Steel: 250
+    Glass: 300
+    Plastic: 200
+    Silver: 75
+    Gold: 50
 
 - type: latheRecipe
   id: FishIpcModuleMeson
   result: FishIpcModuleMeson
-  completetime: 35
+  completetime: 7
   materials:
-    Steel: 900
-    Glass: 1100
-    Plastic: 600
-    Silver: 200
+    Steel: 225
+    Glass: 275
+    Plastic: 150
+    Silver: 50
 
 - type: latheRecipe
   id: FishIpcModuleNightVision
   result: FishIpcModuleNightVision
-  completetime: 50
+  completetime: 10
   materials:
-    Steel: 1400
-    Glass: 1400
-    Plasma: 600
-    Silver: 400
-    Gold: 250
+    Steel: 350
+    Glass: 350
+    Plasma: 150
+    Silver: 100
+    Gold: 62
 
 - type: latheRecipe
   id: FishIpcModuleNanoRepair
   result: FishIpcModuleNanoRepair
-  completetime: 55
+  completetime: 11
   materials:
-    Steel: 2000
-    Glass: 1200
-    Plasma: 800
-    Silver: 400
-    Gold: 300
-    Uranium: 200
+    Steel: 500
+    Glass: 300
+    Plasma: 200
+    Silver: 100
+    Gold: 75
+    Uranium: 50
 
 - type: latheRecipe
   id: FishIpcModuleReactiveRepair
   result: FishIpcModuleReactiveRepair
-  completetime: 55
+  completetime: 11
   materials:
-    Steel: 2100
-    Glass: 1100
-    Plasma: 900
-    Silver: 450
-    Gold: 320
-    Uranium: 220
+    Steel: 525
+    Glass: 275
+    Plasma: 225
+    Silver: 112
+    Gold: 80
+    Uranium: 55
 
 - type: latheRecipe
   id: FishIpcModuleEmpScreen
   result: FishIpcModuleEmpScreen
-  completetime: 50
+  completetime: 10
   materials:
-    Steel: 1800
-    Glass: 1000
-    Plasma: 700
-    Silver: 500
-    Gold: 280
+    Steel: 450
+    Glass: 250
+    Plasma: 175
+    Silver: 125
+    Gold: 70
 
 - type: latheRecipe
   id: FishIpcModuleJumpstarter
   result: FishIpcModuleJumpstarter
-  completetime: 60
+  completetime: 12
   materials:
-    Steel: 2200
-    Glass: 1000
-    Plasma: 900
-    Silver: 500
-    Gold: 400
-    Uranium: 250
+    Steel: 550
+    Glass: 250
+    Plasma: 225
+    Silver: 125
+    Gold: 100
+    Uranium: 62
 
 - type: latheRecipe
   id: FishIpcModuleDefib
   result: FishIpcModuleDefib
-  completetime: 65
+  completetime: 13
   materials:
-    Steel: 2400
-    Glass: 1400
-    Plasma: 1000
-    Silver: 600
-    Gold: 500
-    Uranium: 300
+    Steel: 600
+    Glass: 350
+    Plasma: 250
+    Silver: 150
+    Gold: 125
+    Uranium: 75
 
 - type: latheRecipe
   id: FishIpcModuleRadFilter
   result: FishIpcModuleRadFilter
-  completetime: 50
+  completetime: 10
   materials:
-    Steel: 1600
-    Glass: 1200
-    Plasma: 700
-    Silver: 450
-    Gold: 300
-    Uranium: 350
+    Steel: 400
+    Glass: 300
+    Plasma: 175
+    Silver: 112
+    Gold: 75
+    Uranium: 87
 # Fish-end

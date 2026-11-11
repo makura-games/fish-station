@@ -48,7 +48,14 @@ public sealed class FishIpcBatteryKeyTest : GameTest
             var ev = new InteractUsingEvent(ipc, newCell, ipc, coords);
             SEntMan.EventBus.RaiseLocalEvent(ipc, ev);
 
-            swapped = ev.Handled && slot.Item == newCell && SEntMan.EntityExists(oldCell);
+            swapped = ev.Handled;
+        });
+
+        await RunSeconds(1.2f);
+
+        await Server.WaitAssertion(() =>
+        {
+            swapped = swapped && SComp<ItemSlotsComponent>(ipc).Slots["cell_slot"].Item == newCell && SEntMan.EntityExists(oldCell);
         });
 
         await Server.WaitAssertion(() =>

@@ -50,10 +50,16 @@ public sealed partial class FishIpcModuleSystem : SharedFishIpcModuleSystem
                 drain += module.PassiveDrainPerSecond;
             }
 
-            if (drain <= 0f)
+            host.PassiveDrainPending += drain * frameTime;
+            host.PassiveDrainTimer += frameTime;
+            if (host.PassiveDrainTimer < 1f)
                 continue;
 
-            _powerCell.TryUseCharge(hostUid, drain * frameTime);
+            host.PassiveDrainTimer -= MathF.Floor(host.PassiveDrainTimer);
+            var pending = host.PassiveDrainPending;
+            host.PassiveDrainPending = 0f;
+            if (pending > 0f)
+                _powerCell.TryUseCharge(hostUid, pending);
         }
     }
 

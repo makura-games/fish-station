@@ -388,6 +388,7 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
     public async Task ClosedPanelAndLock_BlockModuleInstall()
     {
         EntityUid ipc = default;
+        EntityUid module = default;
         var closedBlocked = false;
         var openInserted = false;
 
@@ -395,7 +396,7 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
         {
             ipc = SSpawn("MobIpc");
             Server.System<LockSystem>().Unlock(ipc, ipc);
-            var module = SSpawn("FishIpcModuleWireInterface");
+            module = SSpawn("FishIpcModuleWireInterface");
             var coords = SEntMan.GetComponent<TransformComponent>(ipc).Coordinates;
             var blocked = new AfterInteractUsingEvent(ipc, module, ipc, coords, true);
             SEntMan.EventBus.RaiseLocalEvent(ipc, blocked);
@@ -406,6 +407,12 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
             Assert.That(panel.Open, Is.True);
             var opened = new AfterInteractUsingEvent(ipc, module, ipc, coords, true);
             SEntMan.EventBus.RaiseLocalEvent(ipc, opened);
+        });
+
+        await RunSeconds(1.2f);
+
+        await Server.WaitAssertion(() =>
+        {
             openInserted = SComp<FishIpcModuleComponent>(module).Installed;
         });
 

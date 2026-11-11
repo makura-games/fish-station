@@ -139,11 +139,12 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         EnsureComp<UnremoveableComponent>(pads);
         EnsureComp<MultiHandedItemComponent>(pads);
 
-        // Свободных рук нет — выбросить предмет и занять руку, иначе модуль «включён» без накладок.
-        if (!_hands.TryForcePickupAnyHand(host, pads, checkActionBlocker: false))
+        // Как у обычного дефиба: две свободные руки, без обхода проверки.
+        if (_hands.CountFreeHands(host) < 2
+            || !_hands.TryForcePickupAnyHand(host, pads, checkActionBlocker: true))
         {
             QueueDel(pads);
-            _popup.PopupEntity(Loc.GetString("fish-ipc-module-tool-no-hand"), host, host);
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-defib-hands"), host, host);
             return false;
         }
 
@@ -249,7 +250,7 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
         if (_rotting.IsRotten(target) || HasComp<UnrevivableComponent>(target))
         {
             _chat.TrySendInGameICMessage(host, Loc.GetString("defibrillator-rotten"), InGameICChatType.Speak, true);
-            _electrocution.TryDoElectrocution(target, host, 5, TimeSpan.FromSeconds(2), true, ignoreInsulation: true);
+            ZapTarget(target, host, TimeSpan.FromSeconds(2));
             _audio.PlayPvs(ent.Comp.FailureSound, host);
             return;
         }
@@ -274,13 +275,20 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
             _eui.OpenEui(new ReturnToBodyEui(mindComp, _mind, _player), session);
         }
 
-        _electrocution.TryDoElectrocution(target, host, 5, TimeSpan.FromSeconds(3), true, ignoreInsulation: true);
+        // Живую цель не станим. Изоляцию не игнорируем.
+        if (_mobState.IsDead(target))
+            ZapTarget(target, host, TimeSpan.FromSeconds(3));
         _audio.PlayPvs(failed ? ent.Comp.FailureSound : ent.Comp.SuccessSound, host);
         _popup.PopupEntity(
             Loc.GetString(failed ? "fish-ipc-module-defib-fail" : "fish-ipc-module-defib-success",
                 ("target", Identity.Entity(target, EntityManager))),
             host,
             host);
+    }
+
+    private void ZapTarget(EntityUid target, EntityUid host, TimeSpan duration)
+    {
+        _electrocution.TryDoElectrocution(target, host, 5, duration, true, ignoreInsulation: false);
     }
 
     private void OnJumpInstall(Entity<FishIpcJumpstarterModuleComponent> ent, ref FishIpcModuleInstalledEvent args)

@@ -234,7 +234,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
             SyncApc(module, host, active);
 
         if (TryComp<FishIpcVisionModuleComponent>(module, out var vision))
-            ApplyVision(host, vision.Kind, active);
+            ApplyVision((module, vision), host, active);
     }
 
     private bool IsModuleRunning(EntityUid module, EntityUid host)
@@ -296,58 +296,67 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         Dirty(host, drinker);
     }
 
-    private void ApplyVision(EntityUid host, FishIpcVisionKind kind, bool add)
+    private void ApplyVision(Entity<FishIpcVisionModuleComponent> module, EntityUid host, bool add)
     {
-        switch (kind)
+        var comp = module.Comp;
+        switch (comp.Kind)
         {
             case FishIpcVisionKind.Medical:
-                ToggleComp<ShowHealthBarsComponent>(host, add);
-                ToggleComp<ShowHealthIconsComponent>(host, add);
+                SetOwned<ShowHealthBarsComponent>(host, add, ref comp.OwnsHealthBars);
+                SetOwned<ShowHealthIconsComponent>(host, add, ref comp.OwnsHealthIcons);
                 break;
             case FishIpcVisionKind.Security:
-                ToggleComp<ShowJobIconsComponent>(host, add);
-                ToggleComp<ShowMindShieldIconsComponent>(host, add);
-                ToggleComp<ShowCriminalRecordIconsComponent>(host, add);
+                SetOwned<ShowJobIconsComponent>(host, add, ref comp.OwnsJobIcons);
+                SetOwned<ShowMindShieldIconsComponent>(host, add, ref comp.OwnsMindShield);
+                SetOwned<ShowCriminalRecordIconsComponent>(host, add, ref comp.OwnsCriminal);
                 break;
             case FishIpcVisionKind.Meson:
-                // Защита глаз от сварки только пока модуль включён. Вспышки мезон не закрывает.
-                ToggleComp<EyeProtectionComponent>(host, add);
+                // Защита глаз только пока модуль включён. Чужую маску и очки не снимаем.
+                SetOwned<EyeProtectionComponent>(host, add, ref comp.OwnsEyeProtection);
                 break;
             case FishIpcVisionKind.Thermal:
-                if (add)
-                {
-                    var tv = EnsureComp<FishThermalVisionComponent>(host);
-                    Dirty(host, tv);
-                }
-                else
-                {
-                    RemComp<FishThermalVisionComponent>(host);
-                }
+                SetOwned<FishThermalVisionComponent>(host, add, ref comp.OwnsThermal);
                 break;
         }
     }
 
-    private void ToggleComp<T>(EntityUid uid, bool add) where T : Component, new()
+    /// <summary>Ставит компонент, только если его не дала экипировка, и снимает только свой.</summary>
+    private void SetOwned<T>(EntityUid uid, bool add, ref bool owned) where T : Component, new()
     {
         if (add)
+        {
+            if (HasComp<T>(uid))
+                return;
+
             EnsureComp<T>(uid);
-        else
-            RemComp<T>(uid);
+            owned = true;
+            return;
+        }
+
+        if (!owned)
+            return;
+
+        RemComp<T>(uid);
+        owned = false;
     }
 
     private void OnRadModify(Entity<FishIpcRadFilterHostComponent> ent, ref DamageModifyEvent args)
     {
-        var modifiers = new DamageModifierSet
+        if (ent.Comp.CachedModifiers == null || ent.Comp.CachedCoefficient != ent.Comp.Coefficient)
         {
-            Coefficients =
+            ent.Comp.CachedCoefficient = ent.Comp.Coefficient;
+            ent.Comp.CachedModifiers = new DamageModifierSet
             {
-                ["Radiation"] = ent.Comp.Coefficient,
-                ["Cellular"] = ent.Comp.Coefficient,
-                ["Poison"] = MathF.Min(1f, ent.Comp.Coefficient + 0.25f),
-            }
-        };
+                Coefficients =
+                {
+                    ["Radiation"] = ent.Comp.Coefficient,
+                    ["Cellular"] = ent.Comp.Coefficient,
+                    ["Poison"] = MathF.Min(1f, ent.Comp.Coefficient + 0.25f),
+                }
+            };
+        }
 
-        args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, modifiers, args.ArmorPenetration, args.CanHeal);
+        args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, ent.Comp.CachedModifiers, args.ArmorPenetration, args.CanHeal);
     }
 
     private void OnWireExamineHost(Entity<FishIpcWireInterfaceHostComponent> ent, ref ExaminedEvent args)

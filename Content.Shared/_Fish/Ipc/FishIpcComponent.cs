@@ -34,6 +34,14 @@ public sealed partial class FishIpcComponent : Component
     [DataField]
     public float DrainPerSecond = 1.5f;
 
+    /// <summary>Копит секунду, чтобы TryUseCharge не пачкал батарею каждый тик.</summary>
+    [ViewVariables]
+    public float ChassisDrainTimer;
+
+    /// <summary>Разрешает вставку и выем батареи из завершённого do-after.</summary>
+    [ViewVariables]
+    public bool BatterySlotBypass;
+
     [DataField]
     public ProtoId<AlertPrototype> BatteryAlert = "BorgBattery";
 

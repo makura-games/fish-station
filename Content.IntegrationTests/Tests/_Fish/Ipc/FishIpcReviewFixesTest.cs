@@ -39,14 +39,14 @@ public sealed class FishIpcReviewFixesTest : FishIpcGameTest
             Hurt(ipc, "Heat", 20);
         });
 
-        await RunSeconds(4);
+        await RunSeconds(5);
 
         await Server.WaitAssertion(() =>
         {
             Assert.Multiple(() =>
             {
-                // 0.15/с * 4 с = 0.6, с округлением тиков около 19.4.
-                Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(19.4f).Within(0.25f));
+                // 0.15/с, применение раз в секунду. За 5 с успевает около 0.6–0.75.
+                Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(19.4f).Within(0.4f));
                 Assert.That(Damage(ipc, "Heat"), Is.EqualTo(20f));
             });
         });
@@ -67,7 +67,7 @@ public sealed class FishIpcReviewFixesTest : FishIpcGameTest
             Hurt(ipc, "Shock", 20);
         });
 
-        await RunSeconds(4);
+        await RunSeconds(5);
 
         await Server.WaitAssertion(() =>
         {

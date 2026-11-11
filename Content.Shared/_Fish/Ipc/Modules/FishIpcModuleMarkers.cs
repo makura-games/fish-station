@@ -45,6 +45,13 @@ public sealed partial class FishIpcRadFilterHostComponent : Component
     /// <summary>Множитель Radiation / Cellular / Poison.</summary>
     [DataField]
     public float Coefficient = 0.35f;
+
+    /// <summary>Кэш модификаторов, чтобы не аллоцировать набор на каждый удар.</summary>
+    [ViewVariables]
+    public DamageModifierSet? CachedModifiers;
+
+    [ViewVariables]
+    public float CachedCoefficient = float.NaN;
 }
 
 /// <summary>Маркер хоста: вокальный модулятор — рация работает на низком заряде.</summary>
@@ -77,6 +84,10 @@ public sealed partial class FishIpcPassiveHealModuleComponent : Component
     /// </summary>
     [ViewVariables]
     public Dictionary<string, float> Accumulator = new();
+
+    /// <summary>Лечение применяется раз в секунду, а не крохами каждый тик.</summary>
+    [ViewVariables]
+    public float ApplyTimer;
 }
 
 /// <summary>Модуль: выдаёт HUD/зрение на хост при установке.</summary>
@@ -94,6 +105,28 @@ public sealed partial class FishIpcVisionModuleComponent : Component
 
     [ViewVariables]
     public EntityUid? ToggleActionEntity;
+
+    /// <summary>Компоненты, которые на шасси повесил этот модуль, а не экипировка.</summary>
+    [ViewVariables]
+    public bool OwnsEyeProtection;
+
+    [ViewVariables]
+    public bool OwnsHealthBars;
+
+    [ViewVariables]
+    public bool OwnsHealthIcons;
+
+    [ViewVariables]
+    public bool OwnsJobIcons;
+
+    [ViewVariables]
+    public bool OwnsMindShield;
+
+    [ViewVariables]
+    public bool OwnsCriminal;
+
+    [ViewVariables]
+    public bool OwnsThermal;
 }
 
 /// <summary>Модуль встроенного дефибриллятора.</summary>

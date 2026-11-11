@@ -48,11 +48,14 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
             Act = () =>
             {
                 _audio.PlayPvs(component.Sound, uid);
+                // BreakOnMove рвёт и если сдвинулось тело: отдельного BreakOnTargetMove в этом движке нет.
                 _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, component.DoAfterDelay,
                     new FishDeadStartupDoAfterEvent(), uid, uid)
                 {
                     BreakOnDamage = true,
                     BreakOnMove = true,
+                    NeedHand = true,
+                    DistanceThreshold = 1.5f,
                 });
             },
             Text = Loc.GetString("fish-ipc-startup-verb"),
