@@ -12,7 +12,7 @@
     eyes: ClothingEyesHudMedSec
     neck: SecurityWhistle
     outerClothing: ClothingOuterArmorAmberNewCom
-    gloves: ClothingHandsPowerGlovesUplinkNTERTAmberLeader
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmberLeader # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
@@ -51,7 +51,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedSec
     neck: SecurityWhistle
-    gloves: ClothingHandsPowerGlovesUplinkNTERTRedLeader
+    gloves: ClothingHandsPowerGlovesUplinkNTERTRedLeader # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
@@ -90,7 +90,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudMedSec
     neck: ClothingNeckMantleERTLeader
-    gloves: ClothingHandsPowerGlovesUplinkNTERTGammaLeader
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGammaLeader # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
@@ -137,7 +137,7 @@
     eyes: ClothingEyesHudSecurity
     neck: HandheldCamera
     outerClothing: ClothingOuterArmorAmberNewSec
-    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltSecurityFilled
@@ -171,7 +171,7 @@
     neck: HandheldCamera
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
-    gloves: ClothingHandsPowerGlovesUplinkNTERTRed
+    gloves: ClothingHandsPowerGlovesUplinkNTERTRed # Fish-edit: ОБР Рыбки надевает перчатки
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: PouchAmmoFilledPistol40
@@ -204,7 +204,7 @@
     neck: HandheldCamera
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
-    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma # Fish-edit: ОБР Рыбки надевает перчатки
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: SpeedLoaderMagnumSP
@@ -239,7 +239,7 @@
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltSecurityFilledERT
-    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
     pocket1: LanternFlash
   inhand:
   - WeaponShotgunKammerer
@@ -267,7 +267,7 @@
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltSecurityFilledERT
-    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma # Fish-edit: ОБР Рыбки надевает перчатки
     pocket1: LanternFlash
   inhand:
   - WeaponShotgunEnforcer
@@ -295,7 +295,7 @@
     eyes: ClothingEyesHudDiagnosticERT
     neck: HandheldCamera
     outerClothing: ClothingOuterArmorAmberNewEng
-    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTEngineerPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltChiefEngineerFilled
@@ -330,7 +330,7 @@
     neck: HandheldCamera
     id: ERTEngineerPDA
     ears: ClothingHeadsetAltERT
-    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma # Fish-edit: ОБР Рыбки надевает перчатки
     belt: ClothingBeltChiefEngineerFilled
     pocket1: DoubleEmergencyOxygenTankFilled
     pocket2: PouchMaterial
@@ -367,7 +367,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMedicalFilled
     pocket1: DoubleEmergencyOxygenTankFilled
-    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
   inhand:
   - LauncherSyringeAuto
   - AdvancedDefibrillatorCompact
@@ -400,7 +400,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMedicalElite
     pocket1: DoubleEmergencyOxygenTankFilled
-    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma # Fish-edit: ОБР Рыбки надевает перчатки
   inhand:
   - LauncherSyringeAuto
   - AdvancedDefibrillator
@@ -432,7 +432,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesHudSecurity
     outerClothing: ClothingOuterArmorAmberNewJan
-    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber
+    gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTJanitorPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltJanitorFilled
@@ -459,7 +459,7 @@
     id: ERTJanitorPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltJanitorFilled
-    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma
+    gloves: ClothingHandsPowerGlovesUplinkNTERTGamma # Fish-edit: ОБР Рыбки надевает перчатки
     pocket1: Holoprojector
     pocket2: HoloprojectorField
   inhand:
