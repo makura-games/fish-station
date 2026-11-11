@@ -64,7 +64,7 @@ public sealed partial class NeuroEffectsSystem : EntitySystem
             < MentalHealthConstants.NeuroCritical => 1f,
             < MentalHealthConstants.NeuroModerate =>
                 (MentalHealthConstants.NeuroModerate - neuro.Current)
-                / (MentalHealthConstants.NeuroModerate - MentalHealthConstants.NeuroCritical) * 0.7f,
+                / (MentalHealthConstants.NeuroModerate - MentalHealthConstants.NeuroCritical) * 0.7f + 0.3f,
             < MentalHealthConstants.NeuroMild =>
                 (MentalHealthConstants.NeuroMild - neuro.Current)
                 / (MentalHealthConstants.NeuroMild - MentalHealthConstants.NeuroModerate) * 0.3f,

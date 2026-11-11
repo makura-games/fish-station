@@ -17,6 +17,11 @@ public sealed partial class HallucinationComponent : Component
     public TimeSpan Lifetime;
 
     /// <summary>
+    /// Время начала затухания, если оно уже запущено.
+    /// </summary>
+    public TimeSpan? FadeStartedAt;
+
+    /// <summary>
     /// Начальная альфа спрайта.
     /// </summary>
     public float StartAlpha = 1f;

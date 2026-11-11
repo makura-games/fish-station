@@ -20,6 +20,7 @@ public sealed partial class PsychosisSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawn);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
     }
 
     /// <summary>
@@ -49,11 +50,12 @@ public sealed partial class PsychosisSystem : EntitySystem
             }
 
             psychosis.Current = Math.Clamp(psychosis.Sources.Values.Sum(), 0f, 100f);
-            if (Math.Abs(oldLevel - psychosis.Current) < 0.001f)
+            var reachedZero = oldLevel > 0f && psychosis.Current == 0f;
+            if (Math.Abs(oldLevel - psychosis.Current) < 0.001f && !reachedZero)
                 continue;
 
             Dirty(uid, psychosis);
-            if ((int) oldLevel != (int) psychosis.Current)
+            if ((int) oldLevel != (int) psychosis.Current || reachedZero)
                 RaiseNetworkEvent(new PsychosisUpdateEvent(GetNetEntity(uid), psychosis.Current), Filter.Entities(uid));
         }
     }
@@ -79,11 +81,32 @@ public sealed partial class PsychosisSystem : EntitySystem
     /// </summary>
     private void OnPlayerSpawn(PlayerSpawnCompleteEvent ev)
     {
+        SendConfig(ev.Mob);
+        SendCurrentLevel(ev.Mob);
+    }
+
+    /// <summary>
+    /// Отправляет состояние психоза и конфигурацию при подключении к уже существующему персонажу.
+    /// </summary>
+    private void OnPlayerAttached(PlayerAttachedEvent ev)
+    {
+        SendConfig(ev.Entity);
+        SendCurrentLevel(ev.Entity);
+    }
+
+    private void SendConfig(EntityUid uid)
+    {
         RaiseNetworkEvent(new PsychosisConfigEvent(
             _config.HallucinationMobPrototypes,
             _config.HallucinationCorpsePrototypes,
             _config.HallucinationItemPrototypes,
             _config.HallucinationSounds
-        ), Filter.Entities(ev.Mob));
+        ), Filter.Entities(uid));
+    }
+
+    private void SendCurrentLevel(EntityUid uid)
+    {
+        var level = TryComp<PsychosisComponent>(uid, out var psychosis) ? psychosis.Current : 0f;
+        RaiseNetworkEvent(new PsychosisUpdateEvent(GetNetEntity(uid), level, true), Filter.Entities(uid));
     }
 }

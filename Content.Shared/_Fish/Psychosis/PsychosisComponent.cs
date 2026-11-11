@@ -5,7 +5,7 @@ namespace Content.Shared._Fish.Psychosis;
 /// <summary>
 /// Уровень психоза, вызываемый химикатами, радиацией и т.п.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class PsychosisComponent : Component
 {
     /// <summary>

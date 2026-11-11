@@ -45,7 +45,8 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     {
         base.Initialize();
         SubscribeNetworkEvent<PsychosisConfigEvent>(OnConfig);
-        SubscribeNetworkEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
+        SubscribeLocalEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
+        SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnLocalPlayerDetached);
     }
 
     /// <summary>
@@ -54,9 +55,7 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     public override void Shutdown()
     {
         base.Shutdown();
-        foreach (var (uid, _) in _hallucinations)
-            _entityManager.DeleteEntity(uid);
-        _hallucinations.Clear();
+        ClearHallucinations();
     }
 
     /// <summary>
@@ -75,9 +74,21 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     /// </summary>
     private void OnPsychosisUpdate(PsychosisUpdateEvent ev)
     {
-        if (GetEntity(ev.Uid) != _player.LocalSession?.AttachedEntity)
-            return;
         _currentPsychosisLevel = ev.Level;
+    }
+
+    private void OnLocalPlayerDetached(LocalPlayerDetachedEvent ev)
+    {
+        _currentPsychosisLevel = 0f;
+        ClearHallucinations();
+    }
+
+    private void ClearHallucinations()
+    {
+        foreach (var uid in _hallucinations.Keys)
+            _entityManager.DeleteEntity(uid);
+
+        _hallucinations.Clear();
     }
 
     /// <summary>
@@ -103,13 +114,30 @@ public sealed partial class HallucinationClientSystem : EntitySystem
                 continue;
             }
 
+            if (comp.FadeStartedAt is { } fadeStartedAt)
+            {
+                var fadeElapsed = currentTime - fadeStartedAt;
+                var alpha = Math.Clamp(1f - (float) fadeElapsed.TotalSeconds / FadeDuration, 0f, 1f) *
+                            comp.StartAlpha;
+                if (_entityManager.TryGetComponent<SpriteComponent>(uid, out var fadeSprite))
+                    fadeSprite.Color = fadeSprite.Color.WithAlpha(alpha);
+
+                if (fadeElapsed >= TimeSpan.FromSeconds(FadeDuration))
+                {
+                    _entityManager.DeleteEntity(uid);
+                    _hallucinations.Remove(uid);
+                }
+
+                continue;
+            }
+
             var xform = Transform(uid);
             var dist = (xform.WorldPosition - playerXform.WorldPosition).Length();
 
             // Удаление, если игрок слишком далеко
             if (dist > MaxDistanceFromPlayer)
             {
-                StartFadeAndDelete(uid, comp, currentTime);
+                StartFadeAndDelete(comp, currentTime);
                 continue;
             }
 
@@ -117,41 +145,23 @@ public sealed partial class HallucinationClientSystem : EntitySystem
             var elapsed = currentTime - comp.CreatedAt;
             if (elapsed >= comp.Lifetime)
             {
-                // Плавно исчезает и удаляется
-                StartFadeAndDelete(uid, comp, currentTime);
+                StartFadeAndDelete(comp, currentTime);
                 continue;
             }
-
-            // Обновление прозрачности в фазе исчезновения
-            float remaining = (float)(comp.Lifetime - elapsed).TotalSeconds;
-			if (remaining <= FadeDuration)
-			{
-				float alpha = Math.Clamp(remaining / FadeDuration, 0f, 1f) * comp.StartAlpha;
-				if (_entityManager.TryGetComponent<SpriteComponent>(uid, out var sprite))
-				{
-					sprite.Color = sprite.Color.WithAlpha(alpha);
-				}
-				if (remaining <= 0)
-				{
-					_entityManager.DeleteEntity(uid);
-					_hallucinations.Remove(uid);
-					continue;
-				}
-			}
         }
 
-        // Создание новых галлюцинаций
-        if (_currentPsychosisLevel <= 0 ||
-            (_mobPrototypes.Count == 0 && _corpsePrototypes.Count == 0 && _itemPrototypes.Count == 0))
+        if (_currentPsychosisLevel <= 0)
             return;
 
-        // Визуальные
-        float visualInterval = MathHelper.Lerp(20f, 5f, _currentPsychosisLevel / 100f);
-        _nextVisualTime -= frameTime;
-        if (_nextVisualTime <= 0)
+        if (_mobPrototypes.Count > 0 || _corpsePrototypes.Count > 0 || _itemPrototypes.Count > 0)
         {
-            TryCreateVisualHallucination(playerEntity.Value);
-            _nextVisualTime = visualInterval * _random.NextFloat(0.5f, 1.5f);
+            float visualInterval = MathHelper.Lerp(20f, 5f, _currentPsychosisLevel / 100f);
+            _nextVisualTime -= frameTime;
+            if (_nextVisualTime <= 0)
+            {
+                TryCreateVisualHallucination(playerEntity.Value);
+                _nextVisualTime = visualInterval * _random.NextFloat(0.5f, 1.5f);
+            }
         }
 
         // Звуковые
@@ -211,7 +221,7 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         }
 
         // Создание сущности
-        var hallucination = _entityManager.CreateEntityUninitialized(protoId);
+        var hallucination = _entityManager.CreateEntityUninitialized(protoId, Transform(player).Coordinates);
         var xform = _entityManager.GetComponent<TransformComponent>(hallucination);
         xform.WorldPosition = randomPos;
 
@@ -233,6 +243,8 @@ public sealed partial class HallucinationClientSystem : EntitySystem
             sprite.Rotation = _random.NextAngle();
         }
 
+        _entityManager.InitializeAndStartEntity(hallucination);
+
         // Регистрируем в словаре
         _hallucinations[hallucination] = comp;
 
@@ -253,10 +265,8 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     /// <summary>
     /// Сокращает оставшееся время жизни галлюцинации для её плавного исчезновения.
     /// </summary>
-    private void StartFadeAndDelete(EntityUid uid, HallucinationComponent comp, TimeSpan currentTime)
+    private void StartFadeAndDelete(HallucinationComponent comp, TimeSpan currentTime)
     {
-        // Устанавливаем оставшееся время жизни равным FadeDuration
-        comp.Lifetime = currentTime - comp.CreatedAt + TimeSpan.FromSeconds(FadeDuration);
-        // Если альфа уже была изменена, оставляем, иначе начнём с текущей
+        comp.FadeStartedAt ??= currentTime;
     }
 }

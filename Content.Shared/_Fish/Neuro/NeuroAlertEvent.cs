@@ -1,3 +1,4 @@
+using Robust.Shared.Localization;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._Fish.Neuro;
@@ -8,9 +9,9 @@ namespace Content.Shared._Fish.Neuro;
 [Serializable, NetSerializable]
 public sealed class NeuroAlertEvent : EntityEventArgs
 {
-    public string Message;
+    public LocId Message;
 
-    public NeuroAlertEvent(string message)
+    public NeuroAlertEvent(LocId message)
     {
         Message = message;
     }

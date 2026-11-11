@@ -1,9 +1,14 @@
 reagent-name-fish-detox = detoxol
 reagent-desc-fish-detox = A medicine that reduces chemical dependence.
 fish-health-analyzer-neuro-level = Neurons
+fish-neuro-muddling = Your mind feels clouded.
+fish-neuro-critical = Your mind is collapsing.
 ent-FishNeuroCriticalSlowdownStatusEffect = neuro critical slowdown
     .desc = Your movements are severely impaired.
     .suffix = Fish
 ent-FishNeuroModerateSlowdownStatusEffect = neuro moderate slowdown
     .desc = Your movements are slowed.
+    .suffix = Fish
+ent-FishNeuroMuddledStatusEffect = neuro muddling
+    .desc = Your vision is blurred and your thoughts are clouded.
     .suffix = Fish

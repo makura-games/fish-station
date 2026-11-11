@@ -1,7 +1,6 @@
 using Content.Shared._Fish.Psychosis;
 using Content.Shared.Audio;
 using Robust.Client.Audio;
-using Robust.Client.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.IoC;
@@ -13,7 +12,6 @@ namespace Content.Client._Fish.Psychosis;
 
 public sealed partial class SoundEchoSystem : EntitySystem
 {
-    [Dependency] private IPlayerManager _player = default!;
     [Dependency] private AudioSystem _audio = default!;
 
     private float _currentPsychosisLevel;
@@ -23,7 +21,7 @@ public sealed partial class SoundEchoSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeNetworkEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
+        SubscribeLocalEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
         SubscribeLocalEvent<AudioComponent, ComponentInit>(OnAudioInit);
     }
 
@@ -32,8 +30,7 @@ public sealed partial class SoundEchoSystem : EntitySystem
     /// </summary>
     private void OnPsychosisUpdate(PsychosisUpdateEvent ev)
     {
-        if (GetEntity(ev.Uid) == _player.LocalSession?.AttachedEntity)
-            _currentPsychosisLevel = ev.Level;
+        _currentPsychosisLevel = ev.Level;
     }
 
     /// <summary>

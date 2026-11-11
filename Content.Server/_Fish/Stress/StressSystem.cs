@@ -15,6 +15,7 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.NPC.Components;
+using Content.Shared.NPC.Systems;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.GameObjects;
@@ -27,8 +28,12 @@ namespace Content.Server._Fish.Stress;
 public sealed partial class StressSystem : EntitySystem
 {
     [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private EntityQuery<MobStateComponent> _mobStateQuery = default!;
+    [Dependency] private EntityQuery<NpcFactionMemberComponent> _factionQuery = default!;
+    [Dependency] private EntityQuery<PuddleComponent> _puddleQuery = default!;
     [Dependency] private JobSystem _jobs = default!;
     [Dependency] private MentalHealthConfigSystem _config = default!;
+    [Dependency] private NpcFactionSystem _npcFaction = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private VomitSystem _vomit = default!;
@@ -97,6 +102,7 @@ public sealed partial class StressSystem : EntitySystem
         _startledHostiles.Remove(uid);
         _highStressStarted.Remove(uid);
         _vomitCooldowns.Remove(uid);
+        RemComp<StressTremorComponent>(uid);
     }
 
     /// <summary>
@@ -147,6 +153,7 @@ public sealed partial class StressSystem : EntitySystem
             var nearby = _lookup.GetEntitiesInRange(xform.Coordinates, 7f);
             var currentHostiles = GetSeenSet(_currentHostiles, uid);
             currentHostiles.Clear();
+            _factionQuery.TryGetComponent(uid, out var observerFactions);
             var now = _timing.CurTime;
             var sawTraumaSource = false;
 
@@ -155,12 +162,13 @@ public sealed partial class StressSystem : EntitySystem
                 if (target == uid)
                     continue;
 
-                var isDead = TryComp<MobStateComponent>(target, out var mobState) &&
+                var isDead = _mobStateQuery.TryGetComponent(target, out var mobState) &&
                              mobState.CurrentState == MobState.Dead;
-                var isHostile = TryComp<NpcFactionMemberComponent>(target, out var factions) &&
-                                factions.HostileFactions.Count > 0;
+                var isHostile = observerFactions != null &&
+                                _factionQuery.TryGetComponent(target, out var targetFactions) &&
+                                IsHostile(observerFactions, target, targetFactions);
                 var hasBloodPuddle = false;
-                if (TryComp<PuddleComponent>(target, out var puddle) &&
+                if (_puddleQuery.TryGetComponent(target, out var puddle) &&
                     _solutions.TryGetSolution(target, puddle.SolutionName, out _, out var solution))
                 {
                     foreach (var reagent in solution.Contents)
@@ -236,6 +244,19 @@ public sealed partial class StressSystem : EntitySystem
                 MentalHealthConstants.StressMax);
 
             var isHigh = stress.Current > MentalHealthConstants.StressThresholdHigh;
+            if (isHigh)
+            {
+                var tremor = EnsureComp<StressTremorComponent>(uid);
+                tremor.Intensity = Math.Clamp(
+                    (stress.Current - MentalHealthConstants.StressThresholdHigh) /
+                    (MentalHealthConstants.StressMax - MentalHealthConstants.StressThresholdHigh),
+                    0f,
+                    1f);
+            }
+            else
+            {
+                RemComp<StressTremorComponent>(uid);
+            }
 
             if (wasHigh != isHigh)
                 RaiseNetworkEvent(new StressEffectsEvent(GetNetEntity(uid), isHigh), Filter.Entities(uid));
@@ -258,6 +279,20 @@ public sealed partial class StressSystem : EntitySystem
         seen = new HashSet<EntityUid>();
         seenByEntity.Add(uid, seen);
         return seen;
+    }
+
+    private bool IsHostile(
+        NpcFactionMemberComponent observerFactions,
+        EntityUid target,
+        NpcFactionMemberComponent targetFactions)
+    {
+        foreach (var faction in observerFactions.Factions)
+        {
+            if (_npcFaction.IsFactionHostile(faction, (target, targetFactions)))
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>

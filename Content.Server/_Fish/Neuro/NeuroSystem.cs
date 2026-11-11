@@ -10,7 +10,6 @@ using Content.Shared.Chat;
 using Content.Shared.CombatMode;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
-using Content.Shared.Drunk;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Stunnable;
 using Content.Shared.StatusEffectNew;
@@ -30,6 +29,7 @@ public sealed partial class NeuroSystem : EntitySystem
     private static readonly ProtoId<DamageTypePrototype> PoisonDamageType = "Poison";
     private static readonly EntProtoId CriticalSlowdown = "FishNeuroCriticalSlowdownStatusEffect";
     private static readonly EntProtoId ModerateSlowdown = "FishNeuroModerateSlowdownStatusEffect";
+    private static readonly EntProtoId NeuroMuddled = "FishNeuroMuddledStatusEffect";
     private static readonly string RussianVowels = "аеёиоуыэюяАЕЁИОУЫЭЮЯ";
     private static readonly char[] ReplacementRussianVowels = "аеёиоуыэюя".ToCharArray();
     private static readonly string EnglishVowels = "aeiouAEIOU";
@@ -179,11 +179,11 @@ public sealed partial class NeuroSystem : EntitySystem
 
         if (neuro.Current < MentalHealthConstants.NeuroModerate)
         {
-            _statusEffects.TryAddStatusEffectDuration(uid, SharedDrunkSystem.Drunk, TimeSpan.FromSeconds(1.5));
+            _statusEffects.TryAddStatusEffectDuration(uid, NeuroMuddled, TimeSpan.FromSeconds(1.5));
         }
         else
         {
-            _statusEffects.TryRemoveStatusEffect(uid, SharedDrunkSystem.Drunk);
+            _statusEffects.TryRemoveStatusEffect(uid, NeuroMuddled);
         }
 
         if (neuro.Current < MentalHealthConstants.NeuroCritical)

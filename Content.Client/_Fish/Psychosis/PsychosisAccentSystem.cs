@@ -29,7 +29,7 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeNetworkEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
+        SubscribeLocalEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
         _chatController = _ui.GetUIController<ChatUIController>();
         _chatController.MessageAdded += OnChatMessageAdded;
     }
@@ -45,10 +45,7 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
     /// </summary>
     private void OnPsychosisUpdate(PsychosisUpdateEvent ev)
     {
-        if (GetEntity(ev.Uid) != _player.LocalSession?.AttachedEntity)
-            return;
-
-        if (_currentPsychosisLevel <= 0f && ev.Level > 0f &&
+        if (!ev.IsInitialState && _currentPsychosisLevel <= 0f && ev.Level > 0f &&
             _player.LocalSession?.AttachedEntity is { } entity)
         {
             _popup.PopupClient(Loc.GetString("fish-psychosis-onset"), entity, entity);
