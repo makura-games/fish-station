@@ -11,6 +11,7 @@ using Content.Shared.Inventory;
 using Content.Shared.Humanoid;
 using Content.Shared.Weapons.Reflect;
 using Content.Shared.Weapons.Ranged.Components;
+using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 
 namespace Content.IntegrationTests.Tests._Fish.Homelander;
@@ -18,6 +19,51 @@ namespace Content.IntegrationTests.Tests._Fish.Homelander;
 [TestFixture]
 public sealed class HomelanderTest : GameTest
 {
+    [Test]
+    public async Task FlightRaisesSpriteAndLandingRestoresIt()
+    {
+        var server = Pair.Server;
+        var client = Pair.Client;
+        var map = await Pair.CreateTestMap();
+        var session = Pair.Player!;
+        var previousEntity = session.AttachedEntity;
+        var actions = server.System<SharedActionsSystem>();
+        EntityUid patriot = default;
+        Entity<ActionComponent> flightAction = default;
+
+        await server.WaitPost(() =>
+        {
+            patriot = server.EntMan.SpawnEntity("FishMobHomelander", map.GridCoords);
+            var flight = server.EntMan.GetComponent<WingFlightComponent>(patriot);
+            var uid = flight.ActionEntity!.Value;
+            flightAction = (uid, server.EntMan.GetComponent<ActionComponent>(uid));
+            server.PlayerMan.SetAttachedEntity(session, patriot);
+        });
+
+        await Pair.RunTicksSync(10);
+        var clientPatriot = Pair.ToClientUid(patriot);
+        await server.WaitPost(() => actions.PerformAction(patriot, flightAction));
+        await CheckOffset(true);
+
+        await server.WaitPost(() => actions.PerformAction(patriot, flightAction));
+        await CheckOffset(false);
+
+        await server.WaitPost(() => server.PlayerMan.SetAttachedEntity(session, previousEntity));
+
+        async Task CheckOffset(bool flying)
+        {
+            await Pair.RunTicksSync(10);
+            await client.WaitAssertion(() =>
+            {
+                var actual = client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Offset;
+                if (flying)
+                    Assert.That(actual.Y, Is.GreaterThanOrEqualTo(HomelanderComponent.FlightVisualLift - 0.001f));
+                else
+                    Assert.That(actual.Y, Is.InRange(0f, 0.25f));
+            });
+        }
+    }
+
     [Test]
     public async Task SpawnsWithArmorAndUsesItsOwnActions()
     {

@@ -1,4 +1,6 @@
 using System.Numerics;
+using Content.Shared._Fish.Homelander; // Fish-edit
+using Content.Shared._Sunrise.Abilities.Milira; // Fish-edit
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Components;
 using Content.Shared.Database;
@@ -59,7 +61,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
 
         // Do visuals without an event. They should always happen and putting it on the attempt event is weird!
         // If more stuff gets added here, it should probably be turned into an event.
-        FireEffects(args.FromCoordinates, distanceTried, args.ShotDirection.ToAngle(), ent.Owner);
+        FireEffects(args.FromCoordinates, distanceTried, args.ShotDirection.ToAngle(), ent.Owner, shooter); // Fish-edit
 
         // Admin logging
         if (result?.HitEntity != null)
@@ -94,7 +96,8 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
     /// <param name="distance">Distance of the hitscan shot.</param>
     /// <param name="shotAngle">Angle of the shot.</param>
     /// <param name="hitscanUid">The hitscan entity itself.</param>
-    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle shotAngle, EntityUid hitscanUid)
+    /// <param name="shooter">Стрелок, от которого начинается визуальный эффект.</param>
+    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle shotAngle, EntityUid hitscanUid, EntityUid shooter) // Fish-edit
     {
         if (distance == 0 || !_visualsQuery.TryComp(hitscanUid, out var vizComp))
             return;
@@ -141,6 +144,13 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         // Fish-start
         if (travelSprite != null && vizComp.TravelOriginOffset is { } offset)
         {
+            if (HasComp<HomelanderComponent>(shooter) &&
+                TryComp<WingFlightComponent>(shooter, out var flight) &&
+                flight.FlightEnabled)
+            {
+                offset.Y += HomelanderComponent.FlightVisualLift;
+            }
+
             var start = (-originRotation).RotateVec(offset);
             var end = shotAngle.ToVec() * distance;
             var beam = end - start;

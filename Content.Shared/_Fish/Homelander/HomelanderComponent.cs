@@ -8,6 +8,8 @@ namespace Content.Shared._Fish.Homelander;
 [RegisterComponent, NetworkedComponent]
 public sealed partial class HomelanderComponent : Component
 {
+    public const float FlightVisualLift = 0.48f;
+
     public EntityUid? ScreamAction;
     public EntityUid? LaserAction;
     public EntityUid? Laser;
