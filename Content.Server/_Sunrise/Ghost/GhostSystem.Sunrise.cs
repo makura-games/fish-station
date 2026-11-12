@@ -11,7 +11,7 @@ using Content.Shared.Warps;
 using Robust.Shared.Prototypes;
 using Content.Shared.Silicons.Borgs;  // Fish-edit: нужен BorgTypePrototype для работы борга
 
-// Не менять
+// ReSharper disable once CheckNamespace
 namespace Content.Server.Ghost;
 
 public sealed partial class GhostSystem
