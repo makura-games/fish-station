@@ -9,6 +9,15 @@
     - !type:DepartmentTimeRequirement
       department: Civilian
       time: 72000 #20 hrs # Sunrise-RoleTime
+    - !type:SpeciesRequirement
+      species:
+      - Vox
+      - Felinid
+      - Vulpkanin
+      - Swine
+      - Dwarf
+      - HumanoidXeno
+      inverted: true
   startingGear: CentcommBartenderGear
   icon: "JobIconCentcommBartender"
   overrideConsoleVisibility: false
@@ -24,13 +33,6 @@
   special:
    - !type:AddImplantSpecial
      implants: [ MindShieldImplant ]
-  speciesBlacklist:
-  - Vox
-  - Felinid
-  - Vulpkanin
-  - Swine
-  - Dwarf
-  - HumanoidXeno
 
 - type: startingGear
   id: CentcommBartenderGear
