@@ -1,6 +1,12 @@
 using System.Linq;
 using System.Numerics;
 using Content.Shared.Item;
+using Content.Shared.Dataset;
+using Content.Shared.Physics;
+using Robust.Shared.Physics;
+using Robust.Shared.Physics.Systems;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Localization;
 using Content.Shared._Fish.Psychosis;
 using Robust.Client.Audio;
 using Robust.Client.GameObjects;
@@ -26,6 +32,19 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private IEyeManager _eyeManager = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+
+    private static readonly ProtoId<LocalizedDatasetPrototype> FirstNames = "NamesFirstMale";
+    private static readonly ProtoId<LocalizedDatasetPrototype> LastNames = "NamesLast";
+
+    private readonly HashSet<EntityUid> _intersecting = new();
+    private const int PositionAttempts = 20;
+    private const float SpawnClearance = 0.5f;
 
     private List<string> _mobPrototypes = new();
     private List<string> _corpsePrototypes = new();
@@ -206,34 +225,10 @@ public sealed partial class HallucinationClientSystem : EntitySystem
 		if (protoId == null)
 			return;
 
-        // Генерация позиции в пределах видимости (используем вьюпорт)
-        var viewport = _eyeManager.GetWorldViewport();
-        var min = viewport.BottomLeft;
-        var max = viewport.TopRight;
+        if (!TryFindSpawnPosition(player, out var position))
+            return;
 
-        // Случайная точка в этом прямоугольнике, но не слишком близко к игроку (минимум 2 тайла)
-        var playerXform = Transform(player);
-        var playerPos = playerXform.WorldPosition;
-        var randomPos = new Vector2(
-            _random.NextFloat(min.X, max.X),
-            _random.NextFloat(min.Y, max.Y)
-        );
-        var offset = randomPos - playerPos;
-        if (offset.Length() < 2f)
-        {
-            var direction = offset.LengthSquared() > 0f ? Vector2.Normalize(offset) : Vector2.UnitX;
-            randomPos = playerPos + direction * 2f;
-        }
-
-        // Создание сущности
-        var hallucination = _entityManager.CreateEntityUninitialized(
-            protoId,
-            new MapCoordinates(randomPos, playerXform.MapID));
-
-        if (_entityManager.HasComponent<PhysicsComponent>(hallucination))
-            _entityManager.RemoveComponent<PhysicsComponent>(hallucination);
-        if (_entityManager.HasComponent<ItemComponent>(hallucination))
-            _entityManager.RemoveComponent<ItemComponent>(hallucination);
+        var hallucination = _entityManager.CreateEntityUninitialized(protoId, position);
 
         // Добавляем наш маркер
         var comp = _entityManager.AddComponent<HallucinationComponent>(hallucination);
@@ -241,18 +236,81 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         comp.Lifetime = TimeSpan.FromSeconds(_random.NextFloat(MinLifetime, MaxLifetime));
         comp.StartAlpha = 1f;
 
-        // Для предметов задаём случайный поворот
-        if (!spawnMob)
+        // Fish-edit: визуализаторы предметов должны получить компоненты исходного прототипа при запуске.
+        _entityManager.InitializeAndStartEntity(hallucination);
+
+        if (TryComp<PhysicsComponent>(hallucination, out var physics))
+            _physics.SetCanCollide(hallucination, false, body: physics);
+        RemComp<ItemComponent>(hallucination);
+
+        if (TryComp<SpriteComponent>(hallucination, out var sprite))
         {
-            var sprite = _entityManager.GetComponent<SpriteComponent>(hallucination);
-            sprite.Rotation = _random.NextAngle();
+            _sprite.SetVisible((hallucination, sprite), true);
+            if (!spawnMob)
+                _sprite.SetRotation((hallucination, sprite), _random.NextAngle());
         }
 
-        _entityManager.InitializeAndStartEntity(hallucination);
+        if (spawnMob)
+        {
+            var firstNames = _prototype.Index(FirstNames);
+            var lastNames = _prototype.Index(LastNames);
+            var name = $"{Loc.GetString(_random.Pick(firstNames.Values))} {Loc.GetString(_random.Pick(lastNames.Values))}";
+            _metaData.SetEntityName(hallucination, name);
+        }
 
         // Регистрируем в словаре
         _hallucinations[hallucination] = comp;
 
+    }
+
+    /// <summary>
+    /// Ищет свободное место с запасом до стен для любой категории галлюцинаций.
+    /// </summary>
+    private bool TryFindSpawnPosition(EntityUid player, out MapCoordinates position)
+    {
+        position = default;
+        var viewport = _eyeManager.GetWorldViewport();
+        var xform = Transform(player);
+        var playerPosition = _transform.GetWorldPosition(xform);
+        for (var attempt = 0; attempt < PositionAttempts; attempt++)
+        {
+            var candidate = new Vector2(
+                _random.NextFloat(viewport.BottomLeft.X, viewport.TopRight.X),
+                _random.NextFloat(viewport.BottomLeft.Y, viewport.TopRight.Y));
+            if (Vector2.DistanceSquared(candidate, playerPosition) < 4f)
+                continue;
+
+            var bounds = new Box2(candidate - new Vector2(SpawnClearance), candidate + new Vector2(SpawnClearance));
+            _intersecting.Clear();
+            _lookup.GetEntitiesIntersecting(xform.MapID, bounds, _intersecting, LookupFlags.Uncontained);
+            if (!CanSpawnAtPosition())
+                continue;
+
+            position = new MapCoordinates(candidate, xform.MapID);
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CanSpawnAtPosition()
+    {
+        foreach (var uid in _intersecting)
+        {
+            if (!TryComp<PhysicsComponent>(uid, out var physics) || !physics.CanCollide)
+                continue;
+
+            if (!TryComp<FixturesComponent>(uid, out var fixtures))
+                continue;
+
+            foreach (var fixture in fixtures.Fixtures.Values)
+            {
+                if (fixture.Hard && (fixture.CollisionLayer & (int) CollisionGroup.MobMask) != 0)
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>

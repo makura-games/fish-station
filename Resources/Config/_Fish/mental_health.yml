@@ -78,7 +78,6 @@ psychosis:
     - Screwdriver
     - Wrench
     - EmergencyOxygenTank
-    # Fish-start: используем только переносимые игровые предметы
     - Flare
     - HandheldGPSBasic
     - HandLabeler
@@ -124,8 +123,6 @@ psychosis:
     - PlushieLizard
     - PlushieCarp
     - PlushieSnake
-    # Fish-end
-    # Fish-start: добавляем больше обычных переносимых предметов
     - FoodBakedBrownie
     - FoodBakedBunHoney
     - FoodBakedBunHotX
@@ -270,7 +267,134 @@ psychosis:
     - BoxFolderRed
     - BoxFolderWhite
     - BoxFolderYellow
-    # Fish-end
+    - FoodBurgerSoy
+    - FoodBurgerTofu
+    - FoodBurgerSuper
+    - FoodBurgerRobot
+    - FoodMealFries
+    - FoodMealFriesCheesy
+    - FoodMealNachos
+    - FoodMealNachosCheesy
+    - FoodMealOmelette
+    - FoodMealFriedegg
+    - FoodMealPotatoLoaded
+    - FoodMealPotatoYaki
+    - FoodMealCornInButter
+    - FoodCheese
+    - FoodCheeseSlice
+    - FoodTofu
+    - FoodButter
+    - FoodButterSlice
+    - FoodCarrot
+    - FoodCabbage
+    - FoodLemon
+    - FoodLime
+    - FoodPineapple
+    - FoodPotato
+    - FoodEggplant
+    - FoodOnion
+    - FoodOnionRed
+    - FoodMushroom
+    - FoodPumpkin
+    - FoodGrape
+    - FoodWatermelonSlice
+    - FoodPeaPod
+    - FoodSnackBoritos
+    - FoodSnackCnDs
+    - FoodSnackCheesie
+    - FoodSnackChips
+    - FoodSnackChocolate
+    - FoodSnackChocolateBar
+    - FoodSnackEnergyBar
+    - FoodSnackPistachios
+    - FoodSnackPopcorn
+    - FoodSnackRaisins
+    - FoodSnackSemki
+    - FoodSnackSwirlLollipop
+    - FoodCakeBlueberrySlice
+    - FoodCakePlainSlice
+    - FoodCakeCarrotSlice
+    - FoodCakeChocolateSlice
+    - FoodCakeAppleSlice
+    - FoodCakeVanillaSlice
+    - FoodPizzaMargheritaSlice
+    - FoodPizzaMeatSlice
+    - FoodPizzaMushroomSlice
+    - FoodPizzaVegetableSlice
+    - FoodNoodlesBoiled
+    - FoodNoodles
+    - FoodNoodlesButter
+    - FoodNoodlesCopy
+    - Cigarette
+    - CigPackGreen
+    - CigPackRed
+    - CigPackBlue
+    - PaperRolling
+    - ChopSticks
+    - ForkPlastic
+    - SpoonPlastic
+    - Basketball
+    - Football
+    - TennisBall
+    - BeachBall
+    - CrayonWhite
+    - CrayonBlack
+    - CrayonRed
+    - CrayonBlue
+    - CrayonGreen
+    - CrayonYellow
+    - CrayonPurple
+    - CrayonBox
+    - ClothingHeadHatCanadaBeanie
+    - ClothingHeadHatBowlerHat
+    - ClothingHeadHatFedoraBrown
+    - ClothingHeadHatFedoraGrey
+    - ClothingHeadHatChef
+    - ClothingHeadHatSombrero
+    - BedsheetBlue
+    - BedsheetRed
+    - BedsheetGreen
+    - BedsheetWhite
+    - EmptyDeskBell
+    - DeskBell
+    - GlowstickRed
+    - GlowstickBlue
+    - GlowstickGreen
+    - Binoculars
+    - FoodPizzaMargherita
+    - FoodPizzaMeat
+    - FoodPizzaMushroom
+    - FoodCakeChocolate
+    - FoodCakeCarrot
+    - FoodCakeApple
+    - FoodCakeVanilla
+    - FoodCakePlain
+    - FoodTinPeaches
+    - FoodTinBeans
+    - FoodTinMRE
+    - FoodBowlBig
+    - FoodPlate
+    - FoodPlateSmall
+    - FoodPlatePlastic
+    - FoodSnackNutribrick
+    - FoodSnackMREBrownie
+    - FoodDonutPink
+    - FoodDonutJellyHomer
+    - FoodMeatCooked
+    - FoodMeatBaconCooked
+    - FoodMeatChickenCooked
+    - FoodMeatFish
+    - FoodMimana
+    - FoodWatermelon
+    - FoodCorn
+    - FoodGarlic
+    - FoodLily
+    - FoodChiliPepper
+    - FoodAloe
+    - FoodAmbrosiaVulgaris
+    - FoodAmbrosiaDeus
+    - ToyRubberDuck
+    - ToyAmongPequeno
   hallucination_sounds:
     - /Audio/Effects/thudswoosh.ogg
     - /Audio/Effects/bone_rattle.ogg
@@ -278,7 +402,6 @@ psychosis:
     - /Audio/Effects/quick_exhale.ogg
     - /Audio/Effects/metal_scrape1.ogg
     - /Audio/Effects/door_open.ogg
-    # Fish-start: добавляем короткие игровые звуковые эффекты без музыки
     - /Audio/Effects/metal_scrape2.ogg
     - /Audio/Effects/metal_scrape3.ogg
     - /Audio/Effects/metal_slam1.ogg
@@ -372,7 +495,6 @@ psychosis:
     - /Audio/Effects/zzzt.ogg
     - /Audio/Effects/egloves.ogg
     - /Audio/Effects/Lightning/lightningshock.ogg
-    - /Audio/Effects/Lightning/strobe.ogg
     - /Audio/Effects/fence_rattle1.ogg
     - /Audio/Effects/fence_rattle2.ogg
     - /Audio/Effects/fence_rattle3.ogg
@@ -498,7 +620,6 @@ psychosis:
     - /Audio/Effects/radpulse6.ogg
     - /Audio/Effects/space_wind.ogg
     - /Audio/Effects/smoke.ogg
-    - /Audio/Effects/Smoke-grenade.ogg
     - /Audio/Effects/sizzle.ogg
     - /Audio/Effects/lightburn.ogg
     - /Audio/Effects/adminhelp.ogg
@@ -527,8 +648,6 @@ psychosis:
     - /Audio/Effects/guardian_deck_shuffle.ogg
     - /Audio/Effects/guardian_inject.ogg
     - /Audio/Effects/guardian_warn.ogg
-    # Fish-end
-    # Fish-start: используем также короткие вариации игровых шагов и звуки существ
     - /Audio/Effects/burning.ogg
     - /Audio/Effects/fire.ogg
     - /Audio/Effects/tree_fell.ogg
@@ -594,4 +713,3 @@ psychosis:
     - /Audio/Effects/Gasp/moth_DeathGasp.ogg
     - /Audio/Effects/Gasp/vox_DeathGasp.ogg
     - /Audio/Effects/Gasp/vox_gasp.ogg
-    # Fish-end
