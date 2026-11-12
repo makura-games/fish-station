@@ -5,22 +5,7 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleWireInterface
   name: IPC wire interface module
-  description: Draws 0.05 J/s. Examining a panel reports whether it is open or closed. Toggleable.
-  suffix: Fish
-  components:
-  - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: FishIpcModule
-    passiveDrainPerSecond: 0.05
-  - type: FishIpcModulePowerToggle
-  - type: FishIpcWireInterfaceModule
-
-- type: entity
-  parent: FishBaseIpcModule
-  id: FishIpcModuleApcAdapter
-  name: IPC APC adapter module
-  description: Draws 0.1 J/s. APC charge do-after time is multiplied by 0.55. Toggleable.
+  description: Draws 0.1 J/s. Examining a panel reports whether it is open or closed. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -29,28 +14,13 @@
   - type: FishIpcModule
     passiveDrainPerSecond: 0.1
   - type: FishIpcModulePowerToggle
-  - type: FishIpcApcAdapterModule
+  - type: FishIpcWireInterfaceModule
 
 - type: entity
   parent: FishBaseIpcModule
-  id: FishIpcModuleVocalMod
-  name: IPC vocal modulator module
-  description: Draws 0.15 J/s. Built-in radio keeps working after the battery dies. Toggleable.
-  suffix: Fish
-  components:
-  - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
-  - type: FishIpcModule
-    passiveDrainPerSecond: 0.15
-  - type: FishIpcModulePowerToggle
-  - type: FishIpcVocalModModule
-
-- type: entity
-  parent: FishBaseIpcModule
-  id: FishIpcModuleToolHand
-  name: IPC multitool hand module
-  description: Draws 0.2 J/s. While on, places a multitool in a free hand. Toggleable.
+  id: FishIpcModuleApcAdapter
+  name: IPC APC adapter module
+  description: Draws 0.2 J/s. APC charge do-after time is multiplied by 0.55. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -59,6 +29,36 @@
   - type: FishIpcModule
     passiveDrainPerSecond: 0.2
   - type: FishIpcModulePowerToggle
+  - type: FishIpcApcAdapterModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleVocalMod
+  name: IPC vocal modulator module
+  description: Draws 0.3 J/s. Built-in radio keeps working after the battery dies. Toggleable.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.3
+  - type: FishIpcModulePowerToggle
+  - type: FishIpcVocalModModule
+
+- type: entity
+  parent: FishBaseIpcModule
+  id: FishIpcModuleToolHand
+  name: IPC multitool hand module
+  description: Draws 0.4 J/s. While on, places a multitool in a free hand. Toggleable.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  - type: FishIpcModule
+    passiveDrainPerSecond: 0.4
+  - type: FishIpcModulePowerToggle
   - type: FishIpcToolHandModule
     toolPrototype: Multitool
 
@@ -66,14 +66,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleMedHud
   name: IPC medical optics module
-  description: Draws 0.35 J/s. Vision slot health bars and health icons. Toggleable.
+  description: Draws 0.7 J/s. Vision slot health bars and health icons. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.35
+    passiveDrainPerSecond: 0.7
     exclusionGroup: vision
   - type: FishIpcVisionModule
     kind: Medical
@@ -82,14 +82,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleSecHud
   name: IPC security optics module
-  description: Draws 0.35 J/s. Vision slot job, mindshield and criminal icons. Toggleable.
+  description: Draws 0.7 J/s. Vision slot job, mindshield and criminal icons. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.35
+    passiveDrainPerSecond: 0.7
     exclusionGroup: vision
   - type: FishIpcVisionModule
     kind: Security
@@ -98,14 +98,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleMeson
   name: IPC meson optics module
-  description: Draws 0.25 J/s. Vision slot. While on, protects eyes from welding. While off, it does not. Does not block flashes.
+  description: Draws 0.5 J/s. Vision slot. While on, protects eyes from welding. While off, it does not. Does not block flashes.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.25
+    passiveDrainPerSecond: 0.5
     exclusionGroup: vision
   - type: FishIpcVisionModule
     kind: Meson
@@ -114,14 +114,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleNightVision
   name: IPC thermal vision module
-  description: Draws 0.55 J/s. Vision slot thermal overlay. Toggleable.
+  description: Draws 1.1 J/s. Vision slot thermal overlay. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
     sprite: _Starlight/Objects/Specific/Medical/implants.rsi
     state: eyes_thermal
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.55
+    passiveDrainPerSecond: 1.1
     exclusionGroup: vision
   - type: FishIpcVisionModule
     kind: Thermal
@@ -132,14 +132,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleNanoRepair
   name: IPC physical repair module
-  description: Draws 1.2 J/s above 10% charge. Heals only blunt, slash and piercing. Not with reactive repair.
+  description: Draws 1.5 J/s above 10% charge. Heals only blunt, slash and piercing. Not with reactive repair.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 1.2
+    passiveDrainPerSecond: 1.5
     exclusionGroup: repair
     minChargeFraction: 0.1
   - type: FishIpcPassiveHealModule
@@ -153,14 +153,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleReactiveRepair
   name: IPC thermal repair module
-  description: Draws 1.6 J/s above 12% charge. Heals only heat and shock. Not with nanorepair.
+  description: Draws 1.5 J/s above 12% charge. Heals only heat and shock. Not with nanorepair.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 1.6
+    passiveDrainPerSecond: 1.5
     exclusionGroup: repair
     minChargeFraction: 0.12
   - type: FishIpcPassiveHealModule
@@ -173,14 +173,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleEmpScreen
   name: IPC EMP screen module
-  description: Draws 0.45 J/s. EMP damage times 0.4, no full EMP disable. Toggleable.
+  description: Draws 0.9 J/s. EMP damage times 0.4, no full EMP disable. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.45
+    passiveDrainPerSecond: 0.9
   - type: FishIpcModulePowerToggle
   - type: FishIpcEmpScreenModule
 
@@ -188,14 +188,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleJumpstarter
   name: IPC jumpstarter module
-  description: Draws 0.2 J/s. Crit pulse costs 30% charge, 180 s cooldown. Does not clear lethal damage. Toggleable.
+  description: Draws 0.4 J/s. Crit pulse costs 30% charge, 180 s cooldown. Does not clear lethal damage. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.2
+    passiveDrainPerSecond: 0.4
   - type: FishIpcModulePowerToggle
   - type: FishIpcJumpstarterModule
 
@@ -203,14 +203,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleDefib
   name: IPC defibrillator module
-  description: Draws 0.25 J/s. Zap costs 40% charge, 4 s, 90 s cooldown, -40 asphyxiation. Toggleable.
+  description: Draws 0.5 J/s. Zap costs 40% charge, 4 s, 90 s cooldown, -40 asphyxiation. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.25
+    passiveDrainPerSecond: 0.5
   - type: FishIpcModulePowerToggle
   - type: FishIpcDefibModule
 
@@ -218,14 +218,14 @@
   parent: FishBaseIpcModule
   id: FishIpcModuleRadFilter
   name: IPC radiation filter module
-  description: Draws 0.6 J/s. Radiation and cellular damage times 0.35. Toggleable.
+  description: Draws 1.2 J/s. Radiation and cellular damage times 0.35. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Specific/Robotics/borgmodule.rsi
     state: generic
   - type: FishIpcModule
-    passiveDrainPerSecond: 0.6
+    passiveDrainPerSecond: 1.2
   - type: FishIpcModulePowerToggle
   - type: FishIpcRadFilterModule
 # Fish-end

@@ -61,7 +61,7 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
 
         await Server.WaitAssertion(() =>
         {
-            Assert.That(CellCharge(ipc), Is.LessThan(charged - 2f));
+            Assert.That(CellCharge(ipc), Is.LessThan(charged - 1.5f));
             Assert.That(SComp<FishIpcComponent>(ipc).PowerDown, Is.False);
         });
 

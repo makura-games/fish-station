@@ -192,7 +192,7 @@
   - type: RespiratorImmunity
   - type: FishIpc
     batteryPowered: true
-    drainPerSecond: 1.5
+    drainPerSecond: 1
     chargeThresholdMid: 0.8
     chargeThresholdLow: 0.35
     chargeThresholdCritical: 0.1

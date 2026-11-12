@@ -32,7 +32,7 @@ public sealed partial class FishIpcComponent : Component
     /// Расход Дж/с при активности (Paradise microbattery / EE drain).
     /// </summary>
     [DataField]
-    public float DrainPerSecond = 1.5f;
+    public float DrainPerSecond = 1f;
 
     /// <summary>Копит секунду, чтобы TryUseCharge не пачкал батарею каждый тик.</summary>
     [ViewVariables]
