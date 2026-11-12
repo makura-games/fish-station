@@ -1578,3 +1578,10 @@
     message: чиним секрет
   id: 159
   url: https://github.com/makura-games/fish-station/pull/636
+- author: Kaiten
+  time: '2026-11-12T18:21:43.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим Санрайз (12.11.2026)
+  id: 160
+  url: https://github.com/makura-games/fish-station/pull/646
