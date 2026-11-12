@@ -1438,6 +1438,93 @@ public sealed class CentCommSupplyTest
     }
 
     [Test]
+    public async Task OrderCancelledWhenStationDeleted()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var protoMan = server.ProtoMan;
+        var ticker = server.System<GameTicker>();
+        var stationSystem = server.System<StationSystem>();
+        var mapSystem = server.System<MapSystem>();
+        var accessSystem = server.System<AccessSystem>();
+        var system = server.System<CentCommSupplyConsoleSystem>();
+        var loc = server.ResolveDependency<ILocalizationManager>();
+
+        EntityUid console = default;
+        EntityUid target = default;
+        MapId devMapId = default;
+        MapId consoleMapId = default;
+        EntityUid actor = default;
+        var targetNet = NetEntity.Invalid;
+        Entity<CentCommSupplyConsoleComponent> consoleEnt = default;
+        var existingCrates = new HashSet<EntityUid>();
+
+        await server.WaitPost(() =>
+        {
+            var map = protoMan.Index<GameMapPrototype>(MapProto);
+            var grids = ticker.LoadGameMap(map, out devMapId, DeserializationOptions.Default with { InitializeMaps = true });
+            target = stationSystem.GetOwningStation(grids[0])
+                ?? throw new InvalidOperationException("Loaded Dev map has no owning station");
+        });
+
+        await server.WaitPost(() =>
+        {
+            var consoleMap = mapSystem.CreateMap(out consoleMapId);
+            console = entMan.SpawnEntity(_consolePrototype, new MapCoordinates(0, 0, consoleMapId));
+            var consoleComp = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
+            consoleEnt = (console, consoleComp);
+            consoleComp.DeliveryDelay = TimeSpan.FromSeconds(1);
+            consoleComp.DeliveryTimeout = TimeSpan.FromSeconds(5);
+            actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
+            targetNet = entMan.GetNetEntity(target);
+            existingCrates.UnionWith(GetNewCrates(entMan, new HashSet<EntityUid>()));
+
+            var bus = entMan.EventBus;
+            bus.RaiseLocalEvent(console, new CentCommSupplyStateRequestMessage { Actor = actor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = actor });
+        });
+
+        await server.WaitPost(() =>
+        {
+            var entries = new List<CentCommSupplyOrderEntry>
+            {
+                new(MedicalBundleProduct, 1),
+            };
+
+            Assert.That(system.TryPlaceOrder(consoleEnt, actor, Guid.NewGuid(), targetNet, entries), Is.True,
+                "Failed to place an order before deleting the station");
+            entMan.DeleteEntity(target);
+        });
+
+        await server.WaitRunTicks(SecondsToTicks(server.Timing.TickPeriod, 2));
+
+        await server.WaitAssertion(() =>
+        {
+            var state = GetUserState(entMan, console, actor);
+            Assert.That(state.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-station-deleted")),
+                "Station deletion must cancel the order with a dedicated status");
+            Assert.That(GetNewCrates(entMan, existingCrates), Is.Empty,
+                "Cancelled order left crates behind");
+        });
+
+        await server.WaitPost(() =>
+        {
+            if (entMan.EntityExists(actor))
+                entMan.DeleteEntity(actor);
+
+            if (entMan.EntityExists(console))
+                entMan.DeleteEntity(console);
+
+            mapSystem.DeleteMap(consoleMapId);
+            mapSystem.DeleteMap(devMapId);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task ConsoleStateIsPerUser()
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true, Dirty = true });
@@ -1465,6 +1552,9 @@ public sealed class CentCommSupplyTest
         using var observer = new RobustIntegrationTest.ClientIntegrationInstance(observerOptions);
         await observer.Connect(server);
 
+        // 20 тиков достаточно для доставки состояния и сообщений между сервером и двумя клиентами.
+        const int NetworkSyncTicks = 20;
+
         async Task RunTicks(int ticks)
         {
             for (var i = 0; i < ticks; i++)
@@ -1474,7 +1564,7 @@ public sealed class CentCommSupplyTest
             }
         }
 
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
         var requesterSession = server.PlayerMan.GetSessionById(client.Session!.UserId);
         var observerSession = server.PlayerMan.GetSessionById(observer.Session!.UserId);
         var previousRequester = requesterSession.AttachedEntity;
@@ -1526,14 +1616,14 @@ public sealed class CentCommSupplyTest
         });
 
         // Сначала синхронизируем привязку игроков, затем открываем интерфейс для обоих.
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
         await server.WaitPost(() =>
         {
             ui.OpenUi(console, CentCommSupplyUiKey.Key, requester);
             ui.OpenUi(console, CentCommSupplyUiKey.Key, spectator);
         });
 
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
         await server.WaitAssertion(() => Assert.That(
             ui.GetActors(console, CentCommSupplyUiKey.Key), Is.EquivalentTo(new[] { requester, spectator })));
         await server.WaitAssertion(() =>
@@ -1606,7 +1696,7 @@ public sealed class CentCommSupplyTest
         {
             GetPrivateField<Dictionary<string, int>>(observerWindow, "_order").Add(MedicalBundleProduct, 1);
         });
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
 
         await client.WaitAssertion(() =>
         {
@@ -1615,7 +1705,7 @@ public sealed class CentCommSupplyTest
             Assert.That(GetPrivateField<Dictionary<string, int>>(requesterWindow, "_order"), Has.Count.EqualTo(1));
         });
         await client.WaitPost(() => SubmitOrder(requesterWindow));
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
 
         await client.WaitAssertion(() =>
         {
@@ -1632,13 +1722,13 @@ public sealed class CentCommSupplyTest
 
         var transform = server.System<SharedTransformSystem>();
         await server.WaitPost(() => transform.SetMapCoordinates(requester, new MapCoordinates(0, 0, firstMap)));
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
         await server.WaitAssertion(() => Assert.That(ui.IsUiOpen(console, CentCommSupplyUiKey.Key, requester), Is.False));
         await server.WaitPost(() =>
             transform.SetMapCoordinates(requester, new MapCoordinates(0, 0, consoleMap)));
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
         await server.WaitPost(() => ui.OpenUi(console, CentCommSupplyUiKey.Key, requester));
-        await RunTicks(20);
+        await RunTicks(NetworkSyncTicks);
         await client.WaitAssertion(() =>
         {
             var clientConsole = client.EntMan.GetEntity(consoleNet);

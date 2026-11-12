@@ -240,6 +240,9 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
             if (!TryComp<StationDataComponent>(order.Station, out _))
             {
+                // Fish-edit: отдельная отмена при удалении станции назначения
+                Log.Warning($"CentComm supply order #{order.OrderNumber} was cancelled because station {ToPrettyString(order.Station)} was deleted.");
+                NotifyStationDeleted(order);
                 RollbackCrates(order.Crates);
                 _pendingOrders.RemoveAt(i);
                 continue;
@@ -930,8 +933,19 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     private void NotifyDeliveryTimeout(PendingOrder order)
     {
         Log.Warning($"CentComm supply order #{order.OrderNumber} timed out waiting for free cargo pallets.");
+        NotifyOrderCancelled(order, Loc.GetString("centcomm-supply-error-delivery-timeout"));
+    }
 
-        var message = Loc.GetString("centcomm-supply-error-delivery-timeout");
+    /// <summary>
+    /// Notifies the ordering actor that the destination station was deleted.
+    /// </summary>
+    private void NotifyStationDeleted(PendingOrder order)
+    {
+        NotifyOrderCancelled(order, Loc.GetString("centcomm-supply-error-station-deleted"));
+    }
+
+    private void NotifyOrderCancelled(PendingOrder order, string message)
+    {
         CentCommSupplyConsoleComponent? component = null;
         var consoleValid = !TerminatingOrDeleted(order.Console)
             && TryComp(order.Console, out component);

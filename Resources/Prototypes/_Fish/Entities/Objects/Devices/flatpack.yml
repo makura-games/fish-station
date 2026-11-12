@@ -1,7 +1,7 @@
 - type: entity
   parent: BaseFlatpack
   id: FishGasMinerOxygenFlatpack
-  name: O2 gas miner flatpack
+  name: O2 miner flatpack
   suffix: Fish
   description: A flatpack used for constructing an O2 gas miner.
   components:
@@ -17,7 +17,7 @@
 - type: entity
   parent: BaseFlatpack
   id: FishGasMinerNitrogenFlatpack
-  name: N2 gas miner flatpack
+  name: N2 miner flatpack
   suffix: Fish
   description: A flatpack used for constructing an N2 gas miner.
   components:
@@ -33,7 +33,7 @@
 - type: entity
   parent: BaseFlatpack
   id: FishGasMinerCarbonDioxideFlatpack
-  name: CO2 gas miner flatpack
+  name: CO2 miner flatpack
   suffix: Fish
   description: A flatpack used for constructing a CO2 gas miner.
   components:

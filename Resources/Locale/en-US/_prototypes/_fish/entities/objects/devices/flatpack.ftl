@@ -1,13 +1,13 @@
-ent-FishGasMinerOxygenFlatpack = O2 gas miner flatpack
+ent-FishGasMinerOxygenFlatpack = O2 miner flatpack
     .desc = A flatpack used for constructing an O2 gas miner.
     .suffix = Fish
-ent-FishGasMinerNitrogenFlatpack = N2 gas miner flatpack
+ent-FishGasMinerNitrogenFlatpack = N2 miner flatpack
     .desc = A flatpack used for constructing an N2 gas miner.
     .suffix = Fish
-ent-FishGasMinerCarbonDioxideFlatpack = CO2 gas miner flatpack
+ent-FishGasMinerCarbonDioxideFlatpack = CO2 miner flatpack
     .desc = A flatpack used for constructing a CO2 gas miner.
     .suffix = Fish
-ent-FishGasMinerPlasmaFlatpack = plasma gas miner flatpack
+ent-FishGasMinerPlasmaFlatpack = plasma miner flatpack
     .desc = A flatpack used for constructing a plasma gas miner.
     .suffix = Fish
 ent-FishVendingMachineChemicalsFlatpack = ChemVend flatpack

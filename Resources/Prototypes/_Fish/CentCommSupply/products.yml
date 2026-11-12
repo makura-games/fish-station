@@ -63,6 +63,26 @@
   - id: DawInstrument
 
 - type: centCommSupplyProduct
+  id: FishCentCommSupplyAccessConfigurator
+  suffix: Fish
+  name: centcomm-supply-product-access-configurator-name
+  category: centcomm-supply-category-other
+  maxQuantity: 1
+  sortOrder: 146
+  contents:
+  - id: AccessConfigurator
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyDoorRemoteCustom
+  suffix: Fish
+  name: centcomm-supply-product-custom-door-remote-name
+  category: centcomm-supply-category-other
+  maxQuantity: 1
+  sortOrder: 145
+  contents:
+  - id: DoorRemoteCustom
+
+- type: centCommSupplyProduct
   id: FishCentCommSupplyLockerDetectiveFilled
   suffix: Fish
   useEntityPreview: true
@@ -1194,13 +1214,14 @@
   - id: WeaponLauncherRL5
 
 - type: centCommSupplyProduct
-  id: FishCentCommSupplyWeaponLightMachineGunM492
+  id: FishCentCommSupplyClothingBackpackDuffelWeaponLightMachineGunM492
   suffix: Fish
+  name: centcomm-supply-product-m492-bundle-name
   category: centcomm-supply-category-spec-ops
   maxQuantity: 1
   sortOrder: 129
   contents:
-  - id: WeaponLightMachineGunM492
+  - id: ClothingBackpackDuffelWeaponLightMachineGunM492
 
 - type: centCommSupplyProduct
   id: FishCentCommSupplyWeaponRifleM90GrenadeLauncher
@@ -1240,11 +1261,61 @@
   - id: ClothingBackpackDuffelWeaponSubMachineGunP90Filled
 
 - type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackDuffelWeaponSniperHristovFilled
+  suffix: Fish
+  name: centcomm-supply-product-hristov-bundle-name
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 138
+  contents:
+  - id: ClothingBackpackDuffelWeaponSniperHristovFilled
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyClothingBackpackDuffelWeaponShotgunCycler
+  suffix: Fish
+  name: centcomm-supply-product-cycler-bundle-name
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 139
+  contents:
+  - id: ClothingBackpackDuffelWeaponShotgunCycler
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponEarthGovXRay
+  suffix: Fish
+  name: centcomm-supply-product-earthgov-xray-name
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 140
+  contents:
+  - id: WeaponEarthGovXRay
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponSniperPulseCarbine
+  suffix: Fish
+  name: centcomm-supply-product-sniper-pulse-carbine-name
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 141
+  contents:
+  - id: WeaponSniperPulseCarbine
+
+- type: centCommSupplyProduct
+  id: FishCentCommSupplyWeaponIonCarbine
+  suffix: Fish
+  name: centcomm-supply-product-ion-carbine-name
+  category: centcomm-supply-category-spec-ops
+  maxQuantity: 1
+  sortOrder: 142
+  contents:
+  - id: WeaponIonCarbine
+
+- type: centCommSupplyProduct
   id: FishCentCommSupplyVendingMachineAmmoFlatpack
   suffix: Fish
   category: centcomm-supply-category-spec-ops
   maxQuantity: 1
-  sortOrder: 138
+  sortOrder: 143
   contents:
   - id: FishVendingMachineAmmoFlatpack
 
@@ -1253,6 +1324,6 @@
   suffix: Fish
   category: centcomm-supply-category-spec-ops
   maxQuantity: 1
-  sortOrder: 139
+  sortOrder: 144
   contents:
   - id: FishVendingMachineChemicalsNanotrasenFlatpack
