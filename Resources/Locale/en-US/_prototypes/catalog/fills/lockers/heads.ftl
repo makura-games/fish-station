@@ -1,4 +1,4 @@
-ent-LockerQuarterMasterFilled = { ent-LockerQuarterMaster }
+﻿ent-LockerQuarterMasterFilled = { ent-LockerQuarterMaster }
     .suffix = Filled
     .desc = { ent-LockerQuarterMaster.desc }
 ent-LockerCaptainFilledNoLaser = { ent-LockerCaptain }

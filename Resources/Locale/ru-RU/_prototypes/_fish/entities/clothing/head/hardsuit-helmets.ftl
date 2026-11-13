@@ -6,6 +6,10 @@ ent-ClothingHeadHelmetHardsuitDeathsquadFish = { ent-ClothingHeadHelmetHardsuitD
     .desc = { ent-ClothingHeadHelmetHardsuitDeathsquad.desc }
     .suffix = Fish
 
+ent-FishClothingHeadHelmetHardsuitQuartermaster = шлем скафандра квартирмейстера
+    .desc = Герметичный шлем с усиленным забралом и мощным встроенным фонарём. Выдерживает вакуум, удары ящиков и недовольство экипажа, когда карго снова опоздало с заказом.
+    .suffix = Fish
+
 ent-FishClothingHeadHelmetHardsuitCentcomBlack = полевой шлем скафандра
     .desc = Предназначен для элитного офицера специальных операций.
     .suffix = Fish

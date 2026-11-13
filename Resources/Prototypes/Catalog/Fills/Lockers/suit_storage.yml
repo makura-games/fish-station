@@ -1,4 +1,4 @@
-#SOFTSUITS
+﻿#SOFTSUITS
 #Basic EVA
 - type: entity
   id: SuitStorageEVA
@@ -223,6 +223,7 @@
         tableId: FillChiefMedicalOfficerHardsuit
   - type: AccessReader
     access: [ [ "ChiefMedicalOfficer" ] ]
+
 
 #RD's hardsuit
 - type: entity
