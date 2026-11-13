@@ -23,6 +23,7 @@
   description: A modern intermediate cartridge for combat rifles. Standard kinetic ammunition is common and useful in most situations.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceSP
   - type: Sprite
     layers:
@@ -38,6 +39,7 @@
   parent: BaseCartridgeRifle
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceFMJ
   - type: Sprite
     layers:
@@ -53,6 +55,7 @@
   parent: BaseCartridgeRifle
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceAP
   - type: Sprite
     layers:
@@ -69,6 +72,7 @@
   description: A modern intermediate cartridge for combat rifles. Chalk ammunition is generally non-harmful, used for practice.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTracePractice
   - type: Sprite
     layers:
@@ -85,6 +89,7 @@
   description: A modern intermediate cartridge for combat rifles. Incendiary ammunition contains a self-igniting compound that sets the target ablaze.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleIncendiary
   - type: Sprite
     layers:
@@ -101,6 +106,7 @@
   description: A modern intermediate cartridge for combat rifles. Uranium ammunition replaces the lead core of the bullet with fissile material, irradiating the target from the inside.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceUranium
   - type: Sprite
     layers:

@@ -30,6 +30,7 @@
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumTraceRubber
   - type: Sprite
     layers:
@@ -46,6 +47,7 @@
   description: Heavy magnum cartridge mostly used by revolvers. Standard kinetic ammunition is common and useful in most situations.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumTraceSP
   - type: Sprite
     layers:
@@ -62,6 +64,7 @@
   description: Heavy magnum cartridge mostly used by revolvers. Chalk ammunition is generally non-harmful, used for practice.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumTraceHP
   - type: Sprite
     layers:
@@ -78,6 +81,7 @@
   description: Heavy magnum cartridge mostly used by revolvers. Incendiary ammunition contains a self-igniting compound that sets the target ablaze.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumTraceFMJ
   - type: Sprite
     layers:
@@ -93,6 +97,7 @@
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumTraceAP
   - type: Sprite
     layers:
@@ -108,6 +113,7 @@
   parent: BaseCartridgeMagnum
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumTracePractice
   - type: Sprite
     layers:
@@ -124,6 +130,7 @@
   description: Heavy magnum cartridge mostly used by revolvers. Armor piercing ammunition is renowned for its ability to cut straight through body armor.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumIncendiary
   - type: Sprite
     layers:
@@ -140,6 +147,7 @@
   description: Heavy magnum cartridge mostly used by revolvers. Uranium ammunition replaces the lead core of the bullet with fissile material, irradiating the target from the inside.
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletMagnumTraceUranium
   - type: Sprite
     layers:
