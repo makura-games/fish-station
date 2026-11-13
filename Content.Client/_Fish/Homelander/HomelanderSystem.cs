@@ -12,6 +12,8 @@ namespace Content.Client._Fish.Homelander;
 public sealed partial class HomelanderSystem : EntitySystem
 {
     private const float FlightTransitionSeconds = 0.3f;
+    private const float HoverPeriod = 1.4f;
+    private const float HoverAmplitude = 0.06f;
     private const string FlightShadowLayer = "fish-homelander-flight-shadow";
     private static readonly Vector2 FlightLift = new(0f, HomelanderComponent.FlightVisualLift);
     private static readonly ResPath SpritePath = new("/Textures/_Fish/Homelander/actions.rsi");
@@ -72,28 +74,24 @@ public sealed partial class HomelanderSystem : EntitySystem
         var query = EntityQueryEnumerator<HomelanderLiftComponent, SpriteComponent>();
         while (query.MoveNext(out var uid, out var lift, out var sprite))
         {
-            var previousProgress = lift.Progress;
             var step = frameTime / FlightTransitionSeconds;
             lift.Progress = Math.Clamp(lift.Progress + (lift.Flying ? step : -step), 0f, 1f);
             var eyeRotation = _eye.CurrentEye.Rotation;
             var facing = _transform.GetWorldRotation(uid) + eyeRotation;
             var renderRotation = sprite.NoRotation ? Angle.Zero :
                 sprite.SnapCardinals ? facing - facing.RoundToCardinalAngle() : facing;
-            if (lift.Flying && previousProgress == lift.Progress &&
-                lift.ShadowRenderRotation == renderRotation)
-                continue;
-
-            lift.ShadowRenderRotation = renderRotation;
+            lift.HoverPhase = (lift.HoverPhase + frameTime / HoverPeriod) % 1f;
 
             var progress = lift.Progress * lift.Progress * (3f - 2f * lift.Progress);
-            var height = FlightLift * progress;
+            var hover = HoverAmplitude * (0.5f - 0.5f * MathF.Cos(lift.HoverPhase * MathF.Tau));
+            var height = (FlightLift + new Vector2(0f, hover)) * progress;
             var entity = (uid, sprite);
             _sprite.SetOffset(entity, lift.GroundOffset + height);
             var rotation = sprite.Rotation;
             var shadowOffset = (-renderRotation).RotateVec(new Vector2(0f, -0.35f)) - sprite.Offset;
             _sprite.LayerSetOffset(entity, FlightShadowLayer, (-rotation).RotateVec(shadowOffset));
             _sprite.LayerSetRotation(entity, FlightShadowLayer, -rotation - renderRotation);
-            _sprite.LayerSetColor(entity, FlightShadowLayer, Color.White.WithAlpha(progress));
+            _sprite.LayerSetColor(entity, FlightShadowLayer, Color.White.WithAlpha(progress * (1f - hover * 4f)));
 
             if (!lift.Flying && lift.Progress == 0f)
             {

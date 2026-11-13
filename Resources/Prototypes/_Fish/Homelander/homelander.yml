@@ -11,7 +11,7 @@
     usesStamina: false
     clearLowObstacles: true
     speedModifier: 1.85
-    frictionModifier: 0.8
+    frictionModifier: 0.55
     inertiaDuration: 0
     updateWingMarkings: false
     maxScaleMultiplier: 1

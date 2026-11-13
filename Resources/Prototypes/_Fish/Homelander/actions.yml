@@ -2,7 +2,7 @@
   parent: BaseAction
   id: FishActionHomelanderScream
   name: Scream
-  description: Let out a terrifying scream.
+  description: Let out a scream that knocks nearby creatures off their feet.
   suffix: Fish
   components:
   - type: Action

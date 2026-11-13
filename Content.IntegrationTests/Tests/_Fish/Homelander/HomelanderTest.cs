@@ -4,6 +4,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Physics;
 using Content.Shared.Movement.Events;
+using Content.Shared.Stunnable;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics;
@@ -179,9 +180,14 @@ public sealed class HomelanderTest : GameTest
             Assert.That(markings.TryGetLayerMarkings(patriot, HumanoidVisualLayers.Hair, out var hair), Is.True);
             Assert.That(hair[0].MarkingId.Id, Is.EqualTo("HumanHairCombed"));
 
+            var nearby = server.EntMan.SpawnEntity("MobHuman", map.GridCoords.Offset(new Vector2(1, 0)));
+            var distant = server.EntMan.SpawnEntity("MobHuman", map.GridCoords.Offset(new Vector2(6, 0)));
             var scream = GetAction(abilities.ScreamAction);
             actions.PerformAction(patriot, scream, predicted: false);
             Assert.That(server.EntMan.GetComponent<InstantActionComponent>(scream).Event?.Handled, Is.True);
+            Assert.That(server.EntMan.HasComponent<KnockedDownComponent>(nearby), Is.True);
+            Assert.That(server.EntMan.HasComponent<KnockedDownComponent>(distant), Is.False);
+            Assert.That(server.EntMan.HasComponent<KnockedDownComponent>(patriot), Is.False);
 
             var laser = GetAction(abilities.LaserAction);
             actions.PerformAction(patriot, laser);

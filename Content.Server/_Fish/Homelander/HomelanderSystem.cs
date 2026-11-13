@@ -4,6 +4,10 @@ using Content.Shared._Fish.Homelander;
 using Content.Shared.Actions;
 using Content.Shared.Body;
 using Content.Shared.Humanoid;
+using Content.Shared.Interaction;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
+using Content.Shared.Stunnable;
 using Content.Shared.Popups;
 using Content.Shared._Sunrise.Humanoid;
 using Content.Shared.Toggleable;
@@ -18,6 +22,8 @@ namespace Content.Server._Fish.Homelander;
 
 public sealed partial class HomelanderSystem : EntitySystem
 {
+    private const float ScreamRange = 3f;
+    private static readonly TimeSpan ScreamKnockdown = TimeSpan.FromSeconds(2);
     private const string LaserSlot = "fish-homelander-laser";
     private static readonly EntProtoId ScreamAction = "FishActionHomelanderScream";
     private static readonly EntProtoId LaserAction = "FishActionHomelanderLaser";
@@ -30,6 +36,10 @@ public sealed partial class HomelanderSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private GunSystem _guns = default!;
     [Dependency] private SunriseHumanoidMarkingSystem _markings = default!;
 
@@ -77,6 +87,19 @@ public sealed partial class HomelanderSystem : EntitySystem
             return;
 
         _audio.PlayPvs(ScreamSound, uid);
+
+        var origin = _transform.GetMapCoordinates(uid);
+        foreach (var target in _lookup.GetEntitiesInRange<MobStateComponent>(origin, ScreamRange, LookupFlags.Uncontained))
+        {
+            if (target.Owner == uid || _mobState.IsDead(target, target.Comp) ||
+                !_interaction.InRangeUnobstructed(uid, target.Owner, ScreamRange))
+            {
+                continue;
+            }
+
+            _stun.TryKnockdown(target.Owner, ScreamKnockdown, drop: false);
+        }
+
         args.Handled = true;
     }
 
