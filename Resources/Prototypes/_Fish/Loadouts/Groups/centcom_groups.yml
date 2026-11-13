@@ -57,5 +57,43 @@
 
 - type: loadoutGroup
   id: CentCommJobTrinkets
-  name: loadout-group-centcomm-trinkets
-  loadouts: []
+  name: loadout-group-trinkets
+  minLimit: 0
+  maxLimit: 3
+  loadouts:
+  - FlowerWreath
+  - Hairflower
+  - Headphones
+  - PlushieLizard
+  - PlushieSpaceLizard
+  - ThreeCandles
+  - Lighter
+  - CigPackGreen
+  - CigPackRed
+  - CigPackBlue
+  - CigPackBlack
+  - CigarCase
+  - CigarGold
+  - BoxFolderBaseThreePapers
+  - BoxFolderPlasticClipboardThreePapers
+  - BoxFolderClipboardThreePapers
+  - ClothingNeckLGBTPin
+  - ClothingNeckAllyPin
+  - ClothingNeckAromanticPin
+  - ClothingNeckAsexualPin
+  - ClothingNeckAroacePin
+  - ClothingNeckBisexualPin
+  - ClothingNeckGayPin
+  - ClothingNeckIntersexPin
+  - ClothingNeckLesbianPin
+  - ClothingNeckNonBinaryPin
+  - ClothingNeckPansexualPin
+  - ClothingNeckPluralPin
+  - ClothingNeckOmnisexualPin
+  - ClothingNeckGenderqueerPin
+  - ClothingNeckGenderfluidPin
+  - ClothingNeckTransPin
+  - ClothingNeckAutismPin
+  - ClothingNeckGoldAutismPin
+  - TowelColorWhite
+  - FishCentCommFlippo
