@@ -1,0 +1,15 @@
+- type: entity
+  parent: CrateCommandSecure
+  id: FishCrateCentCommSupply
+  name: CentComm supply crate
+  description: A secure crate for Central Command supplies.
+  suffix: Fish
+  components:
+  - type: EntityStorage
+    airtight: false
+    whitelist:
+      components:
+      - Item
+      - MobState
+      - Instrument
+      - EntityStorage

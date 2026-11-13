@@ -1,0 +1,159 @@
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerOxygenFlatpack
+  name: O2 miner flatpack
+  suffix: Fish
+  description: A flatpack used for constructing an O2 gas miner.
+  components:
+  - type: Flatpack
+    entity: GasMinerOxygen
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerNitrogenFlatpack
+  name: N2 miner flatpack
+  suffix: Fish
+  description: A flatpack used for constructing an N2 gas miner.
+  components:
+  - type: Flatpack
+    entity: GasMinerNitrogen
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerCarbonDioxideFlatpack
+  name: CO2 miner flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a CO2 gas miner.
+  components:
+  - type: Flatpack
+    entity: GasMinerCarbonDioxide
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGasMinerPlasmaFlatpack
+  name: plasma gas miner flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a plasma gas miner.
+  components:
+  - type: Flatpack
+    entity: GasMinerPlasma
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineChemicalsFlatpack
+  name: ChemVend flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a ChemVend vending machine.
+  components:
+  - type: Flatpack
+    entity: VendingMachineChemicals
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#52B4E9"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineChemicalsNanotrasenFlatpack
+  name: Nanotrasen ChemVend flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a Nanotrasen ChemVend vending machine.
+  components:
+  - type: Flatpack
+    entity: VendingMachineChemicalsNanotrasen
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#536EB5"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineBoozeFlatpack
+  name: Booze-O-Mat flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a Booze-O-Mat vending machine.
+  components:
+  - type: Flatpack
+    entity: VendingMachineBooze
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#9FED58"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishGravityGeneratorFlatpack
+  name: gravity generator flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a gravity generator.
+  components:
+  - type: Flatpack
+    entity: GravityGenerator
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#EFB341"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineAmmoFlatpack
+  name: liberation station flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a Liberation Station vending machine.
+  components:
+  - type: Flatpack
+    entity: VendingMachineAmmo
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#DE3A3A"
+    - state: icon-default
+
+- type: entity
+  parent: BaseFlatpack
+  id: FishVendingMachineMedicalSecurityFlatpack
+  name: NanoMed Security flatpack
+  suffix: Fish
+  description: A flatpack used for constructing a NanoMed Security vending machine.
+  components:
+  - type: Flatpack
+    entity: VendingMachineMedicalSecurity
+  - type: Sprite
+    layers:
+    - state: base
+    - state: overlay
+      color: "#DE3A3A"
+    - state: icon-default

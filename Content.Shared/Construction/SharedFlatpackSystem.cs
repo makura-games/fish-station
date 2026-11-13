@@ -13,6 +13,7 @@ using Content.Shared.Tools.Systems;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
@@ -95,6 +96,11 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
             return;
         }
 
+        // Fish-start: проверка дополнительных условий распаковки для отдельных прототипов
+        if (!CanUnpack(ent, grid, gridComp, buildPos, args.User, layer, mask))
+            return;
+        // Fish-end
+
         if (_net.IsServer)
         {
             var spawn = Spawn(comp.Entity, _map.GridTileToLocal(grid, gridComp, buildPos));
@@ -107,6 +113,17 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
 
         _audio.PlayPredicted(comp.UnpackSound, args.Used, args.User);
     }
+
+    // Fish-start: хук для дополнительных проверок распаковки
+    private partial bool CanUnpack(
+        Entity<FlatpackComponent> ent,
+        EntityUid grid,
+        MapGridComponent gridComp,
+        Vector2i buildPos,
+        EntityUid user,
+        int collisionLayer,
+        int collisionMask);
+    // Fish-end
 
     private void OnFlatpackExamined(Entity<FlatpackComponent> ent, ref ExaminedEvent args)
     {
