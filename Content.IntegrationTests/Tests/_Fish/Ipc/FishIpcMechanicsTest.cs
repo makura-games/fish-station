@@ -407,12 +407,6 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
             Assert.That(panel.Open, Is.True);
             var opened = new AfterInteractUsingEvent(ipc, module, ipc, coords, true);
             SEntMan.EventBus.RaiseLocalEvent(ipc, opened);
-        });
-
-        await RunSeconds(1.2f);
-
-        await Server.WaitAssertion(() =>
-        {
             openInserted = SComp<FishIpcModuleComponent>(module).Installed;
         });
 

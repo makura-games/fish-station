@@ -2,7 +2,6 @@ using System.Linq;
 using Content.Shared.Alert;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Containers.ItemSlots;
-using Content.Shared.DoAfter;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Lock;
@@ -32,7 +31,6 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedToolSystem _tool = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
-    [Dependency] private SharedDoAfterSystem _doAfter = default!;
 
     public override void Initialize()
     {
@@ -50,8 +48,6 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         SubscribeLocalEvent<FishIpcComponent, InteractUsingEvent>(
             OnInteractUsing,
             before: [typeof(ItemSlotsSystem), typeof(EncryptionKeySystem)]);
-        SubscribeLocalEvent<FishIpcComponent, FishIpcBatteryInsertDoAfterEvent>(OnBatteryInsertDoAfter);
-        SubscribeLocalEvent<FishIpcComponent, FishIpcBatteryEjectDoAfterEvent>(OnBatteryEjectDoAfter);
     }
 
     private void OnInit(Entity<FishIpcComponent> ent, ref ComponentInit args)
@@ -89,16 +85,7 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         if (HasComp<PowerCellComponent>(args.Used))
         {
             args.Handled = true;
-            if (!CanAccessInternals(ent.Owner, args.User))
-                return;
-
-            _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, 1f, new FishIpcBatteryInsertDoAfterEvent(), ent, ent, args.Used)
-            {
-                BreakOnMove = true,
-                BreakOnDamage = true,
-                NeedHand = true,
-                DistanceThreshold = 1.5f,
-            });
+            TrySwapPowerCell(ent.Owner, args.User, args.Used);
             return;
         }
 
@@ -125,26 +112,8 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
 
-        if (ent.Comp.BatterySlotBypass)
-            return;
-
         if (!CanAccessInternals(ent.Owner, args.User))
-        {
             args.Cancelled = true;
-            return;
-        }
-
-        args.Cancelled = true;
-        if (args.User is not { } user)
-            return;
-
-        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, 1f, new FishIpcBatteryInsertDoAfterEvent(), ent, ent, args.Item)
-        {
-            BreakOnMove = true,
-            BreakOnDamage = true,
-            NeedHand = true,
-            DistanceThreshold = 1.5f,
-        });
     }
 
     private void OnItemSlotEjectAttempt(Entity<FishIpcComponent> ent, ref ItemSlotEjectAttemptEvent args)
@@ -152,60 +121,8 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
 
-        if (ent.Comp.BatterySlotBypass)
-            return;
-
         if (!CanAccessInternals(ent.Owner, args.User))
-        {
             args.Cancelled = true;
-            return;
-        }
-
-        args.Cancelled = true;
-        if (args.User is not { } user)
-            return;
-
-        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, 1f, new FishIpcBatteryEjectDoAfterEvent(), ent, ent)
-        {
-            BreakOnMove = true,
-            BreakOnDamage = true,
-            NeedHand = true,
-            DistanceThreshold = 1.5f,
-        });
-    }
-
-    private void OnBatteryInsertDoAfter(Entity<FishIpcComponent> ent, ref FishIpcBatteryInsertDoAfterEvent args)
-    {
-        if (args.Cancelled || args.Handled || args.Used is not { } cell)
-            return;
-
-        args.Handled = true;
-        TrySwapPowerCell(ent.Owner, args.User, cell);
-    }
-
-    private void OnBatteryEjectDoAfter(Entity<FishIpcComponent> ent, ref FishIpcBatteryEjectDoAfterEvent args)
-    {
-        if (args.Cancelled || args.Handled)
-            return;
-
-        if (!CanAccessInternals(ent.Owner, args.User))
-            return;
-
-        if (!TryComp<PowerCellSlotComponent>(ent.Owner, out var cellSlot) ||
-            !_itemSlots.TryGetSlot(ent.Owner, cellSlot.CellSlotId, out var slot) ||
-            !slot.HasItem)
-            return;
-
-        args.Handled = true;
-        ent.Comp.BatterySlotBypass = true;
-        try
-        {
-            _itemSlots.TryEjectToHands(ent.Owner, slot, args.User, excludeUserAudio: true);
-        }
-        finally
-        {
-            ent.Comp.BatterySlotBypass = false;
-        }
     }
 
     private bool IsCellSlot(EntityUid owner, ItemSlot slot)
@@ -247,25 +164,6 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
     }
 
     private bool TrySwapPowerCell(EntityUid ipc, EntityUid user, EntityUid cell)
-    {
-        if (!TryComp<FishIpcComponent>(ipc, out var ipcComp))
-            return false;
-
-        if (!CanAccessInternals(ipc, user))
-            return false;
-
-        ipcComp.BatterySlotBypass = true;
-        try
-        {
-            return TrySwapPowerCellUnlocked(ipc, user, cell);
-        }
-        finally
-        {
-            ipcComp.BatterySlotBypass = false;
-        }
-    }
-
-    private bool TrySwapPowerCellUnlocked(EntityUid ipc, EntityUid user, EntityUid cell)
     {
         if (!CanAccessInternals(ipc, user))
             return false;

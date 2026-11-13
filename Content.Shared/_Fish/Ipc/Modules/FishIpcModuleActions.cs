@@ -26,7 +26,3 @@ public readonly record struct FishIpcChassisPowerChangedEvent(bool Powered);
 
 [Serializable, NetSerializable]
 public sealed partial class FishIpcDefibDoAfterEvent : SimpleDoAfterEvent;
-
-/// <summary>Секунда на вставку модуля в открытый корпус.</summary>
-[Serializable, NetSerializable]
-public sealed partial class FishIpcModuleInsertDoAfterEvent : SimpleDoAfterEvent;

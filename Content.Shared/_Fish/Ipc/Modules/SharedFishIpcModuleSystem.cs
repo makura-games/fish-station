@@ -1,5 +1,4 @@
 using System.Linq;
-using Content.Shared.DoAfter;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Lock;
@@ -25,7 +24,6 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
     [Dependency] private LockSystem _lock = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
-    [Dependency] private SharedDoAfterSystem _doAfter = default!;
 
     // У боргов отдельного звука установки модуля нет — тот же щелчок, что у слота карты.
     private static readonly SoundSpecifier ModuleInsertSound = new SoundPathSpecifier("/Audio/Machines/id_insert.ogg");
@@ -37,7 +35,6 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         SubscribeLocalEvent<FishIpcModuleHostComponent, ComponentStartup>(OnHostStartup);
         SubscribeLocalEvent<FishIpcModuleHostComponent, ComponentShutdown>(OnHostShutdown);
         SubscribeLocalEvent<FishIpcModuleHostComponent, AfterInteractUsingEvent>(OnHostInteractUsing);
-        SubscribeLocalEvent<FishIpcModuleHostComponent, FishIpcModuleInsertDoAfterEvent>(OnModuleInsertDoAfter);
         SubscribeLocalEvent<FishIpcModuleHostComponent, EntInsertedIntoContainerMessage>(OnModuleInserted);
         SubscribeLocalEvent<FishIpcModuleHostComponent, EntRemovedFromContainerMessage>(OnModuleRemoved);
         SubscribeLocalEvent<FishIpcModuleHostComponent, ContainerIsInsertingAttemptEvent>(OnInsertAttempt);
@@ -141,37 +138,10 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
         if (!CanInsertModule(host, (args.Used, module), args.User))
             return;
 
-        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, 1f, new FishIpcModuleInsertDoAfterEvent(), host, host, args.Used)
-        {
-            BreakOnMove = true,
-            BreakOnDamage = true,
-            NeedHand = true,
-            DistanceThreshold = 1.5f,
-        });
-    }
-
-    private void OnModuleInsertDoAfter(Entity<FishIpcModuleHostComponent> host, ref FishIpcModuleInsertDoAfterEvent args)
-    {
-        if (args.Cancelled || args.Handled || args.Used is not { } used)
-            return;
-
-        if (!TryComp<FishIpcModuleComponent>(used, out var module))
-            return;
-
-        if (TryComp<WiresPanelComponent>(host, out var panel) && !panel.Open)
-            return;
-
-        if (_lock.IsLocked(host.Owner))
-            return;
-
-        if (!CanInsertModule(host, (used, module), args.User))
-            return;
-
         if (host.Comp.ModuleContainer is not { } insertContainer)
             return;
 
-        args.Handled = true;
-        _container.Insert(used, insertContainer);
+        _container.Insert(args.Used, insertContainer);
     }
 
     private void OnModuleInserted(Entity<FishIpcModuleHostComponent> host, ref EntInsertedIntoContainerMessage args)

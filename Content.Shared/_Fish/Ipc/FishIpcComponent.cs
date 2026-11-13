@@ -38,10 +38,6 @@ public sealed partial class FishIpcComponent : Component
     [ViewVariables]
     public float ChassisDrainTimer;
 
-    /// <summary>Разрешает вставку и выем батареи из завершённого do-after.</summary>
-    [ViewVariables]
-    public bool BatterySlotBypass;
-
     [DataField]
     public ProtoId<AlertPrototype> BatteryAlert = "BorgBattery";
 

@@ -163,44 +163,25 @@ public sealed class FishIpcKaitenReviewTest : FishIpcGameTest
     }
 
     [Test]
-    public async Task ModuleInsert_AndBatterySwap_TakeOneSecond()
+    public async Task ModuleInsert_AndBatterySwap_AreImmediate()
     {
         var map = await Pair.CreateTestMap();
-        EntityUid ipc = default;
-        EntityUid module = default;
-        EntityUid cell = default;
 
-        await Server.WaitPost(() =>
+        await Server.WaitAssertion(() =>
         {
-            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            var ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
             Server.System<LockSystem>().Unlock(ipc, ipc);
             Assert.That(Server.System<SharedWiresSystem>().TogglePanel(ipc, SComp<WiresPanelComponent>(ipc), true), Is.True);
 
-            module = SSpawnAtPosition("FishIpcModuleEmpScreen", map.GridCoords);
+            var module = SSpawnAtPosition("FishIpcModuleEmpScreen", map.GridCoords);
             Assert.That(Server.System<SharedHandsSystem>().TryPickupAnyHand(ipc, module), Is.True);
             var coords = SComp<TransformComponent>(ipc).Coordinates;
             SEntMan.EventBus.RaiseLocalEvent(ipc, new AfterInteractUsingEvent(ipc, module, ipc, coords, true));
-            Assert.That(SComp<FishIpcModuleComponent>(module).Installed, Is.False);
-
-            cell = SSpawnAtPosition("PowerCellSmall", map.GridCoords);
-        });
-
-        await RunSeconds(1.2f);
-
-        await Server.WaitAssertion(() =>
-        {
             Assert.That(SComp<FishIpcModuleComponent>(module).Installed, Is.True);
-            var before = Cell(ipc).Owner;
+
+            var cell = SSpawnAtPosition("PowerCellSmall", map.GridCoords);
             Assert.That(Server.System<SharedHandsSystem>().TryPickupAnyHand(ipc, cell), Is.True);
-            var coords = SComp<TransformComponent>(ipc).Coordinates;
             SEntMan.EventBus.RaiseLocalEvent(ipc, new InteractUsingEvent(ipc, cell, ipc, coords));
-            Assert.That(Cell(ipc).Owner, Is.EqualTo(before));
-        });
-
-        await RunSeconds(1.2f);
-
-        await Server.WaitAssertion(() =>
-        {
             Assert.That(Cell(ipc).Owner, Is.EqualTo(cell));
         });
     }
