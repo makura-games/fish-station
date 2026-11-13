@@ -1,20 +1,54 @@
 - type: entity
-  parent: ClothingOuterHardsuitDeathsquadFish
+  parent: [FishClothingOuterCostumeHomelander, BaseCentcommContraband]
   id: FishClothingOuterHardsuitHomelander
   name: Patriot's armored suit
   description: A reinforced suit styled after the Patriot's costume.
   suffix: Fish
   components:
-  - type: Sprite
-    sprite: _Fish/Homelander/suit.rsi
-  - type: Clothing
-    sprite: _Fish/Homelander/suit.rsi
+  - type: PressureProtection
+    protectsWholeBody: true
+    highPressureMultiplier: 0.02
+    lowPressureMultiplier: 1000
+    lowPressureModifier: 1
+  - type: TemperatureProtection
+    heatingCoefficient: 0.001
+    coolingCoefficient: 0.001
+  - type: ExplosionResistance
+    damageCoefficient: 0.2
+  - type: FireProtection
+    reduction: 0.8
+  - type: StaminaResistance
+    damageCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.1
+        Slash: 0.1
+        Piercing: 0.1
+        Heat: 0.1
+        Radiation: 0.1
+        Caustic: 0.1
+        Poison: 0.1
+        Cellular: 0.1
+        Shock: 0.1
   - type: Reflect
     slotFlags: OUTERCLOTHING
     reflects:
     - NonEnergy
     reflectProb: 0.75
     reflectingInHands: false
+
+- type: entity
+  parent: ClothingOuterBase
+  id: FishClothingOuterCostumeHomelander
+  name: Patriot's costume
+  description: A stage costume in the Patriot's colors.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Homelander/suit.rsi
+  - type: Clothing
+    sprite: _Fish/Homelander/suit.rsi
 
 - type: entity
   parent: ClothingNeckBase
@@ -39,12 +73,49 @@
     sprite: _Fish/Homelander/gloves.rsi
   - type: Clothing
     sprite: _Fish/Homelander/gloves.rsi
+  - type: Item
+    inhandVisuals:
+      left: []
+      right: []
+      middle: []
+      functional: []
 
 - type: entity
   parent: ClothingShoesBootsCombat
   id: FishClothingShoesHomelander
   name: Patriot's boots
   description: The Patriot's boots.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Homelander/boots.rsi
+  - type: Clothing
+    sprite: _Fish/Homelander/boots.rsi
+
+- type: entity
+  parent: Clothing
+  id: FishClothingHandsCostumeHomelander
+  name: Patriot's costume gloves
+  description: Gloves for the Patriot's stage costume.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Homelander/gloves.rsi
+  - type: Clothing
+    slots: [gloves]
+    sprite: _Fish/Homelander/gloves.rsi
+  - type: Item
+    inhandVisuals:
+      left: []
+      right: []
+      middle: []
+      functional: []
+
+- type: entity
+  parent: ClothingShoesBase
+  id: FishClothingShoesCostumeHomelander
+  name: Patriot's costume boots
+  description: Boots for the Patriot's stage costume.
   suffix: Fish
   components:
   - type: Sprite

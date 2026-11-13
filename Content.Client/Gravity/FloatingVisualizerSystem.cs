@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Client._Fish.Homelander; // Fish-edit
 using Content.Shared._Fish.Homelander; // Fish-edit
 using Content.Shared._Sunrise.Abilities.Milira; // Fish-edit
 using Content.Shared.Gravity;
@@ -30,8 +31,9 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
         }
 
         // Fish-start
-        if (HasComp<HomelanderComponent>(uid) &&
-            TryComp<WingFlightComponent>(uid, out var flight) && flight.FlightEnabled)
+        if (HasComp<HomelanderLiftComponent>(uid) ||
+            (HasComp<HomelanderComponent>(uid) &&
+                TryComp<WingFlightComponent>(uid, out var flight) && flight.FlightEnabled))
         {
             return;
         }

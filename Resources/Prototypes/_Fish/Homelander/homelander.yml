@@ -9,6 +9,7 @@
   - type: WingFlight
     action: FishActionHomelanderFlight
     usesStamina: false
+    clearLowObstacles: true
     speedModifier: 1.85
     frictionModifier: 0.8
     inertiaDuration: 0

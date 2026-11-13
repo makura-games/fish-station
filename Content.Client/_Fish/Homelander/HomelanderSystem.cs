@@ -21,7 +21,6 @@ public sealed partial class HomelanderSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<HomelanderComponent, AppearanceChangeEvent>(OnAppearanceChanged);
         SubscribeLocalEvent<HomelanderComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<HomelanderComponent, ComponentShutdown>(OnShutdown);
     }
@@ -48,24 +47,46 @@ public sealed partial class HomelanderSystem : EntitySystem
         if (!TryComp<SpriteComponent>(uid, out var sprite))
             return;
 
-        var entity = (uid, sprite);
-        var lifted = _sprite.LayerMapTryGet(entity, FlightShadowLayer, out var shadow, false);
-        if (flying == lifted)
-            return;
-
-        _floating.RefreshHomelanderBobbing(uid, flying);
-
-        if (flying)
+        if (!TryComp<HomelanderLiftComponent>(uid, out var lift))
         {
-            shadow = _sprite.AddRsiLayer(entity, "flight-shadow", SpritePath, index: 0);
+            if (!flying)
+                return;
+
+            _floating.RefreshHomelanderBobbing(uid, true);
+            lift = EnsureComp<HomelanderLiftComponent>(uid);
+            lift.GroundOffset = sprite.Offset;
+            var entity = (uid, sprite);
+            var shadow = _sprite.AddRsiLayer(entity, "flight-shadow", SpritePath, index: 0);
             _sprite.LayerMapSet(entity, FlightShadowLayer, shadow);
-            _sprite.LayerSetOffset(entity, shadow, new Vector2(0f, -0.35f) - FlightLift);
-            _sprite.SetOffset(entity, sprite.Offset + FlightLift);
         }
-        else
+
+        lift.Flying = flying;
+    }
+
+    public override void FrameUpdate(float frameTime)
+    {
+        var query = EntityQueryEnumerator<HomelanderLiftComponent, SpriteComponent>();
+        while (query.MoveNext(out var uid, out var lift, out var sprite))
         {
-            _sprite.RemoveLayer(entity, shadow);
-            _sprite.SetOffset(entity, sprite.Offset - FlightLift);
+            if (lift.Flying && lift.Progress >= 1f)
+                continue;
+            var step = frameTime / 0.3f;
+            lift.Progress = Math.Clamp(lift.Progress + (lift.Flying ? step : -step), 0f, 1f);
+            var progress = lift.Progress * lift.Progress * (3f - 2f * lift.Progress);
+            var height = FlightLift * progress;
+            var entity = (uid, sprite);
+            _sprite.SetOffset(entity, lift.GroundOffset + height);
+            _sprite.LayerSetOffset(entity, FlightShadowLayer, new Vector2(0f, -0.35f) - lift.GroundOffset - height);
+            _sprite.LayerSetColor(entity, FlightShadowLayer, Color.White.WithAlpha(progress));
+
+            if (!lift.Flying && lift.Progress == 0f)
+            {
+                if (_sprite.LayerMapTryGet(entity, FlightShadowLayer, out var shadow, false))
+                    _sprite.RemoveLayer(entity, shadow);
+
+                RemComp<HomelanderLiftComponent>(uid);
+                _floating.RefreshHomelanderBobbing(uid, false);
+            }
         }
     }
 
@@ -88,23 +109,4 @@ public sealed partial class HomelanderSystem : EntitySystem
         return true;
     }
 
-    private void OnAppearanceChanged(Entity<HomelanderComponent> entity, ref AppearanceChangeEvent args)
-    {
-        if (args.Sprite == null)
-            return;
-
-        var sprite = (entity.Owner, args.Sprite);
-        _appearance.TryGetData<bool>(entity, HomelanderVisuals.LaserActive, out var active, args.Component);
-        if (!_sprite.LayerMapTryGet(sprite, HomelanderVisuals.Anger, out var layer, false))
-        {
-            if (!active)
-                return;
-
-            layer = _sprite.LayerMapReserve(sprite, HomelanderVisuals.Anger);
-            _sprite.LayerSetRsi(sprite, layer, SpritePath, "anger");
-            _sprite.LayerSetOffset(sprite, layer, new Vector2(0.23f, 0.36f));
-        }
-
-        _sprite.LayerSetVisible(sprite, layer, active);
-    }
 }

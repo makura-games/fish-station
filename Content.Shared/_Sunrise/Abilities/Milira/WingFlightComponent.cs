@@ -24,6 +24,9 @@ public sealed partial class WingFlightComponent : Component
     public bool UsesStamina = true;
 
     [DataField]
+    public bool ClearLowObstacles;
+
+    [DataField]
     public bool UpdateWingMarkings = true;
     // Fish-end
 

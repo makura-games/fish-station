@@ -1,3 +1,10 @@
+using System.Linq;
+using Content.Server.Atmos.Components;
+using Content.Server.Atmos.EntitySystems;
+using Content.Shared.Clothing.Components;
+using Content.Shared.Physics;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics;
 using System.Numerics;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.IntegrationTests.Fixtures;
@@ -42,17 +49,36 @@ public sealed class HomelanderTest : GameTest
 
         await Pair.RunTicksSync(10);
         var clientPatriot = Pair.ToClientUid(patriot);
+        var originalMasks = await CheckPhysics(false);
         await server.WaitPost(() => actions.PerformAction(patriot, flightAction));
         await CheckOffset(true);
+        var flightMasks = await CheckPhysics(true);
+        Assert.That(flightMasks, Is.EqualTo(originalMasks.Select(mask =>
+            mask & ~(int) (CollisionGroup.MidImpassable | CollisionGroup.LowImpassable))));
+        Assert.That(flightMasks, Is.Not.EqualTo(originalMasks));
 
         await server.WaitPost(() => actions.PerformAction(patriot, flightAction));
         await CheckOffset(false);
+        Assert.That(await CheckPhysics(false), Is.EqualTo(originalMasks));
 
         await server.WaitPost(() => server.PlayerMan.SetAttachedEntity(session, previousEntity));
 
+        async Task<int[]> CheckPhysics(bool flying)
+        {
+            int[] masks = [];
+            await server.WaitAssertion(() =>
+            {
+                var body = server.EntMan.GetComponent<PhysicsComponent>(patriot);
+                Assert.That(body.BodyStatus, Is.EqualTo(flying ? BodyStatus.InAir : BodyStatus.OnGround));
+                masks = server.EntMan.GetComponent<FixturesComponent>(patriot).Fixtures.Values
+                    .Select(fixture => fixture.CollisionMask).ToArray();
+            });
+            return masks;
+        }
+
         async Task CheckOffset(bool flying)
         {
-            await Pair.RunTicksSync(10);
+            await Pair.RunTicksSync(30);
             await client.WaitAssertion(() =>
             {
                 var actual = client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Offset;
@@ -73,6 +99,7 @@ public sealed class HomelanderTest : GameTest
         var appearance = server.System<SharedAppearanceSystem>();
         var inventory = server.System<InventorySystem>();
         var guns = server.System<GunSystem>();
+        var pressure = server.System<BarotraumaSystem>();
         var markings = server.System<SunriseHumanoidMarkingSystem>();
 
         WingFlightComponent? activeFlight = null;
@@ -89,6 +116,15 @@ public sealed class HomelanderTest : GameTest
             Assert.That(server.EntMan.GetComponent<MetaDataComponent>(suit!.Value).EntityPrototype?.ID,
                 Is.EqualTo("FishClothingOuterHardsuitHomelander"));
             Assert.That(server.EntMan.HasComponent<ReflectComponent>(suit.Value), Is.True);
+            Assert.That(server.EntMan.HasComponent<ToggleableClothingComponent>(suit.Value), Is.False);
+            Assert.That(inventory.TryGetSlotEntity(patriot, "head", out _), Is.False);
+            var barotrauma = server.EntMan.GetComponent<BarotraumaComponent>(patriot);
+            Assert.That(pressure.GetFeltLowPressure(patriot, barotrauma, 0), Is.GreaterThan(100f));
+            Assert.That(inventory.TryUnequip(patriot, "outerClothing", force: true), Is.True);
+            var costume = server.EntMan.SpawnEntity("FishClothingOuterCostumeHomelander", map.GridCoords);
+            Assert.That(inventory.TryEquip(patriot, costume, "outerClothing", force: true), Is.True);
+            Assert.That(pressure.GetFeltLowPressure(patriot, barotrauma, 0), Is.Zero);
+            Assert.That(server.EntMan.HasComponent<ReflectComponent>(costume), Is.False);
             Assert.That(abilities.Laser, Is.Not.Null);
             Assert.That(markings.TryGetLayerMarkings(patriot, HumanoidVisualLayers.Hair, out var hair), Is.True);
             Assert.That(hair[0].MarkingId.Id, Is.EqualTo("HumanHairCombed"));

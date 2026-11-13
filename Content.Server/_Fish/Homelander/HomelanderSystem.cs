@@ -4,6 +4,7 @@ using Content.Shared._Fish.Homelander;
 using Content.Shared.Actions;
 using Content.Shared.Body;
 using Content.Shared.Humanoid;
+using Content.Shared.Popups;
 using Content.Shared._Sunrise.Humanoid;
 using Content.Shared.Toggleable;
 using Content.Shared.Weapons.Ranged.Components;
@@ -23,6 +24,7 @@ public sealed partial class HomelanderSystem : EntitySystem
     private static readonly EntProtoId LaserPrototype = "FishHomelanderEyeGun";
     private static readonly SoundSpecifier ScreamSound = new SoundPathSpecifier("/Audio/_Fish/Homelander/changeling_screech_strong.ogg");
 
+    [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -86,6 +88,8 @@ public sealed partial class HomelanderSystem : EntitySystem
         _appearance.TryGetData<bool>(entity, HomelanderVisuals.LaserActive, out var active);
         _appearance.SetData(entity, HomelanderVisuals.LaserActive, !active);
         _actions.SetToggled(args.Action.Owner, !active);
+        if (!active)
+            _popup.PopupEntity(Loc.GetString("fish-homelander-angry"), entity, PopupType.MediumCaution);
         args.Handled = true;
     }
 

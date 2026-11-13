@@ -323,6 +323,11 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
         if (!TryComp(ent, out FixturesComponent? fixtures))
             return;
 
+        // Fish-start
+        var obstacleMask = ent.Comp.ClearLowObstacles
+            ? CollisionGroup.MidImpassable | CollisionGroup.LowImpassable
+            : CollisionGroup.MidImpassable;
+        // Fish-end
         var fixtureIds = fixtures.Fixtures.Keys.ToArray();
         for (var i = fixtureIds.Length - 1; i >= 0; i--)
         {
@@ -332,7 +337,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
 
             ent.Comp.OriginalCollisionMasks.TryAdd(id, fixture.CollisionMask);
             ent.Comp.OriginalCollisionLayers.TryAdd(id, fixture.CollisionLayer);
-            _physics.RemoveCollisionMask(ent, id, fixture, (int)CollisionGroup.MidImpassable, manager: fixtures);
+            _physics.RemoveCollisionMask(ent, id, fixture, (int)obstacleMask, manager: fixtures); // Fish-edit
         }
     }
 

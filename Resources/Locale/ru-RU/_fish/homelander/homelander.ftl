@@ -28,3 +28,14 @@ ent-FishHomelanderEyeGun = излучатель лазеров из глаз
 ent-FishHomelanderEyeRay = лазер из глаз
     .desc = Тонкий красный лазерный луч.
     .suffix = Fish
+
+ent-FishClothingOuterCostumeHomelander = Костюм Патриота
+    .desc = Сценический костюм в цветах Патриота.
+    .suffix = Fish
+ent-FishClothingHandsCostumeHomelander = костюмные перчатки Патриота
+    .desc = Перчатки для сценического костюма.
+    .suffix = Fish
+ent-FishClothingShoesCostumeHomelander = костюмные ботинки Патриота
+    .desc = Ботинки для сценического костюма.
+    .suffix = Fish
+fish-homelander-angry = Патриот в гневе!

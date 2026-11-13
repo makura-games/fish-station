@@ -21,7 +21,6 @@ public sealed partial class HomelanderScreamEvent : InstantActionEvent;
 public enum HomelanderVisuals : byte
 {
     LaserActive,
-    Anger,
 }
 
 [Serializable, NetSerializable]
