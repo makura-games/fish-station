@@ -1601,3 +1601,10 @@
     message: Таймер AFK-неактивности успешно поднят с 10 до 20 минут.
   id: 162
   url: https://github.com/makura-games/fish-station/pull/641
+- author: NekutGit
+  time: '2026-11-13T21:39:12.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено 6 новых звуков/саундтреков.
+  id: 163
+  url: https://github.com/makura-games/fish-station/pull/647
