@@ -1638,3 +1638,10 @@
     message: 'В лодаут ОЦК и стажера ЦК добавлены: нагрудник ЦентКом и торжественная форма ЦК.'
   id: 167
   url: https://github.com/makura-games/fish-station/pull/633
+- author: Fynex_x
+  time: '2026-11-13T23:51:25.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Изменение плюшек в магазине.
+  id: 168
+  url: https://github.com/makura-games/fish-station/pull/650
