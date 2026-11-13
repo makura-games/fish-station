@@ -88,6 +88,7 @@ fish-ipc-module-locked = Корпус заблокирован.
 fish-ipc-module-too-many = В шасси уже максимум модулей ({ $max }).
 fish-ipc-module-whitelist-deny = Этот модуль не подходит к шасси КПБ.
 fish-ipc-module-exclusion = Модуль этой группы уже установлен.
+fish-ipc-module-duplicate = Такой модуль уже установлен.
 fish-ipc-module-eject = Извлечь { $module }
 fish-ipc-module-need-charge = Недостаточно заряда батареи.
 fish-ipc-module-cooldown = Конденсаторы модуля ещё перезаряжаются.

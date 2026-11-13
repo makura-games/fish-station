@@ -88,6 +88,7 @@ fish-ipc-module-locked = The chassis is locked.
 fish-ipc-module-too-many = The chassis already has the maximum number of modules ({ $max }).
 fish-ipc-module-whitelist-deny = That module does not fit an IPC chassis.
 fish-ipc-module-exclusion = A module of that group is already installed.
+fish-ipc-module-duplicate = That module is already installed.
 fish-ipc-module-eject = Eject { $module }
 fish-ipc-module-need-charge = Not enough battery charge.
 fish-ipc-module-cooldown = The module capacitors are still recharging.

@@ -23,6 +23,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Verbs;
 using Content.Shared.Wires;
+using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 
@@ -159,6 +160,31 @@ public sealed class FishIpcKaitenReviewTest : FishIpcGameTest
 
             Assert.That(SEntMan.HasComponent<EyeProtectionComponent>(ipc), Is.True);
             Assert.That(SComp<EyeProtectionComponent>(ipc), Is.EqualTo(protection));
+        });
+    }
+
+    [Test]
+    public async Task DuplicateModule_IsRejected()
+    {
+        var map = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            Server.System<LockSystem>().Unlock(ipc, ipc);
+            Assert.That(Server.System<SharedWiresSystem>().TogglePanel(ipc, SComp<WiresPanelComponent>(ipc), true), Is.True);
+
+            var first = SSpawnAtPosition("FishIpcModuleWireInterface", map.GridCoords);
+            var second = SSpawnAtPosition("FishIpcModuleWireInterface", map.GridCoords);
+            var host = SComp<FishIpcModuleHostComponent>(ipc);
+            var modules = Server.System<SharedFishIpcModuleSystem>();
+            Assert.That(modules.CanInsertModule((ipc, host), (first, SComp<FishIpcModuleComponent>(first)), ipc), Is.True);
+            Assert.That(Server.System<SharedContainerSystem>().Insert(first, host.ModuleContainer), Is.True);
+
+            Assert.That(modules.CanInsertModule((ipc, host), (second, SComp<FishIpcModuleComponent>(second)), ipc), Is.False);
+            Assert.That(Server.System<SharedContainerSystem>().Insert(second, host.ModuleContainer), Is.False);
+            Assert.That(SComp<FishIpcModuleComponent>(second).Installed, Is.False);
+            Assert.That(host.ModuleCount, Is.EqualTo(1));
         });
     }
 

@@ -186,6 +186,24 @@ public abstract partial class SharedFishIpcModuleSystem : EntitySystem
             return false;
         }
 
+        // Тот же прототип второй раз не ставим: группа исключения это не ловит.
+        var incoming = Prototype(module.Owner);
+        if (incoming != null)
+        {
+            foreach (var other in container.ContainedEntities)
+            {
+                if (other == module.Owner)
+                    continue;
+
+                if (Prototype(other) != incoming)
+                    continue;
+
+                if (user != null)
+                    _popup.PopupEntity(Loc.GetString("fish-ipc-module-duplicate"), host, user.Value);
+                return false;
+            }
+        }
+
         if (!string.IsNullOrEmpty(module.Comp.ExclusionGroup))
         {
             foreach (var other in container.ContainedEntities)
