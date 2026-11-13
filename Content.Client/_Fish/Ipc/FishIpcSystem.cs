@@ -3,13 +3,15 @@ using Content.Shared.Alert;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.PowerCell;
 using Content.Shared.PowerCell.Components;
+using Robust.Shared.Containers;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.Ipc;
 
 /// <summary>
-/// Клиентские алерты батареи КПБ.
+/// Клиентские алерты батареи КПБ. BorgBattery clientHandled, сервер его не шлёт:
+/// иначе снятие ячейки подменяет severity-алерт значением без severity и роняет клиент.
 /// </summary>
 public sealed partial class FishIpcSystem : SharedFishIpcSystem
 {
@@ -27,6 +29,32 @@ public sealed partial class FishIpcSystem : SharedFishIpcSystem
         base.Initialize();
         SubscribeLocalEvent<FishIpcComponent, LocalPlayerAttachedEvent>(OnAttached);
         SubscribeLocalEvent<FishIpcComponent, LocalPlayerDetachedEvent>(OnDetached);
+        SubscribeLocalEvent<FishIpcComponent, EntInsertedIntoContainerMessage>(OnCellInserted);
+        SubscribeLocalEvent<FishIpcComponent, EntRemovedFromContainerMessage>(OnCellRemoved);
+    }
+
+    private void OnCellInserted(Entity<FishIpcComponent> ent, ref EntInsertedIntoContainerMessage args)
+    {
+        if (!IsLocalCellSlot(ent, args.Container.ID))
+            return;
+
+        UpdateBatteryAlert(ent);
+    }
+
+    private void OnCellRemoved(Entity<FishIpcComponent> ent, ref EntRemovedFromContainerMessage args)
+    {
+        if (!IsLocalCellSlot(ent, args.Container.ID))
+            return;
+
+        UpdateBatteryAlert(ent);
+    }
+
+    private bool IsLocalCellSlot(Entity<FishIpcComponent> ent, string containerId)
+    {
+        if (_player.LocalEntity != ent.Owner)
+            return false;
+
+        return TryComp<PowerCellSlotComponent>(ent.Owner, out var slot) && slot.CellSlotId == containerId;
     }
 
     private void OnAttached(Entity<FishIpcComponent> ent, ref LocalPlayerAttachedEvent args)

@@ -3,18 +3,26 @@ using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
+using Content.Shared.Alert;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.DoAfter;
 using Content.Shared.GameTicking;
+using Content.Shared.Lock;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Overlays;
+using Content.Shared.PowerCell.Components;
 using Content.Shared.Preferences;
+using Content.Shared.Wires;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Log;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
+using Robust.UnitTesting;
 
 namespace Content.IntegrationTests.Tests._Fish.Ipc;
 
@@ -98,6 +106,92 @@ public sealed class FishIpcConnectedTest : FishIpcGameTest
                 Assert.That(SComp<FishIpcModuleHostComponent>(security).ModuleCount, Is.EqualTo(1));
                 Assert.That(SComp<FishIpcModuleHostComponent>(medical).ModuleCount, Is.EqualTo(1));
             });
+        });
+    }
+
+    [Test]
+    public async Task BatteryEjectAndInsert_ClientDoesNotCrash()
+    {
+        var catcher = new LogCatcher();
+        var logMan = Client.ResolveDependency<ILogManager>();
+        await Client.WaitPost(() => logMan.RootSawmill.AddHandler(catcher));
+
+        try
+        {
+            EntityUid ipc = default;
+            EntityUid cell = default;
+
+            await Server.WaitPost(() =>
+            {
+                var player = Server.ResolveDependency<IPlayerManager>().Sessions.Single();
+                var minds = Server.System<SharedMindSystem>();
+                ipc = SSpawn("MobIpc");
+                var mind = minds.CreateMind(player.UserId, "ipc-battery");
+                minds.TransferTo(mind.Owner, ipc, createGhost: false, mind: mind.Comp);
+                Server.System<LockSystem>().Unlock(ipc, ipc);
+                var panel = SComp<WiresPanelComponent>(ipc);
+                Assert.That(Server.System<SharedWiresSystem>().TogglePanel(ipc, panel, true), Is.True);
+            });
+
+            await RunSeconds(1);
+
+            await Server.WaitPost(() =>
+            {
+                var slots = Server.System<ItemSlotsSystem>();
+                var cellSlot = SComp<PowerCellSlotComponent>(ipc);
+                Assert.That(slots.TryEject(ipc, cellSlot.CellSlotId, null, out var ejected), Is.True);
+                cell = ejected!.Value;
+            });
+
+            await RunSeconds(1);
+            await AssertClientBatteryIcons(ipc, catcher);
+
+            await Server.WaitPost(() =>
+            {
+                var slots = Server.System<ItemSlotsSystem>();
+                var cellSlot = SComp<PowerCellSlotComponent>(ipc);
+                Assert.That(slots.TryInsert(ipc, cellSlot.CellSlotId, cell, null), Is.True);
+            });
+
+            await RunSeconds(1);
+            await AssertClientBatteryIcons(ipc, catcher);
+        }
+        finally
+        {
+            await Client.WaitPost(() => logMan.RootSawmill.RemoveHandler(catcher));
+        }
+    }
+
+    /// <summary>
+    /// Тот же путь, что у HUD: прототип берётся из ключа алерта, и GetIcon не должен падать на null severity.
+    /// </summary>
+    private async Task AssertClientBatteryIcons(EntityUid ipc, LogCatcher catcher)
+    {
+        await Client.WaitAssertion(() =>
+        {
+            var uid = ToClientUid(ipc);
+            var local = Client.ResolveDependency<ISharedPlayerManager>().LocalEntity;
+            Assert.That(local, Is.EqualTo(uid));
+            Assert.That(CEntMan.TryGetComponent(uid, out AlertsComponent? alerts), Is.True);
+
+            var protos = Client.ResolveDependency<IPrototypeManager>();
+            foreach (var (key, state) in alerts!.Alerts)
+            {
+                if (key.AlertType is not { } alertType)
+                    continue;
+
+                var alert = protos.Index<AlertPrototype>(alertType);
+                if (alert.SupportsSeverity)
+                    Assert.That(state.Severity, Is.Not.Null, $"alert {alertType}");
+
+                Assert.That(alert.GetIcon(state.Severity), Is.Not.Null);
+            }
+
+            var crash = catcher.CaughtLogs
+                .Select(log => log.RenderMessage())
+                .Where(message => message.Contains("No severity specified") || message.Contains("ResetPredictedEntities"))
+                .ToArray();
+            Assert.That(crash, Is.Empty);
         });
     }
 

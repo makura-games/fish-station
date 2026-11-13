@@ -1,6 +1,5 @@
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
-using Content.Shared.Alert;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
@@ -24,7 +23,6 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
     [Dependency] private PowerCellSystem _powerCell = default!;
     [Dependency] private SharedBatterySystem _battery = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
-    [Dependency] private AlertsSystem _alerts = default!;
     [Dependency] private FishIpcRadioSystem _ipcRadio = default!;
     [Dependency] private IGameTiming _timing = default!;
 
@@ -62,12 +60,9 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
 
             if (!_powerCell.TryGetBatteryFromSlot((uid, slot), out var batteryEnt))
             {
-                if (_alerts.IsShowingAlert(uid, ipc.BatteryAlert))
-                {
-                    _alerts.ClearAlert(uid, ipc.BatteryAlert);
-                    _alerts.ShowAlert(uid, ipc.NoBatteryAlert);
-                }
-
+                // BorgBattery — clientHandled. Серверный ShowAlert кладёт в стейт ключ с severity,
+                // а клиент при снятии ячейки пишет BorgBatteryNone без severity. Ключи одной категории
+                // равны, словарь оставляет старый ключ, и GetIcon падает на ResetPredictedEntities.
                 UpdateChargeState(uid, ipc, 0);
                 continue;
             }
@@ -89,12 +84,6 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
                 chargePercent = 1;
 
             UpdateChargeState(uid, ipc, chargePercent);
-
-            if (_alerts.IsShowingAlert(uid, ipc.NoBatteryAlert) && chargePercent > 0)
-            {
-                _alerts.ClearAlert(uid, ipc.NoBatteryAlert);
-                _alerts.ShowAlert(uid, ipc.BatteryAlert, chargePercent);
-            }
 
             if (skipDrain)
                 continue;

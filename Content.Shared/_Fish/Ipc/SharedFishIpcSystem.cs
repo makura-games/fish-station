@@ -1,5 +1,4 @@
 using System.Linq;
-using Content.Shared.Alert;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Hands.EntitySystems;
@@ -19,11 +18,11 @@ using SharedToolSystem = Content.Shared.Tools.Systems.SharedToolSystem;
 namespace Content.Shared._Fish.Ipc;
 
 /// <summary>
-/// Общая логика КПБ: алерты, скорость, слот батареи/ключей, сон, self-unlock шасси.
+/// Общая логика КПБ: заряд и скорость, слот батареи/ключей, сон, self-unlock шасси.
+/// Иконку заряда рисует клиент: BorgBattery помечен clientHandled.
 /// </summary>
 public abstract partial class SharedFishIpcSystem : EntitySystem
 {
-    [Dependency] private AlertsSystem _alerts = default!;
     [Dependency] private ItemSlotsSystem _itemSlots = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private LockSystem _lock = default!;
@@ -36,7 +35,6 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<FishIpcComponent, ComponentInit>(OnInit);
         SubscribeLocalEvent<FishIpcComponent, FishIpcChargeStateUpdateEvent>(OnChargeUpdate);
         SubscribeLocalEvent<FishIpcComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovespeed);
         SubscribeLocalEvent<FishIpcComponent, ItemSlotInsertAttemptEvent>(OnItemSlotInsertAttempt);
@@ -50,16 +48,10 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
             before: [typeof(ItemSlotsSystem), typeof(EncryptionKeySystem)]);
     }
 
-    private void OnInit(Entity<FishIpcComponent> ent, ref ComponentInit args)
-    {
-        _alerts.ShowAlert(ent.Owner, ent.Comp.BatteryAlert, ent.Comp.ChargeState);
-    }
-
     private void OnChargeUpdate(Entity<FishIpcComponent> ent, ref FishIpcChargeStateUpdateEvent args)
     {
         ent.Comp.ChargeState = args.ChargePercent;
         Dirty(ent);
-        _alerts.ShowAlert(ent.Owner, ent.Comp.BatteryAlert, args.ChargePercent);
     }
 
     private void OnRefreshMovespeed(Entity<FishIpcComponent> ent, ref RefreshMovementSpeedModifiersEvent args)

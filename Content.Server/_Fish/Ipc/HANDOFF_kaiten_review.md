@@ -51,15 +51,18 @@
 - 3.1 Расход шасси и модулей: накопитель, `TryUseCharge` не чаще раза в секунду.
 - 3.2 Нано/реактивный хил применяется раз в секунду, не по 0.01 каждый тик.
 - 3.3 `DamageModifierSet` радфильтра кэшируется на компоненте.
-- Do-after на вставку модуля и батареи снят по просьбе Kaiten: вместе с обычным слотом не работало. Вставка снова сразу. FishIpc 44/44, YAMLLinter без ошибок.
+- Do-after на вставку модуля и батареи снят: вместе с обычным слотом не работало. Вставка и извлечение снова сразу, как до `06908dfc56`. Код слота совпадает с `986dbcf2c2`.
 - Рецепты модулей: материалы / 4, `completetime` / 5. Описания не менялись.
 
-Осталось:
+## Крах клиента при снятии батареи
 
-- Перегнать FishIpc после последних правок. Прошлый прогон: 40 passed, 4 skipped. Отдельно эти 4 упали: `SelfSwapPowerCellWithOpenPanel` (не ждал 1 с — тест поправлен), `ClosedPanelAndLock_BlockModuleInstall` (то же, плюс компиляция `module`), `MindedChassis_DrainsCell` (за 2 с успевал один списанный интервал — таймер теперь оставляет остаток), `ReactiveRepair_HealsHeatAndShock` (окно увеличено до 5 с).
-- YAMLLinter и RSI на этот коммит не гонялись.
-- Конфликт с актуальным `master` не проверялся.
-- В игре не проверялось.
+Причина: `BorgBattery` — `clientHandled` и с severity 0–10, `BorgBatteryNone` — та же категория `Battery` и без severity. Сервер делал `ShowAlert(BorgBattery)`, клиент при снятии ячейки писал `BorgBatteryNone` без severity. `AlertKey` равен по категории, словарь оставляет старый ключ и подменяет значение. `GetIcon` в `OnHandleState` / `ResetPredictedEntities` падает: «No severity specified but this alert has severity».
+
+Откат вставки/извлечения не нужен: do-after уже снят в `3673eabe3c`, слот тот же, что в `986dbcf2c2` (до do-after). Серверные `ShowAlert` батареи убраны (`OnInit`, `OnChargeUpdate`, пустой слот и возврат заряда). Иконку рисует только клиент, в том числе сразу на insert/remove слота. Накопитель расхода 3.1 алерты не трогает. Сварка, дефиб, дистанция перезапуска, зрение, хил раз в секунду, кэш радфильтра и дешёвые рецепты на месте. Do-after на батарею и модули нет.
+
+Тест: `FishIpcConnectedTest.BatteryEjectAndInsert_ClientDoesNotCrash` — игрок на КПБ, извлечение и вставка, `GetIcon` по ключу алерта, в логе нет этой ошибки.
+
+FishIpc 45/45. YAMLLinter: No errors found. В игре клиент не запускался.
 
 ## Ревью после пунктов 1–3
 
@@ -73,5 +76,5 @@
 
 ## Тесты
 
-`dotnet test Content.IntegrationTests --filter FullyQualifiedName~FishIpc`: 32 passed, 0 failed.
+`dotnet test Content.IntegrationTests --filter FullyQualifiedName~FishIpc`: 45 passed, 0 failed.
 YAMLLinter: No errors found.
