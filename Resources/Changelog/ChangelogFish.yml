@@ -1617,3 +1617,17 @@
     message: Приведение музыки в порядок.
   id: 164
   url: https://github.com/makura-games/fish-station/pull/616
+- author: Pythagorius-cra
+  time: '2026-11-13T22:29:20.0000000+00:00'
+  changes:
+  - type: Add
+    message: На консоли ОБР Центрального Командования можно развернуть отряд в криокапсулах ЦК вместо вызова шаттла.
+  id: 165
+  url: https://github.com/makura-games/fish-station/pull/626
+- author: dan4ikk3
+  time: '2026-11-13T22:30:20.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Теперь вся верхняя одежда открывает доступ к слоту на спине, но только для балонов
+  id: 166
+  url: https://github.com/makura-games/fish-station/pull/628
