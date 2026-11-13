@@ -25,7 +25,7 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
     [Dependency] private IUserInterfaceManager _uiManager = default!;
     [Dependency] private IClientAdminManager _adminManager = default!;
 
-    private const int DistortionThreshold = 66;
+    private const int DistortionThreshold = (int) PsychosisStages.DeliriousMin;
     private const int FullDistortionLevel = 99;
 
     private readonly Dictionary<Control, DistortedText> _distortedTexts = new();
@@ -129,9 +129,12 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
     {
         for (Control? current = control; current != null; current = current.Parent)
         {
-            if (current is EntityMenuElement &&
+            if (current is EntityMenuElement entityMenu &&
                 _adminManager.HasFlag(AdminFlags.Admin | AdminFlags.Debug))
+            {
+                // Админская запись содержит entity ID и prototype ID — оставляем её точной.
                 return true;
+            }
 
             if (current is not VerbMenuElement verbElement)
                 continue;

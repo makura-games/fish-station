@@ -25,4 +25,9 @@ public sealed partial class HallucinationComponent : Component
     /// Начальная альфа спрайта.
     /// </summary>
     public float StartAlpha = 1f;
+
+    /// <summary>
+    /// Мираж, который рассеивается, если подойти вплотную.
+    /// </summary>
+    public bool IsMirage;
 }

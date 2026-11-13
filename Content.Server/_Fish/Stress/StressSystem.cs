@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Content.Server._Fish.MentalHealth;
+using Content.Server._Fish.Psychosis;
 using Content.Server.Roles.Jobs;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared._Fish.MentalHealth;
@@ -34,6 +35,7 @@ public sealed partial class StressSystem : EntitySystem
     [Dependency] private EntityQuery<PuddleComponent> _puddleQuery = default!;
     [Dependency] private JobSystem _jobs = default!;
     [Dependency] private MentalHealthConfigSystem _config = default!;
+    [Dependency] private PsychosisSystem _psychosis = default!;
     [Dependency] private NpcFactionSystem _npcFaction = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedSolutionContainerSystem _solutions = default!;
@@ -50,6 +52,7 @@ public sealed partial class StressSystem : EntitySystem
     private readonly Dictionary<EntityUid, TimeSpan> _highStressStarted = new();
     private readonly Dictionary<EntityUid, TimeSpan> _vomitCooldowns = new();
     private const float SafeStressRecoveryPerSecond = 0.5f;
+    private const float HighStressPsychosisPerSecond = 0.02f;
 
     public override void Initialize()
     {
@@ -254,6 +257,13 @@ public sealed partial class StressSystem : EntitySystem
                 stress.Current + stressDelta * elapsed,
                 0f,
                 MentalHealthConstants.StressMax);
+
+            // Fish-edit: постоянное высокое напряжение медленно подпитывает психоз.
+            if (stress.Current > MentalHealthConstants.StressThresholdHigh)
+            {
+                var excess = stress.Current - MentalHealthConstants.StressThresholdHigh;
+                _psychosis.AddSource(uid, "Stress", excess * HighStressPsychosisPerSecond * elapsed);
+            }
 
             var isHigh = stress.Current > MentalHealthConstants.StressThresholdHigh;
             if (isHigh)

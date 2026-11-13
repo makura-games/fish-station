@@ -1,4 +1,4 @@
-using Content.Shared.Chemistry.Reagent;
+using Content.Shared._Fish.Psychosis;
 using Content.Shared.EntityEffects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
@@ -24,6 +24,18 @@ public sealed partial class ChemReducePsychosis : EntityEffectBase<ChemReducePsy
 {
     [DataField]
     public float ReducePerUnit = 1f;
+
+    /// <summary>
+    /// Идентификатор вещества для расчёта толерантности.
+    /// </summary>
+    [DataField]
+    public string SubstanceId = "Antipsychotic";
+
+    /// <summary>
+    /// Насколько доза повышает зависимость.
+    /// </summary>
+    [DataField]
+    public float AddictionPerDose = 4f;
 
     public override string? EntityEffectGuidebookText(IPrototypeManager prototype, IEntitySystemManager entSys) =>
         Loc.GetString(

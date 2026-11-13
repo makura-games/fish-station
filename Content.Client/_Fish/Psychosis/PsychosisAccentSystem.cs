@@ -127,11 +127,12 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
 
     private string Distort(string text)
     {
-        if (_currentPsychosisLevel < 33)
-            return DistortLight(text);
-        if (_currentPsychosisLevel < 66)
-            return DistortMedium(text);
-        return DistortHeavy(text);
+        return PsychosisStages.Get(_currentPsychosisLevel) switch
+        {
+            PsychosisStage.Delirious or PsychosisStage.Terminal => DistortHeavy(text),
+            PsychosisStage.Distorted => DistortMedium(text),
+            _ => DistortLight(text),
+        };
     }
 
     /// <summary>

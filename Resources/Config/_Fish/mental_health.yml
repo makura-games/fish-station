@@ -45,12 +45,6 @@ stress_resists:
   Antag:
     blood: 80
     enemies: 80
-  AtmosphericTechnician:
-    blood: 0
-    enemies: 0
-  Bartender:
-    blood: 0
-    enemies: 0
   BlueShieldEnsign:
     blood: 60
     enemies: 70
@@ -60,9 +54,6 @@ stress_resists:
   Borg:
     blood: 100
     enemies: 100
-  Botanist:
-    blood: 0
-    enemies: 0
   CBURN:
     blood: 90
     enemies: 90
@@ -75,9 +66,6 @@ stress_resists:
   CentCommOfficer:
     blood: 20
     enemies: 20
-  CentCommTrainee:
-    blood: 0
-    enemies: 0
   CentcommBartender:
     blood: 20
     enemies: 20
@@ -96,15 +84,6 @@ stress_resists:
   CentralCommandOfficial:
     blood: 20
     enemies: 20
-  Chaplain:
-    blood: 0
-    enemies: 0
-  Chef:
-    blood: 0
-    enemies: 0
-  Clown:
-    blood: 0
-    enemies: 0
   DeathSquad:
     blood: 100
     enemies: 100
@@ -132,77 +111,32 @@ stress_resists:
   Janitor:
     blood: 40
     enemies: 0
-  Lawyer:
-    blood: 0
-    enemies: 0
-  Librarian:
-    blood: 0
-    enemies: 0
   MedicalIntern:
     blood: 15
-    enemies: 0
-  Mime:
-    blood: 0
-    enemies: 0
-  Musician:
-    blood: 0
     enemies: 0
   OversightOfficer:
     blood: 20
     enemies: 20
-  Passenger:
-    blood: 0
-    enemies: 0
   Psychologist:
     blood: 20
     enemies: 0
   Quartermaster:
     blood: 30
     enemies: 0
-  Reporter:
-    blood: 0
-    enemies: 0
   RepresentativeBlueShield:
     blood: 60
     enemies: 60
-  ResearchAssistant:
-    blood: 0
-    enemies: 0
   SalvageSpecialist:
     blood: 25
-    enemies: 0
-  Scientist:
-    blood: 0
     enemies: 0
   SecurityCadet:
     blood: 20
     enemies: 20
-  ServiceWorker:
-    blood: 0
-    enemies: 0
-  SpecOpsOfficer:
-    blood: 0
-    enemies: 0
   StationAi:
     blood: 100
     enemies: 100
-  StationEngineer:
-    blood: 0
-    enemies: 0
-  TechnicalAssistant:
-    blood: 0
-    enemies: 0
-  TramDriver:
-    blood: 0
-    enemies: 0
-  Visitor:
-    blood: 0
-    enemies: 0
   Adjutant:
     blood: 20
-    enemies: 0
-  Barber:
-    blood: 0
     enemies: 0
   BlueShieldOfficer:
     blood: 70
@@ -219,12 +153,6 @@ stress_resists:
   CBURNLeader:
     blood: 90
     enemies: 90
-  CentCommOfficial:
-    blood: 0
-    enemies: 0
-  CentCommOperator:
-    blood: 0
-    enemies: 0
   ClownBorg:
     blood: 100
     enemies: 100
@@ -234,48 +162,9 @@ stress_resists:
   EngineerBorg:
     blood: 100
     enemies: 100
-  HeadOfPrison:
-    blood: 0
-    enemies: 0
-  IAA:
-    blood: 0
-    enemies: 0
   JanitorBorg:
     blood: 100
     enemies: 100
-  JobArmBase:
-    blood: 0
-    enemies: 0
-  JobArmPC0I5:
-    blood: 0
-    enemies: 0
-  JobArmPE1:
-    blood: 0
-    enemies: 0
-  JobArmPM1:
-    blood: 0
-    enemies: 0
-  JobCoreBase:
-    blood: 0
-    enemies: 0
-  JobCorePC0I5:
-    blood: 0
-    enemies: 0
-  JobCorePE1:
-    blood: 0
-    enemies: 0
-  JobCorePM1:
-    blood: 0
-    enemies: 0
-  JobGhostWMBase:
-    blood: 0
-    enemies: 0
-  Magistrat:
-    blood: 0
-    enemies: 0
-  MailCarrier:
-    blood: 0
-    enemies: 0
   MedicalBorg:
     blood: 100
     enemies: 100
@@ -291,66 +180,18 @@ stress_resists:
   NanoTrasenRepresentative:
     blood: 30
     enemies: 30
-  NtrGuard:
-    blood: 0
-    enemies: 0
-  NtrLeader:
-    blood: 0
-    enemies: 0
-  NtrOfficer:
-    blood: 0
-    enemies: 0
   PeaceBorg:
     blood: 100
     enemies: 100
-  PlanetPrisoner:
-    blood: 0
-    enemies: 0
-  PrisonChef:
-    blood: 0
-    enemies: 0
-  PrisonDoctor:
-    blood: 0
-    enemies: 0
-  PrisonEngineer:
-    blood: 0
-    enemies: 0
-  PrisonInspector:
-    blood: 0
-    enemies: 0
-  PrisonPilot:
-    blood: 0
-    enemies: 0
-  PrisonScientist:
-    blood: 0
-    enemies: 0
-  PrisonTrainee:
-    blood: 0
-    enemies: 0
-  PrisonWorker:
-    blood: 0
-    enemies: 0
-  Roboticist:
-    blood: 0
-    enemies: 0
   SecurityBorg:
     blood: 100
     enemies: 100
   SecurityPilot:
     blood: 30
     enemies: 30
-  SeniorEngineer:
-    blood: 0
-    enemies: 0
   SeniorOfficer:
     blood: 40
     enemies: 40
-  SeniorPhysician:
-    blood: 0
-    enemies: 0
-  SeniorResearcher:
-    blood: 0
-    enemies: 0
   ServiceBorg:
     blood: 100
     enemies: 100
@@ -383,6 +224,11 @@ psychosis:
     - MobKobold
     - MobLizard
     - MobFrog
+    - MobHuman
+    - MobDiona
+    - MobMoth
+    - MobReptilian
+    - MobVox
   hallucination_corpse_prototypes:
     - SalvageHumanCorpse
     - MobRandomServiceCorpse
@@ -722,6 +568,28 @@ psychosis:
     - FoodAmbrosiaDeus
     - ToyRubberDuck
     - ToyAmongPequeno
+    - PuddleBlood
+    - PuddleBloodSmall
+    - PuddleSmear
+    - PuddleVomit
+    - TrashBananaPeel
+    - TrashCherryPit
+    - TrashMimanaPeel
+    - ScrapSteel
+    - ScrapGlass
+    - ScrapAirlock1
+    - ScrapAirlock2
+    - ScrapBucket
+    - ScrapCamera
+    - ScrapCanister1
+    - ScrapCanister2
+    - ScrapFaxMachine
+    - ScrapFireExtinguisher
+    - ScrapFirelock1
+    - ScrapFirelock2
+    - ScrapIntercom
+    - ScrapJetpack
+    - ScrapMedkit
   hallucination_sounds:
     - /Audio/Effects/thudswoosh.ogg
     - /Audio/Effects/bone_rattle.ogg

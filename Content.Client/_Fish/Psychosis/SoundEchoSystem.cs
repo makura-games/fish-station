@@ -2,6 +2,7 @@ using Content.Shared._Fish.Psychosis;
 using Robust.Client.Audio;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
+using Robust.Shared.Map;
 using Robust.Shared.IoC;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
@@ -16,12 +17,21 @@ public sealed partial class SoundEchoSystem : EntitySystem
     [Dependency] private AudioSystem _audio = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
-    private const float MinPsychosisLevel = 50f;
+    /// <summary>
+    /// Ниже этого уровня громкости звук считается слишком тихим для эха.
+    /// </summary>
+    private const float MinSourceVolume = -40f;
+
     private const int EchoCount = 3;
     private const float EchoDelay = 0.22f;
     private const float EchoVolumeStep = -7f;
 
+    // Ограничитель, чтобы на высоком психозе не заливать звук и не нагружать сервер аудио.
+    private const float EchoBudgetPerSecond = 6f;
+    private const float EchoBudgetMax = 6f;
+
     private float _currentPsychosisLevel;
+    private float _echoBudget = EchoBudgetMax;
 
     public override void Initialize()
     {
@@ -45,22 +55,29 @@ public sealed partial class SoundEchoSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        if (_currentPsychosisLevel < MinPsychosisLevel)
+        _echoBudget = Math.Min(EchoBudgetMax, _echoBudget + EchoBudgetPerSecond * frameTime);
+
+        if (_currentPsychosisLevel < PsychosisStages.DistortedMin)
             return;
 
         var query = EntityQueryEnumerator<AudioComponent>();
         while (query.MoveNext(out var uid, out var audio))
         {
+            if (_echoBudget < 1f)
+                return;
+
             if (!audio.Started || !audio.Playing || string.IsNullOrWhiteSpace(audio.FileName) ||
-                HasComp<EchoSoundComponent>(uid))
+                audio.Volume < MinSourceVolume || HasComp<EchoSoundComponent>(uid))
                 continue;
 
             // Fish-edit: помечаем исходный звук, чтобы он не порождал эхо каждый кадр.
             EnsureComp<EchoSoundComponent>(uid);
+            _echoBudget -= 1f;
 
             var fileName = audio.FileName;
             var volume = audio.Volume;
             var mapCoordinates = _transform.GetMapCoordinates(uid);
+            var positional = mapCoordinates.MapId != MapId.Nullspace;
 
             for (var i = 1; i <= EchoCount; i++)
             {
@@ -69,9 +86,13 @@ public sealed partial class SoundEchoSystem : EntitySystem
 
                 Timer.Spawn(TimeSpan.FromSeconds(delay), () =>
                 {
-                    var coordinates = _transform.ToCoordinates(mapCoordinates);
                     var sound = _audio.ResolveSound(new SoundPathSpecifier(fileName));
-                    var echo = _audio.PlayStatic(sound, Filter.Local(), coordinates, false, echoParams);
+
+                    // Непозиционные звуки (музыка, UI) живут в nullspace — их повторяем глобально.
+                    var echo = positional
+                        ? _audio.PlayStatic(sound, Filter.Local(), _transform.ToCoordinates(mapCoordinates), false, echoParams)
+                        : _audio.PlayGlobal(sound, Filter.Local(), false, echoParams);
+
                     if (echo is { } echoData)
                         EnsureComp<EchoSoundComponent>(echoData.Entity);
                 });

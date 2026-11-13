@@ -27,6 +27,7 @@
       effects:
       - !type:ChemReducePsychosis
         reducePerUnit: 2
+        substanceId: FishAntipsychotic
       # Fish-start - побочный эффект: термические повреждения
       - !type:HealthChange
         damage:

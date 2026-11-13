@@ -8,6 +8,8 @@ using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Localization;
 using Content.Shared._Fish.Psychosis;
+using Content.Shared._Fish.MentalHealth;
+using Content.Shared._Fish.Neuro;
 using Robust.Client.Audio;
 using Robust.Client.GameObjects;
 using Robust.Client.Player;
@@ -38,6 +40,7 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private EntityQuery<NeuroComponent> _neuroQuery = default!;
 
     private static readonly ProtoId<LocalizedDatasetPrototype> FirstNames = "NamesFirstMale";
     private static readonly ProtoId<LocalizedDatasetPrototype> LastNames = "NamesLast";
@@ -50,14 +53,18 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     private List<string> _corpsePrototypes = new();
     private List<string> _itemPrototypes = new();
     private List<string> _sounds = new();
+    private readonly List<string> _footstepSounds = new();
 
     private float _currentPsychosisLevel;
     private float _nextVisualTime;
     private float _nextSoundTime;
+    private float _nextFootstepTime;
     private const float MinLifetime = 10f;
     private const float MaxLifetime = 20f;
     private const float FadeDuration = 3f; // сколько секунд в конце исчезает
     private const float MaxDistanceFromPlayer = 25f; // удаление при превышении
+    private const float MirageRevealDistance = 1.6f; // мираж исчезает при подходе
+    private const float DoppelgangerChance = 0.08f;
 
     private readonly Dictionary<EntityUid, HallucinationComponent> _hallucinations = new();
 
@@ -87,6 +94,14 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         _corpsePrototypes = ev.CorpsePrototypes;
         _itemPrototypes = ev.ItemPrototypes;
         _sounds = ev.Sounds;
+
+        // Fish-edit: отдельный список шагов для «шагов за спиной».
+        _footstepSounds.Clear();
+        foreach (var sound in _sounds)
+        {
+            if (sound.Contains("/Footsteps/", StringComparison.Ordinal))
+                _footstepSounds.Add(sound);
+        }
     }
 
     /// <summary>
@@ -157,6 +172,13 @@ public sealed partial class HallucinationClientSystem : EntitySystem
             var xform = Transform(uid);
             var dist = (xform.WorldPosition - playerXform.WorldPosition).Length();
 
+            // Мираж рассеивается, когда игрок подходит вплотную.
+            if (comp.IsMirage && dist <= MirageRevealDistance)
+            {
+                StartFadeAndDelete(comp, currentTime);
+                continue;
+            }
+
             // Удаление, если игрок слишком далеко
             if (dist > MaxDistanceFromPlayer)
             {
@@ -176,14 +198,37 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         if (_currentPsychosisLevel <= 0)
             return;
 
+        // Fish-edit: низкие нейроны усиливают психоз — галлюцинации появляются чаще.
+        var neuroFactor = 1f;
+        if (_neuroQuery.TryComp(playerEntity.Value, out var neuro))
+        {
+            var neuroLoss = Math.Clamp(
+                (MentalHealthConstants.NeuroMild - neuro.Current) / MentalHealthConstants.NeuroMild,
+                0f,
+                1f);
+            neuroFactor = 1f + neuroLoss * 0.8f;
+        }
+
         if (_mobPrototypes.Count > 0 || _corpsePrototypes.Count > 0 || _itemPrototypes.Count > 0)
         {
-            float visualInterval = MathHelper.Lerp(10f, 1.5f, _currentPsychosisLevel / 100f);
+            float visualInterval = MathHelper.Lerp(10f, 1.5f, _currentPsychosisLevel / 100f) / neuroFactor;
             _nextVisualTime -= frameTime;
             if (_nextVisualTime <= 0)
             {
                 TryCreateVisualHallucination(playerEntity.Value);
                 _nextVisualTime = visualInterval * _random.NextFloat(0.8f, 1.2f);
+            }
+        }
+
+        // Шаги за спиной.
+        if (_footstepSounds.Count > 0 && _currentPsychosisLevel >= PsychosisStages.UnsettledMin)
+        {
+            _nextFootstepTime -= frameTime;
+            if (_nextFootstepTime <= 0)
+            {
+                PlayPhantomFootstep(playerEntity.Value);
+                _nextFootstepTime = MathHelper.Lerp(22f, 6f, _currentPsychosisLevel / 100f) /
+                                    neuroFactor * _random.NextFloat(0.7f, 1.3f);
             }
         }
 
@@ -206,14 +251,19 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         var roll = _random.NextFloat();
         string? protoId = null;
         var spawnMob = false;
+        var spawnCorpse = false;
 
-        if (roll < 0.4f && _mobPrototypes.Count > 0)
+        // Предметы и прочие сущности должны появляться чаще мобов и трупов.
+        if (roll < 0.2f && _mobPrototypes.Count > 0)
         {
             protoId = _random.Pick(_mobPrototypes);
             spawnMob = true;
         }
-        else if (roll < 0.7f && _corpsePrototypes.Count > 0)
+        else if (roll < 0.35f && _corpsePrototypes.Count > 0)
+        {
             protoId = _random.Pick(_corpsePrototypes);
+            spawnCorpse = true;
+        }
         else if (_itemPrototypes.Count > 0)
             protoId = _random.Pick(_itemPrototypes);
         else if (_mobPrototypes.Count > 0)
@@ -225,6 +275,15 @@ public sealed partial class HallucinationClientSystem : EntitySystem
 		if (protoId == null)
 			return;
 
+        // «Двойник» — моб с именем самого игрока.
+        var usePlayerName = false;
+        if (_mobPrototypes.Count > 0 && _random.Prob(DoppelgangerChance))
+        {
+            protoId = _random.Pick(_mobPrototypes);
+            spawnMob = true;
+            usePlayerName = true;
+        }
+
         if (!TryFindSpawnPosition(player, out var position))
             return;
 
@@ -235,6 +294,11 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         comp.CreatedAt = _timing.CurTime;
         comp.Lifetime = TimeSpan.FromSeconds(_random.NextFloat(MinLifetime, MaxLifetime));
         comp.StartAlpha = 1f;
+        comp.IsMirage = !spawnMob;
+
+        // Fish-edit: до запуска физики задаём начальную позу трупа, чтобы он не падал после спавна.
+        if (spawnCorpse)
+            _transform.SetLocalRotation(Transform(hallucination), Angle.FromDegrees(90));
 
         // Fish-edit: визуализаторы предметов должны получить компоненты исходного прототипа при запуске.
         _entityManager.InitializeAndStartEntity(hallucination);
@@ -246,16 +310,23 @@ public sealed partial class HallucinationClientSystem : EntitySystem
         if (TryComp<SpriteComponent>(hallucination, out var sprite))
         {
             _sprite.SetVisible((hallucination, sprite), true);
-            if (!spawnMob)
+            if (!spawnMob && !spawnCorpse)
                 _sprite.SetRotation((hallucination, sprite), _random.NextAngle());
         }
 
-        if (spawnMob)
+        if (spawnMob || spawnCorpse)
         {
-            var firstNames = _prototype.Index(FirstNames);
-            var lastNames = _prototype.Index(LastNames);
-            var name = $"{Loc.GetString(_random.Pick(firstNames.Values))} {Loc.GetString(_random.Pick(lastNames.Values))}";
-            _metaData.SetEntityName(hallucination, name);
+            if (usePlayerName)
+            {
+                _metaData.SetEntityName(hallucination, MetaData(player).EntityName);
+            }
+            else
+            {
+                var firstNames = _prototype.Index(FirstNames);
+                var lastNames = _prototype.Index(LastNames);
+                var name = $"{Loc.GetString(_random.Pick(firstNames.Values))} {Loc.GetString(_random.Pick(lastNames.Values))}";
+                _metaData.SetEntityName(hallucination, name);
+            }
         }
 
         // Регистрируем в словаре
@@ -323,6 +394,23 @@ public sealed partial class HallucinationClientSystem : EntitySystem
 
         var soundPath = _random.Pick(_sounds);
         _audio.PlayGlobal(soundPath, Filter.Local(), false, AudioParams.Default.WithVolume(-6f));
+    }
+
+    /// <summary>
+    /// Проигрывает шаги рядом с игроком, будто кто-то идёт следом.
+    /// </summary>
+    private void PlayPhantomFootstep(EntityUid player)
+    {
+        if (_footstepSounds.Count == 0)
+            return;
+
+        var mapCoordinates = _transform.GetMapCoordinates(player);
+        var offset = _random.NextVector2(1.5f, 2.5f);
+        var coordinates = _transform.ToCoordinates(
+            new MapCoordinates(mapCoordinates.Position + offset, mapCoordinates.MapId));
+
+        var soundPath = _random.Pick(_footstepSounds);
+        _audio.PlayStatic(soundPath, Filter.Local(), coordinates, false, AudioParams.Default.WithVolume(-9f));
     }
 
     /// <summary>

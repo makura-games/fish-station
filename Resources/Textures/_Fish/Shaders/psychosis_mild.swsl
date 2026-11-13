@@ -23,8 +23,11 @@ void fragment()
         + sampleScreen(uv - vec2(0.0, texel.y));
     blur *= 0.25;
 
-    highp float sharpen = 1.0 + strength * 0.9;
+    highp float sharpen = 1.0 + strength * 2.2;
     color.rgb = color.rgb * sharpen - blur.rgb * (sharpen - 1.0);
+
+    // Небольшой контраст, чтобы мягкий режим был заметен без потемнения.
+    color.rgb = (color.rgb - 0.5) * (1.0 + strength * 0.18) + 0.5;
 
     COLOR = clamp(color, 0.0, 1.0);
 }

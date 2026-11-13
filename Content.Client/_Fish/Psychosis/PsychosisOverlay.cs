@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Shared.CCVar;
+using Content.Shared._Fish.Psychosis;
 using Robust.Client.Graphics;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
@@ -16,7 +17,7 @@ public sealed partial class PsychosisOverlay : Overlay
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IGameTiming _timing = default!;
 
-    private const float StrongThreshold = 0.5f;
+    private const float StrongThreshold = PsychosisStages.DistortedMin / 100f;
 
     private static readonly ProtoId<ShaderPrototype> StrongShader = "FishPsychosis";
     private static readonly ProtoId<ShaderPrototype> MildShader = "FishPsychosisMild";

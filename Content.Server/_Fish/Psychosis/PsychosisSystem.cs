@@ -15,8 +15,6 @@ public sealed partial class PsychosisSystem : EntitySystem
 {
     [Dependency] private MentalHealthConfigSystem _config = default!;
 
-    private const float ModeratePsychosisThreshold = 33f;
-    private const float HighPsychosisThreshold = 66f;
     private const float LowPsychosisDecayPerSecond = 0.5f;
     private const float ModeratePsychosisDecayPerSecond = 0.05f;
     private const float HighPsychosisDecayPerSecond = 0.005f;
@@ -63,6 +61,15 @@ public sealed partial class PsychosisSystem : EntitySystem
 
             psychosis.Current = Math.Clamp(current, 0f, 100f);
             var reachedZero = oldLevel > 0f && psychosis.Current == 0f;
+
+            var oldStage = psychosis.Stage;
+            var newStage = PsychosisStages.Get(psychosis.Current);
+            if (oldStage != newStage)
+            {
+                psychosis.Stage = newStage;
+                RaiseLocalEvent(uid, new PsychosisStageChangedEvent(uid, oldStage, newStage, psychosis.Current));
+            }
+
             if (oldLevel == psychosis.Current)
                 continue;
 
@@ -92,8 +99,8 @@ public sealed partial class PsychosisSystem : EntitySystem
     {
         return psychosisLevel switch
         {
-            < ModeratePsychosisThreshold => LowPsychosisDecayPerSecond,
-            < HighPsychosisThreshold => ModeratePsychosisDecayPerSecond,
+            < PsychosisStages.UnsettledMin => LowPsychosisDecayPerSecond,
+            < PsychosisStages.DeliriousMin => ModeratePsychosisDecayPerSecond,
             _ => HighPsychosisDecayPerSecond,
         };
     }

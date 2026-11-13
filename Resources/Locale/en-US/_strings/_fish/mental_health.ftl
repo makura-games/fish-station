@@ -25,6 +25,10 @@ entity-effect-guidebook-fish-detox = { $chance ->
     *[other] has a { $chance } chance to reduce
 } addiction by { $amount } per unit
 fish-health-analyzer-neuro-level = Neurons
+fish-psychosis-whisper-1 = You hear it too?
+fish-psychosis-whisper-2 = Don't turn around.
+fish-psychosis-whisper-3 = It's already next to you.
+fish-psychosis-whisper-4 = You know you're not really here, right?
 fish-neuro-muddling = Your mind feels clouded.
 fish-neuro-critical = Your mind is collapsing.
 ent-FishNeuroCriticalSlowdownStatusEffect = neuro critical slowdown

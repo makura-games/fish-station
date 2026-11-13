@@ -18,4 +18,9 @@ public sealed partial class PsychosisComponent : Component
     /// Словарь источников: имя источника -> сила.
     /// </summary>
     public Dictionary<string, float> Sources = new();
+
+    /// <summary>
+    /// Последняя известная стадия психоза. Служебное поле сервера.
+    /// </summary>
+    public PsychosisStage Stage = PsychosisStage.Calm;
 }

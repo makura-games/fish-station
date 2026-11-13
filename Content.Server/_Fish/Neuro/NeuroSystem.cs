@@ -4,6 +4,7 @@ using System.Text;
 using Content.Server._Sunrise.Chat.Sanitization;
 using Content.Server._Fish.MentalHealth;
 using Content.Server._Fish.Psychosis;
+using Content.Shared._Fish.Psychosis;
 using Content.Shared._Fish.MentalHealth;
 using Content.Shared._Fish.Neuro;
 using Content.Shared._Fish.Stress;
@@ -181,7 +182,12 @@ public sealed partial class NeuroSystem : EntitySystem
             if (TryComp<CombatModeComponent>(uid, out var combat))
                 inCombat = combat.IsInCombatMode;
 
-            if (stress.Current < neuro.RegenStressThreshold && !inCombat)
+            // Fish-edit: сильный психоз мешает восстановлению нейронов.
+            var psychosisBlocksRegen =
+                TryComp<PsychosisComponent>(uid, out var psychosis) &&
+                psychosis.Current >= PsychosisStages.DistortedMin;
+
+            if (!psychosisBlocksRegen && stress.Current < neuro.RegenStressThreshold && !inCombat)
             {
                 neuro.Current = Math.Min(
                     neuro.Max - neuro.PermanentLoss,
