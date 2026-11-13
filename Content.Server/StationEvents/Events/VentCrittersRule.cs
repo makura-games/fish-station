@@ -25,8 +25,13 @@ public sealed partial class VentCrittersRule : StationEventSystem<VentCrittersRu
 
         var locations = EntityQueryEnumerator<VentCritterSpawnLocationComponent, TransformComponent>();
         var validLocations = new List<EntityCoordinates>();
-        while (locations.MoveNext(out _, out _, out var transform))
+        while (locations.MoveNext(out var locationUid, out _, out var transform)) // Fish-edit: UID нужен для проверки карты ЦК.
         {
+            // Fish-start: не выбираем точки спавна ЦК.
+            if (IsOnCentcomm(locationUid))
+                continue;
+            // Fish-end
+
             if (!transform.Anchored)
                 continue;
 
