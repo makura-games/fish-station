@@ -237,8 +237,14 @@ public abstract partial class SharedMoverController : VirtualController
         ContentTileDefinition? tileDef = null;
 
         var touching = false;
-        // Whether we use tilefriction or not
+        // Fish-start
+        var spaceMovement = new CanWeightlessMoveEvent(uid);
         if (weightless || inAirHelpless)
+            RaiseLocalEvent(uid, ref spaceMovement, true);
+        // Fish-end
+
+        // Whether we use tilefriction or not
+        if ((weightless || inAirHelpless) && !spaceMovement.UseGroundMovement) // Fish-edit
         {
             // Find the speed we should be moving at and make sure we're not trying to move faster than that
             var walkSpeed = moveSpeedComponent?.WeightlessWalkSpeed ?? MovementSpeedModifierComponent.DefaultBaseWalkSpeed;
@@ -246,10 +252,7 @@ public abstract partial class SharedMoverController : VirtualController
 
             wishDir = AssertValidWish(mover, walkSpeed, sprintSpeed);
 
-            var ev = new CanWeightlessMoveEvent(uid);
-            RaiseLocalEvent(uid, ref ev, true);
-
-            touching = ev.CanMove || xform.GridUid != null || MapGridQuery.HasComp(xform.GridUid);
+            touching = spaceMovement.CanMove || xform.GridUid != null || MapGridQuery.HasComp(xform.GridUid);
 
             // If we're not on a grid, and not able to move in space check if we're close enough to a grid to touch.
             if (!touching && MobMoverQuery.TryComp(uid, out var mobMover))
@@ -307,7 +310,7 @@ public abstract partial class SharedMoverController : VirtualController
         var minimumFrictionSpeed = moveSpeedComponent?.MinimumFrictionSpeed ?? MovementSpeedModifierComponent.DefaultMinimumFrictionSpeed;
         Friction(minimumFrictionSpeed, frameTime, friction, ref velocity);
 
-        if (!weightless || touching)
+        if (!weightless || touching || spaceMovement.UseGroundMovement) // Fish-edit
             Accelerate(ref velocity, in wishDir, accel, frameTime);
 
         SetWishDir((uid, mover), wishDir);

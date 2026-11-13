@@ -16,6 +16,9 @@ public sealed partial class SharedHomelanderFlightSystem : EntitySystem
     private void OnCanWeightlessMove(Entity<HomelanderComponent> entity, ref CanWeightlessMoveEvent args)
     {
         if (_flightQuery.TryComp(entity, out var flight) && flight.FlightEnabled)
+        {
             args.CanMove = true;
+            args.UseGroundMovement = true;
+        }
     }
 }

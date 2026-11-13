@@ -22,6 +22,7 @@ using Content.Shared.Weapons.Reflect;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Maths;
 
 namespace Content.IntegrationTests.Tests._Fish.Homelander;
 
@@ -59,13 +60,22 @@ public sealed class HomelanderTest : GameTest
             mask & ~(int) (CollisionGroup.MidImpassable | CollisionGroup.LowImpassable))));
         Assert.That(flightMasks, Is.Not.EqualTo(originalMasks));
 
-        await server.WaitPost(() => server.System<SharedPhysicsSystem>().SetLinearVelocity(patriot, new Vector2(5f, 0f)));
+        await server.WaitPost(() =>
+        {
+            server.System<SharedTransformSystem>().SetLocalRotation(patriot, Direction.East.ToAngle());
+            server.System<SharedPhysicsSystem>().SetLinearVelocity(patriot, new Vector2(5f, 0f));
+        });
         await Pair.RunTicksSync(5);
         await client.WaitAssertion(() =>
         {
             var sprite = client.EntMan.GetComponent<SpriteComponent>(clientPatriot);
-            Assert.That(sprite.Rotation.Theta, Is.LessThan(-0.05f));
+            Assert.That(sprite.Rotation.Theta, Is.LessThan(-0.001f));
         });
+
+        await server.WaitPost(() => server.System<SharedTransformSystem>().SetLocalRotation(patriot, Direction.South.ToAngle()));
+        await Pair.RunTicksSync(30);
+        await client.WaitAssertion(() =>
+            Assert.That(client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Rotation.Theta, Is.Zero.Within(0.001f)));
 
         await server.WaitPost(() => actions.PerformAction(patriot, flightAction));
         await CheckOffset(false);
@@ -133,6 +143,7 @@ public sealed class HomelanderTest : GameTest
                 var movement = new CanWeightlessMoveEvent(patriot);
                 events.RaiseLocalEvent(patriot, ref movement, broadcast: true);
                 Assert.That(movement.CanMove, Is.EqualTo(expected));
+                Assert.That(movement.UseGroundMovement, Is.EqualTo(expected));
             }
         });
     }

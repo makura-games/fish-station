@@ -101,6 +101,7 @@
   components:
   - type: Sprite
     sprite: _Fish/Homelander/gloves.rsi
+    state: icon
   - type: Clothing
     slots: [gloves]
     sprite: _Fish/Homelander/gloves.rsi

@@ -81,13 +81,22 @@ public sealed partial class HomelanderSystem : EntitySystem
             var previousLean = lift.Lean;
             var step = frameTime / FlightTransitionSeconds;
             lift.Progress = Math.Clamp(lift.Progress + (lift.Flying ? step : -step), 0f, 1f);
-            var targetLean = lift.Flying ? GetTargetLean(uid) : 0f;
+            var eyeRotation = _eye.CurrentEye.Rotation;
+            var facing = _transform.GetWorldRotation(uid) + eyeRotation;
+            var direction = facing.GetCardinalDir();
+            var sideFacing = direction is Direction.East or Direction.West;
+            var targetLean = lift.Flying && sideFacing ? GetTargetLean(uid, eyeRotation) : 0f;
             lift.Lean = MathHelper.Lerp(lift.Lean, targetLean, 1f - MathF.Exp(-12f * frameTime));
-            if (MathF.Abs(lift.Lean - targetLean) < 0.001f)
+            if (!sideFacing || MathF.Abs(lift.Lean - targetLean) < 0.001f)
                 lift.Lean = targetLean;
 
-            if (lift.Flying && previousProgress == lift.Progress && previousLean == lift.Lean)
+            var renderRotation = sprite.NoRotation ? Angle.Zero :
+                sprite.SnapCardinals ? facing - facing.RoundToCardinalAngle() : facing;
+            if (lift.Flying && previousProgress == lift.Progress && previousLean == lift.Lean &&
+                lift.ShadowRenderRotation == renderRotation)
                 continue;
+
+            lift.ShadowRenderRotation = renderRotation;
 
             var progress = lift.Progress * lift.Progress * (3f - 2f * lift.Progress);
             var height = FlightLift * progress;
@@ -95,9 +104,9 @@ public sealed partial class HomelanderSystem : EntitySystem
             _sprite.SetOffset(entity, lift.GroundOffset + height);
             var rotation = lift.GroundRotation + new Angle(lift.Lean * progress);
             _sprite.SetRotation(entity, rotation);
-            var shadowOffset = new Vector2(0f, -0.35f) - lift.GroundOffset - height;
+            var shadowOffset = (-renderRotation).RotateVec(new Vector2(0f, -0.35f)) - sprite.Offset;
             _sprite.LayerSetOffset(entity, FlightShadowLayer, (-rotation).RotateVec(shadowOffset));
-            _sprite.LayerSetRotation(entity, FlightShadowLayer, -rotation);
+            _sprite.LayerSetRotation(entity, FlightShadowLayer, -rotation - renderRotation);
             _sprite.LayerSetColor(entity, FlightShadowLayer, Color.White.WithAlpha(progress));
 
             if (!lift.Flying && lift.Progress == 0f)
@@ -111,14 +120,14 @@ public sealed partial class HomelanderSystem : EntitySystem
         }
     }
 
-    private float GetTargetLean(EntityUid uid)
+    private float GetTargetLean(EntityUid uid, Angle eyeRotation)
     {
         if (!_physicsQuery.TryComp(uid, out var body))
             return 0f;
 
         // Скорость относительно грида, чтобы движение шаттла не наклоняло Патриота.
         var parent = Transform(uid).ParentUid;
-        var rotation = (parent.IsValid() ? _transform.GetWorldRotation(parent) : Angle.Zero) + _eye.CurrentEye.Rotation;
+        var rotation = (parent.IsValid() ? _transform.GetWorldRotation(parent) : Angle.Zero) + eyeRotation;
         var velocity = rotation.RotateVec(body.LinearVelocity);
         return -Math.Clamp(velocity.X / SpeedForFullLean, -1f, 1f) * MaxLeanRadians;
     }
