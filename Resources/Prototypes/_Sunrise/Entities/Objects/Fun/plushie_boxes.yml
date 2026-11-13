@@ -116,8 +116,8 @@
         orGroup: Plushie
       - id: PlushieMechanixFaurHorseman
         orGroup: Plushie
-      - id: PlushieMihailOsipov
-        orGroup: Plushie
+#      - id: PlushieMihailOsipov # Fish-edit
+#        orGroup: Plushie
       - id: PlushieMadokaMori
         orGroup: Plushie
       - id: PlushieMolnia
