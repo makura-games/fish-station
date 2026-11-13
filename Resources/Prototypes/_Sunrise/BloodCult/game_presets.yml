@@ -6,7 +6,7 @@
   description: cult-description
   showInVote: true
   hide: true
-  minPlayers: 20
+  minPlayers: 40 # Fish-edit
   rules:
   - BloodCult
   - BasicStationEventScheduler

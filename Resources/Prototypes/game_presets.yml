@@ -196,7 +196,10 @@
   description: nukeops-description
   showInVote: true # Sunrise-Edit
   hide: true # Sunrise-Edit
-  minPlayers: 20 # Sunrise-Edit: 20 players for NUKEOPS
+  # Fish-start: 40 игроков для Nukeops
+  # minPlayers: 20 # Sunrise-Edit: 20 players for NUKEOPS
+  minPlayers: 40
+  # Fish-end
   rules:
   - Nukeops
   - DummyNonAntagChance
@@ -216,7 +219,10 @@
   description: rev-description
   showInVote: true # Sunrise-Edit
   hide: true # Sunrise-Edit
-  minPlayers: 15 # Sunrise-Edit: 15 players for REVOLUTIONARY
+  # Fish-start: 40 игроков для Revolutionary
+  # minPlayers: 15 # Sunrise-Edit: 15 players for REVOLUTIONARY
+  minPlayers: 40
+  # Fish-end
   rules:
   - DummyNonAntagChance
   - Revolutionary
@@ -249,6 +255,7 @@
   name: xenoborgs-title
   description: xenoborgs-description
   showInVote: false
+  minPlayers: 40 # Fish-edit: 40 игроков для Xenoborgs
   rules:
   - Xenoborgs
   - DummyNonAntagChance
@@ -270,7 +277,10 @@
   description: zombie-description
   showInVote: true # Sunrise-Edit
   hide: true # Sunrise-Edit
-  minPlayers: 20 # Sunrise-Edit: 20 players for ZOMBIES
+  # Fish-start: 40 игроков для Zombie
+  # minPlayers: 20 # Sunrise-Edit: 20 players for ZOMBIES
+  minPlayers: 40
+  # Fish-end
   rules:
   - Zombie
   - BasicStationEventScheduler
@@ -288,7 +298,10 @@
   description: zombieteors-description
   showInVote: true # Sunrise-Edit
   hide: true # Sunrise-Edit
-  minPlayers: 20 # Sunrise-Edit: 20 players for ZOMBIES
+  # Fish-start: 40 игроков для Zombieteors
+  # minPlayers: 20 # Sunrise-Edit: 20 players for ZOMBIES
+  minPlayers: 40
+  # Fish-end
   rules:
   - Zombie
   - BasicStationEventScheduler

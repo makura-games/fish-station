@@ -163,7 +163,10 @@
   id: Nukeops
   components:
   - type: GameRule
-    minPlayers: 50
+    # Fish-start: 40 игроков для Nukeops
+    # minPlayers: 50
+    minPlayers: 40
+    # Fish-end
   - type: LoadMapRule
     mapPath: /Maps/_Fish/Nonstations/nukieplanet.yml # Fish-edit
   - type: AntagSelection
@@ -272,7 +275,10 @@
   parent: [BaseGameRule, BaseRoundstartAntagRule]
   components:
   - type: GameRule
-    minPlayers: 45 # Sunrise-Edit
+    # Fish-start: 40 игроков для Revolutionary
+    # minPlayers: 45 # Sunrise-Edit
+    minPlayers: 40
+    # Fish-end
   - type: RevolutionaryRule
   - type: AntagSelection
     selectionTime: JobsAssigned # Sunrise-Edit
@@ -347,7 +353,10 @@
   parent: [ BaseGameRule, BaseRoundstartAntagRule]
   components:
   - type: GameRule
-    minPlayers: 20
+    # Fish-start: 40 игроков для Zombie
+    # minPlayers: 20
+    minPlayers: 40
+    # Fish-end
     # Sunrise-Edit
     #delay:
     #  min: 600
@@ -394,7 +403,10 @@
   id: Xenoborgs
   components:
   - type: GameRule
-    minPlayers: 30
+    # Fish-start: 40 игроков для Xenoborgs
+    # minPlayers: 30
+    minPlayers: 40
+    # Fish-end
 
 # This rule makes the chosen players unable to get other antag rules, as a way to prevent metagaming job rolls.
 # Put this before antags assigned to station jobs, but after non-job antags (NukeOps/Wiz).
