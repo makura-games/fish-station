@@ -1631,3 +1631,10 @@
     message: Теперь вся верхняя одежда открывает доступ к слоту на спине, но только для балонов
   id: 166
   url: https://github.com/makura-games/fish-station/pull/628
+- author: dan4ikk3
+  time: '2026-11-13T23:41:40.0000000+00:00'
+  changes:
+  - type: Add
+    message: 'В лодаут ОЦК и стажера ЦК добавлены: нагрудник ЦентКом и торжественная форма ЦК.'
+  id: 167
+  url: https://github.com/makura-games/fish-station/pull/633
