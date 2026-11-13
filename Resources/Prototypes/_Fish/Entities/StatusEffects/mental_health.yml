@@ -1,0 +1,17 @@
+- type: entity
+  parent: StatusEffectSlowdown
+  id: FishNeuroCriticalSlowdownStatusEffect
+  suffix: Fish
+  name: neuro critical slowdown
+
+- type: entity
+  parent: StatusEffectSlowdown
+  id: FishNeuroModerateSlowdownStatusEffect
+  suffix: Fish
+  name: neuro moderate slowdown
+
+- type: entity
+  parent: StatusEffectWoozy
+  id: FishNeuroMuddledStatusEffect
+  suffix: Fish
+  name: neuro muddling

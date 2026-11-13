@@ -1,0 +1,33 @@
+light_mode unshaded;
+
+uniform sampler2D SCREEN_TEXTURE;
+uniform highp float intensity;
+uniform highp vec2 screen_size;
+
+highp vec4 sampleScreen(highp vec2 uv)
+{
+    return zTextureSpec(SCREEN_TEXTURE, clamp(uv, vec2(0.0), vec2(1.0)));
+}
+
+void fragment()
+{
+    // Мягкий режим до 50 психоза: только лёгкая резкость, без искажения цветов.
+    highp float strength = clamp(intensity, 0.0, 1.0);
+    highp vec2 texel = vec2(1.0) / max(screen_size, vec2(1.0));
+    highp vec2 uv = clamp(UV, vec2(0.0), vec2(1.0));
+
+    highp vec4 color = sampleScreen(uv);
+    highp vec4 blur = sampleScreen(uv + vec2(texel.x, 0.0))
+        + sampleScreen(uv - vec2(texel.x, 0.0))
+        + sampleScreen(uv + vec2(0.0, texel.y))
+        + sampleScreen(uv - vec2(0.0, texel.y));
+    blur *= 0.25;
+
+    highp float sharpen = 1.0 + strength * 2.2;
+    color.rgb = color.rgb * sharpen - blur.rgb * (sharpen - 1.0);
+
+    // Небольшой контраст, чтобы мягкий режим был заметен без потемнения.
+    color.rgb = (color.rgb - 0.5) * (1.0 + strength * 0.18) + 0.5;
+
+    COLOR = clamp(color, 0.0, 1.0);
+}

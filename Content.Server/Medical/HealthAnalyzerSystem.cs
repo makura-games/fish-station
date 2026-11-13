@@ -23,6 +23,7 @@ using Content.Server.Body.Systems;
 using Content.Shared.Body.Systems;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Nutrition.EntitySystems;
+using Content.Shared._Fish.Neuro; // Fish-edit: показание нейронов медицинского сканера
 using Content.Shared._Sunrise.Research.Artifact;
 
 namespace Content.Server.Medical;
@@ -258,6 +259,12 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
             unrevivable = true;
 
+        // Fish-start - передаём синхронизированный уровень нейронов в медицинский сканер
+        float? neuroLevel = TryComp<NeuroComponent>(entity, out var neuro)
+            ? neuro.Current
+            : null;
+        // Fish-end
+
         // Sunrise-Edit start - collect hunger, thirst, and raise analyze event
         // Collect hunger and thirst data as percentages
         float hungerLevel = -1;
@@ -291,7 +298,8 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             unrevivable,
             hungerLevel,
             thirstLevel,
-            reagents // Fish-edit - посторонние реагенты в показаниях
+            reagents, // Fish-edit - посторонние реагенты в показаниях
+            neuroLevel // Fish-edit: добавляем уровень нейронов в состояние интерфейса
         );
         // Sunrise-Edit end
     }

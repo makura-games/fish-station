@@ -178,6 +178,8 @@ public sealed partial class ChatUIController : UIController
     public event Action<ChatChannel>? FilterableChannelsChanged;
     public event Action<ChatSelectChannel>? SelectableChannelsChanged;
     public event Action<ChatChannel, int?>? UnreadMessageCountsUpdated;
+    // Fish-edit: позволяет изменить сообщение до обработки и отображения в чате.
+    public event Action<ChatMessage>? MessagePreparing;
     public event Action<ChatMessage>? MessageAdded;
 
     public override void Initialize()
@@ -913,6 +915,10 @@ public sealed partial class ChatUIController : UIController
 
     public void ProcessChatMessage(ChatMessage msg, bool speechBubble = true)
     {
+        // Fish-start: подготавливаем текст до применения подсветки и сохранения в истории.
+        MessagePreparing?.Invoke(msg);
+        // Fish-end
+
         // color the name unless it's something like "the old man"
         if ((msg.Channel == ChatChannel.Local || msg.Channel == ChatChannel.Whisper) && _chatNameColorsEnabled)
         {

@@ -188,6 +188,13 @@
           inverted: true
       - !type:Drunk
         boozePower: 2
+      # Fish-start - алкоголь влияет на стресс, нейроны и зависимость
+      - !type:ChemMentalHealth
+        substanceId: Alcohol
+        stressPerUnit: -2
+        neuroPerUnit: -0.5
+        addictionPerDose: 3
+      # Fish-end
 
 - type: reagent
   id: Gin

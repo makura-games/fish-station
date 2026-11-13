@@ -1,2 +1,50 @@
+- type: reagent
+  id: FishNootropil
+  name: reagent-name-nootropil
+  desc: reagent-desc-nootropil
+  group: Medicine
+  physicalDesc: reagent-physical-desc-chalky
+  flavor: medicine
+  color: "#b7d7e8"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ChemRestoreNeuro
+        sourceId: FishNootropil
+        restorePerUnit: 5
+        addictionPerDose: 8
 
+- type: reagent
+  id: FishAntipsychotic
+  name: reagent-name-fish-antipsychotic
+  desc: reagent-desc-fish-antipsychotic
+  group: Medicine
+  physicalDesc: reagent-physical-desc-chalky
+  flavor: medicine
+  color: "#b8a5d6"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ChemReducePsychosis
+        reducePerUnit: 2
+        substanceId: FishAntipsychotic
+      # Fish-start - побочный эффект: термические повреждения
+      - !type:HealthChange
+        damage:
+          types:
+            Heat: 0.2
+      # Fish-end
 
+- type: reagent
+  id: FishDetox
+  name: reagent-name-fish-detox
+  desc: reagent-desc-fish-detox
+  group: Medicine
+  physicalDesc: reagent-physical-desc-crystalline
+  flavor: medicine
+  color: "#b9d1c2"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ChemDetox
+        addictionReductionPerUnit: 5
