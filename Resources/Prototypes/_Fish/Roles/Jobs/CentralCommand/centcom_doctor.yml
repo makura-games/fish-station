@@ -9,6 +9,15 @@
     - !type:DepartmentTimeRequirement
       department: Medical
       time: 72000 #20 hrs # Sunrise-RoleTime
+    - !type:SpeciesRequirement
+      species:
+      - Vox
+      - Felinid
+      - Vulpkanin
+      - Swine
+      - Dwarf
+      - HumanoidXeno
+      inverted: true
   startingGear: DoctorGear
   icon: "JobIconCentcommMedicalDoctor"
   supervisors: job-supervisors-centcom
@@ -25,10 +34,3 @@
     prototype: WehMedipen
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]
-  speciesBlacklist:
-  - Vox
-  - Felinid
-  - Vulpkanin
-  - Swine
-  - Dwarf
-  - HumanoidXeno

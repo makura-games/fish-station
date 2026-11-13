@@ -1578,3 +1578,26 @@
     message: чиним секрет
   id: 159
   url: https://github.com/makura-games/fish-station/pull/636
+- author: Kaiten
+  time: '2026-11-12T18:21:43.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим Санрайз (12.11.2026)
+  id: 160
+  url: https://github.com/makura-games/fish-station/pull/646
+- author: TiFeRi
+  time: '2026-11-12T21:37:47.0000000+00:00'
+  changes:
+  - type: Add
+    message: Карта рейфайнери в пулл
+  - type: Tweak
+    message: Фиксы карт
+  id: 161
+  url: https://github.com/makura-games/fish-station/pull/637
+- author: Kaiten
+  time: '2026-11-12T21:36:45.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Таймер AFK-неактивности успешно поднят с 10 до 20 минут.
+  id: 162
+  url: https://github.com/makura-games/fish-station/pull/641
