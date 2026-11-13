@@ -1,5 +1,7 @@
 reagent-name-fish-detox = detoxol
 reagent-desc-fish-detox = A medicine that reduces chemical dependence.
+reagent-name-fish-deliriumine = deliriumine
+reagent-desc-fish-deliriumine = A hallucinogen that causes strange effects and psychosis.
 reagent-name-fish-antipsychotic = neurolith
 reagent-desc-fish-antipsychotic = A medicine that reduces psychosis.
 fish-health-analyzer-neuro-level = Neurons

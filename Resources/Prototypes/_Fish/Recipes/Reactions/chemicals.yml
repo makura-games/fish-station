@@ -1,5 +1,5 @@
 - type: reaction
-  id: Deliriumine
+  id: FishDeliriumine
   impact: Medium
   minTemp: 423
   maxTemp: 443
@@ -14,4 +14,4 @@
      amount: 1
      catalyst: true
   products:
-    Deliriumine: 3
+    FishDeliriumine: 3

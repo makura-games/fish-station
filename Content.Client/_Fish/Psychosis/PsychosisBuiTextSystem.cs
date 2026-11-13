@@ -56,6 +56,8 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
     {
         base.FrameUpdate(frameTime);
 
+        PsychosisBuiWindowExtensions.RemoveClosedControls();
+
         if (_psychosisLevel < DistortionThreshold)
         {
             RestoreTexts();
@@ -66,7 +68,6 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
         var progress = (level - DistortionThreshold) / (float)(FullDistortionLevel - DistortionThreshold);
         var strength = 0.02f + 0.98f * progress * progress;
 
-        PsychosisBuiWindowExtensions.RemoveClosedControls();
         _controlsToVisit.Clear();
         _activeControls.Clear();
         // Fish-edit: только окна игровых сущностей; HUD, ахелп, админка и настройки не обходятся.

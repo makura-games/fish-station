@@ -53,7 +53,7 @@ public sealed partial class SoundEchoSystem : EntitySystem
             for (var i = 1; i <= 3; i++)
             {
                 var delay = 0.2f * i;
-                var echoParams = AudioParams.Default.WithVolume(-6f * i);
+                var echoParams = AudioParams.Default.WithVolume(audio.Volume - 6f * i);
                 Timer.Spawn(TimeSpan.FromSeconds(delay), () =>
                 {
                     if (!Exists(uid))

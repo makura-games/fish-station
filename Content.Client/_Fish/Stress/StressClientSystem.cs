@@ -56,7 +56,7 @@ public sealed partial class StressClientSystem : EntitySystem
         // Если событие активно, включаем эффект (интенсивность выставится в FrameUpdate)
         _overlay.SetIntensity(ev.Active ? 1f : 0f);
         if (ev.Active && _player.LocalSession?.AttachedEntity is { } entity)
-            _popup.PopupClient(Loc.GetString("fish-stress-critical"), entity, entity);
+            _popup.PopupEntity(Loc.GetString("fish-stress-critical"), entity, entity);
     }
 
     /// <summary>

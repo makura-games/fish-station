@@ -42,7 +42,7 @@ public sealed partial class NeuroEffectsSystem : EntitySystem
         if (entity == null)
             return;
 
-        _popup.PopupClient(Loc.GetString(ev.Message), entity.Value, entity.Value);
+        _popup.PopupEntity(Loc.GetString(ev.Message), entity.Value, entity.Value);
     }
 
     /// <summary>

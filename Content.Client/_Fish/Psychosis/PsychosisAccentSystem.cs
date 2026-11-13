@@ -49,7 +49,7 @@ public sealed partial class PsychosisAccentSystem : EntitySystem
         if (!ev.IsInitialState && _currentPsychosisLevel <= 0f && ev.Level > 0f &&
             _player.LocalSession?.AttachedEntity is { } entity)
         {
-            _popup.PopupClient(Loc.GetString("fish-psychosis-onset"), entity, entity);
+            _popup.PopupEntity(Loc.GetString("fish-psychosis-onset"), entity, entity);
         }
 
         _currentPsychosisLevel = ev.Level;

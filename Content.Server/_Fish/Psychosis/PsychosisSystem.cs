@@ -63,11 +63,11 @@ public sealed partial class PsychosisSystem : EntitySystem
 
             psychosis.Current = Math.Clamp(current, 0f, 100f);
             var reachedZero = oldLevel > 0f && psychosis.Current == 0f;
-            if (Math.Abs(oldLevel - psychosis.Current) < 0.001f && !reachedZero)
+            if (oldLevel == psychosis.Current)
                 continue;
 
             Dirty(uid, psychosis);
-            if ((int) oldLevel != (int) psychosis.Current || reachedZero)
+            if ((int)oldLevel != (int)psychosis.Current || reachedZero)
                 RaiseNetworkEvent(new PsychosisUpdateEvent(GetNetEntity(uid), psychosis.Current), Filter.Entities(uid));
         }
     }

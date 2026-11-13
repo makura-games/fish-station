@@ -30,8 +30,8 @@
 
 - type: reagent
   id: FishDetox
-  name: reagent-name-detox
-  desc: reagent-desc-detox
+  name: reagent-name-fish-detox
+  desc: reagent-desc-fish-detox
   group: Medicine
   physicalDesc: reagent-physical-desc-crystalline
   flavor: medicine
