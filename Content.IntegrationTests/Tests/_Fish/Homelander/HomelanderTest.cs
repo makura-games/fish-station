@@ -1,5 +1,8 @@
 using System.Linq;
 using Content.Server.Atmos.Components;
+using Content.Server.Gravity;
+using Content.Shared.Gravity;
+using Robust.Shared.Map;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Physics;
@@ -180,7 +183,12 @@ public sealed class HomelanderTest : GameTest
             Assert.That(markings.TryGetLayerMarkings(patriot, HumanoidVisualLayers.Hair, out var hair), Is.True);
             Assert.That(hair[0].MarkingId.Id, Is.EqualTo("HumanHairCombed"));
 
+            var mapSystem = server.System<SharedMapSystem>();
+            mapSystem.SetTile(map.Grid.Owner, map.Grid.Comp, new Vector2i(1, 0), map.Tile.Tile);
+            var gravity = server.EntMan.EnsureComponent<GravityComponent>(map.Grid.Owner);
+            server.System<GravitySystem>().EnableGravity(map.Grid.Owner, gravity);
             var nearby = server.EntMan.SpawnEntity("MobHuman", map.GridCoords.Offset(new Vector2(1, 0)));
+            Assert.That(server.System<SharedGravitySystem>().IsWeightless(nearby), Is.False);
             var distant = server.EntMan.SpawnEntity("MobHuman", map.GridCoords.Offset(new Vector2(6, 0)));
             var scream = GetAction(abilities.ScreamAction);
             actions.PerformAction(patriot, scream, predicted: false);
