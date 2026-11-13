@@ -3,6 +3,8 @@ using Content.Server.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Physics;
+using Content.Shared.Movement.Events;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics;
 using System.Numerics;
@@ -57,6 +59,14 @@ public sealed class HomelanderTest : GameTest
             mask & ~(int) (CollisionGroup.MidImpassable | CollisionGroup.LowImpassable))));
         Assert.That(flightMasks, Is.Not.EqualTo(originalMasks));
 
+        await server.WaitPost(() => server.System<SharedPhysicsSystem>().SetLinearVelocity(patriot, new Vector2(5f, 0f)));
+        await Pair.RunTicksSync(5);
+        await client.WaitAssertion(() =>
+        {
+            var sprite = client.EntMan.GetComponent<SpriteComponent>(clientPatriot);
+            Assert.That(sprite.Rotation.Theta, Is.LessThan(-0.05f));
+        });
+
         await server.WaitPost(() => actions.PerformAction(patriot, flightAction));
         await CheckOffset(false);
         Assert.That(await CheckPhysics(false), Is.EqualTo(originalMasks));
@@ -85,9 +95,46 @@ public sealed class HomelanderTest : GameTest
                 if (flying)
                     Assert.That(actual.Y, Is.GreaterThanOrEqualTo(HomelanderComponent.FlightVisualLift - 0.001f));
                 else
+                {
                     Assert.That(actual.Y, Is.InRange(0f, 0.25f));
+                    Assert.That(client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Rotation.Theta,
+                        Is.Zero.Within(0.001f));
+                }
             });
         }
+    }
+
+    [Test]
+    public async Task ActiveFlightAllowsMovementInOpenSpace()
+    {
+        var server = Pair.Server;
+        var map = await Pair.CreateTestMap();
+
+        await server.WaitAssertion(() =>
+        {
+            var coords = new Robust.Shared.Map.EntityCoordinates(map.MapUid, new Vector2(20f, 20f));
+            var patriot = server.EntMan.SpawnEntity("FishMobHomelander", coords);
+            Assert.That(server.EntMan.GetComponent<TransformComponent>(patriot).GridUid, Is.Null);
+
+            var flight = server.EntMan.GetComponent<WingFlightComponent>(patriot);
+            var action = flight.ActionEntity!.Value;
+            var actions = server.System<SharedActionsSystem>();
+            Entity<ActionComponent> flightAction = (action, server.EntMan.GetComponent<ActionComponent>(action));
+            var events = server.EntMan.EventBus;
+
+            AssertCanMove(false);
+            actions.PerformAction(patriot, flightAction);
+            AssertCanMove(true);
+            actions.PerformAction(patriot, flightAction);
+            AssertCanMove(false);
+
+            void AssertCanMove(bool expected)
+            {
+                var movement = new CanWeightlessMoveEvent(patriot);
+                events.RaiseLocalEvent(patriot, ref movement, broadcast: true);
+                Assert.That(movement.CanMove, Is.EqualTo(expected));
+            }
+        });
     }
 
     [Test]
