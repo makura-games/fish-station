@@ -1,5 +1,8 @@
 using Content.Shared.Mech.Components;
 using Content.Shared.Shuttles.BUIStates;
+using Content.Shared.Vehicle;
+using Content.Shared.Vehicle.Components;
+using Content.Shared.Vehicle.Systems;
 using Content.Shared._Fish.Mech.Events;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
@@ -12,12 +15,13 @@ namespace Content.Server._Fish.Mech;
 public sealed partial class MechMassScannerSystem : EntitySystem
 {
     [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private VehicleSystem _vehicle = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<MechComponent, MechOpenMassScannerEvent>(OnOpenMassScanner);
-        SubscribeLocalEvent<MechPilotComponent, ComponentRemove>(OnPilotRemoved);
+        SubscribeLocalEvent<VehicleComponent, VehicleOperatorSetEvent>(OnOperatorSet);
     }
 
     private void OnOpenMassScanner(Entity<MechComponent> ent, ref MechOpenMassScannerEvent args)
@@ -28,9 +32,10 @@ public sealed partial class MechMassScannerSystem : EntitySystem
         args.Handled = TryOpenMassScanner(ent, args.Performer);
     }
 
-    private void OnPilotRemoved(Entity<MechPilotComponent> ent, ref ComponentRemove args)
+    private void OnOperatorSet(Entity<VehicleComponent> ent, ref VehicleOperatorSetEvent args)
     {
-        _ui.CloseUi(ent.Comp.Mech, RadarConsoleUiKey.Key, ent.Owner);
+        if (HasComp<MechComponent>(ent) && args.OldOperator is { } oldOperator && args.NewOperator != oldOperator)
+            _ui.CloseUi(ent.Owner, RadarConsoleUiKey.Key, oldOperator);
     }
 
     /// <summary>
@@ -49,7 +54,7 @@ public sealed partial class MechMassScannerSystem : EntitySystem
     /// </summary>
     public bool CanOpenMassScanner(Entity<MechComponent> ent, EntityUid performer)
     {
-        if (ent.Comp.Broken || ent.Comp.PilotSlot.ContainedEntity != performer)
+        if (ent.Comp.Broken || _vehicle.GetOperatorOrNull(ent.Owner) != performer)
             return false;
 
         if (!HasComp<ActorComponent>(performer))

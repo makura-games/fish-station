@@ -1,9 +1,9 @@
-using Content.Server.AlertLevel;
 using Content.Server.Audio;
 using Content.Server.Light.Components;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Station.Systems;
+using Content.Shared.AlertLevel;
 using Content.Shared.Examine;
 using Content.Shared.Light;
 using Content.Shared.Light.Components;
@@ -18,6 +18,7 @@ namespace Content.Server.Light.EntitySystems;
 public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem // Sunrise-Edit
 {
     [Dependency] private AmbientSoundSystem _ambient = default!;
+    [Dependency] private AlertLevelSystem _alert = default!;
     [Dependency] private BatterySystem _battery = default!;
     [Dependency] private PointLightSystem _pointLight = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
@@ -58,15 +59,21 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem //
                         Loc.GetString(component.BatteryStateText[component.State]))));
 
             // Show alert level on the light itself.
-            var station = _station.GetOwningStation(uid);
+            if (_station.GetOwningStation(uid) is not { } station)
+                return;
+
+            // Sunrise edit start - отображение кода с наивысшим визуальным приоритетом
+            // if (!_alert.TryGetLevel(station, out var level)
+            //     || !ProtoMan.Resolve(level, out var proto))
             if (!TryComp<AlertLevelComponent>(station, out var alerts)
-                || !_alertLevel.TryGetVisualAlertLevel((station!.Value, alerts), out var name, out var details))
+                || !_alert.TryGetVisualAlertLevel((station, alerts), out _, out var proto))
+            // Sunrise edit end
                 return;
 
             args.PushMarkup(
                 Loc.GetString("emergency-light-component-on-examine-alert",
-                    ("color", details.Color.ToHex()),
-                    ("level", Loc.GetString($"alert-level-{name.ToLowerInvariant()}"))));
+                    ("color", proto.Color.ToHex()),
+                    ("level", proto.LocalizedName)));
         }
     }
 
@@ -87,9 +94,37 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem //
         }
     }
 
-    private void OnAlertLevelChanged(AlertLevelChangedEvent ev)
+    private void OnAlertLevelChanged(ref AlertLevelChangedEvent ev)
     {
+        // Sunrise edit start - обновление аварийного освещения с учётом дополнительных кодов
         UpdateStationLights(ev.Station);
+        /*
+        if (!ProtoMan.Resolve(ev.AlertLevel, out var level))
+            return;
+
+        var query = EntityQueryEnumerator<EmergencyLightComponent, PointLightComponent, AppearanceComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var light, out var pointLight, out var appearance, out var xform))
+        {
+            if (CompOrNull<StationMemberComponent>(xform.GridUid)?.Station != ev.Station)
+                continue;
+
+            _pointLight.SetColor(uid, level.EmergencyLightColor, pointLight);
+            _appearance.SetData(uid, EmergencyLightVisuals.Color, level.EmergencyLightColor, appearance);
+
+            if (level.ForceEnableEmergencyLights && !light.ForciblyEnabled)
+            {
+                light.ForciblyEnabled = true;
+                TurnOn((uid, light));
+            }
+            else if (!level.ForceEnableEmergencyLights && light.ForciblyEnabled)
+            {
+                // Previously forcibly enabled, and we went down an alert level.
+                light.ForciblyEnabled = false;
+                UpdateState((uid, light));
+            }
+        }
+        */
+        // Sunrise edit end
     }
 
     public void SetState(EntityUid uid, EmergencyLightComponent component, EmergencyLightState state)
@@ -142,11 +177,17 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem //
         if (!TryComp<ApcPowerReceiverComponent>(entity.Owner, out var receiver))
             return;
 
+        // Show alert level on the light itself.
+        // Sunrise edit start - выбор цвета по коду с наивысшим визуальным приоритетом
+        // if (_station.GetOwningStation(entity.Owner) is not { } station
+        //     || !_alert.TryGetLevel(station, out var level)
+        //     || !ProtoMan.Resolve(level, out var proto))
         var station = _station.GetOwningStation(entity.Owner);
         if (!TryComp<AlertLevelComponent>(station, out var alerts))
             return;
 
-        if (!_alertLevel.TryGetVisualAlertLevel((station!.Value, alerts), out _, out var details))
+        if (!_alert.TryGetVisualAlertLevel((station.Value, alerts), out _, out var proto))
+        // Sunrise edit end
         {
             TurnOff(entity, Color.Red); // if no alert, default to off red state
             return;
@@ -154,8 +195,8 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem //
 
         if (receiver.Powered && !entity.Comp.ForciblyEnabled) // Green alert
         {
-            receiver.Load = (int) Math.Abs(entity.Comp.Wattage);
-            TurnOff(entity, details.EmergencyLightColor); // Sunrise-Edit
+            receiver.Load = (int)Math.Abs(entity.Comp.Wattage);
+            TurnOff(entity, proto.EmergencyLightColor);
             SetState(entity.Owner, entity.Comp, EmergencyLightState.Charging);
         }
         else if (!receiver.Powered) // If internal battery runs out it will end in off red state
@@ -165,7 +206,7 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem //
         }
         else // Powered and enabled
         {
-            TurnOn(entity, details.EmergencyLightColor); // Sunrise-Edit
+            TurnOn(entity, proto.EmergencyLightColor);
             SetState(entity.Owner, entity.Comp, EmergencyLightState.On);
         }
     }

@@ -787,9 +787,6 @@
   components:
     - type: WarpPoint
      # location: подкрепление Nontex
-      blacklist:
-        components:
-        - AdminMinigun
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMale
@@ -820,8 +817,10 @@
     - type: PlanetWarBriefing
       briefingText: pw-briefing-rebels-mobhumanarmp0
       briefingColor: "#e50000"
-    - type: ToggleableNightVision
-      effect: EffectNightVisioArm
+    - type: NightVision
+      enabled: false
+      action: ActionToggleNightVision
+      lightingColor: "#e6000026"
 
 
 - type: entity
@@ -1079,8 +1078,10 @@
     - type: AutoImplant
       implants:
       - SmokeScreenImplantWM
-    - type: ToggleableNightVision
-      effect: EffectNightVisioArmSniper
+    - type: NightVision
+      enabled: false
+      action: ActionToggleNightVision
+      lightingColor: "#e6000026"
     - type: GhostRole
       name: pw-construction-rebels-mobhumanarmps4-name
       description: pw-construction-rebels-mobhumanarmps4-desc
@@ -1568,7 +1569,7 @@
     baseState: darkgygax
     openState: darkgygax-open
     brokenState: darkgygax-broken
-    mechToPilotDamageMultiplier: 0.4
+#   mechToPilotDamageMultiplier: 0.4
     maxEquipmentAmount: 1
     startingEquipment:
       - WeaponMechCombatLightWM
@@ -1656,7 +1657,7 @@
     baseState: darkdurand
     openState: darkdurand-open
     brokenState: darkdurand-broken
-    mechToPilotDamageMultiplier: 0.15
+#   mechToPilotDamageMultiplier: 0.15
     maxEquipmentAmount: 1
     startingEquipment:
       - WeaponMechCombatShotgunWM
@@ -1774,7 +1775,7 @@
     baseState: armTank
     openState: armTank
     brokenState: armTank
-    mechToPilotDamageMultiplier: 0.01
+#   mechToPilotDamageMultiplier: 0.01
     maxEquipmentAmount: 2
     startingEquipment: 
       - WeaponMechCombatLightWM
@@ -1906,7 +1907,7 @@
   parent: GatewayArm
   id: GatewayArmJob
   components:
-  # Fish edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
+  # Fish-edit: конец раунда через PlanetWarRuleSystem вместо AddGameRuleOnTrigger
   - type: PlanetWarGateway
     team: Arm
 
@@ -2000,7 +2001,7 @@
  #   scale: 1.5
   - type: WarpPoint
     follow: true
-    location: Врата Повстанцев
+    location: pw-construction-rebels-gatewayarm-name
   - type: Lathe
     staticPacks:
     - PackLatheArmPortal

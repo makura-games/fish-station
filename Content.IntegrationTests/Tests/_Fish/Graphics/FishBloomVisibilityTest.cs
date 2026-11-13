@@ -1,4 +1,5 @@
 using Content.Client._Fish.Graphics.Bloom;
+using Content.Client.Graphics;
 using Content.Client.Interactable.Components;
 using Content.Client.Stealth;
 using Content.Shared.Stealth.Components;
@@ -37,16 +38,19 @@ public sealed class FishBloomVisibilityTest
             {
                 uid = client.EntMan.SpawnEntity("Pen", MapCoordinates.Nullspace);
                 sprite = client.EntMan.GetComponent<SpriteComponent>(uid);
+                var spriteSystem = client.System<SpriteSystem>();
                 if (emissive)
-                    client.System<SpriteSystem>().LayerSetData((uid, sprite), 0, new PrototypeLayerData
+                    spriteSystem.LayerSetData((uid, sprite), 0, new PrototypeLayerData
                     {
                         Shader = SpriteSystem.UnshadedId,
                     });
 
                 bloom = new FishBloomOverlay(client.EntMan);
                 outline = client.EntMan.EnsureComponent<InteractionOutlineComponent>(uid);
-                outline.OnMouseEnter(uid, true, 1);
-                outlineShader = sprite.PostShader;
+                outline.Active = true;
+                ProtoId<ShaderPrototype> outlineProto = "SelectionOutlineInrange";
+                outlineShader = client.ProtoMan.Index(outlineProto).InstanceUnique();
+                spriteSystem.SetPostShader((uid, sprite), new SpriteComponent.PostShaderArgs(ContentPostShaderIds.InteractionOutline, outlineShader));
                 // ID проверяется клиентом; серверный YAML-линтер не регистрирует ShaderPrototype.
                 ProtoId<ShaderPrototype> stealthShader = "Stealth";
                 otherShader = client.ProtoMan.Index(stealthShader).InstanceUnique();
@@ -63,8 +67,9 @@ public sealed class FishBloomVisibilityTest
                 "An outline component alone does not make an unrelated postshader safe to bypass."));
             await client.WaitPost(() =>
             {
-                sprite.PostShader = outlineShader;
-                outline.OnMouseLeave(uid);
+                outline.Active = false;
+                client.System<SpriteSystem>().RemovePostShader((uid, sprite), ContentPostShaderIds.InteractionOutline);
+                sprite.PostShader = null;
                 client.EntMan.EnsureComponent<StealthComponent>(uid);
             });
             await pair.RunTicksSync(1);
@@ -92,11 +97,13 @@ public sealed class FishBloomVisibilityTest
             {
                 if (client.EntMan.EntityExists(uid))
                 {
-                    outline?.OnMouseLeave(uid);
+                    if (outline != null)
+                        outline.Active = false;
                     sprite.PostShader = null;
                     client.EntMan.DeleteEntity(uid);
                 }
 
+                outlineShader?.Dispose();
                 otherShader?.Dispose();
                 bloom?.Dispose();
             });

@@ -16,7 +16,6 @@
     - BaseStationJobsSpawning
     - BaseStationRecords
     - BaseStationArrivals
-    - BaseStationGateway
     - BaseStationShuttles
     - BaseStationCentComm
     - BaseStationEvacuation
@@ -56,7 +55,7 @@
     - BaseStationJobsSpawning
     # Sunrise-Start
     - BaseCentCommShuttles
-    # - BaseStationImmortal # Fish-Edit
+    # - BaseStationImmortal # Fish-edit
     - BaseStationDontSelling
     - BaseStationCryoTeleport
     - BaseStationCorporateLaw # Sunrise-Edit

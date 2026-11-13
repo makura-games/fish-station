@@ -1,48 +1,49 @@
-- type: seed
+- type: entity
+  parent: BasePlant
   id: cannabisWM
-  noun: канабис
-  displayName: канабис
-  plantRsi: Objects/Specific/Hydroponics/cannabis.rsi
-  packetPrototype: CannabisSeedsWM
-  productPrototypes:
+  categories: [HideSpawnMenu]
+  name: канабис
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/cannabis.rsi
+  - type: PlantData
+    name: seeds-cannabis-name
+    packetPrototype: CannabisSeedsWM
+    productPrototypes:
     - MarkerLeavesCannabisWM
-  harvestRepeat: Repeat
-  lifespan: 75
-  maturation: 8
-  production: 12
-  yield: 5 #10
-  potency: 20
-  growthStages: 3
-  waterConsumption: 0
-  idealLight: 9
-  idealHeat: 298
- # chemicals:
-   # THCPW:
-   #   Min: 5
-     # Max: 10
-     # PotencyDivisor: 20
+  - type: Plant
+    lifespan: 75
+    maturation: 8
+    production: 12
+    yield: 5 #10
+    potency: 20
+    growthStages: 3
+  - type: PlantHarvest
+    harvestRepeat: Repeat
+  - type: PlantGrowth
+    waterConsumption: 0
 
-
-- type: seed
+- type: entity
+  parent: BasePlant
   id: cottonWM
-  noun: хлопок
-  displayName: хлопок
-  plantRsi: Objects/Specific/Hydroponics/cotton.rsi
-  packetPrototype: CottonSeedsWM
-  productPrototypes:
+  categories: [HideSpawnMenu]
+  name: хлопок
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/cotton.rsi
+  - type: PlantData
+    name: seeds-cotton-name
+    packetPrototype: CottonSeedsWM
+    productPrototypes:
     - MarkerCottonBolWM
-  harvestRepeat: Repeat
-  lifespan: 75
-  maturation: 8
-  production: 12
-  yield: 5 #10
-  potency: 20
-  growthStages: 3
-  waterConsumption: 0
-  idealLight: 9
-  idealHeat: 298
-  #chemicals:
-   # FiberPW:
-   #   Min: 5
-     # Max: 10
-     # PotencyDivisor: 20
+  - type: Plant
+    lifespan: 75
+    maturation: 8
+    production: 12
+    yield: 5 #10
+    potency: 20
+    growthStages: 3
+  - type: PlantHarvest
+    harvestRepeat: Repeat
+  - type: PlantGrowth
+    waterConsumption: 0

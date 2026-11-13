@@ -41,12 +41,6 @@
       shuttlePath: /Maps/_Sunrise/Shuttles/arrivals.yml # Sunrise-edit
 
 - type: entity
-  id: BaseStationGateway
-  abstract: true
-  components:
-    - type: GatewayGenerator
-
-- type: entity
   id: BaseStationShuttles
   abstract: true
   components:
@@ -55,11 +49,14 @@
 # Fish-start
         - gridPath: /Maps/_Fish/Shuttles/mining.yml
           priorityTag: DockMining
-        - gridPaths: 
+        - gridPaths:
             - /Maps/_Fish/Shuttles/security/security_Bliznec.yml
             - /Maps/_Fish/Shuttles/security/security_Sherhen.yml
             - /Maps/_Fish/Shuttles/security/security_Sozicatel.yml
             - /Maps/_Fish/Shuttles/security/security_jay.yml
+            - /Maps/_Sunrise/Shuttles/Security/mosquitt.yml
+            - /Maps/_Sunrise/Shuttles/Security/stargaze.yml
+            - /Maps/_Sunrise/Shuttles/Security/vanguard.yml
           priorityTag: DockFishSecurity
 # Fish-end
 #    - type: StationCargoShuttle
@@ -86,7 +83,7 @@
           - /Maps/Ruins/biodome_satellite.yml
           - /Maps/Ruins/derelict.yml
           - /Maps/_Sunrise/Ruins/djstation.yml # Sunrise-Edit
-          #- /Maps/_Sunrise/Ruins/empty_flagship.yml # Sunrise-Edit # Fish-Edit
+          #- /Maps/_Sunrise/Ruins/empty_flagship.yml # Sunrise-Edit # Fish-edit
           - /Maps/Ruins/hydro_outpost.yml
           - /Maps/Ruins/old_ai_sat.yml
           - /Maps/Ruins/ruined_prison_ship.yml
@@ -101,11 +98,8 @@
           maximumDistance: 300
           stationGrid: false
           minCount: 12
-          maxCount: 16
+          maxCount: 26 # Fish-edit: Лимит обломков увеличен с 16 до 26
           addComponents:
-          - type: Gravity
-            enabled: true
-            inherent: true
           - type: IFF
             flags: HideLabel
             color: "#88b0d1"
@@ -115,17 +109,19 @@
           - ChunkDebrisSmall
           - ChunkDebrisSmall
           - ChunkDebris
-        vgroid: !type:DungeonSpawnGroup
-          minimumDistance: 300
-          maximumDistance: 350
-          nameDataset: NamesBorer
-          stationGrid: false
-          addComponents:
-          - type: Gravity
-            enabled: true
-            inherent: true
-          protos:
-          - VGRoid
+  # Sunrise-Start: Удалён планетоид до удаления его Wizard апстримом при запланированной ими переработке Salvage работы
+        # vgroid: !type:DungeonSpawnGroup
+        #   minimumDistance: 300
+        #   maximumDistance: 350
+        #   nameDataset: NamesBorer
+        #   stationGrid: false
+        #   addComponents:
+        #   - type: Gravity
+        #     enabled: true
+        #     inherent: true
+        #   protos:
+        #   - VGRoid
+  # Sunrise-End
 
 # Sunrise-Edit: Вынесено в _Sunrise
 #- type: entity
@@ -139,13 +135,6 @@
   abstract: true
   components:
     - type: StationEmergencyShuttle
-
-- type: entity
-  id: BaseStationAlertLevels
-  abstract: true
-  components:
-    - type: AlertLevel
-      alertLevelPrototype: stationAlerts
 
 - type: entity
   id: BaseStationExpeditions

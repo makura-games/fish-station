@@ -11,7 +11,7 @@
     - !type:DepartmentTimeRequirement
       department: Command
       time: 14400 # 4 hours
-  weight: 30
+  # weight: 30
   setPreference: true
   startingGear: SpecOpsOfficerGear
   icon: "JobIconSpecOpsOfficer"

@@ -1,0 +1,73 @@
+- type: entity
+  id: FishArenaCaptainSabre
+  suffix: Fish
+  parent: CaptainSabre
+  components:
+  - type: Reflect
+    reflectProb: 0.2
+
+- type: entity
+  id: FishArenaEnergySword
+  suffix: Fish
+  parent: EnergySword
+  components:
+  - type: Reflect
+    reflectProb: 0.15
+
+- type: entity
+  id: FishArenaRiotShield
+  suffix: Fish
+  parent: RiotShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 7
+        Slash: 6
+        Piercing: 3
+        Heat: 3
+
+- type: entity
+  id: FishArenaRiotLaserShield
+  suffix: Fish
+  parent: RiotLaserShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 3
+        Slash: 4
+        Piercing: 3
+        Heat: 10
+  - type: Reflect
+    reflectProb: 0.1
+
+- type: entity
+  id: FishArenaEnergyShield
+  suffix: Fish
+  parent: EnergyShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 2
+        Slash: 2
+        Piercing: 5
+        Heat: 12
+      coefficients:
+        Heat: 0.7
+  - type: Reflect
+    reflectProb: 0.65
+
+- type: entity
+  id: FishArenaRiotBulletShield
+  suffix: Fish
+  parent: RiotBulletShield
+  components:
+  - type: Blocking
+    passiveBlockModifier:
+      flatReductions:
+        Blunt: 4
+        Slash: 3
+        Piercing: 10
+        Heat: 3

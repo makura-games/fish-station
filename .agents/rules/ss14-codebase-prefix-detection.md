@@ -41,7 +41,7 @@ Select the first line that matches the exact repository slug, the name of the ro
 | --- | --- | --- | --- | --- | --- |
 | `sunrise-station/space-station-14`, `makura-games/sunrise-station`, `sunrise-station`, `_Sunrise` | `Sunrise` | `_Sunrise` | `Sunrise-Edit` | `Sunrise edit start/end`, `Sunrise added start/end` | For new single placemarks, default to `Sunrise-Edit`. |
 | `fire-station/project-fire`, `project-fire`, `fire-station`, `_Scp` | `Fire` | `_Scp` | `Fire edit`, `Fire added` | `Fire edit start/end`, `Fire added start/end` | For Fire, single edit/add marks are different. |
-| `fish-station`, `_Fish` | `Fish` | `_Fish` | `FIsh edit` | Use local file style | Don't automatically normalize the legacy token case. |
+| `fish-station`, `_Fish` | `Fish` | `_Fish` | `Fish-edit` | `Fish-start` / `Fish-end` | Строго только эти два типа маркеров. Любые вариации запрещены. |
 | `lust-lustation`, `_Lust` | `Lust` | `_Lust` | `Lust edit` | Use local file style | If there is already a block-style nearby inside Lust, follow it. |
 
 ## 4. How to apply a marker in a specific file

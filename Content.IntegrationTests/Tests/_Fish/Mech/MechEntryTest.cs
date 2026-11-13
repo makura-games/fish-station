@@ -2,7 +2,7 @@ using Content.Server.Mech.Systems;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Hands.EntitySystems;
-using Content.Shared.Mech.Components;
+using Content.Shared.Vehicle.Systems;
 using Robust.Shared.GameObjects;
 
 namespace Content.IntegrationTests.Tests._Fish.Mech;
@@ -21,6 +21,7 @@ public sealed class MechEntryTest
         var entMan = server.EntMan;
         var map = await pair.CreateTestMap();
         var mechs = entMan.System<MechSystem>();
+        var vehicles = entMan.System<VehicleSystem>();
         var hands = entMan.System<SharedHandsSystem>();
         var access = entMan.System<SharedAccessSystem>();
         EntityUid installer = default;
@@ -55,7 +56,7 @@ public sealed class MechEntryTest
             Assert.That(pickedUp, Is.True);
             Assert.That(canEnter, Is.EqualTo(installerHasAccess));
             Assert.That(entMan.GetComponent<AccessReaderComponent>(mech).AccessLog.Count, Is.EqualTo(originalLogCount));
-            Assert.That(entMan.GetComponent<MechComponent>(mech).PilotSlot.ContainedEntity, Is.Null);
+            Assert.That(vehicles.GetOperatorOrNull(mech), Is.Null);
             Assert.That(hands.IsHolding(installer, heldItem), Is.True);
         });
 
@@ -63,7 +64,7 @@ public sealed class MechEntryTest
         await server.WaitAssertion(() =>
         {
             Assert.That(inserted, Is.EqualTo(installerHasAccess));
-            Assert.That(entMan.GetComponent<MechComponent>(mech).PilotSlot.ContainedEntity,
+            Assert.That(vehicles.GetOperatorOrNull(mech),
                 installerHasAccess ? Is.EqualTo(brain) : Is.Null);
             Assert.That(hands.IsHolding(installer, heldItem), Is.True);
         });

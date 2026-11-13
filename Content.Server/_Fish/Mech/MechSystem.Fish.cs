@@ -1,12 +1,40 @@
+using Content.Server._Fish.Mech;
 using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Interaction;
 using Content.Shared.Mech.Components;
+using Content.Shared.Popups;
+using Content.Shared.DoAfter;
 using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared._Fish.Mech.Events;
 
 namespace Content.Server.Mech.Systems;
 
 public sealed partial class MechSystem
 {
+    [Dependency] private AccessReaderSystem _accessReader = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private MechBrainCombatSystem _mechBrainCombat = default!;
+
+    private void InitializeFish()
+    {
+        SubscribeLocalEvent<MechComponent, MechBrainInsertDoAfterEvent>(OnBrainInsertDoAfter);
+    }
+
+    private void OnBrainInsertDoAfter(Entity<MechComponent> ent, ref MechBrainInsertDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled || args.Args.Target is not { } target || args.Args.Used is not { } used)
+            return;
+
+        args.Handled = TryEnterMech(ent.AsNullable(), args.User, used);
+    }
+
+    private void RestoreFishBrainState(EntityUid pilot)
+    {
+        if (HasComp<MechBrainCombatComponent>(pilot))
+            _mechBrainCombat.RestoreBrainState(pilot);
+    }
+
     // Установка мозга и обычная посадка используют общие проверки, различающие актора и пилота.
     private bool HandleFishBrainInteraction(Entity<MechComponent> ent, InteractUsingEvent args)
     {
@@ -16,7 +44,18 @@ public sealed partial class MechSystem
         if (!HasComp<BorgBrainComponent>(args.Used))
             return false;
 
-        args.Handled = TryEnterMech(ent.AsNullable(), args.User, args.Used);
+        if (!CanEnterMech(ent.AsNullable(), args.User, args.Used, quiet: false))
+            return true;
+
+        var doAfterArgs = new DoAfterArgs(EntityManager, args.User, TimeSpan.FromSeconds(5), new MechBrainInsertDoAfterEvent(), ent.Owner, target: ent.Owner, used: args.Used)
+        {
+            BreakOnMove = true,
+            BreakOnDamage = true,
+            NeedHand = true,
+        };
+
+        _doAfter.TryStartDoAfter(doAfterArgs);
+        args.Handled = true;
         return true;
     }
 
@@ -59,16 +98,6 @@ public sealed partial class MechSystem
         return true;
     }
 
-    private bool CanOfferFishMechEntry(Entity<MechComponent> ent, EntityUid actor, EntityUid? held)
-    {
-        if (HasComp<BorgBrainComponent>(actor))
-            return false;
-
-        return held is not { } brain ||
-               !HasComp<BorgBrainComponent>(brain) ||
-               !CanEnterMech(ent.AsNullable(), actor, brain);
-    }
-
     private bool CanAccessFishMech(EntityUid mech, EntityUid actor, AccessReaderComponent reader)
     {
         if (!reader.Enabled)
@@ -98,8 +127,8 @@ public sealed partial class MechSystem
         if (!TryInsert(ent, pilot, ent.Comp))
             return false;
 
-        _factionSystem.Up(pilot, ent);
-        _actionBlocker.UpdateCanMove(ent);
+        _faction.Up(pilot, ent);
+        Vehicle.RefreshCanRun(ent.Owner);
         return true;
     }
 }

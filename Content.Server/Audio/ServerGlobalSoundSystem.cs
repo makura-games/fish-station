@@ -15,9 +15,9 @@ public sealed partial class ServerGlobalSoundSystem : SharedGlobalSoundSystem
 
     public override void Shutdown()
     {
-        // FIsh edit start - остановка звуков при выключении системы
+        // Fish-start - остановка звуков при выключении системы
         ShutdownFishAdminSounds();
-        // FIsh edit end
+        // Fish-end
         base.Shutdown();
         _conHost.UnregisterCommand("playglobalsound");
     }
@@ -60,7 +60,7 @@ public sealed partial class ServerGlobalSoundSystem : SharedGlobalSoundSystem
 
     public void DispatchStationEventMusic(EntityUid source, ResolvedSoundSpecifier specifier, StationEventMusicType type)
     {
-        var audio = AudioParams.Default.WithVolume(-8);
+        var audio = AudioParams.Default.AddVolume(-8);
         var msg = new StationEventMusicEvent(specifier, type, audio);
 
         var filter = GetStationAndPvs(source);

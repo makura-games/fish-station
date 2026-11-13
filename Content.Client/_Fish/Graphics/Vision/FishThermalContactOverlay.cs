@@ -2,7 +2,6 @@ using System.Numerics;
 using Content.Client.Graphics;
 using Content.Client.Interactable.Components;
 using Content.Shared._Fish.Vision;
-using Content.Shared.Stealth.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Containers;
@@ -47,7 +46,7 @@ internal sealed partial class FishThermalContactOverlay : Overlay
         _vision.ThermalViewer != null && _vision.ThermalRange > 0f &&
         args.Viewport.Eye != null && args.Viewport.Eye == _eye.CurrentEye;
 
-    /// <summary>Rejects detached, contained, concealed or otherwise hidden sprite contacts.</summary>
+    /// <summary>Rejects detached, contained or otherwise hidden sprite contacts; cloaking does not hide body heat.</summary>
     internal bool CanDraw(Entity<SpriteComponent> ent)
     {
         if (ent.Comp.Deleted || !ent.Comp.Visible || ent.Comp.ContainerOccluded || ent.Comp.Color.A <= 0f ||
@@ -58,13 +57,22 @@ internal sealed partial class FishThermalContactOverlay : Overlay
             (meta.Flags & MetaDataFlags.Detached) != 0)
             return false;
 
-        if (_entityManager.TryGetComponent<StealthComponent>(ent, out var stealth) && stealth.Enabled)
-            return false;
+        // Маскировка прячет картинку от глаз, но тело продолжает излучать тепло, поэтому Stealth пропускаем.
+        var outlineOnly = false;
+        foreach (var postShader in _sprite.GetPostShaders(ent.Comp))
+        {
+            if (postShader.Id == ContentPostShaderIds.Stealth)
+                continue;
 
-        // Не обходим маскирующий постшейдер. Обычная обводка не скрывает исходный спрайт.
-        return ent.Comp.PostShader == null ||
-            _entityManager.TryGetComponent<InteractionOutlineComponent>(ent, out var outline) &&
-            ReferenceEquals(ent.Comp.PostShader, outline.FishVisionOutlineShader);
+            // Не обходим прочие маскирующие постшейдеры. Обычная обводка не скрывает исходный спрайт.
+            if (outlineOnly || postShader.Id != ContentPostShaderIds.InteractionOutline)
+                return false;
+
+            outlineOnly = true;
+        }
+
+        return !outlineOnly ||
+               _entityManager.TryGetComponent<InteractionOutlineComponent>(ent, out var outline) && outline.Active;
     }
 
     protected override void Draw(in OverlayDrawArgs args)

@@ -344,8 +344,10 @@
       metabolismRate: 0.4
       effects:
       # Питание + утоление жажды
-      - !type:SatiateHunger
-      - !type:SatiateThirst
+      - !type:Satiate
+        satiationType: Hunger
+      - !type:Satiate
+        satiationType: Thirst
       # DexalinPlus эффект
       - !type:HealthChange
         conditions:

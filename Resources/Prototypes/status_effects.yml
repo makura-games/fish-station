@@ -25,19 +25,12 @@
   id: Drunk
 
 - type: statusEffect
-  id: SlurredSpeech
-
-- type: statusEffect
-  id: PressureImmunity
+  id: SlurredSpeechr
 
 # Fish-start - иммунитет к облучению (газ Крипиум)
 - type: statusEffect
   id: FishRadiationImmunity
 # Fish-end
-
-- type: statusEffect
-  id: Muted
-  alert: Muted
 
 - type: statusEffect
   id: Corporeal
@@ -46,15 +39,11 @@
 - type: statusEffect
   id: Pacified #cannot attack
 
-- type: statusEffect
-  id: RatvarianLanguage #Praise him
-
-- type: statusEffect
-  id: Flashed
-
+# Sunrise added start - старые системы Sunrise всё ещё используют эти идентификаторы.
 - type: statusEffect
   id: Adrenaline
   alert: Adrenaline
 
 - type: statusEffect
   id: Incorporeal
+# Sunrise added end

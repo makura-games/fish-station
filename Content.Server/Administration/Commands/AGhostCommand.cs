@@ -2,8 +2,11 @@ using System.Linq;
 using Content.Server.GameTicking;
 using Content.Server.Ghost;
 using Content.Server.Mind;
+// Fish-edit: система подписи агоста админской должностью лежит в _Fish
+using Content.Server._Fish.Administration;
 using Content.Shared.Administration;
-using Content.Shared.Ghost;
+using Content.Shared.Ghost.Components;
+using Content.Shared.Ghost.Systems;
 using Content.Shared.Mind;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
@@ -94,11 +97,14 @@ public sealed partial class AGhostCommand : LocalizedCommands
 
         var canReturn = mind.CurrentEntity != null
                         && !_entities.HasComponent<GhostComponent>(mind.CurrentEntity);
-        var coordinates = player!.AttachedEntity != null
-            ? _entities.GetComponent<TransformComponent>(player.AttachedEntity.Value).Coordinates
-            : gameTicker.GetObserverSpawnPoint();
-        var ghost = _entities.SpawnEntity(GameTicker.AdminObserverPrototypeName, coordinates);
-        transformSystem.AttachToGridOrMap(ghost, _entities.GetComponent<TransformComponent>(ghost));
+
+        if (player!.AttachedEntity == null
+            || !transformSystem.TryGetMapOrGridCoordinates(player.AttachedEntity.Value, out var coordinates))
+        {
+            coordinates = gameTicker.GetObserverSpawnPoint();
+        }
+
+        var ghost = _entities.SpawnEntity(GameTicker.AdminObserverPrototypeName, coordinates.Value);
 
         if (canReturn)
         {
@@ -115,6 +121,10 @@ public sealed partial class AGhostCommand : LocalizedCommands
             metaDataSystem.SetEntityName(ghost, player.Name);
             mindSystem.TransferTo(mindId, ghost, mind: mind);
         }
+
+        // Fish-start: подписываем агоста его админской должностью
+        _entities.System<AdminGhostTitleSystem>().ApplyAdminTitle(ghost, player!);
+        // Fish-end
 
         var comp = _entities.GetComponent<GhostComponent>(ghost);
         ghostSystem.SetCanReturnToBody((ghost, comp), canReturn);

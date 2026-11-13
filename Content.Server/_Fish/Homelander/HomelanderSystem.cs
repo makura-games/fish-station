@@ -143,6 +143,6 @@ public sealed partial class HomelanderSystem : EntitySystem
         }
 
         TryGetEntity(ev.Target, out var clicked);
-        _guns.AttemptShoot(user, laser, gun, target, clicked);
+        _guns.AttemptShoot(user, (laser, gun), target, clicked);
     }
 }

@@ -1,12 +1,14 @@
 # Fish Station Corporate Law Localization
 
+corplaw-sentence-minutes-short = min
+
 # Sections
 corplaw-fish-section-general = General Provisions
-corplaw-fish-section-1xx = 1xx: Minor Offenses
-corplaw-fish-section-2xx = 2xx: Light Offenses
-corplaw-fish-section-3xx = 3xx: Major Offenses
-corplaw-fish-section-4xx = 4xx: Severe Offenses
-corplaw-fish-section-5xx = 5xx: Critical Offenses
+corplaw-fish-section-1xx = 1xx: Minor Offenses (5 min or warning)
+corplaw-fish-section-2xx = 2xx: Light Offenses (10 min)
+corplaw-fish-section-3xx = 3xx: Major Offenses (25 min)
+corplaw-fish-section-4xx = 4xx: Severe Offenses (40 min)
+corplaw-fish-section-5xx = 5xx: Critical Offenses (permanent)
 
 # General Provisions
 corplaw-fish-oprs-title = BROSB: Basic Rights of Sapient Beings
@@ -37,11 +39,12 @@ corplaw-fish-oprs-desc =
 
 corplaw-fish-sentences-title = General Sentencing Guidelines
 corplaw-fish-sentences-desc =
-    - Violation of [color=#64d2ff]1XX[/color] articles — sentence from [color=#64d2ff]5[/color] to [color=#64d2ff]7[/color] minutes, or a warning.
-    - Violation of [color=#32ade6]2XX[/color] articles — sentence from [color=#32ade6]10[/color] to [color=#32ade6]15[/color] minutes.
-    - Violation of [color=#0a84ff]3XX[/color] articles — sentence from [color=#0a84ff]17[/color] to [color=#0a84ff]25[/color] minutes.
-    - Violation of [color=#af52de]4XX[/color] articles — sentence from [color=#af52de]40[/color] to [color=#af52de]45[/color] minutes.
+    - Violation of [color=#64d2ff]1XX[/color] articles — [color=#64d2ff]5[/color] minutes, or a warning.
+    - Violation of [color=#32ade6]2XX[/color] articles — [color=#32ade6]10[/color] minutes.
+    - Violation of [color=#0a84ff]3XX[/color] articles — [color=#0a84ff]25[/color] minutes.
+    - Violation of [color=#af52de]4XX[/color] articles — [color=#af52de]40[/color] minutes.
     - Violation of [color=#ff2d55]5XX[/color] articles — permanent imprisonment.
+    - Permanent brig also applies when the total sentence is 60 minutes or more.
 
 # 1xx Articles
 corplaw-fish-art100-title = Offensive Conduct
@@ -243,10 +246,13 @@ corplaw-fish-circ-officialmisconduct-title = Official Misconduct
 corplaw-fish-circ-officialmisconduct-desc = Violation of Corporate Law by an official who is expected to set an example.
 
 corplaw-fish-circ-nonviolentresistance-title = Non-Violent Resistance to Arrest
-corplaw-fish-circ-nonviolentresistance-desc = Attempting to break out of cuffs and flee without harming anyone.
+corplaw-fish-circ-nonviolentresistance-desc = Attempting to break out of cuffs and flee without harming anyone. +5 minutes.
 
 corplaw-fish-circ-violentresistance-title = Violent Resistance to Arrest
-corplaw-fish-circ-violentresistance-desc = Use of force and/or weapons against Security during detention. Does not stack with non-violent resistance.
+corplaw-fish-circ-violentresistance-desc = Use of force and/or weapons against Security during detention. Does not stack with non-violent resistance. +10 minutes.
+
+corplaw-fish-circ-recidivism-title = Recidivism
+corplaw-fish-circ-recidivism-desc = Committing the same article again after a prior conviction — doubles the sentence (applied automatically by the calculator).
 
 corplaw-fish-circ-aidabetting-title = Aiding and/or Abetting
 corplaw-fish-circ-aidabetting-desc = Knowingly aiding a criminal or inciting a crime. Accomplices receive the articles they incited.

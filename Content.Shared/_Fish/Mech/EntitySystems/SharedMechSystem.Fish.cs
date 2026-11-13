@@ -1,13 +1,17 @@
+using Content.Shared.ActionBlocker;
 using Content.Shared.Interaction;
 using Content.Shared.Mech;
 using Content.Shared.Mech.Components;
 using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared.Vehicle.Components;
 using Content.Shared._Fish.Mech.Components;
 
 namespace Content.Shared.Mech.EntitySystems;
 
 public abstract partial class SharedMechSystem
 {
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+
     // Допуск пилотов, ручные взаимодействия и дополнительные действия мехов Fish.
     private void InitializeFish()
     {
@@ -29,9 +33,50 @@ public abstract partial class SharedMechSystem
                HasComp<BorgBrainComponent>(entity);
     }
 
+    /// <summary>
+    /// Checks if the pilot is present.
+    /// </summary>
+    public bool IsEmpty(Entity<MechComponent?> ent)
+    {
+        return !Vehicle.HasOperator(ent.Owner);
+    }
+
+    /// <summary>
+    /// Checks if an entity can be inserted into the mech.
+    /// </summary>
+    public bool CanInsert(EntityUid uid, EntityUid toInsert, MechComponent? component = null)
+    {
+        if (!Resolve(uid, ref component))
+            return false;
+
+        return CanInsertFishPilot((uid, component), toInsert);
+    }
+
+    /// <summary>
+    /// Attempts to insert a pilot into the mech.
+    /// </summary>
+    public bool TryInsert(EntityUid uid, EntityUid? toInsert, MechComponent? component = null)
+    {
+        if (toInsert == null || !Resolve(uid, ref component))
+            return false;
+
+        if (!CanInsert(uid, toInsert.Value, component))
+            return false;
+
+        return DoInsertFishPilot((uid, component), toInsert.Value);
+    }
+
+    /// <summary>
+    /// Attempts to eject the current pilot from the mech.
+    /// </summary>
+    public bool TryEject(EntityUid uid, MechComponent? component = null)
+    {
+        return Vehicle.TryExit(uid);
+    }
+
     private bool CanInsertFishPilot(Entity<MechComponent> ent, EntityUid pilot)
     {
-        if (ent.Comp.Broken || !IsEmpty(ent.Comp))
+        if (ent.Comp.Broken || Vehicle.HasOperator(ent.Owner))
             return false;
 
         if (_whitelistSystem.IsWhitelistPass(ent.Comp.PilotBlacklist, pilot))
@@ -42,31 +87,20 @@ public abstract partial class SharedMechSystem
             if (!CanInsertBrain(ent, pilot))
                 return false;
         }
-        else if (!_actionBlocker.CanMove(pilot) || _whitelistSystem.IsWhitelistFail(ent.Comp.PilotWhitelist, pilot))
+        else if (!_actionBlocker.CanMove(pilot) || !Vehicle.CanOperate(ent.Owner, pilot))
+        {
             return false;
+        }
 
-        return _container.CanInsert(pilot, ent.Comp.PilotSlot);
-    }
-
-    private bool CanDragDropFishPilot(Entity<MechComponent> ent, EntityUid pilot)
-    {
-        return !HasComp<BorgBrainComponent>(pilot) && CanInsert(ent, pilot, ent.Comp);
+        return Vehicle.TryGetOperatorContainer(ent.Owner, out var container) &&
+               _container.CanInsert(pilot, container);
     }
 
     private bool DoInsertFishPilot(Entity<MechComponent> ent, EntityUid pilot)
     {
-        SetupUser(ent, pilot, ent.Comp);
-        if (!_container.Insert(pilot, ent.Comp.PilotSlot))
-        {
-            // Вставка может быть отменена контейнером; временные компоненты пилота нужно снять.
-            RemoveUser(ent, pilot);
-            return false;
-        }
-
-        var ev = new MechSayEvent(ent, ent.Comp.MessageHello);
-        RaiseLocalEvent(ent, ref ev, true);
-        UpdateAppearance(ent, ent.Comp);
-        return true;
+        return Vehicle.TryGetOperatorContainer(ent.Owner, out var container) &&
+               _container.Insert(pilot, container) &&
+               Vehicle.GetOperatorOrNull(ent.Owner) == pilot;
     }
 
     private void UpdateFishBrainMovement(EntityUid pilot)

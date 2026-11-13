@@ -204,7 +204,7 @@ public sealed class HomelanderTest : GameTest
 
             var emitter = abilities.Laser!.Value;
             var gun = server.EntMan.GetComponent<GunComponent>(emitter);
-            Assert.That(guns.AttemptShoot(patriot, emitter, gun, map.GridCoords.Offset(new Vector2(4, 0))), Is.True);
+            Assert.That(guns.AttemptShoot(patriot, (emitter, gun), map.GridCoords.Offset(new Vector2(4, 0))), Is.True);
 
             var previousStaminaDamage = stamina.StaminaDamage;
             actions.PerformAction(patriot, GetAction(flight.ActionEntity));
