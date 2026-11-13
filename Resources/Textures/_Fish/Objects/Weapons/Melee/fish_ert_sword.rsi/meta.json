@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-4.0",
+  "copyright": "Made by @vetch for Fish Station only",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "icon"
+    },
+    {
+      "name": "icon-on",
+      "delays": [
+        [
+          0.05,
+          0.05
+        ]
+      ]
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "inhand-left-on",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right-on",
+      "directions": 4
+    },
+    {
+      "name": "ap-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "ap-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "cut-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "cut-inhand-right",
+      "directions": 4
+    }
+  ]
+}
