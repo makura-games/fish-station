@@ -49,6 +49,11 @@ public sealed class ObrCallIntegrationTests
             Assert.That(proto.Index(AmberId).StationCost, Is.EqualTo(100000));
             Assert.That(proto.Index(RedId).StationCost, Is.EqualTo(200000));
             Assert.That(proto.Index(CburnId).StationCost, Is.EqualTo(200000));
+
+            Assert.That(proto.Index(AmberId).CryoRoleSpawners, Has.Count.EqualTo(7));
+            Assert.That(proto.Index(RedId).CryoRoleSpawners, Has.Count.EqualTo(7));
+            Assert.That(proto.Index(GammaId).CryoRoleSpawners, Has.Count.EqualTo(7));
+            Assert.That(proto.Index(CburnId).CryoRoleSpawners, Has.Count.EqualTo(11));
         });
 
         await pair.CleanReturnAsync();
