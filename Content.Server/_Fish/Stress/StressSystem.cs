@@ -49,6 +49,7 @@ public sealed partial class StressSystem : EntitySystem
     private readonly Dictionary<EntityUid, Dictionary<EntityUid, TimeSpan>> _startledHostiles = new();
     private readonly Dictionary<EntityUid, TimeSpan> _highStressStarted = new();
     private readonly Dictionary<EntityUid, TimeSpan> _vomitCooldowns = new();
+    private const float SafeStressRecoveryPerSecond = 0.5f;
 
     public override void Initialize()
     {
@@ -244,6 +245,11 @@ public sealed partial class StressSystem : EntitySystem
             var seenHostiles = GetSeenSet(_nearbyHostiles, uid);
             seenHostiles.Clear();
             seenHostiles.UnionWith(currentHostiles);
+
+            // Fish-edit: стресс снижается, когда рядом нет крови, трупов и враждебных существ.
+            if (!sawTraumaSource && currentHostiles.Count == 0)
+                stressDelta = -SafeStressRecoveryPerSecond;
+
             stress.Current = Math.Clamp(
                 stress.Current + stressDelta * elapsed,
                 0f,
@@ -353,7 +359,7 @@ public sealed partial class StressSystem : EntitySystem
             return;
 
         _vomit.Vomit(uid);
-        _vomitCooldowns[uid] = now + TimeSpan.FromSeconds(60);
+        _vomitCooldowns[uid] = now + TimeSpan.FromSeconds(30);
         _highStressStarted[uid] = now;
     }
 

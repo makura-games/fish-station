@@ -32,7 +32,7 @@ public sealed partial class StressOverlay : Overlay
         var handle = args.ScreenHandle;
         var screenSize = args.Viewport.Size;
 
-        float vignetteStrength = _intensity * 0.2f;
+        float vignetteStrength = _intensity * 0.3f;
         handle.DrawRect(new UIBox2(Vector2.Zero, screenSize), new Color(0, 0, 0, vignetteStrength));
     }
 }

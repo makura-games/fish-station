@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Content.Client.Administration.Managers;
+using Content.Client.ContextMenu.UI;
+using Content.Client.Verbs.UI;
+using Content.Shared.Administration;
 using Content.Shared._Fish.Psychosis;
+using Content.Shared.Verbs;
 using Robust.Client.GameObjects;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
@@ -17,6 +22,8 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
     [Dependency] private UserInterfaceSystem _userInterface = default!;
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IUserInterfaceManager _uiManager = default!;
+    [Dependency] private IClientAdminManager _adminManager = default!;
 
     private const int DistortionThreshold = 66;
     private const int FullDistortionLevel = 99;
@@ -55,8 +62,8 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
             return;
         }
 
-        var level = Math.Clamp((int) _psychosisLevel, DistortionThreshold, FullDistortionLevel);
-        var progress = (level - DistortionThreshold) / (float) (FullDistortionLevel - DistortionThreshold);
+        var level = Math.Clamp((int)_psychosisLevel, DistortionThreshold, FullDistortionLevel);
+        var progress = (level - DistortionThreshold) / (float)(FullDistortionLevel - DistortionThreshold);
         var strength = 0.02f + 0.98f * progress * progress;
 
         PsychosisBuiWindowExtensions.RemoveClosedControls();
@@ -75,10 +82,26 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
             _controlsToVisit.Add(control);
         }
 
+        // Fish-edit: добавляем игровые контекстные меню и подсказку осмотра,
+        // но не обходим остальные окна модального интерфейса.
+        foreach (var popup in _uiManager.ModalRoot.Children)
+        {
+            if (popup is ContextMenuPopup || IsExaminePopup(popup))
+                _controlsToVisit.Add(popup);
+        }
+
+        // Fish-edit: искажаем и обычные подсказки из PopupRoot, не затрагивая админские действия.
+        if (_uiManager.CurrentlyHovered is { } hovered && !IsAdminControl(hovered) &&
+            hovered.SuppliedTooltip is { } tooltip)
+            _controlsToVisit.Add(tooltip);
+
         for (var i = 0; i < _controlsToVisit.Count; i++)
         {
             var control = _controlsToVisit[i];
             if (!_activeControls.Add(control))
+                continue;
+
+            if (IsAdminControl(control))
                 continue;
 
             DistortText(control, level, strength);
@@ -99,6 +122,46 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
         _controlsToVisit.Clear();
         _activeControls.Clear();
         _staleControls.Clear();
+    }
+
+    private bool IsAdminControl(Control control)
+    {
+        for (Control? current = control; current != null; current = current.Parent)
+        {
+            if (current is EntityMenuElement &&
+                _adminManager.HasFlag(AdminFlags.Admin | AdminFlags.Debug))
+                return true;
+
+            if (current is not VerbMenuElement verbElement)
+                continue;
+
+            if (verbElement.Verb is VvVerb)
+                return true;
+
+            var category = verbElement.Category ?? verbElement.Verb?.Category;
+            if (category == null)
+                continue;
+
+            if (category.Text == VerbCategory.Admin.Text ||
+                category.Text == VerbCategory.Debug.Text ||
+                category.Text == VerbCategory.Antag.Text ||
+                category.Text == VerbCategory.Smite.Text ||
+                category.Text == VerbCategory.Tricks.Text)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsExaminePopup(Control popup)
+    {
+        foreach (var child in popup.Children)
+        {
+            if (child.Name == "ExaminePopupPanel")
+                return true;
+        }
+
+        return false;
     }
 
     private void DistortText(Control control, int level, float strength)
@@ -173,12 +236,12 @@ public sealed partial class PsychosisBuiTextSystem : EntitySystem
             var threshold = random.NextDouble();
             // Fish-edit: число вызовов генератора не зависит от силы искажения.
             var replacement = char.IsDigit(original)
-                ? (char) ('0' + random.Next(10))
-                : (char) ('а' + random.Next(32));
+                ? (char)('0' + random.Next(10))
+                : (char)('а' + random.Next(32));
             if (replacement == original)
                 replacement = char.IsDigit(original)
-                    ? (char) ('0' + (replacement - '0' + 1) % 10)
-                    : (char) ('а' + (replacement - 'а' + 1) % 32);
+                    ? (char)('0' + (replacement - '0' + 1) % 10)
+                    : (char)('а' + (replacement - 'а' + 1) % 32);
 
             if (threshold < strength)
                 chars[i] = replacement;

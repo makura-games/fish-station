@@ -15,6 +15,20 @@
         addictionPerDose: 8
 
 - type: reagent
+  id: FishAntipsychotic
+  name: reagent-name-fish-antipsychotic
+  desc: reagent-desc-fish-antipsychotic
+  group: Medicine
+  physicalDesc: reagent-physical-desc-chalky
+  flavor: medicine
+  color: "#b8a5d6"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ChemReducePsychosis
+        reducePerUnit: 2
+
+- type: reagent
   id: FishDetox
   name: reagent-name-detox
   desc: reagent-desc-detox

@@ -43,7 +43,7 @@ public sealed partial class HallucinationClientSystem : EntitySystem
     private static readonly ProtoId<LocalizedDatasetPrototype> LastNames = "NamesLast";
 
     private readonly HashSet<EntityUid> _intersecting = new();
-    private const int PositionAttempts = 20;
+    private const int PositionAttempts = 60;
     private const float SpawnClearance = 0.5f;
 
     private List<string> _mobPrototypes = new();
@@ -178,12 +178,12 @@ public sealed partial class HallucinationClientSystem : EntitySystem
 
         if (_mobPrototypes.Count > 0 || _corpsePrototypes.Count > 0 || _itemPrototypes.Count > 0)
         {
-            float visualInterval = MathHelper.Lerp(20f, 5f, _currentPsychosisLevel / 100f);
+            float visualInterval = MathHelper.Lerp(10f, 1.5f, _currentPsychosisLevel / 100f);
             _nextVisualTime -= frameTime;
             if (_nextVisualTime <= 0)
             {
                 TryCreateVisualHallucination(playerEntity.Value);
-                _nextVisualTime = visualInterval * _random.NextFloat(0.5f, 1.5f);
+                _nextVisualTime = visualInterval * _random.NextFloat(0.8f, 1.2f);
             }
         }
 

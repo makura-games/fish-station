@@ -5,30 +5,30 @@ stress_resists:
     enemies: 0
   MedicalDoctor:
     blood: 30
-    enemies: 10
+    enemies: 5
   Paramedic:
     blood: 30
     enemies: 10
   Chemist:
     blood: 30
-    enemies: 10
+    enemies: 5
   SecurityOfficer:
     blood: 15
     enemies: 30
   Detective:
-    blood: 15
+    blood: 25
     enemies: 30
   Warden:
-    blood: 15
-    enemies: 30
+    blood: 30
+    enemies: 40
   Captain:
-    blood: 20
-    enemies: 20
+    blood: 25
+    enemies: 25
   HeadOfSecurity:
-    blood: 20
-    enemies: 20
+    blood: 30
+    enemies: 50
   ChiefMedicalOfficer:
-    blood: 20
+    blood: 50
     enemies: 20
   ResearchDirector:
     blood: 20
@@ -37,19 +37,346 @@ stress_resists:
     blood: 20
     enemies: 20
   NuclearOperative:
-    blood: 80
-    enemies: 80
+    blood: 100
+    enemies: 90
   SyndicateAgent:
     blood: 80
-    enemies: 80
+    enemies: 70
   Antag:
     blood: 80
     enemies: 80
+  AtmosphericTechnician:
+    blood: 0
+    enemies: 0
+  Bartender:
+    blood: 0
+    enemies: 0
+  BlueShieldEnsign:
+    blood: 60
+    enemies: 70
+  BlueShieldOfficerFish:
+    blood: 60
+    enemies: 70
+  Borg:
+    blood: 100
+    enemies: 100
+  Botanist:
+    blood: 0
+    enemies: 0
+  CBURN:
+    blood: 90
+    enemies: 90
+  CargoTechnician:
+    blood: 20
+    enemies: 0
+  CentCommHead:
+    blood: 40
+    enemies: 40
+  CentCommOfficer:
+    blood: 20
+    enemies: 20
+  CentCommTrainee:
+    blood: 0
+    enemies: 0
+  CentcommBartender:
+    blood: 20
+    enemies: 20
+  CentcommBlueShield:
+    blood: 80
+    enemies: 80
+  CentcommChef:
+    blood: 20
+    enemies: 20
+  CentcommMedicalDoctor:
+    blood: 60
+    enemies: 20
+  CentcommSectoralJudge:
+    blood: 20
+    enemies: 20
+  CentralCommandOfficial:
+    blood: 20
+    enemies: 20
+  Chaplain:
+    blood: 0
+    enemies: 0
+  Chef:
+    blood: 0
+    enemies: 0
+  Clown:
+    blood: 0
+    enemies: 0
+  DeathSquad:
+    blood: 100
+    enemies: 100
+  ERTChaplain:
+    blood: 80
+    enemies: 80
+  ERTEngineer:
+    blood: 70
+    enemies: 70
+  ERTJanitor:
+    blood: 70
+    enemies: 70
+  ERTLeader:
+    blood: 85
+    enemies: 85
+  ERTMedical:
+    blood: 90
+    enemies: 70
+  ERTSecurity:
+    blood: 80
+    enemies: 80
+  HeadOfPersonnel:
+    blood: 20
+    enemies: 20
+  Janitor:
+    blood: 40
+    enemies: 0
+  Lawyer:
+    blood: 0
+    enemies: 0
+  Librarian:
+    blood: 0
+    enemies: 0
+  MedicalIntern:
+    blood: 15
+    enemies: 0
+  Mime:
+    blood: 0
+    enemies: 0
+  Musician:
+    blood: 0
+    enemies: 0
+  OversightOfficer:
+    blood: 20
+    enemies: 20
+  Passenger:
+    blood: 0
+    enemies: 0
+  Psychologist:
+    blood: 20
+    enemies: 0
+  Quartermaster:
+    blood: 30
+    enemies: 0
+  Reporter:
+    blood: 0
+    enemies: 0
+  RepresentativeBlueShield:
+    blood: 60
+    enemies: 60
+  ResearchAssistant:
+    blood: 0
+    enemies: 0
+  SalvageSpecialist:
+    blood: 25
+    enemies: 0
+  Scientist:
+    blood: 0
+    enemies: 0
+  SecurityCadet:
+    blood: 20
+    enemies: 20
+  ServiceWorker:
+    blood: 0
+    enemies: 0
+  SpecOpsOfficer:
+    blood: 0
+    enemies: 0
+  StationAi:
+    blood: 100
+    enemies: 100
+  StationEngineer:
+    blood: 0
+    enemies: 0
+  TechnicalAssistant:
+    blood: 0
+    enemies: 0
+  TramDriver:
+    blood: 0
+    enemies: 0
+  Visitor:
+    blood: 0
+    enemies: 0
+  Adjutant:
+    blood: 20
+    enemies: 0
+  Barber:
+    blood: 0
+    enemies: 0
+  BlueShieldOfficer:
+    blood: 70
+    enemies: 70
+  BlueShieldOperative:
+    blood: 70
+    enemies: 70
+  Brigmedic:
+    blood: 50
+    enemies: 20
+  CBURNAgentEVA:
+    blood: 80
+    enemies: 80
+  CBURNLeader:
+    blood: 90
+    enemies: 90
+  CentCommOfficial:
+    blood: 0
+    enemies: 0
+  CentCommOperator:
+    blood: 0
+    enemies: 0
+  ClownBorg:
+    blood: 100
+    enemies: 100
+  ComMaid:
+    blood: 20
+    enemies: 0
+  EngineerBorg:
+    blood: 100
+    enemies: 100
+  HeadOfPrison:
+    blood: 0
+    enemies: 0
+  IAA:
+    blood: 0
+    enemies: 0
+  JanitorBorg:
+    blood: 100
+    enemies: 100
+  JobArmBase:
+    blood: 0
+    enemies: 0
+  JobArmPC0I5:
+    blood: 0
+    enemies: 0
+  JobArmPE1:
+    blood: 0
+    enemies: 0
+  JobArmPM1:
+    blood: 0
+    enemies: 0
+  JobCoreBase:
+    blood: 0
+    enemies: 0
+  JobCorePC0I5:
+    blood: 0
+    enemies: 0
+  JobCorePE1:
+    blood: 0
+    enemies: 0
+  JobCorePM1:
+    blood: 0
+    enemies: 0
+  JobGhostWMBase:
+    blood: 0
+    enemies: 0
+  Magistrat:
+    blood: 0
+    enemies: 0
+  MailCarrier:
+    blood: 0
+    enemies: 0
+  MedicalBorg:
+    blood: 100
+    enemies: 100
+  MedicalPathologist:
+    blood: 50
+    enemies: 10
+  MiningBorg:
+    blood: 100
+    enemies: 100
+  MiningSpecialist:
+    blood: 30
+    enemies: 10
+  NanoTrasenRepresentative:
+    blood: 30
+    enemies: 30
+  NtrGuard:
+    blood: 0
+    enemies: 0
+  NtrLeader:
+    blood: 0
+    enemies: 0
+  NtrOfficer:
+    blood: 0
+    enemies: 0
+  PeaceBorg:
+    blood: 100
+    enemies: 100
+  PlanetPrisoner:
+    blood: 0
+    enemies: 0
+  PrisonChef:
+    blood: 0
+    enemies: 0
+  PrisonDoctor:
+    blood: 0
+    enemies: 0
+  PrisonEngineer:
+    blood: 0
+    enemies: 0
+  PrisonInspector:
+    blood: 0
+    enemies: 0
+  PrisonPilot:
+    blood: 0
+    enemies: 0
+  PrisonScientist:
+    blood: 0
+    enemies: 0
+  PrisonTrainee:
+    blood: 0
+    enemies: 0
+  PrisonWorker:
+    blood: 0
+    enemies: 0
+  Roboticist:
+    blood: 0
+    enemies: 0
+  SecurityBorg:
+    blood: 100
+    enemies: 100
+  SecurityPilot:
+    blood: 30
+    enemies: 30
+  SeniorEngineer:
+    blood: 0
+    enemies: 0
+  SeniorOfficer:
+    blood: 40
+    enemies: 40
+  SeniorPhysician:
+    blood: 0
+    enemies: 0
+  SeniorResearcher:
+    blood: 0
+    enemies: 0
+  ServiceBorg:
+    blood: 100
+    enemies: 100
+  TSFMarine:
+    blood: 60
+    enemies: 60
+  USSPCaptain:
+    blood: 70
+    enemies: 70
+  USSPCrew:
+    blood: 40
+    enemies: 40
+  USSPOfficer:
+    blood: 50
+    enemies: 60
+  USSPOfficerAlt:
+    blood: 50
+    enemies: 60
+  USSPSoldier:
+    blood: 50
+    enemies: 60
 # Здесь добавить прототипы и звуки, которые будут показываться при психозе
 psychosis:
   hallucination_mob_prototypes:
     - MobMouse
-    - MobSlimePerson
+    #- MobSlimePerson
     - MobTick
     - MobCarp
     - MobMothroach

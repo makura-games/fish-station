@@ -50,7 +50,7 @@ public sealed partial class StressTremorSystem : EntitySystem
             return;
 
         var randomAngle = _random.NextAngle();
-        var force = _random.NextFloat(0.5f, 1.5f) * intensity;
+        var force = _random.NextFloat(0.5f, 1f) * intensity;
         var impulse = randomAngle.ToVec() * force;
 
         _physics.ApplyLinearImpulse(uid, impulse, body: physics);

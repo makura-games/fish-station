@@ -43,15 +43,13 @@ public sealed partial class PsychosisOverlay : Overlay
 
         _shader ??= _prototypeManager.Index(Shader).InstanceUnique();
         var handle = args.ScreenHandle;
-        var screenSize = args.Viewport.Size;
 
         _shader.SetParameter("SCREEN_TEXTURE", ScreenTexture);
         _shader.SetParameter("intensity", _intensity);
         _shader.SetParameter("time", (float) _timing.CurTime.TotalSeconds);
-        _shader.SetParameter("screen_size", screenSize);
         var previousShader = handle.GetShader();
         handle.UseShader(_shader);
-        handle.DrawRect(new UIBox2(Vector2.Zero, screenSize), Color.White);
+        handle.DrawRect(new UIBox2(Vector2.Zero, args.Viewport.Size), Color.White);
         handle.UseShader(previousShader);
     }
 }

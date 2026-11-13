@@ -107,7 +107,7 @@ public sealed partial class StressClientSystem : EntitySystem
         _shakePhase += frameTime * 24f;
         var previousShake = _appliedCameraShake;
         var externalOffset = eye.Offset - previousShake;
-        var amplitude = Math.Clamp(intensity, 0f, 1f) * 0.1f;
+        var amplitude = Math.Clamp(intensity, 0f, 1f) * 0.06f;
         var shake = new Vector2(
             MathF.Sin(_shakePhase),
             MathF.Cos(_shakePhase * 1.37f)) * amplitude;

@@ -11,6 +11,22 @@
     FishNootropil: 3
     
 - type: reaction
+  id: FishAntipsychotic
+  impact: Medium
+  minTemp: 377.59
+  reactants:
+    Dylovene:
+      amount: 1
+    Mannitol:
+      amount: 1
+    Lithium:
+      amount: 1
+    Water:
+      amount: 1
+  products:
+    FishAntipsychotic: 3
+
+- type: reaction
   id: FishDetox
   reactants:
     Ethanol:

@@ -3,7 +3,6 @@ light_mode unshaded;
 uniform sampler2D SCREEN_TEXTURE;
 uniform highp float intensity;
 uniform highp float time;
-uniform highp vec2 screen_size;
 
 highp vec2 distort(highp vec2 uv, highp float amount)
 {
@@ -14,29 +13,33 @@ highp vec2 distort(highp vec2 uv, highp float amount)
 void fragment()
 {
     highp float strength = clamp(intensity, 0.0, 1.0);
-    highp vec2 uv = distort(UV, strength * 0.3);
-    uv.x += sin(uv.y * 50.0 + time * 20.0) * 0.002 * strength;
-    uv.y += cos(uv.x * 50.0 + time * 18.0) * 0.002 * strength;
+    highp vec2 uv = distort(UV, strength * 0.08);
+    uv.x += sin(uv.y * 24.0 + time * 2.2) * 0.0015 * strength;
+    uv.y += cos(uv.x * 19.0 - time * 1.8) * 0.0015 * strength;
     uv = clamp(uv, vec2(0.0), vec2(1.0));
 
-    highp float chromatic = strength * 0.02;
+    highp float chromatic = strength * 0.006;
+    highp vec2 redUv = clamp(uv + vec2(chromatic, 0.0), vec2(0.0), vec2(1.0));
+    highp vec2 greenUv = clamp(uv + vec2(-chromatic, chromatic * 0.35), vec2(0.0), vec2(1.0));
+    highp vec2 blueUv = clamp(uv - vec2(chromatic, 0.0), vec2(0.0), vec2(1.0));
     highp vec4 color;
-    color.r = zTextureSpec(SCREEN_TEXTURE, clamp(uv + vec2(chromatic, 0.0), vec2(0.0), vec2(1.0))).r;
-    color.g = zTextureSpec(SCREEN_TEXTURE, uv).g;
-    color.b = zTextureSpec(SCREEN_TEXTURE, clamp(uv - vec2(chromatic, 0.0), vec2(0.0), vec2(1.0))).b;
+    color.r = zTextureSpec(SCREEN_TEXTURE, redUv).r;
+    color.g = zTextureSpec(SCREEN_TEXTURE, greenUv).g;
+    color.b = zTextureSpec(SCREEN_TEXTURE, blueUv).b;
     color.a = zTextureSpec(SCREEN_TEXTURE, uv).a;
 
     highp float luminance = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-    color.rgb = mix(vec3(luminance), color.rgb, 1.0 + strength * 0.8);
-    color.rgb = (color.rgb - 0.5) * (1.0 + strength * 1.5) + 0.5;
-    color.rgb += vec3(0.7, 0.3, -0.5) * sin(uv.x * 10.0 + uv.y * 8.0 + time) * strength * 0.1;
+    color.rgb = mix(vec3(luminance), color.rgb, 1.0 + strength * 0.55);
+    color.rgb = (color.rgb - 0.5) * (1.0 + strength * 0.45) + 0.5;
+    color.r *= 1.0 + strength * 0.12;
+    color.g *= 1.0 + strength * 0.16;
 
-    if (strength > 0.7)
-    {
-        highp float pixel_size = mix(1.0, 8.0, (strength - 0.7) * 3.0);
-        highp vec2 pixel_uv = floor(uv * screen_size / pixel_size) * pixel_size / screen_size;
-        color = zTextureSpec(SCREEN_TEXTURE, clamp(pixel_uv, vec2(0.0), vec2(1.0)));
-    }
+    highp vec2 ghostUv = clamp(uv + vec2(sin(time * 1.7) * 0.008, cos(time * 1.3) * 0.004) * strength,
+        vec2(0.0), vec2(1.0));
+    highp vec3 ghost = zTextureSpec(SCREEN_TEXTURE, ghostUv).rgb;
+    color.rgb = mix(color.rgb, ghost, strength * 0.10);
+    color.rgb += vec3(0.035, 0.012, 0.025) * sin(time * 2.4 + uv.y * 8.0) * strength;
+    color.rgb = min(color.rgb + vec3(strength * 0.08), vec3(1.0));
 
     COLOR = color;
 }

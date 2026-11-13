@@ -15,4 +15,4 @@
             Poison: 2
       - !type:ChemPsychosis
         sourceId: Deliriumine
-        amountPerUnit: 20
+        amountPerUnit: 4

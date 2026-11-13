@@ -13,14 +13,12 @@ public sealed partial class SoundEchoSystem : EntitySystem
     [Dependency] private AudioSystem _audio = default!;
 
     private float _currentPsychosisLevel;
-    private bool _creatingEcho;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<PsychosisUpdateEvent>(OnPsychosisUpdate);
-        SubscribeLocalEvent<AudioComponent, ComponentInit>(OnAudioInit);
     }
 
     /// <summary>
@@ -32,40 +30,41 @@ public sealed partial class SoundEchoSystem : EntitySystem
     }
 
     /// <summary>
-    /// Создаёт затухающие повторы звука при высоком уровне психоза.
+    /// Создаёт затухающие повторы запущенных звуков при высоком уровне психоза.
     /// </summary>
-    private void OnAudioInit(Entity<AudioComponent> ent, ref ComponentInit args)
+    public override void Update(float frameTime)
     {
-        if (_currentPsychosisLevel <= 66f || _creatingEcho || string.IsNullOrWhiteSpace(ent.Comp.FileName))
+        base.Update(frameTime);
+
+        if (_currentPsychosisLevel <= 66f)
             return;
 
-        if (HasComp<EchoSoundComponent>(ent))
-            return;
-
-        var uid = ent.Owner;
-        var fileName = ent.Comp.FileName;
-        for (int i = 1; i <= 3; i++)
+        var query = EntityQueryEnumerator<AudioComponent>();
+        while (query.MoveNext(out var uid, out var audio))
         {
-            float delay = 0.2f * i;
-            var echoParams = AudioParams.Default.WithVolume(-6f * i);
-            Timer.Spawn(TimeSpan.FromSeconds(delay), () =>
-            {
-                if (!Exists(uid))
-                    return;
+            if (!audio.Started || !audio.Playing || string.IsNullOrWhiteSpace(audio.FileName) ||
+                HasComp<EchoSoundComponent>(uid))
+                continue;
 
-                _creatingEcho = true;
-                try
+            // Fish-edit: отмечаем исходный звук, чтобы он не создавал повторное эхо каждый кадр.
+            EnsureComp<EchoSoundComponent>(uid);
+            var fileName = audio.FileName;
+
+            for (var i = 1; i <= 3; i++)
+            {
+                var delay = 0.2f * i;
+                var echoParams = AudioParams.Default.WithVolume(-6f * i);
+                Timer.Spawn(TimeSpan.FromSeconds(delay), () =>
                 {
+                    if (!Exists(uid))
+                        return;
+
                     var sound = _audio.ResolveSound(new SoundPathSpecifier(fileName));
                     var echo = _audio.PlayEntity(sound, Filter.Local(), uid, false, echoParams);
                     if (echo is { } echoData)
                         EnsureComp<EchoSoundComponent>(echoData.Entity);
-                }
-                finally
-                {
-                    _creatingEcho = false;
-                }
-            });
+                });
+            }
         }
     }
 }

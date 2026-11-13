@@ -1,5 +1,7 @@
 reagent-name-fish-detox = detoxol
 reagent-desc-fish-detox = A medicine that reduces chemical dependence.
+reagent-name-fish-antipsychotic = neurolith
+reagent-desc-fish-antipsychotic = A medicine that reduces psychosis.
 fish-health-analyzer-neuro-level = Neurons
 fish-neuro-muddling = Your mind feels clouded.
 fish-neuro-critical = Your mind is collapsing.
