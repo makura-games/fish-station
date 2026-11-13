@@ -197,6 +197,8 @@ public sealed partial class SurveillanceCameraMonitorWindow : DefaultWindow
         CameraSelected!((string)SubnetList[args.ItemIndex].Metadata!, null);
     }
 
+    public void AddSpeech(NetEntity speaker, string name, string message, bool whisper) => SpeechLog.AddLine(CameraView, speaker, name, message, whisper); // Fish-edit
+
     public void SetMap(EntityUid mapUid)
     {
         CameraMap.MapUid = _mapUid = mapUid;

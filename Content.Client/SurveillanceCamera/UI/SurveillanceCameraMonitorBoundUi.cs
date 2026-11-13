@@ -1,4 +1,5 @@
 using Content.Client.Eye;
+using Content.Shared._Fish.CameraHearing; // Fish-edit
 using Content.Shared.DeviceNetwork;
 using Content.Shared.SurveillanceCamera;
 using Robust.Client.UserInterface;
@@ -72,6 +73,14 @@ public sealed class SurveillanceCameraMonitorBoundUserInterface : BoundUserInter
     {
         SendMessage(new SurveillanceCameraDisconnectMessage());
     }
+
+    // Fish-start
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        if (message is FishCameraSpeechMessage speech)
+            _window?.AddSpeech(speech.Speaker, speech.Name, speech.Message, speech.Whisper);
+    }
+    // Fish-end
 
     protected override void UpdateState(BoundUserInterfaceState state)
     {

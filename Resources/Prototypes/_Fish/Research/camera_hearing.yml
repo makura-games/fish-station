@@ -1,0 +1,16 @@
+- type: technology
+  id: FishCameraHearing
+  name: research-technology-fish-camera-hearing
+  icon:
+    sprite: Objects/Storage/boxes.rsi
+    state: box
+  discipline: Arsenal
+  tier: 3
+  cost: 10000
+  recipeUnlocks:
+  - FishCameraUpgradeRecipe
+  - FishMasterHandheldCameraRecipe
+  technologyPrerequisites:
+  - ConcentratedLaserWeaponry
+  radioChannels:
+  - Security

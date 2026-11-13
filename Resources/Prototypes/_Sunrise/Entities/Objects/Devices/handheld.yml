@@ -524,6 +524,7 @@
   components:
   - type: StationAiVision
     range: 2
+  - type: FishCameraHearing # Fish-edit
   - type: Item
     sprite: _Sunrise/Objects/Devices/master_handheld_camera.rsi
   - type: Sprite

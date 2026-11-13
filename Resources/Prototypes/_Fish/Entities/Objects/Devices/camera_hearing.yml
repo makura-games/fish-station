@@ -1,0 +1,13 @@
+- type: entity
+  parent: BaseItem
+  id: FishCameraUpgrade
+  name: camera hearing upgrade
+  description: A module that lets a surveillance camera pick up nearby speech. Use it on a camera.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Storage/boxes.rsi
+    state: box
+  - type: Item
+    size: Small
+  - type: FishCameraUpgrade
