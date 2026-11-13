@@ -67,14 +67,6 @@ public sealed class HomelanderTest : GameTest
         });
         await Pair.RunTicksSync(5);
         await client.WaitAssertion(() =>
-        {
-            var sprite = client.EntMan.GetComponent<SpriteComponent>(clientPatriot);
-            Assert.That(sprite.Rotation.Theta, Is.LessThan(-0.001f));
-        });
-
-        await server.WaitPost(() => server.System<SharedTransformSystem>().SetLocalRotation(patriot, Direction.South.ToAngle()));
-        await Pair.RunTicksSync(30);
-        await client.WaitAssertion(() =>
             Assert.That(client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Rotation.Theta, Is.Zero.Within(0.001f)));
 
         await server.WaitPost(() => actions.PerformAction(patriot, flightAction));

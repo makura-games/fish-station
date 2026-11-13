@@ -5,7 +5,6 @@ using Content.Shared._Sunrise.Abilities.Milira;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Map;
-using Robust.Shared.Physics.Components;
 using Robust.Shared.Utility;
 
 namespace Content.Client._Fish.Homelander;
@@ -13,8 +12,6 @@ namespace Content.Client._Fish.Homelander;
 public sealed partial class HomelanderSystem : EntitySystem
 {
     private const float FlightTransitionSeconds = 0.3f;
-    private const float MaxLeanRadians = MathF.PI / 3f;
-    private const float SpeedForFullLean = 6f;
     private const string FlightShadowLayer = "fish-homelander-flight-shadow";
     private static readonly Vector2 FlightLift = new(0f, HomelanderComponent.FlightVisualLift);
     private static readonly ResPath SpritePath = new("/Textures/_Fish/Homelander/actions.rsi");
@@ -23,7 +20,6 @@ public sealed partial class HomelanderSystem : EntitySystem
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private IEyeManager _eye = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
-    [Dependency] private EntityQuery<PhysicsComponent> _physicsQuery = default!;
     [Dependency] private FloatingVisualizerSystem _floating = default!;
 
     public override void Initialize()
@@ -63,7 +59,6 @@ public sealed partial class HomelanderSystem : EntitySystem
             _floating.RefreshHomelanderBobbing(uid, true);
             lift = EnsureComp<HomelanderLiftComponent>(uid);
             lift.GroundOffset = sprite.Offset;
-            lift.GroundRotation = sprite.Rotation;
             var entity = (uid, sprite);
             var shadow = _sprite.AddRsiLayer(entity, "flight-shadow", SpritePath, index: 0);
             _sprite.LayerMapSet(entity, FlightShadowLayer, shadow);
@@ -78,21 +73,13 @@ public sealed partial class HomelanderSystem : EntitySystem
         while (query.MoveNext(out var uid, out var lift, out var sprite))
         {
             var previousProgress = lift.Progress;
-            var previousLean = lift.Lean;
             var step = frameTime / FlightTransitionSeconds;
             lift.Progress = Math.Clamp(lift.Progress + (lift.Flying ? step : -step), 0f, 1f);
             var eyeRotation = _eye.CurrentEye.Rotation;
             var facing = _transform.GetWorldRotation(uid) + eyeRotation;
-            var direction = facing.GetCardinalDir();
-            var sideFacing = direction is Direction.East or Direction.West;
-            var targetLean = lift.Flying && sideFacing ? GetTargetLean(uid, eyeRotation) : 0f;
-            lift.Lean = MathHelper.Lerp(lift.Lean, targetLean, 1f - MathF.Exp(-12f * frameTime));
-            if (!sideFacing || MathF.Abs(lift.Lean - targetLean) < 0.001f)
-                lift.Lean = targetLean;
-
             var renderRotation = sprite.NoRotation ? Angle.Zero :
                 sprite.SnapCardinals ? facing - facing.RoundToCardinalAngle() : facing;
-            if (lift.Flying && previousProgress == lift.Progress && previousLean == lift.Lean &&
+            if (lift.Flying && previousProgress == lift.Progress &&
                 lift.ShadowRenderRotation == renderRotation)
                 continue;
 
@@ -102,8 +89,7 @@ public sealed partial class HomelanderSystem : EntitySystem
             var height = FlightLift * progress;
             var entity = (uid, sprite);
             _sprite.SetOffset(entity, lift.GroundOffset + height);
-            var rotation = lift.GroundRotation + new Angle(lift.Lean * progress);
-            _sprite.SetRotation(entity, rotation);
+            var rotation = sprite.Rotation;
             var shadowOffset = (-renderRotation).RotateVec(new Vector2(0f, -0.35f)) - sprite.Offset;
             _sprite.LayerSetOffset(entity, FlightShadowLayer, (-rotation).RotateVec(shadowOffset));
             _sprite.LayerSetRotation(entity, FlightShadowLayer, -rotation - renderRotation);
@@ -118,18 +104,6 @@ public sealed partial class HomelanderSystem : EntitySystem
                 _floating.RefreshHomelanderBobbing(uid, false);
             }
         }
-    }
-
-    private float GetTargetLean(EntityUid uid, Angle eyeRotation)
-    {
-        if (!_physicsQuery.TryComp(uid, out var body))
-            return 0f;
-
-        // Скорость относительно грида, чтобы движение шаттла не наклоняло Патриота.
-        var parent = Transform(uid).ParentUid;
-        var rotation = (parent.IsValid() ? _transform.GetWorldRotation(parent) : Angle.Zero) + eyeRotation;
-        var velocity = rotation.RotateVec(body.LinearVelocity);
-        return -Math.Clamp(velocity.X / SpeedForFullLean, -1f, 1f) * MaxLeanRadians;
     }
 
     public bool IsLaserActive(EntityUid? user)
