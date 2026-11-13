@@ -8,9 +8,18 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.Psychosis;
 
+/// <summary>
+/// Добавляет запаздывающие повторы уже играющих звуков при высоком психозе.
+/// </summary>
 public sealed partial class SoundEchoSystem : EntitySystem
 {
     [Dependency] private AudioSystem _audio = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+
+    private const float MinPsychosisLevel = 50f;
+    private const int EchoCount = 3;
+    private const float EchoDelay = 0.22f;
+    private const float EchoVolumeStep = -7f;
 
     private float _currentPsychosisLevel;
 
@@ -36,7 +45,7 @@ public sealed partial class SoundEchoSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        if (_currentPsychosisLevel <= 66f)
+        if (_currentPsychosisLevel < MinPsychosisLevel)
             return;
 
         var query = EntityQueryEnumerator<AudioComponent>();
@@ -46,21 +55,23 @@ public sealed partial class SoundEchoSystem : EntitySystem
                 HasComp<EchoSoundComponent>(uid))
                 continue;
 
-            // Fish-edit: отмечаем исходный звук, чтобы он не создавал повторное эхо каждый кадр.
+            // Fish-edit: помечаем исходный звук, чтобы он не порождал эхо каждый кадр.
             EnsureComp<EchoSoundComponent>(uid);
-            var fileName = audio.FileName;
 
-            for (var i = 1; i <= 3; i++)
+            var fileName = audio.FileName;
+            var volume = audio.Volume;
+            var mapCoordinates = _transform.GetMapCoordinates(uid);
+
+            for (var i = 1; i <= EchoCount; i++)
             {
-                var delay = 0.2f * i;
-                var echoParams = AudioParams.Default.WithVolume(audio.Volume - 6f * i);
+                var delay = EchoDelay * i;
+                var echoParams = AudioParams.Default.WithVolume(volume + EchoVolumeStep * i);
+
                 Timer.Spawn(TimeSpan.FromSeconds(delay), () =>
                 {
-                    if (!Exists(uid))
-                        return;
-
+                    var coordinates = _transform.ToCoordinates(mapCoordinates);
                     var sound = _audio.ResolveSound(new SoundPathSpecifier(fileName));
-                    var echo = _audio.PlayEntity(sound, Filter.Local(), uid, false, echoParams);
+                    var echo = _audio.PlayStatic(sound, Filter.Local(), coordinates, false, echoParams);
                     if (echo is { } echoData)
                         EnsureComp<EchoSoundComponent>(echoData.Entity);
                 });

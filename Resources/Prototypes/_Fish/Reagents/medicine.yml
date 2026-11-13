@@ -27,6 +27,12 @@
       effects:
       - !type:ChemReducePsychosis
         reducePerUnit: 2
+      # Fish-start - побочный эффект: термические повреждения
+      - !type:HealthChange
+        damage:
+          types:
+            Heat: 0.2
+      # Fish-end
 
 - type: reagent
   id: FishDetox

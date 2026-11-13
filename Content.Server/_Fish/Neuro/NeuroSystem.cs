@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Content.Server._Sunrise.Chat.Sanitization;
 using Content.Server._Fish.MentalHealth;
+using Content.Server._Fish.Psychosis;
 using Content.Shared._Fish.MentalHealth;
 using Content.Shared._Fish.Neuro;
 using Content.Shared._Fish.Stress;
@@ -27,6 +28,7 @@ public sealed partial class NeuroSystem : EntitySystem
 {
     private static readonly ProtoId<DamageTypePrototype> AsphyxiationDamageType = "Asphyxiation";
     private static readonly ProtoId<DamageTypePrototype> PoisonDamageType = "Poison";
+    private static readonly ProtoId<DamageTypePrototype> CellularDamageType = "Cellular";
     private static readonly EntProtoId CriticalSlowdown = "FishNeuroCriticalSlowdownStatusEffect";
     private static readonly EntProtoId ModerateSlowdown = "FishNeuroModerateSlowdownStatusEffect";
     private static readonly EntProtoId NeuroMuddled = "FishNeuroMuddledStatusEffect";
@@ -37,6 +39,7 @@ public sealed partial class NeuroSystem : EntitySystem
     private static readonly string[] MildAdditions = { "!", "?", "😨" };
 
     [Dependency] private MentalHealthConfigSystem _config = default!;
+    [Dependency] private PsychosisSystem _psychosis = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
     [Dependency] private MovementModStatusSystem _movementMod = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -94,7 +97,7 @@ public sealed partial class NeuroSystem : EntitySystem
     }
 
     /// <summary>
-    /// Преобразует прирост удушающего и токсического урона в потерю нейронов.
+    /// Преобразует прирост удушающего, токсического и клеточного урона в потерю нейронов.
     /// </summary>
     private void OnDamageChanged(Entity<NeuroComponent> ent, ref DamageChangedEvent args)
     {
@@ -104,7 +107,13 @@ public sealed partial class NeuroSystem : EntitySystem
         var delta = args.DamageDelta.DamageDict;
         var asphyxiation = Math.Max(0f, delta.GetValueOrDefault(AsphyxiationDamageType).Float());
         var poison = Math.Max(0f, delta.GetValueOrDefault(PoisonDamageType).Float());
-        var neuralDamage = (asphyxiation + poison) * 0.1f;
+        var cellular = Math.Max(0f, delta.GetValueOrDefault(CellularDamageType).Float());
+        var neuralDamage = (asphyxiation + poison) * 0.1f + cellular * 0.5f;
+
+        // Fish-edit: клеточные повреждения дают лёгкий прирост психоза.
+        if (cellular > 0f)
+            _psychosis.AddSource(ent, "Cellular", cellular * 0.25f);
+
         if (neuralDamage <= 0f)
             return;
 
