@@ -1608,3 +1608,12 @@
     message: Добавлено 6 новых звуков/саундтреков.
   id: 163
   url: https://github.com/makura-games/fish-station/pull/647
+- author: TiFeRi
+  time: '2026-11-13T22:08:04.0000000+00:00'
+  changes:
+  - type: Remove
+    message: Удаление лишней и невостребованной музыки.
+  - type: Tweak
+    message: Приведение музыки в порядок.
+  id: 164
+  url: https://github.com/makura-games/fish-station/pull/616
