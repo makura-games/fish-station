@@ -44,31 +44,6 @@ public sealed partial class PaperSystem
         return true;
     }
 
-    private void OnTemplateRequest(Entity<PaperComponent> entity, ref PaperComponent.PaperTemplateRequestMessage args)
-    {
-        // Fish-start - подпись/должность на текущей странице пакета
-        var contentTarget = ResolvePaperContentTarget(entity);
-        if (!_paperQuery.TryComp(contentTarget, out var contentPaper))
-            return;
-        var contentEntity = new Entity<PaperComponent>(contentTarget, contentPaper);
-        // Fish-end
-
-        switch (args.Type)
-        {
-            case PaperComponent.PaperTemplateRequestType.Signature:
-                HandleSignatureRequest(contentEntity, args.Actor, args.Index); // Fish-edit
-                break;
-            case PaperComponent.PaperTemplateRequestType.Job:
-                HandleJobRequest(contentEntity, args.Actor, args.Index); // Fish-edit
-                break;
-        }
-
-        // Fish-start - BUI открыт на внешнем листе; SetContent обновляет только внутреннюю страницу
-        if (contentEntity.Owner != entity.Owner)
-            RefreshUi(entity);
-        // Fish-end
-    }
-
     private bool TryValidateTemplateWriteRequest(Entity<PaperComponent> entity, EntityUid actor, int index)
     {
         if (!PaperInteractiveTagParsing.ContainsInteractiveTags(entity.Comp.Content))
@@ -145,29 +120,4 @@ public sealed partial class PaperSystem
         UpdateUserInterface(entity);
     }
 
-    private PaperComponent.PaperBoundUserInterfaceState GetPaperUiState(Entity<PaperComponent> entity)
-    {
-        // Fish-start - UI показывает текущую страницу пакета
-        var contentUid = ResolvePaperContentTarget(entity);
-        if (!_paperQuery.TryComp(contentUid, out var contentPaper))
-            contentPaper = entity.Comp;
-
-        var pageEv = new GetPaperPageInfoEvent(entity);
-        RaiseLocalEvent(entity.Owner, ref pageEv);
-
-        var templateFieldsEnabled = PaperInteractiveTagParsing.ContainsInteractiveTags(contentPaper.Content);
-
-        return new PaperComponent.PaperBoundUserInterfaceState(
-            contentPaper.Content,
-            contentPaper.DefaultColor,
-            contentPaper.StampedBy,
-            entity.Comp.Mode,
-            contentPaper.ImageContent,
-            contentPaper.ImageScale,
-            templateFieldsEnabled,
-            pageEv.PageIndex,
-            pageEv.PageCount,
-            GetNetEntity(contentUid));
-        // Fish-end
-    }
 }

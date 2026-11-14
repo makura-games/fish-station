@@ -122,7 +122,6 @@ public sealed partial class PaperSystem : EntitySystem
         if (!TryComp(contentTarget, out PaperComponent? contentPaper))
             contentPaper = entity.Comp;
         var contentEntity = new Entity<PaperComponent>(contentTarget, contentPaper);
-        // Fish-end
 
         // only allow editing if there are no stamps or when using a cyberpen
         var editable = contentEntity.Comp.StampedBy.Count == 0 || _tagSystem.HasTag(args.Used, WriteIgnoreStampsTag);
@@ -181,6 +180,7 @@ public sealed partial class PaperSystem : EntitySystem
 
             UpdateUserInterface(entity);
         }
+        // Fish-end
     }
 
     private static StampDisplayInfo GetStampInfo(StampComponent stamp)
@@ -221,7 +221,6 @@ public sealed partial class PaperSystem : EntitySystem
         if (!TryComp(contentTarget, out PaperComponent? contentPaper))
             return;
         var contentEntity = new Entity<PaperComponent>(contentTarget, contentPaper);
-        // Fish-end
 
         if (!TryValidateWriteTool(contentEntity, args.Actor))
             return;
@@ -253,7 +252,6 @@ public sealed partial class PaperSystem : EntitySystem
         entity.Comp.Mode = PaperAction.Read;
         UpdateUserInterface(entity);
 
-        // Fish-start
         var writeAfterEv = new PaperAfterWriteEvent(args.Actor);
         RaiseLocalEvent(contentEntity.Owner, ref writeAfterEv);
         // Fish-end

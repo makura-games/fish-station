@@ -60,7 +60,7 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         {
             ent.Comp.CurrentPage = 0;
             RemComp<FishStapledDocumentComponent>(ent);
-            RefreshUi(ent.Owner); // Fish: сбрасываем UI пакета после снятия компонента
+            RefreshUi(ent.Owner); // Fish-edit - сбрасываем UI пакета после снятия компонента
             return;
         }
 
@@ -92,27 +92,41 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
 
     private void OnPageTurn(Entity<FishStapledDocumentComponent> ent, ref FishPaperPageTurnMessage args)
     {
-        if (args.Delta == 0)
-            return;
+        TryPageTurn(ent, args.Actor, args.Delta);
+    }
+
+    private bool CanPageTurn(Entity<FishStapledDocumentComponent> ent, int delta, out PaperComponent? paper, out int nextPage)
+    {
+        paper = null;
+        nextPage = ent.Comp.CurrentPage;
+        if (delta == 0)
+            return false;
 
         // Нельзя листать во время записи — иначе текст уйдёт на другую страницу.
-        if (TryComp(ent, out PaperComponent? paper) && paper.Mode == PaperAction.Write)
-            return;
+        if (TryComp(ent, out paper) && paper.Mode == PaperAction.Write)
+            return false;
 
         var count = GetPageCount(ent);
         if (count <= 1)
-            return;
+            return false;
 
-        var next = Math.Clamp(ent.Comp.CurrentPage + args.Delta, 0, count - 1);
-        if (next == ent.Comp.CurrentPage)
-            return;
+        nextPage = Math.Clamp(ent.Comp.CurrentPage + delta, 0, count - 1);
+        return nextPage != ent.Comp.CurrentPage;
+    }
 
-        ent.Comp.CurrentPage = next;
+    private bool TryPageTurn(Entity<FishStapledDocumentComponent> ent, EntityUid actor, int delta)
+    {
+        if (!CanPageTurn(ent, delta, out var paper, out var nextPage))
+            return false;
+
+        ent.Comp.CurrentPage = nextPage;
         Dirty(ent);
         RefreshUi(ent);
 
         if (paper?.Sound != null)
-            _audio.PlayPredicted(paper.Sound, ent, args.Actor);
+            _audio.PlayPredicted(paper.Sound, ent, actor);
+
+        return true;
     }
 
     private void OnRemoveCurrentPageMessage(Entity<FishStapledDocumentComponent> ent, ref FishPaperRemoveCurrentPageMessage args)
