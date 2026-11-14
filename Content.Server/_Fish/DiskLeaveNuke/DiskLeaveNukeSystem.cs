@@ -1,6 +1,8 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
 using Content.Server.Explosion.EntitySystems;
+using Content.Server.GameTicking;
+using Content.Server.GameTicking.Rules.Components;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Shuttles.Components;
 using Content.Server._Sunrise.StationCentComm;
@@ -25,6 +27,7 @@ public sealed partial class DiskLeaveNukeSystem : EntitySystem
     [Dependency] private RadioSystem _radio = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private GameTicker _ticker = default!;
 
     public override void Initialize()
     {
@@ -42,9 +45,17 @@ public sealed partial class DiskLeaveNukeSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        var nukeops = _ticker.IsGameRuleActive<NukeopsRuleComponent>();
         var query = EntityQueryEnumerator<DiskLeaveNukeComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
+            // В NukeOps и LoneOps диск должен вести себя как раньше.
+            if (nukeops)
+            {
+                comp.StrikeTime = null;
+                continue;
+            }
+
             if (_timing.CurTime < comp.NextCheck)
                 continue;
 
