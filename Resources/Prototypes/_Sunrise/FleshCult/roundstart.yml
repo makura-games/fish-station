@@ -58,7 +58,7 @@
     # Fish-end
   blacklist:
     components:
-    # - Synth # Sunrise-TODO: КПБ
+    - FishIpc # Fish-edit: КПБ вместо закомментированного Synth
     - BibleUser
   mindRoles:
   - MindRoleFleshCultistLeader
@@ -96,7 +96,7 @@
     # Fish-end
   blacklist:
     components:
-    # - Synth # Sunrise-TODO: КПБ
+    - FishIpc # Fish-edit: КПБ
     - BibleUser
   mindRoles:
   - MindRoleFleshCultist
