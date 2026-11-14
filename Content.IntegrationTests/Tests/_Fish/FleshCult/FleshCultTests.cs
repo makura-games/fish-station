@@ -670,7 +670,7 @@ public sealed partial class FleshCultTests
         {
             entMan.EnsureComponent<FleshCultistComponent>(human);
         });
-        // Ждём репликации CollectiveMindComponent.Minds и обновления прав чата через AfterAutoHandleStateEvent.
+        // Ждём репликации добавления CollectiveMindComponent на клиент и обновления прав чата через ComponentInit.
         await pair.RunTicksSync(10);
 
         await client.WaitAssertion(() =>
@@ -682,7 +682,6 @@ public sealed partial class FleshCultTests
             {
                 Assert.That(clientMindSys.IsCollectiveMind, Is.True);
                 Assert.That(clientMindSys.Player, Is.Not.Null);
-                Assert.That(clientMindSys.Player!.Minds, Does.Contain(new ProtoId<CollectiveMindPrototype>("FleshCult")));
                 Assert.That(chatUi.CanSendChannels.HasFlag(ChatSelectChannel.CollectiveMind), Is.True);
             });
         });

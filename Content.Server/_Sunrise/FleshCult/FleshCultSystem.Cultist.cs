@@ -86,6 +86,11 @@ public sealed partial class FleshCultSystem
 
     private void OnMobStateChanged(EntityUid uid, FleshCultistComponent component, MobStateChangedEvent args)
     {
+        // Fish-start: если культиста реанимировали до превращения в UpdateCultist, отменяем ожидание трансформации
+        if (args.NewMobState != MobState.Dead && !component.IsDeathPending)
+            component.IsTransformationPending = false;
+        // Fish-end
+
         switch (args.NewMobState)
         {
             case MobState.Critical:
@@ -180,13 +185,8 @@ public sealed partial class FleshCultSystem
     {
         var storeComp = EnsureComp<StoreComponent>(uid);
         var collectiveMindComponent = EnsureComp<CollectiveMindComponent>(uid);
-        // Fish-start: синхронизируем добавление коллективного разума с клиентом
         if (!collectiveMindComponent.Minds.Contains(FleshCollectiveMindProto))
-        {
             collectiveMindComponent.Minds.Add(FleshCollectiveMindProto);
-            Dirty(uid, collectiveMindComponent);
-        }
-        // Fish-end
 
         storeComp.Categories.Add("FleshCultistPassiveSkills");
         storeComp.Categories.Add("FleshCultistActiveSkills");
@@ -268,12 +268,10 @@ public sealed partial class FleshCultSystem
     {
         if (TryComp(uid, out CollectiveMindComponent? collectiveMind) && collectiveMind.Minds.Contains(FleshCollectiveMindProto))
         {
-            // Fish-start: удаляем компонент при пустом списке разумов, иначе синхронизируем оставшийся список с клиентом
+            // Fish-start: удаляем компонент при пустом списке разумов, чтобы клиентский CollectiveMindChatUpdateSystem обновил права чата
             collectiveMind.Minds.Remove(FleshCollectiveMindProto);
             if (collectiveMind.Minds.Count == 0)
                 RemCompDeferred<CollectiveMindComponent>(uid);
-            else
-                Dirty(uid, collectiveMind);
             // Fish-end
         }
     }
@@ -385,12 +383,15 @@ public sealed partial class FleshCultSystem
         {
             if (cultist.IsTransformationPending)
             {
-                // Check if entity is still dead and complete the transformation
-                if (TryComp<MobStateComponent>(uid, out var mobState) && mobState.CurrentState == MobState.Dead)
+                // Check if entity is still dead (or starved) and complete the transformation
+                if ((TryComp<MobStateComponent>(uid, out var mobState) && mobState.CurrentState == MobState.Dead)
+                    || cultist.Hunger < 0)
                 {
                     _pendingTransformations.Add((uid, cultist));
+                    continue;
                 }
-                continue;
+
+                cultist.IsTransformationPending = false;
             }
 
             cultist.Accumulator += frameTime;
