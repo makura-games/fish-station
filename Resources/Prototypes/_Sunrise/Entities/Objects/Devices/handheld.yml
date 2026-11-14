@@ -294,6 +294,7 @@
       path: "/Audio/Items/Medical/healthscanner.ogg"
     damageContainers:
     - Mech
+    - Ipc # Fish-edit: мех-анализатор читает шасси КПБ
   - type: GuideHelp
     guides:
     - Robotics

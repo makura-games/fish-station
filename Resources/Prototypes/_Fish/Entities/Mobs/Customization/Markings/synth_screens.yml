@@ -1,0 +1,2 @@
+# Fish-edit: экраны КПБ живут в _Fish/Ipc/Markings/screens.yml (HeadSide, Screen*).
+# Старые SynthMonitor* на Hair конфликтовали с markingsGroup Ipc (Hair limit 0).

@@ -1,0 +1,6 @@
+# Fish-start: доступ самого шасси к своей панели, на карты не выдаётся
+- type: accessLevel
+  id: FishIpcChassis
+  name: id-card-access-level-fish-ipc-chassis
+  canAddToIdCard: false
+# Fish-end

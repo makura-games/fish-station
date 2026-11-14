@@ -227,6 +227,8 @@
     - SurgeryDynamicSunrise
     - NightVisionDevice
     # Sunrise-End
+    - FishIpcUtilityModulesDynamic # Fish-edit: utility-модули КПБ
+    - FishIpcAdvancedOpticsModulesDynamic # Fish-edit: термалы + анти-ЭМИ КПБ
   - type: EmagLatheRecipes
     # emagStaticPacks: # Fish-edit
     # - SyndicateBorgModulesEmagSunrise # Sunrise-Add # Fish-edit
@@ -538,6 +540,7 @@
     - SurgeryDynamicSunrise # Sunrise-Add
     - MedicalDynamicSunrise # Sunrise-Add
     - FishMedicalPouchesDynamic # Fish-edit: рецепты подсумков открываются исследованиями T2 и T3
+    - FishIpcHealthcareModulesDynamic # Fish-edit: мед-модули КПБ
     - MedicalCyberlimbDynamic # Sunrise-Add
     - MedicalCyberOrgansDynamic # Sunrise-Add
     - MedicalImplantDynamic # Sunrise-Add

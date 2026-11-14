@@ -1,5 +1,6 @@
 // Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
+using Content.Shared._Fish.Ipc;
 using Content.Shared.CCVar;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
@@ -41,6 +42,8 @@ public abstract partial class SharedSickSystem : EntitySystem
 
     public void OnInfected(EntityUid uid, EntityUid disease, float prob)
     {
+        // Fish-edit: кашель, чих и объятие не заражают КПБ
+        if (HasComp<FishIpcComponent>(uid)) return;
         if (HasComp<DiseaseImmuneComponent>(uid)) return;
         if (HasComp<SickComponent>(uid)) return;
 

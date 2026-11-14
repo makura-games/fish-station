@@ -1,0 +1,195 @@
+# Fish-start: actions модулей КПБ
+- type: entity
+  parent: BaseAction
+  id: FishActionIpcDefib
+  name: Chassis defibrillator pads
+  description: Deploy integrated defibrillator pads into both hands. Huge battery cost per zap.
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: Sprite
+    layers:
+    - sprite: Objects/Specific/Medical/defib.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: Objects/Specific/Medical/defib.rsi
+      state: screen
+      map: ["enum.ActionVisuals.IconToggled"]
+      shader: unshaded
+      visible: false
+  - type: GenericVisualizer
+    visuals:
+      enum.ActionState.Toggled:
+        enum.ActionVisuals.Icon:
+          True: { visible: true }
+          False: { visible: true }
+        enum.ActionVisuals.IconToggled:
+          True: { visible: true }
+          False: { visible: false }
+  - type: InstantAction
+    event: !type:FishIpcDefibActionEvent
+
+- type: entity
+  parent: BaseAction
+  id: FishActionIpcJumpstarter
+  name: Jumpstarter pulse
+  description: Dump capacitor charge to claw out of critical condition.
+  components:
+  - type: Action
+    useDelay: 1
+    itemIconStyle: NoItem
+    # Jumpstarter должен работать в crit.
+    checkCanInteract: false
+    checkConsciousness: false
+  - type: Sprite
+    layers:
+    - sprite: Objects/Power/power_cells.rsi
+      state: high
+      map: ["enum.ActionVisuals.Icon"]
+  - type: InstantAction
+    event: !type:FishIpcJumpstarterActionEvent
+
+# Включённое состояние — зелёная рамка поверх иконки. Базовый визуализатор прячет Icon.
+- type: entity
+  abstract: true
+  parent: BaseToggleAction
+  id: FishBaseIpcToggleAction
+  components:
+  - type: Action
+    useDelay: 0.5
+    itemIconStyle: NoItem
+  - type: GenericVisualizer
+    visuals:
+      enum.ActionState.Toggled:
+        enum.ActionVisuals.Icon:
+          True: { visible: true }
+          False: { visible: true }
+        enum.ActionVisuals.IconToggled:
+          True: { visible: true }
+          False: { visible: false }
+      enum.LimitedChargesState.HasCharges:
+        enum.ActionVisuals.Icon:
+          True: { color: White }
+          False: { color: DimGray }
+        enum.ActionVisuals.IconToggled:
+          True: { color: White }
+          False: { color: DimGray }
+  - type: InstantAction
+    event: !type:FishIpcModuleToggleActionEvent
+
+- type: entity
+  parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleRepair
+  name: Toggle chassis repair
+  description: Enable or disable the installed repair module.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Objects/Specific/Robotics/borgmodule.rsi
+      state: generic
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleVision
+  name: Toggle chassis optics
+  description: Enable or disable the installed vision module.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Clothing/Eyes/Hud/med.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleMeson
+  name: Toggle chassis welding shield
+  description: Enable or disable the installed welding-shield optics.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Clothing/Eyes/Glasses/meson.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleSec
+  name: Toggle chassis security optics
+  description: Enable or disable the installed security optics.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Clothing/Eyes/Hud/sec.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleThermal
+  name: Toggle chassis thermals
+  description: Enable or disable the installed thermal vision module.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: _Starlight/Objects/Specific/Medical/implants.rsi
+      state: eyes_thermal
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleModule
+  name: Toggle chassis module
+  description: Enable or disable this chassis module.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Objects/Specific/Robotics/borgmodule.rsi
+      state: generic
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: BaseItem
+  id: FishIpcDefibPads
+  name: chassis defibrillator pads
+  description: Integrated shock paddles projected from an IPC chassis module.
+  categories: [ HideSpawnMenu ]
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/defib.rsi
+    layers:
+    - state: icon
+    - state: screen
+      shader: unshaded
+  - type: Item
+    size: Huge
+  - type: MultiHandedItem
+  - type: FishIpcDefibPads
+# Fish-end

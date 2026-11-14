@@ -1,0 +1,30 @@
+# Fish-start: паки модулей КПБ
+# Healthcare → MedicalTechFab (T2 Biochemical)
+- type: latheRecipePack
+  id: FishIpcHealthcareModulesDynamic
+  recipes:
+  - FishIpcModuleMedHud
+  - FishIpcModuleJumpstarter
+  - FishIpcModuleDefib
+  - FishIpcModuleNanoRepair
+  - FishIpcModuleReactiveRepair
+
+# Остальное utility → Protolathe (T2 Experimental)
+- type: latheRecipePack
+  id: FishIpcUtilityModulesDynamic
+  recipes:
+  - FishIpcModuleWireInterface
+  - FishIpcModuleApcAdapter
+  - FishIpcModuleVocalMod
+  - FishIpcModuleToolHand
+  - FishIpcModuleSecHud
+  - FishIpcModuleMeson
+  - FishIpcModuleRadFilter
+
+# Термалы + анти-ЭМИ → Protolathe (T3 Experimental)
+- type: latheRecipePack
+  id: FishIpcAdvancedOpticsModulesDynamic
+  recipes:
+  - FishIpcModuleNightVision
+  - FishIpcModuleEmpScreen
+# Fish-end

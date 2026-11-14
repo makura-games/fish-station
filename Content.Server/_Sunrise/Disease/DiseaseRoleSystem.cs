@@ -1,5 +1,6 @@
 // Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
+using Content.Shared._Fish.Ipc;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Robust.Shared.Random;
@@ -69,6 +70,14 @@ public sealed partial class DiseaseRoleSystem : SharedDiseaseRoleSystem
     {
         if (TryComp<DiseaseRoleComponent>(args.Performer, out var component))
         {
+            // Fish-start: робот не заражается и попытка не тратит заряд
+            if (HasComp<FishIpcComponent>(args.Target))
+            {
+                _popup.PopupEntity(Loc.GetString("fish-ipc-disease-robot"), args.Performer, args.Performer);
+                return;
+            }
+            // Fish-end
+
             if (HasComp<SickComponent>(args.Target))
             {
                 _popup.PopupEntity(Loc.GetString("disease-infect-already-sick"), args.Performer, args.Performer);

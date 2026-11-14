@@ -10,6 +10,7 @@ using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.RoundEnd;
 using Content.Server.Storage.EntitySystems;
+using Content.Shared._Fish.Ipc;
 using Content.Shared._Sunrise.BloodCult;
 using Content.Shared._Sunrise.BloodCult.Components;
 using Content.Shared._Sunrise.CollectiveMind;
@@ -505,6 +506,11 @@ public sealed partial class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleCo
     {
         if (!_mindSystem.TryGetMind(cultist, out var mindId, out var mind))
             return false;
+
+        // Fish-start: КПБ не становятся культистами
+        if (HasComp<FishIpcComponent>(cultist))
+            return false;
+        // Fish-end
 
         if (_tagSystem.HasTag(cultist, DeconvertedCultistTag))
             return false;

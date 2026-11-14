@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Ipc;
 using Content.Shared.Examine;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
@@ -43,8 +44,14 @@ public sealed partial class MindExamineSystem : EntitySystem
             _ => null,
         };
 
-        if (message != null)
-            args.PushMarkup(message);
+        if (message == null)
+            return;
+
+        // Fish-edit: у КПБ нет кататонии «от стресса глубокого космоса»
+        if (ent.Comp.State == MindState.Catatonic && HasComp<FishIpcComponent>(ent.Owner))
+            return;
+
+        args.PushMarkup(message);
     }
 
     private void OnPlayerAttached(PlayerAttachedEvent args)

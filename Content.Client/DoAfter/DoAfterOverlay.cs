@@ -159,14 +159,17 @@ public sealed partial class DoAfterOverlay : Overlay
                 if (doAfter.CancelledTime != null)
                 {
                     elapsed = doAfter.CancelledTime.Value - doAfter.StartTime;
-                    elapsedRatio = (float)Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
+                    // Fish-start - Clamp вместо Min: отрицательный elapsed/нулевой Delay давали Left>Right в Box2
+                    elapsedRatio = GetElapsedRatio(elapsed, doAfter.Args.Delay);
+                    // Fish-end
                     var cancelElapsed = (time - doAfter.CancelledTime.Value).TotalSeconds;
                     var flash = Math.Floor(cancelElapsed / FlashTime) % 2 == 0;
                     color = GetProgressColor(0, flash ? alpha : 0);
                 }
                 else
                 {
-                    elapsedRatio = (float)Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
+                    // Fish-edit - безопасный ratio для прогресс-бара (см. GetElapsedRatio)
+                    elapsedRatio = GetElapsedRatio(elapsed, doAfter.Args.Delay);
                     color = GetProgressColor(elapsedRatio, alpha);
                 }
 
@@ -186,4 +189,19 @@ public sealed partial class DoAfterOverlay : Overlay
     {
         return _progressColor.GetProgressColor(progress).WithAlpha(alpha);
     }
+
+    // Fish-start - защита Draw от инвертированного Box2 при prediction/pause/нулевом Delay
+    private static float GetElapsedRatio(TimeSpan elapsed, TimeSpan delay)
+    {
+        var delaySeconds = (float)delay.TotalSeconds;
+        if (delaySeconds <= 0f || float.IsNaN(delaySeconds))
+            return 1f;
+
+        var ratio = (float)(elapsed.TotalSeconds / delaySeconds);
+        if (float.IsNaN(ratio) || float.IsInfinity(ratio))
+            return 0f;
+
+        return Math.Clamp(ratio, 0f, 1f);
+    }
+    // Fish-end
 }
