@@ -718,7 +718,6 @@ public sealed partial class FleshCultTests
         });
         var server = pair.Server;
         var entMan = server.EntMan;
-        var timing = server.Timing;
         var map = await pair.CreateTestMap();
         var atmosSys = server.System<AtmosphereSystem>();
         var dmgSys = server.System<DamageableSystem>();
@@ -743,22 +742,30 @@ public sealed partial class FleshCultTests
             // Вторая горящая сущность гарантирует продолжение обхода в FlammableSystem.Update.
             bystander = entMan.Spawn("MobHuman", map.MapCoords);
 
-            dmgSys.TryChangeDamage(cultist, new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(198) } } }, true);
+            // Доводим урон до предсмертного (~185), чтобы именно тик FlammableSystem.Update перевёл культиста в Dead.
+            for (var i = 0; i < 12 && dmgSys.GetAllDamage(cultist).GetTotal() < FixedPoint2.New(185); i++)
+            {
+                dmgSys.TryChangeDamage(cultist, new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(25) } } }, true);
+            }
+
             flammableSys.AdjustFireStacks(cultist, 20, ignite: true);
             flammableSys.AdjustFireStacks(bystander, 1, ignite: true);
         });
 
+        await server.WaitAssertion(() =>
+        {
+            var state = entMan.GetComponent<MobStateComponent>(cultist).CurrentState;
+            Assert.That(state, Is.Not.EqualTo(MobState.Dead),
+                "Cultist must still be alive/critical before FlammableSystem.Update deals the lethal fire tick.");
+        });
+
         // Ждём срабатывания 1-секундного цикла FlammableSystem.Update (смерть от огня) и отложенного превращения в MobFleshPudge.
-        await pair.RunSeconds(2.0f);
+        await pair.RunSeconds(2.5f);
 
         await server.WaitAssertion(() =>
         {
-            var state = entMan.GetComponentOrNull<MobStateComponent>(cultist)?.CurrentState;
-            var dmg = dmgSys.GetAllDamage(cultist).GetTotal();
-            var flam = entMan.GetComponentOrNull<FlammableComponent>(cultist);
-            var fc = entMan.GetComponentOrNull<FleshCultistComponent>(cultist);
             Assert.That(entMan.Deleted(cultist), Is.True,
-                $"Cultist killed by fire should gib and delete after spawning MobFleshPudge. CurTime={timing.CurTime}, State={state}, Dmg={dmg}, OnFire={flam?.OnFire}, Stacks={flam?.FireStacks}, NextUpd={flam?.NextUpdate}, Pending={fc?.IsTransformationPending}, DeathPending={fc?.IsDeathPending}");
+                "Cultist killed by fire should gib and delete after spawning MobFleshPudge.");
             Assert.That(entMan.Deleted(bystander), Is.False);
 
             var foundPudge = false;
