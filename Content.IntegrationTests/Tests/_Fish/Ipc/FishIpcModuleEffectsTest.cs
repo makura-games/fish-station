@@ -130,7 +130,8 @@ public sealed class FishIpcModuleEffectsTest : FishIpcGameTest
             DisableDamageVariance();
             ipc = SSpawn("MobIpc");
             InstallModule(ipc, "FishIpcModuleJumpstarter");
-            Hurt(ipc, "Blunt", 120);
+            // −15 blunt уводит 110 под порог Critical. 120 осталось бы в крите.
+            Hurt(ipc, "Blunt", 110);
             SetCellCharge(ipc, 0f);
         });
 

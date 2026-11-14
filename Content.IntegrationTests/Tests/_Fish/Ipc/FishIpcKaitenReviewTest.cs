@@ -256,6 +256,29 @@ public sealed class FishIpcKaitenReviewTest : FishIpcGameTest
     }
 
     [Test]
+    public async Task Jumpstarter_StaysCriticalWhenDamageRemainsAboveThreshold()
+    {
+        EntityUid ipc = default;
+
+        await Server.WaitPost(() =>
+        {
+            DisableDamageVariance();
+            ipc = SSpawn("MobIpc");
+            InstallModule(ipc, "FishIpcModuleJumpstarter");
+            Hurt(ipc, "Blunt", 160);
+            SetCellCharge(ipc, 720f);
+            Assert.That(SComp<MobStateComponent>(ipc).CurrentState, Is.EqualTo(MobState.Critical));
+            SEntMan.EventBus.RaiseLocalEvent(ipc, new FishIpcJumpstarterActionEvent());
+        });
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SComp<MobStateComponent>(ipc).CurrentState, Is.EqualTo(MobState.Critical));
+            Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(145f));
+        });
+    }
+
+    [Test]
     public async Task DuplicateModule_IsRejected()
     {
         var map = await Pair.CreateTestMap();

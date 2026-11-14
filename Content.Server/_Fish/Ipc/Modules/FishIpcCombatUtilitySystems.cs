@@ -373,16 +373,21 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
             _actions.SetCooldown(action, module.Comp.Cooldown);
 
         _damageable.TryChangeDamage(host.Owner, module.Comp.HealOnUse, ignoreResistances: true, origin: host.Owner, ignoreVariance: true);
+        // Не ставим Alive вручную: при уроне 100–199 порог Critical должен остаться.
+        _mobThreshold.VerifyThresholds(host.Owner);
 
-        if (TryComp<MobThresholdsComponent>(host.Owner, out var thresholds) &&
-            _mobThreshold.TryGetThresholdForState(host.Owner, MobState.Dead, out var deadThreshold, thresholds) &&
-            _damageable.GetTotalDamage(host.Owner) >= deadThreshold)
+        if (_mobState.IsDead(host.Owner))
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-fail"), host, host, PopupType.MediumCaution);
             return;
         }
 
-        _mobState.ChangeMobState(host.Owner, MobState.Alive);
+        if (!_mobState.IsAlive(host.Owner))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-still-crit"), host, host, PopupType.MediumCaution);
+            return;
+        }
+
         _popup.PopupEntity(Loc.GetString("fish-ipc-module-jumpstarter-success"), host, host, PopupType.Medium);
     }
 

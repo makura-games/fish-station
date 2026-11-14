@@ -98,6 +98,7 @@ fish-ipc-module-defib-fail = Разряд не оживляет { $target }.
 fish-ipc-module-jumpstarter-not-crit = Jumpstarter работает только в критическом состоянии.
 fish-ipc-module-jumpstarter-success = Импульс jumpstarter поднимает шасси.
 fish-ipc-module-jumpstarter-fail = Импульса мало — урон всё ещё смертельный.
+fish-ipc-module-jumpstarter-still-crit = Импульса мало — шасси всё ещё в критическом состоянии.
 fish-ipc-module-tool-no-hand = Нет свободной руки для встроенного инструмента.
 fish-ipc-module-defib-hands = Для накладок нужны две свободные руки.
 fish-ipc-module-wire-interface-self = Интерфейс проводов активен: панели рядом дают доп. диагностику.
