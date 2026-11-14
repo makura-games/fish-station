@@ -1,5 +1,7 @@
+using Content.Server.Suicide;
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
+using Content.Shared.Interaction.Events;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
@@ -36,6 +38,16 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
         SubscribeLocalEvent<FishIpcComponent, PowerCellSlotEmptyEvent>(OnPowerCellEmpty);
         SubscribeLocalEvent<FishIpcComponent, EntInsertedIntoContainerMessage>(OnCellInserted);
         SubscribeLocalEvent<FishIpcComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<FishIpcComponent, SuicideEvent>(OnSuicide, before: [typeof(SuicideSystem)]);
+    }
+
+    private void OnSuicide(Entity<FishIpcComponent> ent, ref SuicideEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        // КПБ не имеют крови (Bloodloss отсутствует в DamageContainer Ipc), поэтому используем совместимый тип урона Shock.
+        args.DamageType ??= "Shock";
     }
 
     private void OnShutdown(Entity<FishIpcComponent> ent, ref ComponentShutdown args)

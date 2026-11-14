@@ -209,13 +209,14 @@ public sealed partial class FleshCultSystem
 
     private void HandleDragDropOn(EntityUid uid, FleshHeartComponent component, ref DragDropTargetEvent args)
     {
-
+        // Fish-start: передаём конкретную причину отказа (например, если сердце уже наелось 3 трупами)
         if (!CanAbsorb(uid, args.Dragged, component, out var failureReason))
         {
             _popup.PopupEntity(Loc.GetString(failureReason),
                 args.User, PopupType.Large);
             return;
         }
+        // Fish-end
 
         if (!TryComp<FixturesComponent>(args.Dragged, out var fixturesComponent))
         {
@@ -252,12 +253,14 @@ public sealed partial class FleshCultSystem
         if (args.Cancelled || args.Handled || args.Args.Target == null)
             return;
 
+        // Fish-start: повторно проверяем вместимость сердца при завершении DoAfter
         if (!CanAbsorb(uid, args.Args.Target.Value, component, out var failureReason))
         {
             _popup.PopupEntity(Loc.GetString(failureReason),
                 args.User, PopupType.Large);
             return;
         }
+        // Fish-end
 
         if (!TryComp<FixturesComponent>(args.Args.Target.Value, out var fixturesComponent))
         {
@@ -322,6 +325,7 @@ public sealed partial class FleshCultSystem
 
     #endregion
 
+    // Fish-start: запрещаем кормление сердца после поглощения 3 трупов или вне базовой стадии
     private bool CanAbsorb(EntityUid uid, EntityUid dragged, FleshHeartComponent component, out string failureReason)
     {
         if (component.Status != HeartStatus.Base
@@ -344,6 +348,7 @@ public sealed partial class FleshCultSystem
         failureReason = string.Empty;
         return !TryComp<MindContainerComponent>(dragged, out _) || true;
     }
+    // Fish-end
 
     private void SpawnFleshFloorOnOpenTiles(EntityUid fleshHeart, FleshHeartComponent component, TransformComponent xform, float radius)
     {

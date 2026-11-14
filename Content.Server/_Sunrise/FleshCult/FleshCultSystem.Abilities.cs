@@ -61,13 +61,15 @@ public sealed partial class FleshCultSystem
         SubscribeLocalEvent<FleshAbilitiesComponent, FleshCultistUnlockAbilityEvent>(OnUnlockAbility);
 
         SubscribeLocalEvent<FleshAbilitiesComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<FleshAbilitiesComponent, ComponentShutdown>(OnAbilitiesShutdown);
+        SubscribeLocalEvent<FleshAbilitiesComponent, ComponentShutdown>(OnAbilitiesShutdown); // Fish-edit: останавливаем звук поглощения при удалении компонента
     }
 
+    // Fish-start: остановка активного звука поглощения при выключении компонента
     private void OnAbilitiesShutdown(Entity<FleshAbilitiesComponent> ent, ref ComponentShutdown args)
     {
         ent.Comp.CurrentDevourSound = _audioSystem.Stop(ent.Comp.CurrentDevourSound);
     }
+    // Fish-end
 
     private int MatchSaturation(int bloodVolume, bool hasAppearance)
     {
@@ -200,6 +202,7 @@ public sealed partial class FleshCultSystem
                             uid, uid);
                         return;
                     }
+                    // Fish-start: запускаем звук поглощения как у генокрада на время DoAfter
                     if (_doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager ,uid, component.DevourTime,
                         new FleshCultistDevourDoAfterEvent(), uid, target: target, used: uid)
                     {
@@ -209,6 +212,7 @@ public sealed partial class FleshCultSystem
                         component.CurrentDevourSound = _audioSystem.Stop(component.CurrentDevourSound);
                         component.CurrentDevourSound = _audioSystem.PlayPvs(component.DevourSound, uid)?.Entity;
                     }
+                    // Fish-end
                     args.Handled = true;
                     break;
 
@@ -229,7 +233,7 @@ public sealed partial class FleshCultSystem
         if (args.Handled)
             return;
 
-        component.CurrentDevourSound = _audioSystem.Stop(component.CurrentDevourSound);
+        component.CurrentDevourSound = _audioSystem.Stop(component.CurrentDevourSound); // Fish-edit: останавливаем звук поглощения по завершении или отмене DoAfter
 
         if (args.Cancelled)
             return;
