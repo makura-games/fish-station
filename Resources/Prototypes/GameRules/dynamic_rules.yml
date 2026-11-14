@@ -14,10 +14,6 @@
         conditions:
         - !type:RoundDurationCondition
           max: 1
-        # Fish-start
-        conditionsForChildren:
-        - !type:FishGameRulePopulationCondition
-        # Fish-end
         children:
         - id: Traitor
           weight: 60

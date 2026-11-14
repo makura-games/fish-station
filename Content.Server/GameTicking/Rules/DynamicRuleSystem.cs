@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Content.Server.Administration.Logs;
 using Content.Server.RoundEnd;
-using Content.Shared._Fish.GameTicking; // Fish-edit
 using Content.Shared.Database;
 using Content.Shared.EntityTable;
 using Content.Shared.EntityTable.Conditions;
@@ -71,7 +70,6 @@ public sealed partial class DynamicRuleSystem : GameRuleSystem<DynamicRuleCompon
         var ctx = new EntityTableContext(new Dictionary<string, object>
         {
             { HasBudgetCondition.BudgetContextKey, entity.Comp.Budget },
-            { FishGameRulePopulationCondition.ReadyPlayersContextKey, GameTicker.ReadyPlayerCount() }, // Fish-edit
         });
 
         return _entityTable.GetSpawns(entity.Comp.Table, ctx: ctx);
