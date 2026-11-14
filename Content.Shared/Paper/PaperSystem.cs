@@ -111,13 +111,26 @@ public sealed partial class PaperSystem : EntitySystem
 
     private void OnInteractUsing(Entity<PaperComponent> entity, ref InteractUsingEvent args)
     {
+        // Fish-start - скрепление бумаг степлером (одна подписка на InteractUsing у Paper)
+        if (EntityManager.System<Content.Shared._Fish.Paper.FishStapledDocumentSystem>()
+            .TryHandlePaperInteractUsing(entity, ref args))
+            return;
+        // Fish-end
+
+        // Fish-start - операции письма/печати на текущей странице пакета
+        var contentTarget = ResolvePaperContentTarget(entity);
+        if (!TryComp(contentTarget, out PaperComponent? contentPaper))
+            contentPaper = entity.Comp;
+        var contentEntity = new Entity<PaperComponent>(contentTarget, contentPaper);
+        // Fish-end
+
         // only allow editing if there are no stamps or when using a cyberpen
-        var editable = entity.Comp.StampedBy.Count == 0 || _tagSystem.HasTag(args.Used, WriteIgnoreStampsTag);
+        var editable = contentEntity.Comp.StampedBy.Count == 0 || _tagSystem.HasTag(args.Used, WriteIgnoreStampsTag);
         if (_tagSystem.HasTag(args.Used, WriteTag))
         {
             if (editable)
             {
-                if (entity.Comp.EditingDisabled)
+                if (contentEntity.Comp.EditingDisabled)
                 {
                     var paperEditingDisabledMessage = Loc.GetString("paper-tamper-proof-modified-message");
                     _popupSystem.PopupEntity(paperEditingDisabledMessage, entity, args.User);
@@ -126,7 +139,7 @@ public sealed partial class PaperSystem : EntitySystem
                     return;
                 }
 
-                var ev = new PaperWriteAttemptEvent(entity.Owner);
+                var ev = new PaperWriteAttemptEvent(contentEntity.Owner);
                 RaiseLocalEvent(args.User, ref ev);
                 if (ev.Cancelled)
                 {
@@ -140,7 +153,7 @@ public sealed partial class PaperSystem : EntitySystem
                     return;
                 }
 
-                var writeEvent = new PaperWriteEvent(args.User, entity);
+                var writeEvent = new PaperWriteEvent(args.User, contentEntity);
                 RaiseLocalEvent(args.Used, ref writeEvent);
 
                 entity.Comp.Mode = PaperAction.Write;
@@ -152,7 +165,7 @@ public sealed partial class PaperSystem : EntitySystem
         }
 
         // If a stamp, attempt to stamp paper
-        if (TryComp<StampComponent>(args.Used, out var stampComp) && TryStamp(entity, GetStampInfo(stampComp), stampComp.StampState))
+        if (TryComp<StampComponent>(args.Used, out var stampComp) && TryStamp(contentEntity, GetStampInfo(stampComp), stampComp.StampState))
         {
             // successfully stamped, play popup
             var stampPaperOtherMessage = Loc.GetString("paper-component-action-stamp-paper-other",
@@ -181,31 +194,38 @@ public sealed partial class PaperSystem : EntitySystem
 
     private void OnInputTextMessage(Entity<PaperComponent> entity, ref PaperInputTextMessage args)
     {
-        if (!TryValidateWriteTool(entity, args.Actor))
+        // Fish-start - запись на текущую страницу пакета
+        var contentTarget = ResolvePaperContentTarget(entity);
+        if (!TryComp(contentTarget, out PaperComponent? contentPaper))
+            return;
+        var contentEntity = new Entity<PaperComponent>(contentTarget, contentPaper);
+        // Fish-end
+
+        if (!TryValidateWriteTool(contentEntity, args.Actor))
             return;
 
-        var ev = new PaperWriteAttemptEvent(entity.Owner);
+        var ev = new PaperWriteAttemptEvent(contentEntity.Owner);
         RaiseLocalEvent(args.Actor, ref ev);
         if (ev.Cancelled)
             return;
 
-        if (args.Text.Length <= entity.Comp.ContentSize)
+        if (args.Text.Length <= contentEntity.Comp.ContentSize)
         {
-            SetContent(entity, args.Text);
+            SetContent(contentEntity, args.Text);
 
             var paperStatus = string.IsNullOrWhiteSpace(args.Text) ? PaperStatus.Blank : PaperStatus.Written;
 
-            if (TryComp<AppearanceComponent>(entity, out var appearance))
-                _appearance.SetData(entity, PaperVisuals.Status, paperStatus, appearance);
+            if (TryComp<AppearanceComponent>(contentEntity, out var appearance))
+                _appearance.SetData(contentEntity, PaperVisuals.Status, paperStatus, appearance);
 
-            if (TryComp(entity, out MetaDataComponent? meta))
-                _metaSystem.SetEntityDescription(entity, "", meta);
+            if (TryComp(contentEntity, out MetaDataComponent? meta))
+                _metaSystem.SetEntityDescription(contentEntity, "", meta);
 
             _adminLogger.Add(LogType.Chat,
                 LogImpact.Low,
-                $"{ToPrettyString(args.Actor):player} has written on {ToPrettyString(entity):entity} the following text: {args.Text}");
+                $"{ToPrettyString(args.Actor):player} has written on {ToPrettyString(contentEntity):entity} the following text: {args.Text}");
 
-            _audio.PlayPvs(entity.Comp.Sound, entity);
+            _audio.PlayPvs(contentEntity.Comp.Sound, contentEntity);
         }
 
         entity.Comp.Mode = PaperAction.Read;
@@ -213,7 +233,7 @@ public sealed partial class PaperSystem : EntitySystem
 
         // Fish-Start
         var writeAfterEv = new PaperAfterWriteEvent(args.Actor);
-        RaiseLocalEvent(entity.Owner, ref writeAfterEv);
+        RaiseLocalEvent(contentEntity.Owner, ref writeAfterEv);
         // Fish-End
     }
 
@@ -313,6 +333,22 @@ public sealed partial class PaperSystem : EntitySystem
         _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, GetPaperUiState(entity));
     }
 
+    // Fish-start - публичный хук для обновления UI пакета документов
+    public void RefreshUi(Entity<PaperComponent> entity)
+    {
+        UpdateUserInterface(entity);
+    }
+    // Fish-end
+
+    // Fish-start - редирект на текущую страницу степлерного пакета
+    private EntityUid ResolvePaperContentTarget(EntityUid paper)
+    {
+        var ev = new GetPaperContentTargetEvent(paper);
+        RaiseLocalEvent(paper, ref ev);
+        return ev.Target;
+    }
+    // Fish-end
+
 }
 
 /// <summary>
@@ -335,4 +371,38 @@ public record struct PaperWriteAttemptEvent(EntityUid Paper, string? FailReason 
 /// <param name="Actor">Entity that wrote something on the paper.</param>
 [ByRefEvent]
 public readonly record struct PaperAfterWriteEvent(EntityUid Actor);
+
+/// <summary>
+/// Позволяет перенаправить операции чтения/записи/печати на другую страницу пакета.
+/// </summary>
+[ByRefEvent]
+public struct GetPaperContentTargetEvent
+{
+    public EntityUid Paper;
+    public EntityUid Target;
+
+    public GetPaperContentTargetEvent(EntityUid paper)
+    {
+        Paper = paper;
+        Target = paper;
+    }
+}
+
+/// <summary>
+/// Сообщает UI индекс и число страниц пакета документов.
+/// </summary>
+[ByRefEvent]
+public struct GetPaperPageInfoEvent
+{
+    public EntityUid Paper;
+    public int PageIndex;
+    public int PageCount;
+
+    public GetPaperPageInfoEvent(EntityUid paper)
+    {
+        Paper = paper;
+        PageIndex = 0;
+        PageCount = 1;
+    }
+}
 // Fish-End

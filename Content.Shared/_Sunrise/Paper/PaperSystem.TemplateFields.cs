@@ -134,15 +134,26 @@ public sealed partial class PaperSystem
 
     private PaperComponent.PaperBoundUserInterfaceState GetPaperUiState(Entity<PaperComponent> entity)
     {
-        var templateFieldsEnabled = PaperInteractiveTagParsing.ContainsInteractiveTags(entity.Comp.Content);
+        // Fish-start - UI показывает текущую страницу пакета
+        var contentUid = ResolvePaperContentTarget(entity);
+        if (!_paperQuery.TryComp(contentUid, out var contentPaper))
+            contentPaper = entity.Comp;
+
+        var pageEv = new GetPaperPageInfoEvent(entity);
+        RaiseLocalEvent(entity.Owner, ref pageEv);
+
+        var templateFieldsEnabled = PaperInteractiveTagParsing.ContainsInteractiveTags(contentPaper.Content);
 
         return new PaperComponent.PaperBoundUserInterfaceState(
-            entity.Comp.Content,
-            entity.Comp.DefaultColor,
-            entity.Comp.StampedBy,
+            contentPaper.Content,
+            contentPaper.DefaultColor,
+            contentPaper.StampedBy,
             entity.Comp.Mode,
-            entity.Comp.ImageContent,
-            entity.Comp.ImageScale,
-            templateFieldsEnabled);
+            contentPaper.ImageContent,
+            contentPaper.ImageScale,
+            templateFieldsEnabled,
+            pageEv.PageIndex,
+            pageEv.PageCount);
+        // Fish-end
     }
 }

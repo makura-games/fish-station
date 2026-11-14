@@ -24,6 +24,7 @@ public sealed partial class PaperBoundUserInterface : BoundUserInterface // Sunr
         _window = this.CreateWindow<PaperWindow>();
         _window.OnSaved += InputOnTextEntered;
         InitializeTemplateFieldSupport(); // Sunrise - add
+        InitializeStapledDocumentSupport(); // Fish-edit - навигация страниц пакета
 
         if (EntMan.TryGetComponent<PaperComponent>(Owner, out var paper))
         {

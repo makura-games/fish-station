@@ -1,0 +1,291 @@
+#nullable enable
+using Content.Shared._Fish.Paper;
+using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Paper;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Map;
+using Robust.Shared.Maths;
+
+namespace Content.IntegrationTests.Tests._Fish.Paper;
+
+[TestFixture]
+[TestOf(typeof(FishStapledDocumentSystem))]
+public sealed class FishStapledDocumentTest
+{
+    [Test]
+    public async Task StapleTwoPapers_PreservesOrderTextAndStamps()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var paperSys = entMan.System<PaperSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        EntityUid user = default;
+        EntityUid outer = default;
+        EntityUid inner = default;
+        EntityUid stapler = default;
+
+        await server.WaitPost(() =>
+        {
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+
+            outer = entMan.SpawnEntity("Paper", map.GridCoords);
+            inner = entMan.SpawnEntity("Paper", map.GridCoords);
+            stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+
+            paperSys.SetContent(outer, "OUTER_PAGE_TEXT");
+            paperSys.SetContent(inner, "INNER_PAGE_TEXT");
+            paperSys.TryStamp((outer, entMan.GetComponent<PaperComponent>(outer)),
+                new StampDisplayInfo { StampedName = "stamp-component-stamped-name-default", StampedColor = Color.Red },
+                "paper_stamp-generic");
+            paperSys.TryStamp((inner, entMan.GetComponent<PaperComponent>(inner)),
+                new StampDisplayInfo { StampedName = "stamp-component-stamped-name-centcom", StampedColor = Color.Blue },
+                "paper_stamp-centcom");
+
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, outer, checkActionBlocker: false), Is.True);
+        });
+
+        var stapled = false;
+        await server.WaitPost(() =>
+        {
+            stapled = stapleSys.TryStaple(user, outer, inner, (stapler, entMan.GetComponent<FishStaplerComponent>(stapler)));
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(stapled, Is.True);
+            Assert.That(entMan.TryGetComponent(outer, out FishStapledDocumentComponent? bundleComp), Is.True);
+            var bundle = (outer, bundleComp!);
+            Assert.That(stapleSys.GetPageCount(bundle), Is.EqualTo(2));
+
+            Assert.That(stapleSys.TryGetPageEntity(bundle, 0, out var page0), Is.True);
+            Assert.That(page0, Is.EqualTo(outer));
+            Assert.That(stapleSys.TryGetPageEntity(bundle, 1, out var page1), Is.True);
+            Assert.That(page1, Is.EqualTo(inner));
+
+            var outerPaper = entMan.GetComponent<PaperComponent>(outer);
+            var innerPaper = entMan.GetComponent<PaperComponent>(inner);
+            Assert.That(outerPaper.Content, Is.EqualTo("OUTER_PAGE_TEXT"));
+            Assert.That(innerPaper.Content, Is.EqualTo("INNER_PAGE_TEXT"));
+            Assert.That(outerPaper.StampedBy, Has.Count.EqualTo(1));
+            Assert.That(innerPaper.StampedBy, Has.Count.EqualTo(1));
+            Assert.That(outerPaper.StampState, Is.EqualTo("paper_stamp-generic"));
+            Assert.That(innerPaper.StampState, Is.EqualTo("paper_stamp-centcom"));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task StapleMultipleAndCombineBundles_PreservesOrder()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var paperSys = entMan.System<PaperSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        EntityUid user = default;
+        EntityUid a = default;
+        EntityUid b = default;
+        EntityUid c = default;
+        EntityUid d = default;
+        EntityUid stapler = default;
+
+        await server.WaitPost(() =>
+        {
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            a = entMan.SpawnEntity("Paper", map.GridCoords);
+            b = entMan.SpawnEntity("Paper", map.GridCoords);
+            c = entMan.SpawnEntity("Paper", map.GridCoords);
+            d = entMan.SpawnEntity("Paper", map.GridCoords);
+            stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            paperSys.SetContent(a, "A");
+            paperSys.SetContent(b, "B");
+            paperSys.SetContent(c, "C");
+            paperSys.SetContent(d, "D");
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, a, checkActionBlocker: false), Is.True);
+        });
+
+        await server.WaitPost(() =>
+        {
+            var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
+            Assert.That(stapleSys.TryStaple(user, a, b, staplerEnt), Is.True);
+            // Держим оба пакета: a уже в руке, c подбираем на свободную после отпускания stapler не нужно —
+            // степлер должен оставаться в другой руке.
+            Assert.That(stapleSys.TryStaple(user, c, d, staplerEnt), Is.True);
+            Assert.That(stapleSys.TryStaple(user, a, c, staplerEnt), Is.True);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(a);
+            Assert.That(stapleSys.GetPageCount((a, bundle)), Is.EqualTo(4));
+            Assert.That(entMan.HasComponent<FishStapledDocumentComponent>(c), Is.False);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(GetPageContent(entMan, stapleSys, a, 0), Is.EqualTo("A"));
+                Assert.That(GetPageContent(entMan, stapleSys, a, 1), Is.EqualTo("B"));
+                Assert.That(GetPageContent(entMan, stapleSys, a, 2), Is.EqualTo("C"));
+                Assert.That(GetPageContent(entMan, stapleSys, a, 3), Is.EqualTo("D"));
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task PageNavigationAndSeparation_NoDuplicationOrLoss()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var paperSys = entMan.System<PaperSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        EntityUid user = default;
+        EntityUid outer = default;
+        EntityUid p2 = default;
+        EntityUid p3 = default;
+        EntityUid stapler = default;
+
+        await server.WaitPost(() =>
+        {
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            outer = entMan.SpawnEntity("Paper", map.GridCoords);
+            p2 = entMan.SpawnEntity("Paper", map.GridCoords);
+            p3 = entMan.SpawnEntity("Paper", map.GridCoords);
+            stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            paperSys.SetContent(outer, "P1");
+            paperSys.SetContent(p2, "P2");
+            paperSys.SetContent(p3, "P3");
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, outer, checkActionBlocker: false), Is.True);
+            var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
+            Assert.That(stapleSys.TryStaple(user, outer, p2, staplerEnt), Is.True);
+            Assert.That(stapleSys.TryStaple(user, outer, p3, staplerEnt), Is.True);
+        });
+
+        await server.WaitPost(() =>
+        {
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
+            bundle.CurrentPage = 1;
+            Dirty(entMan, (outer, bundle));
+
+            var targetEv = new GetPaperContentTargetEvent(outer);
+            entMan.EventBus.RaiseLocalEvent(outer, ref targetEv);
+            Assert.That(targetEv.Target, Is.EqualTo(p2));
+
+            Assert.That(stapleSys.TryRemoveCurrentPage((outer, bundle), user, quiet: true), Is.True);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.EntityExists(p2), Is.True);
+            Assert.That(entMan.EntityExists(p3), Is.True);
+            Assert.That(entMan.EntityExists(outer), Is.True);
+
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
+            Assert.That(stapleSys.GetPageCount((outer, bundle)), Is.EqualTo(2));
+            Assert.That(GetPageContent(entMan, stapleSys, outer, 0), Is.EqualTo("P1"));
+            Assert.That(GetPageContent(entMan, stapleSys, outer, 1), Is.EqualTo("P3"));
+            Assert.That(entMan.GetComponent<PaperComponent>(p2).Content, Is.EqualTo("P2"));
+        });
+
+        await server.WaitPost(() =>
+        {
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
+            Assert.That(stapleSys.TrySeparateAll((outer, bundle), user), Is.True);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.HasComponent<FishStapledDocumentComponent>(outer), Is.False);
+            Assert.That(entMan.EntityExists(outer), Is.True);
+            Assert.That(entMan.EntityExists(p3), Is.True);
+            Assert.That(entMan.GetComponent<PaperComponent>(outer).Content, Is.EqualTo("P1"));
+            Assert.That(entMan.GetComponent<PaperComponent>(p3).Content, Is.EqualTo("P3"));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task SelfStapleAndMissingStapler_Rejected()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        EntityUid user = default;
+        EntityUid paper = default;
+        EntityUid other = default;
+        EntityUid stapler = default;
+
+        await server.WaitPost(() =>
+        {
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            paper = entMan.SpawnEntity("Paper", map.GridCoords);
+            other = entMan.SpawnEntity("Paper", map.GridCoords);
+            stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(stapleSys.CanStaple(user, paper, paper, quiet: true), Is.False);
+            Assert.That(stapleSys.CanStaple(user, paper, other, quiet: true), Is.False);
+
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, paper, checkActionBlocker: false), Is.True);
+            Assert.That(stapleSys.CanStaple(user, paper, other, quiet: true), Is.True);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    private static void EnsureTwoHands(IEntityManager entMan, SharedHandsSystem hands, EntityUid user)
+    {
+        var handsComp = entMan.EnsureComponent<HandsComponent>(user);
+        // MobHuman уже имеет две руки; добираем только если рук меньше двух.
+        var i = 0;
+        while (handsComp.SortedHands.Count < 2)
+        {
+            hands.AddHand(user, $"fish-test-hand-{i}", i == 0 ? HandLocation.Left : HandLocation.Right);
+            i++;
+        }
+    }
+
+    private static string GetPageContent(
+        IEntityManager entMan,
+        FishStapledDocumentSystem stapleSys,
+        EntityUid bundle,
+        int index)
+    {
+        var comp = entMan.GetComponent<FishStapledDocumentComponent>(bundle);
+        Assert.That(stapleSys.TryGetPageEntity((bundle, comp), index, out var page), Is.True);
+        return entMan.GetComponent<PaperComponent>(page).Content;
+    }
+
+    private static void Dirty(IEntityManager entMan, Entity<FishStapledDocumentComponent> ent)
+    {
+        entMan.Dirty(ent);
+    }
+}
