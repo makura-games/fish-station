@@ -73,6 +73,12 @@ ent-FishActionIpcToggleVision = переключить оптику шасси
 ent-FishActionIpcToggleThermal = переключить термалы шасси
     .desc = Включить или выключить термальное зрение.
 
+ent-FishActionIpcToggleMeson = переключить защиту сварки
+    .desc = Включить или выключить защиту глаз от сварки.
+
+ent-FishActionIpcToggleSec = переключить оптику СБ
+    .desc = Включить или выключить очки службы безопасности.
+
 ent-FishActionIpcToggleModule = переключить модуль шасси
     .desc = Включить или выключить модуль. Всплывёт статус.
 

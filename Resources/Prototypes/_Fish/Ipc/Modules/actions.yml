@@ -112,6 +112,38 @@
 
 - type: entity
   parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleMeson
+  name: Toggle chassis welding shield
+  description: Enable or disable the installed welding-shield optics.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Clothing/Eyes/Glasses/meson.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
+  id: FishActionIpcToggleSec
+  name: Toggle chassis security optics
+  description: Enable or disable the installed security optics.
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Clothing/Eyes/Hud/sec.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: _Fish/Interface/Actions/ipc_toggle.rsi
+      state: on
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: FishBaseIpcToggleAction
   id: FishActionIpcToggleThermal
   name: Toggle chassis thermals
   description: Enable or disable the installed thermal vision module.

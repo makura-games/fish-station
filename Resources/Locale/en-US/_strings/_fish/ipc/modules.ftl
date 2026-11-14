@@ -73,6 +73,12 @@ ent-FishActionIpcToggleVision = Toggle chassis optics
 ent-FishActionIpcToggleThermal = Toggle chassis thermals
     .desc = Enable or disable thermal vision.
 
+ent-FishActionIpcToggleMeson = Toggle chassis welding shield
+    .desc = Enable or disable the welding eye shield.
+
+ent-FishActionIpcToggleSec = Toggle chassis security optics
+    .desc = Enable or disable the security HUD.
+
 ent-FishActionIpcToggleModule = Toggle chassis module
     .desc = Enable or disable this module. A status popup appears.
 

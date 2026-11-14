@@ -86,13 +86,14 @@
   suffix: Fish
   components:
   - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
+    sprite: Clothing/Eyes/Hud/sec.rsi
+    state: icon
   - type: FishIpcModule
     passiveDrainPerSecond: 0.7
     exclusionGroup: vision
   - type: FishIpcVisionModule
     kind: Security
+    toggleAction: FishActionIpcToggleSec
 
 - type: entity
   parent: FishBaseIpcModule
@@ -102,13 +103,14 @@
   suffix: Fish
   components:
   - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
+    sprite: Clothing/Eyes/Glasses/meson.rsi
+    state: icon
   - type: FishIpcModule
     passiveDrainPerSecond: 0.5
     exclusionGroup: vision
   - type: FishIpcVisionModule
     kind: Meson
+    toggleAction: FishActionIpcToggleMeson
 
 - type: entity
   parent: FishBaseIpcModule
