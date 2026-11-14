@@ -1,4 +1,5 @@
 # Цены и доступность вызова ОБР. Не хардкодить суммы в C#.
+# cryoRoleSpawners.roleKey сопоставляет спавнер с SpawnOnTrigger-точками на ЦК.
 
 - type: obrTeam
   id: ObrAmber
@@ -11,6 +12,22 @@
   account: Cargo
   priorityTag: DockFishERT
   sortOrder: 10
+  # Состав как у первой кнопки «вызов ОБР» на ЦК.
+  cryoRoleSpawners:
+  - spawner: RandomHumanoidSpawnerERTLeaderAmber
+    roleKey: Leader
+  - spawner: RandomHumanoidSpawnerERTEngineerAmber
+    roleKey: Engineer
+  - spawner: RandomHumanoidSpawnerERTMedicalAmber
+    roleKey: Medical
+  - spawner: RandomHumanoidSpawnerERTChaplainAmber
+    roleKey: Chaplain
+  - spawner: RandomHumanoidSpawnerERTSecurityAmber
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityAmber
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityAmber
+    roleKey: Security
 
 - type: obrTeam
   id: ObrRed
@@ -23,6 +40,22 @@
   account: Cargo
   priorityTag: DockFishERT
   sortOrder: 20
+  # Red-шаттл: Leader/Security Red, Eng/Med/Chaplain как на карте Red.
+  cryoRoleSpawners:
+  - spawner: RandomHumanoidSpawnerERTLeaderRed
+    roleKey: Leader
+  - spawner: RandomHumanoidSpawnerERTEngineerGamma
+    roleKey: Engineer
+  - spawner: RandomHumanoidSpawnerERTMedicalGamma
+    roleKey: Medical
+  - spawner: RandomHumanoidSpawnerERTChaplainEVA
+    roleKey: Chaplain
+  - spawner: RandomHumanoidSpawnerERTSecurityRed
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityRed
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityRed
+    roleKey: Security
 
 - type: obrTeam
   id: ObrGamma
@@ -34,6 +67,21 @@
   stationAvailable: false
   priorityTag: DockFishERT
   sortOrder: 30
+  cryoRoleSpawners:
+  - spawner: RandomHumanoidSpawnerERTLeaderGamma
+    roleKey: Leader
+  - spawner: RandomHumanoidSpawnerERTEngineerGamma
+    roleKey: Engineer
+  - spawner: RandomHumanoidSpawnerERTMedicalGamma
+    roleKey: Medical
+  - spawner: RandomHumanoidSpawnerERTChaplainGamma
+    roleKey: Chaplain
+  - spawner: RandomHumanoidSpawnerERTSecurityGamma
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityGamma
+    roleKey: Security
+  - spawner: RandomHumanoidSpawnerERTSecurityGamma
+    roleKey: Security
 
 - type: obrTeam
   id: ObrCburn
@@ -46,3 +94,27 @@
   account: Cargo
   priorityTag: DockFishCBURN
   sortOrder: 40
+  # 11 точек РХБЗЗ на centcomm.yml (кнопка вызова РХБЗЗ).
+  cryoRoleSpawners:
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN
+  - spawner: RandomHumanoidSpawnerCBURNUnit
+    roleKey: CBURN

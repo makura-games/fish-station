@@ -35,6 +35,7 @@
   path:
     path: /Audio/Jukebox/starlight.ogg
 
+# Fish-start
 # Classic SS13 title / lobby tracks (already licensed in-repo; safe for community hosted servers).
 # Stereo lobby and station-event files stay stereo for non-positional playback.
 # The jukebox points at mono copies under Audio/_Fish/Jukebox/Mono so PlayPvs can position them.
@@ -232,136 +233,23 @@
   path:
     path: /Audio/_Fish/Jukebox/Mono/sponsored-by-syndicate.ogg
 
-# A-Guy (A-Guy173/Music) — full catalog, CC0-1.0
-- type: jukebox
-  id: FishNuclearOpsFull
-  name: A-Guy - Nuclear Operations
-  path:
-    path: /Audio/_Fish/StationEvents/Music-main/0_nuclearoperations_remake_full.ogg
-
-- type: jukebox
-  id: FishNuclearOpsPrep
-  name: A-Guy - Nuclear Operations (Prep)
-  path:
-    path: /Audio/_Fish/StationEvents/Music-main/1_nuclearoperations_remake_prep.ogg
-
-- type: jukebox
-  id: FishNuclearOpsInfil
-  name: A-Guy - Nuclear Operations (Infil)
-  path:
-    path: /Audio/_Fish/StationEvents/Music-main/2_nuclearoperations_remake_infil.ogg
-
-- type: jukebox
-  id: FishNuclearOpsDef
-  name: A-Guy - Nuclear Operations (Defense)
-  path:
-    path: /Audio/_Fish/StationEvents/Music-main/3_nuclearoperations_remake_def.ogg
-
+# A-Guy (A-Guy173/Music), CC0-1.0
 - type: jukebox
   id: FishRevolutionTheme
   name: A-Guy - Revolution
   path:
-    path: /Audio/_Fish/StationEvents/Music-main/revolution.ogg
-
-- type: jukebox
-  id: FishAGuyNuclearOperationsOriginal
-  name: A-Guy - Nuclear Operations (Original)
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/nuclear_operations.ogg
-
-- type: jukebox
-  id: FishAGuyChaosTheory
-  name: A-Guy - Chaos Theory
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/chaos_theory.ogg
-
-- type: jukebox
-  id: FishAGuyMainframeBitflip
-  name: A-Guy - Mainframe Bitflip
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/mainframe_bitflip.ogg
-
-- type: jukebox
-  id: FishAGuyManMachine
-  name: A-Guy - Man-Machine
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/man_machine.ogg
-
-- type: jukebox
-  id: FishAGuyNoKingsInOrbit
-  name: A-Guy - No Kings In Orbit
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/no_kings_in_orbit.ogg
-
-- type: jukebox
-  id: FishAGuyNothingWrongWithMegacorpos
-  name: A-Guy - Nothing Wrong With Megacorpos
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/nothing_wrong_with_megacorpos.ogg
-
-- type: jukebox
-  id: FishAGuyTomfooleryRequired
-  name: A-Guy - Tomfoolery Required
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/tomfoolery_required.ogg
-
-- type: jukebox
-  id: FishAGuyUndefinedTheory
-  name: A-Guy - Undefined Theory
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/undefined_theory.ogg
-
-- type: jukebox
-  id: FishAGuyGetItDone
-  name: A-Guy - Get It Done
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/get_it_done.ogg
-
-- type: jukebox
-  id: FishAGuyLavaland
-  name: A-Guy - Lavaland
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/lavaland.ogg
-
-- type: jukebox
-  id: FishAGuyLowfunk
-  name: A-Guy - Lowfunk
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/lowfunk.ogg
-
-- type: jukebox
-  id: FishAGuyMotive
-  name: A-Guy - Motive
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/motive.ogg
-
-- type: jukebox
-  id: FishAGuyRadify
-  name: A-Guy - Radify
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/radify.ogg
-
-- type: jukebox
-  id: FishAGuySeclusion
-  name: A-Guy - Seclusion
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/seclusion.ogg
-
-- type: jukebox
-  id: FishAGuyTheStation
-  name: A-Guy - The Station
-  path:
-    path: /Audio/_Fish/Jukebox/AGuy/the_station.ogg
+    path: /Audio/_Fish/StationEvents/A-Guy/revolution.ogg
 
 # boich9585 — written for SS14 (Мёртвый Космос), CC-BY-SA-4.0
 - type: jukebox
   id: FishEnigma
   name: boich9585 - Enigma
   path:
-    path: /Audio/_Fish/StationEvents/enigma.ogg
+    path: /Audio/_Fish/StationEvents/Delta-Singoloose.ogg
 
 - type: jukebox
   id: FishCodeSierra
   name: boich9585 - Code Sierra
   path:
-    path: /Audio/_Fish/StationEvents/Code-Sierra.ogg
+    path: /Audio/_Fish/StationEvents/Sierra-Code.ogg
+# Fish-end

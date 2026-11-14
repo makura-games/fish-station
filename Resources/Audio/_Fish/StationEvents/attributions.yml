@@ -1,8 +1,4 @@
-- files: ["level.ogg"]
-  license: "CC-BY-3.0"
-  copyright: "Created by Dapper Husky"
-  source: "https://www.youtube.com/watch?v=Lyj-MZSAA9o"
-- files: ["enigma.ogg, Code-Sierra.ogg"]
+- files: ["Delta-Singoloose.ogg", "Sierra-Code.ogg"]
   license: "CC-BY-SA-4.0"
   copyright: "boich9585 (discord) for Space Station 14 server Мёртвый Космос. Downmixed to mono OGG for positional jukebox playback."
   source: https://discord.gg/ds14

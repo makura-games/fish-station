@@ -28,8 +28,8 @@ public sealed class ObrCallBoundUserInterface : BoundUserInterface
             _window?.UpdateState(cast);
     }
 
-    private void OnCallPressed(string teamId, string mission)
+    private void OnCallPressed(string teamId, string mission, bool spawnInCryo)
     {
-        SendMessage(new ObrCallRequestMessage(teamId, mission));
+        SendMessage(new ObrCallRequestMessage(teamId, mission, spawnInCryo));
     }
 }
