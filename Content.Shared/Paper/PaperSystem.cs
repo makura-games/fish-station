@@ -196,15 +196,19 @@ public sealed partial class PaperSystem : EntitySystem
     {
         // Fish-start - запись на явную страницу пакета (не на CurrentPage гонки)
         EntityUid contentTarget;
-        if (args.ContentTarget is { Valid: true } netTarget &&
-            TryGetEntity(netTarget, out var requestedUid) &&
-            requestedUid != null &&
-            IsValidPaperContentTarget(entity, requestedUid.Value))
+        if (args.ContentTarget is { Valid: true } netTarget)
         {
+            // Явная цель: при отсутствии/отсоединении страницы отклоняем, без fallback на текущую.
+            if (!TryGetEntity(netTarget, out var requestedUid) ||
+                requestedUid == null ||
+                !IsValidPaperContentTarget(entity, requestedUid.Value))
+                return;
+
             contentTarget = requestedUid.Value;
         }
         else
         {
+            // Обычная бумага без ContentTarget (клиент без пакета).
             contentTarget = ResolvePaperContentTarget(entity);
         }
 

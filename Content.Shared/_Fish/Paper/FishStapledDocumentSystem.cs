@@ -267,6 +267,10 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         if (_net.IsClient)
             return false;
 
+        // Нельзя отсоединять страницу во время записи — иначе ContentTarget уйдёт мимо пакета.
+        if (TryComp(ent, out PaperComponent? writingPaper) && writingPaper.Mode == PaperAction.Write)
+            return false;
+
         var count = GetPageCount(ent);
         if (count <= 1)
         {
@@ -308,6 +312,10 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
     public bool TrySeparateAll(Entity<FishStapledDocumentComponent> ent, EntityUid user)
     {
         if (_net.IsClient)
+            return false;
+
+        // Нельзя разбирать пакет во время записи.
+        if (TryComp(ent, out PaperComponent? writingPaper) && writingPaper.Mode == PaperAction.Write)
             return false;
 
         var pages = ent.Comp.Pages.ContainedEntities.ToList();

@@ -356,6 +356,159 @@ public sealed class FishStapledDocumentTest
         await pair.CleanReturnAsync();
     }
 
+    [Test]
+    public async Task WriteWithDetachedContentTarget_IsRejected()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var paperSys = entMan.System<PaperSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        EntityUid user = default;
+        EntityUid outer = default;
+        EntityUid inner = default;
+        EntityUid stapler = default;
+
+        await server.WaitPost(() =>
+        {
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            outer = entMan.SpawnEntity("Paper", map.GridCoords);
+            inner = entMan.SpawnEntity("Paper", map.GridCoords);
+            stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            paperSys.SetContent(outer, "OUTER");
+            paperSys.SetContent(inner, "INNER");
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, outer, checkActionBlocker: false), Is.True);
+            var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
+            Assert.That(stapleSys.TryStaple(user, outer, inner, staplerEnt), Is.True);
+
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
+            bundle.CurrentPage = 1;
+            Dirty(entMan, (outer, bundle));
+            Assert.That(stapleSys.TryRemoveCurrentPage((outer, bundle), user, quiet: true), Is.True);
+            Assert.That(entMan.HasComponent<FishStapledDocumentComponent>(outer), Is.False);
+
+            // Отклонённый ContentTarget возвращается до проверки ручки — ручка не нужна.
+            var detachedNet = entMan.GetNetEntity(inner);
+            var msg = new PaperComponent.PaperInputTextMessage("HACKED", detachedNet) { Actor = user };
+            entMan.EventBus.RaiseLocalEvent(outer, msg);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.GetComponent<PaperComponent>(outer).Content, Is.EqualTo("OUTER"));
+            Assert.That(entMan.GetComponent<PaperComponent>(inner).Content, Is.EqualTo("INNER"));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task RemovePage_BlockedWhileWriting()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            var outer = entMan.SpawnEntity("Paper", map.GridCoords);
+            var inner = entMan.SpawnEntity("Paper", map.GridCoords);
+            var stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, outer, checkActionBlocker: false), Is.True);
+            var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
+            Assert.That(stapleSys.TryStaple(user, outer, inner, staplerEnt), Is.True);
+
+            var paper = entMan.GetComponent<PaperComponent>(outer);
+            paper.Mode = PaperComponent.PaperAction.Write;
+            entMan.Dirty(outer, paper);
+
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
+            Assert.That(stapleSys.TryRemoveCurrentPage((outer, bundle), user, quiet: true), Is.False);
+            Assert.That(stapleSys.TrySeparateAll((outer, bundle), user), Is.False);
+            Assert.That(entMan.GetComponent<FishStapledDocumentComponent>(outer).Pages.Contains(inner), Is.True);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task TemplateSignatureAndJob_WriteOnCurrentInnerPage()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var paperSys = entMan.System<PaperSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        EntityUid user = default;
+        EntityUid outer = default;
+        EntityUid inner = default;
+        EntityUid pen = default;
+
+        await server.WaitPost(() =>
+        {
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            outer = entMan.SpawnEntity("Paper", map.GridCoords);
+            inner = entMan.SpawnEntity("Paper", map.GridCoords);
+            var stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            pen = entMan.SpawnEntity("Pen", map.GridCoords);
+            paperSys.SetContent(outer, "OUTER [signature] [job]");
+            paperSys.SetContent(inner, "INNER [signature] [job]");
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, outer, checkActionBlocker: false), Is.True);
+            var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
+            Assert.That(stapleSys.TryStaple(user, outer, inner, staplerEnt), Is.True);
+
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
+            bundle.CurrentPage = 1;
+            Dirty(entMan, (outer, bundle));
+
+            hands.TryDrop(user, stapler, checkActionBlocker: false);
+            Assert.That(hands.TryPickupAnyHand(user, pen, checkActionBlocker: false), Is.True);
+            Assert.That(hands.IsHolding(user, pen, out var penHand), Is.True);
+            // TrySetActiveHand возвращает false, если рука уже активна.
+            hands.SetActiveHand(user, penHand);
+            Assert.That(hands.GetActiveItem(user), Is.EqualTo(pen));
+
+            var sigMsg = new PaperComponent.PaperTemplateRequestMessage(
+                PaperComponent.PaperTemplateRequestType.Signature, 0) { Actor = user };
+            entMan.EventBus.RaiseLocalEvent(outer, sigMsg);
+
+            var jobMsg = new PaperComponent.PaperTemplateRequestMessage(
+                PaperComponent.PaperTemplateRequestType.Job, 0) { Actor = user };
+            entMan.EventBus.RaiseLocalEvent(outer, jobMsg);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var outerContent = entMan.GetComponent<PaperComponent>(outer).Content;
+            var innerContent = entMan.GetComponent<PaperComponent>(inner).Content;
+            var userName = entMan.GetComponent<MetaDataComponent>(user).EntityName;
+
+            Assert.That(outerContent, Is.EqualTo("OUTER [signature] [job]"));
+            Assert.That(innerContent, Does.Contain(userName));
+            Assert.That(innerContent, Does.Not.Contain("[signature]"));
+            Assert.That(innerContent, Does.Not.Contain("[job]"));
+            Assert.That(innerContent, Does.StartWith("INNER "));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
     private static void EnsureTwoHands(IEntityManager entMan, SharedHandsSystem hands, EntityUid user)
     {
         var handsComp = entMan.EnsureComponent<HandsComponent>(user);

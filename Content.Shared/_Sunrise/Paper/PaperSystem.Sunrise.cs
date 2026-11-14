@@ -62,6 +62,11 @@ public sealed partial class PaperSystem
                 HandleJobRequest(contentEntity, args.Actor, args.Index); // Fish-edit
                 break;
         }
+
+        // Fish-start - BUI открыт на внешнем листе; SetContent обновляет только внутреннюю страницу
+        if (contentEntity.Owner != entity.Owner)
+            RefreshUi(entity);
+        // Fish-end
     }
 
     private bool TryValidateTemplateWriteRequest(Entity<PaperComponent> entity, EntityUid actor, int index)
