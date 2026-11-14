@@ -520,7 +520,7 @@ public sealed partial class FleshCultTests
                     Assert.Multiple(() =>
                     {
                         Assert.That(melee.Damage.DamageDict["Slash"], Is.EqualTo(FixedPoint2.New(20)));
-                        Assert.That(melee.Damage.DamageDict["Blunt"], Is.EqualTo(FixedPoint2.New(30)));
+                        Assert.That(melee.Damage.DamageDict["Blunt"], Is.EqualTo(FixedPoint2.New(25)));
                         Assert.That(melee.Damage.DamageDict["Structural"], Is.EqualTo(FixedPoint2.New(35)));
                     });
                 }

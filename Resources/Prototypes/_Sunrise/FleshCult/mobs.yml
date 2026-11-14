@@ -257,7 +257,7 @@
       damage:
         types:
           Slash: 20 # Fish-edit: увеличено с 15 до 20
-          Blunt: 30 # Fish-edit: увеличено на 5 (с 25 до 30)
+          Blunt: 25
           Structural: 35 # Fish-edit: увеличено с 30 до 35
     - type: GhostRole
       allowMovement: true

@@ -27,7 +27,9 @@ namespace Content.Server._Sunrise.FleshCult
 
         public float DevourTime = 10f;
 
-        public SoundSpecifier DevourSound = new SoundPathSpecifier("/Audio/_Sunrise/FleshCult/devour_flesh_cultist.ogg");
+        public SoundSpecifier DevourSound = new SoundCollectionSpecifier("ChangelingDevourConsume", AudioParams.Default.WithMaxDistance(6));
+
+        public EntityUid? CurrentDevourSound;
 
         public Solution AdrenalinReagents = new()
         {

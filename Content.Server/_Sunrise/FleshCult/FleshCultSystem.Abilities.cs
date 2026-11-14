@@ -61,6 +61,12 @@ public sealed partial class FleshCultSystem
         SubscribeLocalEvent<FleshAbilitiesComponent, FleshCultistUnlockAbilityEvent>(OnUnlockAbility);
 
         SubscribeLocalEvent<FleshAbilitiesComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<FleshAbilitiesComponent, ComponentShutdown>(OnAbilitiesShutdown);
+    }
+
+    private void OnAbilitiesShutdown(Entity<FleshAbilitiesComponent> ent, ref ComponentShutdown args)
+    {
+        ent.Comp.CurrentDevourSound = _audioSystem.Stop(ent.Comp.CurrentDevourSound);
     }
 
     private int MatchSaturation(int bloodVolume, bool hasAppearance)
@@ -194,11 +200,15 @@ public sealed partial class FleshCultSystem
                             uid, uid);
                         return;
                     }
-                    _doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager ,uid, component.DevourTime,
+                    if (_doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager ,uid, component.DevourTime,
                         new FleshCultistDevourDoAfterEvent(), uid, target: target, used: uid)
                     {
                         BreakOnMove = true,
-                    });
+                    }))
+                    {
+                        component.CurrentDevourSound = _audioSystem.Stop(component.CurrentDevourSound);
+                        component.CurrentDevourSound = _audioSystem.PlayPvs(component.DevourSound, uid)?.Entity;
+                    }
                     args.Handled = true;
                     break;
 
@@ -216,7 +226,12 @@ public sealed partial class FleshCultSystem
 
     private void OnDevourDoAfter(EntityUid uid, FleshAbilitiesComponent component, FleshCultistDevourDoAfterEvent args)
     {
-        if (args.Handled || args.Cancelled)
+        if (args.Handled)
+            return;
+
+        component.CurrentDevourSound = _audioSystem.Stop(component.CurrentDevourSound);
+
+        if (args.Cancelled)
             return;
 
         if (args.Args.Target == null)
@@ -229,7 +244,6 @@ public sealed partial class FleshCultSystem
 
         var xform = Transform(args.Args.Target.Value);
         var coordinates = xform.Coordinates;
-        _audioSystem.PlayPvs(component.DevourSound, coordinates, AudioParams.Default.WithVariation(0.025f).WithMaxDistance(5f));
         _popup.PopupEntity(Loc.GetString("flesh-cultist-devour-target",
                 ("Entity", uid), ("Target", args.Args.Target)), uid);
 
