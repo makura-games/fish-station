@@ -4,6 +4,7 @@ using Content.Server.EUI;
 using Content.Server.Ghost;
 using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Atmos.Rotting;
 using Content.Shared.Chat;
 using Content.Shared.Damage.Systems;
@@ -207,21 +208,43 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
             return;
         }
 
+        if (!moduleComp.PadsActive)
+            return;
+
+        if (TryComp<FishIpcModulePowerToggleComponent>(moduleUid, out var power) && !power.Enabled)
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-toggled-off"), host, host);
+            return;
+        }
+
         if (!HasEnoughCharge(host, moduleComp.ChargeFraction))
         {
             _popup.PopupEntity(Loc.GetString("fish-ipc-module-need-charge"), host, host, PopupType.SmallCaution);
             return;
         }
 
+        if (moduleComp.ActionEntity is { } action &&
+            TryComp<ActionComponent>(action, out var actionComp) &&
+            _actions.IsCooldownActive(actionComp))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-module-cooldown"), host, host);
+            return;
+        }
+
         args.Handled = true;
-        _audio.PlayPvs(moduleComp.ChargeSound, host);
-        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, host, moduleComp.DoAfter, new FishIpcDefibDoAfterEvent(), moduleUid, target)
+        if (!_doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, host, moduleComp.DoAfter, new FishIpcDefibDoAfterEvent(), moduleUid, target)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
             NeedHand = true,
             DistanceThreshold = 1.5f,
-        });
+            CancelDuplicate = true,
+            BlockDuplicate = false,
+            DuplicateCondition = DuplicateConditions.SameEvent,
+        }))
+            return;
+
+        _audio.PlayPvs(moduleComp.ChargeSound, host);
     }
 
     private void OnDefibDoAfter(Entity<FishIpcDefibModuleComponent> ent, ref FishIpcDefibDoAfterEvent args)
@@ -231,6 +254,12 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
 
         if (!TryComp<FishIpcModuleComponent>(ent.Owner, out var moduleComp) || !moduleComp.Installed ||
             moduleComp.InstalledEntity is not { } host)
+            return;
+
+        if (!ent.Comp.PadsActive || !_modules.IsChassisPowered(host))
+            return;
+
+        if (TryComp<FishIpcModulePowerToggleComponent>(ent.Owner, out var power) && !power.Enabled)
             return;
 
         var cost = GetChargeCost(host, ent.Comp.ChargeFraction);
@@ -255,16 +284,19 @@ public sealed partial class FishIpcCombatUtilitySystems : EntitySystem
             return;
         }
 
-        _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, ignoreResistances: true, origin: host, ignoreVariance: true);
-
+        // Как ванильный дефиб: лечение только мёртвых. Живую цель не хилим и не станим.
         var failed = true;
-        if (_mobState.IsDead(target) &&
-            TryComp<MobThresholdsComponent>(target, out var thresholds) &&
-            _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var deadThreshold, thresholds) &&
-            _damageable.GetTotalDamage(target) < deadThreshold)
+        if (_mobState.IsDead(target))
         {
-            _mobState.ChangeMobState(target, MobState.Critical, null, host);
-            failed = false;
+            _damageable.TryChangeDamage(target, ent.Comp.ZapHeal, ignoreResistances: true, origin: host, ignoreVariance: true);
+
+            if (TryComp<MobThresholdsComponent>(target, out var thresholds) &&
+                _mobThreshold.TryGetThresholdForState(target, MobState.Dead, out var deadThreshold, thresholds) &&
+                _damageable.GetTotalDamage(target) < deadThreshold)
+            {
+                _mobState.ChangeMobState(target, MobState.Critical, null, host);
+                failed = false;
+            }
         }
 
         if (_mind.TryGetMind(target, out _, out var mindComp) &&

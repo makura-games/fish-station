@@ -142,6 +142,98 @@ public sealed class FishIpcKaitenReviewTest : FishIpcGameTest
     }
 
     [Test]
+    public async Task Defib_DoesNotHealLiving_AndBlocksCooldownAndRepeat()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid patient = default;
+        EntityUid module = default;
+
+        await Server.WaitPost(() =>
+        {
+            DisableDamageVariance();
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            patient = SSpawnAtPosition("MobHuman", map.GridCoords);
+            module = InstallModule(ipc, "FishIpcModuleDefib");
+            SComp<FishIpcDefibModuleComponent>(module).DoAfter = TimeSpan.FromSeconds(0.4f);
+            var action = SComp<FishIpcDefibModuleComponent>(module).ActionEntity!.Value;
+            SEntMan.EventBus.RaiseLocalEvent(ipc, new FishIpcDefibActionEvent
+            {
+                Performer = ipc,
+                Action = (action, SComp<ActionComponent>(action)),
+            });
+            Hurt(patient, "Asphyxiation", 20);
+        });
+
+        await Server.WaitPost(() =>
+        {
+            var pads = SComp<FishIpcDefibModuleComponent>(module).PadsEntity!.Value;
+            var coords = SComp<TransformComponent>(patient).Coordinates;
+            SEntMan.EventBus.RaiseLocalEvent(pads, new AfterInteractEvent(ipc, pads, patient, coords, true));
+            Assert.That(SComp<DoAfterComponent>(ipc).DoAfters.Values.Count(d => !d.Cancelled && !d.Completed), Is.EqualTo(1));
+            SEntMan.EventBus.RaiseLocalEvent(pads, new AfterInteractEvent(ipc, pads, patient, coords, true));
+            Assert.That(SComp<DoAfterComponent>(ipc).DoAfters.Values.Count(d => !d.Cancelled && !d.Completed), Is.EqualTo(1));
+        });
+
+        await RunSeconds(0.7f);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(Damage(patient, "Asphyxiation"), Is.EqualTo(20f));
+            Assert.That(SComp<MobStateComponent>(patient).CurrentState, Is.EqualTo(MobState.Alive));
+            var action = SComp<FishIpcDefibModuleComponent>(module).ActionEntity!.Value;
+            Assert.That(Server.System<SharedActionsSystem>().IsCooldownActive(SComp<ActionComponent>(action)), Is.True);
+
+            var pads = SComp<FishIpcDefibModuleComponent>(module).PadsEntity!.Value;
+            var before = SComp<DoAfterComponent>(ipc).DoAfters.Count;
+            var coords = SComp<TransformComponent>(patient).Coordinates;
+            SEntMan.EventBus.RaiseLocalEvent(pads, new AfterInteractEvent(ipc, pads, patient, coords, true));
+            Assert.That(SComp<DoAfterComponent>(ipc).DoAfters.Count, Is.EqualTo(before));
+        });
+    }
+
+    [Test]
+    public async Task Defib_ZapAbortsWithoutPadsOrPower()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid patient = default;
+        EntityUid module = default;
+
+        await Server.WaitPost(() =>
+        {
+            DisableDamageVariance();
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            patient = SSpawnAtPosition("MobHuman", map.GridCoords);
+            module = InstallModule(ipc, "FishIpcModuleDefib");
+            var action = SComp<FishIpcDefibModuleComponent>(module).ActionEntity!.Value;
+            SEntMan.EventBus.RaiseLocalEvent(ipc, new FishIpcDefibActionEvent
+            {
+                Performer = ipc,
+                Action = (action, SComp<ActionComponent>(action)),
+            });
+            Hurt(patient, "Asphyxiation", 40);
+            Server.System<MobStateSystem>().ChangeMobState(patient, MobState.Dead);
+            SComp<FishIpcDefibModuleComponent>(module).PadsActive = false;
+            Assert.That(Server.System<SharedDoAfterSystem>().TryStartDoAfter(new DoAfterArgs(
+                SEntMan, ipc, 0.05f, new FishIpcDefibDoAfterEvent(), module, patient)
+            {
+                NeedHand = false,
+                BreakOnMove = false,
+                BreakOnDamage = false,
+            }), Is.True);
+        });
+
+        await RunSeconds(0.3f);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SComp<MobStateComponent>(patient).CurrentState, Is.EqualTo(MobState.Dead));
+            Assert.That(Damage(patient, "Asphyxiation"), Is.EqualTo(40f));
+        });
+    }
+
+    [Test]
     public async Task MesonModule_DoesNotStripWornEyeProtection()
     {
         await Server.WaitAssertion(() =>

@@ -134,7 +134,10 @@
   components:
   - type: Sprite
     sprite: Objects/Specific/Medical/defib.rsi
-    state: icon
+    layers:
+    - state: icon
+    - state: screen
+      shader: unshaded
   - type: Item
     size: Huge
   - type: MultiHandedItem
