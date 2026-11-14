@@ -11,8 +11,7 @@
     lowPressureMultiplier: 1000
     lowPressureModifier: 1
   - type: TemperatureProtection
-    heatingCoefficient: 0.001
-    coolingCoefficient: 0.001
+    coefficient: 0.001
   - type: ExplosionResistance
     damageCoefficient: 0.2
   - type: FireProtection

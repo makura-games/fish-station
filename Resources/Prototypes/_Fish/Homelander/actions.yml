@@ -8,7 +8,10 @@
   - type: Action
     itemIconStyle: NoItem
     useDelay: 10
-    icon: { sprite: _Fish/Homelander/actions.rsi, state: scream }
+  - type: Sprite
+    sprite: _Fish/Homelander/actions.rsi
+    layers:
+    - state: scream
   - type: InstantAction
     event: !type:HomelanderScreamEvent
 
@@ -22,8 +25,14 @@
   - type: Action
     itemIconStyle: NoItem
     useDelay: 0.5
-    icon: { sprite: _Fish/Homelander/actions.rsi, state: laser }
-    iconOn: { sprite: _Fish/Homelander/actions.rsi, state: laser-active }
+  - type: Sprite
+    sprite: _Fish/Homelander/actions.rsi
+    layers:
+    - state: laser
+      map: ["enum.ActionVisuals.Icon"]
+    - state: laser-active
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
 
 - type: entity
   parent: BaseToggleAction
@@ -36,8 +45,14 @@
     itemIconStyle: NoItem
     checkCanInteract: false
     useDelay: 1.5
-    icon: { sprite: _Fish/Homelander/actions.rsi, state: flight }
-    iconOn: { sprite: _Fish/Homelander/actions.rsi, state: flight-active }
+  - type: Sprite
+    sprite: _Fish/Homelander/actions.rsi
+    layers:
+    - state: flight
+      map: ["enum.ActionVisuals.Icon"]
+    - state: flight-active
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
 
 - type: entity
   parent: RedLightLaser
