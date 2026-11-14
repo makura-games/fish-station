@@ -1,6 +1,7 @@
 using Content.Shared.Paper;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Utility;
 
 namespace Content.Client.Paper.UI;
 
@@ -14,10 +15,20 @@ public sealed partial class PaperWindow
     private Button? _prevButton;
     private Button? _nextButton;
     private Button? _removeButton;
+    private int _lastPageIndex = -1;
 
     private void UpdatePageNavigation(PaperComponent.PaperBoundUserInterfaceState state)
     {
         EnsurePageBar();
+
+        // При смене страницы сбрасываем черновик ввода, чтобы не отправить его на другой лист.
+        if (_lastPageIndex >= 0 && _lastPageIndex != state.PageIndex && InputContainer.Visible)
+        {
+            Input.TextRope = Rope.Leaf.Empty;
+            Input.CursorPosition = new TextEdit.CursorPos();
+        }
+
+        _lastPageIndex = state.PageIndex;
 
         var multi = state.PageCount > 1;
         _pageBar!.Visible = multi;

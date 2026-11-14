@@ -39,12 +39,14 @@ public sealed partial class PaperBoundUserInterface : BoundUserInterface // Sunr
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
-        _window?.Populate((PaperBoundUserInterfaceState) state);
+        var paperState = (PaperBoundUserInterfaceState) state;
+        UpdateStapledDocumentState(paperState); // Fish-edit
+        _window?.Populate(paperState);
     }
 
     private void InputOnTextEntered(string text)
     {
-        SendMessage(new PaperInputTextMessage(text));
+        SendPaperInputWithContentTarget(text); // Fish-edit - явная страница пакета
 
         if (_window != null)
         {

@@ -1,4 +1,5 @@
 using Robust.Shared.Audio;
+using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 
@@ -36,10 +37,16 @@ public sealed partial class PaperComponent : Component
     public sealed class PaperInputTextMessage : BoundUserInterfaceMessage
     {
         public readonly string Text;
+        // Fish-start - явная страница пакета, чтобы запись не ушла на другой лист
+        public readonly NetEntity? ContentTarget;
+        // Fish-end
 
-        public PaperInputTextMessage(string text)
+        public PaperInputTextMessage(string text, NetEntity? contentTarget = null)
         {
             Text = text;
+            // Fish-start
+            ContentTarget = contentTarget;
+            // Fish-end
         }
     }
 

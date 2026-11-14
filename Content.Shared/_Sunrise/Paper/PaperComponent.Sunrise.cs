@@ -1,4 +1,5 @@
 using System.Numerics;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
 
@@ -29,6 +30,7 @@ public sealed partial class PaperComponent
         // Fish-start - навигация по страницам степлерного пакета
         public readonly int PageIndex;
         public readonly int PageCount;
+        public readonly NetEntity ContentEntity;
         // Fish-end
 
         public PaperBoundUserInterfaceState(
@@ -41,7 +43,8 @@ public sealed partial class PaperComponent
             bool templateFieldsEnabled = false,
             // Fish-start
             int pageIndex = 0,
-            int pageCount = 1
+            int pageCount = 1,
+            NetEntity contentEntity = default
             // Fish-end
             )
         {
@@ -55,6 +58,7 @@ public sealed partial class PaperComponent
             // Fish-start
             PageIndex = pageIndex;
             PageCount = pageCount;
+            ContentEntity = contentEntity;
             // Fish-end
         }
     }

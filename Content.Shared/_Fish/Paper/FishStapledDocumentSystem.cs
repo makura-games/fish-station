@@ -59,7 +59,8 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         if (ent.Comp.Pages.Count == 0)
         {
             ent.Comp.CurrentPage = 0;
-            RemCompDeferred<FishStapledDocumentComponent>(ent);
+            RemComp<FishStapledDocumentComponent>(ent);
+            RefreshUi(ent.Owner); // Fish: сбрасываем UI пакета после снятия компонента
             return;
         }
 
@@ -94,6 +95,10 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         if (args.Delta == 0)
             return;
 
+        // Нельзя листать во время записи — иначе текст уйдёт на другую страницу.
+        if (TryComp(ent, out PaperComponent? paper) && paper.Mode == PaperAction.Write)
+            return;
+
         var count = GetPageCount(ent);
         if (count <= 1)
             return;
@@ -106,7 +111,7 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         Dirty(ent);
         RefreshUi(ent);
 
-        if (TryComp(ent, out PaperComponent? paper) && paper.Sound != null)
+        if (paper?.Sound != null)
             _audio.PlayPredicted(paper.Sound, ent, args.Actor);
     }
 
@@ -181,14 +186,16 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
 
         EnsureBundle(outer, out var outerBundle);
 
-        var pagesToAdd = CollectPagesInOrder(toAppend);
+        // Считаем страницы до разборки toAppend — иначе при отказе по лимиту пакет уже разрушен.
+        var pagesToAddCount = CountPages(toAppend);
         var free = outerBundle.Comp.MaxPages - GetPageCount(outerBundle);
-        if (pagesToAdd.Count > free)
+        if (pagesToAddCount > free)
         {
             _popup.PopupEntity(Loc.GetString("fish-stapled-document-too-many", ("max", outerBundle.Comp.MaxPages)), outer, user);
             return false;
         }
 
+        var pagesToAdd = CollectPagesInOrder(toAppend);
         foreach (var page in pagesToAdd)
         {
             if (page == outer)
@@ -282,6 +289,7 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         if (ent.Comp.Pages.Count == 0)
         {
             RemComp<FishStapledDocumentComponent>(ent);
+            RefreshUi(ent.Owner);
         }
         else
         {
@@ -310,6 +318,7 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         }
 
         RemComp<FishStapledDocumentComponent>(ent);
+        RefreshUi(ent.Owner);
         _popup.PopupEntity(Loc.GetString("fish-stapled-document-separated"), ent, user);
         return true;
     }
@@ -317,6 +326,17 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
     public int GetPageCount(Entity<FishStapledDocumentComponent> ent)
     {
         return 1 + ent.Comp.Pages.Count;
+    }
+
+    /// <summary>
+    /// Число страниц без изменения сущностей (для проверки лимита до CollectPagesInOrder).
+    /// </summary>
+    public int CountPages(EntityUid entity)
+    {
+        if (TryComp<FishStapledDocumentComponent>(entity, out var stapled))
+            return GetPageCount((entity, stapled));
+
+        return HasComp<PaperComponent>(entity) ? 1 : 0;
     }
 
     public bool TryGetPageEntity(Entity<FishStapledDocumentComponent> ent, int index, out EntityUid page)

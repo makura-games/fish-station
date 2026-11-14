@@ -227,6 +227,49 @@ public sealed class FishStapledDocumentTest
     }
 
     [Test]
+    public async Task StapleOverLimit_DoesNotDismantleSourceBundle()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        await server.WaitPost(() =>
+        {
+            var user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            var outer = entMan.SpawnEntity("Paper", map.GridCoords);
+            var filler = entMan.SpawnEntity("Paper", map.GridCoords);
+            var stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, outer, checkActionBlocker: false), Is.True);
+
+            var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
+            Assert.That(stapleSys.TryStaple(user, outer, filler, staplerEnt), Is.True);
+
+            // outer: 2 страницы, MaxPages=3 → свободен 1 слот.
+            var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
+            bundle.MaxPages = 3;
+            Dirty(entMan, (outer, bundle));
+
+            var source = entMan.SpawnEntity("Paper", map.GridCoords);
+            var sourcePage = entMan.SpawnEntity("Paper", map.GridCoords);
+            Assert.That(stapleSys.TryStaple(user, source, sourcePage, staplerEnt), Is.True);
+            Assert.That(stapleSys.GetPageCount((source, entMan.GetComponent<FishStapledDocumentComponent>(source))), Is.EqualTo(2));
+
+            // Добавление 2 страниц в пакет со свободным слотом 1 должно быть отклонено без разборки source.
+            Assert.That(stapleSys.TryStaple(user, outer, source, staplerEnt), Is.False);
+            Assert.That(entMan.HasComponent<FishStapledDocumentComponent>(source), Is.True);
+            Assert.That(stapleSys.GetPageCount((source, entMan.GetComponent<FishStapledDocumentComponent>(source))), Is.EqualTo(2));
+            Assert.That(entMan.EntityExists(sourcePage), Is.True);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task StapledBundle_OccupiesSingleHandSlot()
     {
         await using var pair = await PoolManager.GetServerClient();

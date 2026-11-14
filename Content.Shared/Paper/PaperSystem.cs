@@ -194,8 +194,20 @@ public sealed partial class PaperSystem : EntitySystem
 
     private void OnInputTextMessage(Entity<PaperComponent> entity, ref PaperInputTextMessage args)
     {
-        // Fish-start - запись на текущую страницу пакета
-        var contentTarget = ResolvePaperContentTarget(entity);
+        // Fish-start - запись на явную страницу пакета (не на CurrentPage гонки)
+        EntityUid contentTarget;
+        if (args.ContentTarget is { Valid: true } netTarget &&
+            TryGetEntity(netTarget, out var requestedUid) &&
+            requestedUid != null &&
+            IsValidPaperContentTarget(entity, requestedUid.Value))
+        {
+            contentTarget = requestedUid.Value;
+        }
+        else
+        {
+            contentTarget = ResolvePaperContentTarget(entity);
+        }
+
         if (!TryComp(contentTarget, out PaperComponent? contentPaper))
             return;
         var contentEntity = new Entity<PaperComponent>(contentTarget, contentPaper);
@@ -332,22 +344,6 @@ public sealed partial class PaperSystem : EntitySystem
     {
         _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, GetPaperUiState(entity));
     }
-
-    // Fish-start - публичный хук для обновления UI пакета документов
-    public void RefreshUi(Entity<PaperComponent> entity)
-    {
-        UpdateUserInterface(entity);
-    }
-    // Fish-end
-
-    // Fish-start - редирект на текущую страницу степлерного пакета
-    private EntityUid ResolvePaperContentTarget(EntityUid paper)
-    {
-        var ev = new GetPaperContentTargetEvent(paper);
-        RaiseLocalEvent(paper, ref ev);
-        return ev.Target;
-    }
-    // Fish-end
 
 }
 

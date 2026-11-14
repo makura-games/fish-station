@@ -46,13 +46,20 @@ public sealed partial class PaperSystem
 
     private void OnTemplateRequest(Entity<PaperComponent> entity, ref PaperComponent.PaperTemplateRequestMessage args)
     {
+        // Fish-start - подпись/должность на текущей странице пакета
+        var contentTarget = ResolvePaperContentTarget(entity);
+        if (!_paperQuery.TryComp(contentTarget, out var contentPaper))
+            return;
+        var contentEntity = new Entity<PaperComponent>(contentTarget, contentPaper);
+        // Fish-end
+
         switch (args.Type)
         {
             case PaperComponent.PaperTemplateRequestType.Signature:
-                HandleSignatureRequest(entity, args.Actor, args.Index);
+                HandleSignatureRequest(contentEntity, args.Actor, args.Index); // Fish-edit
                 break;
             case PaperComponent.PaperTemplateRequestType.Job:
-                HandleJobRequest(entity, args.Actor, args.Index);
+                HandleJobRequest(contentEntity, args.Actor, args.Index); // Fish-edit
                 break;
         }
     }
@@ -154,7 +161,8 @@ public sealed partial class PaperSystem
             contentPaper.ImageScale,
             templateFieldsEnabled,
             pageEv.PageIndex,
-            pageEv.PageCount);
+            pageEv.PageCount,
+            GetNetEntity(contentUid));
         // Fish-end
     }
 }
