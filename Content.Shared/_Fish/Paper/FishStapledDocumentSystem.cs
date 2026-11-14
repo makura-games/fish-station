@@ -2,12 +2,14 @@ using System.Linq;
 using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
+using Content.Shared.Item;
 using Content.Shared.Paper;
 using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Network;
+using Robust.Shared.Prototypes;
 using static Content.Shared.Paper.PaperComponent;
 
 namespace Content.Shared._Fish.Paper;
@@ -17,11 +19,14 @@ namespace Content.Shared._Fish.Paper;
 /// </summary>
 public sealed partial class FishStapledDocumentSystem : EntitySystem
 {
+    private static readonly ProtoId<ItemSizePrototype> BundleItemSize = "Tiny";
+
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private MetaDataSystem _meta = default!;
+    [Dependency] private SharedItemSystem _item = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private PaperSystem _paper = default!;
 
@@ -197,6 +202,7 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         }
 
         Dirty(outerBundle);
+        EnsureSingleHandBundle(outer);
         UpdateBundleDescription(outerBundle);
         RefreshUi(outerBundle);
 
@@ -406,5 +412,17 @@ public sealed partial class FishStapledDocumentSystem : EntitySystem
         _meta.SetEntityDescription(ent,
             Loc.GetString("fish-stapled-document-desc", ("pages", GetPageCount(ent))),
             meta);
+    }
+
+    /// <summary>
+    /// Пакет всегда один предмет в одной руке: Tiny, без MultiHanded.
+    /// Внутренние страницы уже в контейнере и не занимают отдельные слоты рук.
+    /// </summary>
+    private void EnsureSingleHandBundle(EntityUid bundle)
+    {
+        RemComp<MultiHandedItemComponent>(bundle);
+
+        if (TryComp<ItemComponent>(bundle, out var item))
+            _item.SetSize(bundle, BundleItemSize, item);
     }
 }

@@ -7,6 +7,7 @@ namespace Content.Shared._Fish.Paper;
 /// <summary>
 /// Многостраничный пакет документов. Сама сущность — первая (внешняя) страница;
 /// дополнительные страницы лежат в контейнере как отдельные сущности с <c>PaperComponent</c>.
+/// Пакет всегда занимает один слот руки (не MultiHanded).
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class FishStapledDocumentComponent : Component

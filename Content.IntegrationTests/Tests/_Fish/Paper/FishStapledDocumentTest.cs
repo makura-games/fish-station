@@ -2,10 +2,12 @@
 using Content.Shared._Fish.Paper;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Item;
 using Content.Shared.Paper;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.Paper;
 
@@ -219,6 +221,56 @@ public sealed class FishStapledDocumentTest
             Assert.That(entMan.EntityExists(p3), Is.True);
             Assert.That(entMan.GetComponent<PaperComponent>(outer).Content, Is.EqualTo("P1"));
             Assert.That(entMan.GetComponent<PaperComponent>(p3).Content, Is.EqualTo("P3"));
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task StapledBundle_OccupiesSingleHandSlot()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var stapleSys = entMan.System<FishStapledDocumentSystem>();
+        var hands = entMan.System<SharedHandsSystem>();
+
+        EntityUid user = default;
+        EntityUid outer = default;
+        EntityUid inner = default;
+        EntityUid stapler = default;
+
+        await server.WaitPost(() =>
+        {
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords);
+            EnsureTwoHands(entMan, hands, user);
+            outer = entMan.SpawnEntity("Paper", map.GridCoords);
+            inner = entMan.SpawnEntity("Paper", map.GridCoords);
+            stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
+            Assert.That(hands.TryPickupAnyHand(user, outer, checkActionBlocker: false), Is.True);
+            var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
+            Assert.That(stapleSys.TryStaple(user, outer, inner, staplerEnt), Is.True);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entMan.HasComponent<MultiHandedItemComponent>(outer), Is.False);
+            Assert.That(entMan.GetComponent<ItemComponent>(outer).Size, Is.EqualTo(new ProtoId<ItemSizePrototype>("Tiny")));
+
+            Assert.That(hands.IsHolding(user, outer), Is.True);
+            Assert.That(hands.IsHolding(user, inner), Is.False);
+
+            var heldPapers = 0;
+            foreach (var held in hands.EnumerateHeld(user))
+            {
+                if (entMan.HasComponent<PaperComponent>(held))
+                    heldPapers++;
+            }
+
+            Assert.That(heldPapers, Is.EqualTo(1), "Скреплённый пакет должен занимать ровно один слот руки.");
+            Assert.That(entMan.GetComponent<FishStapledDocumentComponent>(outer).Pages.Contains(inner), Is.True);
         });
 
         await pair.CleanReturnAsync();

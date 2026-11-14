@@ -1,6 +1,6 @@
-fish-stapled-document-examine = Это скреплённый пакет документов на [color=cyan]{$pages}[/color] стр.
-fish-stapled-document-desc = Скреплённый многостраничный пакет документов ({$pages} стр.).
-fish-stapled-document-stapled = Бумаги скреплены. В пакете теперь {$pages} стр.
+fish-stapled-document-examine = Это скреплённый пакет документов на [color=cyan]{$pages}[/color] стр. Держится как один предмет.
+fish-stapled-document-desc = Скреплённый многостраничный пакет документов ({$pages} стр.). Занимает одну руку.
+fish-stapled-document-stapled = Бумаги скреплены в один документ. В пакете теперь {$pages} стр.
 fish-stapled-document-need-stapler = Нужно держать степлер в другой руке.
 fish-stapled-document-unsupported = Это нельзя скрепить.
 fish-stapled-document-invalid = Так скрепить нельзя.

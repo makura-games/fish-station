@@ -1,6 +1,6 @@
-fish-stapled-document-examine = This is a stapled document bundle with [color=cyan]{$pages}[/color] pages.
-fish-stapled-document-desc = A stapled multi-page document bundle ({$pages} pages).
-fish-stapled-document-stapled = Papers stapled together. The bundle now has {$pages} pages.
+fish-stapled-document-examine = This is a stapled document bundle with [color=cyan]{$pages}[/color] pages. It is held as a single item.
+fish-stapled-document-desc = A stapled multi-page document bundle ({$pages} pages). Fits in one hand.
+fish-stapled-document-stapled = Papers stapled together into one document. The bundle now has {$pages} pages.
 fish-stapled-document-need-stapler = You need to hold a stapler in your other hand.
 fish-stapled-document-unsupported = That can't be stapled together.
 fish-stapled-document-invalid = You can't staple that.
