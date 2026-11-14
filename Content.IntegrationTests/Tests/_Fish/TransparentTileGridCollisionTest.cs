@@ -66,6 +66,7 @@ public sealed class TransparentTileGridCollisionTest
         await server.WaitAssertion(() =>
         {
             var mapId = testMap.MapId;
+            xformSys.SetWorldPosition(testMap.Grid, new Vector2(10f, 0f));
             gridA = mapSys.CreateGridEntity(mapId);
             gridB = mapSys.CreateGridEntity(mapId);
 
@@ -132,18 +133,13 @@ public sealed class TransparentTileGridCollisionTest
             Assert.That(GridsTouching(physSys, gridA, gridB), Is.False,
                 "После удаления стены прозрачный тайл снова проходим");
 
+            // Разводим гриды, чтобы следующий подход создал новый контакт в broadphase.
+            xformSys.SetWorldPosition(gridB, new Vector2(2f, 0f));
             airlock = entMan.SpawnEntity("Airlock", new EntityCoordinates(gridB, 0.5f, 0.5f));
             Assert.That(entMan.GetComponent<TransformComponent>(airlock).Anchored, Is.True);
             Assert.That(entMan.GetComponent<PhysicsComponent>(airlock).CanCollide, Is.True);
             Assert.That(entMan.System<TurfSystem>().IsTileBlocked(gridB, Vector2i.Zero, CollisionGroup.FullTileMask), Is.True,
                 "IsTileBlocked должен видеть закрытый airlock");
-
-            // Принудительно обновляем контакты обоих гридов после появления блокатора.
-            var broadphase = entMan.System<SharedBroadphaseSystem>();
-            var bodyA = entMan.GetComponent<PhysicsComponent>(gridA);
-            var bodyB = entMan.GetComponent<PhysicsComponent>(gridB);
-            broadphase.RegenerateContacts(gridA, bodyA);
-            broadphase.RegenerateContacts(gridB, bodyB);
         });
 
         await server.WaitRunTicks(5);
