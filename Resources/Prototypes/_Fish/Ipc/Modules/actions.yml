@@ -9,8 +9,24 @@
     useDelay: 0.5
     itemIconStyle: NoItem
   - type: Sprite
-    sprite: Objects/Specific/Medical/defib.rsi
-    state: icon
+    layers:
+    - sprite: Objects/Specific/Medical/defib.rsi
+      state: icon
+      map: ["enum.ActionVisuals.Icon"]
+    - sprite: Objects/Specific/Medical/defib.rsi
+      state: screen
+      map: ["enum.ActionVisuals.IconToggled"]
+      shader: unshaded
+      visible: false
+  - type: GenericVisualizer
+    visuals:
+      enum.ActionState.Toggled:
+        enum.ActionVisuals.Icon:
+          True: { visible: true }
+          False: { visible: true }
+        enum.ActionVisuals.IconToggled:
+          True: { visible: true }
+          False: { visible: false }
   - type: InstantAction
     event: !type:FishIpcDefibActionEvent
 
@@ -27,8 +43,10 @@
     checkCanInteract: false
     checkConsciousness: false
   - type: Sprite
-    sprite: Objects/Specific/Robotics/borgmodule.rsi
-    state: generic
+    layers:
+    - sprite: Objects/Power/power_cells.rsi
+      state: high
+      map: ["enum.ActionVisuals.Icon"]
   - type: InstantAction
     event: !type:FishIpcJumpstarterActionEvent
 
