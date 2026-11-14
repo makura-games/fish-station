@@ -12,6 +12,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
 using Content.Server.Mind;
+using Content.Server.Preferences.Managers;
 using Content.Server.Roles;
 using Content.Shared._Sunrise.CollectiveMind;
 using Content.Shared._Sunrise.FleshCult;
@@ -35,6 +36,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Overlays;
+using Content.Shared.Preferences;
 using Content.Shared.Slippery;
 using Content.Shared.Speech;
 using Content.Shared.Weapons.Melee;
@@ -75,8 +77,27 @@ public sealed partial class FleshCultTests
         // Ждём регистрации тестовых сессий в тикере перед переключением готовности.
         await pair.RunTicksSync(5);
 
-        await pair.SetAntagPreference("FleshCultist", true);
-        await pair.SetAntagPreference("FleshCultistLeader", true);
+        // КПБ (FishIpc) находятся в blacklist правила FleshCult: гарантируем не-КПБ профили и подписку на роли у всех сессий.
+        var prefMan = server.ResolveDependency<IServerPreferencesManager>();
+        var allSessions = dummies.Append(pair.Player!).ToArray();
+        await server.WaitPost(() =>
+        {
+            foreach (var session in allSessions)
+            {
+                var prefs = prefMan.GetPreferences(session.UserId);
+                if (prefs.Characters[0] is HumanoidCharacterProfile profile && profile.Species == "Ipc")
+                {
+                    var nonIpcProfile = HumanoidCharacterProfile.RandomWithSpecies("Human");
+                    prefMan.SetProfile(session.UserId, 0, nonIpcProfile).Wait();
+                }
+            }
+        });
+
+        foreach (var session in allSessions)
+        {
+            await pair.SetAntagPreference("FleshCultist", true, session.UserId);
+            await pair.SetAntagPreference("FleshCultistLeader", true, session.UserId);
+        }
 
         await server.WaitPost(() =>
         {

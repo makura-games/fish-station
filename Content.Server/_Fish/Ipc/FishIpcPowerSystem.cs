@@ -1,6 +1,6 @@
-using Content.Server.Suicide;
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
+using Content.Shared.Damage.Components;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
@@ -9,6 +9,7 @@ using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.PowerCell;
 using Content.Shared.PowerCell.Components;
+using Content.Shared.Suicide;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
 
@@ -25,6 +26,7 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
     [Dependency] private PowerCellSystem _powerCell = default!;
     [Dependency] private SharedBatterySystem _battery = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedSuicideSystem _suicide = default!;
     [Dependency] private FishIpcRadioSystem _ipcRadio = default!;
     [Dependency] private IGameTiming _timing = default!;
 
@@ -38,16 +40,28 @@ public sealed partial class FishIpcPowerSystem : SharedFishIpcSystem
         SubscribeLocalEvent<FishIpcComponent, PowerCellSlotEmptyEvent>(OnPowerCellEmpty);
         SubscribeLocalEvent<FishIpcComponent, EntInsertedIntoContainerMessage>(OnCellInserted);
         SubscribeLocalEvent<FishIpcComponent, ComponentShutdown>(OnShutdown);
-        SubscribeLocalEvent<FishIpcComponent, SuicideEvent>(OnSuicide, before: [typeof(SuicideSystem)]);
+        // Подписываемся без before/after, чтобы не переводить SuicideEvent в ordered-режим для всех мобов.
+        SubscribeLocalEvent<FishIpcComponent, SuicideEvent>(OnSuicide);
     }
 
     private void OnSuicide(Entity<FishIpcComponent> ent, ref SuicideEvent args)
     {
-        if (args.Handled)
+        if (!args.Handled)
+        {
+            // КПБ не имеют крови (Bloodloss отсутствует в DamageContainer Ipc), поэтому используем совместимый тип урона Shock.
+            args.DamageType ??= "Shock";
             return;
+        }
 
-        // КПБ не имеют крови (Bloodloss отсутствует в DamageContainer Ipc), поэтому используем совместимый тип урона Shock.
-        args.DamageType ??= "Shock";
+        // Если SuicideSystem.OnDamageableSuicide сработал раньше в unordered-шине и применил Bloodloss,
+        // добиваем КПБ совместимым типом урона Shock.
+        if (args.DamageType == "Bloodloss"
+            && !_mobState.IsDead(ent.Owner)
+            && TryComp<DamageableComponent>(ent.Owner, out var damageable))
+        {
+            args.DamageType = "Shock";
+            _suicide.ApplyLethalDamage((ent.Owner, damageable), "Shock");
+        }
     }
 
     private void OnShutdown(Entity<FishIpcComponent> ent, ref ComponentShutdown args)
