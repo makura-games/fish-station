@@ -168,7 +168,7 @@ public sealed partial class ObrCallSystem : EntitySystem
             return;
         }
 
-        TryProcessCall(actor, ent.Owner, args.TeamId, args.Mission, purchaseMode: false);
+        TryProcessCall(actor, ent.Owner, args.TeamId, args.Mission, purchaseMode: false, spawnInCryo: args.SpawnInCryo);
     }
 
     private void OnStationRequest(Entity<ObrStationConsoleComponent> ent, ref ObrCallRequestMessage args)
@@ -182,7 +182,8 @@ public sealed partial class ObrCallSystem : EntitySystem
             return;
         }
 
-        TryProcessCall(actor, ent.Owner, args.TeamId, args.Mission, purchaseMode: true);
+        // Станция всегда вызывает шаттл; крио-опция только для ЦК.
+        TryProcessCall(actor, ent.Owner, args.TeamId, args.Mission, purchaseMode: true, spawnInCryo: false);
     }
 
     private void TryProcessCall(
@@ -190,7 +191,8 @@ public sealed partial class ObrCallSystem : EntitySystem
         EntityUid console,
         string teamId,
         string mission,
-        bool purchaseMode)
+        bool purchaseMode,
+        bool spawnInCryo)
     {
         var maxMissionLength = purchaseMode
             ? CompOrNull<ObrStationConsoleComponent>(console)?.MaxMissionLength ?? 512
@@ -323,7 +325,13 @@ public sealed partial class ObrCallSystem : EntitySystem
             return;
         }
 
-        // CentComm: мгновенный вызов
+        // CentComm: мгновенный вызов — шаттл или криокапсулы.
+        if (spawnInCryo)
+        {
+            SpawnObrInCryo(team, sanitizedMission, centcommGrid, actor, console);
+            return;
+        }
+
         SpawnAndFtlObrShuttle(team, sanitizedMission, station, centcommGrid, actor, console, purchaseMode: false, cost: 0);
     }
 
@@ -599,7 +607,12 @@ public sealed partial class ObrCallSystem : EntitySystem
                 reason));
         }
 
-        var state = new ObrCallBoundUserInterfaceState(purchaseMode, balance, status, teams);
+        var state = new ObrCallBoundUserInterfaceState(
+            purchaseMode,
+            showCryoOption: !purchaseMode,
+            balance,
+            status,
+            teams);
         _ui.SetUiState(console, ObrCallUiKey.Key, state);
     }
 
@@ -645,19 +658,25 @@ public sealed partial class ObrCallSystem : EntitySystem
 
     private void OnMissionTargetMindAdded(EntityUid uid, ObrMissionTargetComponent component, MindAddedMessage args)
     {
-        if (Transform(uid).GridUid is not { } grid)
-            return;
-
-        if (!TryComp<ObrCalledShuttleComponent>(grid, out var called))
-            return;
-
-        if (string.IsNullOrWhiteSpace(called.Mission))
-            return;
-
         if (!TryComp<ActorComponent>(uid, out var actor))
             return;
 
-        ApplyMissionToEntity(uid, actor.PlayerSession, called.Mission);
+        var mission = component.Mission;
+        if (string.IsNullOrWhiteSpace(mission))
+        {
+            if (Transform(uid).GridUid is not { } grid)
+                return;
+
+            if (!TryComp<ObrCalledShuttleComponent>(grid, out var called))
+                return;
+
+            mission = called.Mission;
+        }
+
+        if (string.IsNullOrWhiteSpace(mission))
+            return;
+
+        ApplyMissionToEntity(uid, actor.PlayerSession, mission);
     }
 
     private void ApplyMissionToEntity(EntityUid entity, ICommonSession session, string mission)
@@ -705,18 +724,28 @@ public sealed partial class ObrCallSystem : EntitySystem
         if (_pendingCalls.Any(p => p.TeamId == teamId))
             return true;
 
-        if (_activeCalls.TryGetValue(teamId, out var rule) &&
-            Exists(rule) &&
-            _gameTicker.IsGameRuleActive(rule))
+        if (_activeCalls.TryGetValue(teamId, out var active) && Exists(active))
         {
-            return true;
+            if (HasComp<ObrCryoDeploymentComponent>(active))
+                return true;
+
+            if (_gameTicker.IsGameRuleActive(active))
+                return true;
         }
 
         // Дополнительная защита: шаттл ещё в мире после завершения rule.
-        var query = EntityQueryEnumerator<ObrCalledShuttleComponent>();
-        while (query.MoveNext(out var uid, out var called))
+        var shuttleQuery = EntityQueryEnumerator<ObrCalledShuttleComponent>();
+        while (shuttleQuery.MoveNext(out var uid, out var called))
         {
             if (called.TeamId == teamId && !Deleted(uid))
+                return true;
+        }
+
+        // Крио-развёртывание без записи в _activeCalls (например после рестарта словаря).
+        var cryoQuery = EntityQueryEnumerator<ObrCryoDeploymentComponent>();
+        while (cryoQuery.MoveNext(out var cryoUid, out var cryo))
+        {
+            if (cryo.TeamId == teamId && !Deleted(cryoUid))
                 return true;
         }
 
