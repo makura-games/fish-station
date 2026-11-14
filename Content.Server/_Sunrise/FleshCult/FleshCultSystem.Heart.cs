@@ -210,9 +210,9 @@ public sealed partial class FleshCultSystem
     private void HandleDragDropOn(EntityUid uid, FleshHeartComponent component, ref DragDropTargetEvent args)
     {
 
-        if (!CanAbsorb(uid, args.Dragged, component))
+        if (!CanAbsorb(uid, args.Dragged, component, out var failureReason))
         {
-            _popup.PopupEntity(Loc.GetString("flesh-heart-cant-absorb-targer"),
+            _popup.PopupEntity(Loc.GetString(failureReason),
                 args.User, PopupType.Large);
             return;
         }
@@ -251,6 +251,13 @@ public sealed partial class FleshCultSystem
     {
         if (args.Cancelled || args.Handled || args.Args.Target == null)
             return;
+
+        if (!CanAbsorb(uid, args.Args.Target.Value, component, out var failureReason))
+        {
+            _popup.PopupEntity(Loc.GetString(failureReason),
+                args.User, PopupType.Large);
+            return;
+        }
 
         if (!TryComp<FixturesComponent>(args.Args.Target.Value, out var fixturesComponent))
         {
@@ -315,24 +322,27 @@ public sealed partial class FleshCultSystem
 
     #endregion
 
-    private bool CanAbsorb(EntityUid uid, EntityUid dragged, FleshHeartComponent component)
+    private bool CanAbsorb(EntityUid uid, EntityUid dragged, FleshHeartComponent component, out string failureReason)
     {
-        if (!TryComp<MobStateComponent>(dragged, out var stateComponent))
+        if (component.Status != HeartStatus.Base
+            || component.BodyContainer.ContainedEntities.Count >= component.BodyToFinalStage)
+        {
+            failureReason = "flesh-heart-already-full";
             return false;
+        }
 
-        if (stateComponent.CurrentState != MobState.Dead)
+        if (!TryComp<MobStateComponent>(dragged, out var stateComponent)
+            || stateComponent.CurrentState != MobState.Dead
+            || !Transform(uid).Anchored
+            || !TryComp<HumanoidProfileComponent>(dragged, out var humanoidAppearance)
+            || !_speciesWhitelist.Contains(humanoidAppearance.Species))
+        {
+            failureReason = "flesh-heart-cant-absorb-targer";
             return false;
+        }
 
-        if (!Transform(uid).Anchored)
-            return false;
-
-        if (!TryComp<HumanoidProfileComponent>(dragged, out var humanoidAppearance))
-            return false;
-
-        if (!_speciesWhitelist.Contains(humanoidAppearance.Species))
-            return false;
-
-        return !TryComp<MindContainerComponent>(dragged, out var mindComp) || true;
+        failureReason = string.Empty;
+        return !TryComp<MindContainerComponent>(dragged, out _) || true;
     }
 
     private void SpawnFleshFloorOnOpenTiles(EntityUid fleshHeart, FleshHeartComponent component, TransformComponent xform, float radius)

@@ -21,9 +21,7 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         base.Initialize();
 
         SubscribeLocalEvent<FireVisualsComponent, ComponentInit>(OnComponentInit);
-        // Fish-start: обновляем огонь и спавним LightEntity только после инициализации родительской сущности, чтобы не падать при появлении горящей сущности в PVS
-        SubscribeLocalEvent<FireVisualsComponent, ComponentStartup>(OnComponentStartup);
-        // Fish-end
+        SubscribeLocalEvent<FireVisualsComponent, ComponentStartup>(OnComponentStartup); // Fish-edit: перенесено в Content.Client/_Fish/Atmos/FireVisualizerSystem.Fish.cs, чтобы спавн LightEntity происходил после инициализации сущности
         SubscribeLocalEvent<FireVisualsComponent, ComponentShutdown>(OnShutdown);
     }
 
@@ -55,18 +53,9 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         if (component.Sprite != null)
             SpriteSystem.LayerSetRsi((uid, sprite), FireVisualLayers.Fire, new ResPath(component.Sprite));
 
-        // Fish-start: не вызываем UpdateAppearance до завершения инициализации всех компонентов сущности
+        // Fish-edit: не вызываем UpdateAppearance до завершения инициализации всех компонентов сущности (перенесено в FireVisualizerSystem.Fish.cs)
         // UpdateAppearance(uid, component, sprite, appearance);
     }
-
-    private void OnComponentStartup(EntityUid uid, FireVisualsComponent component, ComponentStartup args)
-    {
-        if (!TryComp<SpriteComponent>(uid, out var sprite) || !TryComp(uid, out AppearanceComponent? appearance))
-            return;
-
-        UpdateAppearance(uid, component, sprite, appearance);
-    }
-    // Fish-end
 
     protected override void OnAppearanceChange(EntityUid uid, FireVisualsComponent component, ref AppearanceChangeEvent args)
     {

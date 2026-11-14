@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections.Generic;
 using System.Linq;
 using Content.Client.Chat;
 using Content.Client.UserInterface.Systems.Chat;
@@ -15,6 +16,7 @@ using Content.Server.Roles;
 using Content.Shared._Sunrise.CollectiveMind;
 using Content.Shared._Sunrise.FleshCult;
 using Content.Shared.Actions.Components;
+using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Body.Components;
 using Content.Shared.Chat;
@@ -70,6 +72,7 @@ public sealed partial class FleshCultTests
         var mindSys = server.System<MindSystem>();
 
         var dummies = await server.AddDummySessions(2);
+        // Ждём регистрации тестовых сессий в тикере перед переключением готовности.
         await pair.RunTicksSync(5);
 
         await pair.SetAntagPreference("FleshCultist", true);
@@ -80,6 +83,7 @@ public sealed partial class FleshCultTests
             ticker.ToggleReadyAll(true);
             ticker.StartRound();
         });
+        // Ждём завершения инициализации карты, спавна игроков и перехода в InRound.
         await pair.RunTicksSync(10);
 
         Assert.That(ticker.RunLevel, Is.EqualTo(GameRunLevel.InRound));
@@ -90,6 +94,7 @@ public sealed partial class FleshCultTests
             ruleEnt = ticker.AddGameRule(FleshCultRuleId);
             ticker.StartGameRule(ruleEnt);
         });
+        // Ждём обработки выбора антагонистов правилом FleshCult при запуске в раунде.
         await pair.RunTicksSync(10);
 
         await server.WaitAssertion(() =>
@@ -128,7 +133,6 @@ public sealed partial class FleshCultTests
         var entMan = server.EntMan;
         var map = await pair.CreateTestMap();
         var antagSys = server.System<AntagSelectionSystem>();
-        var fleshSys = server.System<FleshCultSystem>();
         var mindSys = server.System<MindSystem>();
         var roleSys = server.System<RoleSystem>();
         var solutionSys = server.System<SharedSolutionContainerSystem>();
@@ -141,6 +145,7 @@ public sealed partial class FleshCultTests
             var mind = mindSys.CreateMind(pair.Player!.UserId, "Yautja Cultist");
             mindSys.TransferTo(mind, predator, true);
         });
+        // Ждём репликации сущности Predator и её разума перед проверкой выбора антагонистов.
         await pair.RunTicksSync(5);
 
         await server.WaitAssertion(() =>
@@ -152,18 +157,38 @@ public sealed partial class FleshCultTests
                 Assert.That(antagSys.IsEntityValid(predator, "SunriseFleshCultistLeader"), Is.True,
                     "Predator (Yautja) should be valid for SunriseFleshCultistLeader.");
             });
-
-            var bloodstream = entMan.GetComponent<BloodstreamComponent>(predator);
-            Assert.That(solutionSys.TryGetSolution(predator, bloodstream.BloodSolutionName, out var bloodSoln, out _), Is.True);
-            Assert.That(solutionSys.TryAddReagent(bloodSoln!.Value, "Carol", FixedPoint2.New(10)), Is.True);
-            // TryAddReagent triggers SolutionChangedEvent -> OnBloodstreamSolutionChanged -> TryInfectWithCarol automatically.
-            Assert.That(entMan.TryGetComponent<PendingFleshCultistComponent>(predator, out var pending), Is.True,
-                "Adding Carol reagent to Predator bloodstream should trigger PendingFleshCultist infection.");
-
-            pending!.CurrentStage = PendingFleshCultistStage.Second;
-            pending.Accumulator = pending.SecondStageTimer + 1f;
         });
 
+        var foundBloodSolution = false;
+        var carolAdded = false;
+        var triggeredPendingInfection = false;
+
+        await server.WaitPost(() =>
+        {
+            var bloodstream = entMan.GetComponent<BloodstreamComponent>(predator);
+            foundBloodSolution = solutionSys.TryGetSolution(predator, bloodstream.BloodSolutionName, out var bloodSoln, out _);
+            if (!foundBloodSolution || bloodSoln == null)
+                return;
+
+            carolAdded = solutionSys.TryAddReagent(bloodSoln.Value, "Carol", FixedPoint2.New(10));
+            // TryAddReagent вызывает SolutionChangedEvent -> OnBloodstreamSolutionChanged -> TryInfectWithCarol автоматически.
+            triggeredPendingInfection = entMan.TryGetComponent<PendingFleshCultistComponent>(predator, out var pending);
+            if (triggeredPendingInfection)
+            {
+                pending!.CurrentStage = PendingFleshCultistStage.Second;
+                pending.Accumulator = pending.SecondStageTimer + 1f;
+            }
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(foundBloodSolution, Is.True);
+            Assert.That(carolAdded, Is.True);
+            Assert.That(triggeredPendingInfection, Is.True,
+                "Adding Carol reagent to Predator bloodstream should trigger PendingFleshCultist infection.");
+        });
+
+        // Ждём несколько тиков цикла UpdateVirus для перевода заражённого Predator в культиста плоти.
         await pair.RunTicksSync(5);
 
         await server.WaitAssertion(() =>
@@ -205,7 +230,25 @@ public sealed partial class FleshCultTests
             fakeShieldMob = entMan.Spawn("MobHuman", map.MapCoords);
             implantSys.AddImplant(fakeShieldMob, "FakeMindShieldImplant");
         });
+        // Ждём завершения инициализации имплантов и обновления MindShieldStatusComponent.
         await pair.RunTicksSync(5);
+
+        var foundBloodSolution = false;
+        var carolAdded = false;
+        var canInfect = true;
+        var tryInfect = true;
+
+        await server.WaitPost(() =>
+        {
+            var bloodstream = entMan.GetComponent<BloodstreamComponent>(shieldedMob);
+            foundBloodSolution = solutionSys.TryGetSolution(shieldedMob, bloodstream.BloodSolutionName, out var bloodSoln, out _);
+            if (!foundBloodSolution || bloodSoln == null)
+                return;
+
+            carolAdded = solutionSys.TryAddReagent(bloodSoln.Value, "Carol", FixedPoint2.New(10));
+            canInfect = fleshSys.CanInfectWithCarol((shieldedMob, bloodstream), bloodSoln.Value);
+            tryInfect = fleshSys.TryInfectWithCarol((shieldedMob, bloodstream), bloodSoln.Value);
+        });
 
         await server.WaitAssertion(() =>
         {
@@ -225,13 +268,10 @@ public sealed partial class FleshCultTests
                     "FakeMindShield must not grant real antagonist immunity.");
             });
 
-            var bloodstream = entMan.GetComponent<BloodstreamComponent>(shieldedMob);
-            Assert.That(solutionSys.TryGetSolution(shieldedMob, bloodstream.BloodSolutionName, out var bloodSoln, out _), Is.True);
-            Assert.That(solutionSys.TryAddReagent(bloodSoln!.Value, "Carol", FixedPoint2.New(10)), Is.True);
-
-            Assert.That(fleshSys.CanInfectWithCarol((shieldedMob, bloodstream), bloodSoln.Value), Is.False,
-                "MindShielded mob must not be infected with Carol.");
-            Assert.That(fleshSys.TryInfectWithCarol((shieldedMob, bloodstream), bloodSoln.Value), Is.False);
+            Assert.That(foundBloodSolution, Is.True);
+            Assert.That(carolAdded, Is.True);
+            Assert.That(canInfect, Is.False, "MindShielded mob must not be infected with Carol.");
+            Assert.That(tryInfect, Is.False);
             Assert.That(entMan.HasComponent<PendingFleshCultistComponent>(shieldedMob), Is.False);
         });
 
@@ -253,6 +293,9 @@ public sealed partial class FleshCultTests
         EntityUid heart = default;
         EntityUid cultist = default;
         EntityUid corpse = default;
+        EntityUid? extraAction = null;
+        var heartAnchored = false;
+        var dragHandled = false;
 
         await server.WaitPost(() =>
         {
@@ -261,17 +304,16 @@ public sealed partial class FleshCultTests
             var heartXform = entMan.GetComponent<TransformComponent>(heart);
             if (!heartXform.Anchored)
                 xformSys.AnchorEntity(heart, heartXform);
-            Assert.That(heartXform.Anchored, Is.True,
-                "FleshHeart must be anchored on test grid.");
+            heartAnchored = heartXform.Anchored;
 
             cultist = entMan.SpawnEntity("MobHuman", coords);
             entMan.EnsureComponent<FleshCultistComponent>(cultist);
 
             corpse = entMan.SpawnEntity("MobPredator", coords);
-            EntityUid? extraAction = null;
             actionsSys.AddAction(corpse, ref extraAction, DevourActionId);
             mobStateSys.ChangeMobState(corpse, MobState.Dead);
         });
+        // Ждём завершения инициализации сердца, трупа и контейнера действий перед перетаскиванием.
         await pair.RunTicksSync(5);
 
         await server.WaitPost(() =>
@@ -281,9 +323,16 @@ public sealed partial class FleshCultTests
 
             var ev = new DragDropTargetEvent(cultist, corpse);
             entMan.EventBus.RaiseLocalEvent(heart, ref ev);
-            Assert.That(ev.Handled, Is.True, "FleshHeart should accept drag-drop of dead Predator corpse.");
+            dragHandled = ev.Handled;
         });
 
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(heartAnchored, Is.True, "FleshHeart must be anchored on test grid.");
+            Assert.That(dragHandled, Is.True, "FleshHeart should accept drag-drop of dead Predator corpse.");
+        });
+
+        // Ждём окончания DoAfter поглощения трупа (EntryDelay = 0.05с) с запасом на тики симуляции.
         await pair.RunSeconds(1.0f);
 
         await server.WaitAssertion(() =>
@@ -292,12 +341,107 @@ public sealed partial class FleshCultTests
             Assert.That(heartComp.BodyContainer.ContainedEntities, Does.Contain(corpse),
                 "Predator corpse should be absorbed by FleshHeart.");
 
+            Assert.That(extraAction, Is.Not.Null, "Corpse extra action must have been created.");
+            Assert.That(entMan.EntityExists(extraAction!.Value), Is.True,
+                "Corpse action entity must still exist after FleshHeart absorption.");
+            Assert.That(containerSys.IsEntityInContainer(extraAction.Value), Is.True,
+                "Corpse extraAction must remain inside a container instead of dropping onto the floor.");
+
             var actionQuery = entMan.EntityQueryEnumerator<ActionComponent>();
             while (actionQuery.MoveNext(out var actionUid, out _))
             {
                 Assert.That(containerSys.IsEntityInContainer(actionUid), Is.True,
                     $"Action entity {entMan.ToPrettyString(actionUid)} should not be dropped onto the floor by FleshHeart.");
             }
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task FleshHeart_RejectsFourthCorpse_AfterAbsorbingThreeBodies()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+        var mobStateSys = server.System<MobStateSystem>();
+        var xformSys = server.System<SharedTransformSystem>();
+
+        EntityUid heart = default;
+        EntityUid cultist = default;
+        var corpses = new EntityUid[4];
+
+        await server.WaitPost(() =>
+        {
+            var coords = map.GridCoords;
+            heart = entMan.SpawnEntity("FleshHeart", coords);
+            var heartXform = entMan.GetComponent<TransformComponent>(heart);
+            if (!heartXform.Anchored)
+                xformSys.AnchorEntity(heart, heartXform);
+
+            var heartComp = entMan.GetComponent<FleshHeartComponent>(heart);
+            heartComp.EntryDelay = 0.05f;
+
+            cultist = entMan.SpawnEntity("MobHuman", coords);
+            entMan.EnsureComponent<FleshCultistComponent>(cultist);
+
+            for (var i = 0; i < corpses.Length; i++)
+            {
+                corpses[i] = entMan.SpawnEntity("MobHuman", coords);
+                mobStateSys.ChangeMobState(corpses[i], MobState.Dead);
+            }
+        });
+        // Ждём завершения инициализации сердца и четырёх трупов.
+        await pair.RunTicksSync(5);
+
+        for (var i = 0; i < 3; i++)
+        {
+            var index = i;
+            var dragAccepted = false;
+            await server.WaitPost(() =>
+            {
+                var ev = new DragDropTargetEvent(cultist, corpses[index]);
+                entMan.EventBus.RaiseLocalEvent(heart, ref ev);
+                dragAccepted = ev.Handled;
+            });
+
+            await server.WaitAssertion(() =>
+            {
+                Assert.That(dragAccepted, Is.True,
+                    $"FleshHeart should accept corpse #{index + 1} before reaching capacity.");
+            });
+
+            // Ждём завершения DoAfter поглощения трупа (EntryDelay = 0.05с).
+            await pair.RunSeconds(0.5f);
+        }
+
+        var fourthHandledWhenFull = true;
+        var fourthHandledWhenActive = true;
+
+        await server.WaitPost(() =>
+        {
+            var fourthEv = new DragDropTargetEvent(cultist, corpses[3]);
+            entMan.EventBus.RaiseLocalEvent(heart, ref fourthEv);
+            fourthHandledWhenFull = fourthEv.Handled;
+
+            var heartComp = entMan.GetComponent<FleshHeartComponent>(heart);
+            heartComp.Status = HeartStatus.Active;
+
+            var activeEv = new DragDropTargetEvent(cultist, corpses[3]);
+            entMan.EventBus.RaiseLocalEvent(heart, ref activeEv);
+            fourthHandledWhenActive = activeEv.Handled;
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var heartComp = entMan.GetComponent<FleshHeartComponent>(heart);
+            Assert.That(heartComp.BodyContainer.ContainedEntities.Count, Is.EqualTo(3),
+                "FleshHeart should hold exactly 3 absorbed corpses.");
+            Assert.That(fourthHandledWhenFull, Is.False,
+                "FleshHeart must reject a 4th corpse once it has absorbed 3 corpses.");
+            Assert.That(fourthHandledWhenActive, Is.False,
+                "FleshHeart must reject corpses once it is already active.");
         });
 
         await pair.CleanReturnAsync();
@@ -323,12 +467,22 @@ public sealed partial class FleshCultTests
             "MobSmallFleshWorm",
         ];
 
-        await server.WaitAssertion(() =>
+        var spawnedMobs = new Dictionary<string, EntityUid>();
+
+        await server.WaitPost(() =>
         {
             foreach (var proto in fleshMobProtos)
             {
-                var mob = entMan.Spawn(proto, map.MapCoords);
+                spawnedMobs[proto] = entMan.Spawn(proto, map.MapCoords);
+            }
+        });
+        // Ждём завершения ComponentStartup (выдача ActionToggleNightVision и др.) у заспавненных мобов.
+        await pair.RunTicksSync(2);
 
+        await server.WaitAssertion(() =>
+        {
+            foreach (var (proto, mob) in spawnedMobs)
+            {
                 Assert.Multiple(() =>
                 {
                     Assert.That(entMan.HasComponent<NoSlipComponent>(mob), Is.True,
@@ -398,17 +552,14 @@ public sealed partial class FleshCultTests
         var mindListener = server.System<CollectiveMindListenerSystem>();
 
         EntityUid pudge = default;
-        EntityUid cultistReceiver = default;
 
         await server.WaitPost(() =>
         {
             mindListener.LastEvent = null;
             pudge = entMan.Spawn("MobFleshPudge", map.MapCoords);
             server.PlayerMan.SetAttachedEntity(pair.Player!, pudge);
-
-            cultistReceiver = entMan.Spawn("MobHuman", map.MapCoords);
-            entMan.EnsureComponent<FleshCultistComponent>(cultistReceiver);
         });
+        // Ждём полной репликации MobFleshPudge и его CollectiveMindComponent на клиент.
         await pair.RunTicksSync(10);
 
         await client.WaitAssertion(() =>
@@ -430,7 +581,7 @@ public sealed partial class FleshCultTests
             });
         });
 
-        await server.WaitAssertion(() =>
+        await server.WaitPost(() =>
         {
             chatSys.TrySendInGameICMessage(
                 pudge,
@@ -438,7 +589,10 @@ public sealed partial class FleshCultTests
                 InGameICChatType.CollectiveMind,
                 ChatTransmitRange.Normal,
                 player: pair.Player);
+        });
 
+        await server.WaitAssertion(() =>
+        {
             var capturedEvent = mindListener.LastEvent;
             Assert.That(capturedEvent, Is.Not.Null,
                 "Flesh mob collective mind message should dispatch CollectiveMindSpokeEvent.");
@@ -447,14 +601,25 @@ public sealed partial class FleshCultTests
             Assert.That(capturedEvent.Message, Is.EqualTo("Проверка связи."));
         });
 
+        var hasFlammableAfterIgnite = false;
+        var isOnFireAfterIgnite = false;
+
         await server.WaitPost(() =>
         {
             flammableSys.AdjustFireStacks(pudge, 10, ignite: true);
-            Assert.That(entMan.TryGetComponent<FlammableComponent>(pudge, out var flammable), Is.True);
-            Assert.That(flammable!.OnFire, Is.True, "Flesh mob should ignite cleanly.");
+            hasFlammableAfterIgnite = entMan.TryGetComponent<FlammableComponent>(pudge, out var flammable);
+            isOnFireAfterIgnite = flammable?.OnFire ?? false;
 
             dmgSys.TryChangeDamage(pudge, new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(500) } } }, true);
         });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(hasFlammableAfterIgnite, Is.True);
+            Assert.That(isOnFireAfterIgnite, Is.True, "Flesh mob should ignite cleanly.");
+        });
+
+        // Ждём репликации смерти моба и появления горящего MobFleshWorm на клиенте без падения визуализатора огня.
         await pair.RunTicksSync(10);
 
         await server.WaitAssertion(() =>
@@ -462,6 +627,153 @@ public sealed partial class FleshCultTests
             Assert.That(entMan.TryGetComponent<MobStateComponent>(pudge, out var state), Is.True);
             Assert.That(state!.CurrentState, Is.EqualTo(MobState.Dead),
                 "Flesh mob ignited and killed by heat damage should die without crashing client or server.");
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task FleshCultist_RuntimeCollectiveMindSync_UpdatesClientChatPermissions()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Dirty = true,
+            DummyTicker = false,
+            Connected = true,
+            InLobby = false,
+        });
+        var server = pair.Server;
+        var client = pair.Client;
+        var entMan = server.EntMan;
+        var map = await pair.CreateTestMap();
+
+        EntityUid human = default;
+
+        await server.WaitPost(() =>
+        {
+            human = entMan.Spawn("MobHuman", map.MapCoords);
+            server.PlayerMan.SetAttachedEntity(pair.Player!, human);
+        });
+        // Ждём репликации стартовой сущности без коллективного разума на клиент.
+        await pair.RunTicksSync(10);
+
+        await client.WaitAssertion(() =>
+        {
+            var clientMindSys = client.System<CollectiveMindChatUpdateSystem>();
+            var chatUi = client.ResolveDependency<IUserInterfaceManager>().GetUIController<ChatUIController>();
+
+            Assert.That(clientMindSys.IsCollectiveMind, Is.False);
+            Assert.That(chatUi.CanSendChannels.HasFlag(ChatSelectChannel.CollectiveMind), Is.False);
+        });
+
+        await server.WaitPost(() =>
+        {
+            entMan.EnsureComponent<FleshCultistComponent>(human);
+        });
+        // Ждём репликации CollectiveMindComponent.Minds и обновления прав чата через AfterAutoHandleStateEvent.
+        await pair.RunTicksSync(10);
+
+        await client.WaitAssertion(() =>
+        {
+            var clientMindSys = client.System<CollectiveMindChatUpdateSystem>();
+            var chatUi = client.ResolveDependency<IUserInterfaceManager>().GetUIController<ChatUIController>();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(clientMindSys.IsCollectiveMind, Is.True);
+                Assert.That(clientMindSys.Player, Is.Not.Null);
+                Assert.That(clientMindSys.Player!.Minds, Does.Contain(new ProtoId<CollectiveMindPrototype>("FleshCult")));
+                Assert.That(chatUi.CanSendChannels.HasFlag(ChatSelectChannel.CollectiveMind), Is.True);
+            });
+        });
+
+        await server.WaitPost(() =>
+        {
+            entMan.RemoveComponent<FleshCultistComponent>(human);
+        });
+        // Ждём репликации удаления CollectiveMindComponent (при пустом Minds) на клиент.
+        await pair.RunTicksSync(10);
+
+        await client.WaitAssertion(() =>
+        {
+            var clientMindSys = client.System<CollectiveMindChatUpdateSystem>();
+            var chatUi = client.ResolveDependency<IUserInterfaceManager>().GetUIController<ChatUIController>();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(clientMindSys.IsCollectiveMind, Is.False);
+                Assert.That(chatUi.CanSendChannels.HasFlag(ChatSelectChannel.CollectiveMind), Is.False);
+            });
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task FleshCultist_IgnitedToDeath_TransformsIntoPudge_WithoutCrashing()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            Dirty = true,
+        });
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var timing = server.Timing;
+        var map = await pair.CreateTestMap();
+        var atmosSys = server.System<AtmosphereSystem>();
+        var dmgSys = server.System<DamageableSystem>();
+        var flammableSys = server.System<FlammableSystem>();
+
+        EntityUid cultist = default;
+        EntityUid bystander = default;
+
+        await server.WaitPost(() =>
+        {
+            var gas = new GasMixture(Atmospherics.CellVolume)
+            {
+                Temperature = Atmospherics.T20C,
+            };
+            gas.SetMoles(Gas.Oxygen, 25f);
+            gas.SetMoles(Gas.Nitrogen, 75f);
+            atmosSys.SetMapAtmosphere(map.MapUid, false, gas);
+
+            cultist = entMan.Spawn("MobHuman", map.MapCoords);
+            entMan.EnsureComponent<FleshCultistComponent>(cultist);
+
+            // Вторая горящая сущность гарантирует продолжение обхода в FlammableSystem.Update.
+            bystander = entMan.Spawn("MobHuman", map.MapCoords);
+
+            dmgSys.TryChangeDamage(cultist, new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(198) } } }, true);
+            flammableSys.AdjustFireStacks(cultist, 20, ignite: true);
+            flammableSys.AdjustFireStacks(bystander, 1, ignite: true);
+        });
+
+        // Ждём срабатывания 1-секундного цикла FlammableSystem.Update (смерть от огня) и отложенного превращения в MobFleshPudge.
+        await pair.RunSeconds(2.0f);
+
+        await server.WaitAssertion(() =>
+        {
+            var state = entMan.GetComponentOrNull<MobStateComponent>(cultist)?.CurrentState;
+            var dmg = dmgSys.GetAllDamage(cultist).GetTotal();
+            var flam = entMan.GetComponentOrNull<FlammableComponent>(cultist);
+            var fc = entMan.GetComponentOrNull<FleshCultistComponent>(cultist);
+            Assert.That(entMan.Deleted(cultist), Is.True,
+                $"Cultist killed by fire should gib and delete after spawning MobFleshPudge. CurTime={timing.CurTime}, State={state}, Dmg={dmg}, OnFire={flam?.OnFire}, Stacks={flam?.FireStacks}, NextUpd={flam?.NextUpdate}, Pending={fc?.IsTransformationPending}, DeathPending={fc?.IsDeathPending}");
+            Assert.That(entMan.Deleted(bystander), Is.False);
+
+            var foundPudge = false;
+            var fleshMobQuery = entMan.EntityQueryEnumerator<FleshMobComponent, MetaDataComponent>();
+            while (fleshMobQuery.MoveNext(out _, out _, out var meta))
+            {
+                if (meta.EntityPrototype?.ID == "MobFleshPudge")
+                {
+                    foundPudge = true;
+                    break;
+                }
+            }
+
+            Assert.That(foundPudge, Is.True,
+                "Burning cultist should transform into MobFleshPudge during FlammableSystem.Update without InvalidOperationException.");
         });
 
         await pair.CleanReturnAsync();

@@ -31,7 +31,7 @@ namespace Content.Client.Chat
         }
 
         // Fish-start: обновление прав чата при изменении состояния CollectiveMindComponent
-        private void OnHandleState(EntityUid uid, CollectiveMindComponent component, ref AfterAutoHandleStateEvent args)
+        private void OnHandleState(Entity<CollectiveMindComponent> ent, ref AfterAutoHandleStateEvent args)
         {
             _chatManager.UpdatePermissions();
         }

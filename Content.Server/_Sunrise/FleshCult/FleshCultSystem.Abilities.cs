@@ -640,7 +640,7 @@ public sealed partial class FleshCultSystem
                 }
 
                 _containerSystem.Remove(ent, cont, force: true);
-                Transform(ent).Coordinates = coordinates;
+                _transformSystem.SetCoordinates(ent, coordinates);
             }
         }
     }

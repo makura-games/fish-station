@@ -47,6 +47,8 @@ public sealed partial class FleshCultSystem
 
     private static readonly ProtoId<CurrencyPrototype> StolenMutationPointPrototype = "StolenMutationPoint";
 
+    private readonly List<(EntityUid Uid, FleshCultistComponent Comp)> _pendingTransformations = new(); // Fish-edit: буфер отложенных превращений вне цикла EntityQueryEnumerator
+
     private static readonly HumanoidVisualLayers[] FleshSpiderLegLayers =
     [
         HumanoidVisualLayers.RLeg,
@@ -116,7 +118,10 @@ public sealed partial class FleshCultSystem
 
         DeleteFleshBodyModComponent(uid, "shoes", component);
         DeleteFleshBodyModComponent(uid, "outerClothing", component);
-        ParasiteComesOut(uid, component);
+        // Fish-start: переносим спавн толстяка и гибинг в UpdateCultist, чтобы не ломать активные итераторы (например, FlammableSystem.Update) при смерти от огня
+        // ParasiteComesOut(uid, component);
+        component.IsTransformationPending = true;
+        // Fish-end
     }
 
     private void DeleteFleshBodyModComponent(EntityUid uid, string slot, FleshCultistComponent component)
@@ -175,11 +180,13 @@ public sealed partial class FleshCultSystem
     {
         var storeComp = EnsureComp<StoreComponent>(uid);
         var collectiveMindComponent = EnsureComp<CollectiveMindComponent>(uid);
+        // Fish-start: синхронизируем добавление коллективного разума с клиентом
         if (!collectiveMindComponent.Minds.Contains(FleshCollectiveMindProto))
         {
             collectiveMindComponent.Minds.Add(FleshCollectiveMindProto);
             Dirty(uid, collectiveMindComponent);
         }
+        // Fish-end
 
         storeComp.Categories.Add("FleshCultistPassiveSkills");
         storeComp.Categories.Add("FleshCultistActiveSkills");
@@ -261,8 +268,13 @@ public sealed partial class FleshCultSystem
     {
         if (TryComp(uid, out CollectiveMindComponent? collectiveMind) && collectiveMind.Minds.Contains(FleshCollectiveMindProto))
         {
+            // Fish-start: удаляем компонент при пустом списке разумов, иначе синхронизируем оставшийся список с клиентом
             collectiveMind.Minds.Remove(FleshCollectiveMindProto);
-            Dirty(uid, collectiveMind);
+            if (collectiveMind.Minds.Count == 0)
+                RemCompDeferred<CollectiveMindComponent>(uid);
+            else
+                Dirty(uid, collectiveMind);
+            // Fish-end
         }
     }
 
@@ -363,6 +375,8 @@ public sealed partial class FleshCultSystem
 
     public void UpdateCultist(float frameTime)
     {
+        // Fish-start: не вызываем ParasiteComesOut (_gibbing.Gib + Spawn) внутри EntityQueryEnumerator<FleshCultistComponent>
+        _pendingTransformations.Clear();
 
         // foreach (var cultist in EntityQuery<FleshCultistComponent>())
         var query = EntityQueryEnumerator<FleshCultistComponent>();
@@ -374,7 +388,7 @@ public sealed partial class FleshCultSystem
                 // Check if entity is still dead and complete the transformation
                 if (TryComp<MobStateComponent>(uid, out var mobState) && mobState.CurrentState == MobState.Dead)
                 {
-                    ParasiteComesOut(uid, cultist);
+                    _pendingTransformations.Add((uid, cultist));
                 }
                 continue;
             }
@@ -398,11 +412,17 @@ public sealed partial class FleshCultSystem
             {
                 // ParasiteComesOut(cultist.Owner, cultist);
                 cultist.IsTransformationPending = true;
-                ParasiteComesOut(uid, cultist);
+                _pendingTransformations.Add((uid, cultist));
                 continue;
             }
 
             ChangeParasiteHunger(uid, cultist.HungerСonsumption, cultist);
         }
+
+        foreach (var (uid, cultist) in _pendingTransformations)
+        {
+            ParasiteComesOut(uid, cultist);
+        }
+        // Fish-end
     }
 }
