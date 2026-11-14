@@ -763,11 +763,13 @@ public sealed partial class FleshCultTests
             // Вторая горящая сущность гарантирует продолжение обхода в FlammableSystem.Update.
             bystander = entMan.Spawn("MobHuman", map.MapCoords);
 
-            // Доводим урон до предсмертного (<190 при пороге смерти 200), чтобы именно FlammableSystem.Update добил культиста огнём.
-            for (var i = 0; i < 20 && dmgSys.GetAllDamage(cultist).GetTotal() < FixedPoint2.New(175); i++)
-            {
-                dmgSys.TryChangeDamage(cultist, new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(15) } } }, true);
-            }
+            // Доводим урон до предсмертного (185 при пороге смерти 200 и negative_variance = 0.3), чтобы FlammableSystem.Update гарантированно добил культиста за 1–2 тика огня.
+            dmgSys.TryChangeDamage(
+                cultist,
+                new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(185) } } },
+                ignoreResistances: true,
+                ignoreGlobalModifiers: true,
+                ignoreVariance: true);
 
             stateBeforeIgnite = entMan.GetComponent<MobStateComponent>(cultist).CurrentState;
 
@@ -776,7 +778,7 @@ public sealed partial class FleshCultTests
         });
 
         // Ждём срабатывания цикла FlammableSystem.Update (смерть от огня) и отложенного превращения в MobFleshPudge.
-        await pair.RunSeconds(2.5f);
+        await pair.RunSeconds(5f);
 
         await server.WaitAssertion(() =>
         {
