@@ -1645,3 +1645,16 @@
     message: Изменение плюшек в магазине.
   id: 168
   url: https://github.com/makura-games/fish-station/pull/650
+- author: NekutGit
+  time: '2026-11-14T00:05:31.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: В лобби снова доступны роли «Синий щит».
+  - type: Tweak
+    message: Для игры на станционных ОпСЩ теперь требуется Вайтлист.
+  - type: Tweak
+    message: Скорректирована иконка ОпСЩ Центкома.
+  - type: Tweak
+    message: Из экиперовки для ОпСЩ Центкома исключен бронежилет чтобы предотвратить дублирование.
+  id: 169
+  url: https://github.com/makura-games/fish-station/pull/642
