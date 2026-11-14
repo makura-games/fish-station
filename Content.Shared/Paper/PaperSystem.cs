@@ -206,10 +206,16 @@ public sealed partial class PaperSystem : EntitySystem
 
             contentTarget = requestedUid.Value;
         }
+        else if (HasComp<Content.Shared._Fish.Paper.FishStapledDocumentComponent>(entity))
+        {
+            // Пакет: Fish-клиент всегда шлёт ContentTarget. Без него запись отклоняем
+            // (не fallback на CurrentPage — контракт UI, а не «гонка во время Write»).
+            return;
+        }
         else
         {
-            // Обычная бумага без ContentTarget (клиент без пакета).
-            contentTarget = ResolvePaperContentTarget(entity);
+            // Обычная бумага без ContentTarget.
+            contentTarget = entity;
         }
 
         if (!TryComp(contentTarget, out PaperComponent? contentPaper))

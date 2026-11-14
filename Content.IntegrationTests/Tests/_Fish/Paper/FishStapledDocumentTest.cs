@@ -357,7 +357,7 @@ public sealed class FishStapledDocumentTest
     }
 
     [Test]
-    public async Task WriteWithDetachedContentTarget_IsRejected()
+    public async Task WriteWithDetachedOrMissingContentTarget_IsRejectedEvenWithPen()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
@@ -371,6 +371,7 @@ public sealed class FishStapledDocumentTest
         EntityUid outer = default;
         EntityUid inner = default;
         EntityUid stapler = default;
+        EntityUid pen = default;
 
         await server.WaitPost(() =>
         {
@@ -379,6 +380,7 @@ public sealed class FishStapledDocumentTest
             outer = entMan.SpawnEntity("Paper", map.GridCoords);
             inner = entMan.SpawnEntity("Paper", map.GridCoords);
             stapler = entMan.SpawnEntity("FishStapler", map.GridCoords);
+            pen = entMan.SpawnEntity("Pen", map.GridCoords);
             paperSys.SetContent(outer, "OUTER");
             paperSys.SetContent(inner, "INNER");
             Assert.That(hands.TryPickupAnyHand(user, stapler, checkActionBlocker: false), Is.True);
@@ -386,21 +388,41 @@ public sealed class FishStapledDocumentTest
             var staplerEnt = (stapler, entMan.GetComponent<FishStaplerComponent>(stapler));
             Assert.That(stapleSys.TryStaple(user, outer, inner, staplerEnt), Is.True);
 
+            // Активная ручка: отказ не из-за TryValidateWriteTool.
+            hands.TryDrop(user, stapler, checkActionBlocker: false);
+            Assert.That(hands.TryPickupAnyHand(user, pen, checkActionBlocker: false), Is.True);
+            Assert.That(hands.IsHolding(user, pen, out var penHand), Is.True);
+            hands.SetActiveHand(user, penHand);
+            Assert.That(hands.GetActiveItem(user), Is.EqualTo(pen));
+
+            // 1) null ContentTarget на живом пакете — отклоняется.
+            entMan.EventBus.RaiseLocalEvent(outer,
+                new PaperComponent.PaperInputTextMessage("HACKED_NULL", null) { Actor = user });
+            Assert.That(entMan.GetComponent<PaperComponent>(outer).Content, Is.EqualTo("OUTER"));
+            Assert.That(entMan.GetComponent<PaperComponent>(inner).Content, Is.EqualTo("INNER"));
+
+            // 2) отделённая страница — отклоняется.
             var bundle = entMan.GetComponent<FishStapledDocumentComponent>(outer);
             bundle.CurrentPage = 1;
             Dirty(entMan, (outer, bundle));
             Assert.That(stapleSys.TryRemoveCurrentPage((outer, bundle), user, quiet: true), Is.True);
             Assert.That(entMan.HasComponent<FishStapledDocumentComponent>(outer), Is.False);
 
-            // Отклонённый ContentTarget возвращается до проверки ручки — ручка не нужна.
-            var detachedNet = entMan.GetNetEntity(inner);
-            var msg = new PaperComponent.PaperInputTextMessage("HACKED", detachedNet) { Actor = user };
-            entMan.EventBus.RaiseLocalEvent(outer, msg);
-        });
-
-        await server.WaitAssertion(() =>
-        {
+            entMan.EventBus.RaiseLocalEvent(outer,
+                new PaperComponent.PaperInputTextMessage("HACKED_DETACHED", entMan.GetNetEntity(inner))
+                {
+                    Actor = user,
+                });
             Assert.That(entMan.GetComponent<PaperComponent>(outer).Content, Is.EqualTo("OUTER"));
+            Assert.That(entMan.GetComponent<PaperComponent>(inner).Content, Is.EqualTo("INNER"));
+
+            // 3) валидная явная цель на обычный лист — запись проходит (ручка активна).
+            entMan.EventBus.RaiseLocalEvent(outer,
+                new PaperComponent.PaperInputTextMessage("OUTER_OK", entMan.GetNetEntity(outer))
+                {
+                    Actor = user,
+                });
+            Assert.That(entMan.GetComponent<PaperComponent>(outer).Content, Is.EqualTo("OUTER_OK"));
             Assert.That(entMan.GetComponent<PaperComponent>(inner).Content, Is.EqualTo("INNER"));
         });
 
