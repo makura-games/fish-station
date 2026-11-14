@@ -65,6 +65,42 @@ public sealed class FishIpcKaitenReviewTest : FishIpcGameTest
     }
 
     [Test]
+    public async Task Reboot_SecondClickDoesNotStackDoAfter()
+    {
+        var map = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            var human = SSpawnAtPosition("MobHuman", map.GridCoords);
+            Hurt(ipc, "Blunt", 250);
+            Server.System<MobStateSystem>().ChangeMobState(ipc, MobState.Dead);
+            SComp<FishDeadStartupButtonComponent>(ipc).DoAfterDelay = TimeSpan.FromSeconds(1);
+
+            InvokeStartup(human, ipc);
+            Assert.That(ActiveDoAfters(human), Is.EqualTo(1));
+            InvokeStartup(human, ipc);
+            Assert.That(ActiveDoAfters(human), Is.LessThanOrEqualTo(1));
+        });
+    }
+
+    private void InvokeStartup(EntityUid user, EntityUid ipc)
+    {
+        var verbs = new GetVerbsEvent<AlternativeVerb>(
+            user, ipc, null, SComp<HandsComponent>(user), true, true, true, new List<VerbCategory>());
+        SEntMan.EventBus.RaiseLocalEvent(ipc, verbs);
+        Assert.That(verbs.Verbs, Is.Not.Empty);
+        verbs.Verbs.First().Act!.Invoke();
+    }
+
+    private int ActiveDoAfters(EntityUid user)
+    {
+        return !SEntMan.TryGetComponent(user, out DoAfterComponent? comp)
+            ? 0
+            : comp.DoAfters.Values.Count(d => !d.Cancelled && !d.Completed);
+    }
+
+    [Test]
     public async Task Reboot_BreaksWhenBodyMoves()
     {
         var map = await Pair.CreateTestMap();

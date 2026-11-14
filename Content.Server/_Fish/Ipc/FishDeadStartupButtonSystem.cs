@@ -47,16 +47,21 @@ public sealed partial class FishDeadStartupButtonSystem : EntitySystem
         {
             Act = () =>
             {
-                _audio.PlayPvs(component.Sound, uid);
                 // BreakOnMove рвёт и если сдвинулось тело: отдельного BreakOnTargetMove в этом движке нет.
-                _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, component.DoAfterDelay,
+                // Повторный клик не плодит разряды, искры и звук.
+                if (!_doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, user, component.DoAfterDelay,
                     new FishDeadStartupDoAfterEvent(), uid, uid)
                 {
                     BreakOnDamage = true,
                     BreakOnMove = true,
                     NeedHand = true,
                     DistanceThreshold = 1.5f,
-                });
+                    CancelDuplicate = true,
+                    DuplicateCondition = DuplicateConditions.SameEvent,
+                }))
+                    return;
+
+                _audio.PlayPvs(component.Sound, uid);
             },
             Text = Loc.GetString("fish-ipc-startup-verb"),
             Icon = new SpriteSpecifier.Texture(new ResPath("/Textures/Interface/VerbIcons/Spare/poweronoff.svg.192dpi.png")),
