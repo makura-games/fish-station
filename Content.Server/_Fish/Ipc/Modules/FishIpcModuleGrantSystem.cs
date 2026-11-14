@@ -1,3 +1,4 @@
+using Content.Server._Fish.Vision;
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared._Fish.Vision;
@@ -6,6 +7,7 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Examine;
 using Content.Shared.Eye.Blinding.Components;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Overlays;
 using Content.Shared.Popups;
 
@@ -21,6 +23,7 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private FishVisionDeviceSystem _visionDevices = default!;
 
     public override void Initialize()
     {
@@ -55,6 +58,31 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
 
         SubscribeLocalEvent<FishIpcRadFilterHostComponent, DamageModifyEvent>(OnRadModify);
         SubscribeLocalEvent<FishIpcWireInterfaceHostComponent, ExaminedEvent>(OnWireExamineHost);
+
+        SubscribeLocalEvent<FishIpcModuleHostComponent, FishVisionGearRefreshedEvent>(OnGearVisionRefreshed);
+        SubscribeLocalEvent<FishIpcModuleHostComponent, DidEquipEvent>(OnIpcEquipped);
+        SubscribeLocalEvent<FishIpcModuleHostComponent, DidUnequipEvent>(OnIpcUnequipped);
+    }
+
+    private void OnGearVisionRefreshed(Entity<FishIpcModuleHostComponent> ent, ref FishVisionGearRefreshedEvent args) =>
+        RefreshHostVision(ent.Owner);
+
+    private void OnIpcEquipped(Entity<FishIpcModuleHostComponent> ent, ref DidEquipEvent args) =>
+        RefreshHostVision(ent.Owner);
+
+    private void OnIpcUnequipped(Entity<FishIpcModuleHostComponent> ent, ref DidUnequipEvent args) =>
+        RefreshHostVision(ent.Owner);
+
+    private void RefreshHostVision(EntityUid host)
+    {
+        if (!TryComp<FishIpcModuleHostComponent>(host, out var hostComp) || hostComp.ModuleContainer is not { } container)
+            return;
+
+        foreach (var module in container.ContainedEntities)
+        {
+            if (HasComp<FishIpcVisionModuleComponent>(module))
+                SyncModuleEffects(module, host);
+        }
     }
 
     private void OnEmpScreenInstall(Entity<FishIpcEmpScreenModuleComponent> ent, ref FishIpcModuleInstalledEvent args) =>
@@ -315,13 +343,17 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
                 SetOwned<EyeProtectionComponent>(host, add, ref comp.OwnsEyeProtection);
                 break;
             case FishIpcVisionKind.Thermal:
-                SetOwned<FishThermalVisionComponent>(host, add, ref comp.OwnsThermal);
+                // Прибор сам пишет FishThermalVision на носителя. Пока очки включены, компонент не снимаем.
+                SetOwned<FishThermalVisionComponent>(host, add, ref comp.OwnsThermal, _visionDevices.HasActiveThermalSource(host));
                 break;
         }
     }
 
-    /// <summary>Ставит компонент, только если его не дала экипировка, и снимает только свой.</summary>
-    private void SetOwned<T>(EntityUid uid, bool add, ref bool owned) where T : Component, new()
+    /// <summary>
+    /// Свой компонент ставим, только если его ещё нет. Чужой не забираем.
+    /// Снимаем только свой и только если экипировка его больше не держит.
+    /// </summary>
+    private void SetOwned<T>(EntityUid uid, bool add, ref bool owned, bool gearKeeps = false) where T : Component, new()
     {
         if (add)
         {
@@ -336,8 +368,11 @@ public sealed partial class FishIpcModuleGrantSystem : EntitySystem
         if (!owned)
             return;
 
-        RemComp<T>(uid);
         owned = false;
+        if (gearKeeps)
+            return;
+
+        RemComp<T>(uid);
     }
 
     private void OnRadModify(Entity<FishIpcRadFilterHostComponent> ent, ref DamageModifyEvent args)

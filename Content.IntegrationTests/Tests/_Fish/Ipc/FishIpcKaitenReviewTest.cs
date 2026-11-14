@@ -10,6 +10,9 @@ using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DoAfter;
 using Content.Shared.Electrocution;
 using Content.Shared.Eye.Blinding.Components;
+using Content.Shared.Eye.Blinding.Systems;
+using Content.Shared.Inventory;
+using Content.Shared._Fish.Vision;
 using Content.Shared.FixedPoint;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -230,6 +233,61 @@ public sealed class FishIpcKaitenReviewTest : FishIpcGameTest
         {
             Assert.That(SComp<MobStateComponent>(patient).CurrentState, Is.EqualTo(MobState.Dead));
             Assert.That(Damage(patient, "Asphyxiation"), Is.EqualTo(40f));
+        });
+    }
+
+    [Test]
+    public async Task VisionModule_AndGlasses_DoNotStripEachOther()
+    {
+        await Server.WaitAssertion(() =>
+        {
+            var inventory = Server.System<InventorySystem>();
+            var toggle = Server.System<ItemToggleSystem>();
+
+            var glassesFirst = SSpawn("MobIpc");
+            var glasses = SSpawn("SunriseClothingEyesGlassesThermal");
+            Assert.That(inventory.TryEquip(glassesFirst, glasses, "eyes", force: true, silent: true), Is.True);
+            Assert.That(toggle.TryActivate(glasses, glassesFirst), Is.True);
+            Assert.That(SEntMan.HasComponent<FishThermalVisionComponent>(glassesFirst), Is.True);
+
+            var module = InstallModule(glassesFirst, "FishIpcModuleNightVision");
+            Assert.That(SComp<FishIpcVisionModuleComponent>(module).OwnsThermal, Is.False);
+            Assert.That(toggle.TryDeactivate(glasses, glassesFirst), Is.True);
+            Assert.That(SEntMan.HasComponent<FishThermalVisionComponent>(glassesFirst), Is.True, "модуль должен вернуть термалы после очков");
+
+            ToggleVision(glassesFirst, module);
+            Assert.That(SEntMan.HasComponent<FishThermalVisionComponent>(glassesFirst), Is.False);
+
+            var moduleFirst = SSpawn("MobIpc");
+            var moduleB = InstallModule(moduleFirst, "FishIpcModuleNightVision");
+            Assert.That(SComp<FishIpcVisionModuleComponent>(moduleB).OwnsThermal, Is.True);
+            var glassesB = SSpawn("SunriseClothingEyesGlassesThermal");
+            Assert.That(inventory.TryEquip(moduleFirst, glassesB, "eyes", force: true, silent: true), Is.True);
+            Assert.That(toggle.TryActivate(glassesB, moduleFirst), Is.True);
+            ToggleVision(moduleFirst, moduleB);
+            Assert.That(SEntMan.HasComponent<FishThermalVisionComponent>(moduleFirst), Is.True, "выключение модуля не снимает очки");
+            Assert.That(toggle.TryDeactivate(glassesB, moduleFirst), Is.True);
+            Assert.That(SEntMan.HasComponent<FishThermalVisionComponent>(moduleFirst), Is.False);
+
+            var eyes = SSpawn("MobIpc");
+            var meson = InstallModule(eyes, "FishIpcModuleMeson");
+            var goggles = SSpawn("ClothingEyesGlassesMeson");
+            Assert.That(inventory.TryEquip(eyes, goggles, "eyes", force: true, silent: true), Is.True);
+            ToggleVision(eyes, meson);
+            var protection = new GetEyeProtectionEvent();
+            SEntMan.EventBus.RaiseLocalEvent(eyes, protection);
+            Assert.That(protection.Protection, Is.GreaterThan(TimeSpan.Zero));
+            Assert.That(SEntMan.HasComponent<EyeProtectionComponent>(goggles), Is.True);
+        });
+    }
+
+    private void ToggleVision(EntityUid ipc, EntityUid module)
+    {
+        var action = SComp<FishIpcVisionModuleComponent>(module).ToggleActionEntity!.Value;
+        SEntMan.EventBus.RaiseLocalEvent(ipc, new FishIpcModuleToggleActionEvent
+        {
+            Performer = ipc,
+            Action = (action, SComp<ActionComponent>(action)),
         });
     }
 
