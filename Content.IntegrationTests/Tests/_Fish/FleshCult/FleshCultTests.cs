@@ -724,6 +724,7 @@ public sealed partial class FleshCultTests
 
         EntityUid cultist = default;
         EntityUid bystander = default;
+        MobState stateBeforeIgnite = default;
 
         await server.WaitPost(() =>
         {
@@ -741,28 +742,25 @@ public sealed partial class FleshCultTests
             // Вторая горящая сущность гарантирует продолжение обхода в FlammableSystem.Update.
             bystander = entMan.Spawn("MobHuman", map.MapCoords);
 
-            // Доводим урон до предсмертного (~185), чтобы именно тик FlammableSystem.Update перевёл культиста в Dead.
-            for (var i = 0; i < 12 && dmgSys.GetAllDamage(cultist).GetTotal() < FixedPoint2.New(185); i++)
+            // Доводим урон до предсмертного (<190 при пороге смерти 200), чтобы именно FlammableSystem.Update добил культиста огнём.
+            for (var i = 0; i < 20 && dmgSys.GetAllDamage(cultist).GetTotal() < FixedPoint2.New(175); i++)
             {
-                dmgSys.TryChangeDamage(cultist, new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(25) } } }, true);
+                dmgSys.TryChangeDamage(cultist, new DamageSpecifier { DamageDict = { { "Heat", FixedPoint2.New(15) } } }, true);
             }
+
+            stateBeforeIgnite = entMan.GetComponent<MobStateComponent>(cultist).CurrentState;
 
             flammableSys.AdjustFireStacks(cultist, 20, ignite: true);
             flammableSys.AdjustFireStacks(bystander, 1, ignite: true);
         });
 
-        await server.WaitAssertion(() =>
-        {
-            var state = entMan.GetComponent<MobStateComponent>(cultist).CurrentState;
-            Assert.That(state, Is.Not.EqualTo(MobState.Dead),
-                "Cultist must still be alive/critical before FlammableSystem.Update deals the lethal fire tick.");
-        });
-
-        // Ждём срабатывания 1-секундного цикла FlammableSystem.Update (смерть от огня) и отложенного превращения в MobFleshPudge.
+        // Ждём срабатывания цикла FlammableSystem.Update (смерть от огня) и отложенного превращения в MobFleshPudge.
         await pair.RunSeconds(2.5f);
 
         await server.WaitAssertion(() =>
         {
+            Assert.That(stateBeforeIgnite, Is.Not.EqualTo(MobState.Dead),
+                "Cultist must still be alive/critical before FlammableSystem.Update deals the lethal fire tick.");
             Assert.That(entMan.Deleted(cultist), Is.True,
                 "Cultist killed by fire should gib and delete after spawning MobFleshPudge.");
             Assert.That(entMan.Deleted(bystander), Is.False);
