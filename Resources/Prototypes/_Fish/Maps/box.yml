@@ -4,7 +4,7 @@
   mapPath: /Maps/_Fish/Station/box.yml
   maxRandomOffset: 0
   randomRotation: false
-  minPlayers: 40
+  minPlayers: 70
   stations:
     Boxstation:
       stationProto: StandardNanotrasenStation
@@ -47,7 +47,6 @@
           - Reconnaissance
           - Saboteurs
           - Crew
-          - CleaningUp
           - HumanitarianAid
           - PersonnelRecovery
           - CrewEducation

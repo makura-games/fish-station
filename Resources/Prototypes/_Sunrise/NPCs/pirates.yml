@@ -269,11 +269,11 @@
     prioritized: false
     lightingColor: '#FF983326'
   - type: ComplexInteraction
-  - type: AnomalyAccent
+  # Fish-edit: убран AnomalyAccent у мобов экспедиций
   - type: TTS
     voice: necrophos_dota_2
   - type: GhostRole
-    prob: 0.1
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-pirate-name
     description: ghost-role-information-expedition-pirate-description
@@ -352,7 +352,7 @@
   - type: Damageable
     damageModifierSet: MobPirateT2
   - type: GhostRole
-    prob: 0.05
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-pirate-name
     description: ghost-role-information-expedition-pirate-description
@@ -369,7 +369,7 @@
   - type: Damageable
     damageModifierSet: MobPirateT3
   - type: GhostRole
-    prob: 0.01
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-pirate-name
     description: ghost-role-information-expedition-pirate-description
@@ -4415,7 +4415,7 @@
     implants:
     - CreepyLaughImplant
   - type: GhostRole
-    prob: 0.35
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
 
 

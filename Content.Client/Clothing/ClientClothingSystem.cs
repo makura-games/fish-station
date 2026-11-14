@@ -9,6 +9,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
+using Content.Shared._Fish.Clothing; // Fish-edit - медали на форме
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -55,6 +56,7 @@ public sealed partial class ClientClothingSystem : ClothingSystem
     [Dependency] private DisplacementMapSystem _displacement = default!;
     [Dependency] private InventorySystem _inventorySystem = default!;
     [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private ClothingMedalsSystem _clothingMedals = default!; // Fish-edit - медали на форме
 
     [Dependency] private EntityQuery<InventorySlotsComponent> _inventorySlotsQuery;
     [Dependency] private EntityQuery<SpriteComponent> _spriteQuery;
@@ -112,7 +114,12 @@ public sealed partial class ClientClothingSystem : ClothingSystem
         {
             // No generic data either. Attempt to generate defaults from the item's RSI & item-prefixes
             if (!TryGetDefaultVisuals(ent, args.Slot, inventory.SpeciesId, args.Equipee, out layers))
+            {
+                // Fish-start - медали рисуем, даже если у формы нет собственных визуалов
+                _clothingMedals.AppendMedalVisuals(ent.Owner, args.Layers);
+                // Fish-end
                 return;
+            }
         }
 
         // add each layer to the visuals
@@ -134,6 +141,10 @@ public sealed partial class ClientClothingSystem : ClothingSystem
             _seriMan.CopyTo(layer, ref newLayer, notNullableOverride: true);
             args.Layers.Add((key, newLayer));
         }
+
+        // Fish-start - слои медалей, прикреплённых к форме
+        _clothingMedals.AppendMedalVisuals(ent.Owner, args.Layers);
+        // Fish-end
     }
 
     [SubscribeLocalEvent]

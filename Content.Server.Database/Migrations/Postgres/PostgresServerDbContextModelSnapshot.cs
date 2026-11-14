@@ -959,7 +959,7 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.ToTable("custom_vote_log_option", (string)null);
                 });
 
-            // Fish-Edit start
+            // Fish-start
             modelBuilder.Entity("Content.Server.Database.FishAchievementProgress", b =>
                 {
                     b.Property<int>("Id")
@@ -999,7 +999,7 @@ namespace Content.Server.Database.Migrations.Postgres
 
                     b.ToTable("fish_achievement_progress", (string)null);
                 });
-            // Fish-Edit end
+            // Fish-end
 
             modelBuilder.Entity("Content.Server.Database.IPIntelCache", b =>
                 {

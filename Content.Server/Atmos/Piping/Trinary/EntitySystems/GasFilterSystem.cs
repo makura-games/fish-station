@@ -31,7 +31,7 @@ public sealed partial class GasFilterSystem : SharedGasFilterSystem
         if (!ent.Comp.Enabled
             || !_nodeContainer.TryGetNodes(ent.Owner, ent.Comp.Inlet, ent.Comp.Filter, ent.Comp.Outlet, out PipeNode? inletNode, out PipeNode? filterNode, out PipeNode? outletNode)
             // || (outletNode.Air.Pressure >= Atmospherics.MaxOutputPressure && filterNode.Air.Pressure >= Atmospherics.MaxOutputPressure)) // No need to transfer if targets are full.
-            || outletNode.Air.Pressure >= Atmospherics.MaxOutputPressure) // Я СКАЗАЛ МЫ РЕАНИМИРУЕМ САБЫ. Fish edit
+            || outletNode.Air.Pressure >= Atmospherics.MaxOutputPressure) // Я СКАЗАЛ МЫ РЕАНИМИРУЕМ САБЫ. Fish-edit
         {
             _ambientSoundSystem.SetAmbience(ent.Owner, false);
             return;
@@ -50,7 +50,7 @@ public sealed partial class GasFilterSystem : SharedGasFilterSystem
 
         if (ent.Comp.FilteredGas.HasValue)
         {
-            // Fish edit start - реанимация сабфреймов
+            // Fish-start - реанимация сабфреймов
             var filteredOut = new GasMixture { Temperature = removed.Temperature };
 
             filteredOut.SetMoles(ent.Comp.FilteredGas.Value, removed.GetMoles(ent.Comp.FilteredGas.Value));
@@ -89,7 +89,7 @@ public sealed partial class GasFilterSystem : SharedGasFilterSystem
         _atmosphereSystem.Merge(outletNode.Air, passthrough);
         _atmosphereSystem.Merge(inletNode.Air, removed);
         */
-        // Fish edit end
+        // Fish-end
     }
 
     [SubscribeLocalEvent]

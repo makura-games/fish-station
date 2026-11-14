@@ -242,7 +242,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         var bloodAmount = float.NaN;
         var bleeding = false;
         var unrevivable = false;
-        // FIsh edit - реагенты, отличные от базового состава крови
+        // Fish-edit - реагенты, отличные от базового состава крови
         var reagents = new List<ReagentQuantity>();
 
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream) &&
@@ -252,7 +252,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             bloodAmount = _bloodstreamSystem.GetBloodLevel(entity);
             bleeding = bloodstream.BleedAmount > 0;
 
-            CollectForeignReagents(bloodSolution, bloodstream.BloodReferenceSolution, reagents); // FIsh edit - состав для сканера
+            CollectForeignReagents(bloodSolution, bloodstream.BloodReferenceSolution, reagents); // Fish-edit - состав для сканера
         }
 
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
@@ -291,7 +291,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             unrevivable,
             hungerLevel,
             thirstLevel,
-            reagents // FIsh edit - посторонние реагенты в показаниях
+            reagents // Fish-edit - посторонние реагенты в показаниях
         );
         // Sunrise-Edit end
     }

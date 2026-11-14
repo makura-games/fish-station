@@ -144,7 +144,7 @@ public sealed class HealthAnalyzerSheetlet : Sheetlet<PalettedStylesheet>
         ];
     }
 
-    // FIsh edit start - палитры и панели для плавной смены состояния интерфейса
+    // Fish-start - палитры и панели для плавной смены состояния интерфейса
     public static ColorPalette GetPalette(HealthAnalyzerTheme theme)
     {
         return theme switch
@@ -183,7 +183,7 @@ public sealed class HealthAnalyzerSheetlet : Sheetlet<PalettedStylesheet>
 
         return null;
     }
-    // FIsh edit end
+    // Fish-end
 
     private static StyleBoxFlat CreatePanel(Color background, Color border, Thickness thickness)
     {

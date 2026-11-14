@@ -22,6 +22,11 @@ public sealed partial class MechBrainCombatComponent : Component
     public bool AddedCombatMode;
 
     /// <summary>
+    /// Контроллер движения добавлен только на время управления мехом.
+    /// </summary>
+    public bool AddedInputMover;
+
+    /// <summary>
     /// The combat mode to restore when piloting ends.
     /// </summary>
     public bool InitialCombatMode;

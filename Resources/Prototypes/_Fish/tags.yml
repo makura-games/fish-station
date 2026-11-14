@@ -18,3 +18,9 @@
 
 - type: Tag
   id: FishPouchMedical # разрешает выбранным вариантам подсумка храниться в медицинских поясах
+
+- type: Tag
+  id: FishMagazineSMGThompson
+
+- type: Tag
+  id: FishMagazineScarH

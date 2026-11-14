@@ -4,7 +4,7 @@
   description: job-description-blueshield-operative
   playTimeTracker: JobBlueShieldOperative
   requirements:
-    - !type:DiscordRoleRequirement # fish-edit
+    - !type:DiscordRoleRequirement # Fish-edit
     # - !type:DepartmentTimeRequirement
     #   department: BlueShield
     #   time: 124000 # 40 hrs
@@ -14,15 +14,15 @@
   startingGear: BlueShieldOperativeGear
   icon: NTR_operative # Fish-edit
   supervisors: job-supervisors-centcom
-  setPreference: true # fish-edit
-  overrideConsoleVisibility: false # fish-edit
+  setPreference: true # Fish-edit
+  overrideConsoleVisibility: false # Fish-edit
   accessGroups:
   - AllAccess
   access:
   - CentralCommand
   special:
     - !type:AddImplantSpecial
-      implants: [ MindShieldImplant ]
+      implants: [ MindShieldImplant, BluespaceImplant, ReviverImplant, ProtoAdrenalImplant, DeathRattleImplantBlueShield ] # Fish-edit
 
 - type: startingGear
   id: BlueShieldOperativeGear
@@ -42,6 +42,7 @@
   storage:
     back:
     - HandheldBSOCrewMonitor
+    - FishUplinkNTERTBlueShield # Fish-edit
 
 - type: chameleonOutfit
   id: BlueShieldOperativeChameleonOutfit

@@ -3,17 +3,18 @@
   maps:
 # High-pop
   - FishDelta
-#  - FishIrefit
+  - FishIrefit
   - FishBox
-#  - FishSuharik
+  - FishSuharik
+  - FishRefinery
 # Mid-pop
   - FishMarathon
-#  - FishOasis
-#  - FishPlasma
+  - FishOasis
+  - FishPlasma
   - FishBagel
 # Low-pop
   - FishCase
-#  - FishSnowball
+  - FishSnowball
   - FishPacked
-#  - FishTerraIsland
+  - FishTerraIsland
 

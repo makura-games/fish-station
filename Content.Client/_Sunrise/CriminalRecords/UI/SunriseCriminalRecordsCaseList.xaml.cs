@@ -88,10 +88,28 @@ public sealed partial class SunriseCriminalRecordsCaseControl : Button
         float mitigationTotal = 1.0f;
         float aggravationTotal = 1.0f;
 
+        // Fish-start: в ExclusiveGroup в сводку попадает только победитель, проценты не перемножаются
+        var exclusiveWinners = new Dictionary<string, CorporateLawPrototype>();
         foreach (var circId in @case.Circumstances)
         {
             if (!proto.TryIndex<CorporateLawPrototype>(circId, out var circ))
                 continue;
+            if (circ.ExclusiveGroup is not { } group)
+                continue;
+            if (!exclusiveWinners.TryGetValue(group, out var existing) || circ.ExclusivePriority > existing.ExclusivePriority)
+                exclusiveWinners[group] = circ;
+        }
+        // Fish-end
+
+        foreach (var circId in @case.Circumstances)
+        {
+            if (!proto.TryIndex<CorporateLawPrototype>(circId, out var circ))
+                continue;
+
+            // Fish-start: проигравший (явка против признания) не рисуется второй скидкой
+            if (circ.ExclusiveGroup is { } group && exclusiveWinners[group].ID != circ.ID)
+                continue;
+            // Fish-end
 
             if (circ.SentenceMultiplier < 1.0f)
                 mitigationTotal *= circ.SentenceMultiplier;
@@ -127,7 +145,7 @@ public sealed partial class SunriseCriminalRecordsCaseControl : Button
             SentenceValueLabel.SetMessage(FormattedMessage.FromMarkupPermissive(
                 Loc.GetString("prisoner-management-warning").ToUpperInvariant()));
         }
-        else if (total >= threshold)
+        else if (threshold > 0 && total >= threshold) // Fish-edit: порог -1 не должен давать «ПЕРМА»
         {
             SentenceValueLabel.SetMessage(FormattedMessage.FromMarkupPermissive(
                 Loc.GetString("sunrise-records-sentence-life").ToUpperInvariant()));

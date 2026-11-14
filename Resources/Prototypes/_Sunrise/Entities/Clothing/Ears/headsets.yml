@@ -142,7 +142,7 @@
     containers:
       key_slots:
       - EncryptionKeyBlueShield
-      - EncryptionKeyStationMaster # Fish edit
+      - EncryptionKeyStationMaster # Fish-edit
       - EncryptionKeyCommon
       - EncryptionKeyCommand # Cause we dont have Ensign on station.
   - type: Sprite

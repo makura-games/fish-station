@@ -7787,7 +7787,7 @@ entities:
       parent: 1
     - type: PowerSupplier
       supplyRate: 80000
-- proto: GhostWarpPoint
+- proto: WarpPoint
   entities:
   - uid: 930
     components:

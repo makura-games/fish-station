@@ -54,12 +54,12 @@ public sealed partial class AccessReaderSystem
         IReadOnlyList<string> activeLevels,
         IReadOnlyCollection<ProtoId<AccessGroupPrototype>>? globalGroups = null)
     {
-        // FIsh edit start - отсутствие группы кода не должно создавать пустой ProtoId.
+        // Fish-start - отсутствие группы кода не должно создавать пустой ProtoId.
         if (TryGetAlertAccessGroup(ent.Comp, primaryLevel, out var primaryGroup))
             ent.Comp.Group = primaryGroup;
         else
             ent.Comp.Group = null;
-        // FIsh edit end
+        // Fish-end
         ent.Comp.AdditionalGroups.Clear();
 
         foreach (var level in activeLevels)

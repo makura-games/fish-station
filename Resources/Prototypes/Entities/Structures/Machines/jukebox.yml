@@ -9,43 +9,26 @@
     sprite: Structures/Machines/jukebox.rsi
     layers:
     - state: "off"
-      map: ["enum.TapePlayerVisualLayers.Base"] # Sunrise-Edit
+      map: ["enum.JukeboxVisualLayers.Base"] # Fish-edit
   - type: Transform
     anchored: true
-  # Sunrise-Start
-  - type: TapePlayer
-    rolloffFactor: 1
-    maxDistance: 30
-    tapeSlot:
-      insertSound: /Audio/_Sunrise/TapePlayer/insert_tape.ogg
-      ejectSound: /Audio/_Sunrise/TapePlayer/eject_tape.ogg
-      whitelist:
-        components:
-        - MusicTape
+  - type: Jukebox # Fish-edit
     onState: on
     offState: off
-    buttonSound: /Audio/_Sunrise/TapePlayer/switch.ogg
-    needPower: true
-  - type: ItemSlots
-  - type: ContainerContainer
-    containers:
-      tape: !type:ContainerSlot
-      machine_board: !type:Container
-      machine_parts: !type:Container
-  # Sunrise-End
+    selectState: select
   - type: Machine
     board: JukeboxCircuitBoard
   - type: Appearance
   - type: ApcPowerReceiver
     powerLoad: 100
   - type: ExtensionCableReceiver
-  - type: ActivatableUI # Sunrise-Edit
-    key: enum.TapePlayerUiKey.Key # Sunrise-Edit
+  - type: ActivatableUI
+    key: enum.JukeboxUiKey.Key
   - type: ActivatableUIRequiresPower
   - type: UserInterface
     interfaces:
-        enum.TapePlayerUiKey.Key: # Sunrise-Edit
-          type: TapePlayerBoundUserInterface # Sunrise-Edit
+        enum.JukeboxUiKey.Key:
+          type: JukeboxBoundUserInterface
         enum.WiresUiKey.Key:
           type: WiresBoundUserInterface
   - type: WiresPanel

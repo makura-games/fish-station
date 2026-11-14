@@ -3,6 +3,7 @@ using Content.Shared.Buckle;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Input;
 using Content.Shared.Movement.Pulling.Components;
+using Content.Shared.Movement.Pulling.Systems;
 
 namespace Content.IntegrationTests.Tests.Buckle;
 
@@ -65,4 +66,29 @@ public sealed class BuckleDragTest : InteractionTest
         Assert.That(pullable.Puller, Is.EqualTo(SPlayer));
         Assert.That(pullable.BeingPulled, Is.True);
     }
+
+    // Fish-start: проверяем, что пристёгивание удерживаемого существа не создаёт relay на существующий pull-joint
+    [Test]
+    public async Task BucklePulledEntityTest()
+    {
+        var borg = await Spawn("BorgChassisGeneric");
+        var urist = await Spawn("MobHuman");
+        var sBorg = ToServer(borg);
+        var sUrist = ToServer(urist);
+
+        await Server.WaitAssertion(() =>
+        {
+            var pulling = Server.System<PullingSystem>();
+            Assert.That(pulling.TryStartPull(sBorg, sUrist), Is.True);
+
+            var buckle = Server.System<SharedBuckleSystem>();
+            Assert.That(buckle.TryBuckle(sUrist, sBorg, sBorg), Is.True);
+        });
+
+        await RunTicks(5);
+
+        Assert.That(Comp<BuckleComponent>(urist).BuckledTo, Is.EqualTo(sBorg));
+        Assert.That(Comp<PullableComponent>(urist).Puller, Is.Null);
+    }
+    // Fish-end
 }

@@ -52,3 +52,4 @@
     targetUser: true
   - type: SpawnOnTrigger
     proto: RedspaceImplantEffect
+  - type: SurviveOnImplantActivate # Fish-edit: активация имплантата засчитывает цель «выжить»

@@ -1,3 +1,35 @@
 - type: accessLevel
   id: BluespaceArtilleryOperator
   name: access-level-bsa-operator
+
+- type: accessGroup
+  id: FishBorgExtended
+  tags:
+  - Command
+  - Bar
+  - Service
+  - Maintenance
+  - Janitor
+  - Theatre
+  - Kitchen
+  - Chapel
+  - Hydroponics
+  - External
+  - Cryogenics
+  - Chemistry
+  - Engineering
+  - Research
+  - Detective
+  - Salvage
+  - Security
+  - Brig
+  - Lawyer
+  - Cargo
+  - CargoPurchaseAccess
+  - ResearchConsoleAccess
+  - Atmospherics
+  - Medical
+  - GenpopEnter
+  - GenpopLeave
+  - Barber
+  - Mining

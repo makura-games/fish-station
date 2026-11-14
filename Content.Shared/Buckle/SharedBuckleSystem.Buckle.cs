@@ -392,8 +392,6 @@ public abstract partial class SharedBuckleSystem
         var coords = new EntityCoordinates(strap, offset);
         _transform.SetCoordinates(buckle, xform, coords, rotation: Angle.Zero);
 
-        _joints.SetRelay(buckle, strap);
-
         switch (strap.Comp.Position)
         {
             case StrapPosition.Stand:
@@ -409,6 +407,10 @@ public abstract partial class SharedBuckleSystem
 
         var gotEv = new BuckledEvent(strap, buckle);
         RaiseLocalEvent(buckle, ref gotEv);
+
+        // Fish-edit: relay после событий, чтобы PullingSystem снял pull-joint до SetRelay.
+        // У StrapVehicle Strap и Vehicle на одной сущности, поэтому relay не перезаписывается.
+        _joints.SetRelay(buckle, strap);
 
         if (TryComp<PhysicsComponent>(buckle, out var physics))
             _physics.ResetDynamics(buckle, physics);

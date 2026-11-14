@@ -11,7 +11,7 @@ namespace Content.Client._Fish.ObrCall;
 [GenerateTypedNameReferences]
 public sealed partial class ObrCallWindow : FancyWindow
 {
-    public event Action<string, string>? OnCallPressed;
+    public event Action<string, string, bool>? OnCallPressed;
 
     public ObrCallWindow()
     {
@@ -27,6 +27,10 @@ public sealed partial class ObrCallWindow : FancyWindow
         BalanceBox.Visible = state.IsPurchaseMode;
         BalanceLabel.Text = Loc.GetString("obr-call-window-balance-value", ("amount", state.StationBalance));
 
+        CryoCheckBox.Visible = state.ShowCryoOption;
+        if (!state.ShowCryoOption)
+            CryoCheckBox.Pressed = false;
+
         if (!string.IsNullOrWhiteSpace(state.StatusMessage))
         {
             StatusLabel.Visible = true;
@@ -37,7 +41,7 @@ public sealed partial class ObrCallWindow : FancyWindow
             StatusLabel.Visible = false;
         }
 
-        TeamsContainer.DisposeAllChildren();
+        TeamsContainer.RemoveAllChildren();
 
         foreach (var team in state.Teams)
         {
@@ -91,7 +95,7 @@ public sealed partial class ObrCallWindow : FancyWindow
             button.OnPressed += _ =>
             {
                 var mission = Rope.Collapse(MissionInput.TextRope);
-                OnCallPressed?.Invoke(teamId, mission);
+                OnCallPressed?.Invoke(teamId, mission, CryoCheckBox.Pressed);
             };
 
             row.AddChild(button);

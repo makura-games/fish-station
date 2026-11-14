@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reaction;
@@ -153,13 +154,16 @@ public abstract partial class SharedVaccinatorSystem : EntitySystem
         {
             if (!_solution.TryGetFitsInDispenser(ent, out var soln, out _))
                 continue;
-            if (!printed)
+            if (!printed && _net.IsServer)
             {
                 if (!(_gameTiming.CurTime < comp.PrintReadyAt))
                 {
-                    RaiseNetworkEvent(new PaperInputTextMessageLigyb(soln.Value.Comp.Solution.Contents, GetNetEntity(uid)));
+                    // Fish-start: Локальное событие для сервера вместо сетевого события
+                    var ev = new VaccineMixFinishedEvent(soln.Value.Comp.Solution);
+                    RaiseLocalEvent(entity, ref ev);
                     printed = true;
                     comp.PrintReadyAt = _gameTiming.CurTime + comp.PrintCooldown;
+                    // Fish-end
                 }
             }
             _solution.UpdateChemicals(soln.Value, true, reactionMixer);
@@ -187,14 +191,10 @@ public abstract partial class SharedVaccinatorSystem : EntitySystem
 
 
 
-[Serializable, NetSerializable]
-public sealed class PaperInputTextMessageLigyb : EntityEventArgs
-{
-    public readonly List<ReagentQuantity> ReagentQuantity;
-    public readonly NetEntity Uid;
-    public PaperInputTextMessageLigyb(List<ReagentQuantity> reagentQuantity, NetEntity uid)
-    {
-        Uid = uid;
-        ReagentQuantity = reagentQuantity;
-    }
-}
+// Fish-start: Локальное событие завершения смешивания вакцины
+/// <summary>
+/// Локальное событие, вызываемое на сервере для печати отчета о вакцине.
+/// </summary>
+[ByRefEvent]
+public readonly record struct VaccineMixFinishedEvent(Solution Solution);
+// Fish-end

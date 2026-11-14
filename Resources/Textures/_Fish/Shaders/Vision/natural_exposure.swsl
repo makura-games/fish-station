@@ -1,0 +1,32 @@
+light_mode unshaded;
+blend_mode none;
+
+uniform sampler2D SCREEN_TEXTURE;
+#include "/Textures/_Fish/Shaders/Vision/vision_sampling.swsl"
+#include "/Textures/_Fish/Shaders/Vision/natural_sampling.swsl"
+uniform sampler2D PREVIOUS_TEXTURE;
+uniform highp vec2 adaptation;
+uniform highp float lighting_strength;
+uniform bool reset_history;
+
+void fragment() {
+    highp float previous = reset_history ? 0.0 : texture2D(PREVIOUS_TEXTURE, vec2(0.5)).r;
+    highp float energy = 0.0;
+    highp float weight = 0.0;
+    // Область вокруг глаз измеряется в тайлах, поэтому зум не меняет привыкание к темноте.
+    for (highp int y = 0; y < 8; y++) {
+        for (highp int x = 0; x < 8; x++) {
+            highp vec2 offset = ((vec2(float(x), float(y)) + 0.5) / 8.0 - 0.5) * 4.0;
+            highp vec2 uv = lighting_geometry.xy + offset / lighting_geometry.zw;
+            if (uv.x >= 0.0 && uv.x <= 1.0 && uv.y >= 0.0 && uv.y <= 1.0 && night_visible(uv)) {
+                highp float light = luminance(zTextureSpec(VISION_LIGHT_TEXTURE, uv).rgb);
+                energy += max(light - lighting_strength * previous * natural_light_fraction(uv), 0.0);
+                weight += 1.0;
+            }
+        }
+    }
+    highp float brightness = energy / max(weight, 1.0);
+    highp float target = 1.0 - smoothstep(0.04, 0.4, brightness);
+    highp float rate = target < previous ? adaptation.x : adaptation.y;
+    COLOR = vec4(mix(previous, target, rate), 0.0, 0.0, 1.0);
+}

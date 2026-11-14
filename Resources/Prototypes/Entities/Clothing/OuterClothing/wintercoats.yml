@@ -113,17 +113,6 @@
       - state: CAP-equipped-OUTERCLOTHING
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHatHoodWinterCaptain
-  # Fish-start - бронированная зимняя куртка капитана
-  - type: Armor
-    modifiers:
-      coefficients:
-        Blunt: 0.6
-        Slash: 0.6
-        Piercing: 0.6
-        Heat: 0.35
-  - type: StaminaResistance
-    damageCoefficient: 0.75
-  # Fish-end
 
 - type: entity
   parent: ClothingOuterWinterCoatToggleable
@@ -826,6 +815,16 @@
     sprite: Clothing/OuterClothing/WinterCoats/syndicate/coatsyndiecaparmored.rsi
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHatHoodWinterSyndie
+  # Fish-start - броня бронекуртки Синдиката как у ClothingOuterArmorWarden
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.7
+        Heat: 0.7
+        Caustic: 0.9
+  # Fish-end
 ##############################################################
 
 - type: entity

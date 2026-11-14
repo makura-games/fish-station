@@ -6,5 +6,5 @@
   - type: Cartridge
     programName: log-probe-program-name
     icon:
-      sprite: _Sunrise/Structures/Doors/Airlocks/Standard/security.rsi
+      sprite: _Sunrise/Structures/Doors/Airlocks/Standard/security_standard.rsi
       state: closed

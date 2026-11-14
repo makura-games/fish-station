@@ -94,6 +94,13 @@
   - type: NightVision
     enabled: false
     action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#FFFFFF15'
+  - type: FishNaturalNightVision
+    fullLightRadius: 5
+    lightFadeWidth: 1
+    darkAdaptationSeconds: 0.875
+    lightAdaptationSeconds: 0.1
   - type: NameIdentifier
     group: null
 

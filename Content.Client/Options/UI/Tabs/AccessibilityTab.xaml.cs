@@ -25,7 +25,7 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionCheckBox(CCVars.DisableRainbowOverlay, DisableRainbowOverlayCheckBox);
         Control.AddOptionCheckBox(CCVars.DisableSinguloWarp, DisableSinguloWarpCheckBox);
 
-        Control.AddOptionPercentSlider(CCVars.ScreenShakeIntensity, ScreenShakeIntensitySlider, min: 0.2f); // Fish-Edit
+        Control.AddOptionPercentSlider(CCVars.ScreenShakeIntensity, ScreenShakeIntensitySlider, min: 0.2f); // Fish-edit
         Control.AddOptionPercentSlider(CCVars.ChatWindowOpacity, ChatWindowOpacitySlider);
         Control.AddOptionPercentSlider(CCVars.SpeechBubbleTextOpacity, SpeechBubbleTextOpacitySlider);
         Control.AddOptionPercentSlider(CCVars.SpeechBubbleSpeakerOpacity, SpeechBubbleSpeakerOpacitySlider);
@@ -33,21 +33,21 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionCheckBox(CCVars.ChatAutoFillHighlights, AutoFillHighlightsCheckBox);
         Control.AddOptionColorSlider(CCVars.ChatHighlightsColor, HighlightsColorSlider);
 
-        // FIsh edit - CRT accessibility preferences
+        // Fish-edit - CRT accessibility preferences
         var crtTheme = Control.AddOptionCheckBox(FishCVars.FishCrtThemeEnabled, FishCrtThemeEnabledCheckBox);
         Control.AddOptionCheckBox(FishCVars.FishCrtEffectsEnabled, FishCrtEffectsEnabledCheckBox);
         crtTheme.ImmediateValueChanged += _ => UpdateCrtEffectsDisabled();
         Control.ValuesReset += UpdateCrtEffectsDisabled;
-        // FIsh edit end
+        // Fish-end
 
         Control.Initialize();
         UpdateCrtEffectsDisabled();
     }
 
-    // FIsh edit
+    // Fish-edit
     private void UpdateCrtEffectsDisabled()
     {
         FishCrtEffectsEnabledCheckBox.Disabled = !FishCrtThemeEnabledCheckBox.Pressed;
     }
-    // FIsh edit end
+    // Fish-end
 }

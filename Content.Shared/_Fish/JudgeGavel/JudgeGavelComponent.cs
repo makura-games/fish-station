@@ -7,7 +7,7 @@ namespace Content.Shared._Fish.JudgeGavel;
 /// <summary>
 ///     Component for the Admin Judge Gavel.
 ///     When activated, starts a DoAfter that teleports sentient creatures in a radius to the Centcomm courtroom.
-///     FIsh edit
+///     Fish-edit
 /// </summary>
 [RegisterComponent, NetworkedComponent]
 public sealed partial class JudgeGavelComponent : Component

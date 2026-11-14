@@ -27,4 +27,9 @@ public sealed partial class RattleOnTriggerComponent : BaseXOnTriggerComponent
         {MobState.Critical, "rattle-on-trigger-critical-message"},
         {MobState.Dead, "rattle-on-trigger-dead-message"}
     };
+
+    // Fish-start
+    [DataField]
+    public bool SendToMessenger = true;
+    // Fish-end
 }

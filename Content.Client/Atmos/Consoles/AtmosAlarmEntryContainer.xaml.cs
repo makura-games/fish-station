@@ -59,7 +59,7 @@ public sealed partial class AtmosAlarmEntryContainer : BoxContainer
         [Gas.Electrovae] = "E",
         [Gas.ChargedElectrovae] = "E₂",
         //Sunrise - End
-        //Fish - Start
+        //Fish-start
         [Gas.Zenthium] = "Zn",
         [Gas.Krypium] = "Kr",
         [Gas.Prallium] = "Pr₂",
@@ -77,7 +77,7 @@ public sealed partial class AtmosAlarmEntryContainer : BoxContainer
         [Gas.Permafrost] = "F₅I₂Jd₈Op₇",
         [Gas.Riminon] = "RMN",
         [Gas.AxoNoblium] = "AxoN"
-        //Fish - End
+        //Fish-end
     };
 
     public AtmosAlarmEntryContainer(NetEntity uid, EntityCoordinates? coordinates)

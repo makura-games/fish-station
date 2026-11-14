@@ -1,0 +1,13 @@
+- type: entity
+  categories: [ HideSpawnMenu, Spawner ]
+  parent: SpawnPointGhostDerelictCyborg
+  id: FishSpawnPointGhostDerelictSyndicateReaperCyborg
+  components:
+  - type: GhostRole
+    name: ghost-role-information-fish-derelict-syndicate-reaper-cyborg-name
+    description: ghost-role-information-fish-derelict-syndicate-reaper-cyborg-description
+    rules: ghost-role-information-silicon-rules
+    mindRoles:
+    - MindRoleGhostRoleSoloAntagonist
+    raffle:
+      settings: default

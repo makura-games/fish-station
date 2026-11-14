@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 using Content.Shared.Chemistry.Components;
 using Content.Shared.StatusIcon;
 using Robust.Shared.GameStates;

@@ -24,7 +24,7 @@ public sealed partial class CorporateLawsetPrototype : IPrototype
     public List<ProtoId<CorporateLawPrototype>> Circumstances = new();
 
     /// <summary>
-    ///     Categorized legal articles (1xx-6xx).
+    ///     Categorized legal articles (1xx-5xx). // Fish-edit: Fish КЗ без 6xx
     /// </summary>
     [DataField(required: true)]
     public List<ProtoId<CorporateLawSectionPrototype>> Articles = new();

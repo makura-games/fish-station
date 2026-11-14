@@ -50,18 +50,38 @@ public partial record struct BorgHand
     [DataField]
     public EntProtoId? Item;
 
+    // Fish-start
     /// <summary>
     /// The settings for the hand, including a whitelist of items hand can pick up.
+    /// Fish: руки, которые выдаёт модуль, по умолчанию функциональные: они идут отдельным
+    /// рядом (FunctionalHandContainer), а не серединой между chassis-руками Right/Left.
+    /// Явно заданный location в YAML это значение переопределяет.
     /// </summary>
     [DataField]
-    public Hand Hand = new();
+    public Hand Hand = new(HandLocation.Functional);
+    // Fish-end
 
     /// <summary>
-    /// Allows hand to act like normal universal humanoid hand. Pick up and put down items. 
+    /// Allows hand to act like normal universal humanoid hand. Pick up and put down items.
     /// </summary>
     [DataField]
     public bool ForceRemovable = false;
 
+    // Fish-start
+    /// <summary>
+    /// Явный пустой конструктор обязателен: у record struct с параметрическим конструктором
+    /// неявный пустой не синтезируется, и десериализатор YAML создаёт значение через initobj
+    /// (обнуление без конструктора) — field initializer выше не выполнялся бы, и реальным
+    /// дефолтом оставался бы HandLocation.Right вместо Functional.
+    /// </summary>
+    public BorgHand()
+    {
+    }
+
+    /// <summary>
+    /// Рука модуля: предмет, слот и флаг принудительного изъятия.
+    /// </summary>
+    // Fish-end
     public BorgHand(EntProtoId? item, Hand hand, bool forceRemovable = false)
     {
         Item = item;

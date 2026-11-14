@@ -100,16 +100,23 @@
       thresholds:
         0: Alive
         300: Dead
+    # Fish-start: скорость джаггернаута 3.5 и тяжёлые шаги
     - type: MovementSpeedModifier
-      baseWalkSpeed: 3.5 # Fish-edit
+      baseWalkSpeed: 3.5
       baseSprintSpeed: 3.5
     - type: FootstepModifier
       footstepSoundCollection:
         collection: FootstepThud
+    # Fish-end
     - type: Construct
       actions: [JuggernautCreateWall]
     - type: Hands
       showInHands: true
+      startingHands:
+        hand_right:
+          location: Right
+        hand_left:
+          location: Left
     - type: ContainerContainer
       containers:
         actions: !type:Container
@@ -181,7 +188,7 @@
       damage:
         types:
           Blunt: 10
-          Slash: 20 #Fish-edit
+          Slash: 20 # Fish-edit
 
 - type: entity
   id: ReaperConstruct

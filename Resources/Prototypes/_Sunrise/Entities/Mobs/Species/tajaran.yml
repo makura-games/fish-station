@@ -31,6 +31,14 @@
   id: BaseMobTajaran
   abstract: true
   components:
+  # Fish-start: Природное зрение принадлежит телу и сохраняется при замене глаз.
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#FFFFFF15'
+  - type: FishNaturalNightVision
+  # Fish-end
   - type: MessyDrinker
     spillChance: 0.2
   - type: Interactions

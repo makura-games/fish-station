@@ -50,9 +50,9 @@ public sealed partial class MechSystem : SharedMechSystem
     {
         if (ent.Comp.Broken || ent.Comp.Integrity <= 0 || ent.Comp.Energy <= 0)
             args.CanRun = false;
-        // Fish-start - мозг или pAI внутри меха не могут им управлять при передвижении.
-        else if (Vehicle.GetOperatorOrNull(ent.Owner) is { } pilot && HasComp<Content.Shared.Silicons.Borgs.Components.BorgBrainComponent>(pilot))
-            args.CanRun = false;
+        // Fish-start - мозг и pAI могут управлять движением меха
+        // else if (Vehicle.GetOperatorOrNull(ent.Owner) is { } pilot && HasComp<Content.Shared.Silicons.Borgs.Components.BorgBrainComponent>(pilot))
+        //     args.CanRun = false;
         // Fish-end
     }
 

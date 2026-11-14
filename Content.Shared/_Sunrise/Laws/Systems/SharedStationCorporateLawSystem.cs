@@ -69,10 +69,11 @@ public abstract partial class SharedStationCorporateLawSystem : EntitySystem
         }
         else
         {
+            // Fish-edit: без набора законов не подставляем запасной порог пермы (раньше 50 ломало 5xx → 60)
             provisions = new();
             articles = new();
             circumstances = new();
-            permanentThreshold = 50;
+            permanentThreshold = -1;
         }
     }
 

@@ -157,6 +157,7 @@ loadout-group-medical-doctor-outerclothing = { loadout-group-outer-clothing }
 loadout-group-medical-doctor-backpack = { loadout-group-back }
 loadout-group-medical-doctor-shoes = { loadout-group-shoes }
 loadout-group-medical-doctor-id = { loadout-group-id }
+
 loadout-group-medical-intern-jumpsuit = { loadout-group-jumpsuit }
 loadout-group-chemist-jumpsuit = { loadout-group-jumpsuit }
 loadout-group-chemist-outerclothing = { loadout-group-outer-clothing }

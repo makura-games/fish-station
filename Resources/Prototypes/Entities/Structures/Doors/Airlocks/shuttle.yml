@@ -84,7 +84,7 @@
       path: /Audio/Effects/docking.ogg
     denySound:
       path: /Audio/Machines/airlock_deny.ogg
-  - type: DelayedOpen # Fish-Edit
+  - type: DelayedOpen # Fish-edit
     delay: 3.0
   - type: Airtight
     noAirWhenFullyAirBlocked: false

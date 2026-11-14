@@ -223,7 +223,7 @@ public sealed partial class SsdIconPrototype : StatusIconPrototype, IInheritingP
     public bool Abstract { get; private set; }
 }
 
-// Sunrise-Start
+// Fish-start: To remove - функционал разумной болезни
 /// <summary>
 /// StatusIcons for the Sick indicator
 /// </summary>
@@ -239,7 +239,7 @@ public sealed partial class SickIconPrototype : StatusIconPrototype, IInheriting
     [AbstractDataField]
     public bool Abstract { get; private set; }
 }
-// Sunrise-End
+// Fish-end
 
 [Serializable, NetSerializable]
 public enum StatusIconLocationPreference : byte

@@ -9,14 +9,19 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
 {
     [Dependency] private SharedStationCorporateLawSystem _corporateLawSystem = default!;
 
-    private static readonly Dictionary<int, (int Min, int Max)> CategoryRanges = new()
+    // Fish-start: потолок категории для лимита 1.5x (вики spacelaw)
+    private static readonly Dictionary<int, int> CategoryCapMinutes = new()
     {
-        [1] = (5, 10),
-        [2] = (10, 15),
-        [3] = (17, 25),
-        [4] = (40, 45), // Fish-edit
-        [5] = (30, 50), // Fish-edit
+        [1] = 5,
+        [2] = 10,
+        [3] = 25,
+        [4] = 40,
+        [5] = 50,
     };
+
+    /// <summary>Вики: рецидив удваивает срок статьи (+100%).</summary>
+    private const float FishRecidivismPercent = 100f;
+    // Fish-end
 
     public int CalculateSentence(CriminalCase @case, List<CriminalCase> allCases)
     {
@@ -98,7 +103,7 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
         if (normalCharges.Count > 0)
         {
             int highestCategory = normalCharges.Max(l => int.TryParse(l.LawIdentifier, out int c) ? c / 100 : 0);
-            int highestCategoryMax = CategoryRanges.TryGetValue(highestCategory, out var range) ? range.Max : 0;
+            int highestCategoryMax = CategoryCapMinutes.TryGetValue(highestCategory, out var capMinutes) ? capMinutes : 0;
             float cap = highestCategoryMax * 1.5f;
             int baseSum = normalCharges.Sum(l => l.BaseSentence);
             cappedBase = Math.Min(baseSum, cap);
@@ -116,43 +121,111 @@ public abstract partial class SharedSunriseCriminalRecordsSystem : EntitySystem
 
         // Modifiers (additive percentages applied to original BaseSentence)
         float globalModifierPercent = 0f;
+        // Fish-start: абсолютные минуты + взаимоисключающие группы (процент и минуты)
+        float absoluteModifierMinutes = 0f;
+        var dropsCharges = false;
+        var exclusiveWinners = new Dictionary<string, CorporateLawPrototype>();
+        foreach (var circId in @case.Circumstances)
+        {
+            if (!circumstances.Contains(circId))
+                continue;
+            if (!ProtoMan.TryIndex<CorporateLawPrototype>(circId, out var grouped))
+                continue;
+            if (grouped.ExclusiveGroup is not { } group)
+                continue;
+            if (!exclusiveWinners.TryGetValue(group, out var existing) || grouped.ExclusivePriority > existing.ExclusivePriority)
+                exclusiveWinners[group] = grouped;
+        }
+
+        var exclusiveMinutes = new Dictionary<string, (CorporateLawPrototype Law, int Minutes)>();
+        // Fish-end
         foreach (var circId in @case.Circumstances)
         {
             if (!circumstances.Contains(circId)) continue;
             if (ProtoMan.TryIndex<CorporateLawPrototype>(circId, out var law))
             {
+                // Fish-start: проигравший в ExclusiveGroup не даёт ни процента, ни минут
+                if (law.ExclusiveGroup is { } group && exclusiveWinners[group].ID != law.ID)
+                    continue;
+                // Fish-end
+
+                // Fish-start: крайняя необходимость / угроза заключённому — снятие обвинения
+                if (law.SentenceMultiplier == 0f)
+                {
+                    dropsCharges = true;
+                    @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", "-100")));
+                    continue;
+                }
+                // Fish-end
+
                 float p = (law.SentenceMultiplier - 1.0f) * 100f;
                 globalModifierPercent += p;
-                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", p.ToString("+0;-0"))));
+                if (p != 0f)
+                    @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier", ("id", Loc.GetString(law.Title)), ("percent", p.ToString("+0;-0"))));
+
+                // Fish-start: минуты из прототипа; в ExclusiveGroup — только уже выбранный победитель
+                if (law.SentenceModifierMinutes == 0)
+                    continue;
+
+                if (law.ExclusiveGroup is { } minuteGroup)
+                {
+                    exclusiveMinutes[minuteGroup] = (law, law.SentenceModifierMinutes);
+                    continue;
+                }
+
+                absoluteModifierMinutes += law.SentenceModifierMinutes;
+                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier-minutes", ("id", Loc.GetString(law.Title)), ("minutes", law.SentenceModifierMinutes.ToString("+0;-0"))));
+                // Fish-end
             }
         }
 
+        // Fish-start: снятие обвинения до надбавок и минимума в 1 минуту
+        if (dropsCharges)
+            return 0;
+
+        foreach (var (_, entry) in exclusiveMinutes)
+        {
+            absoluteModifierMinutes += entry.Minutes;
+            @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-modifier-minutes", ("id", Loc.GetString(entry.Law.Title)), ("minutes", entry.Minutes.ToString("+0;-0"))));
+        }
+        // Fish-end
+
+        // Fish-start: рецидив только по делам с реальным сроком (снятые / предупреждения с 0 не считаются)
         var pastLaws = allCases
-            .Where(c => c.Id != @case.Id && (c.Status == CriminalCaseStatus.Finished || c.Status == CriminalCaseStatus.Incarcerated || c.Status == CriminalCaseStatus.Closed))
+            .Where(c => c.Id != @case.Id
+                        && c.CalculatedSentence > 0
+                        && (c.Status == CriminalCaseStatus.Finished
+                            || c.Status == CriminalCaseStatus.Incarcerated
+                            || c.Status == CriminalCaseStatus.Closed))
             .SelectMany(c => c.Laws)
             .ToHashSet();
 
-        float totalModifierDelta = 0;
+        // Сначала рецидив к capped base, потом абсолютные минуты, затем % смягчения/отягчения к итогу
+        // (300+301, рецидив только 300 → 62.5; с явкой ×0.5 → ~31, а не 25).
+        float afterRecidivism = totalBase;
         foreach (var law in finalEffectiveCharges)
         {
-            float lawRecidivismPercent = 0;
-            if (pastLaws.Contains(law.ID))
-            {
-                lawRecidivismPercent = 15f;
-                var lawName = law.LawIdentifier ?? Loc.GetString(law.Title);
-                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-recidivism", ("id", lawName), ("percent", lawRecidivismPercent.ToString("+0;-0"))));
-            }
+            if (!pastLaws.Contains(law.ID))
+                continue;
 
-            float totalLawPercent = globalModifierPercent + lawRecidivismPercent;
-            totalModifierDelta += law.BaseSentence * (totalLawPercent / 100f);
+            afterRecidivism += law.BaseSentence * (FishRecidivismPercent / 100f);
+            var lawName = law.LawIdentifier ?? Loc.GetString(law.Title);
+            @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-recidivism", ("id", lawName), ("percent", FishRecidivismPercent.ToString("+0;-0"))));
         }
 
-        float finalMinutes = totalBase + totalModifierDelta;
-        
+        float finalMinutes = (afterRecidivism + absoluteModifierMinutes) * (1f + globalModifierPercent / 100f);
+        // Fish-end
 
-        // If there's any Category 6, ensure it's at least threshold
-        if (permaCharges.Count > 0)
-            finalMinutes = Math.Max(finalMinutes, threshold);
+
+        // Fish-edit: при статьях 5xx срок не ниже порога пермы (только если набор законов доступен)
+        if (permaCharges.Count > 0 && threshold > 0)
+        {
+            if (finalMinutes < threshold)
+            {
+                @case.SentenceBreakdown.Add(new SentenceBreakdownEntry("sunrise-records-breakdown-perma-threshold", ("from", (int)Math.Round(finalMinutes)), ("to", threshold)));
+                finalMinutes = threshold;
+            }
+        }
 
         if (finalMinutes < 1 && finalEffectiveCharges.Count > 0)
             finalMinutes = 1;

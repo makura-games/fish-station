@@ -42,7 +42,9 @@ public sealed partial class CCVars
     /// </summary>
     [CVarControl(AdminFlags.VarEdit, min: 0f, max: float.MaxValue)]
     public static readonly CVarDef<float> AfkTime =
-        CVarDef.Create("afk.time", 600f, CVar.SERVER | CVar.REPLICATED);
+        // Fish-edit: увеличение времени AFK до 20 минут (1200 секунд)
+        // CVarDef.Create("afk.time", 600f, CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("afk.time", 1200f, CVar.SERVER | CVar.REPLICATED);
         // If afk players become an issue again, implement using a more aggressive time limit when server pop is near full
 
     /// <summary>
