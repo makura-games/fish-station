@@ -120,15 +120,18 @@ public sealed class AllGamePresetsStartTest : AntagTest
 
         // Fish-start: КПБ не могут быть антагонистами, поэтому исключаем расу Ipc у тестовых игроков
         var prefMan = Server.ResolveDependency<IServerPreferencesManager>();
-        foreach (var playerSession in players)
+        await Server.WaitPost(() =>
         {
-            var prefs = prefMan.GetPreferences(playerSession.UserId);
-            if (prefs.Characters[0] is HumanoidCharacterProfile profile && profile.Species == "Ipc")
+            foreach (var playerSession in players)
             {
-                var nonIpcProfile = HumanoidCharacterProfile.RandomWithSpecies();
-                await Server.WaitPost(() => prefMan.SetProfile(playerSession.UserId, 0, nonIpcProfile).Wait());
+                var prefs = prefMan.GetPreferences(playerSession.UserId);
+                if (prefs.Characters[0] is HumanoidCharacterProfile profile && profile.Species == "Ipc")
+                {
+                    var nonIpcProfile = HumanoidCharacterProfile.RandomWithSpecies();
+                    prefMan.SetProfile(playerSession.UserId, 0, nonIpcProfile).Wait();
+                }
             }
-        }
+        });
         // Fish-end
 
         // Sunrise added start - правила с minCommandStaff должны запускаться в корректных тестовых условиях.
