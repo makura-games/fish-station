@@ -1,4 +1,7 @@
 using System.Numerics;
+using Content.Client._Fish.Homelander; // Fish-edit
+using Content.Shared._Fish.Homelander; // Fish-edit
+using Content.Shared._Sunrise.Abilities.Milira; // Fish-edit
 using Content.Shared.Gravity;
 using Robust.Client.GameObjects;
 using Robust.Client.Animations;
@@ -27,6 +30,15 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
             return;
         }
 
+        // Fish-start
+        if (HasComp<HomelanderLiftComponent>(uid) ||
+            (HasComp<HomelanderComponent>(uid) &&
+                TryComp<WingFlightComponent>(uid, out var flight) && flight.FlightEnabled))
+        {
+            return;
+        }
+        // Fish-end
+
         var animation = new Animation
         {
             // We multiply by the number of extra keyframes to make time for them
@@ -51,6 +63,18 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
         if (!AnimationSystem.HasRunningAnimation(uid, animationKey))
             AnimationSystem.Play(uid, animation, animationKey);
     }
+
+    // Fish-start
+    internal void RefreshHomelanderBobbing(EntityUid uid, bool flying)
+    {
+        if (!TryComp<FloatingVisualsComponent>(uid, out var floating))
+            return;
+
+        AnimationSystem.Stop(uid, floating.AnimationKey);
+        if (!flying && floating.CanFloat && !TerminatingOrDeleted(uid))
+            FloatAnimation(uid, floating.Offset, floating.AnimationKey, floating.AnimationTime);
+    }
+    // Fish-end
 
     private void OnAnimationCompleted(EntityUid uid, FloatingVisualsComponent component, AnimationCompletedEvent args)
     {

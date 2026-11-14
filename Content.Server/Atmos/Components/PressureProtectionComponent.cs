@@ -6,6 +6,9 @@ namespace Content.Server.Atmos.Components;
 [Access(typeof(BarotraumaSystem))]
 public sealed partial class PressureProtectionComponent : Component
 {
+    [DataField] // Fish-edit
+    public bool ProtectsWholeBody; // Fish-edit
+
     [DataField]
     public float HighPressureMultiplier = 1f;
 

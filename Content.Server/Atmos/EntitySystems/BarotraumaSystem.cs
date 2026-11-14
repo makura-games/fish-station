@@ -85,8 +85,29 @@ namespace Content.Server.Atmos.EntitySystems
                 var lPModifier = float.MaxValue;
                 var lPMultiplier = float.MaxValue;
 
+                // Fish-start
+                var fullSuit = false;
+                if (barotrauma.ProtectionSlots.Contains("outerClothing") &&
+                    _inventorySystem.TryGetSlotEntity(uid, "outerClothing", out var suit, inv, contMan) &&
+                    TryComp<PressureProtectionComponent>(suit, out var suitProtection) &&
+                    suitProtection.ProtectsWholeBody &&
+                    TryGetPressureProtectionValues(suit.Value,
+                        out var suitHighMultiplier, out var suitHighModifier,
+                        out var suitLowMultiplier, out var suitLowModifier))
+                {
+                    fullSuit = true;
+                    hPModifier = suitHighModifier.Value;
+                    hPMultiplier = suitHighMultiplier.Value;
+                    lPModifier = suitLowModifier.Value;
+                    lPMultiplier = suitLowMultiplier.Value;
+                }
+                // Fish-end
+
                 foreach (var slot in barotrauma.ProtectionSlots)
                 {
+                    if (fullSuit) // Fish-edit
+                        break; // Fish-edit
+
                     if (!_inventorySystem.TryGetSlotEntity(uid, slot, out var equipment, inv, contMan)
                         || !TryGetPressureProtectionValues(equipment.Value,
                             out var itemHighMultiplier,

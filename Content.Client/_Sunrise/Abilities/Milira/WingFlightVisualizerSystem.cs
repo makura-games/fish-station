@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Content.Client._Fish.Homelander; // Fish-edit
 using Content.Shared._Sunrise.Abilities.Milira;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
@@ -16,6 +17,7 @@ public sealed partial class WingFlightVisualizerSystem : EntitySystem
 {
     [Dependency] private AnimationPlayerSystem _animation = default!;
     [Dependency] private SpriteSystem _spriteSystem = default!;
+    [Dependency] private HomelanderSystem _homelander = default!; // Fish-edit
 
     private const string AnimationKey = "wing-flight-scale";
 
@@ -41,6 +43,8 @@ public sealed partial class WingFlightVisualizerSystem : EntitySystem
 
     private void OnState(Entity<WingFlightComponent> ent, ref AfterAutoHandleStateEvent args)
     {
+        _homelander.RefreshFlightVisual(ent, ent.Comp.FlightEnabled); // Fish-edit
+
         if (!TryComp<SpriteComponent>(ent, out var sprite))
             return;
 
@@ -59,6 +63,8 @@ public sealed partial class WingFlightVisualizerSystem : EntitySystem
 
     private void OnShutdown(Entity<WingFlightComponent> ent, ref ComponentShutdown args)
     {
+        _homelander.RefreshFlightVisual(ent, false); // Fish-edit
+
         if (!ent.Comp.OriginalScale.HasValue)
             return;
 

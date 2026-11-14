@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client.CombatMode;
+using Content.Client._Fish.Homelander; // Fish-edit
 using Content.Client.Examine;
 using Content.Client.Gameplay;
 using Content.Client.Verbs;
@@ -51,6 +52,8 @@ namespace Content.Client.ContextMenu.UI
         [UISystemDependency] private readonly ExamineSystem _examineSystem = default!;
         [UISystemDependency] private readonly TransformSystem _xform = default!;
         [UISystemDependency] private readonly CombatModeSystem _combatMode = default!;
+
+        [UISystemDependency] private readonly HomelanderSystem _homelander = default!; // Fish-edit
 
         private EntityQuery<TransformComponent> _xformQuery;
         private EntityQuery<SpriteComponent> _spriteQuery;
@@ -173,6 +176,11 @@ namespace Content.Client.ContextMenu.UI
 
             if (_stateManager.CurrentState is not GameplayStateBase)
                 return false;
+
+            // Fish-start
+            if (_homelander.TryFire(args.Session?.AttachedEntity, args.Coordinates, args.EntityUid))
+                return true;
+            // Fish-end
 
             if (_combatMode.IsInCombatMode(args.Session?.AttachedEntity))
                 return false;

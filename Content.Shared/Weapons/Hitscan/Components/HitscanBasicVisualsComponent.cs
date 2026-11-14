@@ -1,3 +1,4 @@
+using System.Numerics;
 using Robust.Shared.GameStates;
 using Robust.Shared.Utility;
 
@@ -31,6 +32,14 @@ public sealed partial class HitscanBasicVisualsComponent : Component
     /// </summary>
     [DataField]
     public SpriteSpecifier? ImpactFlash;
+
+    // Fish-start
+    /// <summary>
+    /// Смещение начала луча в мировых координатах. Точка попадания сохраняется.
+    /// </summary>
+    [DataField]
+    public Vector2? TravelOriginOffset;
+    // Fish-end
 
     // Starlight start
     /// <summary>

@@ -1,0 +1,94 @@
+- type: entity
+  parent: BaseAction
+  id: FishActionHomelanderScream
+  name: Scream
+  description: Let out a scream that knocks nearby creatures off their feet.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 10
+  - type: Sprite
+    sprite: _Fish/Homelander/actions.rsi
+    layers:
+    - state: scream
+  - type: InstantAction
+    event: !type:HomelanderScreamEvent
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionHomelanderLaser
+  name: Eye lasers
+  description: Toggle eye lasers. Right-click while active to fire.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 0.5
+  - type: Sprite
+    sprite: _Fish/Homelander/actions.rsi
+    layers:
+    - state: laser
+      map: ["enum.ActionVisuals.Icon"]
+    - state: laser-active
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: BaseToggleAction
+  id: FishActionHomelanderFlight
+  name: Flight
+  description: Take flight or land.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    checkCanInteract: false
+    useDelay: 1.5
+  - type: Sprite
+    sprite: _Fish/Homelander/actions.rsi
+    layers:
+    - state: flight
+      map: ["enum.ActionVisuals.Icon"]
+    - state: flight-active
+      map: ["enum.ActionVisuals.IconToggled"]
+      visible: false
+
+- type: entity
+  parent: RedLightLaser
+  id: FishHomelanderEyeRay
+  name: eye laser
+  suffix: Fish
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: HitscanBasicVisuals
+    travelOriginOffset: 0, 0.31
+    travelFlash: { sprite: _Fish/Homelander/actions.rsi, state: eye-beam }
+  - type: HitscanBasicDamage
+    damage:
+      types:
+        Heat: 18
+
+- type: entity
+  id: FishHomelanderEyeGun
+  name: eye laser emitter
+  suffix: Fish
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Gun
+    minAngle: 0
+    maxAngle: 0
+    angleIncrease: 0
+    fireRate: 4
+    soundGunshot:
+      collection: syndi_plasma
+      params:
+        volume: -2
+  - type: Battery
+    maxCharge: 100
+    startingCharge: 100
+  - type: BatteryAmmoProvider
+    proto: FishHomelanderEyeRay
+    fireCost: 5
+  - type: BatterySelfRecharger
+    autoRechargeRate: 20

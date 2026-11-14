@@ -1,4 +1,6 @@
 using System.Numerics;
+using Content.Shared._Fish.Homelander; // Fish-edit
+using Content.Shared._Sunrise.Abilities.Milira; // Fish-edit
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Components;
 using Content.Shared.Database;
@@ -61,7 +63,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
 
         // Do visuals without an event. They should always happen and putting it on the attempt event is weird!
         // If more stuff gets added here, it should probably be turned into an event.
-        FireEffects(args.FromCoordinates, distanceTried, args.ShotDirection.ToAngle(), ent.Owner);
+        FireEffects(args.FromCoordinates, distanceTried, args.ShotDirection.ToAngle(), ent.Owner, shooter); // Fish-edit
 
         // Admin logging
         if (result?.HitEntity != null)
@@ -103,7 +105,8 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
     /// <param name="distance">Distance of the hitscan shot.</param>
     /// <param name="shotAngle">Angle of the shot.</param>
     /// <param name="hitscanUid">The hitscan entity itself.</param>
-    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle shotAngle, EntityUid hitscanUid)
+    /// <param name="shooter">Стрелок, от которого начинается визуальный эффект.</param>
+    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle shotAngle, EntityUid hitscanUid, EntityUid shooter) // Fish-edit
     {
         if (distance == 0 || !_visualsQuery.TryComp(hitscanUid, out var vizComp))
             return;
@@ -116,17 +119,22 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         // We'll get the effects relative to the grid / map of the firer
         // Look you could probably optimise this a bit with redundant transforms at this point.
 
+        Angle originRotation; // Fish-edit
         var gridUid = fromXform.GridUid;
         if (gridUid != fromCoordinates.EntityId && TryComp(gridUid, out TransformComponent? gridXform))
         {
             var (_, gridRot, gridInvMatrix) = _transform.GetWorldPositionRotationInvMatrix(gridXform);
             var map = _transform.ToMapCoordinates(fromCoordinates);
             fromCoordinates = new EntityCoordinates(gridUid.Value, Vector2.Transform(map.Position, gridInvMatrix));
+            originRotation = gridRot; // Fish-edit
             shotAngle -= gridRot;
         }
         else
         {
-            shotAngle -= _transform.GetWorldRotation(fromXform);
+            // Fish-start
+            originRotation = _transform.GetWorldRotation(fromXform);
+            shotAngle -= originRotation;
+            // Fish-end
         }
 
         // Sunrise edit start - custom bullet visuals with color and scale
@@ -142,6 +150,24 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         }
         // Sunrise edit end
 
+        // Fish-start
+        if (travelSprite != null && vizComp.TravelOriginOffset is { } offset)
+        {
+            if (HasComp<HomelanderComponent>(shooter) &&
+                TryComp<WingFlightComponent>(shooter, out var flight) &&
+                flight.FlightEnabled)
+            {
+                offset.Y += HomelanderComponent.FlightVisualLift;
+            }
+
+            var start = (-originRotation).RotateVec(offset);
+            var end = shotAngle.ToVec() * distance;
+            var beam = end - start;
+            var midpoint = fromCoordinates.Offset((start + end) / 2);
+            sprites.Add((GetNetCoordinates(midpoint), beam.ToAngle(), travelSprite, beam.Length(), color, scale));
+        }
+        else
+        // Fish-end
         if (distance >= 1f)
         {
             if (vizComp.MuzzleFlash != null)
