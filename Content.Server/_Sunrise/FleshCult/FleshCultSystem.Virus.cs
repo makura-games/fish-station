@@ -1,4 +1,5 @@
 using Content.Server._Sunrise.FleshCult.GameRule;
+using Content.Shared._Fish.Ipc;
 using Content.Shared._Sunrise.FleshCult;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.Components;
@@ -56,6 +57,7 @@ public sealed partial class FleshCultSystem
 
         if (HasComp<PendingFleshCultistComponent>(ent) ||
             HasComp<MindShieldComponent>(ent) ||
+            HasComp<FishIpcComponent>(ent) || // Fish-edit: КПБ не заражаются культом плоти
             _tagSystem.HasTag(ent, FleshTag))
         {
             return false;

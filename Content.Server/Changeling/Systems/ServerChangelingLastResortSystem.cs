@@ -1,4 +1,5 @@
 using Content.Server.Antag;
+using Content.Shared._Fish.Ipc;
 using Content.Shared.Antag;
 using Content.Shared.Changeling.Components;
 using Content.Shared.Changeling.Systems;
@@ -61,6 +62,16 @@ public sealed partial class ServerChangelingLastResortSystem : ChangelingLastRes
     /// </summary>
     private bool CanTakeOver(EntityUid user, EntityUid target, bool showPopups = true)
     {
+        // Fish-start: слизень не вселяется в шасси КПБ
+        if (HasComp<FishIpcComponent>(target))
+        {
+            if (showPopups)
+                _popup.PopupEntity(Loc.GetString("fish-ipc-devour-robot"), user, user);
+
+            return false;
+        }
+        // Fish-end
+
         if (!HasComp<HumanoidProfileComponent>(target))
             return false;
 
