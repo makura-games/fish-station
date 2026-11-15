@@ -1,0 +1,4 @@
+- files: ["ipc_toggle.rsi"]
+  license: "CC0-1.0"
+  copyright: "Original green square frame for enabled IPC module actions. State on.png."
+  source: "https://github.com/Pythagorius-cra/fish-station-mane"

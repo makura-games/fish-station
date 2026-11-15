@@ -135,12 +135,14 @@ namespace Content.Shared.Localizations
         /// </summary>
         public static string FormatListToOr(List<string> list)
         {
+            // Fish-edit: союз из локали (ru «или», en «or»), английские клиенты не ломаются
+            var or = Loc.GetString("generic-or");
             return list.Count switch
             {
                 <= 0 => string.Empty,
                 1 => list[0],
-                2 => $"{list[0]} or {list[1]}",
-                _ => $"{string.Join(", ", list.GetRange(0, list.Count - 1))}, or {list[^1]}"
+                2 => $"{list[0]} {or} {list[1]}",
+                _ => $"{string.Join(", ", list.GetRange(0, list.Count - 1))}, {or} {list[^1]}"
             };
         }
 

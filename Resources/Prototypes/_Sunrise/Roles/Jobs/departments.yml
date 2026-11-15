@@ -16,13 +16,9 @@
   name: department-Blueshield
   description: department-Blueshield-description
   color: "#0f4e81"
-  editorHidden: true # Fish-edit: скрыть отдел из меню выбора ролей
   roles:
     - BlueShieldOfficer
-    - BlueShieldEnsign # Fish-edit
-    - BlueShieldOperative # Fish-edit
     - BlueShieldOfficerFish # Fish-edit
-    - CentcommBlueShield # Fish-edit
     - RepresentativeBlueShield #Fish-edit
   primary: false
   weight: 50
