@@ -2,6 +2,8 @@
 using System.Linq;
 using Content.Server.Atmos.Components;
 using Content.Server.Gravity;
+using Content.Server.Physics.Controllers;
+using Content.Shared.Movement.Components;
 using Content.Shared.Gravity;
 using Robust.Shared.Map;
 using Content.Server.Atmos.EntitySystems;
@@ -13,7 +15,7 @@ using Robust.Shared.Physics.Systems;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics;
 using System.Numerics;
-using Content.Server.Weapons.Ranged.Systems;
+using Content.Server._Fish.Homelander;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Fish.Homelander;
 using Content.Shared._Sunrise.Abilities.Milira;
@@ -24,7 +26,6 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Humanoid;
 using Content.Shared.Weapons.Reflect;
-using Content.Shared.Weapons.Ranged.Components;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Maths;
@@ -55,6 +56,7 @@ public sealed class HomelanderTest : GameTest
             server.PlayerMan.SetAttachedEntity(session, patriot);
         });
 
+        // Ждём, пока клиент получит сущность и привязку управления.
         await Pair.RunTicksSync(10);
         var clientPatriot = Pair.ToClientUid(patriot);
         var originalMasks = await CheckPhysics(false);
@@ -70,6 +72,7 @@ public sealed class HomelanderTest : GameTest
             server.System<SharedTransformSystem>().SetLocalRotation(patriot, Direction.East.ToAngle());
             server.System<SharedPhysicsSystem>().SetLinearVelocity(patriot, new Vector2(5f, 0f));
         });
+        // Даём клиенту применить скорость и направление до проверки спрайта.
         await Pair.RunTicksSync(5);
         await client.WaitAssertion(() =>
             Assert.That(client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Rotation.Theta, Is.Zero.Within(0.001f)));
@@ -95,6 +98,7 @@ public sealed class HomelanderTest : GameTest
 
         async Task CheckOffset(bool flying)
         {
+            // Даём клиентской анимации подъёма или посадки завершиться.
             await Pair.RunTicksSync(30);
             await client.WaitAssertion(() =>
             {
@@ -112,7 +116,7 @@ public sealed class HomelanderTest : GameTest
     }
 
     [Test]
-    public async Task ActiveFlightAllowsMovementInOpenSpace()
+    public async Task OpenSpaceFlightAllowsWeightlessMovement()
     {
         var server = Pair.Server;
         var map = await Pair.CreateTestMap();
@@ -146,6 +150,37 @@ public sealed class HomelanderTest : GameTest
     }
 
     [Test]
+    public async Task FlightInputMovesPatriotInOpenSpace()
+    {
+        var server = Pair.Server;
+        var map = await Pair.CreateTestMap();
+        var start = new Vector2(20f, 20f);
+        var transform = server.System<SharedTransformSystem>();
+        EntityUid patriot = default;
+
+        await server.WaitPost(() =>
+        {
+            patriot = server.EntMan.SpawnEntity("FishMobHomelander", new EntityCoordinates(map.MapUid, start));
+            var action = server.EntMan.GetComponent<WingFlightComponent>(patriot).ActionEntity!.Value;
+            server.System<SharedActionsSystem>().PerformAction(patriot,
+                (action, server.EntMan.GetComponent<ActionComponent>(action)));
+            var mover = server.EntMan.GetComponent<InputMoverComponent>(patriot);
+            server.System<MoverController>().SetVelocityDirection((patriot, mover), Direction.East, 0, true);
+        });
+
+        // Даём персонажу разогнаться выше обычной скорости перемещения в невесомости.
+        await server.WaitRunTicks(30);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(server.EntMan.GetComponent<TransformComponent>(patriot).GridUid, Is.Null);
+            Assert.That(transform.GetWorldPosition(patriot).X - start.X, Is.GreaterThan(0.05f));
+            var speed = server.EntMan.GetComponent<MovementSpeedModifierComponent>(patriot);
+            var body = server.EntMan.GetComponent<PhysicsComponent>(patriot);
+            Assert.That(body.LinearVelocity.X, Is.GreaterThan(speed.WeightlessSprintSpeed));
+        });
+    }
+
+    [Test]
     public async Task SpawnsWithArmorAndUsesItsOwnActions()
     {
         var server = Pair.Server;
@@ -153,7 +188,7 @@ public sealed class HomelanderTest : GameTest
         var actions = server.System<SharedActionsSystem>();
         var appearance = server.System<SharedAppearanceSystem>();
         var inventory = server.System<InventorySystem>();
-        var guns = server.System<GunSystem>();
+        var homelander = server.System<HomelanderSystem>();
         var pressure = server.System<BarotraumaSystem>();
         var markings = server.System<SunriseHumanoidMarkingSystem>();
 
@@ -198,14 +233,14 @@ public sealed class HomelanderTest : GameTest
             Assert.That(server.EntMan.HasComponent<KnockedDownComponent>(distant), Is.False);
             Assert.That(server.EntMan.HasComponent<KnockedDownComponent>(patriot), Is.False);
 
+            var laserTarget = map.GridCoords.Offset(new Vector2(4, 0));
+            Assert.That(homelander.TryFireLaser((patriot, abilities), laserTarget), Is.False);
             var laser = GetAction(abilities.LaserAction);
             actions.PerformAction(patriot, laser);
             Assert.That(appearance.TryGetData<bool>(patriot, HomelanderVisuals.LaserActive, out var active) && active,
                 Is.True);
 
-            var emitter = abilities.Laser!.Value;
-            var gun = server.EntMan.GetComponent<GunComponent>(emitter);
-            Assert.That(guns.AttemptShoot(patriot, (emitter, gun), map.GridCoords.Offset(new Vector2(4, 0))), Is.True);
+            Assert.That(homelander.TryFireLaser((patriot, abilities), laserTarget), Is.True);
 
             var previousStaminaDamage = stamina.StaminaDamage;
             actions.PerformAction(patriot, GetAction(flight.ActionEntity));
@@ -226,6 +261,7 @@ public sealed class HomelanderTest : GameTest
             }
         });
 
+        // За это время обычный полёт успел бы накопить расход выносливости.
         await server.WaitRunTicks(120);
         await server.WaitAssertion(() =>
         {

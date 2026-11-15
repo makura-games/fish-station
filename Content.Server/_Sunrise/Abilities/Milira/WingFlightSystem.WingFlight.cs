@@ -239,7 +239,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
         while (query.MoveNext(out var uid, out _, out var flightComp, out var stamina))
         {
             Entity<WingFlightComponent> ent = (uid, flightComp);
-            var staminaPercent = GetStaminaPercent(stamina);
+            var staminaPercent = ent.Comp.UsesStamina ? GetStaminaPercent(stamina) : 1f; // Fish-edit
 
             if (ent.Comp.FlightEnabled && ent.Comp.UsesStamina) // Fish-edit
             {

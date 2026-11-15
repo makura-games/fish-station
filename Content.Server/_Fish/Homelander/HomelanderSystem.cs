@@ -81,18 +81,29 @@ public sealed partial class HomelanderSystem : EntitySystem
         QueueDel(entity.Comp.Laser);
     }
 
-    private void OnScream(EntityUid uid, HomelanderComponent component, HomelanderScreamEvent args)
+    private void OnScream(Entity<HomelanderComponent> entity, ref HomelanderScreamEvent args)
     {
-        if (args.Handled || args.Action.Owner != component.ScreamAction)
-            return;
+        if (!args.Handled)
+            args.Handled = TryScream(entity, args.Action.Owner);
+    }
 
-        _audio.PlayPvs(ScreamSound, uid);
+    public bool CanScream(Entity<HomelanderComponent> entity, EntityUid action)
+    {
+        return entity.Comp.ScreamAction == action;
+    }
 
-        var origin = _transform.GetMapCoordinates(uid);
+    public bool TryScream(Entity<HomelanderComponent> entity, EntityUid action)
+    {
+        if (!CanScream(entity, action))
+            return false;
+
+        _audio.PlayPvs(ScreamSound, entity);
+
+        var origin = _transform.GetMapCoordinates(entity);
         foreach (var target in _lookup.GetEntitiesInRange<MobStateComponent>(origin, ScreamRange, LookupFlags.Uncontained))
         {
-            if (target.Owner == uid || _mobState.IsDead(target, target.Comp) ||
-                !_interaction.InRangeUnobstructed(uid, target.Owner, ScreamRange))
+            if (target.Owner == entity.Owner || _mobState.IsDead(target, target.Comp) ||
+                !_interaction.InRangeUnobstructed(entity.Owner, target.Owner, ScreamRange))
             {
                 continue;
             }
@@ -100,49 +111,75 @@ public sealed partial class HomelanderSystem : EntitySystem
             _stun.TryKnockdown(target.Owner, ScreamKnockdown, drop: false);
         }
 
-        args.Handled = true;
+        return true;
     }
 
     private void OnToggle(Entity<HomelanderComponent> entity, ref ToggleActionEvent args)
     {
-        if (args.Handled || args.Action.Owner != entity.Comp.LaserAction)
-            return;
+        if (!args.Handled)
+            args.Handled = TryToggleLaser(entity, args.Action.Owner);
+    }
+
+    public bool CanToggleLaser(Entity<HomelanderComponent> entity, EntityUid action)
+    {
+        return entity.Comp.LaserAction == action;
+    }
+
+    public bool TryToggleLaser(Entity<HomelanderComponent> entity, EntityUid action)
+    {
+        if (!CanToggleLaser(entity, action))
+            return false;
 
         _appearance.TryGetData<bool>(entity, HomelanderVisuals.LaserActive, out var active);
         _appearance.SetData(entity, HomelanderVisuals.LaserActive, !active);
-        _actions.SetToggled(args.Action.Owner, !active);
+        _actions.SetToggled(action, !active);
         if (!active)
             _popup.PopupEntity(Loc.GetString("fish-homelander-angry"), entity, PopupType.MediumCaution);
-        args.Handled = true;
+        return true;
     }
 
     private void OnFire(HomelanderFireEvent ev, EntitySessionEventArgs args)
     {
         if (args.SenderSession.AttachedEntity is not { } user ||
             !TryComp<HomelanderComponent>(user, out var component) ||
-            _containers.IsEntityInContainer(user) ||
-            !_appearance.TryGetData<bool>(user, HomelanderVisuals.LaserActive, out var active) ||
-            !active ||
-            component.Laser is not { } laser ||
-            !TryComp<GunComponent>(laser, out var gun) ||
-            !TryGetEntity(ev.Coordinates.NetEntity, out var reference) ||
-            !float.IsFinite(ev.Coordinates.Position.X) ||
-            !float.IsFinite(ev.Coordinates.Position.Y))
-        {
-            return;
-        }
-
-        var target = new EntityCoordinates(reference.Value, ev.Coordinates.Position);
-        var origin = _transform.GetMapCoordinates(user);
-        var destination = _transform.ToMapCoordinates(target);
-        if (origin.MapId == MapId.Nullspace || origin.MapId != destination.MapId ||
-            !float.IsFinite(destination.Position.X) || !float.IsFinite(destination.Position.Y) ||
-            Vector2.DistanceSquared(origin.Position, destination.Position) < 0.0001f)
+            !TryGetEntity(ev.Coordinates.NetEntity, out var reference))
         {
             return;
         }
 
         TryGetEntity(ev.Target, out var clicked);
-        _guns.AttemptShoot(user, (laser, gun), target, clicked);
+        TryFireLaser((user, component), new EntityCoordinates(reference.Value, ev.Coordinates.Position), clicked);
+    }
+
+    public bool CanFireLaser(Entity<HomelanderComponent> entity, EntityCoordinates target, out Entity<GunComponent> gun)
+    {
+        gun = default;
+        if (_containers.IsEntityInContainer(entity) ||
+            !_appearance.TryGetData<bool>(entity, HomelanderVisuals.LaserActive, out var active) ||
+            !active ||
+            entity.Comp.Laser is not { } laser ||
+            !TryComp<GunComponent>(laser, out var gunComponent) ||
+            !float.IsFinite(target.Position.X) ||
+            !float.IsFinite(target.Position.Y))
+        {
+            return false;
+        }
+
+        var origin = _transform.GetMapCoordinates(entity);
+        var destination = _transform.ToMapCoordinates(target, logError: false);
+        if (origin.MapId == MapId.Nullspace || origin.MapId != destination.MapId ||
+            !float.IsFinite(destination.Position.X) || !float.IsFinite(destination.Position.Y) ||
+            Vector2.DistanceSquared(origin.Position, destination.Position) < 0.0001f)
+        {
+            return false;
+        }
+
+        gun = (laser, gunComponent);
+        return true;
+    }
+
+    public bool TryFireLaser(Entity<HomelanderComponent> entity, EntityCoordinates target, EntityUid? clicked = null)
+    {
+        return CanFireLaser(entity, target, out var gun) && _guns.AttemptShoot(entity, gun, target, clicked);
     }
 }

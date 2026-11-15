@@ -150,6 +150,16 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         }
         // Sunrise edit end
 
+        if (distance >= 1f && vizComp.MuzzleFlash != null) // Fish-edit
+        {
+            var coords = fromCoordinates.Offset(shotAngle.ToVec().Normalized() / 2);
+            var netCoords = GetNetCoordinates(coords);
+
+            // Sunrise edit start - pass custom color and scale
+            sprites.Add((netCoords, shotAngle, vizComp.MuzzleFlash, 1f, color, scale));
+            // Sunrise edit end
+        }
+
         // Fish-start
         if (travelSprite != null && vizComp.TravelOriginOffset is { } offset)
         {
@@ -166,29 +176,15 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
             var midpoint = fromCoordinates.Offset((start + end) / 2);
             sprites.Add((GetNetCoordinates(midpoint), beam.ToAngle(), travelSprite, beam.Length(), color, scale));
         }
-        else
+        else if (distance >= 1f && travelSprite != null)
         // Fish-end
-        if (distance >= 1f)
         {
-            if (vizComp.MuzzleFlash != null)
-            {
-                var coords = fromCoordinates.Offset(shotAngle.ToVec().Normalized() / 2);
-                var netCoords = GetNetCoordinates(coords);
+            var coords = fromCoordinates.Offset(shotAngle.ToVec() * (distance + 0.5f) / 2);
+            var netCoords = GetNetCoordinates(coords);
 
-                // Sunrise edit start - pass custom color and scale
-                sprites.Add((netCoords, shotAngle, vizComp.MuzzleFlash, 1f, color, scale));
-                // Sunrise edit end
-            }
-
-            if (travelSprite != null)
-            {
-                var coords = fromCoordinates.Offset(shotAngle.ToVec() * (distance + 0.5f) / 2);
-                var netCoords = GetNetCoordinates(coords);
-
-                // Sunrise edit start - pass custom color and scale
-                sprites.Add((netCoords, shotAngle, travelSprite, distance - 1.5f, color, scale));
-                // Sunrise edit end
-            }
+            // Sunrise edit start - pass custom color and scale
+            sprites.Add((netCoords, shotAngle, travelSprite, distance - 1.5f, color, scale));
+            // Sunrise edit end
         }
 
         if (vizComp.ImpactFlash != null)

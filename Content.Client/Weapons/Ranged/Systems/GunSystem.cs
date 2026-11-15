@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Numerics;
-using Content.Client._Fish.Homelander; // Fish-edit
 using Content.Client.Animations;
 using Content.Client.Clickable;
 using Content.Client.Items;
@@ -41,7 +40,6 @@ namespace Content.Client.Weapons.Ranged.Systems;
 
 public sealed partial class GunSystem : SharedGunSystem
 {
-    [Dependency] private HomelanderSystem _homelander = default!; // Fish-edit
     [Dependency] private IEyeManager _eyeManager = default!;
     [Dependency] private IInputManager _inputManager = default!;
     [Dependency] private InputSystem _inputSystem = default!;
