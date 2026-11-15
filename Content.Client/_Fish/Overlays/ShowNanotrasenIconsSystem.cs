@@ -14,12 +14,12 @@ public sealed partial class ShowNanotrasenIconsSystem : EquipmentHudSystem<ShowN
         SubscribeLocalEvent<ERTMemberComponent, GetStatusIconsEvent>(OnGetStatusIconsEvent);
     }
 
-    private void OnGetStatusIconsEvent(EntityUid uid, ERTMemberComponent component, ref GetStatusIconsEvent ev)
+    private void OnGetStatusIconsEvent(Entity<ERTMemberComponent> ent, ref GetStatusIconsEvent ev)
     {
         if (!IsActive)
             return;
 
-        if (ProtoMan.TryIndex<FactionIconPrototype>(component.NanotrasenStatusIcon, out var iconPrototype))
+        if (ProtoMan.TryIndex<FactionIconPrototype>(ent.Comp.NanotrasenStatusIcon, out var iconPrototype))
             ev.StatusIcons.Add(iconPrototype);
     }
 }
