@@ -30,21 +30,46 @@ public sealed partial class FishVisionDeviceSystem : EntitySystem
 
     private void OnToggled(Entity<FishVisionDeviceComponent> ent, ref ItemToggledEvent args)
     {
-        if (TryComp<ComponentTogglerComponent>(ent, out var toggler))
-            RefreshWearer((ent.Owner, toggler));
+        if (!TryComp<ComponentTogglerComponent>(ent, out var toggler))
+            return;
+
+        RefreshWearer((ent.Owner, toggler));
+        NotifyWearer(toggler.Target);
     }
 
     private void OnShutdown(Entity<FishVisionDeviceComponent> ent, ref ComponentShutdown args)
     {
-        if (TryComp<ComponentTogglerComponent>(ent, out var toggler))
-            RefreshWearer((ent.Owner, toggler), ent.Owner);
+        if (!TryComp<ComponentTogglerComponent>(ent, out var toggler))
+            return;
+
+        RefreshWearer((ent.Owner, toggler), ent.Owner);
+        NotifyWearer(toggler.Target);
     }
 
-    private void OnIntrinsicThermalStartup(Entity<ThermalVisionComponent> ent, ref ComponentStartup args) =>
+    private void OnIntrinsicThermalStartup(Entity<ThermalVisionComponent> ent, ref ComponentStartup args)
+    {
         RefreshThermalVision(ent);
+        NotifyWearer(ent.Owner);
+    }
 
-    private void OnIntrinsicThermalShutdown(Entity<ThermalVisionComponent> ent, ref ComponentShutdown args) =>
+    private void OnIntrinsicThermalShutdown(Entity<ThermalVisionComponent> ent, ref ComponentShutdown args)
+    {
         RefreshThermalVision(ent, includeIntrinsic: false);
+        NotifyWearer(ent.Owner);
+    }
+
+    private void NotifyWearer(EntityUid? wearer)
+    {
+        if (wearer is not { } uid || TerminatingOrDeleted(uid))
+            return;
+
+        var ev = new FishVisionGearRefreshedEvent();
+        RaiseLocalEvent(uid, ref ev);
+    }
+
+    /// <summary>Включённые очки или шлем уже держат термальный компонент на носителе.</summary>
+    public bool HasActiveThermalSource(EntityUid wearer) =>
+        TryGetSource<FishThermalVisionComponent>(wearer, ThermalVisionSlots, null, out _);
 
     private void RefreshWearer(Entity<ComponentTogglerComponent> device, EntityUid? excluded = null)
     {
@@ -109,3 +134,7 @@ public sealed partial class FishVisionDeviceSystem : EntitySystem
         return false;
     }
 }
+
+/// <summary>Прибор закончил пересчёт оптики на носителе.</summary>
+[ByRefEvent]
+public readonly record struct FishVisionGearRefreshedEvent;

@@ -98,6 +98,15 @@ public abstract partial class SharedWiresSystem : EntitySystem
                     args.PushMarkup(Loc.GetString(wiresPanelSecurity.Examine));
                 }
             }
+
+            // Fish-start: доп. диагностика панелей с модулем интерфейса проводов КПБ
+            if (HasComp<Content.Shared._Fish.Ipc.Modules.FishIpcWireInterfaceHostComponent>(args.Examiner))
+            {
+                args.PushMarkup(Loc.GetString(component.Open
+                    ? "fish-ipc-module-wire-interface-panel-open"
+                    : "fish-ipc-module-wire-interface-panel-closed"));
+            }
+            // Fish-end
         }
     }
 

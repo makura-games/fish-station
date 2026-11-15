@@ -20,6 +20,7 @@
     - Synth
     - Silicon
     - Xenoborg
+    - Ipc # Fish-edit: HealingSystem принимает нанопасту для MobIpc
     damage:
       types:
         Heat: -10

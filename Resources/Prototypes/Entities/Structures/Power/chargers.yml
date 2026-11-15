@@ -260,6 +260,7 @@
     whitelist:
       components:
       - BorgChassis
+      - FishIpc # Fish-edit: КПБ заряжаются на станции киборгов (Paradise/EE)
   - type: Construction
     containers:
     - machine_parts
@@ -303,6 +304,7 @@
     whitelist:
       components:
       - BorgChassis
+      - FishIpc # Fish-edit: КПБ заряжаются на станции киборгов
   - type: ContainerContainer
     containers:
       entity_storage: !type:Container

@@ -1,0 +1,18 @@
+# Fish-start: модификаторы урона КПБ (Paradise tox=0, heat/shock↑)
+- type: damageModifierSet
+  id: Ipc
+  coefficients:
+    Blunt: 1
+    Slash: 1
+    Piercing: 1
+    Shock: 2.5
+    Cold: 0.2
+    Heat: 2
+    # Fish-edit: таран/структура 0.3; радиация и клеточный урон проходят, фильтр режет их отдельно
+    Structural: 0.3
+    Poison: 0
+    Radiation: 1
+    Asphyxiation: 0
+    Bloodloss: 0
+    Cellular: 1
+# Fish-end

@@ -57,6 +57,16 @@ public sealed partial class InjectorSystem : EntitySystem
             || !ProtoMan.Resolve(injector.Comp.ActiveModeProtoId, out var activeProto))
             return;
 
+        // Fish-start: гипоспрей в руке не лечит самого КПБ
+        if (activeProto.InjectOnUse && HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.User))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-not-organic"), args.User, args.User, PopupType.SmallCaution);
+            args.Handled = true;
+            args.ApplyDelay = false;
+            return;
+        }
+        // Fish-end
+
         if (activeProto.InjectOnUse) // Injectors that can't toggle transferAmounts will be used.
             TryMobsDoAfter(injector, args.User, args.User);
         else // Syringes toggle Draw/Inject.
@@ -70,6 +80,15 @@ public sealed partial class InjectorSystem : EntitySystem
     {
         if (args.Handled || !args.CanReach || args.Target is not { Valid: true } target)
             return;
+
+        // Fish-start: укол в КПБ не лечит шасси
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-not-organic"), target, args.User, PopupType.SmallCaution);
+            args.Handled = true;
+            return;
+        }
+        // Fish-end
 
         // Is the target a mob? If yes, use a do-after to give them time to respond.
         if (HasComp<BloodstreamComponent>(target))
