@@ -20,6 +20,8 @@
     - MindShieldImplant
     - DeathRattleImplantERT
     - NutrimentImplant
+  - type: ERTMember  # Fish-edit
+  - type: ShowNanotrasenIcons  # Fish-edit
 
 - type: randomHumanoidSettings
   id: EventHumanoidDeathSquadSunrise
@@ -33,3 +35,5 @@
     - FreedomImplant
     - DeathAcidifierImplant
     - NutrimentImplant
+  - type: ERTMember  # Fish-edit
+  - type: ShowNanotrasenIcons  # Fish-edit

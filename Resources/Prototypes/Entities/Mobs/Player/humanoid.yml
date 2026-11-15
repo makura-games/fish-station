@@ -89,7 +89,7 @@
       footstepSoundCollection:
         collection: FootstepThud
         params:
-          volume: -6
+          volume: -3  # Fish-edit
 ## ERT Leader
 
 - type: entity
