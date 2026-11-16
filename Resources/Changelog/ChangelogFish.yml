@@ -1699,3 +1699,10 @@
     message: Небольшие правки сикера лона.
   id: 172
   url: https://github.com/makura-games/fish-station/pull/657
+- author: Kaiten
+  time: '2026-11-16T12:38:26.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим Санрайз (16.11.2026)
+  id: 173
+  url: https://github.com/makura-games/fish-station/pull/662
