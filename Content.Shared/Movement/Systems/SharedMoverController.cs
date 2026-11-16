@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
-using Content.Shared._Fish.Homelander; // Fish-edit
 using Content.Shared.ActionBlocker;
 using Content.Shared.CCVar;
 using Content.Shared.Friction;
@@ -35,7 +34,6 @@ namespace Content.Shared.Movement.Systems;
 /// </summary>
 public abstract partial class SharedMoverController : VirtualController
 {
-    [Dependency] private SharedHomelanderFlightSystem _homelanderFlight = default!; // Fish-edit
     [Dependency] private IConfigurationManager _configManager = default!;
     [Dependency] protected IGameTiming Timing = default!;
     [Dependency] private ITileDefinitionManager _tileDefinitionManager = default!;
@@ -514,15 +512,6 @@ public abstract partial class SharedMoverController : VirtualController
         ContentTileDefinition? tileDef = null)
     {
         sound = null;
-
-        // Fish-start
-        if (_homelanderFlight.IsFlying(uid))
-        {
-            mobMover.LastPosition = xform.Coordinates;
-            mobMover.StepSoundDistance = 0f;
-            return false;
-        }
-        // Fish-end
 
         if (!CanSound() || !_tags.HasTag(uid, FootstepSoundTag))
             return false;

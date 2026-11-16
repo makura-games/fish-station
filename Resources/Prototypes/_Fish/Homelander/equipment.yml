@@ -5,11 +5,7 @@
   description: A reinforced suit styled after the Patriot's costume.
   suffix: Fish
   components:
-  - type: PressureProtection
-    protectsWholeBody: true
-    highPressureMultiplier: 0.02
-    lowPressureMultiplier: 1000
-    lowPressureModifier: 1
+  - type: HomelanderPressureSeal
   - type: TemperatureProtection
     coefficient: 0.001
   - type: ExplosionResistance

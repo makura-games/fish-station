@@ -198,8 +198,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
         var useKey = gun.Comp.UseKey ? EngineKeyFunctions.Use : EngineKeyFunctions.UseSecondary;
 
-        var laserUsesSecondary = !gun.Comp.UseKey && _homelander.IsLaserActive(entity); // Fish-edit
-        if ((laserUsesSecondary || _inputSystem.CmdStates.GetState(useKey) != BoundKeyState.Down) && !gun.Comp.BurstActivated) // Fish-edit
+        if (_inputSystem.CmdStates.GetState(useKey) != BoundKeyState.Down && !gun.Comp.BurstActivated)
         {
             if (gun.Comp.ShotCounter != 0)
                 RaisePredictiveEvent(new RequestStopShootEvent { Gun = GetNetEntity(gun) });

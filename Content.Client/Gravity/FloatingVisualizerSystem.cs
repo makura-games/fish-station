@@ -1,7 +1,4 @@
 using System.Numerics;
-using Content.Client._Fish.Homelander; // Fish-edit
-using Content.Shared._Fish.Homelander; // Fish-edit
-using Content.Shared._Sunrise.Abilities.Milira; // Fish-edit
 using Content.Shared.Gravity;
 using Robust.Client.GameObjects;
 using Robust.Client.Animations;
@@ -31,12 +28,10 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
         }
 
         // Fish-start
-        if (HasComp<HomelanderLiftComponent>(uid) ||
-            (HasComp<HomelanderComponent>(uid) &&
-                TryComp<WingFlightComponent>(uid, out var flight) && flight.FlightEnabled))
-        {
+        var attempt = new FloatingAnimationAttemptEvent();
+        RaiseLocalEvent(uid, ref attempt);
+        if (attempt.Cancelled)
             return;
-        }
         // Fish-end
 
         var animation = new Animation
@@ -64,18 +59,6 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
             AnimationSystem.Play(uid, animation, animationKey);
     }
 
-    // Fish-start
-    internal void RefreshHomelanderBobbing(EntityUid uid, bool flying)
-    {
-        if (!TryComp<FloatingVisualsComponent>(uid, out var floating))
-            return;
-
-        AnimationSystem.Stop(uid, floating.AnimationKey);
-        if (!flying && floating.CanFloat && !TerminatingOrDeleted(uid))
-            FloatAnimation(uid, floating.Offset, floating.AnimationKey, floating.AnimationTime);
-    }
-    // Fish-end
-
     private void OnAnimationCompleted(EntityUid uid, FloatingVisualsComponent component, AnimationCompletedEvent args)
     {
         if (args.Key != component.AnimationKey)
@@ -84,3 +67,8 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
         FloatAnimation(uid, component.Offset, component.AnimationKey, component.AnimationTime, stop: !component.CanFloat);
     }
 }
+
+// Fish-start
+[ByRefEvent]
+public record struct FloatingAnimationAttemptEvent(bool Cancelled = false);
+// Fish-end

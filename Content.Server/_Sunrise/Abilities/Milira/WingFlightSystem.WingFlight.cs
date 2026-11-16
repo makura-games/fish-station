@@ -65,11 +65,6 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
 
     private void OnComponentRemove(Entity<WingFlightComponent> ent, ref ComponentRemove args)
     {
-        // Fish-start
-        if (TerminatingOrDeleted(ent))
-            return;
-        // Fish-end
-
         if (ent.Comp.ActionEntity != null)
             _actions.RemoveAction(ent.Owner, ent.Comp.ActionEntity);
 
@@ -97,7 +92,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
         if (_standing.IsDown(ent.Owner))
             return false;
 
-        if (!ent.Comp.UsesStamina || !TryComp<StaminaComponent>(ent, out var stamina)) // Fish-edit
+        if (!TryComp<StaminaComponent>(ent, out var stamina))
         {
             Activate(ent, 1f);
             return true;
@@ -150,7 +145,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
 
     private void UpdateMarkings(Entity<WingFlightComponent> ent, bool enable)
     {
-        if (!ent.Comp.UpdateWingMarkings || !HasComp<VisualBodyComponent>(ent)) // Fish-edit
+        if (!HasComp<VisualBodyComponent>(ent))
             return;
 
         if (!_sunriseMarking.TryGetLayerMarkings(ent, HumanoidVisualLayers.Tail, out var markings) ||
@@ -239,9 +234,9 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
         while (query.MoveNext(out var uid, out _, out var flightComp, out var stamina))
         {
             Entity<WingFlightComponent> ent = (uid, flightComp);
-            var staminaPercent = ent.Comp.UsesStamina ? GetStaminaPercent(stamina) : 1f; // Fish-edit
+            var staminaPercent = GetStaminaPercent(stamina);
 
-            if (ent.Comp.FlightEnabled && ent.Comp.UsesStamina) // Fish-edit
+            if (ent.Comp.FlightEnabled)
             {
                 if (staminaPercent <= ent.Comp.AutoDisableThreshold)
                 {
@@ -322,11 +317,6 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
         if (!TryComp(ent, out FixturesComponent? fixtures))
             return;
 
-        // Fish-start
-        var obstacleMask = ent.Comp.ClearLowObstacles
-            ? CollisionGroup.MidImpassable | CollisionGroup.LowImpassable
-            : CollisionGroup.MidImpassable;
-        // Fish-end
         var fixtureIds = fixtures.Fixtures.Keys.ToArray();
         for (var i = fixtureIds.Length - 1; i >= 0; i--)
         {
@@ -336,7 +326,7 @@ public sealed partial class WingFlightSystem : SharedWingFlightSystem
 
             ent.Comp.OriginalCollisionMasks.TryAdd(id, fixture.CollisionMask);
             ent.Comp.OriginalCollisionLayers.TryAdd(id, fixture.CollisionLayer);
-            _physics.RemoveCollisionMask(ent, id, fixture, (int)obstacleMask, manager: fixtures); // Fish-edit
+            _physics.RemoveCollisionMask(ent, id, fixture, (int)CollisionGroup.MidImpassable, manager: fixtures);
         }
     }
 

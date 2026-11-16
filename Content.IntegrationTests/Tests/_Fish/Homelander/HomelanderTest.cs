@@ -7,6 +7,7 @@ using Content.Shared.Movement.Components;
 using Content.Shared.Gravity;
 using Robust.Shared.Map;
 using Content.Server.Atmos.EntitySystems;
+using Content.Shared.Atmos;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Physics;
 using Content.Shared.Movement.Events;
@@ -18,7 +19,6 @@ using System.Numerics;
 using Content.Server._Fish.Homelander;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Fish.Homelander;
-using Content.Shared._Sunrise.Abilities.Milira;
 using Content.Shared._Sunrise.Humanoid;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
@@ -26,6 +26,8 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Humanoid;
 using Content.Shared.Weapons.Reflect;
+using Content.Shared.Weapons.Ranged.Components;
+using Content.Shared.Weapons.Ranged.Events;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Maths;
@@ -50,7 +52,7 @@ public sealed class HomelanderTest : GameTest
         await server.WaitPost(() =>
         {
             patriot = server.EntMan.SpawnEntity("FishMobHomelander", map.GridCoords);
-            var flight = server.EntMan.GetComponent<WingFlightComponent>(patriot);
+            var flight = server.EntMan.GetComponent<HomelanderFlightComponent>(patriot);
             var uid = flight.ActionEntity!.Value;
             flightAction = (uid, server.EntMan.GetComponent<ActionComponent>(uid));
             server.PlayerMan.SetAttachedEntity(session, patriot);
@@ -90,6 +92,15 @@ public sealed class HomelanderTest : GameTest
             {
                 var body = server.EntMan.GetComponent<PhysicsComponent>(patriot);
                 Assert.That(body.BodyStatus, Is.EqualTo(flying ? BodyStatus.InAir : BodyStatus.OnGround));
+                if (flying)
+                {
+                    var footstep = server.EntMan.GetComponent<FootstepModifierComponent>(patriot);
+                    Assert.That(footstep.FootstepSoundCollection, Is.Null);
+                }
+                else
+                {
+                    Assert.That(server.EntMan.HasComponent<FootstepModifierComponent>(patriot), Is.False);
+                }
                 masks = server.EntMan.GetComponent<FixturesComponent>(patriot).Fixtures.Values
                     .Select(fixture => fixture.CollisionMask).ToArray();
             });
@@ -127,7 +138,7 @@ public sealed class HomelanderTest : GameTest
             var patriot = server.EntMan.SpawnEntity("FishMobHomelander", coords);
             Assert.That(server.EntMan.GetComponent<TransformComponent>(patriot).GridUid, Is.Null);
 
-            var flight = server.EntMan.GetComponent<WingFlightComponent>(patriot);
+            var flight = server.EntMan.GetComponent<HomelanderFlightComponent>(patriot);
             var action = flight.ActionEntity!.Value;
             var actions = server.System<SharedActionsSystem>();
             Entity<ActionComponent> flightAction = (action, server.EntMan.GetComponent<ActionComponent>(action));
@@ -161,7 +172,7 @@ public sealed class HomelanderTest : GameTest
         await server.WaitPost(() =>
         {
             patriot = server.EntMan.SpawnEntity("FishMobHomelander", new EntityCoordinates(map.MapUid, start));
-            var action = server.EntMan.GetComponent<WingFlightComponent>(patriot).ActionEntity!.Value;
+            var action = server.EntMan.GetComponent<HomelanderFlightComponent>(patriot).ActionEntity!.Value;
             server.System<SharedActionsSystem>().PerformAction(patriot,
                 (action, server.EntMan.GetComponent<ActionComponent>(action)));
             var mover = server.EntMan.GetComponent<InputMoverComponent>(patriot);
@@ -192,14 +203,14 @@ public sealed class HomelanderTest : GameTest
         var pressure = server.System<BarotraumaSystem>();
         var markings = server.System<SunriseHumanoidMarkingSystem>();
 
-        WingFlightComponent? activeFlight = null;
+        HomelanderFlightComponent? activeFlight = null;
         StaminaComponent? activeStamina = null;
 
         await server.WaitAssertion(() =>
         {
             var patriot = server.EntMan.SpawnEntity("FishMobHomelander", map.GridCoords);
             var abilities = server.EntMan.GetComponent<HomelanderComponent>(patriot);
-            var flight = server.EntMan.GetComponent<WingFlightComponent>(patriot);
+            var flight = server.EntMan.GetComponent<HomelanderFlightComponent>(patriot);
             var stamina = server.EntMan.GetComponent<StaminaComponent>(patriot);
 
             Assert.That(inventory.TryGetSlotEntity(patriot, "outerClothing", out var suit), Is.True);
@@ -209,11 +220,13 @@ public sealed class HomelanderTest : GameTest
             Assert.That(server.EntMan.HasComponent<ToggleableClothingComponent>(suit.Value), Is.False);
             Assert.That(inventory.TryGetSlotEntity(patriot, "head", out _), Is.False);
             var barotrauma = server.EntMan.GetComponent<BarotraumaComponent>(patriot);
-            Assert.That(pressure.GetFeltLowPressure(patriot, barotrauma, 0), Is.GreaterThan(100f));
+            Assert.That(pressure.GetFeltLowPressure(patriot, barotrauma, 0), Is.EqualTo(Atmospherics.OneAtmosphere));
+            Assert.That(pressure.GetFeltHighPressure(patriot, barotrauma, 10000f), Is.EqualTo(Atmospherics.OneAtmosphere));
             Assert.That(inventory.TryUnequip(patriot, "outerClothing", force: true), Is.True);
             var costume = server.EntMan.SpawnEntity("FishClothingOuterCostumeHomelander", map.GridCoords);
             Assert.That(inventory.TryEquip(patriot, costume, "outerClothing", force: true), Is.True);
             Assert.That(pressure.GetFeltLowPressure(patriot, barotrauma, 0), Is.Zero);
+            Assert.That(pressure.GetFeltHighPressure(patriot, barotrauma, 10000f), Is.EqualTo(10000f));
             Assert.That(server.EntMan.HasComponent<ReflectComponent>(costume), Is.False);
             Assert.That(abilities.Laser, Is.Not.Null);
             Assert.That(markings.TryGetLayerMarkings(patriot, HumanoidVisualLayers.Hair, out var hair), Is.True);
@@ -236,10 +249,13 @@ public sealed class HomelanderTest : GameTest
             var laserTarget = map.GridCoords.Offset(new Vector2(4, 0));
             Assert.That(homelander.TryFireLaser((patriot, abilities), laserTarget), Is.False);
             var laser = GetAction(abilities.LaserAction);
+            var crusher = server.EntMan.SpawnEntity("WeaponCrusher", map.GridCoords);
+            AssertSecondaryShotCancelled(false);
             actions.PerformAction(patriot, laser);
             Assert.That(appearance.TryGetData<bool>(patriot, HomelanderVisuals.LaserActive, out var active) && active,
                 Is.True);
 
+            AssertSecondaryShotCancelled(true);
             Assert.That(homelander.TryFireLaser((patriot, abilities), laserTarget), Is.True);
 
             var previousStaminaDamage = stamina.StaminaDamage;
@@ -253,6 +269,18 @@ public sealed class HomelanderTest : GameTest
             Assert.That(appearance.TryGetData<bool>(patriot, HomelanderVisuals.LaserActive, out active) && active,
                 Is.False);
             Assert.That(flight.FlightEnabled, Is.True);
+            AssertSecondaryShotCancelled(false);
+
+            void AssertSecondaryShotCancelled(bool expected)
+            {
+                var shot = new ShotAttemptedEvent
+                {
+                    User = patriot,
+                    Used = (crusher, server.EntMan.GetComponent<GunComponent>(crusher)),
+                };
+                server.EntMan.EventBus.RaiseLocalEvent(patriot, ref shot, broadcast: false);
+                Assert.That(shot.Cancelled, Is.EqualTo(expected));
+            }
 
             Entity<ActionComponent> GetAction(EntityUid? action)
             {

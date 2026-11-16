@@ -1,7 +1,13 @@
 using System.Numerics;
 using Content.Client.Gravity;
 using Content.Shared._Fish.Homelander;
-using Content.Shared._Sunrise.Abilities.Milira;
+using Content.Client.ContextMenu.UI;
+using Content.Client.Gameplay;
+using Content.Shared.Gravity;
+using Robust.Client.State;
+using Robust.Shared.GameStates;
+using Robust.Shared.Input;
+using Robust.Shared.Input.Binding;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Map;
@@ -18,34 +24,66 @@ public sealed partial class HomelanderSystem : EntitySystem
     private static readonly Vector2 FlightLift = new(0f, HomelanderComponent.FlightVisualLift);
     private static readonly ResPath SpritePath = new("/Textures/_Fish/Homelander/actions.rsi");
 
-    [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private SharedHomelanderLaserSystem _laser = default!;
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private IEyeManager _eye = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private FloatingVisualizerSystem _floating = default!;
+    [Dependency] private SharedGravitySystem _gravity = default!;
+    [Dependency] private IStateManager _stateManager = default!;
+    [Dependency] private InputSystem _input = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<HomelanderComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<HomelanderComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<HomelanderFlightComponent, ComponentStartup>(OnFlightStartup);
+        SubscribeLocalEvent<HomelanderFlightComponent, ComponentShutdown>(OnFlightShutdown);
+        SubscribeLocalEvent<HomelanderFlightComponent, AfterAutoHandleStateEvent>(OnFlightState);
+        SubscribeLocalEvent<HomelanderFlightComponent, FloatingAnimationAttemptEvent>(OnFloatAttempt);
+        SubscribeLocalEvent<HomelanderLiftComponent, FloatingAnimationAttemptEvent>(OnLiftFloatAttempt);
+
+        CommandBinds.Builder
+            .BindBefore(EngineKeyFunctions.UseSecondary, new PointerInputCmdHandler(OnSecondaryUse, outsidePrediction: true),
+                typeof(EntityMenuUIController))
+            .Register<HomelanderSystem>();
     }
 
-    private void OnStartup(Entity<HomelanderComponent> entity, ref ComponentStartup args)
+    public override void Shutdown()
     {
-        if (TryComp<WingFlightComponent>(entity, out var flight) && flight.FlightEnabled)
-            UpdateFlightVisual(entity, true);
+        CommandBinds.Unregister<HomelanderSystem>();
+        base.Shutdown();
     }
 
-    private void OnShutdown(Entity<HomelanderComponent> entity, ref ComponentShutdown args)
+    private bool OnSecondaryUse(in PointerInputCmdHandler.PointerInputCmdArgs args)
+    {
+        return !_input.Predicted && _stateManager.CurrentState is GameplayStateBase &&
+            TryFire(args.Session?.AttachedEntity, args.Coordinates, args.EntityUid);
+    }
+
+    private void OnFlightStartup(Entity<HomelanderFlightComponent> entity, ref ComponentStartup args)
+    {
+        UpdateFlightVisual(entity, entity.Comp.FlightEnabled);
+    }
+
+    private void OnFlightShutdown(Entity<HomelanderFlightComponent> entity, ref ComponentShutdown args)
     {
         UpdateFlightVisual(entity, false);
     }
 
-    internal void RefreshFlightVisual(EntityUid uid, bool flying)
+    private void OnFlightState(Entity<HomelanderFlightComponent> entity, ref AfterAutoHandleStateEvent args)
     {
-        if (HasComp<HomelanderComponent>(uid))
-            UpdateFlightVisual(uid, flying);
+        UpdateFlightVisual(entity, entity.Comp.FlightEnabled);
+    }
+
+    private void OnFloatAttempt(Entity<HomelanderFlightComponent> entity, ref FloatingAnimationAttemptEvent args)
+    {
+        if (entity.Comp.FlightEnabled)
+            args.Cancelled = true;
+    }
+
+    private void OnLiftFloatAttempt(Entity<HomelanderLiftComponent> entity, ref FloatingAnimationAttemptEvent args)
+    {
+        args.Cancelled = true;
     }
 
     private void UpdateFlightVisual(EntityUid uid, bool flying)
@@ -58,7 +96,8 @@ public sealed partial class HomelanderSystem : EntitySystem
             if (!flying)
                 return;
 
-            _floating.RefreshHomelanderBobbing(uid, true);
+            if (TryComp<FloatingVisualsComponent>(uid, out var floating))
+                _floating.FloatAnimation(uid, floating.Offset, floating.AnimationKey, floating.AnimationTime, stop: true);
             lift = EnsureComp<HomelanderLiftComponent>(uid);
             lift.GroundOffset = sprite.Offset;
             var entity = (uid, sprite);
@@ -99,20 +138,19 @@ public sealed partial class HomelanderSystem : EntitySystem
                     _sprite.RemoveLayer(entity, shadow);
 
                 RemComp<HomelanderLiftComponent>(uid);
-                _floating.RefreshHomelanderBobbing(uid, false);
+                if (!TerminatingOrDeleted(uid) && _gravity.IsWeightless(uid) &&
+                    TryComp<FloatingVisualsComponent>(uid, out var floating))
+                    _floating.FloatAnimation(uid, floating.Offset, floating.AnimationKey, floating.AnimationTime);
             }
         }
     }
 
     public bool IsLaserActive(EntityUid? user)
     {
-        return user is { } uid &&
-            HasComp<HomelanderComponent>(uid) &&
-            _appearance.TryGetData<bool>(uid, HomelanderVisuals.LaserActive, out var active) &&
-            active;
+        return _laser.IsActive(user);
     }
 
-    public bool TryFire(EntityUid? user, EntityCoordinates coordinates, EntityUid target)
+    private bool TryFire(EntityUid? user, EntityCoordinates coordinates, EntityUid target)
     {
         if (!IsLaserActive(user))
             return false;

@@ -1,6 +1,5 @@
 using System.Numerics;
 using Content.Shared._Fish.Homelander; // Fish-edit
-using Content.Shared._Sunrise.Abilities.Milira; // Fish-edit
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Components;
 using Content.Shared.Database;
@@ -163,9 +162,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         // Fish-start
         if (travelSprite != null && vizComp.TravelOriginOffset is { } offset)
         {
-            if (HasComp<HomelanderComponent>(shooter) &&
-                TryComp<WingFlightComponent>(shooter, out var flight) &&
-                flight.FlightEnabled)
+            if (TryComp<HomelanderFlightComponent>(shooter, out var flight) && flight.FlightEnabled)
             {
                 offset.Y += HomelanderComponent.FlightVisualLift;
             }

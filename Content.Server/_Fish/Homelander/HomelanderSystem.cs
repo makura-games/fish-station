@@ -30,6 +30,7 @@ public sealed partial class HomelanderSystem : EntitySystem
     private static readonly EntProtoId LaserPrototype = "FishHomelanderEyeGun";
     private static readonly SoundSpecifier ScreamSound = new SoundPathSpecifier("/Audio/_Fish/Homelander/changeling_screech_strong.ogg");
 
+    [Dependency] private SharedHomelanderLaserSystem _laser = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
@@ -155,8 +156,7 @@ public sealed partial class HomelanderSystem : EntitySystem
     {
         gun = default;
         if (_containers.IsEntityInContainer(entity) ||
-            !_appearance.TryGetData<bool>(entity, HomelanderVisuals.LaserActive, out var active) ||
-            !active ||
+            !_laser.IsActive(entity) ||
             entity.Comp.Laser is not { } laser ||
             !TryComp<GunComponent>(laser, out var gunComponent) ||
             !float.IsFinite(target.Position.X) ||
@@ -167,9 +167,9 @@ public sealed partial class HomelanderSystem : EntitySystem
 
         var origin = _transform.GetMapCoordinates(entity);
         var destination = _transform.ToMapCoordinates(target, logError: false);
+        var distanceSquared = Vector2.DistanceSquared(origin.Position, destination.Position);
         if (origin.MapId == MapId.Nullspace || origin.MapId != destination.MapId ||
-            !float.IsFinite(destination.Position.X) || !float.IsFinite(destination.Position.Y) ||
-            Vector2.DistanceSquared(origin.Position, destination.Position) < 0.0001f)
+            !float.IsFinite(distanceSquared) || distanceSquared <= 0.0001f)
         {
             return false;
         }
