@@ -13,7 +13,7 @@
     - FleshCultSurviveObjective
   - type: AntagSelection
     agentName: flesh-cult-round-end-agent-name
-    selectionTime: JobsAssigned
+    selectionTime: RuleStarted # Fish-edit: раздача ролей и на раундстарте, и при запуске геймрула в середине раунда
     antags:
     - !type:FixedAntagCount
       proto: SunriseFleshCultistLeader
@@ -50,6 +50,12 @@
     - Vox
     - Tajaran
     - Kitsune # Fish-edit
+    # Fish-start: доступность культа плоти для яутжа и остальных органических рас
+    - HumanoidXeno
+    - Predator
+    - Milira
+    - Resomi
+    # Fish-end
   blacklist:
     components:
     - FishIpc # Fish-edit: КПБ вместо закомментированного Synth
@@ -82,6 +88,12 @@
     - Vox
     - Tajaran
     - Kitsune # Fish-edit
+    # Fish-start: доступность культа плоти для яутжа и остальных органических рас
+    - HumanoidXeno
+    - Predator
+    - Milira
+    - Resomi
+    # Fish-end
   blacklist:
     components:
     - FishIpc # Fish-edit: КПБ
