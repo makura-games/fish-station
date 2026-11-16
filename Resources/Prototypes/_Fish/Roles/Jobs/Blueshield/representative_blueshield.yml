@@ -3,10 +3,12 @@
   name: job-name-blueshield-operative
   description: job-description-blueshield-operative
   playTimeTracker: JobRepresentativeBlueShield
+  sponsorAliases:
+  - BlueShieldOperative
   requirements:
    - !type:DiscordRoleRequirement
    - !type:DepartmentTimeRequirement
-     department: FishBlueShieldPlayTime
+     department: BlueShield
      time: 62000 # 20 hrs
    - !type:DepartmentTimeRequirement
      department: Command

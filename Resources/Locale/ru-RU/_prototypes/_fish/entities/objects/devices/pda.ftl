@@ -10,7 +10,9 @@ ent-OversightOfficerPDA = КПК офицера надзора
 ent-SpecOpsOfficerPDA = КПК офицера специальных операций
     .desc = { ent-CentcomPDA.desc }
 
-ent-FishRepresentativeBlueShieldPDA = КПК станционного оперативника «Синий щит»
+ent-FishRepresentativeBlueShieldPDA = КПК оперативника «Синий щит»
     .desc = { ent-BlueShieldOperativePDA.desc }
-    .suffix = Fish
+
+ent-FishCentcommBlueShieldPDA = КПК оперативника «Синий щит»
+    .desc = { ent-BlueShieldOperativePDA.desc }
 
