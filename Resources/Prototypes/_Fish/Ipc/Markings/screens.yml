@@ -1,0 +1,391 @@
+﻿## CANT SET THESE SCREENS TO "shader: unshaded"
+## RobustToolbox/Robust.Shared/Utility/SpriteSpecifier.cs
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenStatic
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_static
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenBlue
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_blue
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenBreakout
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_breakout
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenEight
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_eight
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenGoggles
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_goggles
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenExclaim
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_exclaim
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenHeart
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_heart
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenMonoeye
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_monoeye
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenNature
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_nature
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenOrange
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_orange
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenPink
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_pink
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenQuestion
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_question
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenShower
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_shower
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenYellow
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_yellow
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenScroll
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_scroll
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenConsole
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_console
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenRgb
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_rgb
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenGlider
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_glider
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenRainbowhoriz
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_rainbowhoriz
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenBsod
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_bsod
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenRedtext
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_redtext
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenSinewave
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_sinewave
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenSquarewave
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_squarewave
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenEcgwave
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_ecgwave
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenEyes
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_eyes
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenEyestall
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_eyestall
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenEyesangry
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_eyesangry
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenLoading
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_loading
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenWindowsxp
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_windowsxp
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenTetris
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_tetris
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenTv
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_tv
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenTextdrop
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_textdrop
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenStars
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_stars
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenRainbowdiag
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_rainbowdiag
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenBlank
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_blank
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenSmile
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_smile
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenFrown
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_frown
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenRing
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_ring
+
+
+- type: marking
+  groupWhitelist: [ Ipc ]
+  id: ScreenL
+  bodyPart: Eyes
+  
+  sprites:
+    - sprite: _Fish/Mobs/Customization/ipc_screens.rsi
+      state: ipc_screen_l
+

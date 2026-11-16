@@ -59,12 +59,29 @@ namespace Content.Shared.CCVar
         /// </summary>
         public static readonly CVarDef<int> AchievementsMaxDbUpsertsPerRound =
             CVarDef.Create("fish.achievements.max_db_upserts_per_round", 15, CVar.SERVERONLY);
-			
-		public static readonly CVarDef<bool> EnableStressEffects =
-			CVarDef.Create("fish.mental_health.stress_effects", true, CVar.CLIENTONLY);
-		public static readonly CVarDef<bool> EnablePsychosisEffects =
-			CVarDef.Create("fish.mental_health.psychosis_effects", true, CVar.CLIENTONLY);
-		public static readonly CVarDef<bool> EnableNeuroEffects =
-			CVarDef.Create("fish.mental_health.neuro_effects", true, CVar.CLIENTONLY);
+
+        /// <summary>
+        /// Самозапрет взаимодействия агоста по умолчанию (PR #537). На проде true.
+        /// </summary>
+        public static readonly CVarDef<bool> AghostDefaultInteractionRestricted =
+            CVarDef.Create("fish.aghost_default_interaction_restricted", true, CVar.SERVERONLY | CVar.ARCHIVE);
+
+        /// <summary>
+        /// Если игрок на loopback (127.0.0.1 / ::1) — не включать самозапрет агоста по умолчанию.
+        /// По умолчанию false: reverse-proxy / X-Forwarded-For часто показывают loopback и иначе
+        /// сняли бы самозапрет на проде. Локалка: development.toml.
+        /// </summary>
+        public static readonly CVarDef<bool> AghostUnrestrictOnLocalhost =
+            CVarDef.Create("fish.aghost_unrestrict_on_localhost", false, CVar.SERVERONLY | CVar.ARCHIVE);
+
+        /// <summary>
+        /// Стресс, психоз и нейроны для игрока.
+        /// </summary>
+      	public static readonly CVarDef<bool> EnableStressEffects =
+			      CVarDef.Create("fish.mental_health.stress_effects", true, CVar.CLIENTONLY);
+		    public static readonly CVarDef<bool> EnablePsychosisEffects =
+			      CVarDef.Create("fish.mental_health.psychosis_effects", true, CVar.CLIENTONLY);
+		    public static readonly CVarDef<bool> EnableNeuroEffects =
+			      CVarDef.Create("fish.mental_health.neuro_effects", true, CVar.CLIENTONLY);
     }
 }
