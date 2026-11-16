@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared.Actions;
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
@@ -13,6 +14,7 @@ public sealed partial class HomelanderComponent : Component
     public EntityUid? ScreamAction;
     public EntityUid? LaserAction;
     public EntityUid? Laser;
+    public (Vector2 Zoom, float PvsScale)? ViewBeforeRage;
 }
 
 public sealed partial class HomelanderScreamEvent : InstantActionEvent;

@@ -7,6 +7,8 @@ using Content.Shared.Humanoid;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Components;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Stunnable;
 using Content.Shared.Popups;
 using Content.Shared._Sunrise.Humanoid;
@@ -23,6 +25,7 @@ namespace Content.Server._Fish.Homelander;
 public sealed partial class HomelanderSystem : EntitySystem
 {
     private const float ScreamRange = 3f;
+    private const float RageViewScale = 1.5f;
     private static readonly TimeSpan ScreamKnockdown = TimeSpan.FromSeconds(2);
     private const string LaserSlot = "fish-homelander-laser";
     private static readonly EntProtoId ScreamAction = "FishActionHomelanderScream";
@@ -31,6 +34,8 @@ public sealed partial class HomelanderSystem : EntitySystem
     private static readonly SoundSpecifier ScreamSound = new SoundPathSpecifier("/Audio/_Fish/Homelander/changeling_screech_strong.ogg");
 
     [Dependency] private SharedHomelanderLaserSystem _laser = default!;
+    [Dependency] private SharedContentEyeSystem _contentEye = default!;
+    [Dependency] private SharedEyeSystem _eye = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
@@ -79,6 +84,8 @@ public sealed partial class HomelanderSystem : EntitySystem
         _actions.RemoveAction(entity.Owner, entity.Comp.ScreamAction);
         _actions.RemoveAction(entity.Owner, entity.Comp.LaserAction);
         _appearance.SetData(entity, HomelanderVisuals.LaserActive, false);
+        if (!TerminatingOrDeleted(entity))
+            SetRageView(entity, false);
         QueueDel(entity.Comp.Laser);
     }
 
@@ -134,9 +141,31 @@ public sealed partial class HomelanderSystem : EntitySystem
         _appearance.TryGetData<bool>(entity, HomelanderVisuals.LaserActive, out var active);
         _appearance.SetData(entity, HomelanderVisuals.LaserActive, !active);
         _actions.SetToggled(action, !active);
+        SetRageView(entity, !active);
         if (!active)
             _popup.PopupEntity(Loc.GetString("fish-homelander-angry"), entity, PopupType.MediumCaution);
         return true;
+    }
+
+    private void SetRageView(Entity<HomelanderComponent> entity, bool active)
+    {
+        if (active)
+        {
+            if (!TryComp<ContentEyeComponent>(entity, out var contentEye) ||
+                !TryComp<EyeComponent>(entity, out var eye))
+                return;
+
+            entity.Comp.ViewBeforeRage = (contentEye.TargetZoom, eye.PvsScale);
+            _contentEye.SetZoom(entity, Vector2.Max(contentEye.TargetZoom, new Vector2(RageViewScale)),
+                ignoreLimits: true, eye: contentEye);
+            _eye.SetPvsScale(entity.Owner, MathF.Max(eye.PvsScale, RageViewScale));
+        }
+        else if (entity.Comp.ViewBeforeRage is { } previous)
+        {
+            entity.Comp.ViewBeforeRage = null;
+            _contentEye.SetZoom(entity, previous.Zoom, ignoreLimits: true);
+            _eye.SetPvsScale(entity.Owner, previous.PvsScale);
+        }
     }
 
     private void OnFire(HomelanderFireEvent ev, EntitySessionEventArgs args)

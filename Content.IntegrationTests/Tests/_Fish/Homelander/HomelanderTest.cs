@@ -2,6 +2,8 @@
 using System.Linq;
 using Content.Server.Atmos.Components;
 using Content.Server.Gravity;
+using Content.Server.Body.Systems;
+using ClientHomelanderSystem = Content.Client._Fish.Homelander.HomelanderSystem;
 using Content.Server.Physics.Controllers;
 using Content.Shared.Movement.Components;
 using Content.Shared.Gravity;
@@ -12,6 +14,7 @@ using Content.Shared.Clothing.Components;
 using Content.Shared.Physics;
 using Content.Shared.Movement.Events;
 using Content.Shared.Stunnable;
+using Content.Shared.Speech;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics;
@@ -61,6 +64,9 @@ public sealed class HomelanderTest : GameTest
         // Ждём, пока клиент получит сущность и привязку управления.
         await Pair.RunTicksSync(10);
         var clientPatriot = Pair.ToClientUid(patriot);
+        float speechOffsetBeforeFlight = 0f;
+        await client.WaitAssertion(() =>
+            speechOffsetBeforeFlight = client.EntMan.GetComponent<SpeechComponent>(clientPatriot).SpeechBubbleOffset);
         var originalMasks = await CheckPhysics(false);
         await server.WaitPost(() => actions.PerformAction(patriot, flightAction));
         await CheckOffset(true);
@@ -114,10 +120,20 @@ public sealed class HomelanderTest : GameTest
             await client.WaitAssertion(() =>
             {
                 var actual = client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Offset;
+                var visuals = client.System<ClientHomelanderSystem>();
+                var speechOffset = client.EntMan.GetComponent<SpeechComponent>(clientPatriot).SpeechBubbleOffset;
                 if (flying)
+                {
                     Assert.That(actual.Y, Is.GreaterThanOrEqualTo(HomelanderComponent.FlightVisualLift - 0.001f));
+                    Assert.That(speechOffset - speechOffsetBeforeFlight,
+                        Is.GreaterThanOrEqualTo(HomelanderComponent.FlightVisualLift - 0.001f));
+                    Assert.That(visuals.TryGetFlightPopupOffset(clientPatriot, Angle.Zero, out var popupOffset), Is.True);
+                    Assert.That(popupOffset.Y, Is.GreaterThan(speechOffset - speechOffsetBeforeFlight));
+                }
                 else
                 {
+                    Assert.That(speechOffset, Is.EqualTo(speechOffsetBeforeFlight));
+                    Assert.That(visuals.TryGetFlightPopupOffset(clientPatriot, Angle.Zero, out _), Is.False);
                     Assert.That(actual.Y, Is.InRange(0f, 0.25f));
                     Assert.That(client.EntMan.GetComponent<SpriteComponent>(clientPatriot).Rotation.Theta,
                         Is.Zero.Within(0.001f));
@@ -192,6 +208,28 @@ public sealed class HomelanderTest : GameTest
     }
 
     [Test]
+    public async Task PatriotDoesNotSuffocateInOpenSpace()
+    {
+        var server = Pair.Server;
+        var map = await Pair.CreateTestMap();
+        EntityUid patriot = default;
+
+        await server.WaitPost(() =>
+        {
+            patriot = server.EntMan.SpawnEntity("FishMobHomelander",
+                new EntityCoordinates(map.MapUid, new Vector2(20f, 20f)));
+        });
+
+        // Восемь секунд в вакууме превышают время до удушья у обычного человека.
+        await server.WaitRunTicks(server.Timing.TickRate * 8);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(server.EntMan.GetComponent<TransformComponent>(patriot).GridUid, Is.Null);
+            Assert.That(server.System<RespiratorSystem>().IsBreathing((patriot, null)), Is.True);
+        });
+    }
+
+    [Test]
     public async Task SpawnsWithArmorAndUsesItsOwnActions()
     {
         var server = Pair.Server;
@@ -249,6 +287,10 @@ public sealed class HomelanderTest : GameTest
             var laserTarget = map.GridCoords.Offset(new Vector2(4, 0));
             Assert.That(homelander.TryFireLaser((patriot, abilities), laserTarget), Is.False);
             var laser = GetAction(abilities.LaserAction);
+            var contentEye = server.EntMan.GetComponent<ContentEyeComponent>(patriot);
+            var eye = server.EntMan.GetComponent<EyeComponent>(patriot);
+            var previousZoom = contentEye.TargetZoom;
+            var previousPvsScale = eye.PvsScale;
             var crusher = server.EntMan.SpawnEntity("WeaponCrusher", map.GridCoords);
             AssertSecondaryShotCancelled(false);
             actions.PerformAction(patriot, laser);
@@ -256,6 +298,8 @@ public sealed class HomelanderTest : GameTest
                 Is.True);
 
             AssertSecondaryShotCancelled(true);
+            Assert.That(contentEye.TargetZoom.X, Is.GreaterThan(previousZoom.X));
+            Assert.That(eye.PvsScale, Is.GreaterThan(previousPvsScale));
             Assert.That(homelander.TryFireLaser((patriot, abilities), laserTarget), Is.True);
 
             var previousStaminaDamage = stamina.StaminaDamage;
@@ -270,6 +314,8 @@ public sealed class HomelanderTest : GameTest
                 Is.False);
             Assert.That(flight.FlightEnabled, Is.True);
             AssertSecondaryShotCancelled(false);
+            Assert.That(contentEye.TargetZoom, Is.EqualTo(previousZoom));
+            Assert.That(eye.PvsScale, Is.EqualTo(previousPvsScale));
 
             void AssertSecondaryShotCancelled(bool expected)
             {

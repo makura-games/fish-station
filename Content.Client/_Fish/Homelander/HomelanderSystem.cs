@@ -4,6 +4,7 @@ using Content.Shared._Fish.Homelander;
 using Content.Client.ContextMenu.UI;
 using Content.Client.Gameplay;
 using Content.Shared.Gravity;
+using Content.Shared.Speech;
 using Robust.Client.State;
 using Robust.Shared.GameStates;
 using Robust.Shared.Input;
@@ -125,7 +126,19 @@ public sealed partial class HomelanderSystem : EntitySystem
             var hover = HoverAmplitude * (0.5f - 0.5f * MathF.Cos(lift.HoverPhase * MathF.Tau));
             var height = (FlightLift + new Vector2(0f, hover)) * progress;
             var entity = (uid, sprite);
-            _sprite.SetOffset(entity, lift.GroundOffset + height);
+            lift.WorldTextOffset = (-eyeRotation).RotateVec(height);
+            _sprite.SetOffset(entity, lift.GroundOffset + (-renderRotation).RotateVec(height));
+
+            if (TryComp<SpeechComponent>(uid, out var speech))
+            {
+                if (lift.Speech != speech)
+                {
+                    lift.Speech = speech;
+                    lift.BaseSpeechOffset = speech.SpeechBubbleOffset;
+                }
+
+                speech.SpeechBubbleOffset = lift.BaseSpeechOffset + height.Y;
+            }
             var rotation = sprite.Rotation;
             var shadowOffset = (-renderRotation).RotateVec(new Vector2(0f, -0.35f)) - sprite.Offset;
             _sprite.LayerSetOffset(entity, FlightShadowLayer, (-rotation).RotateVec(shadowOffset));
@@ -143,6 +156,16 @@ public sealed partial class HomelanderSystem : EntitySystem
                     _floating.FloatAnimation(uid, floating.Offset, floating.AnimationKey, floating.AnimationTime);
             }
         }
+    }
+
+    public bool TryGetFlightPopupOffset(EntityUid uid, Angle eyeRotation, out Vector2 offset)
+    {
+        offset = default;
+        if (!TryComp<HomelanderLiftComponent>(uid, out var lift))
+            return false;
+
+        offset = lift.WorldTextOffset + (-eyeRotation).RotateVec(new Vector2(0f, 0.65f));
+        return true;
     }
 
     public bool IsLaserActive(EntityUid? user)
