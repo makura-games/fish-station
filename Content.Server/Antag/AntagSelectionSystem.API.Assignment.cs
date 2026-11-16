@@ -203,6 +203,12 @@ public sealed partial class AntagSelectionSystem
             return false;
         // Fish-end
 
+        // Fish-start: Не выбираем антагонистами сущности с активным имплантом защиты разума
+        _mindShield.GetMindshieldStatus(uid.Value, out var isMindshielded, out _);
+        if (isMindshielded)
+            return false;
+        // Fish-end
+
         if (!def.AllowNonHumans && !HasComp<HumanoidProfileComponent>(uid))
             return false;
 

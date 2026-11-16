@@ -23,6 +23,7 @@ using Content.Shared.Database;
 using Content.Shared.Follower;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.Mindshield; // Fish-edit
 using Content.Shared.Random.Helpers;
 using Content.Shared.Roles;
 using Content.Shared.Whitelist;
@@ -69,6 +70,7 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     [Dependency] private JobSystem _jobs = default!;
     [Dependency] private LoadoutSystem _loadout = default!;
     [Dependency] private MindSystem _mind = default!;
+    [Dependency] private MindShieldSystem _mindShield = default!; // Fish-edit
     [Dependency] private PlayTimeTrackingSystem _playTime = default!;
     [Dependency] private RoleSystem _role = default!;
     [Dependency] private TransformSystem _transform = default!;

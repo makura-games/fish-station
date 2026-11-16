@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Content.Server.Chat.Systems;
+using Content.Server.Suicide;
 using Content.Shared._Fish.Ipc;
 using Content.Shared.Chat.Prototypes;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.Interaction.Events;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Overlays;
 using Content.Shared.Speech.Components;
 using Robust.Shared.Audio.Systems;
@@ -232,6 +237,45 @@ public sealed class FishIpcReviewFixesTest : FishIpcGameTest
                     Assert.That(resources.ContentFileExists(new ResPath(path!)), Is.True, path);
                     Assert.That(chat.TryPlayEmoteSound(ipc, sounds, id), Is.True, id);
                 }
+            });
+        });
+    }
+
+    [Test]
+    public async Task SuicideEvent_KillsIpc_ReachingDeadThreshold()
+    {
+        EntityUid ipc = default;
+        EntityUid damagedIpc = default;
+
+        await Server.WaitPost(() =>
+        {
+            ipc = SSpawn("MobIpc");
+            damagedIpc = SSpawn("MobIpc");
+
+            // Проверяем оба сценария SuicideCommandTests: целый КПБ и уже раненый КПБ.
+            Server.System<DamageableSystem>().TryChangeDamage(
+                damagedIpc,
+                new() { DamageDict = { ["Slash"] = FixedPoint2.New(46.5) } },
+                ignoreResistances: true,
+                ignoreVariance: true);
+
+            // Гарантируем инициализацию подписок SuicideSystem до Raising SuicideEvent.
+            Server.System<SuicideSystem>();
+            Server.EntMan.EventBus.RaiseLocalEvent(ipc, new SuicideEvent(ipc));
+            Server.EntMan.EventBus.RaiseLocalEvent(damagedIpc, new SuicideEvent(damagedIpc));
+        });
+
+        await Server.WaitAssertion(() =>
+        {
+            var mobState = Server.System<MobStateSystem>();
+            var dmg = Server.System<DamageableSystem>();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(mobState.IsDead(ipc), Is.True, "Uninjured IPC must die from default suicide.");
+                Assert.That(mobState.IsDead(damagedIpc), Is.True, "Injured IPC must die from default suicide.");
+                Assert.That(dmg.GetTotalDamage(ipc), Is.EqualTo(FixedPoint2.New(200)));
+                Assert.That(dmg.GetTotalDamage(damagedIpc), Is.EqualTo(FixedPoint2.New(200)));
             });
         });
     }
