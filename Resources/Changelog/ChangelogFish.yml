@@ -1706,3 +1706,10 @@
     message: Апстрим Санрайз (16.11.2026)
   id: 173
   url: https://github.com/makura-games/fish-station/pull/662
+- author: Kaiten
+  time: '2026-11-16T19:10:05.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Откат ношения на спине баллонов. Шипучка сломал всем спины.
+  id: 174
+  url: https://github.com/makura-games/fish-station/pull/663
