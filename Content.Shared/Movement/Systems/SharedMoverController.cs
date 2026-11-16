@@ -242,7 +242,7 @@ public abstract partial class SharedMoverController : VirtualController
             RaiseLocalEvent(uid, ref spaceMovement, true);
         // Fish-end
 
-        // Whether we use tilefriction or not
+        // Should we use tile friction or not?
         if ((weightless || inAirHelpless) && !spaceMovement.UseGroundMovement) // Fish-edit
         {
             // Find the speed we should be moving at and make sure we're not trying to move faster than that
@@ -251,7 +251,7 @@ public abstract partial class SharedMoverController : VirtualController
 
             wishDir = AssertValidWish(mover, walkSpeed, sprintSpeed);
 
-            touching = spaceMovement.CanMove || xform.GridUid != null || MapGridQuery.HasComp(xform.GridUid);
+            touching = spaceMovement.CanMove || xform.GridUid != null || MapGridQuery.HasComp(xform.GridUid); // Fish-edit
 
             // If we're not on a grid, and not able to move in space check if we're close enough to a grid to touch.
             if (!touching && MobMoverQuery.TryComp(uid, out var mobMover))

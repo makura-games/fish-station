@@ -24,13 +24,13 @@ public sealed partial class HomelanderPressureSealSystem : EntitySystem
         SubscribeLocalEvent<BarotraumaComponent, RefreshPressureImmunityEvent>(OnRefreshImmunity);
     }
 
-    private void OnEquipped(EntityUid uid, HomelanderPressureSealComponent component, GotEquippedEvent args)
+    private void OnEquipped(Entity<HomelanderPressureSealComponent> entity, ref GotEquippedEvent args)
     {
         if (args.Slot == OuterClothing)
             _barotrauma.RefreshPressureImmunity(args.EquipTarget);
     }
 
-    private void OnUnequipped(EntityUid uid, HomelanderPressureSealComponent component, GotUnequippedEvent args)
+    private void OnUnequipped(Entity<HomelanderPressureSealComponent> entity, ref GotUnequippedEvent args)
     {
         if (args.Slot == OuterClothing)
             _barotrauma.RefreshPressureImmunity(args.EquipTarget);

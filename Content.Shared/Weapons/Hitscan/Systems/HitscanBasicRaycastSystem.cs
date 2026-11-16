@@ -1,5 +1,4 @@
 using System.Numerics;
-using Content.Shared._Fish.Homelander; // Fish-edit
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Components;
 using Content.Shared.Database;
@@ -104,7 +103,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
     /// <param name="distance">Distance of the hitscan shot.</param>
     /// <param name="shotAngle">Angle of the shot.</param>
     /// <param name="hitscanUid">The hitscan entity itself.</param>
-    /// <param name="shooter">Стрелок, от которого начинается визуальный эффект.</param>
+    /// <param name="shooter">Entity from which the visual effect originates.</param>
     private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle shotAngle, EntityUid hitscanUid, EntityUid shooter) // Fish-edit
     {
         if (distance == 0 || !_visualsQuery.TryComp(hitscanUid, out var vizComp))
@@ -118,22 +117,18 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         // We'll get the effects relative to the grid / map of the firer
         // Look you could probably optimise this a bit with redundant transforms at this point.
 
-        Angle originRotation; // Fish-edit
+        var worldShotAngle = shotAngle; // Fish-edit
         var gridUid = fromXform.GridUid;
         if (gridUid != fromCoordinates.EntityId && TryComp(gridUid, out TransformComponent? gridXform))
         {
             var (_, gridRot, gridInvMatrix) = _transform.GetWorldPositionRotationInvMatrix(gridXform);
             var map = _transform.ToMapCoordinates(fromCoordinates);
             fromCoordinates = new EntityCoordinates(gridUid.Value, Vector2.Transform(map.Position, gridInvMatrix));
-            originRotation = gridRot; // Fish-edit
             shotAngle -= gridRot;
         }
         else
         {
-            // Fish-start
-            originRotation = _transform.GetWorldRotation(fromXform);
-            shotAngle -= originRotation;
-            // Fish-end
+            shotAngle -= _transform.GetWorldRotation(fromXform);
         }
 
         // Sunrise edit start - custom bullet visuals with color and scale
@@ -149,40 +144,34 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         }
         // Sunrise edit end
 
-        if (distance >= 1f && vizComp.MuzzleFlash != null) // Fish-edit
+        if (distance >= 1f)
         {
-            var coords = fromCoordinates.Offset(shotAngle.ToVec().Normalized() / 2);
-            var netCoords = GetNetCoordinates(coords);
+            if (vizComp.MuzzleFlash != null)
+            {
+                var coords = fromCoordinates.Offset(shotAngle.ToVec().Normalized() / 2);
+                var netCoords = GetNetCoordinates(coords);
 
-            // Sunrise edit start - pass custom color and scale
-            sprites.Add((netCoords, shotAngle, vizComp.MuzzleFlash, 1f, color, scale));
-            // Sunrise edit end
+                // Sunrise edit start - pass custom color and scale
+                sprites.Add((netCoords, shotAngle, vizComp.MuzzleFlash, 1f, color, scale));
+                // Sunrise edit end
+            }
+
+            if (travelSprite != null && vizComp.TravelOriginOffset == null) // Fish-edit
+            {
+                var coords = fromCoordinates.Offset(shotAngle.ToVec() * (distance + 0.5f) / 2);
+                var netCoords = GetNetCoordinates(coords);
+
+                // Sunrise edit start - pass custom color and scale
+                sprites.Add((netCoords, shotAngle, travelSprite, distance - 1.5f, color, scale));
+                // Sunrise edit end
+            }
         }
 
         // Fish-start
         if (travelSprite != null && vizComp.TravelOriginOffset is { } offset)
-        {
-            if (TryComp<HomelanderFlightComponent>(shooter, out var flight) && flight.FlightEnabled)
-            {
-                offset.Y += HomelanderComponent.FlightVisualLift;
-            }
-
-            var start = (-originRotation).RotateVec(offset);
-            var end = shotAngle.ToVec() * distance;
-            var beam = end - start;
-            var midpoint = fromCoordinates.Offset((start + end) / 2);
-            sprites.Add((GetNetCoordinates(midpoint), beam.ToAngle(), travelSprite, beam.Length(), color, scale));
-        }
-        else if (distance >= 1f && travelSprite != null)
+            sprites.Add(GetOffsetTravelEffect(shooter, fromCoordinates, distance, shotAngle,
+                worldShotAngle, offset, travelSprite, color, scale));
         // Fish-end
-        {
-            var coords = fromCoordinates.Offset(shotAngle.ToVec() * (distance + 0.5f) / 2);
-            var netCoords = GetNetCoordinates(coords);
-
-            // Sunrise edit start - pass custom color and scale
-            sprites.Add((netCoords, shotAngle, travelSprite, distance - 1.5f, color, scale));
-            // Sunrise edit end
-        }
 
         if (vizComp.ImpactFlash != null)
         {
