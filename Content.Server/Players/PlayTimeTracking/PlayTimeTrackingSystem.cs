@@ -7,7 +7,6 @@ using Content.Server.GameTicking.Events;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Events;
 using Content.Shared.Afk.Events;
-using Content.Shared._Fish.Roles; // Fish-edit - спонсорские алиасы ролей
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
 using Content.Shared.Mobs;
@@ -257,8 +256,6 @@ public sealed partial class PlayTimeTrackingSystem : EntitySystem
         var sponsorPrototypes = _sponsorsManager != null && _sponsorsManager.TryGetPrototypes(player.UserId, out var prototypes)
             ? prototypes.ToArray()
             : [];
-        if (ProtoMan.TryIndex(job, out var jobPrototype))
-            sponsorPrototypes = FishJobRequirements.ApplySponsorAliases(jobPrototype, sponsorPrototypes); // Fish-edit
         // Sunrise-Sponsors-End
 
         var requirements = _roles.GetRoleRequirements(job);

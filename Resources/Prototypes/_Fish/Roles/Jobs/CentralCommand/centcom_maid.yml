@@ -3,8 +3,6 @@
   name: job-name-centcom-maid
   description: job-description-centcom-maid
   playTimeTracker: JobBlueShieldEnsign
-  sponsorAliases:
-  - CentCommMaid
   requirements:
   - !type:DiscordRoleRequirement
   # weight: 100

@@ -98,7 +98,7 @@
 
 - type: jobIcon
   parent: JobIcon
-  id: JobIconFishCentcommBlueShield
+  id: FishJobIconFishCentcommBlueShield
   icon:
     sprite: /Textures/_Fish/Interface/Misc/job_icons.rsi
     state: CentcommBlueShield

@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Content.Shared._Fish.Roles; // Fish-edit - спонсорские алиасы ролей
 using Content.Shared.Preferences;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -27,7 +26,6 @@ public static class JobRequirements
     {
         var sys = entManager.System<SharedRoleSystem>();
         var requirements = sys.GetRoleRequirements(job);
-        sponsorPrototypes = FishJobRequirements.ApplySponsorAliases(job, sponsorPrototypes); // Fish-edit
         return TryRequirementsMet(requirements, playTimes, out reason, entManager, protoManager, profile, job.ID, sponsorPrototypes);
     }
 

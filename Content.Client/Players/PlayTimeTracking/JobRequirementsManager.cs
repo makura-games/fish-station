@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Client.Lobby;
-using Content.Shared._Fish.Roles; // Fish-edit - спонсорские алиасы ролей
 using Content.Shared.CCVar;
 using Content.Shared.Players;
 using Content.Shared.Players.JobWhitelist;
@@ -198,8 +197,6 @@ public sealed partial class JobRequirementsManager : ISharedPlaytimeManager
             return true;
 
         var sponsorPrototypes = _sponsorsMgr?.GetClientPrototypes().ToArray() ?? []; // Sunrise-Sponsors
-        if (_prototypes.TryIndex<JobPrototype>(protoId, out var job))
-            sponsorPrototypes = FishJobRequirements.ApplySponsorAliases(job, sponsorPrototypes); // Fish-edit
 
         var reasons = new List<string>();
         foreach (var requirement in requirements)

@@ -3,8 +3,6 @@
   name: job-name-blueshield-operative
   description: job-description-blueshield-operative
   playTimeTracker: JobRepresentativeBlueShield
-  sponsorAliases:
-  - BlueShieldOperative
   requirements:
    - !type:DiscordRoleRequirement
    - !type:DepartmentTimeRequirement
