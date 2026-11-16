@@ -37,11 +37,6 @@
   id: AllowSuitStorageClothing
   components:
   - type: AllowSuitStorage
-  # Fish-start
-    whitelist:
-      components:
-      - Item
-  # Fish-end
 
 - type: entity
   abstract: true
