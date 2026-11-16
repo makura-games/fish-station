@@ -28,7 +28,12 @@
         Blunt: -10
         Slash: -10
         Piercing: -10
+        # Fish-start: лечение радиации и клеточного урона для КПБ
+        Radiation: -5
+        Cellular: -1
+        # Fish-end
        # Mangleness: -10 # Fish-edit: Removed Mangleness from the damage types
+    eyeDamageHeal: 0.5 # Fish-edit: малое лечение слепоты (0.5 за использование)
     healingBeginSound:
       path: "/Audio/Items/Medical/ointment_begin.ogg"
     healingEndSound:

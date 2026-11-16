@@ -189,6 +189,7 @@ public sealed partial class DamageableSystem
         RaiseLocalEvent(ent, finalEv);
         if (finalEv.Cancelled)
             return damageDone;
+        damage = finalEv.Damage; // Fish-edit: применяем изменения урона из DamageBeforeApplyEvent
         // 🌟Starlight🌟 end
 
         if (!ignoreGlobalModifiers)

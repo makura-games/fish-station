@@ -96,6 +96,9 @@ public sealed partial class HealingSystem : EntitySystem
         if (!_damageable.TryChangeDamage(target.Owner, healDamage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
             return;
 
+        // Fish-edit: малое лечение слепоты (например, нанопастой)
+        ApplyEyeDamageHeal(healing, target.Owner);
+
         var total = healed.GetTotal();
 
         // Re-verify that we can heal the damage.
@@ -202,6 +205,11 @@ public sealed partial class HealingSystem : EntitySystem
                 return true;
             }
         }
+
+        // Fish-start: можно применять для лечения повреждений глаз
+        if (CanHealEyeDamage(healing.Comp, target.Owner))
+            return true;
+        // Fish-end
 
         return false;
     }
