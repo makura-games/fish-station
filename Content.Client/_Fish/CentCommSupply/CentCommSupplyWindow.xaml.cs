@@ -80,20 +80,24 @@ public sealed partial class CentCommSupplyWindow : FancyWindow
 
         UpdateStations(state.AvailableStations);
 
-        _products.Clear();
-        _productsById.Clear();
-
-        foreach (var product in state.Products)
+        // Не перестраивать каталог товаров, если сервер прислал пустое обновление продуктов.
+        if (state.Products.Count > 0)
         {
-            var localized = LocalizeProduct(product);
-            _products.Add(localized);
-            _productsById[localized.PrototypeId] = localized;
-        }
+            _products.Clear();
+            _productsById.Clear();
 
-        PruneOrder();
-        PopulateCategories();
-        PopulateProducts();
-        PopulateOrder();
+            foreach (var product in state.Products)
+            {
+                var localized = LocalizeProduct(product);
+                _products.Add(localized);
+                _productsById[localized.PrototypeId] = localized;
+            }
+
+            PruneOrder();
+            PopulateCategories();
+            PopulateProducts();
+            PopulateOrder();
+        }
 
         if (OrderPending && state.OrderId == _pendingOrderId)
         {

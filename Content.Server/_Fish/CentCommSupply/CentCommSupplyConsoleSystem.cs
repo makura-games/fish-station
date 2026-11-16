@@ -61,7 +61,12 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
 
     private static readonly TimeSpan _deliveryRetryInterval = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan StateRequestRateLimit = TimeSpan.FromSeconds(0.5);
+    private readonly Dictionary<EntityUid, TimeSpan> _userStateRequestCooldowns = new();
 
+    // Единый глобальный таймер кулдауна и кэш каталога товаров.
+    private TimeSpan _nextOrderTime;
+    private List<CentCommSupplyProductEntry>? _cachedProducts;
     private readonly HashSet<Guid> _acceptedOrders = new();
     private readonly List<PendingOrder> _pendingOrders = new();
     private readonly List<(EntityUid Entity, CargoPalletComponent Component, TransformComponent Transform)> _pads = new();
@@ -72,6 +77,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<PrototypesReloadedEventArgs>(OnPrototypesReloaded);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, CentCommSupplyStateRequestMessage>(OnStateRequested);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIOpenedEvent>(OnUiOpened);
         SubscribeLocalEvent<CentCommSupplyConsoleComponent, BoundUIClosedEvent>(OnUiClosed);
@@ -95,10 +101,36 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             _map.DeleteMap(stagingMap);
 
         _stagingMap = null;
+
+        // Сброс глобального кулдауна, кэша каталога и ограничений частоты при завершении раунда.
+        _nextOrderTime = TimeSpan.Zero;
+        _cachedProducts = null;
+        _userStateRequestCooldowns.Clear();
+    }
+
+    private void OnPrototypesReloaded(PrototypesReloadedEventArgs ev)
+    {
+        if (ev.WasModified<CentCommSupplyProductPrototype>() || ev.WasModified<EntityPrototype>())
+            _cachedProducts = null;
     }
 
     private void OnStateRequested(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyStateRequestMessage args)
     {
+        // Повторная проверка доступа и ограничение частоты запросов
+        if (!_access.IsAllowed(args.Actor, ent.Owner))
+        {
+            ent.Comp.UserStates.Remove(args.Actor);
+            _userStateRequestCooldowns.Remove(args.Actor);
+            _ui.CloseUi(ent.Owner, CentCommSupplyUiKey.Key, args.Actor);
+            return;
+        }
+
+        var now = _timing.CurTime;
+        if (_userStateRequestCooldowns.TryGetValue(args.Actor, out var nextAllowed) && now < nextAllowed)
+            return;
+
+        _userStateRequestCooldowns[args.Actor] = now + StateRequestRateLimit;
+
         UpdateUi(ent, args.Actor);
     }
 
@@ -111,7 +143,10 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     private void OnUiClosed(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIClosedEvent args)
     {
         if (Equals(args.UiKey, CentCommSupplyUiKey.Key))
+        {
             ent.Comp.UserStates.Remove(args.Actor);
+            _userStateRequestCooldowns.Remove(args.Actor);
+        }
     }
 
     /// <summary>
@@ -147,7 +182,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             return false;
         }
 
-        UpdateUi(ent, actor, selectionId: selectionId, requestedStation: stationNet);
+        UpdateUi(ent, actor, selectionId: selectionId, requestedStation: stationNet, includeProducts: false);
         return true;
     }
 
@@ -337,10 +372,13 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             return false;
         }
 
+        // Единый глобальный таймер кулдауна.
+
         var now = _timing.CurTime;
-        if (now < ent.Comp.NextOrderTime)
+        var nextOrderTime = _nextOrderTime > ent.Comp.NextOrderTime ? _nextOrderTime : ent.Comp.NextOrderTime;
+        if (now < nextOrderTime)
         {
-            var secondsCount = Math.Max(1, (int) Math.Ceiling((ent.Comp.NextOrderTime - now).TotalSeconds));
+            var secondsCount = Math.Max(1, (int) Math.Ceiling((nextOrderTime - now).TotalSeconds));
             error = Loc.GetString("centcomm-supply-error-cooldown", ("seconds", secondsCount));
             return false;
         }
@@ -595,7 +633,10 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             Crates = crates,
         });
 
-        ent.Comp.NextOrderTime = now + ent.Comp.OrderCooldown;
+        // Fish-start: установка единого глобального таймера кулдауна
+        _nextOrderTime = now + ent.Comp.OrderCooldown;
+        ent.Comp.NextOrderTime = _nextOrderTime;
+        // Fish-end
         _audio.PlayPvs(ent.Comp.ApproveSound, ent.Owner);
 
         var announcement = Loc.GetString(ent.Comp.OrderAnnouncement,
@@ -620,6 +661,35 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
+    /// Возвращает закэшированный список доступных товаров каталога.
+    /// </summary>
+    private List<CentCommSupplyProductEntry> GetCachedProducts()
+    {
+        if (_cachedProducts != null)
+            return _cachedProducts;
+
+        var products = new List<CentCommSupplyProductEntry>();
+
+        foreach (var product in _prototypes.EnumeratePrototypes<CentCommSupplyProductPrototype>()
+            .OrderBy(product => product.SortOrder)
+            .ThenBy(product => product.ID))
+        {
+            if (!product.Enabled || !TryGetProductEntity(product, out var productEntity))
+                continue;
+
+            products.Add(new CentCommSupplyProductEntry(
+                product.ID,
+                product.GetName(productEntity),
+                product.GetDescription(productEntity),
+                Loc.GetString(product.Category),
+                Math.Max(1, product.MaxQuantity)));
+        }
+
+        _cachedProducts = products;
+        return _cachedProducts;
+    }
+
+    /// <summary>
     /// Sends the current console state to the client.
     /// </summary>
     private void UpdateUi(
@@ -630,7 +700,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         NetEntity? requestedStation = null,
         Guid? orderId = null,
         bool orderPlaced = false,
-        bool opening = false)
+        bool opening = false,
+        bool includeProducts = true)
     {
         if (TerminatingOrDeleted(ent.Owner))
             return;
@@ -646,27 +717,12 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         }
 
         ent.Comp.UserStates.TryGetValue(actor, out var previous);
-        var defaultStation = stations.Count > 0 ? GetNetEntity(stations[0]) : (NetEntity?) null;
+        var defaultStation = stations.Count > 0 ? GetNetEntity(stations[0]) : (NetEntity?)null;
         var selected = requestedStation ?? previous?.SelectedStation;
         if (selected == null || !available.ContainsKey(selected.Value))
             selected = defaultStation;
 
-        var products = new List<CentCommSupplyProductEntry>();
-
-        foreach (var product in _prototypes.EnumeratePrototypes<CentCommSupplyProductPrototype>()
-                     .OrderBy(product => product.SortOrder)
-                     .ThenBy(product => product.ID))
-        {
-            if (!product.Enabled || !TryGetProductEntity(product, out var productEntity))
-                continue;
-
-            products.Add(new CentCommSupplyProductEntry(
-                product.ID,
-                product.GetName(productEntity),
-                product.GetDescription(productEntity),
-                Loc.GetString(product.Category),
-                Math.Max(1, product.MaxQuantity)));
-        }
+        var products = GetCachedProducts();
 
         var state = new CentCommSupplyUserStateMessage(
             products,
@@ -692,7 +748,20 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             _ui.SetUiState(ent.Owner, CentCommSupplyUiKey.Key, new CentCommSupplyCatalogState(catalog));
         }
 
-        _ui.ServerSendUiMessage(ent.Owner, CentCommSupplyUiKey.Key, state, actor);
+        var messageState = includeProducts
+            ? state
+            : new CentCommSupplyUserStateMessage(
+                [],
+                available,
+                selected,
+                ent.Comp.MaxCratesPerOrder,
+                ent.Comp.MaxProductsPerOrder,
+                status,
+                orderPlaced,
+                selectionId ?? previous?.LastStationSelectionId,
+                orderId);
+
+        _ui.ServerSendUiMessage(ent.Owner, CentCommSupplyUiKey.Key, messageState, actor);
     }
 
     private MapCoordinates GetStagingCoordinates()
@@ -784,6 +853,15 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         var stations = new List<EntityUid>();
         var owningStation = _station.GetOwningStation(ent.Owner);
 
+        // Один проход по паллетам вместо повторных запросов на каждый грид.
+        var gridsWithBuyPallets = new HashSet<EntityUid>();
+        var query = AllEntityQuery<CargoPalletComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var component, out var xform))
+        {
+            if (xform.Anchored && (component.PalletType & BuySellType.Buy) != 0)
+                gridsWithBuyPallets.Add(xform.ParentUid);
+        }
+
         foreach (var station in _station.GetStations())
         {
             if (station == owningStation)
@@ -795,7 +873,17 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             if (!TryComp<StationCargoOrderDatabaseComponent>(station, out _))
                 continue;
 
-            if (HasBuyPallets(data))
+            var hasPallet = false;
+            foreach (var grid in data.Grids)
+            {
+                if (gridsWithBuyPallets.Contains(grid))
+                {
+                    hasPallet = true;
+                    break;
+                }
+            }
+
+            if (hasPallet)
                 stations.Add(station);
         }
 
@@ -807,9 +895,17 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// </summary>
     private bool HasBuyPallets(StationDataComponent data)
     {
+        var gridsWithBuyPallets = new HashSet<EntityUid>();
+        var query = AllEntityQuery<CargoPalletComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var component, out var xform))
+        {
+            if (xform.Anchored && (component.PalletType & BuySellType.Buy) != 0)
+                gridsWithBuyPallets.Add(xform.ParentUid);
+        }
+
         foreach (var grid in data.Grids)
         {
-            if (GetCargoPallets(grid, BuySellType.Buy).Count > 0)
+            if (gridsWithBuyPallets.Contains(grid))
                 return true;
         }
 
@@ -1010,7 +1106,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         if (!component.UserStates.ContainsKey(order.Actor))
             return;
 
-        UpdateUi((order.Console, component), order.Actor, message);
+        UpdateUi((order.Console, component), order.Actor, message, includeProducts: false);
         // Fish-end
     }
 
@@ -1042,7 +1138,7 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         Guid? orderId = null)
     {
         _popup.PopupEntity(message, ent.Owner, actor, PopupType.MediumCaution);
-        UpdateUi(ent, actor, message, selectionId: selectionId, orderId: orderId);
+        UpdateUi(ent, actor, message, selectionId: selectionId, orderId: orderId, includeProducts: false);
     }
 
     private readonly struct BlockingFixtureCallback : IFixtureQueryCallback<bool>
