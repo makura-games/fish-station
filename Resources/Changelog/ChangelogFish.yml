@@ -1713,3 +1713,13 @@
     message: Откат ношения на спине баллонов. Шипучка сломал всем спины.
   id: 174
   url: https://github.com/makura-games/fish-station/pull/663
+- author: Endennsss
+  time: '2026-11-16T22:01:56.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен прототип патриота с его способностями
+  id: 175
+  url: https://github.com/makura-games/fish-station/pull/649
+  media:
+  - url: https://github.com/user-attachments/assets/ae7b7854-bc2d-4512-b94d-9deefd117a91
+    description: изображение
