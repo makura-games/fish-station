@@ -96,6 +96,9 @@ public sealed partial class HealingSystem : EntitySystem
         if (!_damageable.TryChangeDamage(target.Owner, healDamage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
             return;
 
+        // Fish-edit: малое лечение слепоты (например, нанопастой)
+        ApplyEyeDamageHeal(healing, target.Owner);
+
         var total = healed.GetTotal();
 
         // Re-verify that we can heal the damage.
@@ -163,8 +166,12 @@ public sealed partial class HealingSystem : EntitySystem
 
         // Update our self heal delay so it shortens as we heal more damage.
         if (args.User == target.Owner)
-            // Fish-edit: у КПБ потолок самолечения ×2
-            args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, IpcSelfHealCap(target.Owner, healing.SelfHealPenaltyMultiplier));
+        {
+            // Fish-start: у КПБ штраф самолечения приравнен к органикам (до ×3 от урона)
+            // args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, IpcSelfHealCap(target.Owner, healing.SelfHealPenaltyMultiplier));
+            args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, healing.SelfHealPenaltyMultiplier);
+            // Fish-end
+        }
     }
 
     private bool HasDamage(Entity<HealingComponent> healing, Entity<DamageableComponent> target)
@@ -202,6 +209,11 @@ public sealed partial class HealingSystem : EntitySystem
                 return true;
             }
         }
+
+        // Fish-start: можно применять для лечения повреждений глаз
+        if (CanHealEyeDamage(healing.Comp, target.Owner))
+            return true;
+        // Fish-end
 
         return false;
     }
@@ -295,8 +307,10 @@ public sealed partial class HealingSystem : EntitySystem
 
         var delay = isNotSelf
             ? healing.Comp.Delay
-            // Fish-edit: у КПБ потолок самолечения ×2
-            : healing.Comp.Delay * GetScaledHealingPenalty(target, IpcSelfHealCap(target, healing.Comp.SelfHealPenaltyMultiplier));
+            // Fish-start: у КПБ штраф самолечения приравнен к органикам (до ×3 от урона)
+            // : healing.Comp.Delay * GetScaledHealingPenalty(target, IpcSelfHealCap(target, healing.Comp.SelfHealPenaltyMultiplier));
+            : healing.Comp.Delay * GetScaledHealingPenalty(target, healing.Comp.SelfHealPenaltyMultiplier);
+            // Fish-end
 
         var doAfterEventArgs =
             new DoAfterArgs(EntityManager, user, delay, new HealingDoAfterEvent(), target, target: target, used: healing)

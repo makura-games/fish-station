@@ -27,7 +27,7 @@ namespace Content.IntegrationTests.Tests._Fish.Ipc;
 [TestFixture]
 public sealed class FishIpcReviewFixesTest : FishIpcGameTest
 {
-    private static readonly string[] CritEmotes = ["Buzz-Two", "Ping", "SevereCough", "DefaultDeathgasp"];
+    private static readonly string[] CritEmotes = ["Buzz-Two", "Ping", "SevereCough"];
     private static readonly ProtoId<EmoteSoundsPrototype> IpcVoice = "UnisexIpc";
 
     [Test]
@@ -180,6 +180,7 @@ public sealed class FishIpcReviewFixesTest : FishIpcGameTest
                 Assert.That(buzz.LastCritEmote, Is.Null);
                 Assert.That(buzz.LastCritEmoteDelay, Is.InRange(30f, 50f));
                 Assert.That(buzz.CritEmotes.Select(id => id.Id), Is.EquivalentTo(CritEmotes));
+                Assert.That(buzz.CritEmotes.Select(id => id.Id), Does.Not.Contain("DefaultDeathgasp"));
             });
         });
 

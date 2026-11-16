@@ -37,14 +37,13 @@ public sealed partial class FishEmitBuzzWhileDamagedComponent : Component
     [DataField]
     public float CritEmoteMaxDelay = 50f;
 
-    /// <summary>Бип буп, Пинг, Тяжело кашлять, Предсмертный хрип.</summary>
+    /// <summary>Бип буп, Пинг, Тяжело кашлять.</summary>
     [DataField]
     public List<ProtoId<EmotePrototype>> CritEmotes = new()
     {
         "Buzz-Two",
         "Ping",
         "SevereCough",
-        "DefaultDeathgasp",
     };
 
     [ViewVariables]
