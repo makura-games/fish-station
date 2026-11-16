@@ -125,14 +125,15 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
             Assert.That(Server.System<ItemToggleSystem>().TrySetActive(welder, true, ipc, predicted: false, showPopup: false), Is.True);
             Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(ipc, welder, checkActionBlocker: false), Is.True);
             Assert.That(weld.TryStartWeld((welder, weldable), ipc, ipc), Is.EqualTo(FishWeldResult.Started));
-            Assert.That(ActiveDelay(ipc), Is.EqualTo(TimeSpan.FromSeconds(2)).Within(TimeSpan.FromMilliseconds(50)));
+            // 40/100 урона при макс. штрафе ×3 → 1 + 0.4 * 2 = 1.8 с.
+            Assert.That(ActiveDelay(ipc), Is.EqualTo(TimeSpan.FromSeconds(1.8)).Within(TimeSpan.FromMilliseconds(50)));
         });
 
         await RunSeconds(2.4f);
 
         await Server.WaitAssertion(() =>
         {
-            // Самосварка 2 с, за 2.4 с успевает один проход: 40 − 3.34.
+            // Самосварка 1.8 с, за 2.4 с успевает один проход: 40 − 3.34.
             Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(36.66f).Within(0.08f));
         });
 
@@ -143,6 +144,25 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
             Server.System<SharedHandsSystem>().TryForcePickupAnyHand(human, welder, checkActionBlocker: false);
             Assert.That(weld.TryStartWeld((welder, weldable), human, ipc), Is.EqualTo(FishWeldResult.Started));
             Assert.That(ActiveDelay(human), Is.EqualTo(TimeSpan.FromSeconds(1)).Within(TimeSpan.FromMilliseconds(50)));
+
+            // Проверка потолка ×3 (как у органиков) при 90 урона: сварка 2.8 с, нанопаста 5.6 с.
+            var critTestIpc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            Hurt(critTestIpc, "Blunt", 90);
+            var welder2 = SSpawnAtPosition("Welder", map.GridCoords);
+            Assert.That(Server.System<ItemToggleSystem>().TrySetActive(welder2, true, critTestIpc, predicted: false, showPopup: false), Is.True);
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(critTestIpc, welder2, checkActionBlocker: false), Is.True);
+            Assert.That(weld.TryStartWeld((welder2, SComp<FishWeldingHealingComponent>(welder2)), critTestIpc, critTestIpc), Is.EqualTo(FishWeldResult.Started));
+            Assert.That(ActiveDelay(critTestIpc), Is.EqualTo(TimeSpan.FromSeconds(2.8)).Within(TimeSpan.FromMilliseconds(50)));
+
+            var selfPasteIpc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            Hurt(selfPasteIpc, "Blunt", 90);
+            var paste = SSpawn("Nanopaste1");
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(selfPasteIpc, paste, checkActionBlocker: false), Is.True);
+            var coords = SComp<TransformComponent>(selfPasteIpc).Coordinates;
+            var ev = new AfterInteractEvent(selfPasteIpc, paste, selfPasteIpc, coords, true);
+            SEntMan.EventBus.RaiseLocalEvent(paste, ev);
+            Assert.That(ev.Handled, Is.True);
+            Assert.That(ActiveDelay(selfPasteIpc), Is.EqualTo(TimeSpan.FromSeconds(5.6)).Within(TimeSpan.FromMilliseconds(50)));
         });
     }
 

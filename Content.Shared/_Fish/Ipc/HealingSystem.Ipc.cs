@@ -58,12 +58,6 @@ public sealed partial class HealingSystem
         return false;
     }
 
-    // Fish-edit: самолечение КПБ не дольше ×2, даже если предмет задаёт больший штраф
-    private float IpcSelfHealCap(EntityUid target, float mod)
-    {
-        return HasComp<FishIpcComponent>(target) ? 2f : mod;
-    }
-
     private static DamageSpecifier WithoutIpcMechanical(DamageSpecifier damage)
     {
         var copy = new DamageSpecifier(damage);

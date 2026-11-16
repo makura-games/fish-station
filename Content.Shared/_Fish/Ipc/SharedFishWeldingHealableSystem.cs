@@ -4,6 +4,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Item.ItemToggle.Components;
+using Content.Shared.Medical.Healing;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Content.Shared.Tools.Components;
@@ -19,6 +20,7 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
 {
     [Dependency] private SharedToolSystem _tool = default!;
     [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private HealingSystem _healing = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedSolutionContainerSystem _solution = default!;
     [Dependency] private SharedStackSystem _stack = default!;
@@ -48,9 +50,7 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
         if (!WelderCanPay(tool, tool.Comp))
             return FishWeldResult.Rejected;
 
-        var delay = user == target
-            ? tool.Comp.DoAfterDelay * tool.Comp.SelfHealPenalty
-            : tool.Comp.DoAfterDelay;
+        var delay = GetWeldDelay(tool.Comp, user, target);
 
         var started = _tool.UseTool(tool, user, target, delay, tool.Comp.QualityNeeded, new FishSiliconRepairDoAfterEvent());
         return started ? FishWeldResult.Started : FishWeldResult.Rejected;
@@ -83,11 +83,16 @@ public sealed partial class SharedFishWeldingHealableSystem : EntitySystem
         if (!HasDamage(uid, healing) || !WelderCanPay(used, healing))
             return;
 
-        var nextDelay = args.User == uid
-            ? healing.DoAfterDelay * healing.SelfHealPenalty
-            : healing.DoAfterDelay;
+        var nextDelay = GetWeldDelay(healing, args.User, uid);
 
         _tool.UseTool(used, args.User, uid, nextDelay, healing.QualityNeeded, new FishSiliconRepairDoAfterEvent());
+    }
+
+    private float GetWeldDelay(FishWeldingHealingComponent healing, EntityUid user, EntityUid target)
+    {
+        return user == target
+            ? healing.DoAfterDelay * _healing.GetScaledHealingPenalty(target, healing.SelfHealPenalty)
+            : healing.DoAfterDelay;
     }
 
     /// <summary>Горелка горит и топлива хватает на один проход. Иначе лечение не стартует и не повторяется.</summary>
