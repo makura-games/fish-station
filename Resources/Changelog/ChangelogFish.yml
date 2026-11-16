@@ -1723,3 +1723,12 @@
   media:
   - url: https://github.com/user-attachments/assets/ae7b7854-bc2d-4512-b94d-9deefd117a91
     description: изображение
+- author: TiFeRi
+  time: '2026-11-16T23:03:17.0000000+00:00'
+  changes:
+  - type: Remove
+    message: Удалена декаль splatter.
+  - type: Tweak
+    message: Прикручена ядерка.
+  id: 176
+  url: https://github.com/makura-games/fish-station/pull/648
