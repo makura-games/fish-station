@@ -171,14 +171,12 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.5
     baseSprintSpeed: 4.5
-# Fish-start: Удаление ПНВ
-#  - type: NightVision
-#    enabled: false
-#    action: ActionToggleNightVision
-#    prioritized: false
-#    lightingColor: '#FFFFFF15'
-#  - type: FishNaturalNightVision
-# Fish-end:
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#FFFFFF15'
+  - type: FishNaturalNightVision # Fish-edit: Природное зрение с плавной адаптацией.
   - type: FlashModifier
     modifier: 2
   - type: FelinidLicking

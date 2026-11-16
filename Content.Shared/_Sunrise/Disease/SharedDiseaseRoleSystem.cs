@@ -1,5 +1,6 @@
 // Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
+using Content.Shared._Fish.Ipc;
 using Content.Shared.Hands;
 using Content.Shared.Humanoid;
 using Content.Shared.Interaction.Events;
@@ -83,6 +84,8 @@ public abstract class SharedDiseaseRoleSystem : EntitySystem
             return;
 
         if (!TryComp<DiseaseRoleComponent>(ev.Performer, out var comp)) return;
+        // Fish-edit: КПБ не заражается, событие не обработано — заряд попытки не списывается
+        if (HasComp<FishIpcComponent>(ev.Target)) return;
         if (HasComp<DiseaseImmuneComponent>(ev.Target)) return;
         if (HasComp<SickComponent>(ev.Target)) return;
 
