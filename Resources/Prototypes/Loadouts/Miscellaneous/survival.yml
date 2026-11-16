@@ -30,6 +30,24 @@
     - Kitsune #Fish-edit
     # Sunrise-End
 
+# Fish-start: КПБ получают ремонтный набор вместо дыхательного
+- type: loadoutEffectGroup
+  id: FishIpcChassis
+  effects:
+  - !type:SpeciesLoadoutEffect
+    species:
+    - Ipc
+
+- type: loadout
+  id: EmergencyFishIpc
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: FishIpcChassis
+  storage:
+    back:
+    - BoxRepairSynth
+# Fish-end
+
 - type: loadoutEffectGroup
   id: EffectSpeciesVox
   effects:

@@ -11,7 +11,7 @@
     - !type:AgeRequirement
       requiredAge: 20
   startingGear: CentcomBlueShieldGear
-  icon: "JobIconBlueShield"
+  icon: NTR_operative
 
   overrideConsoleVisibility: false
   supervisors: job-supervisors-centcom
@@ -30,9 +30,8 @@
   equipment:
    shoes: ClothingShoesBootsBlueShieldFilled
    eyes: ClothingEyesGlassesBlueShield
-   # head через BlueShieldHead loadout # Fish-edit
+   # Fish-edit: головной убор и броня выдаются через лодаут
    id: BlueShieldOperativePDA
-   outerClothing: ClothingOuterArmorBlueShield
    ears: ClothingHeadsetFishCentCom
    gloves: ClothingHandsGlovesCombat
   storage:

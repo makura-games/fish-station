@@ -1,0 +1,6 @@
+# Assets ported from Einstein Engines / Delta-V IPC species (AGPL-3.0 / MIT-compatible SS14 forks).
+# Behavioral reference: Paradise SS13 Machine species.
+- files: ["parts.rsi", "organs.rsi"]
+  license: "Custom"
+  copyright: "Einstein Engines / Delta-V IPC assets, adapted for Fish Station. Upstream license AGPL-3.0-or-later."
+  source: "https://github.com/ARF-SS13/coyotesector-14"

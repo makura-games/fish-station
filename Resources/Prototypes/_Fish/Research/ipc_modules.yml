@@ -1,0 +1,57 @@
+# Fish-start: технологии модулей КПБ
+# --- Healthcare T2 Biochemical ---
+- type: technology
+  id: FishTechIpcHealthcareModules
+  name: research-technology-fish-ipc-healthcare
+  icon:
+    sprite: Clothing/Eyes/Hud/med.rsi
+    state: icon
+  discipline: Biochemical
+  tier: 2
+  cost: 12000
+  recipeUnlocks:
+  - FishIpcModuleMedHud
+  - FishIpcModuleJumpstarter
+  - FishIpcModuleDefib
+  - FishIpcModuleNanoRepair
+  - FishIpcModuleReactiveRepair
+  technologyPrerequisites:
+  - BiochemicalStasis
+
+# --- Utility T2 Experimental ---
+- type: technology
+  id: FishTechIpcUtilityModules
+  name: research-technology-fish-ipc-utility
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  discipline: Experimental
+  tier: 2
+  cost: 10000
+  recipeUnlocks:
+  - FishIpcModuleWireInterface
+  - FishIpcModuleApcAdapter
+  - FishIpcModuleVocalMod
+  - FishIpcModuleToolHand
+  - FishIpcModuleSecHud
+  - FishIpcModuleMeson
+  - FishIpcModuleRadFilter
+  technologyPrerequisites:
+  - BasicRobotics
+
+# --- Thermals + anti-EMP T3 Experimental ---
+- type: technology
+  id: FishTechIpcAdvancedOptics
+  name: research-technology-fish-ipc-advanced-optics
+  icon:
+    sprite: Clothing/Eyes/Glasses/meson.rsi
+    state: icon
+  discipline: Experimental
+  tier: 3
+  cost: 18000
+  recipeUnlocks:
+  - FishIpcModuleNightVision
+  - FishIpcModuleEmpScreen
+  technologyPrerequisites:
+  - FishTechIpcUtilityModules
+# Fish-end
