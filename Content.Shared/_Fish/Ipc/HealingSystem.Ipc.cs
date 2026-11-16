@@ -77,15 +77,15 @@ public sealed partial class HealingSystem
 
     private bool CanHealEyeDamage(HealingComponent healing, EntityUid target)
     {
-        return healing.EyeDamageHeal > 0f
+        return healing.EyeDamageHeal > 0
                && TryComp<BlindableComponent>(target, out var blindable)
                && blindable.EyeDamage > blindable.MinDamage;
     }
 
     private void ApplyEyeDamageHeal(HealingComponent healing, EntityUid target)
     {
-        if (healing.EyeDamageHeal > 0f)
-            _blindable.HealEyeDamageFractional(target, healing.EyeDamageHeal);
+        if (healing.EyeDamageHeal > 0)
+            _blindable.AdjustEyeDamage(target, -healing.EyeDamageHeal);
     }
     // Fish-end
 }

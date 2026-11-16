@@ -232,7 +232,7 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
     }
 
     [Test]
-    public async Task Ipc_IsBlindable_FlashedWorks_NanopasteHealsHalfEyeDamage_VisorsShowIpc()
+    public async Task Ipc_IsBlindable_FlashedWorks_NanopasteHealsEyeDamage_VisorsShowIpc()
     {
         var map = await Pair.CreateTestMap();
         EntityUid ipc = default;
@@ -270,17 +270,43 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
 
         await RunSeconds(0.4f);
 
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.EqualTo(1), "одно применение снимает 1 единицу повреждения глаз");
+        });
+    }
+
+    [Test]
+    public async Task Nanopaste_AfterInteract_OnlyEyeDamage_StartsDoAfterAndHeals()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid human = default;
+
         await Server.WaitPost(() =>
         {
-            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.EqualTo(2), "первое применение копит 0.5");
-            StartHealingDoAfter(human, ipc, "Nanopaste1");
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            human = SSpawnAtPosition("MobHuman", map.GridCoords);
+
+            Server.System<BlindableSystem>().AdjustEyeDamage(ipc, 2);
+            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.GreaterThan(SComp<BlindableComponent>(ipc).MinDamage));
+
+            var paste = SSpawn("Nanopaste1");
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(human, paste, checkActionBlocker: false), Is.True);
+
+            var coords = SComp<TransformComponent>(ipc).Coordinates;
+            var ev = new AfterInteractEvent(human, paste, ipc, coords, true);
+            SEntMan.EventBus.RaiseLocalEvent(paste, ev);
+
+            Assert.That(ev.Handled, Is.True);
+            Assert.That(ActiveDelay(human), Is.GreaterThan(TimeSpan.Zero));
         });
 
-        await RunSeconds(0.4f);
+        await RunSeconds(2.2f);
 
         await Server.WaitAssertion(() =>
         {
-            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.EqualTo(1), "второе применение снимает 1 целую единицу");
+            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.EqualTo(1));
         });
     }
 

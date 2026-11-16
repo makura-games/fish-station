@@ -7,5 +7,5 @@ public sealed partial class HealingComponent
     /// Количество повреждений глаз (<c>BlindableComponent.EyeDamage</c>), снимаемое за одно применение.
     /// </summary>
     [DataField]
-    public float EyeDamageHeal;
+    public int EyeDamageHeal;
 }

@@ -33,7 +33,7 @@
         Cellular: -1
         # Fish-end
        # Mangleness: -10 # Fish-edit: Removed Mangleness from the damage types
-    eyeDamageHeal: 0.5 # Fish-edit: малое лечение слепоты (0.5 за использование)
+    eyeDamageHeal: 1 # Fish-edit: лечение слепоты (1 за использование)
     healingBeginSound:
       path: "/Audio/Items/Medical/ointment_begin.ogg"
     healingEndSound:
