@@ -1,7 +1,7 @@
 - type: entity
-  id: RandomHumanoidSpawnerCBURNLeader
+  id: FishRandomHumanoidSpawnerCBURNLeader
   name: CBURN Leader
-  suffix: ERTRole
+  suffix: Fish, ERTRole
   components:
     - type: Sprite
       sprite: Markers/jobs.rsi

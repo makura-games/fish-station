@@ -192,6 +192,7 @@
       - state: equipped-EYES-unshaded
         shader: unshaded
   - type: ShowMindShieldIcons
+  - type: ShowNanotrasenIcons
   - type: ItemSlots
     slots:
       cell_slot:

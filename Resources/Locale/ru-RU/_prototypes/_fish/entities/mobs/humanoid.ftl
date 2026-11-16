@@ -1,5 +1,5 @@
-ent-RandomHumanoidSpawnerCBURNLeader = лидер РХБЗЗ
-    .suffix = Роль ОБР, Лидер
+ent-FishRandomHumanoidSpawnerCBURNLeader = лидер РХБЗЗ
+    .suffix = Fish, Роль ОБР
     .desc = { ent-SpawnPointJobBase.desc }
 
 ent-RandomHumanoidSpawnerDeathSquadFish = { ent-RandomHumanoidSpawnerDeathSquad }

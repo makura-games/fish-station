@@ -1,5 +1,5 @@
 - type: factionIcon
-  id: NanoTrasenFaction
+  id: FishNanoTrasenFaction
   priority: 0
   locationPreference: Left
   icon:

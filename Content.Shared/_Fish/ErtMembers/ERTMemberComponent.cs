@@ -14,5 +14,5 @@ public sealed partial class ERTMemberComponent : Component
     /// Прототип фракционной иконки, отображаемой на HUD Nanotrasen.
     /// </summary>
     [DataField, AutoNetworkedField]
-    public ProtoId<FactionIconPrototype> NanotrasenStatusIcon = "NanoTrasenFaction";
+    public ProtoId<FactionIconPrototype> NanotrasenStatusIcon = "FishNanoTrasenFaction";
 }
