@@ -16,7 +16,7 @@
 
 - type: entity
   abstract: true
-  parent: [Clothing, AllowSuitStorageClothingGasTanks] # Fish-edit
+  parent: Clothing
   id: ClothingOuterBase
   components:
   - type: Clothing

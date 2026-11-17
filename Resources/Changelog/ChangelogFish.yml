@@ -1706,3 +1706,71 @@
     message: Апстрим Санрайз (16.11.2026)
   id: 173
   url: https://github.com/makura-games/fish-station/pull/662
+- author: Kaiten
+  time: '2026-11-16T19:10:05.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Откат ношения на спине баллонов. Шипучка сломал всем спины.
+  id: 174
+  url: https://github.com/makura-games/fish-station/pull/663
+- author: Endennsss
+  time: '2026-11-16T22:01:56.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен прототип патриота с его способностями
+  id: 175
+  url: https://github.com/makura-games/fish-station/pull/649
+  media:
+  - url: https://github.com/user-attachments/assets/ae7b7854-bc2d-4512-b94d-9deefd117a91
+    description: изображение
+- author: TiFeRi
+  time: '2026-11-16T23:03:17.0000000+00:00'
+  changes:
+  - type: Remove
+    message: Удалена декаль splatter.
+  - type: Tweak
+    message: Прикручена ядерка.
+  id: 176
+  url: https://github.com/makura-games/fish-station/pull/648
+- author: Kaiten
+  time: '2026-11-16T23:31:52.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено лечение повреждений глаз у КПБ с помощью нанопасты (по 0,5 единицы за применение), а также восстановление 5 единиц радиационного и 1 единицы клеточного урона.
+  - type: Remove
+    message: Убрана случайная эмоция предсмертного хрипа у КПБ в критическом состоянии.
+  - type: Tweak
+    message: Увеличен урон от электричества по КПБ до +200%, а также актуализированы сведения о токе и нанопасте в руководстве.
+  - type: Tweak
+    message: самолечение киборгов и КПБ замедлено с 2х до 3х как у органиков по рекомендации от Rоbеrt-F232.
+  - type: Fix
+    message: Исключено появление КПБ в ролях ОБР, ролях призраков и прочих ролях со случайной расой (включая антагов - никаких ниндзя/ДО/ЯО КПБшников).
+  - type: Fix
+    message: КПБ без защиты глаз теперь могут ослепнуть от сварки и вспышек.
+  - type: Fix
+    message: Исправлено отображение полоски здоровья над КПБ для мех- и робовизоров, инженерных киборгов и ИИ.
+  - type: Fix
+    message: Структурный урон по киборгам теперь преобразуется в ушибы при получении, корректно отображается и поддаётся починке. ЭТОТ БАГ БЫЛ ЕЩЁ И НА КИБОРГАХ И НИКТО НЕ СКАЗАЛ.
+  id: 177
+  url: https://github.com/makura-games/fish-station/pull/666
+- author: Endennsss
+  time: '2026-11-17T22:41:51.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фикс запрета взаимодействия с миром в агосте
+  id: 178
+  url: https://github.com/makura-games/fish-station/pull/670
+- author: NekutGit
+  time: '2026-11-17T22:47:42.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен канал сервиса для гарнитуры гк.
+  id: 179
+  url: https://github.com/makura-games/fish-station/pull/659
+- author: Tiferi
+  time: '2026-11-17T22:50:50.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Откат уродских спрайтов railing
+  id: 180
+  url: https://github.com/makura-games/fish-station/pull/658
