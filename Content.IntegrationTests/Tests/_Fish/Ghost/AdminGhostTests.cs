@@ -193,6 +193,11 @@ public sealed class AdminGhostTests : GameTest
         var server = Pair.Server;
         var client = Pair.Client;
         var inventory = server.System<InventorySystem>();
+        var network = server.ResolveDependency<IServerEntityNetworkManager>();
+        var session = Pair.Player!;
+
+        // Запас тиков на доставку сообщения и продвижение сервера до тика клиента.
+        const int acknowledgementBudget = 30;
         EntityUid item = default;
         await server.WaitAssertion(() =>
         {
@@ -202,29 +207,43 @@ public sealed class AdminGhostTests : GameTest
         });
         await Pair.RunUntilSynced();
 
-        await ClickSlot();
+        await SendAndWaitForServer(new UseSlotNetworkMessage(slot));
         await server.WaitAssertion(() =>
         {
             Assert.That(inventory.TryGetSlotEntity(ghost, slot, out var equipped), Is.True);
             Assert.That(equipped, Is.EqualTo(item));
         });
 
-        await client.WaitPost(() => client.EntMan.RaisePredictiveEvent(new RequestPerformActionEvent(action)));
-        await Pair.RunTicksSync(30);
-        await Pair.RunUntilSynced();
+        await SendAndWaitForServer(new RequestPerformActionEvent(action));
+        await server.WaitAssertion(() =>
+            Assert.That(server.EntMan.GetComponent<AdminGhostComponent>(ghost).InteractionRestricted, Is.False));
 
-        await ClickSlot();
+        await SendAndWaitForServer(new UseSlotNetworkMessage(slot));
         await server.WaitAssertion(() =>
         {
             Assert.That(inventory.TryGetSlotEntity(ghost, slot, out _), Is.False);
             Assert.That(server.System<SharedHandsSystem>().GetActiveItem(ghost), Is.EqualTo(item));
         });
 
-        async Task ClickSlot()
+        async Task SendAndWaitForServer<T>(T message) where T : EntityEventArgs
         {
-            await client.WaitPost(() => client.EntMan.RaisePredictiveEvent(new UseSlotNetworkMessage(slot)));
-            await Pair.RunTicksSync(30);
-            await Pair.RunUntilSynced();
+            uint previousSequence = 0;
+            await server.WaitPost(() => previousSequence = network.GetLastMessageSequence(session));
+            await client.WaitPost(() => client.EntMan.RaisePredictiveEvent(message));
+
+            for (var tick = 0; tick < acknowledgementBudget; tick++)
+            {
+                await Pair.RunTicksSync(1);
+                var processed = false;
+                await server.WaitPost(() => processed = network.GetLastMessageSequence(session) > previousSequence);
+                if (!processed)
+                    continue;
+
+                await Pair.RunUntilSynced();
+                return;
+            }
+
+            Assert.Fail($"Server did not process {typeof(T).Name} within {acknowledgementBudget} ticks.");
         }
     }
 
