@@ -76,11 +76,4 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     [NonSerialized]
     [ViewVariables]
     public readonly Dictionary<EntityUid, CentCommSupplyUserStateMessage> UserStates = new();
-
-    /// <summary>
-    /// Earliest time the next order can be placed.
-    /// </summary>
-    [NonSerialized]
-    [ViewVariables]
-    public TimeSpan NextOrderTime;
 }

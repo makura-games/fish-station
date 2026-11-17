@@ -470,7 +470,7 @@ public sealed class CentCommSupplyTest
         var ticker = server.System<GameTicker>();
         var stationSystem = server.System<StationSystem>();
         var mapSystem = server.System<MapSystem>();
-        var loc = server.ResolveDependency<ILocalizationManager>();
+        var accessSystem = server.System<AccessSystem>();
         var bus = entMan.EventBus;
 
         EntityUid console = default;
@@ -478,6 +478,8 @@ public sealed class CentCommSupplyTest
         MapId devMapId = default;
         MapId consoleMapId = default;
         EntityUid actor = default;
+        EntityUid outsider = default;
+        CentCommSupplyConsoleComponent consoleComponent = default!;
         var targetNet = NetEntity.Invalid;
 
         await server.WaitPost(() =>
@@ -492,8 +494,13 @@ public sealed class CentCommSupplyTest
         {
             var consoleMap = mapSystem.CreateMap(out consoleMapId);
             console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
+            consoleComponent = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
             actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            outsider = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
             bus.RaiseLocalEvent(console, new CentCommSupplyStateRequestMessage { Actor = actor });
+            bus.RaiseLocalEvent(console, new CentCommSupplyStateRequestMessage { Actor = outsider });
+            RevokeCentralCommandAccess(entMan, accessSystem, actor);
         });
 
         var selectionId = Guid.NewGuid();
@@ -505,9 +512,8 @@ public sealed class CentCommSupplyTest
 
         await server.WaitAssertion(() =>
         {
-            var state = GetUserState(entMan, console, actor);
-            Assert.That(state.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-access")));
-            Assert.That(state.LastStationSelectionId, Is.EqualTo(selectionId));
+            Assert.That(consoleComponent.UserStates, Does.Not.ContainKey(actor));
+            Assert.That(consoleComponent.UserStates, Does.Not.ContainKey(outsider));
         });
 
         var orderId = Guid.NewGuid();
@@ -525,16 +531,16 @@ public sealed class CentCommSupplyTest
 
         await server.WaitAssertion(() =>
         {
-            var state = GetUserState(entMan, console, actor);
-            Assert.That(state.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-access")));
-            Assert.That(state.OrderId, Is.EqualTo(orderId));
-            Assert.That(state.OrderPlaced, Is.False);
+            Assert.That(consoleComponent.UserStates, Does.Not.ContainKey(actor));
         });
 
         await server.WaitPost(() =>
         {
             if (entMan.EntityExists(actor))
                 entMan.DeleteEntity(actor);
+
+            if (entMan.EntityExists(outsider))
+                entMan.DeleteEntity(outsider);
 
             if (entMan.EntityExists(target))
                 entMan.DeleteEntity(target);
@@ -688,9 +694,7 @@ public sealed class CentCommSupplyTest
             var consoleMap = mapSystem.CreateMap(out consoleMapId);
             console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
             actor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
-            if (!requestAvailableStation)
-                GrantCentralCommandAccess(entMan, accessSystem, actor);
-
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
             bus.RaiseLocalEvent(console, new CentCommSupplyStateRequestMessage { Actor = actor });
         });
 
@@ -703,6 +707,9 @@ public sealed class CentCommSupplyTest
                 requested = state.AvailableStations.Keys.Single(station => station != previous);
         });
 
+        if (requestAvailableStation)
+            await server.WaitPost(() => RevokeCentralCommandAccess(entMan, accessSystem, actor));
+
         var invalidSelectionId = Guid.NewGuid();
         await server.WaitPost(() =>
         {
@@ -711,15 +718,20 @@ public sealed class CentCommSupplyTest
 
         await server.WaitAssertion(() =>
         {
+            var consoleComponent = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
+            if (requestAvailableStation)
+            {
+                // Потеря доступа закрывает UI и удаляет состояние пользователя.
+                Assert.That(consoleComponent.UserStates, Does.Not.ContainKey(actor));
+                return;
+            }
+
             var state = GetUserState(entMan, console, actor);
             Assert.That(state.LastStationSelectionId, Is.EqualTo(invalidSelectionId));
             Assert.That(state.SelectedStation, Is.EqualTo(previous));
             Assert.That(state.SelectedStation, Is.Not.EqualTo(requested));
-            if (requestAvailableStation)
-                Assert.That(state.AvailableStations.Keys, Does.Contain(requested));
-            Assert.That(state.StatusMessage, Is.EqualTo(loc.GetString(requestAvailableStation
-                ? "centcomm-supply-error-access"
-                : "centcomm-supply-error-invalid-station")));
+            Assert.That(state.StatusMessage,
+                Is.EqualTo(loc.GetString("centcomm-supply-error-invalid-station")));
         });
 
         await server.WaitPost(() =>
@@ -1143,6 +1155,7 @@ public sealed class CentCommSupplyTest
             Assert.That(emptyIdResult, Is.False);
             var state = GetUserState(entMan, console, actor);
             Assert.That(state.StatusMessage, Is.EqualTo(loc.GetString("centcomm-supply-error-invalid-order-id")));
+            Assert.That(state.Products, Is.Empty, "Error responses must not resend the static catalog");
         });
 
         var orderId = Guid.NewGuid();
@@ -1170,6 +1183,119 @@ public sealed class CentCommSupplyTest
         {
             if (entMan.EntityExists(actor))
                 entMan.DeleteEntity(actor);
+
+            if (entMan.EntityExists(target))
+                entMan.DeleteEntity(target);
+
+            mapSystem.DeleteMap(consoleMapId);
+            mapSystem.DeleteMap(devMapId);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task OrderCooldownSurvivesConsoleReconstruction()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var protoMan = server.ProtoMan;
+        var ticker = server.System<GameTicker>();
+        var stationSystem = server.System<StationSystem>();
+        var mapSystem = server.System<MapSystem>();
+        var accessSystem = server.System<AccessSystem>();
+        var system = server.System<CentCommSupplyConsoleSystem>();
+        var bus = entMan.EventBus;
+
+        EntityUid console = default;
+        EntityUid target = default;
+        MapId devMapId = default;
+        MapId consoleMapId = default;
+        EntityUid firstActor = default;
+        EntityUid secondActor = default;
+        var targetNet = NetEntity.Invalid;
+
+        await server.WaitPost(() =>
+        {
+            var map = protoMan.Index<GameMapPrototype>(MapProto);
+            var grids = ticker.LoadGameMap(map, out devMapId, DeserializationOptions.Default with { InitializeMaps = true });
+            target = stationSystem.GetOwningStation(grids[0])
+                ?? throw new InvalidOperationException("Loaded Dev map has no owning station");
+        });
+
+        await server.WaitPost(() =>
+        {
+            var consoleMap = mapSystem.CreateMap(out consoleMapId);
+            targetNet = entMan.GetNetEntity(target);
+            firstActor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            GrantCentralCommandAccess(entMan, accessSystem, firstActor);
+            console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
+            var component = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
+            component.DeliveryDelay = TimeSpan.Zero;
+            component.DeliveryTimeout = TimeSpan.Zero;
+            component.OrderCooldown = TimeSpan.FromMinutes(1);
+            bus.RaiseLocalEvent(console, new CentCommSupplyStateRequestMessage { Actor = firstActor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = firstActor });
+        });
+
+        var entries = new List<CentCommSupplyOrderEntry>
+        {
+            new(MedicalBundleProduct, 1),
+        };
+
+        var firstPlaced = false;
+        await server.WaitPost(() =>
+        {
+            var component = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
+            firstPlaced = system.TryPlaceOrder((console, component), firstActor, Guid.NewGuid(), targetNet, entries);
+        });
+
+        await server.WaitAssertion(() =>
+            Assert.That(firstPlaced, Is.True, "The first order should be accepted"));
+
+        Entity<CentCommSupplyConsoleComponent> replacement = default;
+        await server.WaitPost(() =>
+        {
+            if (entMan.EntityExists(console))
+                entMan.DeleteEntity(console);
+
+            console = entMan.SpawnEntity("FishCentCommSupplyConsole", new MapCoordinates(0, 0, consoleMapId));
+            var component = entMan.GetComponent<CentCommSupplyConsoleComponent>(console);
+            component.DeliveryDelay = TimeSpan.Zero;
+            component.DeliveryTimeout = TimeSpan.Zero;
+            component.OrderCooldown = TimeSpan.FromMinutes(1);
+            replacement = (console, component);
+
+            secondActor = entMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            GrantCentralCommandAccess(entMan, accessSystem, secondActor);
+            bus.RaiseLocalEvent(console, new CentCommSupplyStateRequestMessage { Actor = secondActor });
+            bus.RaiseLocalEvent(console, new CentCommSupplySelectStationMessage(targetNet, Guid.NewGuid()) { Actor = secondActor });
+        });
+
+        var secondPlaced = true;
+        await server.WaitPost(() =>
+            secondPlaced = system.TryPlaceOrder(replacement, secondActor, Guid.NewGuid(), targetNet, entries));
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(secondPlaced, Is.False,
+                "Replacing the console must not reset the station order cooldown");
+
+            var state = GetUserState(entMan, console, secondActor);
+            Assert.That(state.StatusMessage, Is.Not.Null.And.Not.Empty);
+        });
+
+        await server.WaitPost(() =>
+        {
+            if (entMan.EntityExists(console))
+                entMan.DeleteEntity(console);
+
+            if (entMan.EntityExists(firstActor))
+                entMan.DeleteEntity(firstActor);
+
+            if (entMan.EntityExists(secondActor))
+                entMan.DeleteEntity(secondActor);
 
             if (entMan.EntityExists(target))
                 entMan.DeleteEntity(target);
@@ -1868,6 +1994,17 @@ public sealed class CentCommSupplyTest
         accessSystem.TrySetTags(actor,
             new[] { new ProtoId<AccessLevelPrototype>("CentralCommand") },
             access);
+    }
+
+    /// <summary>
+    /// Revokes all access tags from the test actor.
+    /// </summary>
+    private static void RevokeCentralCommandAccess(IEntityManager entMan, AccessSystem accessSystem, EntityUid actor)
+    {
+        if (!entMan.TryGetComponent<AccessComponent>(actor, out var access))
+            return;
+
+        accessSystem.TrySetTags(actor, Array.Empty<ProtoId<AccessLevelPrototype>>(), access);
     }
 
     /// <summary>

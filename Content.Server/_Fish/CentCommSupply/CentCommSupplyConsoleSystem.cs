@@ -61,11 +61,11 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
 
     private static readonly TimeSpan _deliveryRetryInterval = TimeSpan.FromSeconds(5);
-    private static readonly TimeSpan StateRequestRateLimit = TimeSpan.FromSeconds(0.5);
-    private readonly Dictionary<EntityUid, TimeSpan> _userStateRequestCooldowns = new();
+    private static readonly TimeSpan _uiRequestRateLimit = TimeSpan.FromSeconds(0.5);
+    private readonly Dictionary<EntityUid, TimeSpan> _uiRequestCooldowns = new();
 
-    // Единый глобальный таймер кулдауна и кэш каталога товаров.
-    private TimeSpan _nextOrderTime;
+    // Кулдаун заказов на станцию назначения и кэш каталога товаров.
+    private readonly Dictionary<EntityUid, TimeSpan> _stationOrderCooldowns = new();
     private List<CentCommSupplyProductEntry>? _cachedProducts;
     private readonly HashSet<Guid> _acceptedOrders = new();
     private readonly List<PendingOrder> _pendingOrders = new();
@@ -102,10 +102,10 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
         _stagingMap = null;
 
-        // Сброс глобального кулдауна, кэша каталога и ограничений частоты при завершении раунда.
-        _nextOrderTime = TimeSpan.Zero;
+        // Сброс кулдаунов станций, кэша каталога и ограничений частоты при завершении раунда.
+        _stationOrderCooldowns.Clear();
         _cachedProducts = null;
-        _userStateRequestCooldowns.Clear();
+        _uiRequestCooldowns.Clear();
     }
 
     private void OnPrototypesReloaded(PrototypesReloadedEventArgs ev)
@@ -116,37 +116,27 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
     private void OnStateRequested(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyStateRequestMessage args)
     {
-        // Повторная проверка доступа и ограничение частоты запросов
-        if (!_access.IsAllowed(args.Actor, ent.Owner))
-        {
-            ent.Comp.UserStates.Remove(args.Actor);
-            _userStateRequestCooldowns.Remove(args.Actor);
-            _ui.CloseUi(ent.Owner, CentCommSupplyUiKey.Key, args.Actor);
-            return;
-        }
-
-        var now = _timing.CurTime;
-        if (_userStateRequestCooldowns.TryGetValue(args.Actor, out var nextAllowed) && now < nextAllowed)
+        // Повторная проверка доступа и ограничение частоты запросов.
+        if (!CanUseUi(ent, args.Actor) || !TryConsumeUiRequest(args.Actor))
             return;
 
-        _userStateRequestCooldowns[args.Actor] = now + StateRequestRateLimit;
-
-        UpdateUi(ent, args.Actor);
+        UpdateUi(ent, args.Actor, refreshStations: true);
     }
 
     private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
     {
-        if (Equals(args.UiKey, CentCommSupplyUiKey.Key))
-            UpdateUi(ent, args.Actor, opening: true);
+        if (Equals(args.UiKey, CentCommSupplyUiKey.Key)
+            && CanUseUi(ent, args.Actor)
+            && TryConsumeUiRequest(args.Actor))
+        {
+            UpdateUi(ent, args.Actor, opening: true, refreshStations: true);
+        }
     }
 
     private void OnUiClosed(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIClosedEvent args)
     {
         if (Equals(args.UiKey, CentCommSupplyUiKey.Key))
-        {
             ent.Comp.UserStates.Remove(args.Actor);
-            _userStateRequestCooldowns.Remove(args.Actor);
-        }
     }
 
     /// <summary>
@@ -154,6 +144,9 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// </summary>
     private void OnSelectStation(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplySelectStationMessage args)
     {
+        if (!CanUseUi(ent, args.Actor))
+            return;
+
         TrySelectStation(ent, args.Actor, args.Station, args.SelectionId);
     }
 
@@ -162,6 +155,9 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     /// </summary>
     private void OnOrder(Entity<CentCommSupplyConsoleComponent> ent, ref CentCommSupplyOrderMessage args)
     {
+        if (!CanUseUi(ent, args.Actor))
+            return;
+
         TryPlaceOrder(ent, args.Actor, args.OrderId, args.Station, args.Entries);
     }
 
@@ -372,17 +368,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             return false;
         }
 
-        // Единый глобальный таймер кулдауна.
-
-        var now = _timing.CurTime;
-        var nextOrderTime = _nextOrderTime > ent.Comp.NextOrderTime ? _nextOrderTime : ent.Comp.NextOrderTime;
-        if (now < nextOrderTime)
-        {
-            var secondsCount = Math.Max(1, (int) Math.Ceiling((nextOrderTime - now).TotalSeconds));
-            error = Loc.GetString("centcomm-supply-error-cooldown", ("seconds", secondsCount));
-            return false;
-        }
-
         var station = GetEntity(stationNet);
         if (!ent.Comp.UserStates.TryGetValue(actor, out var state) || state.SelectedStation != stationNet)
         {
@@ -412,6 +397,14 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         if (!TryComp<StationCargoOrderDatabaseComponent>(station, out _))
         {
             error = Loc.GetString("centcomm-supply-error-invalid-station");
+            return false;
+        }
+
+        var now = _timing.CurTime;
+        if (_stationOrderCooldowns.TryGetValue(station, out var nextOrderTime) && now < nextOrderTime)
+        {
+            var secondsCount = Math.Max(1, (int) Math.Ceiling((nextOrderTime - now).TotalSeconds));
+            error = Loc.GetString("centcomm-supply-error-cooldown", ("seconds", secondsCount));
             return false;
         }
 
@@ -633,9 +626,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             Crates = crates,
         });
 
-        // Fish-start: установка единого глобального таймера кулдауна
-        _nextOrderTime = now + ent.Comp.OrderCooldown;
-        ent.Comp.NextOrderTime = _nextOrderTime;
+        // Fish-start: кулдаун привязан к станции назначения, пересборка консоли его не сбрасывает
+        _stationOrderCooldowns[plan.Station] = now + ent.Comp.OrderCooldown;
         // Fish-end
         _audio.PlayPvs(ent.Comp.ApproveSound, ent.Owner);
 
@@ -690,6 +682,48 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
     }
 
     /// <summary>
+    /// Checks that the actor still has access to the console UI.
+    /// </summary>
+    private bool CanUseUi(Entity<CentCommSupplyConsoleComponent> ent, EntityUid actor)
+    {
+        if (!TerminatingOrDeleted(actor) && _access.IsAllowed(actor, ent.Owner))
+            return true;
+
+        ent.Comp.UserStates.Remove(actor);
+        if (!TerminatingOrDeleted(actor))
+            _ui.CloseUi(ent.Owner, CentCommSupplyUiKey.Key, actor);
+
+        return false;
+    }
+
+    /// <summary>
+    /// Limits expensive catalog/state requests from one actor.
+    /// </summary>
+    private bool TryConsumeUiRequest(EntityUid actor)
+    {
+        var now = _timing.CurTime;
+        if (_uiRequestCooldowns.TryGetValue(actor, out var nextAllowed) && now < nextAllowed)
+            return false;
+
+        _uiRequestCooldowns[actor] = now + _uiRequestRateLimit;
+        return true;
+    }
+
+    private Dictionary<NetEntity, string> GetAvailableStations(Entity<CentCommSupplyConsoleComponent> ent)
+    {
+        var available = new Dictionary<NetEntity, string>();
+        foreach (var station in GetOrderableStations(ent))
+        {
+            var name = MetaData(station).EntityName;
+            if (string.IsNullOrWhiteSpace(name))
+                name = Loc.GetString("centcomm-supply-unknown-station");
+            available[GetNetEntity(station)] = name;
+        }
+
+        return available;
+    }
+
+    /// <summary>
     /// Sends the current console state to the client.
     /// </summary>
     private void UpdateUi(
@@ -701,28 +735,26 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         Guid? orderId = null,
         bool orderPlaced = false,
         bool opening = false,
-        bool includeProducts = true)
+        bool includeProducts = true,
+        bool refreshStations = false)
     {
-        if (TerminatingOrDeleted(ent.Owner))
+        if (TerminatingOrDeleted(ent.Owner) || !CanUseUi(ent, actor))
             return;
 
-        var stations = GetOrderableStations(ent);
-        var available = new Dictionary<NetEntity, string>();
-        foreach (var station in stations)
-        {
-            var name = MetaData(station).EntityName;
-            if (string.IsNullOrWhiteSpace(name))
-                name = Loc.GetString("centcomm-supply-unknown-station");
-            available[GetNetEntity(station)] = name;
-        }
-
         ent.Comp.UserStates.TryGetValue(actor, out var previous);
-        var defaultStation = stations.Count > 0 ? GetNetEntity(stations[0]) : (NetEntity?)null;
+
+        var available = previous?.AvailableStations;
+        if (refreshStations || available == null)
+            available = GetAvailableStations(ent);
+
+        var defaultStation = available.Count > 0 ? available.Keys.First() : (NetEntity?)null;
         var selected = requestedStation ?? previous?.SelectedStation;
         if (selected == null || !available.ContainsKey(selected.Value))
             selected = defaultStation;
 
-        var products = GetCachedProducts();
+        var products = includeProducts || opening
+            ? GetCachedProducts()
+            : new List<CentCommSupplyProductEntry>();
 
         var state = new CentCommSupplyUserStateMessage(
             products,
@@ -735,7 +767,6 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
             selectionId ?? previous?.LastStationSelectionId,
             orderId);
 
-        ent.Comp.UserStates[actor] = state;
         if (opening)
         {
             var catalog = new CentCommSupplyUserStateMessage(products,
@@ -760,6 +791,8 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
                 orderPlaced,
                 selectionId ?? previous?.LastStationSelectionId,
                 orderId);
+
+        ent.Comp.UserStates[actor] = messageState;
 
         _ui.ServerSendUiMessage(ent.Owner, CentCommSupplyUiKey.Key, messageState, actor);
     }
