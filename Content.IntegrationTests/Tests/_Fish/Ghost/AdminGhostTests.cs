@@ -1,13 +1,18 @@
 ﻿#nullable enable
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server.Administration.Managers;
 using Content.Shared._Fish.Ghost;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
+using Content.Shared.CCVar;
 using Content.Shared.Hands;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
+using Content.Shared.Inventory;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Robust.Server.Console;
@@ -175,6 +180,52 @@ public sealed class AdminGhostTests : GameTest
             entMan.EventBus.RaiseLocalEvent(ghost, dropAttempt);
             Assert.That(dropAttempt.Cancelled, Is.False);
         });
+    }
+
+    [TestCase("id", "AdminPDA")]
+    [TestCase("back", "ClothingBackpackSatchelAdmin")]
+    public async Task AghostSlotClickKeepsEquippedItemWhileRestricted(string slot, string prototype)
+    {
+        await OverrideCVar(Side.Server, FishCVars.AghostDefaultInteractionRestricted, true);
+        await OverrideCVar(Side.Server, FishCVars.AghostUnrestrictOnLocalhost, false);
+
+        var (ghost, action) = await SpawnAghost();
+        var server = Pair.Server;
+        var client = Pair.Client;
+        var inventory = server.System<InventorySystem>();
+        EntityUid item = default;
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(inventory.TryGetSlotEntity(ghost, slot, out var equipped), Is.True);
+            item = equipped!.Value;
+            Assert.That(server.EntMan.GetComponent<MetaDataComponent>(item).EntityPrototype?.ID, Is.EqualTo(prototype));
+        });
+        await Pair.RunUntilSynced();
+
+        await ClickSlot();
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(inventory.TryGetSlotEntity(ghost, slot, out var equipped), Is.True);
+            Assert.That(equipped, Is.EqualTo(item));
+        });
+
+        await client.WaitPost(() => client.EntMan.RaisePredictiveEvent(new RequestPerformActionEvent(action)));
+        await Pair.RunTicksSync(30);
+        await Pair.RunUntilSynced();
+
+        await ClickSlot();
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(inventory.TryGetSlotEntity(ghost, slot, out _), Is.False);
+            Assert.That(server.System<SharedHandsSystem>().GetActiveItem(ghost), Is.EqualTo(item));
+        });
+
+        async Task ClickSlot()
+        {
+            await client.WaitPost(() => client.EntMan.RaisePredictiveEvent(new UseSlotNetworkMessage(slot)));
+            await Pair.RunTicksSync(30);
+            await Pair.RunUntilSynced();
+        }
     }
 
     /// <summary>
