@@ -100,13 +100,13 @@ public sealed partial class SunriseDamagePopupSystem : EntitySystem
 
         if (damageDelta > 0)
         {
-            _popupSystem.PopupCoordinates($"-{damageDelta}", coords, session, ent.Comp.DamagePopupType);
+            ShowDamagePopup(ent.Owner, $"-{damageDelta}", coords, session, ent.Comp.DamagePopupType); // Fish-edit
         }
         else if (showHealPopup)
         {
             // Лечение меньше 1 это пасивный реген, его показывать не нужно.
             if (damageDelta < -1)
-                _popupSystem.PopupCoordinates($"+{FixedPoint2.Abs(damageDelta)}", coords, session, ent.Comp.HealPopupType);
+                ShowDamagePopup(ent.Owner, $"+{FixedPoint2.Abs(damageDelta)}", coords, session, ent.Comp.HealPopupType); // Fish-edit
         }
 
         return true;

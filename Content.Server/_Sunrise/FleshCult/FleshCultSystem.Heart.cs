@@ -209,13 +209,14 @@ public sealed partial class FleshCultSystem
 
     private void HandleDragDropOn(EntityUid uid, FleshHeartComponent component, ref DragDropTargetEvent args)
     {
-
-        if (!CanAbsorb(uid, args.Dragged, component))
+        // Fish-start: передаём конкретную причину отказа (например, если сердце уже наелось 3 трупами)
+        if (!CanAbsorb(uid, args.Dragged, component, out var failureReason))
         {
-            _popup.PopupEntity(Loc.GetString("flesh-heart-cant-absorb-targer"),
+            _popup.PopupEntity(Loc.GetString(failureReason),
                 args.User, PopupType.Large);
             return;
         }
+        // Fish-end
 
         if (!TryComp<FixturesComponent>(args.Dragged, out var fixturesComponent))
         {
@@ -252,6 +253,15 @@ public sealed partial class FleshCultSystem
         if (args.Cancelled || args.Handled || args.Args.Target == null)
             return;
 
+        // Fish-start: повторно проверяем вместимость сердца при завершении DoAfter
+        if (!CanAbsorb(uid, args.Args.Target.Value, component, out var failureReason))
+        {
+            _popup.PopupEntity(Loc.GetString(failureReason),
+                args.User, PopupType.Large);
+            return;
+        }
+        // Fish-end
+
         if (!TryComp<FixturesComponent>(args.Args.Target.Value, out var fixturesComponent))
         {
             _popup.PopupEntity(Loc.GetString("flesh-heart-cant-absorb-targer"),
@@ -261,23 +271,7 @@ public sealed partial class FleshCultSystem
 
         var xform = Transform(args.Args.Target.Value);
 
-        if (TryComp(args.Args.Target.Value, out ContainerManagerComponent? container))
-        {
-            foreach (var cont in _containerSystem.GetAllContainers(args.Args.Target.Value, container).ToArray())
-            {
-                foreach (var ent in cont.ContainedEntities.ToArray())
-                {
-                    {
-                        if (HasComp<OrganComponent>(ent))
-                        {
-                            continue;
-                        }
-                        _containerSystem.Remove(ent, cont, force: true);
-                        Transform(ent).Coordinates = xform.Coordinates;
-                    }
-                }
-            }
-        }
+        DropTargetContainerEntities(args.Args.Target.Value, xform.Coordinates); // Fish-edit: не выбрасываем экшены, растворы и прочие служебные сущности
 
         // SUNRISE-TODO: Убрать конечности хирургией а тело заменить на скелета
         if (TryComp<HumanoidProfileComponent>(args.Args.Target.Value, out var HuAppComponent))
@@ -331,25 +325,30 @@ public sealed partial class FleshCultSystem
 
     #endregion
 
-    private bool CanAbsorb(EntityUid uid, EntityUid dragged, FleshHeartComponent component)
+    // Fish-start: запрещаем кормление сердца после поглощения 3 трупов или вне базовой стадии
+    private bool CanAbsorb(EntityUid uid, EntityUid dragged, FleshHeartComponent component, out string failureReason)
     {
-        if (!TryComp<MobStateComponent>(dragged, out var stateComponent))
+        if (component.Status != HeartStatus.Base
+            || component.BodyContainer.ContainedEntities.Count >= component.BodyToFinalStage)
+        {
+            failureReason = "flesh-heart-already-full";
             return false;
+        }
 
-        if (stateComponent.CurrentState != MobState.Dead)
+        if (!TryComp<MobStateComponent>(dragged, out var stateComponent)
+            || stateComponent.CurrentState != MobState.Dead
+            || !Transform(uid).Anchored
+            || !TryComp<HumanoidProfileComponent>(dragged, out var humanoidAppearance)
+            || !_speciesWhitelist.Contains(humanoidAppearance.Species))
+        {
+            failureReason = "flesh-heart-cant-absorb-targer";
             return false;
+        }
 
-        if (!Transform(uid).Anchored)
-            return false;
-
-        if (!TryComp<HumanoidProfileComponent>(dragged, out var humanoidAppearance))
-            return false;
-
-        if (!_speciesWhitelist.Contains(humanoidAppearance.Species))
-            return false;
-
-        return !TryComp<MindContainerComponent>(dragged, out var mindComp) || true;
+        failureReason = string.Empty;
+        return !TryComp<MindContainerComponent>(dragged, out _) || true;
     }
+    // Fish-end
 
     private void SpawnFleshFloorOnOpenTiles(EntityUid fleshHeart, FleshHeartComponent component, TransformComponent xform, float radius)
     {

@@ -9,3 +9,23 @@
     - state: green
   - type: PresetIdCard
     job: CentcommSectoralJudge
+
+- type: entity
+  parent: IDCardStandard
+  id: FishRepresentativeBlueShieldIDCard
+  name: station blue shield operative ID card
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Sunrise/Objects/Misc/id_cards.rsi
+    layers:
+    - state: blue
+    - state: department-side
+      color: "#212121"
+    - sprite: _Fish/Interface/Misc/job_icons.rsi
+      offset: -0.19, 0
+      state: NTR_operative
+  - type: Item
+    heldPrefix: blue
+  - type: PresetIdCard
+    job: RepresentativeBlueShield
