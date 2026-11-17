@@ -1753,3 +1753,10 @@
     message: Структурный урон по киборгам теперь преобразуется в ушибы при получении, корректно отображается и поддаётся починке. ЭТОТ БАГ БЫЛ ЕЩЁ И НА КИБОРГАХ И НИКТО НЕ СКАЗАЛ.
   id: 177
   url: https://github.com/makura-games/fish-station/pull/666
+- author: Endennsss
+  time: '2026-11-17T22:41:51.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фикс запрета взаимодействия с миром в агосте
+  id: 178
+  url: https://github.com/makura-games/fish-station/pull/670
