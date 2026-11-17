@@ -15,17 +15,20 @@ public enum ObrCallUiKey : byte
 public sealed class ObrCallBoundUserInterfaceState : BoundUserInterfaceState
 {
     public readonly bool IsPurchaseMode;
+    public readonly bool ShowCryoOption;
     public readonly int StationBalance;
     public readonly string? StatusMessage;
     public readonly List<ObrCallTeamEntry> Teams;
 
     public ObrCallBoundUserInterfaceState(
         bool isPurchaseMode,
+        bool showCryoOption,
         int stationBalance,
         string? statusMessage,
         List<ObrCallTeamEntry> teams)
     {
         IsPurchaseMode = isPurchaseMode;
+        ShowCryoOption = showCryoOption;
         StationBalance = stationBalance;
         StatusMessage = statusMessage;
         Teams = teams;
@@ -67,10 +70,12 @@ public sealed class ObrCallRequestMessage : BoundUserInterfaceMessage
 {
     public readonly string TeamId;
     public readonly string Mission;
+    public readonly bool SpawnInCryo;
 
-    public ObrCallRequestMessage(string teamId, string mission)
+    public ObrCallRequestMessage(string teamId, string mission, bool spawnInCryo = false)
     {
         TeamId = teamId;
         Mission = mission;
+        SpawnInCryo = spawnInCryo;
     }
 }

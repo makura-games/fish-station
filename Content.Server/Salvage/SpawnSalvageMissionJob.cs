@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server._Fish.Salvage; // Fish-edit: система усиления обзора мобов экспедиции
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Parallax;
@@ -87,7 +88,8 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         var mapUid = _map.CreateMap(out var mapId, runMapInit: false);
         MetaDataComponent? metadata = null;
         var grid = _entManager.EnsureComponent<MapGridComponent>(mapUid);
-        var random = new Random(_missionParams.Seed);
+        var random = new RobustRandom();
+        random.SetSeed(_missionParams.Seed);
         var destComp = _entManager.AddComponent<FTLDestinationComponent>(mapUid);
         destComp.BeaconsOnly = true;
         destComp.RequireCoordinateDisk = true;
@@ -285,10 +287,14 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
             }
         }
 
+        // Fish-start: мобы экспедиции замечают игроков издалека и сразу атакуют
+        _entManager.System<ExpeditionMobSystem>().BoostMobVision(mapUid);
+        // Fish-end
+
         return true;
     }
 
-    private async Task SpawnRandomEntry(Entity<MapGridComponent> grid, IBudgetEntry entry, Dungeon dungeon, Random random)
+    private async Task SpawnRandomEntry(Entity<MapGridComponent> grid, IBudgetEntry entry, Dungeon dungeon, IRobustRandom random)
     {
         await SuspendIfOutOfTime();
 

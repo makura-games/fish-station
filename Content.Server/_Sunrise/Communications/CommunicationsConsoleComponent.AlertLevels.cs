@@ -1,3 +1,6 @@
+using Content.Shared.AlertLevel;
+using Robust.Shared.Prototypes;
+
 #pragma warning disable IDE0130 // Пространство имён соответствует расширяемому upstream-компоненту.
 namespace Content.Server.Communications;
 
@@ -7,7 +10,7 @@ public sealed partial class CommunicationsConsoleComponent
     /// Alert levels this console may set. A null value allows every crew-selectable level.
     /// </summary>
     [DataField]
-    public HashSet<string>? AllowedAlertLevels;
+    public HashSet<ProtoId<AlertLevelPrototype>>? AllowedAlertLevels;
 
     /// <summary>
     /// Whether this console may set allowed non-selectable levels and bypass alert selection locks.

@@ -41,6 +41,9 @@ public sealed partial class KrypiumSynthesisReaction : IGasReactionEffect
         if (produceKrypium < 0.05f)
             return ReactionResult.NoReaction;
 
+        // Не даём реакции превратить весь объём за один тик.
+        produceKrypium = MathF.Min(produceKrypium, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         var consumedHealium = produceKrypium / efficiency;
         var consumedBz      = produceKrypium / efficiency;
         var consumedPlasma  = (produceKrypium / efficiency) * 3f;

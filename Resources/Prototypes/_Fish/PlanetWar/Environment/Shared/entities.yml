@@ -4,7 +4,7 @@
   id: CannabisSeedsWM
   components:
     - type: Seed
-      seedId: cannabisWM
+      plantId: cannabisWM
     - type: PhysicalComposition
       materialComposition:
         MoneyWarMizMaterial: 20
@@ -67,7 +67,7 @@
   id: CottonSeedsWM
   components:
     - type: Seed
-      seedId: cottonWM
+      plantId: cottonWM
     - type: PhysicalComposition
       materialComposition:
         MoneyWarMizMaterial: 20
@@ -91,7 +91,7 @@
       - ReagentId: FiberPW
         Quantity: 10
   - type: Produce
-    seedId: cottonWM
+    plantId: cottonWM
   - type: PhysicalComposition
     materialComposition:
       MoneyWarMizMaterial: 100
@@ -158,9 +158,11 @@
   parent: ActionActivateSmokeGrenadeImplant
   components:
   - type: Action
-    icon:
-      sprite: /Textures/Actions/Implants/implants.rsi
-      state: explosive
+
+  - type: Sprite
+    sprite: Actions/Implants/implants.rsi
+    layers:
+    - state: explosive
   - type: LimitedCharges
     maxCharges: 1
   - type: AutoRecharge
@@ -173,10 +175,11 @@
   parent: ActionActivateSmokeGrenadeImplant
   components:
   - type: Action
-    icon:
-      sprite: Objects/Misc/landmine.rsi
-      state: landmine
     useDelay: 1
+  - type: Sprite
+    sprite: Objects/Misc/landmine.rsi
+    layers:
+    - state: landmine
   - type: LimitedCharges
     maxCharges: 2
   - type: AutoRecharge

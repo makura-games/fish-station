@@ -76,7 +76,7 @@ public sealed partial class PrisonerRecordControl : Control
         _lastSeconds = -1;
         _isCountdownFinished = false;
 
-        if (_sentenceMinutes >= PermanentThreshold)
+        if (PermanentThreshold > 0 && _sentenceMinutes >= PermanentThreshold) // Fish-edit: порог -1 ≠ перма
         {
             PositionLabel.Text = Loc.GetString("prisoner-management-permabrig");
             PositionLabel.Visible = true;

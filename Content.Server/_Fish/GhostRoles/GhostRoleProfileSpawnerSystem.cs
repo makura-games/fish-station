@@ -1,9 +1,10 @@
 using Content.Server.GameTicking;
 using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
-using Content.Server.Ghost.Roles.Events;
 using Content.Server.Station.Systems;
 using Content.Shared._Fish.GhostRoles.Components;
+using Content.Shared.Ghost;
+using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.NPC.Systems;
@@ -63,6 +64,14 @@ public sealed partial class GhostRoleProfileSpawnerSystem : EntitySystem
         }
         else
         {
+            // КПБ и прочие расы с ExcludeFromRandomSpecies не должны появляться на ролях призраков.
+            if (profile is HumanoidCharacterProfile humanoidProfile &&
+                _prototypes.TryIndex<SpeciesPrototype>(humanoidProfile.Species, out var speciesProto) &&
+                speciesProto.ExcludeFromRandomSpecies)
+            {
+                profile = HumanoidCharacterProfile.Random();
+            }
+
             mob = _stationSpawning.SpawnPlayerMob(coords, null, profile, station);
         }
 
@@ -84,7 +93,8 @@ public sealed partial class GhostRoleProfileSpawnerSystem : EntitySystem
         if (ent.Comp.Factions.Count > 0)
             _npcFaction.AddFactions((mob, null), ent.Comp.Factions);
 
-        RaiseLocalEvent(mob, new GhostRoleSpawnerUsedEvent(ent, mob));
+        var spawnedEvent = new GhostRoleSpawnerUsedEvent(ent, mob);
+        RaiseLocalEvent(mob, ref spawnedEvent);
 
         if (ghostRole.MakeSentient)
             _mindSystem.MakeSentient(mob, ghostRole.AllowMovement, ghostRole.AllowSpeech);

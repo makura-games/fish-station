@@ -19,11 +19,12 @@ store-category-engineering = Инженерный отдел
 store-category-cargo = Отдел снабжения
 store-category-security = Служба Безопасности
 store-category-paint = Краска
-# disease
+# Fish-start: To remove - функционал разумной болезни
 shop-disease-category-infect = Передача
 shop-disease-category-symptoms = Симптомы
 shop-disease-category-evolution = Улучшение
 shop-disease-category-infection = Заражение
+# Fish-end
 # Uplink
 store-category-objectives = Цели
 # ntUplink

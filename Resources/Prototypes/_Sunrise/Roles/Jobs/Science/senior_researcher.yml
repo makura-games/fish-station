@@ -10,7 +10,9 @@
   startingGear: SeniorResearcherGear
   icon: "JobIconSeniorResearcher"
   supervisors: job-supervisors-rd
-  displayWeight: 35
+  # Fish-start: displayWeight удален из JobPrototype (настраивается через jobWeight)
+  # displayWeight: 35
+  # Fish-end
   # canBeAntag: false # Fish-edit
   alternativeTitles:
   - job-alt-title-lead-researcher

@@ -38,6 +38,9 @@ public sealed partial class BaratriumSynthesisReaction : IGasReactionEffect
         if (produce < 0.1f)
             return ReactionResult.NoReaction;
 
+        // Не даём реакции превратить весь объём за один тик.
+        produce = MathF.Min(produce, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         var consTritium = produce / efficiency;
         var consGarodin  = produce / efficiency;
 

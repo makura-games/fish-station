@@ -20,7 +20,9 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
 using Content.Server.Body.Systems;
+using Content.Shared.Body.Systems;
 using Content.Shared.Nutrition.Components;
+using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared._Sunrise.Research.Artifact;
 
 namespace Content.Server.Medical;
@@ -37,6 +39,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     [Dependency] private TransformSystem _transformSystem = default!;
     [Dependency] private SharedPopupSystem _popupSystem = default!;
     [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
+    [Dependency] private SatiationSystem _satiation = default!; // Sunrise-Edit
 
     public override void Initialize()
     {
@@ -90,6 +93,15 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (args.Target == null || !args.CanReach || !HasComp<MobStateComponent>(args.Target) || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
 
+        // Fish-start: обычный медсканер не читает КПБ; робо- и мех-анализаторы читают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value) && !AcceptsFishIpc(uid.Comp))
+        {
+            args.Handled = true;
+            _popupSystem.PopupEntity(Loc.GetString("fish-ipc-health-analyzer-refuse"), args.Target.Value, args.User, PopupType.SmallCaution);
+            return;
+        }
+        // Fish-end
+
         _audio.PlayPvs(uid.Comp.ScanningBeginSound, uid);
 
         var doAfterCancelled = !_doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, uid.Comp.ScanDelay, new HealthAnalyzerDoAfterEvent(), uid, target: args.Target, used: uid)
@@ -109,6 +121,11 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     {
         if (args.Handled || args.Cancelled || args.Target == null || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
+
+        // Fish-start: обычный медсканер не читает КПБ; робо- и мех-анализаторы читают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value) && !AcceptsFishIpc(uid.Comp))
+            return;
+        // Fish-end
 
         if (!uid.Comp.Silent)
             _audio.PlayPvs(uid.Comp.ScanningEndSound, uid);
@@ -234,12 +251,12 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         var bodyTemperature = float.NaN;
 
         if (TryComp<TemperatureComponent>(entity, out var temp))
-            bodyTemperature = temp.CurrentTemperature;
+            bodyTemperature = temp.Temperature;
 
         var bloodAmount = float.NaN;
         var bleeding = false;
         var unrevivable = false;
-        // FIsh edit - реагенты, отличные от базового состава крови
+        // Fish-edit - реагенты, отличные от базового состава крови
         var reagents = new List<ReagentQuantity>();
 
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream) &&
@@ -249,7 +266,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             bloodAmount = _bloodstreamSystem.GetBloodLevel(entity);
             bleeding = bloodstream.BleedAmount > 0;
 
-            CollectForeignReagents(bloodSolution, bloodstream.BloodReferenceSolution, reagents); // FIsh edit - состав для сканера
+            CollectForeignReagents(bloodSolution, bloodstream.BloodReferenceSolution, reagents); // Fish-edit - состав для сканера
         }
 
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
@@ -260,16 +277,19 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         float hungerLevel = -1;
         float thirstLevel = -1;
 
-        if (TryComp<HungerComponent>(entity, out var hunger))
+        if (TryComp<SatiationComponent>(entity, out var satiation))
         {
-            // Calculate hunger as percentage (max hunger is 200.0f from Overfed threshold)
-            hungerLevel = (hunger.LastAuthoritativeHungerValue / 200.0f) * 100.0f;
-        }
+            if (_satiation.GetValueOrNull((entity, satiation), SatiationSystem.Hunger) is { } hunger &&
+                _satiation.GetMaximumValue((entity, satiation), SatiationSystem.Hunger) is { } maxHunger)
+            {
+                hungerLevel = hunger / maxHunger * 100f;
+            }
 
-        if (TryComp<ThirstComponent>(entity, out var thirst))
-        {
-            // Calculate thirst as percentage (max thirst is 600.0f from OverHydrated threshold)
-            thirstLevel = (thirst.CurrentThirst / 600.0f) * 100.0f;
+            if (_satiation.GetValueOrNull((entity, satiation), SatiationSystem.Thirst) is { } thirst &&
+                _satiation.GetMaximumValue((entity, satiation), SatiationSystem.Thirst) is { } maxThirst)
+            {
+                thirstLevel = thirst / maxThirst * 100f;
+            }
         }
 
         RaiseLocalEvent(entity, new EntityAnalyzedEvent());
@@ -285,7 +305,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             unrevivable,
             hungerLevel,
             thirstLevel,
-            reagents // FIsh edit - посторонние реагенты в показаниях
+            reagents // Fish-edit - посторонние реагенты в показаниях
         );
         // Sunrise-Edit end
     }

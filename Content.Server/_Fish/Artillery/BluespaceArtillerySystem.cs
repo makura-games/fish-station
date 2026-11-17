@@ -51,7 +51,7 @@ public sealed partial class BluespaceArtillerySystem : SharedBluespaceArtilleryS
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private ShuttleConsoleSystem _shuttleConsole = default!;
-    [Dependency] private IMapManager _mapManager = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
 
     public override void Initialize()
     {
@@ -427,7 +427,7 @@ public sealed partial class BluespaceArtillerySystem : SharedBluespaceArtilleryS
 
 		NavInterfaceState? navState = null;
 		var targetMapId = console.TargetMapId ?? Transform(consoleUid).MapID;
-		var mapUid = _mapManager.GetMapEntityId(targetMapId);
+		var mapUid = _mapSystem.GetMapOrInvalid(targetMapId);
 
 		if (mapUid != EntityUid.Invalid)
 		{

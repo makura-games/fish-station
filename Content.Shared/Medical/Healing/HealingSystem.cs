@@ -18,6 +18,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
+using Content.Shared.Tag;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Utility;
 
@@ -28,7 +29,7 @@ public sealed partial class HealingSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private DamageableSystem _damageable = default!;
-    [Dependency] private SharedBloodstreamSystem _bloodstreamSystem = default!;
+    [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
     [Dependency] private SharedStackSystem _stacks = default!;
     [Dependency] private SharedInteractionSystem _interactionSystem = default!;
@@ -36,6 +37,7 @@ public sealed partial class HealingSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popupSystem = default!;
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private TagSystem _tag = default!; // Fish-edit: катушка не лечит мех. урон КПБ
 
     public override void Initialize()
     {
@@ -77,7 +79,7 @@ public sealed partial class HealingSystem : EntitySystem
                 var popup = (args.User == target.Owner)
                     ? Loc.GetString("medical-item-stop-bleeding-self")
                     : Loc.GetString("medical-item-stop-bleeding", ("target", Identity.Entity(target.Owner, EntityManager)));
-                _popupSystem.PopupClient(popup, target, args.User);
+                _popupSystem.PopupEntity(popup, target, args.User);
             }
         }
 
@@ -85,8 +87,17 @@ public sealed partial class HealingSystem : EntitySystem
         if (healing.ModifyBloodLevel != 0 && bloodstream != null)
             _bloodstreamSystem.TryModifyBloodLevel((target.Owner, bloodstream), healing.ModifyBloodLevel);
 
-        if (!_damageable.TryChangeDamage(target.Owner, healing.Damage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
+        var healDamage = healing.Damage;
+        // Fish-start: катушка не снимает Blunt/Slash/Piercing с КПБ. Нанопаста и прочие силиконы без тега CableCoil не затронуты.
+        if (args.Used is { } used && IgnoresIpcCableMechanical(target.Owner, used))
+            healDamage = WithoutIpcMechanical(healDamage);
+        // Fish-end
+
+        if (!_damageable.TryChangeDamage(target.Owner, healDamage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
             return;
+
+        // Fish-edit: малое лечение слепоты (например, нанопастой)
+        ApplyEyeDamageHeal(healing, target.Owner);
 
         var total = healed.GetTotal();
 
@@ -149,13 +160,18 @@ public sealed partial class HealingSystem : EntitySystem
 
         if (!args.Repeat)
         {
-            _popupSystem.PopupClient(Loc.GetString("medical-item-finished-using", ("item", args.Used)), target.Owner, args.User);
+            _popupSystem.PopupEntity(Loc.GetString("medical-item-finished-using", ("item", args.Used)), target.Owner, args.User);
             return;
         }
 
         // Update our self heal delay so it shortens as we heal more damage.
         if (args.User == target.Owner)
+        {
+            // Fish-start: у КПБ штраф самолечения приравнен к органикам (до ×3 от урона)
+            // args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, IpcSelfHealCap(target.Owner, healing.SelfHealPenaltyMultiplier));
             args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, healing.SelfHealPenaltyMultiplier);
+            // Fish-end
+        }
     }
 
     private bool HasDamage(Entity<HealingComponent> healing, Entity<DamageableComponent> target)
@@ -168,6 +184,11 @@ public sealed partial class HealingSystem : EntitySystem
                 && amount > 0
                 && (type.Key != "Mangleness" || type.Value < 0)) // Sunrise-Edit — Mangleness нельзя наносить лечебным предметом
             {
+                // Fish-start: у КПБ катушка не считает мех. урон поводом для лечения
+                if (IgnoresIpcCableMechanical(target.Owner, healing.Owner) && IsIpcMechanical(type.Key))
+                    continue;
+                // Fish-end
+
                 return true;
             }
         }
@@ -188,6 +209,11 @@ public sealed partial class HealingSystem : EntitySystem
                 return true;
             }
         }
+
+        // Fish-start: можно применять для лечения повреждений глаз
+        if (CanHealEyeDamage(healing.Comp, target.Owner))
+            return true;
+        // Fish-end
 
         return false;
     }
@@ -217,6 +243,14 @@ public sealed partial class HealingSystem : EntitySystem
 
         if (!TryComp<InjurableComponent>(target, out var injurable))
             return false;
+
+        // Fish-start: органика не лечит КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target.Owner) && !IpcAllowsHeal(healing.Comp))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("fish-ipc-not-organic"), target.Owner, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
 
         if (healing.Comp.DamageContainers is not null &&
             injurable.DamageContainer is not null &&
@@ -257,7 +291,7 @@ public sealed partial class HealingSystem : EntitySystem
         // Starlight end
         if (!HasDamage(healing, target!))
         {
-            _popupSystem.PopupClient(Loc.GetString("medical-item-cant-use", ("item", healing.Owner)), healing, user);
+            _popupSystem.PopupEntity(Loc.GetString("medical-item-cant-use", ("item", healing.Owner)), healing, user);
             return false;
         }
 
@@ -273,7 +307,10 @@ public sealed partial class HealingSystem : EntitySystem
 
         var delay = isNotSelf
             ? healing.Comp.Delay
+            // Fish-start: у КПБ штраф самолечения приравнен к органикам (до ×3 от урона)
+            // : healing.Comp.Delay * GetScaledHealingPenalty(target, IpcSelfHealCap(target, healing.Comp.SelfHealPenaltyMultiplier));
             : healing.Comp.Delay * GetScaledHealingPenalty(target, healing.Comp.SelfHealPenaltyMultiplier);
+            // Fish-end
 
         var doAfterEventArgs =
             new DoAfterArgs(EntityManager, user, delay, new HealingDoAfterEvent(), target, target: target, used: healing)

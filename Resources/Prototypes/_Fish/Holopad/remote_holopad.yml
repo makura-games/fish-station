@@ -7,7 +7,7 @@
     unlistedNumber: false
   - type: RemoteHolopadTransmitter
   - type: Label
-    currentLabel: holopad-remote-transmitter
+    localizedLabel: holopad-remote-transmitter
 
 - type: entity
   parent: HolopadBluespace
@@ -18,13 +18,15 @@
     unlistedNumber: false
   - type: RemoteHolopadReceiver
   - type: Label
-    currentLabel: holopad-remote-receiver
+    localizedLabel: holopad-remote-receiver
 
 - type: entity
   id: FishActionRemoteHolopadExitView
   components:
   - type: Action
-    icon: Interface/Actions/eyeclose.png
     useDelay: 1
+  - type: Sprite
+    layers:
+    - texture: Interface/Actions/eyeclose.png
   - type: InstantAction
     event: !type:RemoteHolopadExitViewActionEvent

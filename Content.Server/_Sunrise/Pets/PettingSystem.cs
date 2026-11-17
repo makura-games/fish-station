@@ -2,13 +2,19 @@ using System.Linq;
 using System.Numerics;
 using Content.Server.Actions;
 using Content.Server.Administration;
+using Content.Server.Administration.Logs;
+using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
+using Content.Shared.Administration;
+using Content.Server.Chat.Managers;
+using Content.Server.Database;
 using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.NPC;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.Systems;
 using Content.Shared._Sunrise.Pets;
+using Content.Shared.Database;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
@@ -20,7 +26,9 @@ using Robust.Server.Player;
 using Robust.Shared.Console;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
+using Robust.Shared.Network; // Fish-edit: для NetUserId в кулдауне попапа
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing; // Fish-edit: для IGameTiming в кулдауне попапа
 using Robust.Shared.Utility;
 
 namespace Content.Server._Sunrise.Pets;
@@ -40,6 +48,15 @@ public sealed partial class PettingSystem : SharedPettingSystem
     [Dependency] private IConsoleHost _console = default!;
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private NpcFactionSystem _npcFaction = default!;
+    [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private IChatManager _chat = default!;
+    [Dependency] private IAdminManager _adminManager = default!;
+    // Fish-start: тайминг и кулдаун для ограничения частоты попапа роли призрака
+    [Dependency] private IGameTiming _timing = default!;
+
+    private static readonly TimeSpan GhostRolePopupCooldown = TimeSpan.FromSeconds(3);
+    private readonly Dictionary<NetUserId, TimeSpan> _lastGhostRolePopup = new();
+    // Fish-end
 
     private const int MaxPetNameLenght = 30;
 
@@ -49,6 +66,7 @@ public sealed partial class PettingSystem : SharedPettingSystem
     {
         base.Initialize();
 
+        // TODO: Переделать Network ивенты на BUI ивенты для правильности и безопасности.
         SubscribeLocalEvent<PettableOnInteractComponent, PetSetAILogicEvent>(Pet);
         SubscribeNetworkEvent<PetSetAILogicEvent>(OnClientChangedPetLogic);
 
@@ -65,15 +83,17 @@ public sealed partial class PettingSystem : SharedPettingSystem
     /// <summary>
     /// Метод, вызываемый, когда игрок изменяет текущий приказ своему питомцу через меню управления
     /// </summary>
-    /// <param name="args">Ивент типа PetSetAILogicEvent</param>
-    private void OnClientChangedPetLogic(PetSetAILogicEvent args)
+    private void OnClientChangedPetLogic(PetSetAILogicEvent ev, EntitySessionEventArgs args)
     {
-        var entity = GetEntity(args.Entity);
+        if (!TryValidate(ev, args))
+            return;
+
+        var entity = GetEntity(ev.Entity);
 
         if (!TryComp<PettableOnInteractComponent>(entity, out var component))
             return;
 
-        Pet((entity, component), ref args);
+        Pet((entity, component), ref ev);
     }
 
     /// <summary>
@@ -92,14 +112,31 @@ public sealed partial class PettingSystem : SharedPettingSystem
     /// Разумность позволяет призракам вселиться в питомца и управлять им.
     /// Отключение выкидывает игрока из тела, заново включая ИИ
     /// </summary>
-    /// <param name="args">Ивент типа PetSetGhostAvaliable</param>
-    private void OnPetGhostAvailable(PetSetGhostAvaliable args)
+    private void OnPetGhostAvailable(PetSetGhostAvaliable ev, EntitySessionEventArgs args)
     {
-        var pet = GetEntity(args.Entity);
+        if (!TryValidate(ev, args))
+            return;
+
+        var pet = GetEntity(ev.Entity);
 
         // В зависимости того, включаем или отключаем разумность делаем всякое.
-        if (args.Enable)
+        if (ev.Enable)
         {
+            // Fish-start: ограничение создания роли призрака только для администраторов с кулдауном попапа
+            if (!_adminManager.HasAdminFlag(args.SenderSession, AdminFlags.Admin))
+            {
+                var user = args.SenderSession.UserId;
+                var now = _timing.CurTime;
+                if (!_lastGhostRolePopup.TryGetValue(user, out var last) || now - last >= GhostRolePopupCooldown)
+                {
+                    _lastGhostRolePopup[user] = now;
+                    if (args.SenderSession.AttachedEntity is { } entity)
+                        _popup.PopupEntity(Loc.GetString("pet-admin-only-ghost-role"), entity, entity);
+                }
+                return;
+            }
+            // Fish-end
+
             if (!TryComp<PettableOnInteractComponent>(pet, out var petComponent))
                 return;
 
@@ -132,11 +169,13 @@ public sealed partial class PettingSystem : SharedPettingSystem
     /// <summary>
     /// Метод, вызываемый при запросе смены имени питомца через меню управления питомца.
     /// </summary>
-    /// <param name="args">Ивент типа PetSetName</param>
-    private void OnPetChangeNameRequest(PetSetName args)
+    private void OnPetChangeNameRequest(PetSetName ev, EntitySessionEventArgs args)
     {
+        if (!TryValidate(ev, args))
+            return;
+
         // Получает EntityUid из передаваемого NetEntity
-        var pet = GetEntity(args.Entity);
+        var pet = GetEntity(ev.Entity);
 
         // Получаем компонент питомца и проверяем, есть ли он
         if (!TryComp<PettableOnInteractComponent>(pet, out var petComponent))
@@ -252,6 +291,11 @@ public sealed partial class PettingSystem : SharedPettingSystem
 
         // Питомец не может следовать за кем-то без хозяина
         if (!master.HasValue)
+            return;
+
+        // Проверка, что питомец реально может выполнить приказ, который отправлен игроком.
+        // Это серверная валидация на случай модифицированного клиента.
+        if (!pet.Comp.AllowedOrders.Contains(order))
             return;
 
         // Обновляем фракцию питомца, если указ изменился
@@ -418,6 +462,55 @@ public sealed partial class PettingSystem : SharedPettingSystem
             return false;
 
         return pet.Comp.CurrentOrder == PetOrderType.Attack;
+    }
+
+    /// <summary>
+    /// Проверяет, действительно ли переданные в ивенте данные правильны.
+    /// Нужны для проверки данных получаемых с клиента, чтобы читеры с модифицированным клиентом не могли послать сообщение от имени другого игрока.
+    /// Для этого сверяет данные переданного владельца питомца, самого питомца с реальными данными.
+    /// </summary>
+    /// <returns>Действительно ли переданный питомец принадлежит игроку, который отсылает сообщение.
+    /// И действительно ли переданный владелец питомца владеет питомцем из ивента</returns>
+    private bool TryValidate(PetBaseEvent ev, EntitySessionEventArgs args)
+    {
+        var petUid = GetEntity(ev.Entity);
+        var master = args.SenderSession.AttachedEntity;
+
+        if (master == null)
+            return false;
+
+        if (!TryComp<PettableOnInteractComponent>(petUid, out var petComponent))
+        {
+            SendAdminAlertAboutCheater(master.Value);
+            return false;
+        }
+
+        if (petComponent.Master != master)
+        {
+            SendAdminAlertAboutCheater(master.Value);
+            return false;
+        }
+
+        if (!TryComp<PetOnInteractComponent>(master, out var masterComponent))
+        {
+            SendAdminAlertAboutCheater(master.Value);
+            return false;
+        }
+
+        if (!masterComponent.Pets.Contains(petUid))
+        {
+            SendAdminAlertAboutCheater(master.Value);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void SendAdminAlertAboutCheater(EntityUid master)
+    {
+        var message = Loc.GetString("admin-alert-pets-cheater", ("master", ToPrettyString(master)));
+        _chat.SendAdminAlert(master, message);
+        _adminLog.Add(LogType.AdminMessage, LogImpact.Extreme, $"{message}");
     }
 
     #endregion

@@ -14,8 +14,18 @@ public sealed partial class AccessibilityTab : Control
 
         Control.AddOptionCheckBox(CCVars.ChatEnableColorName, EnableColorNameCheckBox);
         Control.AddOptionCheckBox(CCVars.AccessibilityColorblindFriendly, ColorblindFriendlyCheckBox);
+
         Control.AddOptionCheckBox(CCVars.ReducedMotion, ReducedMotionCheckBox);
-        Control.AddOptionPercentSlider(CCVars.ScreenShakeIntensity, ScreenShakeIntensitySlider, min: 0.2f); // Fish-Edit
+        Control.AddOptionCheckBox(CCVars.DisableAiStatic, DisableAiStaticCheckBox);
+        Control.AddOptionCheckBox(CCVars.DisableBlurryVision, DisableBlurryVisionCheckBox);
+        Control.AddOptionCheckBox(CCVars.DisableDrunkOverlay, DisableDrunkOverlayCheckBox);
+        Control.AddOptionCheckBox(CCVars.DisableFlashEffect, DisableFlashEffectCheckBox);
+        Control.AddOptionCheckBox(CCVars.DisableHeatDistortion, DisableHeatDistortionCheckBox);
+        Control.AddOptionCheckBox(CCVars.DisableNightVisionNoise, DisableNightVisionNoiseCheckBox);
+        Control.AddOptionCheckBox(CCVars.DisableRainbowOverlay, DisableRainbowOverlayCheckBox);
+        Control.AddOptionCheckBox(CCVars.DisableSinguloWarp, DisableSinguloWarpCheckBox);
+
+        Control.AddOptionPercentSlider(CCVars.ScreenShakeIntensity, ScreenShakeIntensitySlider, min: 0.2f); // Fish-edit
         Control.AddOptionPercentSlider(CCVars.ChatWindowOpacity, ChatWindowOpacitySlider);
         Control.AddOptionPercentSlider(CCVars.SpeechBubbleTextOpacity, SpeechBubbleTextOpacitySlider);
         Control.AddOptionPercentSlider(CCVars.SpeechBubbleSpeakerOpacity, SpeechBubbleSpeakerOpacitySlider);
@@ -23,21 +33,21 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionCheckBox(CCVars.ChatAutoFillHighlights, AutoFillHighlightsCheckBox);
         Control.AddOptionColorSlider(CCVars.ChatHighlightsColor, HighlightsColorSlider);
 
-        // FIsh edit - CRT accessibility preferences
+        // Fish-edit - CRT accessibility preferences
         var crtTheme = Control.AddOptionCheckBox(FishCVars.FishCrtThemeEnabled, FishCrtThemeEnabledCheckBox);
         Control.AddOptionCheckBox(FishCVars.FishCrtEffectsEnabled, FishCrtEffectsEnabledCheckBox);
         crtTheme.ImmediateValueChanged += _ => UpdateCrtEffectsDisabled();
         Control.ValuesReset += UpdateCrtEffectsDisabled;
-        // FIsh edit end
+        // Fish-end
 
         Control.Initialize();
         UpdateCrtEffectsDisabled();
     }
 
-    // FIsh edit
+    // Fish-edit
     private void UpdateCrtEffectsDisabled()
     {
         FishCrtEffectsEnabledCheckBox.Disabled = !FishCrtThemeEnabledCheckBox.Pressed;
     }
-    // FIsh edit end
+    // Fish-end
 }

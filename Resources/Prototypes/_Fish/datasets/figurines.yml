@@ -3,3 +3,9 @@
   values:
     prefix: figurines-mol-
     count: 1
+
+- type: localizedDataset
+  id: FigurinesLusain
+  values:
+    prefix: figurines-lusain-
+    count: 7

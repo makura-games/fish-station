@@ -1,9 +1,9 @@
-using Content.Server.Atmos.Components;
+using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Components;
-using Content.Shared._Sunrise.NightVision.Components;
 using Content.Shared._Sunrise.CollectiveMind;
 using Content.Shared._Sunrise.FleshCult;
 using Content.Shared.Actions.Components;
+using Content.Shared.Atmos.Components; // Fish-edit: PressureImmunityComponent перенесён из Content.Server, иначе падает предсказанный метаболизм
 using Content.Shared.Body;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Electrocution;
@@ -13,9 +13,11 @@ using Content.Shared.Humanoid;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Overlays;
 using Content.Shared.Popups;
 using Content.Shared.Store;
 using Content.Shared.Store.Components;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Tag;
 using Content.Shared.Temperature.Components;
 using Robust.Shared.Audio;
@@ -29,25 +31,23 @@ namespace Content.Server._Sunrise.FleshCult;
 /// </summary>
 public sealed partial class FleshCultSystem
 {
-    [ValidatePrototypeId<CollectiveMindPrototype>]
-    private const string FleshCollectiveMindProto = "FleshCult";
+    private static readonly ProtoId<CollectiveMindPrototype> FleshCollectiveMindProto = "FleshCult";
 
-    [ValidatePrototypeId<TagPrototype>]
-    private const string FleshTagProto = "Flesh";
+    private static readonly ProtoId<TagPrototype> FleshTagProto = "Flesh";
 
     private static readonly ProtoId<TagPrototype> FullBodyOuterTag = "FullBodyOuter";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string DefaultFleshCultRule = "FleshCult";
+    private static readonly EntProtoId ToggleNightVisionAction = "ActionToggleNightVision";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string CreateFleshHeartObjective = "CreateFleshHeartObjective";
+    private static readonly EntProtoId DefaultFleshCultRule = "FleshCult";
 
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string FleshCultSurviveObjective = "FleshCultSurviveObjective";
+    private static readonly EntProtoId CreateFleshHeartObjective = "CreateFleshHeartObjective";
 
-    [ValidatePrototypeId<CurrencyPrototype>]
-    private const string StolenMutationPointPrototype = "StolenMutationPoint";
+    private static readonly EntProtoId FleshCultSurviveObjective = "FleshCultSurviveObjective";
+
+    private static readonly ProtoId<CurrencyPrototype> StolenMutationPointPrototype = "StolenMutationPoint";
+
+    private readonly List<(EntityUid Uid, FleshCultistComponent Comp)> _pendingTransformations = new(); // Fish-edit: буфер отложенных превращений вне цикла EntityQueryEnumerator
 
     private static readonly HumanoidVisualLayers[] FleshSpiderLegLayers =
     [
@@ -86,6 +86,11 @@ public sealed partial class FleshCultSystem
 
     private void OnMobStateChanged(EntityUid uid, FleshCultistComponent component, MobStateChangedEvent args)
     {
+        // Fish-start: если культиста реанимировали до превращения в UpdateCultist, отменяем ожидание трансформации
+        if (args.NewMobState != MobState.Dead && !component.IsDeathPending)
+            component.IsTransformationPending = false;
+        // Fish-end
+
         switch (args.NewMobState)
         {
             case MobState.Critical:
@@ -118,7 +123,10 @@ public sealed partial class FleshCultSystem
 
         DeleteFleshBodyModComponent(uid, "shoes", component);
         DeleteFleshBodyModComponent(uid, "outerClothing", component);
-        ParasiteComesOut(uid, component);
+        // Fish-start: переносим спавн толстяка и гибинг в UpdateCultist, чтобы не ломать активные итераторы (например, FlammableSystem.Update) при смерти от огня
+        // ParasiteComesOut(uid, component);
+        component.IsTransformationPending = true;
+        // Fish-end
     }
 
     private void DeleteFleshBodyModComponent(EntityUid uid, string slot, FleshCultistComponent component)
@@ -153,7 +161,12 @@ public sealed partial class FleshCultSystem
         InitializeActions(uid, component);
         InitializeStore(uid, component);
         InitializeAppearance(uid);
-        _store.TryAddCurrency(new Dictionary<string, FixedPoint2> { { StolenMutationPointPrototype, component.StartingMutationPoints } }, uid);
+        _store.TryAddCurrency(
+            new Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2>
+            {
+                { StolenMutationPointPrototype, component.StartingMutationPoints },
+            },
+            uid);
     }
 
     private void InitializeActions(EntityUid uid, FleshCultistComponent component)
@@ -246,7 +259,7 @@ public sealed partial class FleshCultSystem
         RemCompDeferred<InsulatedComponent>(uid);
         RemCompDeferred<FlashImmunityComponent>(uid);
         RemCompDeferred<RespiratorImmunityComponent>(uid);
-        RemCompDeferred<PressureImmunityComponent>(uid);
+        _statusEffects.TryRemoveStatusEffect(uid, PressureImmunityStatusEffectSystem.PressureImmunityEffect);
         RemCompDeferred<StoreComponent>(uid);
         RemCompDeferred<FleshAbilitiesComponent>(uid);
     }
@@ -254,7 +267,13 @@ public sealed partial class FleshCultSystem
     private void RemoveCollectiveMind(EntityUid uid)
     {
         if (TryComp(uid, out CollectiveMindComponent? collectiveMind) && collectiveMind.Minds.Contains(FleshCollectiveMindProto))
+        {
+            // Fish-start: удаляем компонент при пустом списке разумов, чтобы клиентский CollectiveMindChatUpdateSystem обновил права чата
             collectiveMind.Minds.Remove(FleshCollectiveMindProto);
+            if (collectiveMind.Minds.Count == 0)
+                RemCompDeferred<CollectiveMindComponent>(uid);
+            // Fish-end
+        }
     }
 
     private void RemoveObjectives(EntityUid uid)
@@ -277,7 +296,11 @@ public sealed partial class FleshCultSystem
 
     private void OnNightVisionMutation(EntityUid uid, FleshCultistComponent component, FleshCultistNightVisionMutationEvent args)
     {
-        EnsureComp<ToggleableNightVisionComponent>(uid);
+        var nightVision = EnsureComp<NightVisionComponent>(uid);
+        nightVision.Enabled = false;
+        nightVision.Action = ToggleNightVisionAction;
+        _action.AddAction(uid, ref nightVision.ActionEntity, nightVision.Action);
+        Dirty(uid, nightVision);
     }
 
     private void OnInsulatedImmunityMutation(EntityUid uid, FleshCultistComponent component, FleshCultistInsulatedImmunityMutationEvent args)
@@ -287,7 +310,7 @@ public sealed partial class FleshCultSystem
 
     private void OnPressureImmunityMutation(EntityUid uid, FleshCultistComponent component, FleshCultistPressureImmunityMutationEvent args)
     {
-        EnsureComp<PressureImmunityComponent>(uid);
+        _statusEffects.TrySetStatusEffectDuration(uid, PressureImmunityStatusEffectSystem.PressureImmunityEffect);
     }
 
     private void OnFlashImmunityMutation(EntityUid uid, FleshCultistComponent component, FleshCultistFlashImmunityMutationEvent args)
@@ -350,6 +373,8 @@ public sealed partial class FleshCultSystem
 
     public void UpdateCultist(float frameTime)
     {
+        // Fish-start: не вызываем ParasiteComesOut (_gibbing.Gib + Spawn) внутри EntityQueryEnumerator<FleshCultistComponent>
+        _pendingTransformations.Clear();
 
         // foreach (var cultist in EntityQuery<FleshCultistComponent>())
         var query = EntityQueryEnumerator<FleshCultistComponent>();
@@ -358,12 +383,15 @@ public sealed partial class FleshCultSystem
         {
             if (cultist.IsTransformationPending)
             {
-                // Check if entity is still dead and complete the transformation
-                if (TryComp<MobStateComponent>(uid, out var mobState) && mobState.CurrentState == MobState.Dead)
+                // Check if entity is still dead (or starved) and complete the transformation
+                if ((TryComp<MobStateComponent>(uid, out var mobState) && mobState.CurrentState == MobState.Dead)
+                    || cultist.Hunger < 0)
                 {
-                    ParasiteComesOut(uid, cultist);
+                    _pendingTransformations.Add((uid, cultist));
+                    continue;
                 }
-                continue;
+
+                cultist.IsTransformationPending = false;
             }
 
             cultist.Accumulator += frameTime;
@@ -385,11 +413,17 @@ public sealed partial class FleshCultSystem
             {
                 // ParasiteComesOut(cultist.Owner, cultist);
                 cultist.IsTransformationPending = true;
-                ParasiteComesOut(uid, cultist);
+                _pendingTransformations.Add((uid, cultist));
                 continue;
             }
 
             ChangeParasiteHunger(uid, cultist.HungerСonsumption, cultist);
         }
+
+        foreach (var (uid, cultist) in _pendingTransformations)
+        {
+            ParasiteComesOut(uid, cultist);
+        }
+        // Fish-end
     }
 }

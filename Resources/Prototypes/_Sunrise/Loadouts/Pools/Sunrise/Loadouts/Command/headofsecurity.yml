@@ -28,7 +28,9 @@
     requirement:
       !type:RoleTimeRequirement
       role: JobHeadOfSecurity
-      time: 7142400 #1984 hrs
+      # Fish-start - 198h 4m requirement
+      time: 713040 # 198 hrs 4 mins
+      # Fish-end
 
 - type: loadout
   id: HeadofSecurityWeapon
@@ -42,14 +44,6 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: MasterHoS50h
-
-- type: loadout
-  id: HeadofSecurityWeapon1984h
-  equipment:
-    pocket1: DeagleGoldBox
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: MasterHoS1984h
 
 - type: loadout
   id: HeadofSecurityJumpsuitHoSOld

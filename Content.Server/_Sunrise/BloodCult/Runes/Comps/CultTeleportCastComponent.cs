@@ -6,6 +6,16 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Comps;
 [RegisterComponent]
 public sealed partial class CultTeleportCastComponent : Component
 {
-    [DataField]
+    // Fish-start
+    /// <summary>
+    /// Целевая сущность для телепортации.
+    /// </summary>
     public EntityUid Target;
+
+    /// <summary>
+    /// Выбранная руна назначения для телепортации.
+    /// </summary>
+    public EntityUid Rune;
+    // Fish-end
 }
+

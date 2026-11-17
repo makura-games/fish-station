@@ -13,7 +13,6 @@
   setPreference: true
   overrideConsoleVisibility: false # Fish-edit
   radioBold: true
-  displayWeight: 75
   access:
   - Magistrat
   - Bar

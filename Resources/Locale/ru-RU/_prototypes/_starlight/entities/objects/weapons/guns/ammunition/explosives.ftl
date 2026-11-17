@@ -33,3 +33,13 @@ ent-Rocket120mmMetla = 120мм ракета
 ent-Magazine60mmRocketLongFlight = магазин 60мм ракет
     .suffix = Увеличенная дальность
     .desc = Вместительный магазин на 16 ракет для шаттл-системы RCT-60 "Веник".
+
+# Fish-start - Добавление локализации self-explode ракет
+ent-Bullet60mmRocketStarlightSelfExplode = 60мм ракета
+    .desc = 60мм ракетный боеприпас аварийного самоподрыва.
+    .suffix = самоподрыв, СЕЙЧАС
+
+ent-Bullet50mmRocketStarlightSelfExplode = 50мм ракета
+    .desc = 50мм ракетный боеприпас аварийного самоподрыва.
+    .suffix = самоподрыв, СЕЙЧАС
+# Fish-end

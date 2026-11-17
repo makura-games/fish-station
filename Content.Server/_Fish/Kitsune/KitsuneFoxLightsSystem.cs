@@ -50,7 +50,7 @@ namespace Content.Server._Fish.Kitsune
                 BreakOnMove = false,
                 BreakOnDamage = false,
                 NeedHand = false,
-                Broadcast = true // FIsh edit: necessary for broadcast system subscription to run since component is deleted in update
+                Broadcast = true // Fish-edit: necessary for broadcast system subscription to run since component is deleted in update
             };
 
             _doAfter.TryStartDoAfter(doAfterArgs);

@@ -76,10 +76,10 @@ guide-entry-brute =
 guide-entry-botanicals = Ботаника
 guide-entry-cloning = Клонирование
 guide-entry-cryogenics = Криогеника
-# Fish edit start - руководства по медицине
+# Fish-start - руководства по медицине
 guide-entry-mangleness = Истощение
 guide-entry-medicaldrugs = Медицинские препараты
-# Fish edit end
+# Fish-end
 guide-entry-science = Научный отдел
 guide-entry-technologies = Технологии
 guide-entry-anomalous-research = Исследование аномалий
@@ -138,7 +138,6 @@ guide-entry-lawsets = Наборы законов силиконом
 guide-entry-antagonists = Антагонисты
 guide-entry-nuclear-operatives = Ядерные оперативники
 guide-entry-traitors = Предатели
-guide-entry-changelings = Генокрад
 guide-entry-flesh-cult = Культист плоти
 guide-entry-zombies = Зомби
 guide-entry-revolutionaries = Революционеры
@@ -207,3 +206,4 @@ guide-entry-rules-ban-types = Типы банов
 guide-entry-rules-ban-durations = Длительность банов
 guide-entry-writing = Разметка письма
 guide-entry-glossary = Словарь терминов
+guide-entry-changelings = Генокрады

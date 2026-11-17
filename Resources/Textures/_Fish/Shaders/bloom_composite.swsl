@@ -1,0 +1,17 @@
+light_mode unshaded;
+blend_mode add;
+
+uniform mediump float bloom_strength;
+uniform sampler2D occlusion_texture;
+
+void fragment() {
+    lowp vec4 glow = zTexture(UV);
+    // Ореол остаётся над своим источником, но скрывается силуэтами передних спрайтов.
+    glow.rgb *= zTextureSpec(occlusion_texture, UV).rgb;
+    mediump float energy = max(glow.r, max(glow.g, glow.b));
+    if (energy <= 0.001)
+        discard;
+
+    // Энергия уже содержит прозрачность источника. Повторное умножение уничтожает мягкий край.
+    COLOR = vec4(max(glow.rgb, vec3(0.0)) * bloom_strength, 1.0);
+}

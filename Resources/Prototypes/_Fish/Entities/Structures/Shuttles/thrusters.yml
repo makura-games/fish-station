@@ -1,71 +1,71 @@
 - type: entity
   id: FishGyroscope01K
   parent: Gyroscope
-  suffix: 100, Debug
+  suffix: 160K, Debug, Fish
   components:
   - type: Thruster
-    thrust: 100
+    thrust: 160000
 
 - type: entity
   id: FishGyroscope05K
   parent: Gyroscope
-  suffix: 500, Debug
+  suffix: 800K, Debug, Fish
   components:
   - type: Thruster
-    thrust: 500
+    thrust: 800000
     
 - type: entity
   id: FishGyroscope1K
   parent: Gyroscope
-  suffix: 1000, Debug
+  suffix: 1.6M, Debug, Fish
   components:
   - type: Thruster
-    thrust: 1000
+    thrust: 1600000
 
 - type: entity
   id: FishGyroscope5K
   parent: Gyroscope
-  suffix: 5000, Debug
+  suffix: 8M, Debug, Fish
   components:
   - type: Thruster
-    thrust: 5000
+    thrust: 8000000
     
 - type: entity
   id: FishGyroscope10K
   parent: Gyroscope
-  suffix: 10000, Debug
+  suffix: 16M, Debug, Fish
   components:
   - type: Thruster
-    thrust: 10000
+    thrust: 16000000
     
 - type: entity
   id: FishGyroscope20K
   parent: Gyroscope
-  suffix: 20000, Debug
+  suffix: 32M, Debug, Fish
   components:
   - type: Thruster
-    thrust: 20000
+    thrust: 32000000
     
 - type: entity
   id: FishGyroscope50K
   parent: Gyroscope
-  suffix: 50000, Debug
+  suffix: 80M, Debug, Fish
   components:
   - type: Thruster
-    thrust: 50000
+    thrust: 80000000
     
 - type: entity
   id: FishGyroscope100K
   parent: Gyroscope
-  suffix: 100000, Debug
+  suffix: 160M, Debug, Fish
   components:
   - type: Thruster
-    thrust: 100000
+    thrust: 160000000
     
 - type: entity
   id: FishGyroscope200K
   parent: Gyroscope
-  suffix: 200000, Debug
+  suffix: 320M, Debug, Fish
   components:
   - type: Thruster
-    thrust: 200000
+    thrust: 320000000

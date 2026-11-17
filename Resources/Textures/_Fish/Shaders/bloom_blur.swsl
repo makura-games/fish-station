@@ -1,0 +1,31 @@
+light_mode unshaded;
+blend_mode none;
+
+uniform highp vec2 texel_size;
+uniform highp vec2 blur_direction;
+uniform highp float blur_radius;
+uniform highp vec2 atlas_grid;
+
+void fragment() {
+    // Плотное ядро с шагом один texel: при росте радиуса между выборками нет дыр.
+    // Узкое ядро сохраняет энергию рядом с источником, а не в длинном хвосте.
+    highp float sigma = max(blur_radius / 3.0, 0.35);
+    highp float radius = ceil(blur_radius);
+    highp vec3 glow = vec3(0.0);
+    highp float weight_sum = 0.0;
+    // Источники лежат рядом в атласе, но их ореолы и маски перекрытия независимы.
+    highp vec2 cell_min = floor(UV * atlas_grid) / atlas_grid;
+    highp vec2 cell_max = cell_min + vec2(1.0) / atlas_grid;
+    for (highp int i = -16; i <= 16; i++) {
+        highp float offset = float(i);
+        if (abs(offset) > radius)
+            continue;
+
+        highp float weight = exp(-0.5 * offset * offset / (sigma * sigma));
+        highp vec2 sample_uv = UV + blur_direction * texel_size * offset;
+        if (sample_uv.x >= cell_min.x && sample_uv.y >= cell_min.y && sample_uv.x < cell_max.x && sample_uv.y < cell_max.y)
+            glow += zTexture(sample_uv).rgb * weight;
+        weight_sum += weight;
+    }
+    COLOR = vec4(glow / weight_sum, 1.0);
+}

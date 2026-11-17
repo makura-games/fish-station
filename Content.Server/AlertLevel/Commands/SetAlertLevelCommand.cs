@@ -1,110 +1,101 @@
-﻿using System.Linq;
 using Content.Server.Administration;
-using Content.Server.Station.Systems;
 using Content.Shared.Administration;
+using Content.Shared.AlertLevel;
+using Content.Shared.Station;
 using Robust.Shared.Console;
+using Robust.Shared.Prototypes;
 
-namespace Content.Server.AlertLevel.Commands
+namespace Content.Server.AlertLevel.Commands;
+
+[AdminCommand(AdminFlags.Fun)]
+public sealed partial class SetAlertLevelCommand : LocalizedEntityCommands
 {
-    [AdminCommand(AdminFlags.Fun)]
-    public sealed partial class SetAlertLevelCommand : LocalizedEntityCommands
+    [Dependency] private AlertLevelSystem _alertLevelSystem = default!;
+    [Dependency] private SharedStationSystem _stationSystem = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+
+    public override string Command => "setalertlevel";
+
+    public override CompletionResult GetCompletion(IConsoleShell shell, string[] args)
     {
-        [Dependency] private AlertLevelSystem _alertLevelSystem = default!;
-        [Dependency] private StationSystem _stationSystem = default!;
-
-        public override string Command => "setalertlevel";
-
-        public override CompletionResult GetCompletion(IConsoleShell shell, string[] args)
+        return args.Length switch
         {
-            var levelNames = new string[] {};
-            var player = shell.Player;
-            if (player?.AttachedEntity != null)
-            {
-                var stationUid = _stationSystem.GetOwningStation(player.AttachedEntity.Value);
-                if (stationUid != null)
-                    levelNames = GetStationLevelNames(stationUid.Value);
-            }
+            1 => CompletionResult.FromHintOptions(CompletionHelper.PrototypeIDs<AlertLevelPrototype>(),
+            Loc.GetString("cmd-setalertlevel-hint-1")),
+            2 => CompletionResult.FromHintOptions(CompletionHelper.Booleans,
+                LocalizationManager.GetString("cmd-setalertlevel-hint-2")),
+            _ => CompletionResult.Empty,
+        };
+    }
 
-            return args.Length switch
-            {
-                1 => CompletionResult.FromHintOptions(levelNames,
-                    LocalizationManager.GetString("cmd-setalertlevel-hint-1")),
-                2 => CompletionResult.FromHintOptions(CompletionHelper.Booleans,
-                    LocalizationManager.GetString("cmd-setalertlevel-hint-2")),
-                _ => CompletionResult.Empty,
-            };
+    public override void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        var player = shell.Player;
+        if (player?.AttachedEntity == null)
+        {
+            shell.WriteLine(LocalizationManager.GetString("shell-only-players-can-run-this-command"));
+            return;
         }
 
-        public override void Execute(IConsoleShell shell, string argStr, string[] args)
+        if (args.Length is < 1 or > 2) // Sunrise-Edit
+        // if (args.Length < 1)
         {
-            if (args.Length is < 1 or > 2)
-            {
-                shell.WriteError(LocalizationManager.GetString("shell-wrong-arguments-number"));
-                return;
-            }
+            shell.WriteError(LocalizationManager.GetString("shell-wrong-arguments-number"));
+            return;
+        }
 
-            var option = false;
-            if (args.Length > 1 && !bool.TryParse(args[1], out option))
+        bool? locked = null;
+        if (args.Length > 1)
+        {
+            if (bool.TryParse(args[1], out var parsedBool))
+            {
+                locked = parsedBool;
+            }
+            else
             {
                 shell.WriteLine(LocalizationManager.GetString("shell-argument-must-be-boolean"));
                 return;
             }
-
-            var player = shell.Player;
-            if (player?.AttachedEntity == null)
-            {
-                shell.WriteLine(LocalizationManager.GetString("shell-only-players-can-run-this-command"));
-                return;
-            }
-
-            var stationUid = _stationSystem.GetOwningStation(player.AttachedEntity.Value);
-            if (stationUid == null)
-            {
-                shell.WriteLine(LocalizationManager.GetString("cmd-setalertlevel-invalid-grid"));
-                return;
-            }
-
-            var level = args[0];
-            if (!EntityManager.TryGetComponent<AlertLevelComponent>(stationUid.Value, out var alertLevelComp)
-                || alertLevelComp.AlertLevels == null
-                || !alertLevelComp.AlertLevels.Levels.TryGetValue(level, out var detail))
-            {
-                shell.WriteLine(LocalizationManager.GetString("cmd-setalertlevel-invalid-level"));
-                return;
-            }
-
-            // Sunrise edit start - второй параметр управляет состоянием дополнительного кода
-            if (detail.IsAdditional)
-            {
-                var enabled = args.Length == 1 || option;
-                if (!_alertLevelSystem.TrySetAdditionalLevel(
-                        stationUid.Value,
-                        level,
-                        enabled,
-                        true,
-                        true,
-                        true,
-                        alertLevelComp))
-                {
-                    shell.WriteError(LocalizationManager.GetString("cmd-setalertlevel-change-failed"));
-                }
-
-                return;
-            }
-
-            _alertLevelSystem.SetLevel(stationUid.Value, level, true, true, true, option);
-            // Sunrise edit end
         }
 
-        private string[] GetStationLevelNames(EntityUid station)
+        var stationUid = _stationSystem.GetOwningStation(player.AttachedEntity.Value);
+        if (stationUid == null)
         {
-            if (!EntityManager.TryGetComponent<AlertLevelComponent>(station, out var alertLevelComp))
-                return new string[]{};
-
-            if (alertLevelComp.AlertLevels == null)
-                return new string[]{};
-
-            return alertLevelComp.AlertLevels.Levels.Keys.ToArray();
+            shell.WriteLine(LocalizationManager.GetString("cmd-setalertlevel-invalid-grid"));
+            return;
         }
+
+        var level = args[0];
+        // Sunrise edit start - второй параметр управляет состоянием дополнительного кода
+        // if (!_prototype.HasIndex<AlertLevelPrototype>(level))
+        if (!EntityManager.TryGetComponent<AlertLevelComponent>(stationUid.Value, out var alertLevelComp)
+            || !alertLevelComp.AvailableAlertLevels.Contains(level)
+            || !_prototype.TryIndex<AlertLevelPrototype>(level, out var detail))
+        // Sunrise edit end
+        {
+            shell.WriteLine(LocalizationManager.GetString("cmd-setalertlevel-invalid-level"));
+            return;
+        }
+
+        // Sunrise added start - второй параметр управляет состоянием дополнительного кода
+        if (detail.IsAdditional)
+        {
+            var enabled = locked ?? true;
+            if (!_alertLevelSystem.TrySetAdditionalLevel(
+                    (stationUid.Value, alertLevelComp),
+                    level,
+                    enabled,
+                    playSound: true,
+                    announce: true,
+                    force: true))
+            {
+                shell.WriteError(LocalizationManager.GetString("cmd-setalertlevel-change-failed"));
+            }
+
+            return;
+        }
+        // Sunrise added end
+
+        _alertLevelSystem.SetLevel(stationUid.Value, level, force: true, locked: locked);
     }
 }

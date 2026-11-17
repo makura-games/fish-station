@@ -148,9 +148,9 @@ public sealed partial class StorytellerSystem
         // Spawn recommended event if specified
         if (!string.IsNullOrWhiteSpace(decision.SpawnEvent))
         {
-            if (_protoManager.TryIndex<EntityPrototype>(decision.SpawnEvent, out var proto))
+            if (ProtoMan.TryIndex<EntityPrototype>(decision.SpawnEvent, out var proto))
             {
-                if (_protoManager.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
+                if (ProtoMan.TryIndex<StorytellerMetadataPrototype>(proto.ID, out var metadata))
                 {
                     // Fish-edit: Calm не запускает MajorAntag даже по AI рекомендации (MajorCalm разрешен)
                     if (entity.Comp.StorytellerType == StorytellerType.Calm &&

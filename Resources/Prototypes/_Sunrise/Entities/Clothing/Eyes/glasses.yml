@@ -21,7 +21,7 @@
       sprite: _Sunrise/Clothing/Eyes/Glasses/kim.rsi
 
 - type: entity
-  parent: [ClothingEyesBase, ShowSecurityIcons, ShowMedicalIcons, BaseSecurityContraband] # Fish edit
+  parent: [ClothingEyesBase, ShowSecurityIcons, ShowMedicalIcons, BaseSecurityContraband] # Fish-edit
   id: ClothingEyesGlassesBlueShield
   name: blueshield's glasses
   description: The innovative blue lenses hide your eyes from light flashes and have a built-in visor.
@@ -107,8 +107,10 @@
   - type: ComponentToggler
     parent: true
     components:
-      - type: NightVision
-        effect: EffectNightVisionSyndie
+      # Fish-start - красная оптика скрытого ПНВ синдиката.
+      - type: FishNightVision
+        color: "#FF1020"
+      # Fish-end
 
 # region thermals
 - type: entity
@@ -133,10 +135,13 @@
     action: ActionToggleThermalVision
     disableOnUnequip: true
     targetSlot: eyes
+  # Fish-start - температурная оптика и согласование нескольких приборов.
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    - type: FishThermalVision
+  - type: FishVisionDevice
+  # Fish-end
   - type: PowerCellDraw
     drawRate: 15
     useCharge: 15
@@ -187,6 +192,11 @@
       - state: equipped-EYES-unshaded
         shader: unshaded
   - type: ShowMindShieldIcons
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellNanoTrasen
 
 - type: entity
   parent: ClothingEyesGlassesThermalSyndie
@@ -243,10 +253,13 @@
     action: ActionToggleThermalVision
     disableOnUnequip: true
     targetSlot: eyes
+  # Fish-start - температурная оптика очков-хамелеона и согласование приборов.
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    - type: FishThermalVision
+  - type: FishVisionDevice
+  # Fish-end
   - type: PowerCellDraw
     drawRate: 3
     useCharge: 15
@@ -273,5 +286,5 @@
     sprite: _Sunrise/Clothing/Eyes/Glasses/stuttering_glasses.rsi
   - type: Clothing
     sprite: _Sunrise/Clothing/Eyes/Glasses/stuttering_glasses.rsi
-  - type: AddAccentClothing
-    accent: StutteringAccent
+  - type: StutteringAccent
+    relayAccent: true

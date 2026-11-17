@@ -28,7 +28,7 @@ namespace Content.Client._Fish.Artillery;
 
 public sealed partial class ArtilleryScannerControl : BaseShuttleControl
 {
-    [Dependency] private IMapManager _mapManager = default!;
+    private SharedMapSystem _maps;
     private SharedShuttleSystem _shuttles;
     private SharedTransformSystem _transform;
 
@@ -48,6 +48,7 @@ public sealed partial class ArtilleryScannerControl : BaseShuttleControl
 
     public ArtilleryScannerControl() : base(64f, 1024f, 256f)
     {
+        _maps = EntManager.System<SharedMapSystem>();
         _shuttles = EntManager.System<SharedShuttleSystem>();
         _transform = EntManager.System<SharedTransformSystem>();
     }
@@ -169,7 +170,7 @@ public sealed partial class ArtilleryScannerControl : BaseShuttleControl
         var viewAABB = viewBounds.CalcBoundingBox();
 
         _grids.Clear();
-        _mapManager.FindGridsIntersecting(xform.MapID, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref _grids, approx: true, includeMap: false);
+        _maps.FindGridsIntersecting(xform.MapID, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref _grids, approx: true, includeMap: false);
 
         foreach (var grid in _grids)
         {

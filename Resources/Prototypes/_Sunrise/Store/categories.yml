@@ -100,8 +100,7 @@
   name: store-category-paint
   priority: 99
 
-# disease
-
+# Fish-start: To remove - функционал разумной болезни
 - type: storeCategory
   id: DiseaseInfectCategory
   name: shop-disease-category-infect
@@ -122,6 +121,7 @@
   id: DiseasePoints
   displayName: shop-disease-currency
   canWithdraw: false
+# Fish-end
 
 #uplink categoires
 - type: storeCategory

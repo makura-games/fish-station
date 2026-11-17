@@ -59,3 +59,7 @@ summon-button-label = { $label } ({ $mobState }; { $distance } м)
 teleport-button-label = { $label } ({ $distance } м)
 revived-cultist-desc = Культист крови, душа которого сгинула в вечном мраке.
 tile-has-rune = На этом тайле уже есть руна!
+
+# Fish-start
+cult-rune-not-on-station = Руны можно рисовать только на территории станции.
+# Fish-end

@@ -2,7 +2,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.EntityEffects;
 using Content.Shared.FixedPoint;
-using Content.Shared.Mindshield.Components;
+using Content.Shared.Mindshield; // Fish-edit
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Prototypes;
 
@@ -14,7 +14,11 @@ public sealed partial class CauseFleshCultInfectionEntityEffectSystem : EntityEf
 
     protected override void Effect(Entity<MobStateComponent> entity, ref EntityEffectEvent<CauseFleshCultInfection> args)
     {
-        if (HasComp<MindShieldComponent>(entity))
+        // Fish-start: Проверяем наличие активного щита разума через статус-компонент на сущности
+        var mindShield = EntityManager.System<MindShieldSystem>();
+        mindShield.GetMindshieldStatus(entity, out var isMindshielded, out _);
+        if (isMindshielded)
+        // Fish-end
         {
             // Inject into chemical solution (bloodstream) specifically, like hyposprays/syringes do
             if (TryComp<BloodstreamComponent>(entity, out var bloodstream))

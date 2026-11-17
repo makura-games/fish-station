@@ -33,13 +33,13 @@ public sealed partial class GasLeakRuleComponent : Component
         Gas.Electrovae,
         Gas.ChargedElectrovae,
         //Sunrise - End
-        //Fish - Start
+        //Fish-start
         Gas.Zenthium,
         Gas.Prallium,
         Gas.Chaoson,
         Gas.Garodin,
         Gas.Ethylium
-        //Fish - End
+        //Fish-end
     };
 
     /// <summary>

@@ -128,7 +128,6 @@
     defaultRotation: 90
     horizontalRotation: 90
   - type: Butcherable
-    butcheringType: Spike
     spawned:
     - id: FoodMeatHuman
       amount: 5
@@ -150,18 +149,18 @@
     interfaces:
       enum.StrippingUiKey.Key:
        type: StrippableBoundUserInterface
-  - type: ToggleableNightVision
-    effect: EffectNightVisionPirate
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#FF983326'
   - type: ComplexInteraction
   - type: TTS
     voice: Sidorovich
   - type: Vocal
-    sounds:
-      Male: MaleHuman
-      Female: FemaleHuman
-      Unsexed: MaleHuman
+    emoteSounds: MaleHuman
   - type: GhostRole
-    prob: 0.05
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-soviet-name
     description: ghost-role-information-expedition-soviet-description
@@ -257,7 +256,7 @@
     - NamesMilitaryFirstGamma
     - NamesLast
     nameFormat: name-format-ert
-  - type: ActionGun
+  - type: SunriseActionGun
     action: ActionGunGrenadeExplosiveShrapnel
     gunProto: GunGrenadeExplosiveShrapnel
   - type: NPCUseActionWhenTargetInRange
@@ -1736,6 +1735,7 @@
     pvsIncrease: 1.5
   # Ghost role stuff
   - type: GhostRole
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     allowMovement: true
     name: ghost-role-information-mercenary-captain-dungeon-name
     description: ghost-role-information-mercenary-captain-dungeon-description
@@ -1745,7 +1745,7 @@
     mindRoles:
     - MindRoleGhostRoleTeamAntagonist
   - type: GhostTakeoverAvailable
-  - type: ActionGun
+  - type: SunriseActionGun
     action: ActionSideArmFan
     gunProto: GunSideArmFan
   - type: NPCUseActionWhenTargetInRange
@@ -1786,8 +1786,8 @@
       types:
         Blunt: 10
         Slash: 20
-  - type: Butcherable
-    spawned:
+  - type: ToolRefinable
+    refineResult:
     - id: FoodMeatBear
       amount: 6
     - id: ChemistryBottleOmnizine

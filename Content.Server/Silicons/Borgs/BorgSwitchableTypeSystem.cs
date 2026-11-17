@@ -1,7 +1,7 @@
 ﻿using Content.Server.Inventory;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Station.Systems;
-using Content.Server.StationRecords.Systems;
+using Content.Shared.StationRecords.Systems; // Sunrise-Edit - StationRecordsSystem перенесён в Shared
 using Content.Server._Sunrise.Messenger;
 using Content.Shared.Inventory;
 using Content.Shared.Radio;
@@ -12,6 +12,7 @@ using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.StationRecords;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using Content.Shared.StationRecords.Components;
 
 namespace Content.Server.Silicons.Borgs;
 
@@ -25,10 +26,9 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
     [Dependency] private StationRecordsSystem _record = default!;
     [Dependency] private MessengerServerSystem _messenger = default!;
     [Dependency] private StationSystem _station = default!;
-
     protected override void SelectBorgModule(Entity<BorgSwitchableTypeComponent> ent, ProtoId<BorgTypePrototype> borgType)
     {
-        var prototype = Prototypes.Index(borgType);
+        var prototype = ProtoMan.Index(borgType);
 
         // Assign radio channels
         string[] radioChannels = [.. ent.Comp.InherentRadioChannels, .. prototype.RadioChannels];
@@ -39,16 +39,11 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
             activeRadio.Channels = [.. radioChannels];
 
         // Borg transponder for the robotics console
-        if (TryComp(ent, out BorgTransponderComponent? transponder))
-        {
-            _borgSystem.SetTransponderSprite(
-                (ent.Owner, transponder),
-                new SpriteSpecifier.Rsi(new ResPath("Mobs/Silicon/chassis.rsi"), prototype.SpriteBodyState));
-
-            _borgSystem.SetTransponderName(
-                (ent.Owner, transponder),
-                Loc.GetString($"borg-type-{borgType}-transponder"));
-        }
+        // Fish-start
+        // Спрайт и имя транспондера обновляем через общий хелпер: он же используется
+        // при апгрейде до Mk2, где RSI берётся из холста нового borgType.
+        UpdateTransponder(ent, borgType);
+        // Fish-end
 
         // Configure modules
         if (TryComp(ent, out BorgChassisComponent? chassis))
@@ -70,7 +65,7 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
         }
 
         // Configure special components
-        if (Prototypes.Resolve(ent.Comp.SelectedBorgType, out var previousPrototype))
+        if (ProtoMan.Resolve(ent.Comp.SelectedBorgType, out var previousPrototype))
         {
             if (previousPrototype.AddComponents is { } removeComponents)
                 EntityManager.RemoveComponents(ent, removeComponents);
@@ -89,7 +84,7 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
 
         // Sunrise-Start
         var borgName = MetaData(ent.Owner).EntityName;
-        if (Prototypes.TryIndex<JobPrototype>(prototype.Job, out var jobPrototype))
+        if (ProtoMan.TryIndex<JobPrototype>(prototype.Job, out var jobPrototype))
         {
             UpdateStationRecord(ent.Owner,
                 jobPrototype.LocalizedName,

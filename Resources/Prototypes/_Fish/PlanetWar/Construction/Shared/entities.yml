@@ -1337,8 +1337,7 @@
       whitelist:
         components:
           - HumanoidProfile
-          - Thirst
-          - Hunger
+          - Satiation
           - Item
         tags:
           - Structure
@@ -1476,7 +1475,7 @@
   id: EmergencyMedipenWM
   components:
   - type: Label
-    currentLabel: эпинефрин
+    localizedLabel: reagent-name-epinephrine
   - type: Solution
     id: pen
     solution:
@@ -1496,7 +1495,7 @@
   - type: Item
     size: Tiny
   - type: Label
-    currentLabel: эфедрин
+    localizedLabel: reagent-name-ephedrine
   - type: Solution
     solution:
       maxVol: 30
@@ -2911,7 +2910,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.00001
   - type: Label
-    currentLabel: Эпинефрен
+    localizedLabel: reagent-name-epinephrine
   - type: Solution
     solution:
       maxVol: 80
@@ -2949,7 +2948,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.00001
   - type: Label
-    currentLabel: Бикаридин-Пункта
+    localizedLabel: label-reagent-bicaridine-puncturase
   - type: Solution
     solution:
       maxVol: 200
@@ -2975,7 +2974,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.00001
   - type: Label
-    currentLabel: Трикомет
+    localizedLabel: label-reagent-tricomet
   - type: Solution
     solution:
       maxVol: 200
@@ -2999,7 +2998,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.00001
   - type: Label
-    currentLabel: Дермалин
+    localizedLabel: reagent-name-dermaline
   - type: Solution
     solution:
       maxVol: 100
@@ -3021,7 +3020,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.00001
   - type: Label
-    currentLabel: EZNutrient
+    localizedLabel: reagent-name-e-z-nutrient
   - type: Solution
     solution:
       maxVol: 100
@@ -3039,7 +3038,7 @@
     - type: ActionGrant
       actions:
       - ActionOpenPlanetWarGuide
-    # Fish edit - for meme gamemode, do not remove
+    # Fish-edit - for meme gamemode, do not remove
     - type: PWVulpkaninCursePending
     - type: IdBind
     # NameIdentifier убран: RandomMetadata + name-format-ert уже даёт номер, иначе двойные цифры в имени.
@@ -3073,10 +3072,10 @@
     - type: Transform
     - type: CanJump
       isOnlyEmotion: true
-    - type: Thirst
-      baseDecayRate: 0
-    - type: Hunger
-      baseDecayRate: 0
+    # - type: Thirst
+    #   baseDecayRate: 0
+    # - type: Hunger
+    #   baseDecayRate: 0
    # - type: RandomHumanoidAppearance
    #   randomizeName: false
     - type: MovementIgnoreGravity
@@ -3196,17 +3195,20 @@
     materialComposition:
       MoneyWarMizMaterial: 100
   - type: SelfUnremovableClothing
-  - type: StorageFill
-    contents: 
-    - id: DrinkMREFlaskWM
-    - id: PinpointerCoreWM
-    - id: CombatKnifeWM
-    - id: MedkitFilledWM
-    - id: GrenadeFlashBangWM
-    - id: TearGasGrenadeWM
-    - id: BoxGlowstickBlueWM
-    - id: MoneyWarMiz500
-    - id: BinocularsWM
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - id: PouchBackpackPockets
+        - id: DrinkMREFlaskWM
+        - id: PinpointerCoreWM
+        - id: CombatKnifeWM
+        - id: MedkitFilledWM
+        - id: GrenadeFlashBangWM
+        - id: TearGasGrenadeWM
+        - id: BoxGlowstickBlueWM
+        - id: MoneyWarMiz500
+        - id: BinocularsWM
   - type: ExplosionResistance
     damageCoefficient: 0
 
@@ -3315,17 +3317,20 @@
     materialComposition:
       MoneyWarMizMaterial: 100
   - type: SelfUnremovableClothing
-  - type: StorageFill
-    contents:
-    - id: DrinkMREFlaskWM
-    - id: PinpointerArmWM
-    - id: KukriKnifeWM
-    - id: MedkitFilledWM
-    - id: GrenadeFlashBangWM
-    - id: TearGasGrenadeWM
-    - id: BoxGlowstickRedWM
-    - id: MoneyWarMiz500
-    - id: BinocularsWM
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - id: PouchBackpackPockets
+        - id: DrinkMREFlaskWM
+        - id: PinpointerArmWM
+        - id: KukriKnifeWM
+        - id: MedkitFilledWM
+        - id: GrenadeFlashBangWM
+        - id: TearGasGrenadeWM
+        - id: BoxGlowstickRedWM
+        - id: MoneyWarMiz500
+        - id: BinocularsWM
   - type: ExplosionResistance
     damageCoefficient: 0
 
@@ -3763,6 +3768,8 @@
        - SellTagWM
        - TehfabTagWM
     blacklist:
+      components:
+       - Material
       tags:
        - TehfabTagMaterialWM
     sound:
@@ -3857,7 +3864,7 @@
 
 - type: entity
   categories: [ HideSpawnMenu, Debug ]
-  parent: BaseGateway
+  parent: Gateway
   id: BaseGatewayWM
   components:
   #  - type: RadarBlip
@@ -3977,6 +3984,8 @@
        - SellTagWM
        - TehfabTagWM
     blacklist:
+      components:
+       - Material
       tags:
        - TehfabTagMaterialWM
     sound:

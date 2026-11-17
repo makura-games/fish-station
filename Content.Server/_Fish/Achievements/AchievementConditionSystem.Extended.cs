@@ -3,6 +3,7 @@ using Content.Server.Antag;
 using Content.Server.Antag.Components;
 using Content.Shared._Fish.Achievements;
 using Content.Shared.Ghost;
+using Content.Shared.Ghost.Components;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Nutrition;

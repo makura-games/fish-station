@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 namespace Content.Server._Sunrise.Disease;
 
 [RegisterComponent, Access(typeof(DiseaseRoleSystem))]

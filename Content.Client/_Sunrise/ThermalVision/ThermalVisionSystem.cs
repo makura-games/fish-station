@@ -66,6 +66,11 @@ public sealed partial class ThermalVisionSystem : EntitySystem
 
     private void AddNightVision(EntityUid uid)
     {
+        // Fish-start - очки используют температурные силуэты.
+        if (_fishVisionOverride)
+            return;
+        // Fish-end
+
         if (HasComp<EyeProtectionComponent>(uid)) return;
 
         _overlayMan.AddOverlay(_throughWallsOverlay);

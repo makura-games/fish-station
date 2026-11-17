@@ -152,8 +152,7 @@
   - type: Speech
     speechSounds: SyndieBorg
   - type: Vocal
-    sounds:
-      Unsexed: UnisexSiliconSyndicate
+    emoteSounds: UnisexSiliconSyndicate
   - type: FootstepModifier
     footstepSoundCollection:
       collection: FootstepBorg
@@ -165,8 +164,11 @@
       params:
         variation: 0.125
   - type: SoundWhileAlive
-  - type: ToggleableNightVision
-    effect: EffectNightVisionSyndie
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#D61B1B26'
   - type: TTS
     voice: Sentrybot
   - type: NpcVeteranFollower
@@ -939,14 +941,16 @@
   - type: Speech
     speechSounds: SyndieBorg
   - type: Vocal
-    sounds:
-      Unsexed: UnisexSiliconSyndicate
+    emoteSounds: UnisexSiliconSyndicate
   - type: FootstepModifier
     footstepSoundCollection:
       path: /Audio/_Sunrise/Effects/silence.ogg
   - type: SoundWhileAlive
-  - type: ToggleableNightVision
-    effect: EffectNightVisionSyndie
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#D61B1B26'
   - type: TTS
     voice: Sentrybot
 
@@ -1331,6 +1335,7 @@
     color: "#47f8ff"
   # Ghost role stuff
   - type: GhostRole
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     allowMovement: true
     name: ghost-role-information-guardian-unit-dungeon-name
     description: ghost-role-information-one-star-unit-dungeon-description
@@ -1456,6 +1461,7 @@
       path: /Audio/Mecha/sound_mecha_powerloader_step.ogg
   # Ghost role stuff
   - type: GhostRole
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     allowMovement: true
     name: ghost-role-information-one-star-unit-dungeon-name
     description: ghost-role-information-one-star-unit-dungeon-description
@@ -1645,7 +1651,7 @@
       settings: default
     mindRoles:
     - MindRoleGhostRoleTeamAntagonist
-    prob: 0.35
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
   - type: GhostTakeoverAvailable
 

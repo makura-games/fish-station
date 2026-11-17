@@ -29,7 +29,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTAmberLeader
     belt:
     - Handcuffs
@@ -68,7 +68,7 @@
     - Flash
     - HoloprojectorField
     - WeaponAdvancedTaser
-    - BluespaceArtilleryDesignator
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTRedLeader
     belt:
     - Handcuffs
@@ -94,7 +94,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: PouchAmmo
+    pocket2: PouchAmmoFilledPistol40
   inhand:
   - WeaponPistolM1911
   - WeaponRifleLecterXL8
@@ -108,11 +108,7 @@
     - HoloprojectorField
     - WeaponAdvancedTaser
     - DoorRemoteOmni
-    - BluespaceArtilleryDesignator
-    - MagazineMagnumFMJ
-    - MagazineMagnum
-    - MagazineMagnum
-    - MagazineMagnum
+    - BluespaceArtilleryDesignator # Fish-eDit
     - ClothingHandsPowerGlovesUplinkNTERTGammaLeader
     belt:
     - Handcuffs
@@ -299,7 +295,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltChiefEngineerFilled
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: CableHVStack
+    pocket2: PouchMaterial
   inhand:
   - ClothingHandsPowerGlovesUplinkNTERTAmber
   - RCD
@@ -317,6 +313,7 @@
     - CableDetStack
     - MiningDrillDiamond
     - CyberGrenadeThrowerAtmos
+    - CableHVStack
 
 - type: startingGear
   id: ERTEngineerGearGamma
@@ -331,7 +328,7 @@
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltChiefEngineerFilled
     pocket1: DoubleEmergencyOxygenTankFilled
-    pocket2: CableHVStack
+    pocket2: PouchMaterial
   inhand:
   - ClothingHandsPowerGlovesUplinkNTERTRed
   - RCDRecharging
@@ -348,6 +345,7 @@
     - CableDetStack
     - MiningDrillDiamond
     - CyberGrenadeThrowerAtmos
+    - CableHVStack
 # Medical
 
 - type: startingGear
@@ -469,7 +467,7 @@
     - BoxCleanerGrenades
     - CrowbarRed
     - ClothingHandsPowerGlovesUplinkNTERTRed
-#fish-start
+#Fish-start
 - type: entity
   id: RandomHumanoidSpawnerCBURNLeader
   name: CBURN Leader
@@ -514,4 +512,4 @@
       - NamesMilitaryFirstLeader
       - NamesMilitaryLast
       nameFormat: name-format-ert
-#fish-end
+#Fish-end

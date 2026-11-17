@@ -27,6 +27,13 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
             return;
         }
 
+        // Fish-start
+        var attempt = new FloatingAnimationAttemptEvent();
+        RaiseLocalEvent(uid, ref attempt);
+        if (attempt.Cancelled)
+            return;
+        // Fish-end
+
         var animation = new Animation
         {
             // We multiply by the number of extra keyframes to make time for them
@@ -60,3 +67,8 @@ public sealed partial class FloatingVisualizerSystem : SharedFloatingVisualizerS
         FloatAnimation(uid, component.Offset, component.AnimationKey, component.AnimationTime, stop: !component.CanFloat);
     }
 }
+
+// Fish-start
+[ByRefEvent]
+public record struct FloatingAnimationAttemptEvent(bool Cancelled = false);
+// Fish-end

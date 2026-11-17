@@ -1,12 +1,10 @@
+using Content.Client._Fish.Homelander; // Fish-edit
 using System.Linq;
 using Content.Client.Gameplay;
 using Content.Shared.CCVar;
-using Content.Shared.CombatMode;
 using Content.Shared.Effects;
-using Content.Shared.Hands.Components;
+using Content.Shared.IdentityManagement;
 using Content.Shared.Input;
-using Content.Shared.Mobs.Components;
-using Content.Shared.StatusEffect;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Components;
 using Content.Shared.Weapons.Melee.Events;
@@ -25,6 +23,7 @@ namespace Content.Client.Weapons.Melee;
 
 public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 {
+    [Dependency] private HomelanderSystem _homelander = default!; // Fish-edit
     [Dependency] private IEyeManager _eyeManager = default!;
     [Dependency] private IInputManager _inputManager = default!;
     [Dependency] private IPlayerManager _player = default!;
@@ -76,7 +75,11 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         }
 
         var useDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.Use);
-        var altDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.UseSecondary);
+        // Fish-start
+        var altDown = _homelander.IsLaserActive(entity)
+            ? BoundKeyState.Up
+            : _inputSystem.CmdStates.GetState(EngineKeyFunctions.UseSecondary);
+        // Fish-end
         var meleeGunAttack = _inputSystem.CmdStates.GetState(ContentKeyFunctions.MeleeGunAttack); // Sunrise-Edit
 
         if (weapon.AutoAttack || useDown != BoundKeyState.Down && altDown != BoundKeyState.Down || _cfg.GetCVar(CCVars.ControlHoldToAttackMelee))
@@ -103,7 +106,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
         EntityCoordinates coordinates;
 
-        if (MapManager.TryFindGridAt(mousePos, out var gridUid, out _))
+        if (Maps.TryFindGridAt(mousePos, out var gridUid, out _))
         {
             coordinates = TransformSystem.ToCoordinates(gridUid, mousePos);
         }
@@ -235,5 +238,37 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         // Entity might not have been sent by PVS.
         if (Exists(ent) && Exists(entWeapon))
             DoLunge(ent, entWeapon, ev.Angle, ev.LocalPos, ev.Animation);
+    }
+
+    protected override void UndamagedAttack(Entity<MeleeWeaponComponent> ent, EntityUid target, EntityUid user)
+    {
+        if (ent.Comp.UndamagedAlertThreshold == 0)
+            return;
+
+        if (ent.Comp.LastUndamagedHitEntity != target)
+        {
+            ent.Comp.UndamagedSwings = 0;
+            ent.Comp.LastUndamagedHitEntity = target;
+        }
+
+        ent.Comp.UndamagedSwings++;
+        if (ent.Comp.UndamagedSwings >= ent.Comp.UndamagedAlertThreshold)
+        {
+            if (ent.Owner == user)
+            {
+                PopupSystem.PopupEntity(Loc.GetString("melee-self-weapon-dealt-no-damage", ("target", Identity.Entity(target, EntityManager, user))), target, user);
+            }
+            else
+            {
+                PopupSystem.PopupEntity(Loc.GetString("melee-weapon-dealt-no-damage", ("weapon", ent), ("target", Identity.Entity(target, EntityManager, user))), target, user);
+            }
+
+            ent.Comp.UndamagedSwings = 0;
+        }
+    }
+
+    protected override void ResetUndamagedSwingsCount(Entity<MeleeWeaponComponent> ent)
+    {
+        ent.Comp.UndamagedSwings = 0;
     }
 }
