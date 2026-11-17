@@ -98,10 +98,11 @@
   # Fish-start: сварка чинит механику только у КПБ, цифры как у борга
   - type: FishWeldingHealing
     qualityNeeded: Welding
-    # Цифры механики как у борга: 1 с, 0.5 топлива, Blunt/Slash/Piercing. Самосварка ×2.
+    # Цифры механики как у борга: 1 с, 0.5 топлива, Blunt/Slash/Piercing. Самосварка до ×3 от урона, как у органиков.
     fuelCost: 0.5
     doAfterDelay: 1
-    selfHealPenalty: 2
+    # selfHealPenalty: 2
+    selfHealPenalty: 3
     allowSelfHeal: true
     requireWelderFuel: true
     damageContainers:

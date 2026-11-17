@@ -29,6 +29,7 @@
     - Inorganic
     - Silicon
     - Mech
+    - Ipc # Fish-edit: отображение шкалы здоровья КПБ на визоре
   - type: FlashImmunity
 
 - type: entity
@@ -46,6 +47,7 @@
     - Inorganic
     - Silicon
     - Mech
+    - Ipc # Fish-edit: отображение шкалы здоровья КПБ на визоре
 
 - type: entity
   parent: [ClothingEyesChameleon, ClothingEyesGlassesHiddenSecurity]

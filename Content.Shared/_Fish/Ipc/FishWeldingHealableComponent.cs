@@ -24,9 +24,9 @@ public sealed partial class FishWeldingHealingComponent : Component
     [DataField]
     public float DoAfterDelay = 1f;
 
-    /// <summary>Самосварка дольше чужого ремонта во столько раз.</summary>
+    /// <summary>Максимальный множитель задержки при самосварке (при критическом уроне).</summary>
     [DataField]
-    public float SelfHealPenalty = 2f;
+    public float SelfHealPenalty = 3f;
 
     [DataField]
     public bool AllowSelfHeal = true;

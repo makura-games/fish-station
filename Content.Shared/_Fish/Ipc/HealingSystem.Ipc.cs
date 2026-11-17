@@ -1,6 +1,8 @@
 using Content.Shared._Fish.Ipc;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
+using Content.Shared.Eye.Blinding.Components;
+using Content.Shared.Eye.Blinding.Systems;
 using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
 
@@ -9,6 +11,8 @@ namespace Content.Shared.Medical.Healing;
 
 public sealed partial class HealingSystem
 {
+    [Dependency] private BlindableSystem _blindable = default!; // Fish-edit: малое лечение слепоты нанопастой
+
     private static readonly ProtoId<TagPrototype> CableCoilTag = "CableCoil";
 
     private static readonly ProtoId<DamageTypePrototype>[] IpcMechanicalTypes =
@@ -54,12 +58,6 @@ public sealed partial class HealingSystem
         return false;
     }
 
-    // Fish-edit: самолечение КПБ не дольше ×2, даже если предмет задаёт больший штраф
-    private float IpcSelfHealCap(EntityUid target, float mod)
-    {
-        return HasComp<FishIpcComponent>(target) ? 2f : mod;
-    }
-
     private static DamageSpecifier WithoutIpcMechanical(DamageSpecifier damage)
     {
         var copy = new DamageSpecifier(damage);
@@ -69,6 +67,19 @@ public sealed partial class HealingSystem
         }
 
         return copy;
+    }
+
+    private bool CanHealEyeDamage(HealingComponent healing, EntityUid target)
+    {
+        return healing.EyeDamageHeal > 0
+               && TryComp<BlindableComponent>(target, out var blindable)
+               && blindable.EyeDamage > blindable.MinDamage;
+    }
+
+    private void ApplyEyeDamageHeal(HealingComponent healing, EntityUid target)
+    {
+        if (healing.EyeDamageHeal > 0)
+            _blindable.AdjustEyeDamage(target, -healing.EyeDamageHeal);
     }
     // Fish-end
 }
