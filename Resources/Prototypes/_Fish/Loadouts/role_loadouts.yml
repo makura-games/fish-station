@@ -58,18 +58,20 @@
 - type: roleLoadout
   id: JobCentcommBlueShield
   groups:
-  - BlueShieldHead # Fish-edit
+  - BlueShieldHead
+  - SunriseLoadoutGroupBlueShieldMask
+  - BlueShieldNeck
+  - BlueShieldOuterClothing
   - BlueShieldJumpsuit
   - BlueShieldBackpack
   - BlueShieldBelt
-  - BlueShieldNeck
-  - BlueShieldOuterClothing
-  - Trinkets
+  - BlueShieldBra
+  - BlueShieldPants
+  - SunriseTrinkets
   - SurvivalSecurity
   - GroupSpeciesBreathTool
-  - Bra
-  - Pants
   - Socks
+  - Contributors
 
 - type: roleLoadout
   id: JobCentcommMedicalDoctor
@@ -146,18 +148,20 @@
 - type: roleLoadout
   id: JobRepresentativeBlueShield
   groups:
-  - BlueShieldHead # Fish-edit
+  - BlueShieldHead
+  - SunriseLoadoutGroupBlueShieldMask
+  - BlueShieldNeck
+  - BlueShieldOuterClothing
   - BlueShieldJumpsuit
   - BlueShieldBackpack
   - BlueShieldBelt
-  - BlueShieldNeck
-  - BlueShieldOuterClothing
-  - Trinkets
+  - BlueShieldBra
+  - BlueShieldPants
+  - SunriseTrinkets
   - SurvivalSecurity
   - GroupSpeciesBreathTool
-  - Bra
-  - Pants
   - Socks
+  - Contributors
 
 - type: roleLoadout
   id: JobOversightOfficer

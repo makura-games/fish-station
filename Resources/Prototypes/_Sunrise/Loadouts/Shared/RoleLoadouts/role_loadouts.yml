@@ -119,10 +119,8 @@
   - BlueShieldBackpack
   - BlueShieldBelt
   # - BlueshieldGun # Fish-edit
-  - Bra # Fish-edit
-  - Pants # Fish-edit
-# - BlueShieldBra # Fish-edit
-# - BlueShieldPants # Fish-edit
+  - BlueShieldBra
+  - BlueShieldPants # Fish-edit
   - SunriseTrinkets
   - SunriseSurvivalSecurity
   - GroupSpeciesBreathTool
