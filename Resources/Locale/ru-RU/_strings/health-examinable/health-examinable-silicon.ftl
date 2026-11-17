@@ -19,8 +19,6 @@ health-examinable-silicon-Shock-50 = [color=lightgoldenrodyellow]{ CAPITALIZE(PO
 
 health-examinable-silicon-Mangleness-15 = [color=gray]{ CAPITALIZE(POSS-ADJ($target)) } шасси покрыто следами кустарного ремонта.[/color]
 
-# Fish-start: осмотр структурного урона синтетиков
 health-examinable-silicon-Structural-15 = [color=red]{ CAPITALIZE(POSS-ADJ($target)) } несущий каркас слегка деформирован.[/color]
 health-examinable-silicon-Structural-50 = [color=crimson]{ CAPITALIZE(POSS-ADJ($target)) } каркас имеет серьёзные структурные повреждения![/color]
 health-examinable-silicon-Structural-100 = [color=crimson]{ CAPITALIZE(POSS-ADJ($target)) } каркас критически повреждён и вот-вот развалится![/color]
-# Fish-end
