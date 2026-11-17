@@ -20,8 +20,8 @@
     - BlueShieldOfficer
     - CentcommBlueShield # Fish-edit
     - RepresentativeBlueShield #Fish-edit
-    # - BlueShieldOfficerFish # Fish-edit
-    # - BlueShieldOperative # Fish-edit
+    - BlueShieldOfficerFish # Fish-edit
+    - BlueShieldOperative # Fish-edit
   primary: false
   weight: 50
 

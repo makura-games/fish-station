@@ -26,4 +26,4 @@
           availableJobs:
             #centcom
             CentCommOperator: [ 1, 2 ]
-            BlueShieldOperative: [1, 2]
+            # BlueShieldOperative: [1, 2]
