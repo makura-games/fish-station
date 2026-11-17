@@ -18,3 +18,9 @@ health-examinable-mech-Heat-75 = { health-examinable-silicon-Heat-75 }
 health-examinable-mech-Shock-50 = { health-examinable-silicon-Shock-50 }
 
 health-examinable-mech-Mangleness-15 = { health-examinable-silicon-Mangleness-15 }
+
+# Fish-start: inspect mech structural damage
+health-examinable-mech-Structural-15 = { health-examinable-silicon-Structural-15 }
+health-examinable-mech-Structural-50 = { health-examinable-silicon-Structural-50 }
+health-examinable-mech-Structural-100 = { health-examinable-silicon-Structural-100 }
+# Fish-end
