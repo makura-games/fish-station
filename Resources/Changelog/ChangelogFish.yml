@@ -1760,3 +1760,10 @@
     message: Фикс запрета взаимодействия с миром в агосте
   id: 178
   url: https://github.com/makura-games/fish-station/pull/670
+- author: NekutGit
+  time: '2026-11-17T22:47:42.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен канал сервиса для гарнитуры гк.
+  id: 179
+  url: https://github.com/makura-games/fish-station/pull/659
