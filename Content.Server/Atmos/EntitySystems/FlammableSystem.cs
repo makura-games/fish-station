@@ -440,11 +440,18 @@ namespace Content.Server.Atmos.EntitySystems
             var curTime = _timing.CurTime;
 
             // TODO: This needs cleanup to take off the crust from TemperatureComponent and shit.
-            var query = EntityQueryEnumerator<FlammableComponent, TransformComponent>();
-            while (query.MoveNext(out var uid, out var flammable, out _))
+            // Fish-start: собираем список обновляемых сущностей до урона/событий смерти, чтобы спавн или удаление FlammableComponent не ломали EntityQueryEnumerator
+            CollectFlammableUpdateEntities(curTime);
+            // var query = EntityQueryEnumerator<FlammableComponent, TransformComponent>();
+            // while (query.MoveNext(out var uid, out var flammable, out _))
+            foreach (var (uid, flammable) in _fishUpdateEntities)
             {
-                if (curTime < flammable.NextUpdate)
+                if (TerminatingOrDeleted(uid) || !flammable.Running)
                     continue;
+
+                // if (curTime < flammable.NextUpdate)
+                //     continue;
+            // Fish-end
 
                 flammable.NextUpdate += UpdateTime;
 

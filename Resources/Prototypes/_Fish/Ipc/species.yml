@@ -3,6 +3,7 @@
   id: Ipc
   name: species-name-ipc
   roundStart: true
+  excludeFromRandomSpecies: true
   prototype: MobIpc
   bodyTypes:
   - IpcNormal

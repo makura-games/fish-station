@@ -71,6 +71,7 @@
       Alive: BorgHealth
       Critical: BorgCrit
       Dead: BorgDead
+  - type: Blindable
   # Fish-edit: гиба от сильного перегруза урона, не от лёгкого удара; модули и батарея выпадают
   - type: Destructible
     thresholds:
