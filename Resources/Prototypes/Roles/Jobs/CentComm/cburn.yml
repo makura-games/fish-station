@@ -25,7 +25,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBrown
     back: ClothingBackpackDuffelCBURN
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesGlassesSecurity
+    eyes: FishClothingEyesHudErt  # Fish-edit
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     # gloves: ClothingHandsGlovesCombat #Sunrise-Edit
     outerClothing: ClothingOuterHardsuitCBURN
