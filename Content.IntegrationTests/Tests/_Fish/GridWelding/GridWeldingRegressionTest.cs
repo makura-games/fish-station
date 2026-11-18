@@ -30,7 +30,7 @@ using Robust.Shared.Maths;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
-using Robust.Shared.Timing;
+using Robust.Client.GameStates;
 
 namespace Content.IntegrationTests.Tests._Fish.GridWelding;
 
@@ -42,41 +42,100 @@ public sealed class GridWeldingRegressionTest
     [TestCase(true)]
     public async Task WeldingOccupiedFragmentIntoStaticGridUpdatesMovement(bool quarterTurn)
     {
-        await using var pair = await PoolManager.GetServerClient(new PoolSettings());
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var server = pair.Server;
+        var client = pair.Client;
         var entities = server.EntMan;
+        var session = pair.Player!;
+        var previous = session.AttachedEntity;
+        var movement = entities.System<SharedMoverController>();
+        var originalAngle = Angle.FromDegrees(90);
         WeldingScene scene = default;
-        var started = false;
+        NetEntity user = default;
+        NetEntity fragment = default;
+        NetEntity station = default;
 
         await server.WaitPost(() =>
         {
             scene = CreateScene(pair, quarterTurn: quarterTurn);
             entities.System<SharedPhysicsSystem>().SetBodyType(scene.Second, BodyType.Static);
             entities.System<SharedTransformSystem>().SetCoordinates(scene.User, scene.FirstClick);
-            // До начала сварки камера уже привязана к обломку, на котором стоит игрок.
+            server.PlayerMan.SetAttachedEntity(session, scene.User);
             var mover = entities.GetComponent<InputMoverComponent>(scene.User);
-            entities.System<SharedMoverController>().SetRelativeEntity((scene.User, mover), scene.First);
-            started = StartWelding(entities, scene);
-        });
-        await server.WaitAssertion(() =>
-        {
-            AssertReady(scene);
-            Assert.That(started, Is.True);
+            movement.SetRelativeEntity((scene.User, mover), scene.First);
+            mover.RelativeRotation = mover.TargetRelativeRotation = originalAngle;
+            entities.Dirty(scene.User, mover);
+            user = entities.GetNetEntity(scene.User);
+            fragment = entities.GetNetEntity(scene.First);
+            station = entities.GetNetEntity(scene.Second);
         });
 
-        await WaitForMerge(pair, scene.First);
-        await server.WaitAssertion(() =>
+        const int networkTicks = 20;
+        await pair.RunTicksSync(networkTicks);
+        var states = client.ResolveDependency<IClientGameStateManager>();
+        var received = false;
+        void OnApplied(GameStateAppliedArgs args)
         {
-            Assert.That(entities.EntityExists(scene.Second), Is.True);
-            Assert.That(entities.GetComponent<TransformComponent>(scene.User).GridUid, Is.EqualTo(scene.Second));
-            var mover = entities.GetComponent<InputMoverComponent>(scene.User);
-            Assert.That(mover.RelativeEntity, Is.EqualTo(scene.Second),
-                "Movement must stop referencing the consumed fragment before the camera interpolation delay expires.");
-            var state = (InputMoverComponentState) entities.GetComponentState(entities.EventBus, mover, null, GameTick.Zero)!;
-            Assert.That(state.RelativeEntity, Is.EqualTo(entities.GetNetEntity(scene.Second)));
-        });
+            foreach (var state in args.AppliedState.EntityStates.Value)
+            {
+                if (state.NetEntity == user && state.ComponentChanges.Value.Any(change =>
+                        change.State is InputMoverComponentState update && update.RelativeEntity == station))
+                    received = true;
+            }
+        }
 
-        await server.WaitPost(() => entities.DeleteEntity(scene.Map));
+        await client.WaitAssertion(() =>
+        {
+            var mover = client.EntMan.GetComponent<InputMoverComponent>(client.EntMan.GetEntity(user));
+            Assert.That(mover.RelativeEntity, Is.EqualTo(client.EntMan.GetEntity(fragment)));
+            states.GameStateApplied += OnApplied;
+        });
+        try
+        {
+            await server.WaitAssertion(() =>
+            {
+                AssertReady(scene);
+                Assert.That(StartWelding(entities, scene), Is.True);
+            });
+            await WaitForMerge(pair, scene.First);
+            var expected = originalAngle - (quarterTurn ? Angle.FromDegrees(90) : Angle.Zero);
+            await server.WaitAssertion(() =>
+            {
+                Assert.That(entities.GetComponent<TransformComponent>(scene.User).GridUid, Is.EqualTo(scene.Second));
+                var mover = entities.GetComponent<InputMoverComponent>(scene.User);
+                Assert.That(mover.RelativeEntity, Is.EqualTo(scene.Second));
+                Assert.That(Math.Abs((mover.RelativeRotation - expected).Reduced().Theta), Is.LessThan(0.001));
+                Assert.That(Math.Abs((mover.TargetRelativeRotation - expected).Reduced().Theta), Is.LessThan(0.001));
+            });
+
+            await pair.RunTicksSync(networkTicks);
+            await client.WaitAssertion(() =>
+            {
+                Assert.That(received, Is.True, "The server must send the new relative grid in the mover state.");
+                var mover = client.EntMan.GetComponent<InputMoverComponent>(client.EntMan.GetEntity(user));
+                Assert.That(mover.RelativeEntity, Is.EqualTo(client.EntMan.GetEntity(station)));
+            });
+
+            await server.WaitPost(() => movement.SetVelocityDirection(
+                (scene.User, entities.GetComponent<InputMoverComponent>(scene.User)), Direction.North, 0, true));
+            await pair.RunTicksSync(1);
+            await server.WaitAssertion(() =>
+            {
+                var direction = movement.GetWishDir(scene.User);
+                Assert.That(direction.LengthSquared(), Is.GreaterThan(0f));
+                Assert.That(Vector2.Distance(Vector2.Normalize(direction), originalAngle.RotateVec(Vector2.UnitY)),
+                    Is.LessThan(0.001), "Forward input must keep its world direction after the weld.");
+            });
+        }
+        finally
+        {
+            await client.WaitPost(() => states.GameStateApplied -= OnApplied);
+            await server.WaitPost(() =>
+            {
+                server.PlayerMan.SetAttachedEntity(session, previous);
+                entities.DeleteEntity(scene.Map);
+            });
+        }
         await pair.CleanReturnAsync();
     }
 
