@@ -29,10 +29,12 @@
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_yellow_glasses.rsi
   - type: ShowNanotrasenIcons
   - type: ShowHealthBars
+  - type: FlashImmunity
   - type: Tag
     tags:
     - PetWearable
     - WhitelistChameleon
+    - HudMedical
   - type: SolutionScanner
 
 - type: entity

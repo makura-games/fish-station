@@ -7,9 +7,9 @@
       sprite: Markers/jobs.rsi
       state: cburn
     - type: RandomHumanoidSpawner
-      settings: CBURNLeader
+      settings: FishCBURNLeader
 - type: randomHumanoidSettings
-  id: CBURNLeader
+  id: FishCBURNLeader
   parent: EventHumanoidERTSunrise
   speciesBlacklist:
   - Diona
