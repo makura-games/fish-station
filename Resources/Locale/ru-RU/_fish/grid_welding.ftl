@@ -14,3 +14,4 @@ fish-grid-welding-station = Эти части принадлежат разны�
 fish-grid-welding-protected = Эти конструкции защищены от такого соединения.
 fish-grid-welding-interrupted = Сварка прервана. Проверьте положение частей и повторите второй клик.
 fish-grid-welding-complete = Части сварены в одну конструкцию.
+fish-grid-welding-too-large = Обломок слишком большой, чтобы приварить его целиком.

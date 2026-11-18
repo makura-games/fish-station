@@ -14,3 +14,4 @@ fish-grid-welding-station = These parts belong to different stations.
 fish-grid-welding-protected = These structures are protected from this connection.
 fish-grid-welding-interrupted = Welding interrupted. Check the parts' alignment and click the second tile again.
 fish-grid-welding-complete = The parts have been welded into one structure.
+fish-grid-welding-too-large = This fragment is too large to weld in one piece.

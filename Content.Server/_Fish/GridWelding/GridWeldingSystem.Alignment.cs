@@ -15,6 +15,11 @@ public sealed partial class GridWeldingSystem
     // Проверки положения выполняются каждый тик; проверка всех тайлов нужна только перед началом и завершением.
     [Dependency] private SharedPhysicsSystem _physics = default!;
 
+    // Ограничиваем объём атомарного переноса; размер принимающей станции не ограничивается.
+    internal const int MaxDonorTiles = 256;
+    private const int MaxDonorChunks = 32;
+    private const int MaxDonorChildren = 128;
+
     private const float MaxSnapDistance = 1f;
     private const float SnapEpsilon = 0.001f;
     private const float MaxRelativeSpeed = 0.25f;
@@ -162,15 +167,68 @@ public sealed partial class GridWeldingSystem
 
         var a = Comp<MapGridComponent>(first);
         var b = Comp<MapGridComponent>(second);
+        if (b.ChunkCount > MaxDonorChunks || Transform(second).ChildCount > MaxDonorChildren ||
+            ExceedsDecalBudget(second))
+        {
+            reason = "fish-grid-welding-too-large";
+            return false;
+        }
+
+        var world = _transform.GetWorldMatrix(first);
+        var nearby = new List<Entity<MapGridComponent>>();
+        _maps.FindGridsIntersecting(Transform(first).MapID, (matrix * world).TransformBox(b.LocalAABB),
+            ref nearby, approx: true, includeMap: false);
+        var obstacles = new List<(Entity<MapGridComponent> Grid, Matrix3x2 ToGrid, Matrix3x2 FromGrid)>();
+        foreach (var grid in nearby)
+        {
+            if (grid.Owner == first || grid.Owner == second)
+                continue;
+
+            var toGrid = world * _transform.GetInvWorldMatrix(grid.Owner);
+            Matrix3x2.Invert(toGrid, out var fromGrid);
+            obstacles.Add((grid, toGrid, fromGrid));
+        }
+
+        var count = 0;
         var tiles = _maps.GetAllTiles(second, b);
         while (tiles.MoveNext(out var tile))
         {
+            if (++count > MaxDonorTiles)
+            {
+                reason = "fish-grid-welding-too-large";
+                return false;
+            }
+
             var destination = TransformTile(tile.Value.GridIndices, matrix);
             if (!_maps.GetTileRef(first, a, destination).Tile.IsEmpty)
                 return false;
+
+            // Для повёрнутых квадратов проверяем проекции на оси обеих сеток.
+            // Небольшой отступ позволяет тайлам касаться краями.
+            var cell = new Box2((Vector2) destination, (Vector2) destination + Vector2.One).Enlarged(-SnapEpsilon);
+            foreach (var (grid, toGrid, fromGrid) in obstacles)
+            {
+                if (OverlapsGrid(cell, grid, toGrid, fromGrid))
+                    return false;
+            }
         }
 
         return true;
+    }
+
+    private bool OverlapsGrid(Box2 cell, Entity<MapGridComponent> grid, Matrix3x2 toGrid, Matrix3x2 fromGrid)
+    {
+        var bounds = toGrid.TransformBox(cell);
+        var indices = new Box2(bounds.BottomLeft / grid.Comp.TileSize, bounds.TopRight / grid.Comp.TileSize);
+        var candidates = _maps.GetLocalTilesIntersecting(grid.Owner, grid.Comp, indices);
+        while (candidates.MoveNext(out var other))
+        {
+            var min = (Vector2) other.GridIndices * grid.Comp.TileSize;
+            var otherCell = new Box2(min, min + new Vector2(grid.Comp.TileSize));
+            if (bounds.Intersects(otherCell) && cell.Intersects(fromGrid.TransformBox(otherCell)))
+                return true;
+        }
+        return false;
     }
 
     /// <summary>

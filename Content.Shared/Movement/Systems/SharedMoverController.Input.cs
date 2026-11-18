@@ -122,7 +122,7 @@ namespace Content.Shared.Movement.Systems
             entity.Comp.RelativeRotation = state.RelativeRotation;
             entity.Comp.TargetRelativeRotation = state.TargetRelativeRotation;
             entity.Comp.CanMove = state.CanMove;
-            entity.Comp.RelativeEntity = EnsureEntity<InputMoverComponent>(state.RelativeEntity, entity.Owner);
+            SetRelativeEntity(entity, EnsureEntity<InputMoverComponent>(state.RelativeEntity, entity.Owner));
 
             // Reset
             entity.Comp.LastInputTick = GameTick.Zero;
@@ -257,7 +257,7 @@ namespace Content.Shared.Movement.Systems
             // Regardless of what the target is don't want the eye to move at all (from the player's perspective).
             mover.RelativeRotation -= diff;
 
-            mover.RelativeEntity = relative;
+            SetRelativeEntity((uid, mover), relative);
             Dirty(uid, mover);
             return true;
         }
@@ -292,7 +292,7 @@ namespace Content.Shared.Movement.Systems
 
             if (entity.Comp.LifeStage < ComponentLifeStage.Running)
             {
-                entity.Comp.RelativeEntity = relative;
+                SetRelativeEntity(entity, relative);
                 Dirty(entity.Owner, entity.Comp);
                 return;
             }
@@ -303,7 +303,7 @@ namespace Content.Shared.Movement.Systems
             // If we change maps then reset eye rotation entirely.
             if (oldMapId != mapId)
             {
-                entity.Comp.RelativeEntity = relative;
+                SetRelativeEntity(entity, relative);
                 entity.Comp.TargetRelativeRotation = Angle.Zero;
                 entity.Comp.RelativeRotation = Angle.Zero;
                 entity.Comp.LerpTarget = TimeSpan.Zero;
@@ -383,7 +383,7 @@ namespace Content.Shared.Movement.Systems
             if (!xform.ParentUid.IsValid())
                 return;
 
-            entity.Comp.RelativeEntity = xform.GridUid ?? xform.MapUid;
+            SetRelativeEntity(entity, xform.GridUid ?? xform.MapUid);
             entity.Comp.TargetRelativeRotation = Angle.Zero;
         }
 

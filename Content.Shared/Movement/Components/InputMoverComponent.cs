@@ -57,6 +57,7 @@ namespace Content.Shared.Movement.Components
         /// <summary>
         /// Entity our movement is relative to.
         /// </summary>
+        [Access(typeof(SharedMoverController))] // Fish-edit: смена опоры должна обновлять индекс
         public EntityUid? RelativeEntity;
 
         /// <summary>

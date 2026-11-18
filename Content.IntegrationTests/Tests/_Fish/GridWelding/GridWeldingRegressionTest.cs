@@ -3,9 +3,14 @@ using System.Linq;
 using System.Numerics;
 using Content.IntegrationTests.Pair;
 using Content.Server._Fish.GridWelding;
+using Content.Server.Atmos.EntitySystems;
 using Content.Server.Decals;
 using Content.Server.Salvage.Magnet;
+using Content.Shared._Fish.Ghost;
+using Content.Shared.Movement.Systems;
 using Content.Shared.ActionBlocker;
+using Content.Shared.Atmos;
+using Content.Shared.Atmos.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.Friction;
 using Content.Shared.GameTicking;
@@ -47,7 +52,7 @@ public sealed class GridWeldingRegressionTest
             entities.System<SharedTransformSystem>().SetCoordinates(scene.User, scene.FirstClick);
             // До начала сварки камера уже привязана к обломку, на котором стоит игрок.
             var mover = entities.GetComponent<InputMoverComponent>(scene.User);
-            mover.RelativeEntity = scene.First;
+            entities.System<SharedMoverController>().SetRelativeEntity((scene.User, mover), scene.First);
             started = StartWelding(entities, scene);
         });
         await server.WaitAssertion(() =>
@@ -318,7 +323,7 @@ public sealed class GridWeldingRegressionTest
             entities.System<SharedPhysicsSystem>().SetBodyType(scene.First, BodyType.Static);
             var tiles = new List<(Vector2i, Tile)>();
             var plating = Plating(pair);
-            const int length = 256;
+            const int length = (GridWeldingSystem.MaxDonorTiles - 1) / 2;
             for (var step = 1; step <= length; step++)
             {
                 tiles.Add((quarterTurn ? new Vector2i(0, -step) : new Vector2i(1, step), plating));
@@ -666,6 +671,122 @@ public sealed class GridWeldingRegressionTest
         await pair.CleanReturnAsync();
     }
 
+    [Test]
+    public async Task QuarterTurnPreservesDirectionalAndMirroredFloor()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings());
+        var entities = pair.Server.EntMan;
+        WeldingScene scene = default;
+        var type = pair.Server.ResolveDependency<ITileDefinitionManager>()["FloorSteelBitile"].TileId;
+        await pair.Server.WaitAssertion(() =>
+        {
+            scene = CreateScene(pair, quarterTurn: true);
+            entities.System<SharedPhysicsSystem>().SetBodyType(scene.First, BodyType.Static);
+            var maps = entities.System<SharedMapSystem>();
+            var donor = entities.GetComponent<MapGridComponent>(scene.Second);
+            maps.SetTile(scene.Second, donor, Vector2i.Zero, new Tile(type, variant: 2, rotationMirroring: 3));
+            maps.SetTile(scene.Second, donor, Vector2i.Down, new Tile(type, variant: 1, rotationMirroring: 4));
+            Assert.That(StartWelding(entities, scene), Is.True);
+        });
+        await WaitForMerge(pair, scene.Second);
+        await pair.Server.WaitAssertion(() =>
+        {
+            var maps = entities.System<SharedMapSystem>();
+            var grid = entities.GetComponent<MapGridComponent>(scene.First);
+            Assert.That(maps.GetTileRef(scene.First, grid, Vector2i.Right).Tile, Is.EqualTo(new Tile(type, variant: 2)));
+            Assert.That(maps.GetTileRef(scene.First, grid, new Vector2i(2, 0)).Tile,
+                Is.EqualTo(new Tile(type, variant: 1, rotationMirroring: 7)));
+            entities.DeleteEntity(scene.Map);
+        });
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase(true, false)]
+    [TestCase(false, false)]
+    [TestCase(true, true)]
+    [TestCase(false, true)]
+    public async Task ThirdGridAtCompletionBlocksOnlyOverlappingTiles(bool overlap, bool diagonal)
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings());
+        var entities = pair.Server.EntMan;
+        WeldingScene scene = default;
+        FixedPoint2 fuel = default;
+        await pair.Server.WaitAssertion(() =>
+        {
+            scene = CreateScene(pair);
+            entities.System<SharedPhysicsSystem>().SetBodyType(scene.First, BodyType.Static);
+            var maps = entities.System<SharedMapSystem>();
+            var grid = maps.CreateGridEntity(entities.GetComponent<TransformComponent>(scene.First).MapID);
+            maps.SetTile(grid, Vector2i.Zero, Plating(pair));
+            var transform = entities.System<SharedTransformSystem>();
+            transform.SetWorldPosition(grid.Owner, new Vector2(8, 0));
+            fuel = entities.System<SharedToolSystem>().GetWelderFuelAndCapacity(scene.Welder).fuel;
+            Assert.That(StartWelding(entities, scene), Is.True);
+            Assert.That(entities.GetComponent<GridWeldingComponent>(scene.Welder).PendingWeld, Is.Not.Null);
+            if (diagonal)
+                transform.SetWorldPositionRotation(grid.Owner, new Vector2(overlap ? 2.15f : 2.45f, 0.8f), Angle.FromDegrees(45));
+            else
+                transform.SetWorldPosition(grid.Owner, new Vector2(overlap ? 1.9f : 2f, 0));
+        });
+        await pair.RunTicksSync(3);
+        await pair.Server.WaitAssertion(() =>
+        {
+            Assert.That(entities.EntityExists(scene.Second), Is.EqualTo(overlap));
+            Assert.That(entities.System<SharedToolSystem>().GetWelderFuelAndCapacity(scene.Welder).fuel,
+                Is.EqualTo(fuel - FixedPoint2.New(overlap ? 0 : 2)));
+            entities.DeleteEntity(scene.Map);
+        });
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase(0)]
+    [TestCase(1)]
+    public async Task DonorTileBudgetIsInclusive(int excess)
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings());
+        var entities = pair.Server.EntMan;
+        WeldingScene scene = default;
+        var count = GridWeldingSystem.MaxDonorTiles + excess;
+        var milliseconds = 0d;
+        await pair.Server.WaitAssertion(() =>
+        {
+            scene = CreateScene(pair);
+            entities.System<SharedPhysicsSystem>().SetBodyType(scene.First, BodyType.Static);
+            var maps = entities.System<SharedMapSystem>();
+            var tiles = new List<(Vector2i, Tile)>();
+            var plating = Plating(pair);
+            for (var i = 0; i < count; i++)
+                tiles.Add((new Vector2i(1 + i % 32, i / 32), plating));
+            maps.SetTiles(scene.Second, entities.GetComponent<MapGridComponent>(scene.Second), tiles);
+            entities.EnsureComponent<GridAtmosphereComponent>(scene.Second);
+            for (var x = 2; x <= 6; x++)
+            for (var y = 2; y <= 6; y++)
+            {
+                var prototype = x is 2 or 6 || y is 2 or 6 ? "WallSolid" : "ChairOfficeLight";
+                entities.SpawnEntity(prototype, new EntityCoordinates(scene.Second, x + 0.5f, y + 0.5f));
+            }
+        });
+        await pair.RunSeconds(1);
+        await pair.Server.WaitAssertion(() =>
+        {
+            var gas = entities.System<AtmosphereSystem>().GetTileMixture(scene.Second, scene.Map, new Vector2i(4, 4));
+            Assert.That(gas, Is.Not.Null);
+            gas.AdjustMoles(Gas.Oxygen, 10);
+            AssertReady(scene);
+            Assert.That(StartWelding(entities, scene), Is.True);
+            var state = entities.GetComponent<GridWeldingComponent>(scene.Welder);
+            Assert.That(state.PendingWeld != null, Is.EqualTo(excess == 0));
+            var start = System.Diagnostics.Stopwatch.GetTimestamp();
+            entities.System<GridWeldingSystem>().Update(0f);
+            milliseconds = System.Diagnostics.Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+            Assert.That(entities.EntityExists(scene.Second), Is.EqualTo(excess != 0));
+            entities.DeleteEntity(scene.Map);
+        });
+        if (excess == 0)
+            TestContext.Out.WriteLine($"Weld completion for {count} tiles took {milliseconds:F2} ms.");
+        await pair.CleanReturnAsync();
+    }
+
     private static WeldingScene CreateScene(TestPair pair, Vector2 origin = default, EntityUid? existingMap = null,
         bool quarterTurn = false)
     {
@@ -689,6 +810,7 @@ public sealed class GridWeldingRegressionTest
         var coordinates = new EntityCoordinates(map, origin + new Vector2(0.5f, -0.5f));
         var user = entities.SpawnEntity("AdminObserver", coordinates);
         var welder = entities.SpawnEntity("FishGridWeldingTestWelder", coordinates);
+        entities.System<AdminGhostSystem>().TrySetInteractionRestricted(user, false);
         var pickedUp = entities.System<SharedHandsSystem>().TryPickupAnyHand(user, welder);
         var activated = entities.System<ItemToggleSystem>().TryActivate(welder, user);
         return new WeldingScene(map, first.Owner, second.Owner, user, welder,

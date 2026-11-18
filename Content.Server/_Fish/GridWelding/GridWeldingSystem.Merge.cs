@@ -24,6 +24,7 @@ namespace Content.Server._Fish.GridWelding;
 public sealed partial class GridWeldingSystem
 {
     // Движок переносит геометрию, а содержимое, принадлежащее игровым системам, переносится через их API.
+    [Dependency] private ITileDefinitionManager _tileDefinitions = default!;
     [Dependency] private GridFixtureSystem _gridFixture = default!;
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private DecalSystem _decal = default!;
@@ -92,7 +93,28 @@ public sealed partial class GridWeldingSystem
                 xform.LocalRotation + alignment.Rotation);
         }
 
+        var rotated = new List<(Vector2i, Tile)>();
+        var turns = (int) Math.Round(alignment.Rotation.Theta / (Math.PI / 2));
+        if (turns != 0)
+        {
+            var tiles = _maps.GetAllTiles(second, b);
+            while (tiles.MoveNext(out var tileRef))
+            {
+                var tile = tileRef.Value.Tile;
+                if (!_tileDefinitions[tile.TypeId].AllowRotationMirror)
+                    continue;
+
+                // При отражении движок зеркалит уже повёрнутую текстуру по экранной оси.
+                var mirror = tile.RotationMirroring & 4;
+                var rotation = (tile.RotationMirroring + (mirror == 0 ? turns : -turns)) & 3;
+                rotated.Add((TransformTile(tileRef.Value.GridIndices, alignment.Matrix),
+                    new Tile(tile.TypeId, tile.Flags, tile.Variant, (byte) (mirror | rotation))));
+            }
+        }
+
         _gridFixture.Merge(first, second, alignment.Matrix, a, b, xformA, xformB);
+        if (rotated.Count > 0)
+            _maps.SetTiles(first, a, rotated);
         _navMap.RefreshGridWeldingBeacons(beacons);
         _atmosphere.RestoreGridWeldingAtmosphere(first, atmos);
         _gravity.RefreshGravity(first);
@@ -107,6 +129,21 @@ public sealed partial class GridWeldingSystem
             var inertia = CenterInertia(bodyA);
             _physics.SetAngularVelocity(first, inertia > 0 ? momentum.Angular / inertia : 0, body: bodyA);
         }
+    }
+
+    private bool ExceedsDecalBudget(EntityUid grid)
+    {
+        const int maxDecals = 256;
+        var count = 0;
+        foreach (var chunk in _chunkEntities.GetChunks(grid))
+        {
+            if (!TryComp<DecalChunkComponent>(chunk.Owner, out var decals))
+                continue;
+            count += decals.Decals.Count;
+            if (count > maxDecals)
+                return true;
+        }
+        return false;
     }
 
     /// <summary>Snapshots decals from existing chunks without scanning the grid's bounding rectangle.</summary>

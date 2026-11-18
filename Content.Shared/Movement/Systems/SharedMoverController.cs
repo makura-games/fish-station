@@ -141,7 +141,7 @@ public abstract partial class SharedMoverController : VirtualController
 
             if (relayTargetMover.RelativeEntity != mover.RelativeEntity)
             {
-                relayTargetMover.RelativeEntity = mover.RelativeEntity;
+                SetRelativeEntity((relay.RelayEntity, relayTargetMover), mover.RelativeEntity);
                 dirtied = true;
             }
 
