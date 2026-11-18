@@ -11,6 +11,9 @@ using Content.Shared.Movement.Systems;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Tools.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.Friction;
 using Content.Shared.GameTicking;
@@ -716,17 +719,21 @@ public sealed class GridWeldingRegressionTest
             scene = CreateScene(pair);
             entities.System<SharedPhysicsSystem>().SetBodyType(scene.First, BodyType.Static);
             var maps = entities.System<SharedMapSystem>();
+            var donor = entities.GetComponent<MapGridComponent>(scene.Second);
+            var far = MapGridComponent.DefaultChunkSize + 1;
+            for (var x = 2; x <= far; x++)
+                maps.SetTile(scene.Second, donor, new Vector2i(x, 0), Plating(pair));
             var grid = maps.CreateGridEntity(entities.GetComponent<TransformComponent>(scene.First).MapID);
             maps.SetTile(grid, Vector2i.Zero, Plating(pair));
             var transform = entities.System<SharedTransformSystem>();
-            transform.SetWorldPosition(grid.Owner, new Vector2(8, 0));
+            transform.SetWorldPosition(grid.Owner, new Vector2(far + 8, 0));
             fuel = entities.System<SharedToolSystem>().GetWelderFuelAndCapacity(scene.Welder).fuel;
             Assert.That(StartWelding(entities, scene), Is.True);
             Assert.That(entities.GetComponent<GridWeldingComponent>(scene.Welder).PendingWeld, Is.Not.Null);
             if (diagonal)
-                transform.SetWorldPositionRotation(grid.Owner, new Vector2(overlap ? 2.15f : 2.45f, 0.8f), Angle.FromDegrees(45));
+                transform.SetWorldPositionRotation(grid.Owner, new Vector2(far + (overlap ? 1.15f : 1.45f), 0.8f), Angle.FromDegrees(45));
             else
-                transform.SetWorldPosition(grid.Owner, new Vector2(overlap ? 1.9f : 2f, 0));
+                transform.SetWorldPosition(grid.Owner, new Vector2(far + (overlap ? 0.9f : 1f), 0));
         });
         await pair.RunTicksSync(3);
         await pair.Server.WaitAssertion(() =>
@@ -734,6 +741,38 @@ public sealed class GridWeldingRegressionTest
             Assert.That(entities.EntityExists(scene.Second), Is.EqualTo(overlap));
             Assert.That(entities.System<SharedToolSystem>().GetWelderFuelAndCapacity(scene.Welder).fuel,
                 Is.EqualTo(fuel - FixedPoint2.New(overlap ? 0 : 2)));
+            entities.DeleteEntity(scene.Map);
+        });
+        await pair.CleanReturnAsync();
+    }
+
+    [TestCase(99, false)]
+    [TestCase(103, true)]
+    public async Task WeldingChargesMixedFuelExactly(int taggedCents, bool shouldMerge)
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings());
+        var entities = pair.Server.EntMan;
+        await pair.Server.WaitAssertion(() =>
+        {
+            var scene = CreateScene(pair);
+            AssertReady(scene);
+            Assert.That(StartWelding(entities, scene), Is.True);
+            Assert.That(entities.GetComponent<GridWeldingComponent>(scene.Welder).PendingWeld, Is.Not.Null);
+
+            var chemistry = entities.System<SharedSolutionContainerSystem>();
+            var welder = entities.GetComponent<WelderComponent>(scene.Welder);
+            Assert.That(chemistry.TryGetSolution(scene.Welder, welder.FuelSolutionName, out var container, out var contents));
+            chemistry.RemoveAllSolution(container!.Value);
+            Assert.That(chemistry.TryAddReagent(container.Value, "Water", 3));
+            Assert.That(chemistry.TryAddReagent(container.Value, "WeldingFuel", 1));
+            Assert.That(chemistry.TryAddReagent(container.Value, "WeldingFuel", FixedPoint2.FromCents(taggedCents),
+                data: [new DnaData { DNA = "test" }]));
+
+            entities.System<GridWeldingSystem>().Update(0f);
+            Assert.That(entities.EntityExists(scene.Second), Is.EqualTo(!shouldMerge));
+            var expected = FixedPoint2.FromCents(100 + taggedCents - (shouldMerge ? 200 : 0));
+            Assert.That(contents!.GetTotalPrototypeQuantity(welder.FuelReagent), Is.EqualTo(expected));
+            Assert.That(contents.GetTotalPrototypeQuantity("Water"), Is.EqualTo(FixedPoint2.New(3)));
             entities.DeleteEntity(scene.Map);
         });
         await pair.CleanReturnAsync();

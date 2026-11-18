@@ -138,8 +138,9 @@ public sealed partial class GridWeldingSystem
     /// Scans the consumed grid in survivor coordinates at action start and completion, rather than every tick.
     /// On failure, <paramref name="reason"/> identifies the localization key for the failed check.
     /// </remarks>
-    private bool CanMergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, out LocId reason)
+    private bool CanMergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, out Vector2i? decalSupport, out LocId reason)
     {
+        decalSupport = null;
         reason = "fish-grid-welding-protected";
         var survivor = GetSurvivingGrid(first, second);
         if (IsProtectedGrid(first) || IsProtectedGrid(second) || HasPersistentRole(survivor == first ? second : first) ||
@@ -176,19 +177,10 @@ public sealed partial class GridWeldingSystem
 
         var world = _transform.GetWorldMatrix(first);
         var nearby = new List<Entity<MapGridComponent>>();
-        _maps.FindGridsIntersecting(Transform(first).MapID, (matrix * world).TransformBox(b.LocalAABB),
-            ref nearby, approx: true, includeMap: false);
+        var donorWorld = matrix * world;
+        var mapId = Transform(first).MapID;
         var obstacles = new List<(Entity<MapGridComponent> Grid, Matrix3x2 ToGrid, Matrix3x2 FromGrid)>();
-        foreach (var grid in nearby)
-        {
-            if (grid.Owner == first || grid.Owner == second)
-                continue;
-
-            var toGrid = world * _transform.GetInvWorldMatrix(grid.Owner);
-            Matrix3x2.Invert(toGrid, out var fromGrid);
-            obstacles.Add((grid, toGrid, fromGrid));
-        }
-
+        Vector2i? lastChunk = null;
         var count = 0;
         var tiles = _maps.GetAllTiles(second, b);
         while (tiles.MoveNext(out var tile))
@@ -202,6 +194,30 @@ public sealed partial class GridWeldingSystem
             var destination = TransformTile(tile.Value.GridIndices, matrix);
             if (!_maps.GetTileRef(first, a, destination).Tile.IsEmpty)
                 return false;
+
+            if (decalSupport == null && !_turf.IsSpace(tile.Value))
+                decalSupport = destination;
+
+            // Перечислитель обходит тайлы по чанкам; соседи нужны только у занятого чанка.
+            var chunk = SharedMapSystem.GetChunkIndices(tile.Value.GridIndices, MapGridComponent.DefaultChunkSize);
+            if (chunk != lastChunk)
+            {
+                lastChunk = chunk;
+                nearby.Clear();
+                obstacles.Clear();
+                var min = (Vector2) chunk * MapGridComponent.DefaultChunkSize;
+                var bounds = donorWorld.TransformBox(new Box2(min, min + new Vector2(MapGridComponent.DefaultChunkSize)));
+                _maps.FindGridsIntersecting(mapId, bounds, ref nearby, approx: true, includeMap: false);
+                foreach (var grid in nearby)
+                {
+                    if (grid.Owner == first || grid.Owner == second)
+                        continue;
+
+                    var toGrid = world * _transform.GetInvWorldMatrix(grid.Owner);
+                    Matrix3x2.Invert(toGrid, out var fromGrid);
+                    obstacles.Add((grid, toGrid, fromGrid));
+                }
+            }
 
             // Для повёрнутых квадратов проверяем проекции на оси обеих сеток.
             // Небольшой отступ позволяет тайлам касаться краями.

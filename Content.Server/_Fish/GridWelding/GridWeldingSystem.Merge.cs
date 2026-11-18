@@ -39,7 +39,7 @@ public sealed partial class GridWeldingSystem
     /// <summary>
     /// Transfers the donor's geometry and game-owned state into the chosen survivor while conserving total momentum.
     /// </summary>
-    private void MergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, EntityUid user)
+    private void MergeGrids(EntityUid first, EntityUid second, WeldAlignment alignment, EntityUid user, Vector2i? decalSupport)
     {
         if (GetSurvivingGrid(first, second) == second)
         {
@@ -120,7 +120,7 @@ public sealed partial class GridWeldingSystem
         _gravity.RefreshGravity(first);
         RestoreTileHistory(first, history);
 
-        RestoreDecals((first, a), decals, alignment);
+        RestoreDecals((first, a), decals, alignment, decalSupport);
 
         if (bodyA.BodyType == BodyType.Dynamic && float.IsFinite(bodyA.Mass) && bodyA.Mass > 0)
         {
@@ -160,27 +160,34 @@ public sealed partial class GridWeldingSystem
 
     /// <summary>Rotates decals into survivor space using a solid support tile for placement validation.</summary>
     private void RestoreDecals(Entity<MapGridComponent> grid, IReadOnlyList<Decal> decals,
-        WeldAlignment alignment)
+        WeldAlignment alignment, Vector2i? supportTile)
     {
         if (decals.Count == 0)
             return;
 
-        // Ищем опору после слияния: у целевого грида до него могли быть только решётки.
-        var tiles = _maps.GetAllTiles(grid, grid.Comp);
-        while (tiles.MoveNext(out var tile))
+        // Запасной поиск нужен только тогда, когда весь приваренный фрагмент состоит из решёток.
+        if (supportTile == null)
         {
-            if (_turf.IsSpace(tile.Value))
-                continue;
-
-            var support = _maps.GridTileToLocal(grid, grid.Comp, tile.Value.GridIndices);
-            foreach (var decal in decals)
+            var tiles = _maps.GetAllTiles(grid, grid.Comp);
+            while (tiles.MoveNext(out var tile))
             {
-                var position = Vector2.Transform(decal.Coordinates + new Vector2(0.5f), alignment.Matrix) - new Vector2(0.5f);
-                // После поворота начало декали может оказаться над пустотой. Проверяем опору отдельно от отрисовки.
-                _decal.TryAddDecal(decal.WithCoordinates(position).WithRotation(decal.Angle + alignment.Rotation),
-                    support, out _);
+                if (_turf.IsSpace(tile.Value))
+                    continue;
+
+                supportTile = tile.Value.GridIndices;
+                break;
             }
+        }
+
+        if (supportTile is not {} indices)
             return;
+
+        var support = _maps.GridTileToLocal(grid, grid.Comp, indices);
+        foreach (var decal in decals)
+        {
+            var position = Vector2.Transform(decal.Coordinates + new Vector2(0.5f), alignment.Matrix) - new Vector2(0.5f);
+            _decal.TryAddDecal(decal.WithCoordinates(position).WithRotation(decal.Angle + alignment.Rotation),
+                support, out _);
         }
     }
 

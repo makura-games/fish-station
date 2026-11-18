@@ -79,7 +79,7 @@ public sealed partial class GridWeldingSystem
     {
         var first = GetEntity(args.FirstGrid);
         var second = GetEntity(args.SecondGrid);
-        if (!CanFinishWelding(welder, args, out var alignment, out var reason))
+        if (!CanFinishWelding(welder, args, out var alignment, out var decalSupport, out var reason))
         {
             if (!TerminatingOrDeleted(args.User))
                 Popup(args.User, reason);
@@ -87,12 +87,20 @@ public sealed partial class GridWeldingSystem
         }
 
         var comp = Comp<WelderComponent>(welder);
-        if (!_solutionContainer.TryGetSolution(welder.Owner, comp.FuelSolutionName, out var solution))
+        if (!_solutionContainer.TryGetSolution(welder.Owner, comp.FuelSolutionName, out var solution, out var contents))
             return false;
 
-        _solutionContainer.RemoveReagent(solution.Value, comp.FuelReagent, FixedPoint2.New(WeldingFuel));
+        var cost = FixedPoint2.New(WeldingFuel);
+        if (contents.GetTotalPrototypeQuantity(comp.FuelReagent) < cost)
+            return false;
+
+        var spent = contents.SplitSolutionWithOnly(cost, comp.FuelReagent);
+        _solutionContainer.UpdateChemicals(solution.Value);
+        if (spent.Volume != cost)
+            return false;
+
         _tool.PlayToolSound(welder, Comp<ToolComponent>(welder), args.User);
-        MergeGrids(first, second, alignment, args.User);
+        MergeGrids(first, second, alignment, args.User, decalSupport);
         ClearSelection(welder.Comp);
         Popup(args.User, "fish-grid-welding-complete");
         return true;
@@ -100,8 +108,9 @@ public sealed partial class GridWeldingSystem
 
     /// <summary>Checks interaction permission again after the queue wait, before any expensive merge validation.</summary>
     private bool CanFinishWelding(Entity<GridWeldingComponent> welder, GridWeldingDoAfterEvent args,
-        out WeldAlignment alignment, out LocId reason)
+        out WeldAlignment alignment, out Vector2i? decalSupport, out LocId reason)
     {
+        decalSupport = null;
         if (!CanWeld(welder, args.User, args, out alignment, out reason))
             return false;
 
@@ -109,7 +118,7 @@ public sealed partial class GridWeldingSystem
         if (!_actionBlocker.CanInteract(args.User, args.Target))
             return false;
 
-        return CanMergeGrids(GetEntity(args.FirstGrid), GetEntity(args.SecondGrid), alignment, out reason);
+        return CanMergeGrids(GetEntity(args.FirstGrid), GetEntity(args.SecondGrid), alignment, out decalSupport, out reason);
     }
 
     /// <summary>Retains paused requests without blocking requests on other maps.</summary>

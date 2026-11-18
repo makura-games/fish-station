@@ -135,7 +135,7 @@ public sealed partial class GridWeldingSystem : EntitySystem
 
         ev = new GridWeldingDoAfterEvent(GetNetEntity(welder.Comp.Grid), GetNetEntity(second), welder.Comp.Tile, secondTile);
         if (!CanWeld(welder, user, ev, out var alignment, out var reason) ||
-            !CanMergeGrids(welder.Comp.Grid, second, alignment, out reason))
+            !CanMergeGrids(welder.Comp.Grid, second, alignment, out _, out reason))
         {
             Popup(user, reason);
             return false;
