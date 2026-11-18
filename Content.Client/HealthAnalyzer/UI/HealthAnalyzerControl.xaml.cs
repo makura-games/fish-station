@@ -213,6 +213,11 @@ public sealed partial class HealthAnalyzerControl : BoxContainer
 
     private Texture GetTexture(string texture)
     {
+        // Fish-start: структурный урон отображается иконкой SheetSteel
+        if (texture == "structural")
+            return _spriteSystem.Frame0(new SpriteSpecifier.Rsi(new ResPath("/Textures/Objects/Materials/Sheets/metal.rsi"), "steel_3"));
+        // Fish-end
+
         var rsiPath = new ResPath("/Textures/Objects/Devices/health_analyzer.rsi");
         var rsiSprite = new SpriteSpecifier.Rsi(rsiPath, texture);
 

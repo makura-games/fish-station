@@ -51,6 +51,7 @@
     - Piercing
     - Heat
     - Shock
+    - Structural
     - Mangleness
     locPrefix: silicon
   - type: Injurable

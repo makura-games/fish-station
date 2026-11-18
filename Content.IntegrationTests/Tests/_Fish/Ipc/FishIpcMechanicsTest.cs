@@ -8,15 +8,19 @@ using Content.Server.Humanoid.Systems;
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Bed.Sleep;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Emp;
 using Content.Shared.Electrocution;
 using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Eye.Blinding.Systems;
+using Content.Shared.FixedPoint;
 using Content.Shared.Flash;
 using Content.Shared.Flash.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.HealthExaminable;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Interaction;
 using Content.Shared.Item.ItemToggle;
@@ -38,6 +42,7 @@ using Content.Shared.Xenoarchaeology.Artifact;
 using Content.Shared.Xenoarchaeology.Artifact.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.Ipc;
@@ -49,6 +54,8 @@ namespace Content.IntegrationTests.Tests._Fish.Ipc;
 public sealed class FishIpcMechanicsTest : FishIpcGameTest
 {
     private static readonly ProtoId<SpeciesPrototype> IpcSpecies = "Ipc";
+    private static readonly ProtoId<DamageGroupPrototype> StructuralDamageGroup = "Structural";
+    private static readonly ProtoId<DamageTypePrototype> StructuralDamageType = "Structural";
 
     [TestPrototypes]
     private const string Prototypes = @"
@@ -248,6 +255,79 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
                 Assert.That(Damage(ipc, "Radiation"), Is.EqualTo(5f).Within(0.05f));
                 Assert.That(Damage(ipc, "Cellular"), Is.EqualTo(4f).Within(0.05f));
             });
+        });
+    }
+
+    [Test]
+    public async Task Structural_IsTrackedAndDisplayed_RepairedByNanopasteAndWelder()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid borg = default;
+        EntityUid human = default;
+        EntityUid welder = default;
+
+        await Server.WaitPost(() =>
+        {
+            DisableDamageVariance();
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            borg = SSpawnAtPosition("BorgChassisGeneric", map.GridCoords);
+            var mech = SSpawnAtPosition("MechRipley", map.GridCoords);
+            human = SSpawnAtPosition("MobHuman", map.GridCoords);
+            welder = SSpawnAtPosition("Welder", map.GridCoords);
+
+            Assert.That(SProtoMan.TryIndex(StructuralDamageGroup, out var group), Is.True);
+            Assert.That(group!.DamageTypes, Does.Contain(StructuralDamageType));
+
+            Hurt(ipc, "Structural", 20);
+            Hurt(borg, "Structural", 20);
+            Hurt(mech, "Structural", 20);
+
+            var damageable = Server.System<DamageableSystem>();
+            Assert.Multiple(() =>
+            {
+                Assert.That(Damage(ipc, "Structural"), Is.EqualTo(20f));
+                Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(0f));
+                Assert.That(Damage(borg, "Structural"), Is.EqualTo(20f));
+                Assert.That(Damage(borg, "Blunt"), Is.EqualTo(0f));
+                Assert.That(damageable.GetDamagePerGroup(ipc)[StructuralDamageGroup], Is.EqualTo(FixedPoint2.New(20)));
+                Assert.That(damageable.GetDamagePerGroup(borg)[StructuralDamageGroup], Is.EqualTo(FixedPoint2.New(20)));
+            });
+
+            var healthExamine = Server.System<HealthExaminableSystem>();
+            var loc = Server.ResolveDependency<ILocalizationManager>();
+            foreach (var ent in new[] { ipc, borg, mech })
+            {
+                var markup = healthExamine.CreateMarkup(ent, SComp<HealthExaminableComponent>(ent), SComp<DamageableComponent>(ent));
+                Assert.That(markup.ToMarkup(), Is.Not.EqualTo(loc.GetString("health-examinable-silicon-none")));
+            }
+
+            StartHealingDoAfter(human, ipc, "Nanopaste1");
+            StartHealingDoAfter(human, borg, "Nanopaste1");
+        });
+
+        await RunSeconds(0.4f);
+
+        await Server.WaitPost(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(Damage(ipc, "Structural"), Is.EqualTo(15f).Within(0.05f));
+                Assert.That(Damage(borg, "Structural"), Is.EqualTo(15f).Within(0.05f));
+            });
+
+            Assert.That(Server.System<ItemToggleSystem>().TrySetActive(welder, true, human, predicted: false, showPopup: false), Is.True);
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(human, welder, checkActionBlocker: false), Is.True);
+            var weld = Server.System<SharedFishWeldingHealableSystem>();
+            Assert.That(weld.TryStartWeld((welder, SComp<FishWeldingHealingComponent>(welder)), human, ipc), Is.EqualTo(FishWeldResult.Started));
+        });
+
+        await RunSeconds(1.3f);
+
+        await Server.WaitAssertion(() =>
+        {
+            // 15 − 1.67 (половина от 3.34 Blunt) = 13.33
+            Assert.That(Damage(ipc, "Structural"), Is.EqualTo(13.33f).Within(0.08f));
         });
     }
 

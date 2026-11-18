@@ -3,6 +3,7 @@ using Content.Shared.Actions;
 using Content.Shared.CCVar;
 using Content.Shared.Hands;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Item;
 using Content.Shared.Popups;
 using Robust.Shared.Configuration;
@@ -38,6 +39,7 @@ public sealed partial class AdminGhostSystem : EntitySystem
         SubscribeLocalEvent<AdminGhostComponent, UseAttemptEvent>(OnUseAttempt);
         SubscribeLocalEvent<AdminGhostComponent, PickupAttemptEvent>(OnPickupAttempt);
         SubscribeLocalEvent<AdminGhostComponent, DropAttemptEvent>(OnDropAttempt);
+        SubscribeLocalEvent<AdminGhostComponent, IsUnequippingAttemptEvent>(OnUnequipAttempt);
     }
 
     /// <summary>
@@ -168,6 +170,11 @@ public sealed partial class AdminGhostSystem : EntitySystem
     /// Запрещает выбрасывать предметы, пока действует самозапрет.
     /// </summary>
     private void OnDropAttempt(Entity<AdminGhostComponent> ent, ref DropAttemptEvent args)
+    {
+        CancelIfRestricted(ent, args);
+    }
+
+    private void OnUnequipAttempt(Entity<AdminGhostComponent> ent, ref IsUnequippingAttemptEvent args)
     {
         CancelIfRestricted(ent, args);
     }

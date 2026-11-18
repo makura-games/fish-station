@@ -7,9 +7,9 @@
   components:
   - type: Sprite
     drawdepth: SmallObjects
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
   - type: Physics
     bodyType: Static
   - type: InteractionOutline
@@ -46,10 +46,10 @@
   suffix: Steel # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: side
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: side
   - type: Fixtures
     fixtures:
@@ -71,10 +71,10 @@
   suffix: Steel, Corner # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner
   - type: Fixtures
     fixtures:
@@ -105,10 +105,10 @@
   suffix: Steel, Corner Small # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner_small
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner_small
   - type: Fixtures
     fixtures:
@@ -130,10 +130,10 @@
   suffix: Steel, Round # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: round
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: round
   - type: Fixtures
     fixtures:
