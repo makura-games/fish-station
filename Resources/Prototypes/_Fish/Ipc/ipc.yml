@@ -74,8 +74,8 @@
       Dead: BorgDead
   - type: DamagedSiliconAccent
     enableChargeCorruption: false
-    OverrideChargeLevel: 0.25
-    ChargeThresholdForPowerCorruption: 0.25
+    overrideChargeLevel: 0.25
+    chargeThresholdForPowerCorruption: 0.25
     startPowerCorruptionAtCharIdx: 8
     maxPowerCorruptionAtCharIdx: 20
     damageAtMaxCorruption: 100
