@@ -11,8 +11,10 @@ ent-SpecOpsOfficerPDA = КПК офицера специальных опера�
     .desc = { ent-CentcomPDA.desc }
 
 ent-FishRepresentativeBlueShieldPDA = КПК оперативника «Синий щит»
+    .suffix = Fish
     .desc = { ent-BlueShieldOperativePDA.desc }
 
 ent-FishCentcommBlueShieldPDA = КПК оперативника «Синий щит»
+    .suffix = Fish
     .desc = { ent-BlueShieldOperativePDA.desc }
 

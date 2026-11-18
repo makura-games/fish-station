@@ -7,7 +7,7 @@
   #  - !type:DiscordRoleRequirement
    - !type:DepartmentTimeRequirement
      department: BlueShield
-     time: 62000 # 20 hrs
+     time: 72000 # 20 hrs
    - !type:DepartmentTimeRequirement
      department: Command
      time: 62000 # 20 hrs

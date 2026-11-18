@@ -25,6 +25,7 @@
   parent: BlueShieldOperativePDA
   id: FishRepresentativeBlueShieldPDA
   name: blue shield operative PDA
+  suffix: Fish
   components:
   - type: Pda
     id: FishRepresentativeBlueShieldIDCard
@@ -33,6 +34,7 @@
   parent: BlueShieldOperativePDA
   id: FishCentcommBlueShieldPDA
   name: blue shield operative PDA
+  suffix: Fish
   components:
   - type: Pda
     id: FishCentcommBlueShieldIDCard
