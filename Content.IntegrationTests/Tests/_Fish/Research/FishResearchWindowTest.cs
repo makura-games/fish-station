@@ -44,15 +44,34 @@ public sealed class FishResearchWindowTest
             var query = client.System<LatheSystem>().GetRecipeName("PowerCellHigh");
             var search = window.FindControl<LineEdit>("Search");
             search.SetText(query, invokeEvent: true);
-            var results = window.FindControl<ItemList>("Results");
-            Assert.That(results.GetSelected().Single().Text, Is.EqualTo(client.ResolveDependency<ILocalizationManager>().GetString("research-technology-advanced-powercells")));
+            var results = window.FindControl<BoxContainer>("Results");
+            Button SelectedLeaf()
+            {
+                var discipline = (Collapsible) results.GetChild(0);
+                var tier = (Collapsible) discipline.Body!.GetChild(0).GetChild(0);
+                Assert.That(discipline.BodyVisible && tier.BodyVisible, Is.True);
+                var leaf = (Button) tier.Body!.GetChild(0).GetChild(0);
+                Assert.That(leaf.Pressed, Is.True);
+                return leaf;
+            }
+
+            Assert.That(SelectedLeaf().Text, Is.EqualTo(client.ResolveDependency<ILocalizationManager>().GetString("research-technology-advanced-powercells")));
             Assert.That(window.FindControl<BoxContainer>("Details").ChildCount, Is.Positive);
 
             window.Refresh(console, new ResearchConsoleBoundInterfaceState(7500));
             Assert.That(buy.Disabled, Is.False);
             Assert.That(search.Text, Is.EqualTo(query));
+            var gyroscope = client.System<LatheSystem>().GetRecipeName("GyroscopeMachineCircuitboard");
+            search.SetText(gyroscope, invokeEvent: true);
+            Assert.That(SelectedLeaf().Text, Is.EqualTo(client.ResolveDependency<ILocalizationManager>().GetString("research-technology-shuttlecraft")));
+            var details = window.FindControl<BoxContainer>("Details");
+            Assert.That(details.Children.OfType<BoxContainer>()
+                .SelectMany(row => row.Children.OfType<RichTextLabel>())
+                .Any(label => label.GetMessage()?.Contains(gyroscope) == true), Is.True);
+            Assert.That(window.FindControl<BoxContainer>("CardRows").GetChild(0).Children.OfType<FishTechnologyCard>().Single(),
+                Is.SameAs(card));
             search.SetText("xxxxxxxxxxxxxx", invokeEvent: true);
-            Assert.That(results.Count, Is.Zero);
+            Assert.That(results.ChildCount, Is.Zero);
             client.EntMan.DeleteEntity(console);
         });
         await pair.CleanReturnAsync();

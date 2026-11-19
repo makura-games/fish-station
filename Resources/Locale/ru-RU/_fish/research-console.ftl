@@ -10,3 +10,5 @@ fish-rnd-no-offers = Сейчас нет предложений для изуч�
 fish-rnd-studied = Уже изучено
 fish-rnd-offered = Предложено к изучению
 fish-rnd-in-pool = Может появиться в предложениях
+fish-rnd-tier = Уровень { $tier }
+fish-rnd-locked = Требования для изучения ещё не выполнены

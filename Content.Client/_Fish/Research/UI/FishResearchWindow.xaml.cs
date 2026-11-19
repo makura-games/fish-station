@@ -30,6 +30,7 @@ public sealed partial class FishResearchWindow : FancyWindow
     private readonly LatheSystem _lathe;
     private readonly List<FishTechnologyCard> _cards = new();
     private readonly List<Entry> _catalog = new();
+    private readonly Dictionary<(string Discipline, int? Tier), bool> _expanded = new();
     private string? _selected;
     private string[] _offers = [];
     private ProtoId<TechnologyPrototype>[] _unlocked = [];
@@ -57,7 +58,6 @@ public sealed partial class FishResearchWindow : FancyWindow
         SelectTab(0);
         ServerButton.OnPressed += _ => OnServerButtonPressed?.Invoke();
         Search.OnTextChanged += _ => FilterCatalog();
-        Results.OnItemSelected += args => ShowDetails((Entry) Results[args.ItemIndex].Metadata!);
     }
 
     private void SelectTab(int index)
@@ -81,7 +81,7 @@ public sealed partial class FishResearchWindow : FancyWindow
             _unlocked = db == null ? [] : [.. db.UnlockedTechnologies];
             _disciplines = db == null ? [] : [.. db.SupportedDisciplines];
             _main = db?.MainDiscipline;
-            Rebuild(console, db);
+            Rebuild(db);
         }
 
         var access = _players.LocalEntity is not { } player ||
@@ -91,7 +91,7 @@ public sealed partial class FishResearchWindow : FancyWindow
             card.UpdatePurchase(state.Points, access);
     }
 
-    private void Rebuild(EntityUid console, TechnologyDatabaseComponent? db)
+    private void Rebuild(TechnologyDatabaseComponent? db)
     {
         CardRows.Children.Clear();
         TierDisplay.Children.Clear();
@@ -104,7 +104,8 @@ public sealed partial class FishResearchWindow : FancyWindow
         EmptyOffers.Visible = _offers.Length == 0;
         if (db != null)
         {
-            foreach (var (key, tier) in _research.GetDisciplineTiers(db))
+            var tiers = _research.GetDisciplineTiers(db);
+            foreach (var (key, tier) in tiers)
             {
                 if (tier == 0)
                     continue;
@@ -118,13 +119,15 @@ public sealed partial class FishResearchWindow : FancyWindow
                 TierDisplay.AddChild(new Label { Text = tier.ToString() });
             }
 
-            var technologies = _research.GetAvailableTechnologies(console, db)
-                .Concat(_offers.Select(key => _prototypes.Index<TechnologyPrototype>(key)))
-                .Concat(_unlocked.Select(key => _prototypes.Index(key))).DistinctBy(tech => tech.ID);
-            foreach (var tech in technologies)
+            foreach (var tech in _prototypes.EnumeratePrototypes<TechnologyPrototype>())
             {
-                LocId status = _unlocked.Contains(tech.ID) ? "fish-rnd-studied" :
-                    _offers.Contains(tech.ID) ? "fish-rnd-offered" : "fish-rnd-in-pool";
+                var studied = _unlocked.Contains(tech.ID);
+                var offered = _offers.Contains(tech.ID);
+                if (!studied && !offered && (tech.Hidden || !tiers.ContainsKey(tech.Discipline)))
+                    continue;
+
+                LocId status = studied ? "fish-rnd-studied" : offered ? "fish-rnd-offered" :
+                    _research.IsTechnologyAvailable(db, tech, tiers) ? "fish-rnd-in-pool" : "fish-rnd-locked";
                 var unlocks = new List<FishResearchUnlock>();
                 foreach (var recipeId in tech.RecipeUnlocks)
                 {
@@ -162,26 +165,62 @@ public sealed partial class FishResearchWindow : FancyWindow
 
     private void FilterCatalog()
     {
-        Results.Clear();
+        Results.Children.Clear();
         var query = Search.Text.Trim();
-        ItemList.Item? selection = null;
-        foreach (var entry in _catalog)
+        var matches = _catalog.Where(entry => entry.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
+            entry.Unlocks.Any(item => item.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
+                item.ProductName?.Contains(query, StringComparison.CurrentCultureIgnoreCase) == true));
+        var disciplines = matches.GroupBy(entry => entry.Tech.Discipline)
+            .OrderBy(group => Loc.GetString(_prototypes.Index(group.Key).Name), StringComparer.CurrentCultureIgnoreCase);
+        var buttons = new ButtonGroup(isNoneSetAllowed: false);
+        (Entry Entry, Button Button)? selection = null;
+        foreach (var discipline in disciplines)
         {
-            if (!entry.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) &&
-                !entry.Unlocks.Any(item => item.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase) ||
-                    item.ProductName?.Contains(query, StringComparison.CurrentCultureIgnoreCase) == true))
-                continue;
-            var item = Results.AddItem(entry.Name, metadata: entry);
-            if (entry.Tech.ID == _selected)
-                selection = item;
+            var levels = AddBranch(Results, Loc.GetString(_prototypes.Index(discipline.Key).Name),
+                (discipline.Key, null), query.Length > 0);
+            foreach (var level in discipline.GroupBy(entry => entry.Tech.Tier).OrderBy(group => group.Key))
+            {
+                var leaves = AddBranch(levels, Loc.GetString("fish-rnd-tier", ("tier", level.Key)),
+                    (discipline.Key, level.Key), query.Length > 0);
+                foreach (var entry in level)
+                {
+                    var button = new Button
+                    {
+                        Text = entry.Name, ToolTip = entry.Name, ClipText = true,
+                        TextAlign = Label.AlignMode.Left, ToggleMode = true, Group = buttons,
+                    };
+                    button.OnPressed += _ => ShowDetails(entry);
+                    leaves.AddChild(button);
+                    if (selection == null || entry.Tech.ID == _selected)
+                        selection = (entry, button);
+                }
+            }
         }
-        if (Results.Count != 0)
+        if (selection is { } selected)
         {
-            (selection ?? Results[0]).Selected = true;
+            selected.Button.Pressed = true;
+            ShowDetails(selected.Entry);
             return;
         }
+
         Details.Children.Clear();
         Details.AddChild(new Label { Text = Loc.GetString("fish-rnd-no-results") });
+    }
+
+    private BoxContainer AddBranch(BoxContainer parent, string title, (string Discipline, int? Tier) key, bool searching)
+    {
+        var children = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(12, 0, 0, 0) };
+        var body = new CollapsibleBody();
+        body.AddChild(children);
+        var heading = new CollapsibleHeading(title);
+        var branch = new Collapsible(heading, body)
+        {
+            BodyVisible = searching || _expanded.GetValueOrDefault(key, key.Tier == null || key.Tier == 1),
+        };
+        if (!searching)
+            heading.OnToggled += args => _expanded[key] = args.Pressed;
+        parent.AddChild(branch);
+        return children;
     }
 
     private void ShowDetails(Entry entry)

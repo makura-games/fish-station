@@ -18,7 +18,9 @@
             <BoxContainer Orientation="Vertical" Margin="6" SeparationOverride="6">
                 <LineEdit Name="Search" PlaceHolder="{Loc 'fish-rnd-search'}"/>
                 <BoxContainer VerticalExpand="True" SeparationOverride="8">
-                    <ItemList Name="Results" HorizontalExpand="True" SizeFlagsStretchRatio="2"/>
+                    <ScrollContainer HorizontalExpand="True" SizeFlagsStretchRatio="2" HScrollEnabled="False">
+                        <BoxContainer Name="Results" Orientation="Vertical" VerticalAlignment="Top"/>
+                    </ScrollContainer>
                     <PanelContainer HorizontalExpand="True" SizeFlagsStretchRatio="3" StyleClasses="PanelDeep">
                         <ScrollContainer HScrollEnabled="False">
                             <BoxContainer Name="Details" VerticalAlignment="Top" Orientation="Vertical" Margin="8" SeparationOverride="6"/>
