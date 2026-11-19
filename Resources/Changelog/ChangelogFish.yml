@@ -1788,3 +1788,12 @@
     message: Апстрим Sunrise(18.11.2026)
   id: 182
   url: https://github.com/makura-games/fish-station/pull/674
+- author: TiFeRi
+  time: '2026-11-19T20:14:02.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавление подкрепления ЯО лон оперу.
+  - type: Tweak
+    message: Снижение стоимости подкрепления ЯО (с 30ТК до 18ТК).
+  id: 183
+  url: https://github.com/makura-games/fish-station/pull/675
