@@ -4,6 +4,7 @@ using Content.Client._Fish.Research.UI;
 using Content.Client.Lathe;
 using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
+using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Localization;
 using Robust.Shared.Map;
@@ -43,17 +44,27 @@ public sealed class FishResearchWindowTest
             Assert.That(card.FindControl<BoxContainer>("Preview").ChildCount, Is.Positive);
             var buy = card.FindControl<Button>("ResearchButton");
             Assert.That(buy.Disabled, Is.True);
+            var catalog = window.FindControl<BoxContainer>("Results");
+            var firstBranch = (Collapsible) catalog.GetChild(0);
+            var firstLevel = (Collapsible) firstBranch.Body!.GetChild(0).GetChild(0);
+            var leaves = firstLevel.Body!.GetChild(0).Children.OfType<Button>().ToArray();
+            var first = leaves.Single(leaf => leaf.Pressed);
+            var next = leaves.First(leaf => !leaf.Pressed);
+            next.Pressed = true;
+            var accent = client.ResolveDependency<IPrototypeManager>().Index<TechDisciplinePrototype>("Industrial").Color;
+            Assert.That(((StyleBoxFlat) next.StyleBoxOverride!).BorderColor, Is.EqualTo(accent));
+            Assert.That(first.StyleBoxOverride, Is.Null);
             var query = client.System<LatheSystem>().GetRecipeName("PowerCellHigh");
             var search = window.FindControl<LineEdit>("Search");
             search.SetText(query, invokeEvent: true);
-            var results = window.FindControl<BoxContainer>("Results");
             Button SelectedLeaf()
             {
-                var discipline = (Collapsible) results.GetChild(0);
+                var discipline = (Collapsible) catalog.GetChild(0);
                 var tier = (Collapsible) discipline.Body!.GetChild(0).GetChild(0);
                 Assert.That(discipline.BodyVisible && tier.BodyVisible, Is.True);
                 var leaf = (Button) tier.Body!.GetChild(0).GetChild(0);
                 Assert.That(leaf.Pressed, Is.True);
+                Assert.That(((StyleBoxFlat) leaf.StyleBoxOverride!).BorderColor, Is.EqualTo(accent));
                 return leaf;
             }
 
@@ -75,7 +86,7 @@ public sealed class FishResearchWindowTest
             Assert.That(window.FindControl<BoxContainer>("CardRows").GetChild(0).Children.OfType<FishTechnologyCard>().Single(),
                 Is.SameAs(card));
             search.SetText("xxxxxxxxxxxxxx", invokeEvent: true);
-            Assert.That(results.ChildCount, Is.Zero);
+            Assert.That(catalog.ChildCount, Is.Zero);
             client.EntMan.DeleteEntity(console);
         });
         await pair.CleanReturnAsync();

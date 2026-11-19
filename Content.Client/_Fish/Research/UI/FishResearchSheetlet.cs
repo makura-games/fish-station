@@ -22,17 +22,23 @@ public sealed class FishResearchSheetlet : Sheetlet<PalettedStylesheet>
             E<Button>().Class("FishResearchPurchase").PseudoDisabled().Box(Box("#303039", "#50505B")).Modulate(Color.White),
             E<Button>().Class("FishResearchLeaf").PseudoNormal().Box(Box("#23232E", "#454250", 2)).Modulate(Color.White),
             E<Button>().Class("FishResearchLeaf").PseudoHovered().Box(Box("#34303F", "#947AA6", 2)).Modulate(Color.White),
-            E<Button>().Class("FishResearchLeaf").PseudoPressed().Box(selected).Modulate(Color.White),
+            E<Button>().Class("FishResearchLeaf").PseudoPressed().Modulate(Color.White),
             E<Label>().Class("FishResearchDiscipline").Font(sheet.BaseFont.GetFont(13, FontKind.Bold)),
             E<Label>().Class("FishResearchTier").FontColor(Color.FromHex("#BCB2CA")),
             E<RichTextLabel>().Class("FishResearchTitle").Font(sheet.BaseFont.GetFont(14, FontKind.Bold)),
         ];
     }
 
-    private static StyleBoxFlat Box(string background, string border, int? left = null) => new()
+    internal static StyleBoxFlat SelectedTechnology(Color accent) =>
+        Box(Color.InterpolateBetween(Color.FromHex("#23232E"), accent, 0.28f), accent, 3);
+
+    private static StyleBoxFlat Box(string background, string border, int? left = null) =>
+        Box(Color.FromHex(background), Color.FromHex(border), left);
+
+    private static StyleBoxFlat Box(Color background, Color border, int? left) => new()
     {
-        BackgroundColor = Color.FromHex(background),
-        BorderColor = Color.FromHex(border),
+        BackgroundColor = background,
+        BorderColor = border,
         BorderThickness = left is { } width ? new Thickness(width, 0, 0, 0) : new Thickness(1),
         ContentMarginLeftOverride = 7,
         ContentMarginRightOverride = 7,
