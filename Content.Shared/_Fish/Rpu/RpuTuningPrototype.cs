@@ -52,26 +52,30 @@ public sealed partial class RpuTuningPrototype : IPrototype
     [DataField]
     public List<RpuBanTier> BanTiers = new();
 
-    /// <summary>Множитель штрафа для игроков с малым наигранным временем.</summary>
+    /// <summary>Сколько очков сверху к штрафу для новичка (меньше NewbieHours наиграно).</summary>
     [DataField]
-    public float NewbieMultiplier = 1.2f;
+    public float NewbieUnits = 2f;
 
     [DataField]
     public float NewbieHours = 10f;
 
+    /// <summary>Сколько очков сверху для совсем нового игрока (меньше VeryNewHours).</summary>
     [DataField]
-    public float VeryNewMultiplier = 1.5f;
+    public float VeryNewUnits = 3f;
 
-    /// <summary>Множители по количеству банов за последние BanHistoryDays дней.</summary>
+    /// <summary>До скольки часов считаем «совсем новым».</summary>
+    [DataField]
+    public float VeryNewHours = 3f;
+
+    /// <summary>Очки сверху за одиночного антагониста на чистой станции.</summary>
+    [DataField]
+    public float LonelyAntagUnits = 1f;
+    /// <summary>Поправки по количеству банов за последние BanHistoryDays дней (в очках).</summary>
     [DataField]
     public List<RpuBanHistoryTier> BanHistoryTiers = new();
 
     [DataField]
     public int BanHistoryDays = 180;
-
-    /// <summary>Множитель присутствия чужих антагонистов (только к самим антагонистам).</summary>
-    [DataField]
-    public float LonelyAntagMultiplier = 1.15f;
 
     /// <summary>
     /// Должности, чья гибель стоит дороже: командование, СБ, ОБР, РХБЗЗ, ЦК.

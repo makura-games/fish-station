@@ -36,8 +36,15 @@
   - GenericSiliconAntagonist
   - Survivor
   - PlanetPrisoner
-  # Система этих игроков не касается вовсе.
+  # Система этих игроков не касается вовсе: их роль и есть взрывы, убийства и взломы.
   immuneAntags:
+  - Nukeops
+  - NukeopsCommander
+  - NukeopsMedic
+  - AssaultOperative
+  - AssaultCommander
+  - Wizard
+  - SpaceNinja
   - Dragon
   - Zombie
   - InitialInfected
@@ -62,10 +69,13 @@
   - PlanetWarSecret
   - PlanetWarVulpkanin
   - AllerAtOnce
-  newbieMultiplier: 1.2
+  # Очки сверху за малое наигранное время: новичок платит больше.
+  veryNewHours: 3
+  veryNewUnits: 3
   newbieHours: 10
-  veryNewMultiplier: 1.5
-  lonelyAntagMultiplier: 1.15
+  newbieUnits: 2
+  # Одинокий антагонист на чистой станции выглядит подозрительнее: плюс очко.
+  lonelyAntagUnits: 1
   banHistoryDays: 180
   # Пороги автобана: maxHours - верхняя граница часов на должностях (не включительно).
   banTiers:
@@ -83,18 +93,20 @@
     threshold: -100
     veteransOnly: true
   # Усиление по количеству банов за banHistoryDays (per-job баны не считаем).
+  # Сколько очков сверху даёт история банов и насколько понижается порог автобана.
+  # Работает только последний подходящий интервал, складывать их нельзя.
   banHistoryTiers:
   - minBans: 1
-    multiplier: 1.1
+    units: 1
     thresholdShift: 5
   - minBans: 3
-    multiplier: 1.25
+    units: 2
     thresholdShift: 10
   - minBans: 6
-    multiplier: 1.4
+    units: 3
     thresholdShift: 15
   - minBans: 11
-    multiplier: 1.5
+    units: 4
     thresholdShift: 20
   # Доступы шлюзов по уровням важности (id из Resources/Prototypes/Access).
   highSecurityAccess:

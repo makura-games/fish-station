@@ -105,15 +105,14 @@ public static class RpuCVars
     public static readonly CVarDef<float> SingularityWatchMinutes =
         CVarDef.Create("rpu.singularity.watch_minutes", 30f, CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>Затухание весов при комбинировании льгот (веса 1, decay, decay^2, ...).</summary>
-    public static readonly CVarDef<float> ModifierWeightDecay =
-        CVarDef.Create("rpu.modifier.weight_decay", 0.6f, CVar.SERVERONLY | CVar.ARCHIVE);
+    /// <summary>
+    /// Потолок надбавки: сколько очков можно добавить к базовой цене нарушения
+    /// отягчающими поправками (новичок, серия убийств, прежние баны).
+    /// </summary>
+    public static readonly CVarDef<float> MaxExtraUnits =
+        CVarDef.Create("rpu.penalty.max_extra", RpuMaths.MaxExtraPenalty, CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>Нижняя граница итогового множителя штрафа.</summary>
-    public static readonly CVarDef<float> ModifierFloor =
-        CVarDef.Create("rpu.modifier.floor", 0.15f, CVar.SERVERONLY | CVar.ARCHIVE);
-
-    /// <summary>Верхняя граница итогового множителя штрафа.</summary>
-    public static readonly CVarDef<float> ModifierCap =
-        CVarDef.Create("rpu.modifier.cap", 1.5f, CVar.SERVERONLY | CVar.ARCHIVE);
+    /// <summary>Минимальное снятие очков за вменяемое нарушение.</summary>
+    public static readonly CVarDef<float> MinPenalty =
+        CVarDef.Create("rpu.penalty.min", RpuMaths.MinPenalty, CVar.SERVERONLY | CVar.ARCHIVE);
 }

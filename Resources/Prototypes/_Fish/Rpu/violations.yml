@@ -1,4 +1,4 @@
-# Fish-start - стоимости нарушений режима персонального угнетения (карма до всех множителей)
+# Fish-start - базовые цены нарушений в очках кармы (до поправок)
 - type: rpuViolation
   id: RpuKillCrew
   category: Kill
@@ -27,14 +27,12 @@
   id: RpuExplosionMedium
   category: Explosion
   base: 6
-  scaleWithSeverity: true
   description: medium explosion
 
 - type: rpuViolation
   id: RpuExplosionLarge
   category: Explosion
   base: 12
-  scaleWithSeverity: true
   description: large explosion
 
 - type: rpuViolation
@@ -95,7 +93,6 @@
   id: RpuSpillHazard
   category: Spill
   base: 3
-  scaleWithSeverity: true
   description: spilled hazardous reagents
 
 - type: rpuViolation
@@ -126,6 +123,5 @@
   id: RpuContrabandItem
   category: Contraband
   base: 2
-  scaleWithSeverity: true
   description: carried contraband
 # Fish-end

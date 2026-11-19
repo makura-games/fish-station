@@ -95,9 +95,8 @@ public sealed partial class RpuExplosionSystem : EntitySystem
             _ => RpuPrototypeIds.ExplosionLarge,
         };
 
-        var severity = 1f;
-        if (args.Intensity >= SmallIntensity)
-            severity = Math.Clamp(args.AffectedTiles / 10f, 1f, 2.5f);
+        // Сверх малого заряда добавляем по очку за каждые 10 затронутых тайлов, максимум +6.
+        var extra = Math.Clamp((float)Math.Floor((args.AffectedTiles - 10) / 10f), 0f, 6f);
 
         var cutoff = _timing.CurTime - MemoryWindow;
         var charged = false;
@@ -123,7 +122,7 @@ public sealed partial class RpuExplosionSystem : EntitySystem
             if (!_rpu.TryGetSession(priming.User, out var session) || session.Status != SessionStatus.InGame)
                 continue;
 
-            _rpu.Penalize(session, violation, severity: severity, details: "explosion");
+            _rpu.Penalize(session, violation, extra: extra, details: "explosion");
             _primings.RemoveAt(index);
             charged = true;
         }

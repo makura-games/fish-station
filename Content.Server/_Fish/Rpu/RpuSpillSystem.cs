@@ -59,9 +59,10 @@ public sealed partial class RpuSpillSystem : EntitySystem
         if (hazard < threshold)
             return;
 
-        // Сверх порога штраф растёт каждые 100 единиц.
-        var severity = 1f + MathF.Max(0f, (float)(hazard - threshold) / 100f) * 0.5f;
+        // Сверх порога — по очку за каждые столько единиц, сколько сам порог (60u), максимум +4.
+        var over = (float)(hazard - threshold) / (float)threshold;
+        var extra = Math.Min(4f, (float)Math.Floor(over));
 
-        _rpu.Penalize(session, RpuPrototypeIds.SpillHazard, severity: severity, details: "hazard spill");
+        _rpu.Penalize(session, RpuPrototypeIds.SpillHazard, extra: extra, details: "hazard spill");
     }
 }

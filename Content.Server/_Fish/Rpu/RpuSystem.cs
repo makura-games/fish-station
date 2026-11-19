@@ -48,7 +48,7 @@ public sealed partial class RpuSystem : EntitySystem
     [Dependency] private SharedJobSystem _jobs = default!;
     [Dependency] private SharedTransformSystem _transforms = default!;
     [Dependency] private PlayTimeTrackingManager _playTime = default!;
-    [Dependency] private RpuModifierSystem _modifiers = default!;
+    [Dependency] private RpuAdjustSystem _adjust = default!;
 
     private readonly Dictionary<NetUserId, RpuSuspect> _suspects = new();
 
@@ -198,8 +198,8 @@ public sealed partial class RpuSystem : EntitySystem
 
         var tuning = Tuning;
         {
-            var (multiplier, shift) = RpuMaths.BanHistoryModifiers(suspect.RecentBans, tuning.BanHistoryTiers);
-            suspect.BanHistoryMultiplier = multiplier;
+            var (units, shift) = RpuMaths.BanHistory(suspect.RecentBans, tuning.BanHistoryTiers);
+            suspect.BanHistoryUnits = units;
             suspect.BanThresholdShift = shift;
         }
 
@@ -321,13 +321,16 @@ public sealed partial class RpuSystem : EntitySystem
     }
 
     /// <summary>
-    /// Единственная точка начисления штрафа. Ничего не делает, если система выключена,
-    /// раунда нет, игрок освобождён или нарушение полностью перекрыто целью/ролью.
+    /// Единственная точка начисления штрафа. Считается в очках:
+    /// база нарушения (rpuViolation.base) + тяжесть случая в очках + все поправки в очках,
+    /// но не меньше <see cref="RpuMaths.MinPenalty"/> и не больше базы на
+    /// <see cref="RpuCVars.MaxExtraUnits"/>. Если нарушение игроку не вменяется —
+    /// не снимается ничего.
     /// </summary>
     public void Penalize(ICommonSession? session,
         ProtoId<RpuViolationPrototype> violation,
         EntityUid? victim = null,
-        float severity = 1f,
+        float extra = 0f,
         string? details = null)
     {
         if (session == null || !Active)
@@ -344,16 +347,15 @@ public sealed partial class RpuSystem : EntitySystem
 
         var suspect = GetSuspect(session.UserId);
 
-        if (_modifiers.IsFullyExempt(session, suspect, proto.Category, victim))
+        if (_adjust.IsWaived(session, suspect, proto.Category, victim))
             return;
 
-        var modifiers = _modifiers.CollectModifiers(session, suspect, proto.Category, victim);
-        var multiplier = RpuMaths.CombineMultipliers(modifiers,
-            _cfg.GetCVar(RpuCVars.ModifierWeightDecay),
-            _cfg.GetCVar(RpuCVars.ModifierFloor),
-            _cfg.GetCVar(RpuCVars.ModifierCap));
-
-        var penalty = Math.Max(0.5f, proto.Base * severity * multiplier);
+        var units = _adjust.CollectUnits(session, suspect, proto.Category, victim);
+        var penalty = RpuMaths.Penalty(proto.Base,
+            units,
+            extra,
+            _cfg.GetCVar(RpuCVars.MinPenalty),
+            _cfg.GetCVar(RpuCVars.MaxExtraUnits));
         var before = suspect.Karma;
         suspect.Karma = RpuMaths.ClampKarma(suspect.Karma - penalty);
         suspect.MarkViolation(_timing.CurTime);

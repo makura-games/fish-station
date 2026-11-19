@@ -21,7 +21,7 @@ public sealed partial class RpuKillSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private RpuSystem _rpu = default!;
-    [Dependency] private RpuModifierSystem _mods = default!;
+    [Dependency] private RpuAdjustSystem _mods = default!;
 
     /// <summary>Виктор -> (нападавший -> накопленный урон).</summary>
     private readonly Dictionary<EntityUid, Dictionary<EntityUid, FixedPoint2>> _ledger = new();

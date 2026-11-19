@@ -29,9 +29,9 @@ public sealed partial class RpuBanHistoryTier
     [DataField(required: true)]
     public int MinBans;
 
-    /// <summary>Множитель к штрафу.</summary>
+    /// <summary>Сколько очков кармы добавляется к штрафу.</summary>
     [DataField(required: true)]
-    public float Multiplier;
+    public float Units;
 
     /// <summary>Насколько понижается порог автобана (по модулю кармы).</summary>
     [DataField]

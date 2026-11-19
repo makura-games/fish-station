@@ -21,7 +21,7 @@ public sealed class RpuSuspect
     /// <summary>Банов за последние N дней (усиливает систему).</summary>
     public int RecentBans;
 
-    public float BanHistoryMultiplier = 1f;
+    public float BanHistoryUnits;
 
     public float BanThresholdShift;
 

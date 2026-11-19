@@ -46,9 +46,9 @@ public enum RpuCategory
 }
 
 /// <summary>
-/// Откуда берётся множитель: должностной, антагонистный, ситуативный.
+/// Откуда берётся поправка в очках.
 /// </summary>
-public enum RpuModifierSource
+public enum RpuAdjustSource
 {
     Job = 0,
     Department = 1,
@@ -57,12 +57,6 @@ public enum RpuModifierSource
     StationSituation = 3,
     /// <summary>Код тревоги.</summary>
     AlertLevel = 4,
-    /// <summary>Счётчик убийств за раунд.</summary>
-    KillCount = 5,
-    /// <summary>Наигранное время (новички получают больше).</summary>
-    Playtime = 6,
-    /// <summary>История банов (усиливает штраф).</summary>
-    BanHistory = 7,
 }
 
 /// <summary>

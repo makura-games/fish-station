@@ -14,7 +14,7 @@ namespace Content.Server._Fish.Rpu;
 public sealed partial class RpuSlipSystem : EntitySystem
 {
     [Dependency] private RpuSystem _rpu = default!;
-    [Dependency] private RpuModifierSystem _mods = default!;
+    [Dependency] private RpuAdjustSystem _mods = default!;
 
     public override void Initialize()
     {

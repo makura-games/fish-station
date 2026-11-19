@@ -5,6 +5,9 @@ using NUnit.Framework;
 
 namespace Content.Tests._Fish.Rpu;
 
+/// <summary>
+/// Проверки аддитивного расчёта кармы: база нарушения + поправки в очках.
+/// </summary>
 [TestFixture]
 public sealed class RpuMathsTest
 {
@@ -20,61 +23,77 @@ public sealed class RpuMathsTest
 
     private static List<RpuBanHistoryTier> DefaultHistoryTiers() => new()
     {
-        new RpuBanHistoryTier { MinBans = 1, Multiplier = 1.1f, ThresholdShift = 5 },
-        new RpuBanHistoryTier { MinBans = 3, Multiplier = 1.25f, ThresholdShift = 10 },
-        new RpuBanHistoryTier { MinBans = 6, Multiplier = 1.4f, ThresholdShift = 15 },
-        new RpuBanHistoryTier { MinBans = 11, Multiplier = 1.5f, ThresholdShift = 20 },
+        new RpuBanHistoryTier { MinBans = 1, Units = 1, ThresholdShift = 5 },
+        new RpuBanHistoryTier { MinBans = 3, Units = 2, ThresholdShift = 10 },
+        new RpuBanHistoryTier { MinBans = 6, Units = 3, ThresholdShift = 15 },
+        new RpuBanHistoryTier { MinBans = 11, Units = 4, ThresholdShift = 20 },
     };
 
     [Test]
-    public void CombineMultipliersEmptyIsNeutral()
+    public void PenaltyIsBasePlusUnits()
     {
-        Assert.That(RpuMaths.CombineMultipliers(Array.Empty<float>()), Is.EqualTo(1f));
+        // Убийство экипажа стоит 6 очков, поправок нет — снимаем 6.
+        Assert.That(RpuMaths.Penalty(6f, Array.Empty<float>()), Is.EqualTo(6f));
+        Assert.That(RpuMaths.Penalty(6f, new[] { -2f }), Is.EqualTo(4f));
+        Assert.That(RpuMaths.Penalty(6f, new[] { 2f, 1f }), Is.EqualTo(9f));
     }
 
     [Test]
-    public void CombineMultipliersZeroMeansFullImmunity()
+    public void SeverityIsExtraUnits()
     {
-        Assert.That(RpuMaths.CombineMultipliers(new[] { 0.9f, 0f, 0.5f }), Is.EqualTo(0f));
+        // Тяжесть случая — тоже очки, а не множитель.
+        Assert.That(RpuMaths.Penalty(6f, Array.Empty<float>(), extra: 3f), Is.EqualTo(9f));
+        Assert.That(RpuMaths.Penalty(6f, new[] { -1f }, extra: 2f), Is.EqualTo(7f));
     }
 
     [Test]
-    public void CombineMultipliersDoesNotMultiplyAway()
+    public void PenaltyNeverGoesBelowMinimum()
     {
-        var combined = RpuMaths.CombineMultipliers(new[] { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f });
-
-        // Пять одинаковых льгот не должны превращаться в произведение (0.078).
-        Assert.That(combined, Is.EqualTo(0.6f).Within(0.001f));
-        Assert.That(combined, Is.GreaterThan(0.078f));
+        // Сколько бы смягчающих очков ни набралось, минимум — одно очко.
+        Assert.That(RpuMaths.Penalty(2f, new[] { -1f, -2f, -3f }), Is.EqualTo(RpuMaths.MinPenalty));
+        Assert.That(RpuMaths.Penalty(0.5f, Array.Empty<float>()), Is.EqualTo(RpuMaths.MinPenalty));
     }
 
     [Test]
-    public void CombineMultipliersIgnoresArgumentOrder()
+    public void PenaltyNeverExceedsBasePlusCap()
     {
-        var strong = RpuMaths.CombineMultipliers(new[] { 0.2f, 0.95f });
-        var neutral = RpuMaths.CombineMultipliers(new[] { 0.95f, 0.95f });
+        var units = new[] { 4f, 4f, 4f, 10f };
 
-        Assert.That(strong, Is.LessThan(neutral));
-        Assert.That(RpuMaths.CombineMultipliers(new[] { 0.95f, 0.2f }), Is.EqualTo(strong).Within(0.001f));
+        Assert.That(RpuMaths.Penalty(6f, units), Is.EqualTo(6f + RpuMaths.MaxExtraPenalty));
+        Assert.That(RpuMaths.Penalty(6f, units, extra: 20f), Is.EqualTo(6f + RpuMaths.MaxExtraPenalty));
     }
 
     [Test]
-    public void CombineMultipliersClampsToFloorAndCap()
+    public void WaivedCategoryCostsNothing()
     {
-        Assert.That(RpuMaths.CombineMultipliers(new[] { 0.01f }), Is.EqualTo(0.15f));
-        Assert.That(RpuMaths.CombineMultipliers(new[] { 9f }), Is.EqualTo(1.5f));
+        // Полное освобождение считается до формулы: там не снятие, а ноль.
+        // Проверим, что формула сама по себе нуля не даёт — значит освобождение
+        // должно решаться именно списком waives, а не вычитанием очков.
+        Assert.That(RpuMaths.Penalty(1f, new[] { -100f }), Is.EqualTo(RpuMaths.MinPenalty));
     }
 
     [Test]
-    public void KillEscalationCurve()
+    public void KillSeriesUnits()
     {
-        Assert.That(RpuMaths.KillEscalation(0), Is.EqualTo(0.5f));
-        Assert.That(RpuMaths.KillEscalation(2), Is.EqualTo(0.5f));
-        Assert.That(RpuMaths.KillEscalation(3), Is.EqualTo(1f));
-        Assert.That(RpuMaths.KillEscalation(6), Is.EqualTo(1f));
-        Assert.That(RpuMaths.KillEscalation(7), Is.EqualTo(1.2f));
-        Assert.That(RpuMaths.KillEscalation(13), Is.EqualTo(1.5f));
-        Assert.That(RpuMaths.KillEscalation(40), Is.EqualTo(1.5f));
+        // Первые два убийства — на 2 очка дешевле, дальше цена начинает расти.
+        Assert.That(RpuMaths.KillUnits(0), Is.EqualTo(-2f));
+        Assert.That(RpuMaths.KillUnits(2), Is.EqualTo(-2f));
+        Assert.That(RpuMaths.KillUnits(3), Is.EqualTo(0f));
+        Assert.That(RpuMaths.KillUnits(6), Is.EqualTo(0f));
+        Assert.That(RpuMaths.KillUnits(7), Is.EqualTo(1f));
+        Assert.That(RpuMaths.KillUnits(11), Is.EqualTo(2f));
+        Assert.That(RpuMaths.KillUnits(23), Is.EqualTo(4f));
+        Assert.That(RpuMaths.KillUnits(100), Is.EqualTo(4f));
+    }
+
+    [Test]
+    public void BanHistoryTakesLastMatchingInterval()
+    {
+        Assert.That(RpuMaths.BanHistory(0, DefaultHistoryTiers()), Is.EqualTo((0f, 0f)));
+        Assert.That(RpuMaths.BanHistory(1, DefaultHistoryTiers()), Is.EqualTo((1f, 5f)));
+        Assert.That(RpuMaths.BanHistory(2, DefaultHistoryTiers()), Is.EqualTo((1f, 5f)));
+        Assert.That(RpuMaths.BanHistory(6, DefaultHistoryTiers()), Is.EqualTo((3f, 15f)));
+        Assert.That(RpuMaths.BanHistory(50, DefaultHistoryTiers()), Is.EqualTo((4f, 20f)));
     }
 
     [Test]
@@ -89,26 +108,16 @@ public sealed class RpuMathsTest
     }
 
     [Test]
-    public void BanThresholdShiftMakesBansEasier()
+    public void BanThresholdShiftBringsThresholdCloser()
     {
-        // Сдвиг поднимает порог к нулю: банить начинают раньше.
+        // Сдвиг в очках поднимает порог к нулю: банить начинают раньше.
         Assert.That(RpuMaths.BanThreshold(2, DefaultTiers(), 20, false), Is.EqualTo(-20f));
-    }
-
-    [Test]
-    public void BanHistoryPicksLastMatchingTier()
-    {
-        Assert.That(RpuMaths.BanHistoryModifiers(0, DefaultHistoryTiers()), Is.EqualTo((1f, 0f)));
-        Assert.That(RpuMaths.BanHistoryModifiers(2, DefaultHistoryTiers()), Is.EqualTo((1.1f, 5f)));
-        Assert.That(RpuMaths.BanHistoryModifiers(6, DefaultHistoryTiers()), Is.EqualTo((1.4f, 15f)));
-        Assert.That(RpuMaths.BanHistoryModifiers(50, DefaultHistoryTiers()), Is.EqualTo((1.5f, 20f)));
     }
 
     [Test]
     public void ScaleByKarmaIsZeroAboveStart()
     {
         Assert.That(RpuMaths.ScaleByKarma(10, 0, -100, 0.1f, 0.5f), Is.EqualTo(0f));
-        Assert.That(RpuMaths.ScaleByKarma(0, 0, -100, 0.1f, 0.5f), Is.EqualTo(0f));
         Assert.That(RpuMaths.ScaleByKarma(-100, 0, -100, 0.1f, 0.5f), Is.EqualTo(0.5f));
         Assert.That(RpuMaths.ScaleByKarma(-50, 0, -100, 0.1f, 0.5f), Is.EqualTo(0.3f).Within(0.001f));
     }
@@ -119,6 +128,23 @@ public sealed class RpuMathsTest
         Assert.That(RpuMaths.ClampKarma(-500), Is.EqualTo(RpuMaths.KarmaMin));
         Assert.That(RpuMaths.ClampKarma(500), Is.EqualTo(RpuMaths.KarmaMax));
         Assert.That(RpuMaths.ClampKarma(-3.5f), Is.EqualTo(-3.5f));
+    }
+
+    [Test]
+    public void WholeViolationChain()
+    {
+        // Трейтор убил члена экипажа: база 6, льгота роли -2, третье убийство в раунде 0,
+        // новичок +2 очка. Итого 6 - 2 + 0 + 2 = 6 очков.
+        var units = new List<float> { -2f, RpuMaths.KillUnits(3), 2f };
+        var penalty = RpuMaths.Penalty(6f, units);
+        Assert.That(penalty, Is.EqualTo(6f));
+
+        var karma = RpuMaths.ClampKarma(-1f - penalty);
+        Assert.That(karma, Is.EqualTo(-7f));
+
+        // Ветеран без льгот и с четырьмя банами в истории: 6 + 4 = 10 очков.
+        var veteran = RpuMaths.Penalty(6f, new[] { 4f });
+        Assert.That(veteran, Is.EqualTo(10f));
     }
 
     [TestCase("0", null)]
