@@ -1797,3 +1797,16 @@
     message: Снижение стоимости подкрепления ЯО (с 30ТК до 18ТК).
   id: 183
   url: https://github.com/makura-games/fish-station/pull/675
+- author: NekutGit
+  time: '2026-11-19T20:30:28.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена новая иконка для ОпСЩ Центкома.
+  - type: Tweak
+    message: Все члены «Синий щит» вернулись в один отдел в лобби.
+  - type: Tweak
+    message: Синхронизированы лоадауты отдела «Синий щит».
+  - type: Tweak
+    message: Вайтлист у ОпСЩ для ПНТ был временно отозван.
+  id: 184
+  url: https://github.com/makura-games/fish-station/pull/665
