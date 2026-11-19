@@ -1,0 +1,131 @@
+# Fish-start - стоимости нарушений режима персонального угнетения (карма до всех множителей)
+- type: rpuViolation
+  id: RpuKillCrew
+  category: Kill
+  base: 6
+  description: kill
+
+- type: rpuViolation
+  id: RpuKillSecurityChain
+  category: KillSecurityChain
+  base: 10
+  description: kill of command/security/ERT/CBRN/CentralCommand
+
+- type: rpuViolation
+  id: RpuCrit
+  category: Crit
+  base: 2
+  description: downed to critical
+
+- type: rpuViolation
+  id: RpuExplosionSmall
+  category: Explosion
+  base: 3
+  description: small explosion
+
+- type: rpuViolation
+  id: RpuExplosionMedium
+  category: Explosion
+  base: 6
+  scaleWithSeverity: true
+  description: medium explosion
+
+- type: rpuViolation
+  id: RpuExplosionLarge
+  category: Explosion
+  base: 12
+  scaleWithSeverity: true
+  description: large explosion
+
+- type: rpuViolation
+  id: RpuAirlockBasic
+  category: AirlockHack
+  base: 1
+  description: breached an unlicensed door
+
+- type: rpuViolation
+  id: RpuAirlockService
+  category: AirlockHack
+  base: 3
+  description: breached a service door
+
+- type: rpuViolation
+  id: RpuAirlockDepartment
+  category: AirlockHack
+  base: 6
+  description: breached a department door
+
+- type: rpuViolation
+  id: RpuAirlockHighSecurity
+  category: AirlockHack
+  base: 10
+  description: breached a command/security/CentralCommand door
+
+- type: rpuViolation
+  id: RpuWireCut
+  category: WireCut
+  base: 4
+  description: cut wires
+
+- type: rpuViolation
+  id: RpuStructureDestroyed
+  category: Destruction
+  base: 2
+  description: destroyed a wall, window or airlock
+
+- type: rpuViolation
+  id: RpuStructureDeconstructed
+  category: Deconstruction
+  base: 1.5
+  description: deconstructed a wall, window or airlock
+
+- type: rpuViolation
+  id: RpuSabotageAtmos
+  category: Sabotage
+  base: 5
+  description: tampered with life support
+
+- type: rpuViolation
+  id: RpuBreachDepressurize
+  category: Sabotage
+  base: 8
+  description: caused decompression
+
+- type: rpuViolation
+  id: RpuSpillHazard
+  category: Spill
+  base: 3
+  scaleWithSeverity: true
+  description: spilled hazardous reagents
+
+- type: rpuViolation
+  id: RpuSlipCrew
+  category: Slip
+  base: 1.5
+  description: left a slip hazard
+
+- type: rpuViolation
+  id: RpuSlipVip
+  category: Slip
+  base: 4
+  description: left a slip hazard for command or security
+
+- type: rpuViolation
+  id: RpuSingularityUnattended
+  category: Singularity
+  base: 4
+  description: singularity or tesla left unattended
+
+- type: rpuViolation
+  id: RpuSingularityEscaped
+  category: Singularity
+  base: 8
+  description: singularity or tesla escaped containment
+
+- type: rpuViolation
+  id: RpuContrabandItem
+  category: Contraband
+  base: 2
+  scaleWithSeverity: true
+  description: carried contraband
+# Fish-end
