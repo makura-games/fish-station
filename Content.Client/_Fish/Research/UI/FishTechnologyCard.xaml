@@ -1,0 +1,12 @@
+<PanelContainer xmlns="https://spacestation14.io" StyleClasses="PanelDeep" HorizontalExpand="True">
+    <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="5">
+        <PanelContainer Name="Stripe" MinHeight="3" StyleClasses="PdaBackground"/>
+        <RichTextLabel Name="TitleLabel" StyleClasses="LabelHeading"/>
+        <TextureRect Name="Icon" SetSize="96 96" CanShrink="True" HorizontalAlignment="Center" Stretch="KeepAspectCentered"/>
+        <RichTextLabel Name="TierLabel"/>
+        <Label Name="Price" StyleClasses="LabelKeyText"/>
+        <BoxContainer Name="Preview" SeparationOverride="4"/>
+        <Control VerticalExpand="True"/>
+        <Button Name="ResearchButton" MinHeight="32"/>
+    </BoxContainer>
+</PanelContainer>

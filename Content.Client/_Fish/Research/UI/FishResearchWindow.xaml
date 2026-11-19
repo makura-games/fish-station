@@ -1,0 +1,36 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="{Loc 'fish-rnd-title'}" SetSize="790 580" MinSize="580 420">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <BoxContainer SeparationOverride="6">
+            <Button Name="StudyTab" Text="{Loc 'fish-rnd-study'}" ToggleMode="True" Pressed="True" MinWidth="105"/>
+            <Button Name="CatalogTab" Text="{Loc 'fish-rnd-catalog'}" ToggleMode="True" MinWidth="105"/>
+            <Control HorizontalExpand="True"/>
+            <Label Name="Balance" StyleClasses="LabelHeading" VerticalAlignment="Center"/>
+        </BoxContainer>
+        <TabContainer Name="Tabs" TabsVisible="False" VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" Margin="6">
+                <Label Name="EmptyOffers" Text="{Loc 'fish-rnd-no-offers'}" HorizontalAlignment="Center"/>
+                <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
+                    <BoxContainer Name="CardRows" Orientation="Vertical" SeparationOverride="8" VerticalAlignment="Top"/>
+                </ScrollContainer>
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" Margin="6" SeparationOverride="6">
+                <LineEdit Name="Search" PlaceHolder="{Loc 'fish-rnd-search'}"/>
+                <BoxContainer VerticalExpand="True" SeparationOverride="8">
+                    <ItemList Name="Results" HorizontalExpand="True" SizeFlagsStretchRatio="2"/>
+                    <PanelContainer HorizontalExpand="True" SizeFlagsStretchRatio="3" StyleClasses="PanelDeep">
+                        <ScrollContainer HScrollEnabled="False">
+                            <BoxContainer Name="Details" VerticalAlignment="Top" Orientation="Vertical" Margin="8" SeparationOverride="6"/>
+                        </ScrollContainer>
+                    </PanelContainer>
+                </BoxContainer>
+            </BoxContainer>
+        </TabContainer>
+        <BoxContainer SeparationOverride="8">
+            <RichTextLabel Name="MainDisciplineLabel" VerticalAlignment="Center" HorizontalExpand="True"/>
+            <BoxContainer Name="TierDisplay" SeparationOverride="4"/>
+            <Button Name="ServerButton" Text="{Loc 'research-console-menu-server-selection-button'}"/>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>
