@@ -24,6 +24,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Jittering;
 using Content.Shared.Maps;
+using Content.Shared.Mindshield; // Fish-edit
 using Content.Shared.Movement.Systems;
 using Content.Shared.Roles;
 using Content.Shared.Speech.EntitySystems;
@@ -73,6 +74,7 @@ public sealed partial class FleshCultSystem : EntitySystem
     [Dependency] private ContainerSystem _containerSystem = default!;
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private AntagSelectionSystem _antag = default!;
+    [Dependency] private MindShieldSystem _mindShield = default!; // Fish-edit
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private DamageableSystem _damageableSystem = default!;
     [Dependency] private PopupSystem _popup = default!;
@@ -99,7 +101,8 @@ public sealed partial class FleshCultSystem : EntitySystem
         "Predator",
         "Tajaran",
         "Milira",
-        "Kitsune"
+        "Kitsune",
+        "Resomi", // Fish-edit
     ];
 
     public override void Initialize()

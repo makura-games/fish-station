@@ -1,0 +1,21 @@
+- type: entity
+  parent: MobHuman
+  id: FishMobHomelander
+  name: Patriot
+  description: The Patriot, ready to take flight.
+  suffix: Fish
+  components:
+  - type: Homelander
+  - type: HomelanderFlight
+  - type: RespiratorImmunity
+  - type: Loadout
+    prototypes: [ FishHomelanderGear ]
+
+- type: startingGear
+  id: FishHomelanderGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlue
+    outerClothing: FishClothingOuterHardsuitHomelander
+    neck: FishClothingNeckHomelander
+    gloves: FishClothingHandsHomelander
+    shoes: FishClothingShoesHomelander
