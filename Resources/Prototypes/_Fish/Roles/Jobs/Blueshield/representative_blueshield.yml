@@ -4,13 +4,13 @@
   description: job-description-blueshield-operative
   playTimeTracker: JobRepresentativeBlueShield
   requirements:
-   - !type:DiscordRoleRequirement
+  #  - !type:DiscordRoleRequirement
    - !type:DepartmentTimeRequirement
-     department: FishBlueShieldPlayTime
-     time: 62000 # 20 hrs
+     department: BlueShield
+     time: 72000 # 20 hrs
    - !type:DepartmentTimeRequirement
      department: Command
-     time: 62000 # 20 hrs
+     time: 72000 # 20 hrs
    - !type:AgeRequirement
      requiredAge: 25
   startingGear: RepresentativeBlueShieldGear
@@ -29,9 +29,9 @@
   equipment:
    shoes: ClothingShoesBootsBlueShieldFilled
    eyes: ClothingEyesGlassesBlueShield
+   id: FishRepresentativeBlueShieldPDA
    # head через BlueShieldHead loadout # Fish-edit
    # outerClothing: ClothingOuterArmorBlueShield # Fish-edit - commented out, managed via loadout
-   id: FishRepresentativeBlueShieldPDA
    ears: ClothingHeadsetBlueShield # Fish-edit
    gloves: ClothingHandsGlovesCombat
   storage:
