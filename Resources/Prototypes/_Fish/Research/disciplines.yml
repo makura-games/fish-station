@@ -1,0 +1,12 @@
+- type: techDiscipline
+  id: Biology
+  name: research-discipline-biology
+  color: "#D252E9"
+  storytellerUsefulness: 1.2
+  icon:
+    sprite: Interface/Misc/research_disciplines.rsi
+    state: biochemical
+  tierPrerequisites:
+    1: 0
+    2: 0.75
+    3: 0.75

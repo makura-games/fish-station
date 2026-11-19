@@ -1,0 +1,9 @@
+- type: latheRecipe
+  id: MobHuman
+  result: MobHuman
+  categories:
+  - Surgery
+  completetime: 2
+  materials:
+    Steel: 300
+    Plastic: 100

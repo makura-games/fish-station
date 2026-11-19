@@ -1,0 +1,11 @@
+- type: technology
+  id: BiologyTech
+  name: research-technology-basic-biology
+  icon:
+    sprite: Objects/Specific/Medical/Surgery/scalpel.rsi
+    state: scalpel
+  discipline: Biology
+  tier: 1
+  cost: 5000
+  recipeUnlocks:
+    - MobHuman

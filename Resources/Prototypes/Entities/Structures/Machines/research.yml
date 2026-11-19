@@ -30,6 +30,7 @@
     - Experimental
     - CivilianServices
     - Biochemical
+    - Biology ## Fish-Edit
   - type: ApcPowerReceiver
     powerLoad: 200
   - type: ExtensionCableReceiver

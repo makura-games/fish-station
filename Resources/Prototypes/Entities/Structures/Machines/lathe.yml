@@ -544,6 +544,7 @@
     - MedicalCyberlimbDynamic # Sunrise-Add
     - MedicalCyberOrgansDynamic # Sunrise-Add
     - MedicalImplantDynamic # Sunrise-Add
+    - MobHuman # Fish-Edit
   # Sunrise-Start
   - type: EmagLatheRecipes
     emagDynamicPacks:
