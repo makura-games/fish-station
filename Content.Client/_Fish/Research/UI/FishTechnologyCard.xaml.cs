@@ -53,7 +53,6 @@ public sealed partial class FishTechnologyCard : PanelContainer
         ResearchButton.Text = !access ? Loc.GetString("research-console-no-access-popup") :
             missing > 0 ? Loc.GetString("fish-rnd-shortfall", ("points", missing)) :
             Loc.GetString("research-console-menu-server-research-button");
-        ResearchButton.ModulateSelfOverride = ResearchButton.Disabled ? null : Color.FromHex("#73DEC4");
     }
 }
 

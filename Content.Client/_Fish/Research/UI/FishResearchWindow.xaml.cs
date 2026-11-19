@@ -189,6 +189,15 @@ public sealed partial class FishResearchWindow : FancyWindow
                         Text = entry.Name, ToolTip = entry.Name, ClipText = true,
                         TextAlign = Label.AlignMode.Left, ToggleMode = true, Group = buttons,
                     };
+                    button.AddStyleClass("FishResearchLeaf");
+                    button.Label.Margin = new Thickness(32, 0, 0, 0);
+                    button.AddChild(new TextureRect
+                    {
+                        Texture = _sprites.Frame0(entry.Tech.Icon),
+                        SetSize = new Vector2(26), CanShrink = true, MouseFilter = MouseFilterMode.Ignore,
+                        Stretch = TextureRect.StretchMode.KeepAspectCentered,
+                        HorizontalAlignment = HAlignment.Left, VerticalAlignment = VAlignment.Center,
+                    });
                     button.OnPressed += _ => ShowDetails(entry);
                     leaves.AddChild(button);
                     if (selection == null || entry.Tech.ID == _selected)
@@ -213,6 +222,17 @@ public sealed partial class FishResearchWindow : FancyWindow
         var body = new CollapsibleBody();
         body.AddChild(children);
         var heading = new CollapsibleHeading(title);
+        if (key.Tier == null)
+        {
+            heading.Label.AddStyleClass("FishResearchDiscipline");
+            heading.Label.FontColorOverride = Color.InterpolateBetween(Color.White, _prototypes.Index<TechDisciplinePrototype>(key.Discipline).Color, 0.55f);
+            heading.MinHeight = 32;
+        }
+        else
+        {
+            heading.Label.AddStyleClass("FishResearchTier");
+            heading.MinHeight = 26;
+        }
         var branch = new Collapsible(heading, body)
         {
             BodyVisible = searching || _expanded.GetValueOrDefault(key, key.Tier == null || key.Tier == 1),
@@ -227,18 +247,26 @@ public sealed partial class FishResearchWindow : FancyWindow
     {
         _selected = entry.Tech.ID;
         Details.Children.Clear();
-        AddText(Details, entry.Name, "LabelHeading");
-        Details.AddChild(new TextureRect
+        var header = new BoxContainer { SeparationOverride = 12 };
+        Details.AddChild(header);
+        header.AddChild(new TextureRect
         {
-            Texture = _sprites.Frame0(entry.Tech.Icon), SetSize = new Vector2(96), CanShrink = true,
+            Texture = _sprites.Frame0(entry.Tech.Icon), SetSize = new Vector2(72), CanShrink = true,
             Stretch = TextureRect.StretchMode.KeepAspectCentered, HorizontalAlignment = HAlignment.Center,
         });
+        var summary = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true,
+            VerticalAlignment = VAlignment.Center, SeparationOverride = 4,
+        };
+        header.AddChild(summary);
+        AddText(summary, entry.Name, "FishResearchTitle");
         var discipline = _prototypes.Index(entry.Tech.Discipline);
         var tier = new RichTextLabel();
         tier.SetMessage(FormattedMessage.FromMarkupOrThrow(Loc.GetString("research-console-tier-discipline-info", ("tier", entry.Tech.Tier),
             ("color", discipline.Color), ("discipline", Loc.GetString(discipline.Name)))));
-        Details.AddChild(tier);
-        AddText(Details, Loc.GetString("fish-rnd-price", ("points", entry.Tech.Cost)));
+        summary.AddChild(tier);
+        AddText(summary, Loc.GetString("fish-rnd-price", ("points", entry.Tech.Cost)));
         AddText(Details, Loc.GetString(entry.Status), "LabelKeyText");
         if (entry.Tech.TechnologyPrerequisites.Count != 0)
         {

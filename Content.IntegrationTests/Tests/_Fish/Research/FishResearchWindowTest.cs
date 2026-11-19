@@ -3,10 +3,12 @@ using System.Numerics;
 using Content.Client._Fish.Research.UI;
 using Content.Client.Lathe;
 using Content.Shared.Research.Components;
+using Content.Shared.Research.Prototypes;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.Research;
 
@@ -58,7 +60,9 @@ public sealed class FishResearchWindowTest
             Assert.That(SelectedLeaf().Text, Is.EqualTo(client.ResolveDependency<ILocalizationManager>().GetString("research-technology-advanced-powercells")));
             Assert.That(window.FindControl<BoxContainer>("Details").ChildCount, Is.Positive);
 
-            window.Refresh(console, new ResearchConsoleBoundInterfaceState(7500));
+            var offer = client.EntMan.GetComponent<TechnologyDatabaseComponent>(console).CurrentTechnologyCards.Single();
+            var price = client.ResolveDependency<IPrototypeManager>().Index<TechnologyPrototype>(offer).Cost;
+            window.Refresh(console, new ResearchConsoleBoundInterfaceState(price));
             Assert.That(buy.Disabled, Is.False);
             Assert.That(search.Text, Is.EqualTo(query));
             var gyroscope = client.System<LatheSystem>().GetRecipeName("GyroscopeMachineCircuitboard");
