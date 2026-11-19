@@ -1810,3 +1810,19 @@
     message: Вайтлист у ОпСЩ для ПНТ был временно отозван.
   id: 184
   url: https://github.com/makura-games/fish-station/pull/665
+- author: NekutGit
+  time: '2026-11-19T21:55:24.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена консоль снабжения Центкома, заказы которой отправляются на выбранную станцию.
+  id: 185
+  url: https://github.com/makura-games/fish-station/pull/630
+  media:
+  - url: https://github.com/user-attachments/assets/e7f1998f-55ef-48e1-bf3a-0ea938af75d8
+    description: изображение
+  - url: https://github.com/user-attachments/assets/0843bae4-eaf1-4195-9859-3a57b951ae2c
+    description: изображение
+  - url: https://github.com/user-attachments/assets/3cd78d7b-e1e8-4f2f-a181-ac10485b6e4c
+    description: изображение
+  - url: https://github.com/user-attachments/assets/9470af52-64a8-49da-a229-d72f677ecd2d
+    description: изображение
