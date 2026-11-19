@@ -101,6 +101,7 @@
       - Inorganic
       - Silicon
       - Mech
+      - Ipc # Fish-edit: отображение шкалы здоровья КПБ на визоре
   # Sunrise-End
   - type: Speech # Sunrise-Edit
     speechVerb: Robotic # Sunrise-Edit

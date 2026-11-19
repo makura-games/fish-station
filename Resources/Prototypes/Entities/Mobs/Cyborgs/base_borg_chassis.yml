@@ -61,6 +61,7 @@
       - Piercing
       - Heat
       - Shock
+      - Structural # Fish-edit: отображаем структурный урон при осмотре
       - Mangleness #Sunrise-Edit
     locPrefix: silicon
   - type: UserInterface

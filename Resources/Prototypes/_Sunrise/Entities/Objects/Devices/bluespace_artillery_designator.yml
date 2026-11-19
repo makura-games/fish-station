@@ -19,8 +19,8 @@
     maxCharges: 3
     lastCharges: 3
   - type: BluespaceArtilleryDesignator
-    targetingDelay: 2
-    strikeDelay: 7
+    targetingDelay: 3 # Fish-edit - было 2с, +1с
+    strikeDelay: 9 # Fish-edit - было 7с, +2с
     targetMarker: EffectBluespaceArtilleryTarget
     announcement: bluespace-artillery-announcement
     announcementSender: bluespace-artillery-announcement-sender
@@ -64,7 +64,7 @@
     lastCharges: 999
   - type: BluespaceArtilleryDesignator
     targetingDelay: 0
-    strikeDelay: 7
+    strikeDelay: 9 # Fish-edit - было 7с, +2с
 
 - type: entity
   id: EffectBluespaceArtilleryTarget
@@ -79,9 +79,9 @@
     layers:
     - state: laser_target
       shader: unshaded
-      scale: 0.5, 0.5
+      scale: 1, 1 # Fish-edit - было 0.5, ×2 для ЛЦУ БСА
   - type: TimedDespawn
-    lifetime: 9
+    lifetime: 12 # Fish-edit - targeting 3с + strike 9с
   - type: Tag
     tags:
     - HideContextMenu

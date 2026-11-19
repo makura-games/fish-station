@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Original action art and frame by fago_s (Discord). Active frames, eye beam and flight shadow added for Fish Station.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "scream"
+    },
+    {
+      "name": "laser"
+    },
+    {
+      "name": "laser-active"
+    },
+    {
+      "name": "flight"
+    },
+    {
+      "name": "flight-active"
+    },
+    {
+      "name": "eye-beam",
+      "delays": [
+        [
+          0.08,
+          0.08,
+          0.5
+        ]
+      ]
+    },
+    {
+      "name": "flight-shadow"
+    }
+  ]
+}

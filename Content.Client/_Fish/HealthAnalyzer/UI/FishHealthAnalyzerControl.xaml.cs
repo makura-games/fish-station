@@ -483,13 +483,14 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
 
     private Texture GetTexture(string texture)
     {
-        var rsiPath = new ResPath("/Textures/Objects/Devices/health_analyzer.rsi");
-        var rsiSprite = new SpriteSpecifier.Rsi(rsiPath, texture);
+        var rsiSprite = texture == "structural"
+            ? new SpriteSpecifier.Rsi(new ResPath("/Textures/Objects/Materials/Sheets/metal.rsi"), "steel_3")
+            : new SpriteSpecifier.Rsi(new ResPath("/Textures/Objects/Devices/health_analyzer.rsi"), texture);
 
         var rsi = _cache.GetResource<RSIResource>(rsiSprite.RsiPath).RSI;
         if (!rsi.TryGetState(rsiSprite.RsiState, out var state))
         {
-            rsiSprite = new SpriteSpecifier.Rsi(rsiPath, "unknown");
+            rsiSprite = new SpriteSpecifier.Rsi(new ResPath("/Textures/Objects/Devices/health_analyzer.rsi"), "unknown");
         }
 
         return _spriteSystem.Frame0(rsiSprite);
