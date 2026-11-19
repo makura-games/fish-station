@@ -2049,6 +2049,94 @@ public sealed class CentCommSupplyTest
         return pallets;
     }
 
+    [Test]
+    public async Task RapidReopenWithinRateLimitInitializesUserState()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
+        var server = pair.Server;
+        var client = pair.Client;
+
+        await pair.RunTicksSync(20);
+
+        var session = server.PlayerMan.GetSessionById(client.Session!.UserId);
+        var previousAttached = session.AttachedEntity;
+        var mapSystem = server.System<MapSystem>();
+        var stationSystem = server.System<StationSystem>();
+        var accessSystem = server.System<AccessSystem>();
+        var ui = server.System<UserInterfaceSystem>();
+
+        EntityUid station = default, actor = default, console = default;
+        NetEntity stationNet = default, consoleNet = default;
+        MapId stationMap = default, consoleMap = default;
+
+        await server.WaitPost(() =>
+        {
+            var entMan = server.EntMan;
+            var stationConfig = server.ProtoMan.Index<GameMapPrototype>(MapProto).Stations.Values.Single();
+            var plating = server.ResolveDependency<ITileDefinitionManager>()["Plating"];
+
+            mapSystem.CreateMap(out stationMap);
+            var grid = mapSystem.CreateGridEntity(stationMap);
+            var palletCoords = new EntityCoordinates(grid, 0.5f, 0.5f);
+            mapSystem.SetTile(grid, palletCoords, new Tile(plating.TileId));
+            entMan.SpawnEntity("CargoPalletBuy", palletCoords);
+            station = stationSystem.InitializeNewStation(stationConfig, [grid.Owner]);
+            stationNet = entMan.GetNetEntity(station);
+
+            mapSystem.CreateMap(out consoleMap);
+            var consoleCoords = new MapCoordinates(0, 0, consoleMap);
+            actor = entMan.SpawnEntity(null, consoleCoords);
+            entMan.EnsureComponent<EyeComponent>(actor);
+            entMan.EnsureComponent<ComplexInteractionComponent>(actor);
+            GrantCentralCommandAccess(entMan, accessSystem, actor);
+            server.PlayerMan.SetAttachedEntity(session, actor);
+
+            console = entMan.SpawnEntity(_consolePrototype, consoleCoords);
+            consoleNet = entMan.GetNetEntity(console);
+        });
+
+        await pair.RunTicksSync(20);
+
+        // Открытие, закрытие и повторное открытие быстрее 0.5 секунды не должны оставлять пользователя без состояния.
+        await server.WaitPost(() => ui.OpenUi(console, CentCommSupplyUiKey.Key, actor));
+        await pair.RunTicksSync(1);
+        await server.WaitPost(() => ui.CloseUi(console, CentCommSupplyUiKey.Key, actor));
+        await pair.RunTicksSync(1);
+        await server.WaitPost(() => ui.OpenUi(console, CentCommSupplyUiKey.Key, actor));
+
+        await server.WaitAssertion(() =>
+        {
+            var userStates = server.EntMan.GetComponent<CentCommSupplyConsoleComponent>(console).UserStates;
+            Assert.That(userStates.ContainsKey(actor), Is.True);
+            Assert.That(userStates[actor].SelectedStation, Is.EqualTo(stationNet));
+        });
+
+        await pair.RunTicksSync(20);
+
+        await client.WaitAssertion(() =>
+        {
+            var clientConsole = client.EntMan.GetEntity(consoleNet);
+            Assert.That(client.System<Robust.Client.GameObjects.UserInterfaceSystem>()
+                .TryGetOpenUi<CentCommSupplyBoundUserInterface>(clientConsole, CentCommSupplyUiKey.Key, out var bui), Is.True);
+            var window = GetPrivateField<CentCommSupplyWindow>(bui!, "_window");
+            Assert.That(window.IsOpen, Is.True);
+            Assert.That(GetPrivateField<NetEntity?>(window, "_selectedStation"), Is.EqualTo(stationNet));
+            Assert.That(GetPrivateField<Dictionary<string, CentCommSupplyProductEntry>>(window, "_productsById"), Is.Not.Empty);
+        });
+
+        await server.WaitPost(() =>
+        {
+            ui.CloseUi(console, CentCommSupplyUiKey.Key);
+            server.PlayerMan.SetAttachedEntity(session, previousAttached);
+            server.EntMan.DeleteEntity(station);
+            mapSystem.DeleteMap(stationMap);
+            mapSystem.DeleteMap(consoleMap);
+        });
+
+        await pair.RunTicksSync(10);
+        await pair.CleanReturnAsync();
+    }
+
     private static int SecondsToTicks(TimeSpan tickPeriod, double seconds)
     {
         return Math.Max(1, (int) Math.Ceiling(seconds / tickPeriod.TotalSeconds));

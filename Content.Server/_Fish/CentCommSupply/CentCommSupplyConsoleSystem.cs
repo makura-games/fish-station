@@ -125,12 +125,13 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
 
     private void OnUiOpened(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIOpenedEvent args)
     {
-        if (Equals(args.UiKey, CentCommSupplyUiKey.Key)
-            && CanUseUi(ent, args.Actor)
-            && TryConsumeUiRequest(args.Actor))
-        {
-            UpdateUi(ent, args.Actor, opening: true, refreshStations: true);
-        }
+        if (!Equals(args.UiKey, CentCommSupplyUiKey.Key) || !CanUseUi(ent, args.Actor))
+            return;
+
+        // Открытие UI всегда должно инициализировать состояние пользователя, даже при быстром переоткрытии;
+        // выставляем кулдаун, чтобы дедуплицировать немедленный автоматический запрос состояния от клиента.
+        _uiRequestCooldowns[args.Actor] = _timing.CurTime + _uiRequestRateLimit;
+        UpdateUi(ent, args.Actor, opening: true, refreshStations: true);
     }
 
     private void OnUiClosed(Entity<CentCommSupplyConsoleComponent> ent, ref BoundUIClosedEvent args)
