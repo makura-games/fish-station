@@ -1753,3 +1753,38 @@
     message: Структурный урон по киборгам теперь преобразуется в ушибы при получении, корректно отображается и поддаётся починке. ЭТОТ БАГ БЫЛ ЕЩЁ И НА КИБОРГАХ И НИКТО НЕ СКАЗАЛ.
   id: 177
   url: https://github.com/makura-games/fish-station/pull/666
+- author: Endennsss
+  time: '2026-11-17T22:41:51.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Фикс запрета взаимодействия с миром в агосте
+  id: 178
+  url: https://github.com/makura-games/fish-station/pull/670
+- author: NekutGit
+  time: '2026-11-17T22:47:42.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлен канал сервиса для гарнитуры гк.
+  id: 179
+  url: https://github.com/makura-games/fish-station/pull/659
+- author: Tiferi
+  time: '2026-11-17T22:50:50.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Откат уродских спрайтов railing
+  id: 180
+  url: https://github.com/makura-games/fish-station/pull/658
+- author: Kaiten
+  time: '2026-11-18T00:19:01.0000000+00:00'
+  changes:
+  - type: Add
+    message: Преобразования структурного в ушибы не прокатило. Поэтому пока тестово добавляем структурный официально как новый тип урона для мехов, боргов и КПБ. Чинится сваркой и нанопастой. Дайте фидбек каково оно, а то оказывается это либо оффы сделали, либо санрайз фигово апстримнули.
+  id: 181
+  url: https://github.com/makura-games/fish-station/pull/671
+- author: Kaiten
+  time: '2026-11-18T17:17:24.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим Sunrise(18.11.2026)
+  id: 182
+  url: https://github.com/makura-games/fish-station/pull/674
