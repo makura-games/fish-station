@@ -11,60 +11,43 @@ public sealed partial class ObrNadzorSystem
 {
     private void OnBeaconChosen(Entity<ObrNadzorConsoleComponent> ent, ref ObrNadzorBeaconChosenBuiMsg args)
     {
-        if (ent.Comp.SessionBrain != null)
+        if (ent.Comp.RemoteEntity != null)
         {
             _popup.PopupEntity(Loc.GetString("obr-nadzor-session-active"), args.Actor, args.Actor);
             return;
         }
 
-        // Сбросить наблюдение с любой другой консоли / этой же, прежде чем стартовать заново.
-        if (TryGetConsoleForObserver(args.Actor, out var previous))
-            StopObserving(previous, args.Actor, deleteEye: true);
-        else
-            StopObserving(ent, args.Actor, deleteEye: true);
-
-        CloseOtherUsers(ent, args.Actor);
-        ent.Comp.Opener = args.Actor;
-
         var beacon = GetEntity(args.Beacon.NetEnt);
-        if (!Exists(beacon))
+        if (!TryValidateBeacon(ent, beacon, out var station))
             return;
 
-        var station = _station.GetOwningStation(beacon);
+        // Сбросить выбор на другой / этой консоли у того же актёра.
+        if (TryGetConsoleForOpener(args.Actor, out var previous) && previous.Owner != ent.Owner)
+            ClearTargeting(previous);
+
+        CloseOtherUsers(ent, args.Actor);
+
+        ent.Comp.Opener = args.Actor;
+        ent.Comp.TargetBeacon = beacon;
         ent.Comp.TargetStation = station;
-
-        var eye = SpawnAtPosition(ent.Comp.RemoteEntityProto, Transform(beacon).Coordinates);
-        ent.Comp.RemoteEntity = GetNetEntity(eye);
-
-        EnsureComp<VisibilityComponent>(eye);
-
-        AddVirtualItems(args.Actor, ent);
-        SetEye(args.Actor, eye);
-        AddObserveActions(args.Actor, ent);
         Dirty(ent);
         RefreshUiState(ent);
     }
 
     private void OnStopObserveMsg(Entity<ObrNadzorConsoleComponent> ent, ref ObrNadzorStopObserveBuiMsg args)
     {
-        StopObserving(ent, args.Actor, deleteEye: true);
+        if (ent.Comp.Opener != args.Actor)
+            return;
+
+        // Сессию глаза снимает только Release — StopObserve чистит только выбор маяка.
+        if (ent.Comp.RemoteEntity != null)
+            return;
+
+        ClearTargeting(ent);
         RefreshUiState(ent);
     }
 
-    private void OnStopObserveAction(ObrNadzorStopObserveEvent args)
-    {
-        if (args.Handled)
-            return;
-
-        if (!TryGetConsoleForObserver(args.Performer, out var console))
-            return;
-
-        StopObserving(console, args.Performer, deleteEye: true);
-        RefreshUiState(console);
-        args.Handled = true;
-    }
-
-    private bool TryGetConsoleForObserver(EntityUid actor, out Entity<ObrNadzorConsoleComponent> console)
+    private bool TryGetConsoleForOpener(EntityUid actor, out Entity<ObrNadzorConsoleComponent> console)
     {
         var query = EntityQueryEnumerator<ObrNadzorConsoleComponent>();
         while (query.MoveNext(out var uid, out var comp))
@@ -80,21 +63,11 @@ public sealed partial class ObrNadzorSystem
         return false;
     }
 
-    private void StopObserving(Entity<ObrNadzorConsoleComponent> ent, EntityUid actor, bool deleteEye)
+    private void ClearTargeting(Entity<ObrNadzorConsoleComponent> ent)
     {
-        if (ent.Comp.Opener == actor)
-            ent.Comp.Opener = null;
-
-        RemoveObserveActions(actor);
-        RemoveEye(actor);
-        _virtualItem.DeleteInHandsMatching(actor, ent.Owner);
-
-        if (deleteEye && ent.Comp.RemoteEntity != null && TryGetEntity(ent.Comp.RemoteEntity, out var eye))
-        {
-            QueueDel(eye.Value);
-            ent.Comp.RemoteEntity = null;
-        }
-
+        ent.Comp.Opener = null;
+        ent.Comp.TargetBeacon = null;
+        ent.Comp.TargetStation = null;
         Dirty(ent);
     }
 
@@ -141,22 +114,5 @@ public sealed partial class ObrNadzorSystem
 
         if (_virtualItem.TrySpawnVirtualItemInHand(console, uid, out var virtItem2))
             EnsureComp<UnremoveableComponent>(virtItem2.Value);
-    }
-
-    private void AddObserveActions(EntityUid actor, Entity<ObrNadzorConsoleComponent> console)
-    {
-        var marker = EnsureComp<ObrNadzorObserverComponent>(actor);
-        marker.Console = console.Owner;
-        _actions.AddAction(actor, ref marker.StopObserveAction, _stopObserveAction);
-        Dirty(actor, marker);
-    }
-
-    private void RemoveObserveActions(EntityUid actor)
-    {
-        if (!TryComp<ObrNadzorObserverComponent>(actor, out var marker))
-            return;
-
-        _actions.RemoveAction(actor, marker.StopObserveAction);
-        RemCompDeferred<ObrNadzorObserverComponent>(actor);
     }
 }

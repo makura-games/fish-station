@@ -1,13 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Content.Server.Actions;
 using Content.Server.Chat.Systems;
-using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._Fish.ObrNadzor;
 using Content.Shared.Access.Systems;
 using Content.Shared.Eye;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory.VirtualItem;
-using Content.Shared.Mind;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Pinpointer;
 using Content.Shared.Popups;
@@ -29,16 +29,13 @@ public sealed partial class ObrNadzorSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedEyeSystem _eye = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
-    [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private SharedMoverController _mover = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedStationSystem _station = default!;
     [Dependency] private SharedVirtualItemSystem _virtualItem = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
-    [Dependency] private MetaDataSystem _meta = default!;
 
-    private static readonly EntProtoId _stopObserveAction = "ActionFishObrNadzorStopObserve";
-    private static readonly EntProtoId _releaseAction = "ActionFishObrNadzorRelease";
+    private static readonly EntProtoId ReleaseAction = "ActionFishObrNadzorRelease";
 
     public override void Initialize()
     {
@@ -46,6 +43,8 @@ public sealed partial class ObrNadzorSystem : EntitySystem
 
         SubscribeLocalEvent<ObrNadzorConsoleComponent, BeforeActivatableUIOpenEvent>(OnBeforeUiOpen);
         SubscribeLocalEvent<ObrNadzorConsoleComponent, ActivatableUIOpenAttemptEvent>(OnUiOpenAttempt);
+        SubscribeLocalEvent<ObrNadzorConsoleComponent, ComponentShutdown>(OnConsoleShutdown);
+        SubscribeLocalEvent<ObrNadzorConsoleComponent, EntityTerminatingEvent>(OnConsoleTerminating);
 
         Subs.BuiEvents<ObrNadzorConsoleComponent>(ObrNadzorUiKey.Key, subs =>
         {
@@ -55,11 +54,12 @@ public sealed partial class ObrNadzorSystem : EntitySystem
             subs.Event<ObrNadzorReleaseSessionBuiMsg>(OnReleaseMsg);
         });
 
-        SubscribeLocalEvent<ObrNadzorStopObserveEvent>(OnStopObserveAction);
         SubscribeLocalEvent<ObrNadzorReleaseSessionEvent>(OnReleaseAction);
 
         SubscribeLocalEvent<ObrNadzorSessionComponent, ComponentShutdown>(OnSessionShutdown);
         SubscribeLocalEvent<ObrNadzorSessionComponent, EntityTerminatingEvent>(OnSessionTerminating);
+
+        SubscribeLocalEvent<ObrNadzorEyeComponent, EntityTerminatingEvent>(OnEyeTerminating);
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
@@ -77,7 +77,8 @@ public sealed partial class ObrNadzorSystem : EntitySystem
             return;
         }
 
-        if (ent.Comp.Opener != null && ent.Comp.Opener != args.User && ent.Comp.SessionBrain == null)
+        // Занято только на этапе выбора маяка (ещё без сессии глаза).
+        if (ent.Comp.Opener != null && ent.Comp.Opener != args.User && ent.Comp.RemoteEntity == null)
         {
             _popup.PopupEntity(Loc.GetString("obr-nadzor-console-occupied"), args.User, args.User);
             args.Cancel();
@@ -87,6 +88,24 @@ public sealed partial class ObrNadzorSystem : EntitySystem
     private void OnBeforeUiOpen(Entity<ObrNadzorConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
     {
         RefreshUiState(ent);
+    }
+
+    private void OnConsoleShutdown(Entity<ObrNadzorConsoleComponent> ent, ref ComponentShutdown args)
+    {
+        ForceCleanupConsole(ent);
+    }
+
+    private void OnConsoleTerminating(Entity<ObrNadzorConsoleComponent> ent, ref EntityTerminatingEvent args)
+    {
+        ForceCleanupConsole(ent);
+    }
+
+    private void ForceCleanupConsole(Entity<ObrNadzorConsoleComponent> ent)
+    {
+        if (ent.Comp.RemoteEntity != null || ent.Comp.OperatorBody != null)
+            EndSession(ent);
+        else if (ent.Comp.Opener != null)
+            ClearTargeting(ent);
     }
 
     private void RefreshUiState(Entity<ObrNadzorConsoleComponent> ent)
@@ -119,25 +138,38 @@ public sealed partial class ObrNadzorSystem : EntitySystem
         _ui.SetUiState(ent.Owner, ObrNadzorUiKey.Key, new ObrNadzorBuiState
         {
             Stations = result,
-            Observing = ent.Comp.RemoteEntity != null && ent.Comp.SessionBrain == null,
-            SessionActive = ent.Comp.SessionBrain != null,
+            Observing = ent.Comp.Opener != null && ent.Comp.RemoteEntity == null,
+            SessionActive = ent.Comp.RemoteEntity != null,
         });
     }
 
     private void CloseOtherUsers(EntityUid console, EntityUid actor)
     {
-        if (!TryComp<UserInterfaceComponent>(console, out var bound))
-            return;
-
-        foreach (var uids in bound.Actors.Values)
+        // Снимок: CloseUi мутирует Actors во время перебора.
+        var actors = _ui.GetActors(console, ObrNadzorUiKey.Key).ToArray();
+        foreach (var uid in actors)
         {
-            foreach (var uid in uids)
-            {
-                if (uid == actor)
-                    continue;
+            if (uid == actor)
+                continue;
 
-                _ui.CloseUi((console, bound), ObrNadzorUiKey.Key, uid);
-            }
+            _ui.CloseUi(console, ObrNadzorUiKey.Key, uid);
         }
+    }
+
+    private bool TryValidateBeacon(Entity<ObrNadzorConsoleComponent> ent, EntityUid beacon, [NotNullWhen(true)] out EntityUid? station)
+    {
+        station = null;
+
+        if (!Exists(beacon) || !HasComp<NavMapBeaconComponent>(beacon))
+            return false;
+
+        station = _station.GetOwningStation(beacon);
+        if (station == null || !Exists(station.Value))
+            return false;
+
+        if (!TryComp(station.Value, out MetaDataComponent? meta) || meta.EntityPrototype == null)
+            return false;
+
+        return ent.Comp.StationWhitelist.Contains(meta.EntityPrototype.ID);
     }
 }

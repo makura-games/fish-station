@@ -1,7 +1,6 @@
 using Content.Shared._Fish.ObrNadzor;
-using Content.Shared.Silicons.StationAi;
+using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
-using Robust.Shared.Map;
 
 namespace Content.Server._Fish.ObrNadzor;
 
@@ -14,15 +13,15 @@ public sealed partial class ObrNadzorSystem
 
     private void OnReleaseMsg(Entity<ObrNadzorConsoleComponent> ent, ref ObrNadzorReleaseSessionBuiMsg args)
     {
-        if (ent.Comp.SessionBrain is not { } brain || !Exists(brain))
+        if (ent.Comp.RemoteEntity == null)
             return;
 
-        // Снять контроль: сам оператор (brain), его тело у консоли, либо другой с доступом ЦК.
-        var isOperator = args.Actor == brain || args.Actor == ent.Comp.OperatorBody;
+        // Снять контроль: сам оператор, либо другой с доступом ЦК.
+        var isOperator = args.Actor == ent.Comp.OperatorBody;
         if (!isOperator && !_access.IsAllowed(args.Actor, ent))
             return;
 
-        EndSession(ent, restoreMind: true);
+        EndSession(ent);
     }
 
     private void OnReleaseAction(ObrNadzorReleaseSessionEvent args)
@@ -36,7 +35,7 @@ public sealed partial class ObrNadzorSystem
         if (!TryComp(session.Console, out ObrNadzorConsoleComponent? console))
             return;
 
-        EndSession((session.Console, console), restoreMind: true);
+        EndSession((session.Console, console));
         args.Handled = true;
     }
 
@@ -48,7 +47,7 @@ public sealed partial class ObrNadzorSystem
         if (!TryComp(ent.Comp.Console, out ObrNadzorConsoleComponent? console))
             return;
 
-        EndSession((ent.Comp.Console, console), restoreMind: true, fromSession: true);
+        EndSession((ent.Comp.Console, console), fromSession: true);
     }
 
     private void OnSessionTerminating(Entity<ObrNadzorSessionComponent> ent, ref EntityTerminatingEvent args)
@@ -59,100 +58,116 @@ public sealed partial class ObrNadzorSystem
         if (!TryComp(ent.Comp.Console, out ObrNadzorConsoleComponent? console))
             return;
 
-        EndSession((ent.Comp.Console, console), restoreMind: true, fromSession: true);
+        EndSession((ent.Comp.Console, console), fromSession: true);
+    }
+
+    private void OnEyeTerminating(Entity<ObrNadzorEyeComponent> ent, ref EntityTerminatingEvent args)
+    {
+        if (!TryComp(ent.Comp.Console, out ObrNadzorConsoleComponent? console))
+            return;
+
+        // Уже чистимся из EndSession — повторный заход не нужен.
+        if (console.OperatorBody == null && console.RemoteEntity == null)
+            return;
+
+        // Глаз уже удаляется — EndSession не должен QueueDel его повторно.
+        if (console.RemoteEntity != null && TryGetEntity(console.RemoteEntity, out var eye) && eye == ent.Owner)
+            console.RemoteEntity = null;
+
+        EndSession((ent.Comp.Console, console));
     }
 
     private void TryStartTakeover(Entity<ObrNadzorConsoleComponent> ent, EntityUid actor)
     {
-        if (ent.Comp.SessionBrain != null)
+        if (ent.Comp.RemoteEntity != null)
         {
             _popup.PopupEntity(Loc.GetString("obr-nadzor-session-active"), actor, actor);
             return;
         }
 
-        if (ent.Comp.Opener != actor || ent.Comp.RemoteEntity == null)
+        if (ent.Comp.Opener != actor || ent.Comp.TargetBeacon is not { } beacon)
         {
             _popup.PopupEntity(Loc.GetString("obr-nadzor-need-observe"), actor, actor);
             return;
         }
 
-        if (!_mind.TryGetMind(actor, out var mindId, out _))
-            return;
-
-        if (ent.Comp.TargetStation is not { } station || !Exists(station))
+        if (!TryValidateBeacon(ent, beacon, out var station))
         {
             _popup.PopupEntity(Loc.GetString("obr-nadzor-no-station"), actor, actor);
+            ClearTargeting(ent);
+            RefreshUiState(ent);
             return;
         }
 
-        EntityCoordinates spawnCoords;
-        if (TryGetEntity(ent.Comp.RemoteEntity, out var eye) && Exists(eye.Value))
-            spawnCoords = Transform(eye.Value).Coordinates;
-        else if (_station.GetLargestGrid(station) is { } grid)
-            spawnCoords = Transform(grid).Coordinates;
-        else
-            return;
+        // Сначала блэкаут и объява, затем глаз на станции (как у abductor console).
+        BeginStationBlackout(station.Value, ent.Comp.BlackoutDuration);
+        AnnounceNadzor(station.Value, ent.Comp);
+        PlayNadzorSound(station.Value, ent.Comp.AnnouncementSound);
 
-        // Сначала блэкаут и объява, затем перевод mind.
-        BeginStationBlackout(station, ent.Comp.BlackoutDuration);
-        AnnounceNadzor(station, ent.Comp);
-        PlayNadzorSound(station, ent.Comp.AnnouncementSound);
+        var eye = SpawnAtPosition(ent.Comp.RemoteEntityProto, Transform(beacon).Coordinates);
+        ent.Comp.RemoteEntity = GetNetEntity(eye);
 
-        StopObserving(ent, actor, deleteEye: true);
+        EnsureComp<VisibilityComponent>(eye);
+        var eyeMarker = EnsureComp<ObrNadzorEyeComponent>(eye);
+        eyeMarker.Console = ent.Owner;
+        Dirty(eye, eyeMarker);
 
-        var core = Spawn(ent.Comp.AiCoreProto, spawnCoords);
-        var brain = SpawnInContainerOrDrop(ent.Comp.AiBrainProto, core, StationAiCoreComponent.Container);
+        AddVirtualItems(actor, ent);
+        SetEye(actor, eye);
 
-        _meta.SetEntityName(brain, Loc.GetString("obr-nadzor-ai-name"));
-
-        var session = EnsureComp<ObrNadzorSessionComponent>(brain);
+        var session = EnsureComp<ObrNadzorSessionComponent>(actor);
         session.Console = ent.Owner;
-        session.Body = actor;
-        session.Core = core;
-        Dirty(brain, session);
-
+        session.Ending = false;
         EntityUid? releaseAction = null;
-        _actions.AddAction(brain, ref releaseAction, _releaseAction);
+        _actions.AddAction(actor, ref releaseAction, ReleaseAction);
+        session.ReleaseAction = releaseAction;
+        Dirty(actor, session);
 
         ent.Comp.OperatorBody = actor;
-        ent.Comp.SessionBrain = brain;
-        ent.Comp.SessionCore = core;
         ent.Comp.Opener = null;
+        ent.Comp.TargetStation = station;
         Dirty(ent);
-
-        _mind.TransferTo(mindId, brain, ghostCheckOverride: true);
         RefreshUiState(ent);
     }
 
-    private void EndSession(Entity<ObrNadzorConsoleComponent> ent, bool restoreMind, bool fromSession = false)
+    private void EndSession(Entity<ObrNadzorConsoleComponent> ent, bool fromSession = false)
     {
-        var brain = ent.Comp.SessionBrain;
-        var core = ent.Comp.SessionCore;
         var body = ent.Comp.OperatorBody;
+        var remote = ent.Comp.RemoteEntity;
 
-        if (brain != null && TryComp(brain.Value, out ObrNadzorSessionComponent? session))
+        // Идемпотентность: повторный вызов (eye terminate / session shutdown) — no-op.
+        if (body == null && remote == null && ent.Comp.Opener == null && ent.Comp.TargetBeacon == null)
+            return;
+
+        if (body != null && Exists(body.Value) && TryComp(body.Value, out ObrNadzorSessionComponent? session))
             session.Ending = true;
 
-        if (restoreMind && brain != null && body != null && Exists(body.Value) && Exists(brain.Value))
+        if (body != null && Exists(body.Value))
         {
-            if (_mind.TryGetMind(brain.Value, out var mindId, out _))
-                _mind.TransferTo(mindId, body.Value, ghostCheckOverride: true);
+            RemoveEye(body.Value);
+            _virtualItem.DeleteInHandsMatching(body.Value, ent.Owner);
+
+            if (TryComp(body.Value, out ObrNadzorSessionComponent? sessionComp))
+            {
+                _actions.RemoveAction(body.Value, sessionComp.ReleaseAction);
+                if (!fromSession)
+                    RemCompDeferred<ObrNadzorSessionComponent>(body.Value);
+            }
         }
 
-        ent.Comp.SessionBrain = null;
-        ent.Comp.SessionCore = null;
+        ent.Comp.RemoteEntity = null;
         ent.Comp.OperatorBody = null;
+        ent.Comp.Opener = null;
+        ent.Comp.TargetBeacon = null;
+        ent.Comp.TargetStation = null;
         Dirty(ent);
 
-        if (!fromSession && brain != null && Exists(brain.Value))
-            RemCompDeferred<ObrNadzorSessionComponent>(brain.Value);
+        if (remote != null && TryGetEntity(remote, out var eye) && Exists(eye.Value))
+            QueueDel(eye.Value);
 
-        if (core != null && Exists(core.Value))
-            QueueDel(core.Value);
-        else if (brain != null && Exists(brain.Value))
-            QueueDel(brain.Value);
-
-        RefreshUiState(ent);
+        // Консоль может уже удаляться — UI только если ещё жива.
+        if (Exists(ent.Owner) && !Terminating(ent.Owner))
+            RefreshUiState(ent);
     }
 
     private void AnnounceNadzor(EntityUid station, ObrNadzorConsoleComponent console)

@@ -5,19 +5,13 @@ using Robust.Shared.Prototypes;
 namespace Content.Shared._Fish.ObrNadzor;
 
 /// <summary>
-/// Консоль надзора ОСО: наблюдение станции и сессионный удалённый AI-контроль.
+/// Консоль надзора ОСО: выбор маяка и сессионный удалённый контроль глазом (как abductor cams).
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class ObrNadzorConsoleComponent : Component
 {
     [DataField]
     public EntProtoId RemoteEntityProto = "FishObrNadzorConsoleEye";
-
-    [DataField]
-    public EntProtoId AiCoreProto = "FishObrNadzorAiCore";
-
-    [DataField]
-    public EntProtoId AiBrainProto = "FishObrNadzorAiBrain";
 
     [DataField]
     public TimeSpan BlackoutDuration = TimeSpan.FromSeconds(20);
@@ -41,22 +35,16 @@ public sealed partial class ObrNadzorConsoleComponent : Component
     public EntityUid? Opener;
 
     /// <summary>
-    /// Тело оператора, оставленное у консоли на время AI-сессии.
+    /// Оператор активной сессии удалённого контроля (тело у консоли).
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntityUid? OperatorBody;
 
     /// <summary>
-    /// Мозг / held-entity текущей AI-сессии.
+    /// Выбранный маяк (цель для спавна глаза при takeover).
     /// </summary>
     [DataField, AutoNetworkedField]
-    public EntityUid? SessionBrain;
-
-    /// <summary>
-    /// Ядро AI текущей сессии.
-    /// </summary>
-    [DataField, AutoNetworkedField]
-    public EntityUid? SessionCore;
+    public EntityUid? TargetBeacon;
 
     /// <summary>
     /// Станция, выбранная для наблюдения / контроля.
@@ -66,7 +54,7 @@ public sealed partial class ObrNadzorConsoleComponent : Component
 }
 
 /// <summary>
-/// Маркер активной сессии надзора на AI-brain: связь с телом и консолью.
+/// Маркер активной сессии надзора на операторе: связь с консолью и action снятия контроля.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class ObrNadzorSessionComponent : Component
@@ -75,14 +63,21 @@ public sealed partial class ObrNadzorSessionComponent : Component
     public EntityUid Console;
 
     [DataField, AutoNetworkedField]
-    public EntityUid Body;
-
-    [DataField, AutoNetworkedField]
-    public EntityUid Core;
+    public EntityUid? ReleaseAction;
 
     /// <summary>
     /// Защита от рекурсии при штатном завершении сессии.
     /// </summary>
     [ViewVariables]
     public bool Ending;
+}
+
+/// <summary>
+/// Маркер глаза надзора — при удалении снимает сессию с консоли.
+/// </summary>
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+public sealed partial class ObrNadzorEyeComponent : Component
+{
+    [DataField, AutoNetworkedField]
+    public EntityUid Console;
 }

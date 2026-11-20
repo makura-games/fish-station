@@ -1,6 +1,7 @@
 using Content.Client._Starlight;
 using Content.Shared._Fish.ObrNadzor;
 using JetBrains.Annotations;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using static Content.Shared.Pinpointer.SharedNavMapSystem;
 
@@ -36,11 +37,10 @@ public sealed class ObrNadzorBoundUserInterface : BoundUserInterface
 
         if (state.Observing || state.SessionActive)
             View(ViewType.Control, state);
+        else if (_station != null)
+            View(ViewType.Beacons, state);
         else
             View(ViewType.Stations, state);
-
-        if (!_window!.IsOpen)
-            _window.OpenCentered();
     }
 
     private void TryInitWindow()
@@ -48,8 +48,7 @@ public sealed class ObrNadzorBoundUserInterface : BoundUserInterface
         if (_window != null)
             return;
 
-        _window = new ObrNadzorWindow();
-        _window.OnClose += Close;
+        _window = this.CreateWindow<ObrNadzorWindow>();
         _window.Title = Loc.GetString("obr-nadzor-window-title");
 
         _window.StationsButton.OnPressed += _ =>
@@ -180,6 +179,6 @@ public sealed class ObrNadzorBoundUserInterface : BoundUserInterface
             return;
 
         _confirm?.Close();
-        _window?.Close();
+        _window = null;
     }
 }
