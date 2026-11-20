@@ -31,3 +31,4 @@ fish-surgery-action-finished = Action finished: { $part }, { $step }
 fish-surgery-action-updated = Action ended. Check the current step's state.
 fish-surgery-unknown-area = Unknown area
 fish-surgery-context = { $part } → { $operation }
+fish-surgery-careless-tool = Because of a careless tool, your hand shook. You need to start this step all over again!

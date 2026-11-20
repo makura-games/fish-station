@@ -63,7 +63,7 @@ public abstract partial class SharedSurgerySystem
         }
         else if (!_random.Prob(args.SuccessRate))
         {
-            _popup.PopupEntity("Because of a careless tool, your hand shook. You need to start this step all over again!", args.User, PopupType.SmallCaution);
+            _popup.PopupEntity(Loc.GetString("fish-surgery-careless-tool"), args.User, PopupType.SmallCaution);
             return;
         }
         // Fish-end
