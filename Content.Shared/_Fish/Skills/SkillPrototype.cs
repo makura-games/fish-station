@@ -60,4 +60,4 @@ public sealed partial class SkillPrototype : IPrototype
     public float GetQualityMultiplierForLevel(int level) =>
         SkillMath.GetQualityMultiplier(QualityMultipliers, QualityFactor, level);
 }
-
+

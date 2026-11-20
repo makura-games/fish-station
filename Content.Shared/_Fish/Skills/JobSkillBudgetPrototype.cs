@@ -29,4 +29,4 @@ public sealed partial class JobSkillBudgetPrototype : IPrototype
 
     public ProtoId<JobPrototype> GetJobId() => Job ?? ID;
 }
-
+

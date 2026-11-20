@@ -55,4 +55,4 @@ public sealed partial class SkillsetComponent : Component
     [DataField, AutoNetworkedField]
     public HashSet<string> CompletedTrainings = new();
 }
-
+

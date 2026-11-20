@@ -31,4 +31,4 @@ public static class SkillLevels
         _ => "skills-level-unknown",
     };
 }
-
+
