@@ -278,7 +278,10 @@ namespace Content.Shared.Preferences
             var random = IoCManager.Resolve<IRobustRandom>();
 
             var pool = prototypeManager.EnumeratePrototypes<SpeciesPrototype>()
-                .Where(x => x.RoundStart && !x.SponsorOnly && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID))) // Sunrise-Edit
+                // Fish-start: исключаем расы с excludeFromRandomSpecies (например, КПБ) из случайных спавнеров
+                // .Where(x => x.RoundStart && !x.SponsorOnly && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID))) // Sunrise-Edit
+                .Where(x => x.RoundStart && !x.SponsorOnly && !x.ExcludeFromRandomSpecies && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID)))
+                // Fish-end
                 .ToArray();
             var species = random.Pick(pool);
             return species;

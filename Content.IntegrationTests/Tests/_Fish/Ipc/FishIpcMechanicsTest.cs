@@ -1,14 +1,27 @@
 #nullable enable
 using System.Linq;
 using Content.Server._Fish.Ipc;
+using Content.Server._Sunrise.Misc.ShiftedAsciiTableAccent;
+using Content.Server._Sunrise.Misc.TimedRemoveComponents;
+using Content.Server._Sunrise.Research.Artifact.Effects.AddComponentsInRadius;
+using Content.Server.Humanoid.Systems;
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
 using Content.Shared.Bed.Sleep;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Emp;
 using Content.Shared.Electrocution;
+using Content.Shared.Eye.Blinding.Components;
+using Content.Shared.Eye.Blinding.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.Flash;
+using Content.Shared.Flash.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.HealthExaminable;
+using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Interaction;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Lock;
@@ -18,11 +31,19 @@ using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Overlays;
 using Content.Shared.Power.Components;
+using Content.Shared.Preferences;
 using Content.Shared.Radio.Components;
+using Content.Shared.Speech;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Wires;
+using Content.Shared.Xenoarchaeology.Artifact;
+using Content.Shared.Xenoarchaeology.Artifact.Components;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Localization;
+using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.Ipc;
 
@@ -32,6 +53,10 @@ namespace Content.IntegrationTests.Tests._Fish.Ipc;
 [TestFixture]
 public sealed class FishIpcMechanicsTest : FishIpcGameTest
 {
+    private static readonly ProtoId<SpeciesPrototype> IpcSpecies = "Ipc";
+    private static readonly ProtoId<DamageGroupPrototype> StructuralDamageGroup = "Structural";
+    private static readonly ProtoId<DamageTypePrototype> StructuralDamageType = "Structural";
+
     [TestPrototypes]
     private const string Prototypes = @"
 - type: entity
@@ -107,14 +132,15 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
             Assert.That(Server.System<ItemToggleSystem>().TrySetActive(welder, true, ipc, predicted: false, showPopup: false), Is.True);
             Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(ipc, welder, checkActionBlocker: false), Is.True);
             Assert.That(weld.TryStartWeld((welder, weldable), ipc, ipc), Is.EqualTo(FishWeldResult.Started));
-            Assert.That(ActiveDelay(ipc), Is.EqualTo(TimeSpan.FromSeconds(2)).Within(TimeSpan.FromMilliseconds(50)));
+            // 40/100 урона при макс. штрафе ×3 → 1 + 0.4 * 2 = 1.8 с.
+            Assert.That(ActiveDelay(ipc), Is.EqualTo(TimeSpan.FromSeconds(1.8)).Within(TimeSpan.FromMilliseconds(50)));
         });
 
         await RunSeconds(2.4f);
 
         await Server.WaitAssertion(() =>
         {
-            // Самосварка 2 с, за 2.4 с успевает один проход: 40 − 3.34.
+            // Самосварка 1.8 с, за 2.4 с успевает один проход: 40 − 3.34.
             Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(36.66f).Within(0.08f));
         });
 
@@ -125,6 +151,25 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
             Server.System<SharedHandsSystem>().TryForcePickupAnyHand(human, welder, checkActionBlocker: false);
             Assert.That(weld.TryStartWeld((welder, weldable), human, ipc), Is.EqualTo(FishWeldResult.Started));
             Assert.That(ActiveDelay(human), Is.EqualTo(TimeSpan.FromSeconds(1)).Within(TimeSpan.FromMilliseconds(50)));
+
+            // Проверка потолка ×3 (как у органиков) при 90 урона: сварка 2.8 с, нанопаста 5.6 с.
+            var critTestIpc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            Hurt(critTestIpc, "Blunt", 90);
+            var welder2 = SSpawnAtPosition("Welder", map.GridCoords);
+            Assert.That(Server.System<ItemToggleSystem>().TrySetActive(welder2, true, critTestIpc, predicted: false, showPopup: false), Is.True);
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(critTestIpc, welder2, checkActionBlocker: false), Is.True);
+            Assert.That(weld.TryStartWeld((welder2, SComp<FishWeldingHealingComponent>(welder2)), critTestIpc, critTestIpc), Is.EqualTo(FishWeldResult.Started));
+            Assert.That(ActiveDelay(critTestIpc), Is.EqualTo(TimeSpan.FromSeconds(2.8)).Within(TimeSpan.FromMilliseconds(50)));
+
+            var selfPasteIpc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            Hurt(selfPasteIpc, "Blunt", 90);
+            var paste = SSpawn("Nanopaste1");
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(selfPasteIpc, paste, checkActionBlocker: false), Is.True);
+            var coords = SComp<TransformComponent>(selfPasteIpc).Coordinates;
+            var ev = new AfterInteractEvent(selfPasteIpc, paste, selfPasteIpc, coords, true);
+            SEntMan.EventBus.RaiseLocalEvent(paste, ev);
+            Assert.That(ev.Handled, Is.True);
+            Assert.That(ActiveDelay(selfPasteIpc), Is.EqualTo(TimeSpan.FromSeconds(5.6)).Within(TimeSpan.FromMilliseconds(50)));
         });
     }
 
@@ -185,6 +230,187 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
     }
 
     [Test]
+    public async Task Nanopaste_HealsRadiationAndCellular_OnIpc()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid human = default;
+
+        await Server.WaitPost(() =>
+        {
+            DisableDamageVariance();
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            human = SSpawnAtPosition("MobHuman", map.GridCoords);
+            Hurt(ipc, "Radiation", 10);
+            Hurt(ipc, "Cellular", 5);
+            StartHealingDoAfter(human, ipc, "Nanopaste1");
+        });
+
+        await RunSeconds(0.4f);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(Damage(ipc, "Radiation"), Is.EqualTo(5f).Within(0.05f));
+                Assert.That(Damage(ipc, "Cellular"), Is.EqualTo(4f).Within(0.05f));
+            });
+        });
+    }
+
+    [Test]
+    public async Task Structural_IsTrackedAndDisplayed_RepairedByNanopasteAndWelder()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid borg = default;
+        EntityUid human = default;
+        EntityUid welder = default;
+
+        await Server.WaitPost(() =>
+        {
+            DisableDamageVariance();
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            borg = SSpawnAtPosition("BorgChassisGeneric", map.GridCoords);
+            var mech = SSpawnAtPosition("MechRipley", map.GridCoords);
+            human = SSpawnAtPosition("MobHuman", map.GridCoords);
+            welder = SSpawnAtPosition("Welder", map.GridCoords);
+
+            Assert.That(SProtoMan.TryIndex(StructuralDamageGroup, out var group), Is.True);
+            Assert.That(group!.DamageTypes, Does.Contain(StructuralDamageType));
+
+            Hurt(ipc, "Structural", 20);
+            Hurt(borg, "Structural", 20);
+            Hurt(mech, "Structural", 20);
+
+            var damageable = Server.System<DamageableSystem>();
+            Assert.Multiple(() =>
+            {
+                Assert.That(Damage(ipc, "Structural"), Is.EqualTo(20f));
+                Assert.That(Damage(ipc, "Blunt"), Is.EqualTo(0f));
+                Assert.That(Damage(borg, "Structural"), Is.EqualTo(20f));
+                Assert.That(Damage(borg, "Blunt"), Is.EqualTo(0f));
+                Assert.That(damageable.GetDamagePerGroup(ipc)[StructuralDamageGroup], Is.EqualTo(FixedPoint2.New(20)));
+                Assert.That(damageable.GetDamagePerGroup(borg)[StructuralDamageGroup], Is.EqualTo(FixedPoint2.New(20)));
+            });
+
+            var healthExamine = Server.System<HealthExaminableSystem>();
+            var loc = Server.ResolveDependency<ILocalizationManager>();
+            foreach (var ent in new[] { ipc, borg, mech })
+            {
+                var markup = healthExamine.CreateMarkup(ent, SComp<HealthExaminableComponent>(ent), SComp<DamageableComponent>(ent));
+                Assert.That(markup.ToMarkup(), Is.Not.EqualTo(loc.GetString("health-examinable-silicon-none")));
+            }
+
+            StartHealingDoAfter(human, ipc, "Nanopaste1");
+            StartHealingDoAfter(human, borg, "Nanopaste1");
+        });
+
+        await RunSeconds(0.4f);
+
+        await Server.WaitPost(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(Damage(ipc, "Structural"), Is.EqualTo(15f).Within(0.05f));
+                Assert.That(Damage(borg, "Structural"), Is.EqualTo(15f).Within(0.05f));
+            });
+
+            Assert.That(Server.System<ItemToggleSystem>().TrySetActive(welder, true, human, predicted: false, showPopup: false), Is.True);
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(human, welder, checkActionBlocker: false), Is.True);
+            var weld = Server.System<SharedFishWeldingHealableSystem>();
+            Assert.That(weld.TryStartWeld((welder, SComp<FishWeldingHealingComponent>(welder)), human, ipc), Is.EqualTo(FishWeldResult.Started));
+        });
+
+        await RunSeconds(1.3f);
+
+        await Server.WaitAssertion(() =>
+        {
+            // 15 − 1.67 (половина от 3.34 Blunt) = 13.33
+            Assert.That(Damage(ipc, "Structural"), Is.EqualTo(13.33f).Within(0.08f));
+        });
+    }
+
+    [Test]
+    public async Task Ipc_IsBlindable_FlashedWorks_NanopasteHealsEyeDamage_VisorsShowIpc()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid human = default;
+
+        await Server.WaitPost(() =>
+        {
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            human = SSpawnAtPosition("MobHuman", map.GridCoords);
+
+            Assert.That(SEntMan.HasComponent<BlindableComponent>(ipc), Is.True);
+
+            Server.System<SharedFlashSystem>().Flash(ipc, human, null, TimeSpan.FromSeconds(2), 0.8f, false);
+            Assert.That(Server.System<StatusEffectsSystem>().HasEffectComp<FlashedStatusEffectComponent>(ipc), Is.True);
+
+            Server.System<BlindableSystem>().AdjustEyeDamage(ipc, 2);
+            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.EqualTo(2));
+
+            foreach (var visorProto in new[]
+                     {
+                         "ClothingEyesHudDiagnostic",
+                         "ClothingEyesHudSyndicateMech",
+                         "ClothingEyesHudDiagnosticERT",
+                     })
+            {
+                var visor = SSpawn(visorProto);
+                Assert.That(
+                    SComp<ShowHealthBarsComponent>(visor).DamageContainers.Any(c => c.Id == "Ipc"),
+                    Is.True,
+                    visorProto);
+            }
+
+            StartHealingDoAfter(human, ipc, "Nanopaste1");
+        });
+
+        await RunSeconds(0.4f);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.EqualTo(1), "одно применение снимает 1 единицу повреждения глаз");
+        });
+    }
+
+    [Test]
+    public async Task Nanopaste_AfterInteract_OnlyEyeDamage_StartsDoAfterAndHeals()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+        EntityUid human = default;
+
+        await Server.WaitPost(() =>
+        {
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            human = SSpawnAtPosition("MobHuman", map.GridCoords);
+
+            Server.System<BlindableSystem>().AdjustEyeDamage(ipc, 2);
+            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.GreaterThan(SComp<BlindableComponent>(ipc).MinDamage));
+
+            var paste = SSpawn("Nanopaste1");
+            Assert.That(Server.System<SharedHandsSystem>().TryForcePickupAnyHand(human, paste, checkActionBlocker: false), Is.True);
+
+            var coords = SComp<TransformComponent>(ipc).Coordinates;
+            var ev = new AfterInteractEvent(human, paste, ipc, coords, true);
+            SEntMan.EventBus.RaiseLocalEvent(paste, ev);
+
+            Assert.That(ev.Handled, Is.True);
+            Assert.That(ActiveDelay(human), Is.GreaterThan(TimeSpan.Zero));
+        });
+
+        await RunSeconds(2.2f);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SComp<BlindableComponent>(ipc).EyeDamage, Is.EqualTo(1));
+        });
+    }
+
+    [Test]
     public async Task EmpScreen_CutsDamageAndDoesNotDisable()
     {
         EntityUid bare = default;
@@ -238,6 +464,24 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
         await Server.WaitAssertion(() =>
         {
             Assert.That(CellCharge(ipc), Is.GreaterThan(before + 30f));
+        });
+    }
+
+    [Test]
+    public async Task ShockDamage_HasThreeTimesMultiplier()
+    {
+        EntityUid ipc = default;
+
+        await Server.WaitPost(() =>
+        {
+            DisableDamageVariance();
+            ipc = SSpawn("MobIpc");
+            Hurt(ipc, "Shock", 10, ignoreResistances: false);
+        });
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(Damage(ipc, "Shock"), Is.EqualTo(30f).Within(0.05f));
         });
     }
 
@@ -435,6 +679,79 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
         });
 
         await Server.WaitAssertion(() => Assert.That(cancelled, Is.True));
+    }
+
+    [Test]
+    public async Task AnomalyAccent_WithTwoSecondTimer_RemovesFromIpc()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid ipc = default;
+
+        await Server.WaitPost(() =>
+        {
+            ipc = SSpawnAtPosition("MobIpc", map.GridCoords);
+            var effect = SSpawnAtPosition("SunriseEffectShiftedAsciiTableAccent", map.GridCoords);
+            var addComp = SComp<AddComponentsInRadiusComponent>(effect);
+            var timedEntry = (TimedRemoveComponentsComponent) addComp.Components["TimedRemoveComponents"].Component;
+            timedEntry.RemoveAfter = TimeSpan.FromSeconds(2);
+
+            var artifactComp = SEntMan.EnsureComponent<XenoArtifactComponent>(effect);
+            var nodeComp = SEntMan.EnsureComponent<XenoArtifactNodeComponent>(effect);
+            var ev = new XenoArtifactNodeActivatedEvent(
+                (effect, artifactComp),
+                (effect, nodeComp),
+                null,
+                null,
+                SComp<TransformComponent>(effect).Coordinates);
+            SEntMan.EventBus.RaiseLocalEvent(effect, ref ev);
+
+            Assert.That(SEntMan.HasComponent<AnomalyAccentComponent>(ipc), Is.True);
+            Assert.That(SEntMan.HasComponent<TimedRemoveComponentsComponent>(ipc), Is.True);
+        });
+
+        await RunSeconds(2.5f);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(SEntMan.HasComponent<AnomalyAccentComponent>(ipc), Is.False, "AnomalyAccent должен сняться с КПБ через 2 с");
+                Assert.That(SEntMan.HasComponent<TimedRemoveComponentsComponent>(ipc), Is.False);
+
+                var accentEv = new AccentGetEvent(ipc, "Hello world");
+                SEntMan.EventBus.RaiseLocalEvent(ipc, ref accentEv);
+                Assert.That(accentEv.Message, Is.EqualTo("Hello world"));
+            });
+        });
+    }
+
+    [Test]
+    public async Task Ipc_IsExcludedFromRandomSpeciesAndGhostRoles()
+    {
+        var map = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var ipcProto = SProtoMan.Index(IpcSpecies);
+            Assert.That(ipcProto.RoundStart, Is.True);
+            Assert.That(ipcProto.ExcludeFromRandomSpecies, Is.True);
+
+            for (var i = 0; i < 100; i++)
+            {
+                Assert.That(HumanoidCharacterProfile.RandomSpecies().ID, Is.Not.EqualTo("Ipc"));
+                Assert.That(HumanoidCharacterProfile.Random().Species, Is.Not.EqualTo("Ipc"));
+            }
+
+            var randomHumanoid = Server.System<RandomHumanoidSystem>();
+            foreach (var settings in new[] { "DeathSquad", "DeathSquadFish", "ERTLeader", "EventHumanoid" })
+            {
+                for (var i = 0; i < 15; i++)
+                {
+                    var spawned = randomHumanoid.SpawnRandomHumanoid(settings, map.GridCoords, "Test");
+                    Assert.That(SEntMan.HasComponent<FishIpcComponent>(spawned), Is.False, settings);
+                }
+            }
+        });
     }
 
     private bool StartReboot(EntityUid user, EntityUid ipc)
