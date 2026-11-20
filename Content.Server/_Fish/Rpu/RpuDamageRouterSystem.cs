@@ -1,3 +1,4 @@
+using Content.Server._Fish.PerformanceMetrics;
 using Content.Shared._Fish.Rpu;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
@@ -37,5 +38,9 @@ public sealed partial class RpuDamageRouterSystem : EntitySystem
 
         _kill.RecordDamage(ent.Owner, origin, total);
         _destruction.RecordDamage(ent.Owner, origin, total);
+
+        // Метрики боя берут те же данные: отдельная направленная подписка на эту пару
+        // занята, поэтому данные раздаём внутренним уведомлением.
+        RaiseLocalEvent(new PmDamageObservedEvent { Victim = ent.Owner, Source = origin, Total = (float) total });
     }
 }
