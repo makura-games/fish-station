@@ -20,6 +20,7 @@
     layers:
     - state: ai_camera
       shader: unshaded
+      color: "#33cc66"
   - type: Tag
     tags:
     - CantInteract

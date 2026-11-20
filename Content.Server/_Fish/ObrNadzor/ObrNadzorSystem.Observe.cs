@@ -1,7 +1,6 @@
 using Content.Shared._Fish.ObrNadzor;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction.Components;
-using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.StationAi;
 using Robust.Server.GameObjects;
 
@@ -89,7 +88,7 @@ public sealed partial class ObrNadzorSystem
         if (!TryComp(uid, out EyeComponent? eyeComp))
             return;
 
-        RemCompDeferred<RelayInputMoverComponent>(uid);
+        _mover.RemoveRelay(uid);
         RemCompDeferred<StationAiOverlayComponent>(uid);
         _eye.SetTarget(uid, null, eyeComp);
         _eye.SetDrawFov(uid, true, eyeComp);

@@ -1,6 +1,8 @@
 using Content.Shared._Fish.ObrNadzor;
+using Content.Shared.Chat;
+using Content.Shared.Station.Components;
 using Robust.Server.GameObjects;
-using Robust.Shared.Audio;
+using Robust.Shared.Utility;
 
 namespace Content.Server._Fish.ObrNadzor;
 
@@ -85,6 +87,13 @@ public sealed partial class ObrNadzorSystem
             return;
         }
 
+        // Одна сессия на оператора — нельзя взять вторую консоль параллельно.
+        if (HasComp<ObrNadzorSessionComponent>(actor))
+        {
+            _popup.PopupEntity(Loc.GetString("obr-nadzor-session-active"), actor, actor);
+            return;
+        }
+
         if (ent.Comp.Opener != actor || ent.Comp.TargetBeacon is not { } beacon)
         {
             _popup.PopupEntity(Loc.GetString("obr-nadzor-need-observe"), actor, actor);
@@ -99,10 +108,9 @@ public sealed partial class ObrNadzorSystem
             return;
         }
 
-        // Сначала блэкаут и объява, затем глаз на станции (как у abductor console).
-        BeginStationBlackout(station.Value, ent.Comp.BlackoutDuration);
+        // Текст всей станции без TTS/звука чата, затем блэкаут и глаз.
         AnnounceNadzor(station.Value, ent.Comp);
-        PlayNadzorSound(station.Value, ent.Comp.AnnouncementSound);
+        BeginStationBlackout(station.Value, ent.Comp.BlackoutDuration);
 
         var eye = SpawnAtPosition(ent.Comp.RemoteEntityProto, Transform(beacon).Coordinates);
         ent.Comp.RemoteEntity = GetNetEntity(eye);
@@ -170,21 +178,32 @@ public sealed partial class ObrNadzorSystem
             RefreshUiState(ent);
     }
 
+    /// <summary>
+    /// Текстовое объявление на всю станцию: без TTS, без звука чата и без зависимости от живых динамиков.
+    /// </summary>
     private void AnnounceNadzor(EntityUid station, ObrNadzorConsoleComponent console)
     {
-        _chat.DispatchStationAnnouncement(
-            station,
-            Loc.GetString("obr-nadzor-announcement"),
-            sender: Loc.GetString("obr-nadzor-announcement-sender"),
-            playDefault: false,
-            playTts: false,
-            playDefaultSound: false,
-            colorOverride: console.AnnouncementColor);
-    }
+        if (!TryComp<StationDataComponent>(station, out var stationData))
+            return;
 
-    private void PlayNadzorSound(EntityUid station, SoundSpecifier sound)
-    {
-        var filter = _station.GetInOwningStation(station);
-        _audio.PlayGlobal(sound, filter, true);
+        var sender = Loc.GetString("obr-nadzor-announcement-sender");
+        var message = Loc.GetString("obr-nadzor-announcement");
+        var wrapped = Loc.GetString(
+            "chat-manager-sender-announcement-wrap-message",
+            ("sender", sender),
+            ("message", FormattedMessage.EscapeText(message)));
+
+        var filter = _station.GetInStation(stationData);
+        _chatManager.ChatMessageToManyFiltered(
+            filter,
+            ChatChannel.Radio,
+            message,
+            wrapped,
+            station,
+            hideChat: false,
+            recordReplay: true,
+            colorOverride: console.AnnouncementColor,
+            audioPath: null,
+            audioVolume: 0f);
     }
 }

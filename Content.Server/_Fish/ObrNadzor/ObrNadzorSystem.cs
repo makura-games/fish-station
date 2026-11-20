@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Actions;
-using Content.Server.Chat.Systems;
+using Content.Server.Chat.Managers;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._Fish.ObrNadzor;
 using Content.Shared.Access.Systems;
@@ -15,7 +15,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Station;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
-using Robust.Shared.Audio.Systems;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.ObrNadzor;
@@ -25,8 +25,7 @@ public sealed partial class ObrNadzorSystem : EntitySystem
     [Dependency] private AccessReaderSystem _access = default!;
     [Dependency] private ActionsSystem _actions = default!;
     [Dependency] private ApcSystem _apc = default!;
-    [Dependency] private ChatSystem _chat = default!;
-    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private IChatManager _chatManager = default!;
     [Dependency] private SharedEyeSystem _eye = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedMoverController _mover = default!;
@@ -35,7 +34,7 @@ public sealed partial class ObrNadzorSystem : EntitySystem
     [Dependency] private SharedVirtualItemSystem _virtualItem = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
 
-    private static readonly EntProtoId ReleaseAction = "ActionFishObrNadzorRelease";
+    private static readonly EntProtoId ReleaseAction = "FishActionObrNadzorRelease";
 
     public override void Initialize()
     {
@@ -43,6 +42,7 @@ public sealed partial class ObrNadzorSystem : EntitySystem
 
         SubscribeLocalEvent<ObrNadzorConsoleComponent, BeforeActivatableUIOpenEvent>(OnBeforeUiOpen);
         SubscribeLocalEvent<ObrNadzorConsoleComponent, ActivatableUIOpenAttemptEvent>(OnUiOpenAttempt);
+        SubscribeLocalEvent<ObrNadzorConsoleComponent, BoundUIClosedEvent>(OnUiClosed);
         SubscribeLocalEvent<ObrNadzorConsoleComponent, ComponentShutdown>(OnConsoleShutdown);
         SubscribeLocalEvent<ObrNadzorConsoleComponent, EntityTerminatingEvent>(OnConsoleTerminating);
 
@@ -87,6 +87,19 @@ public sealed partial class ObrNadzorSystem : EntitySystem
 
     private void OnBeforeUiOpen(Entity<ObrNadzorConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
     {
+        RefreshUiState(ent);
+    }
+
+    private void OnUiClosed(Entity<ObrNadzorConsoleComponent> ent, ref BoundUIClosedEvent args)
+    {
+        // Оператор закрыл UI до takeover — освобождаем выбор маяка.
+        if (ent.Comp.RemoteEntity != null)
+            return;
+
+        if (ent.Comp.Opener != args.Actor)
+            return;
+
+        ClearTargeting(ent);
         RefreshUiState(ent);
     }
 

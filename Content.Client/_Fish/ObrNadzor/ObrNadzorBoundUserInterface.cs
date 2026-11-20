@@ -124,6 +124,13 @@ public sealed class ObrNadzorBoundUserInterface : BoundUserInterface
 
         _window.Stations.RemoveAllChildren();
 
+        // Станция пропала из whitelist/стейта — сбрасываем маяки, иначе останется мусор в UI.
+        if (_station != null && !state.Stations.ContainsKey(_station.Value))
+        {
+            _station = null;
+            _window.Beacons.RemoveAllChildren();
+        }
+
         foreach (var station in state.Stations)
         {
             var stationButton = new ChoiceControl();

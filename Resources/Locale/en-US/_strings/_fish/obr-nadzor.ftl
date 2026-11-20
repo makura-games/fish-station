@@ -39,5 +39,6 @@ obr-nadzor-no-station = Target station was not found.
 obr-nadzor-announcement-sender = Department of Special Operations
 obr-nadzor-announcement = Attention. The Department of Special Operations declares a remote surveillance regime. All station systems are transferring to external control. Remain calm and follow Central Command directives.
 
-ent-ActionFishObrNadzorRelease = End remote control
+ent-FishActionObrNadzorRelease = End remote control
     .desc = Leave the surveillance eye and return to your body view at the console.
+    .suffix = Fish

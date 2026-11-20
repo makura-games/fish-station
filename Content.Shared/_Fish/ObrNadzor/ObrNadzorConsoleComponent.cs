@@ -1,4 +1,3 @@
-using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
@@ -16,9 +15,9 @@ public sealed partial class ObrNadzorConsoleComponent : Component
     [DataField]
     public TimeSpan BlackoutDuration = TimeSpan.FromSeconds(20);
 
-    [DataField]
-    public SoundPathSpecifier AnnouncementSound = new("/Audio/_Fish/Announcements/nadzor.ogg");
-
+    /// <summary>
+    /// Цвет текстового объявления (без TTS / без звука).
+    /// </summary>
     [DataField]
     public Color AnnouncementColor = Color.FromHex("#c22532");
 

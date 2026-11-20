@@ -1,7 +1,8 @@
 - type: entity
-  id: ActionFishObrNadzorRelease
+  id: FishActionObrNadzorRelease
   name: End remote control
   description: Leave the surveillance eye and return to your body view at the console.
+  suffix: Fish
   components:
   - type: Action
     priority: -20
