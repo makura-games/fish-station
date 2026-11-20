@@ -1,3 +1,4 @@
+using Content.Client._Fish.Homelander; // Fish-edit
 using System.Linq;
 using Content.Client.Gameplay;
 using Content.Shared.CCVar;
@@ -22,6 +23,7 @@ namespace Content.Client.Weapons.Melee;
 
 public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 {
+    [Dependency] private HomelanderSystem _homelander = default!; // Fish-edit
     [Dependency] private IEyeManager _eyeManager = default!;
     [Dependency] private IInputManager _inputManager = default!;
     [Dependency] private IPlayerManager _player = default!;
@@ -73,7 +75,11 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         }
 
         var useDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.Use);
-        var altDown = _inputSystem.CmdStates.GetState(EngineKeyFunctions.UseSecondary);
+        // Fish-start
+        var altDown = _homelander.IsLaserActive(entity)
+            ? BoundKeyState.Up
+            : _inputSystem.CmdStates.GetState(EngineKeyFunctions.UseSecondary);
+        // Fish-end
         var meleeGunAttack = _inputSystem.CmdStates.GetState(ContentKeyFunctions.MeleeGunAttack); // Sunrise-Edit
 
         if (weapon.AutoAttack || useDown != BoundKeyState.Down && altDown != BoundKeyState.Down || _cfg.GetCVar(CCVars.ControlHoldToAttackMelee))

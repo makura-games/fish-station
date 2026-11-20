@@ -13,3 +13,7 @@ ent-SpecOpsOfficerIDCard = ID карта офицера специальных �
 ent-FishRepresentativeBlueShieldIDCard = ID-карта станционного оперативника «Синий щит»
     .desc = { ent-IDCardStandard.desc }
     .suffix = Fish
+
+ent-FishCentcommBlueShieldIDCard = ID-карта оперативника «Синий щит»
+    .desc = { ent-IDCardStandard.desc }
+    .suffix = Fish
