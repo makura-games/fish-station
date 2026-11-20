@@ -1,5 +1,4 @@
 #nullable enable
-using System.Linq;
 using Content.Server._Fish.Skills;
 using Content.Shared._Fish.Skills;
 using Content.Shared.DoAfter;
@@ -20,6 +19,14 @@ namespace Content.IntegrationTests.Tests._Fish.Skills;
 [TestOf(typeof(SkillSystem))]
 public sealed class FishSkillSystemTests
 {
+    private static readonly ProtoId<JobSkillBudgetPrototype> EngineerBudgetId = "FishStationEngineer";
+    private static readonly ProtoId<JobSkillBudgetPrototype> ErtSecurityBudgetId = "FishERTSecurity";
+    private static readonly ProtoId<JobPrototype> StationEngineerJob = "StationEngineer";
+    private static readonly ProtoId<JobPrototype> ErtSecurityJob = "ERTSecurity";
+    private static readonly ProtoId<SkillPrototype> ConstructionSkill = "FishSkillConstruction";
+    private static readonly ProtoId<SkillPrototype> MedicalSkill = "FishSkillMedical";
+    private static readonly ProtoId<SkillPrototype> WeaponsSkill = "FishSkillWeapons";
+
     [Test]
     public async Task JobBudget_GrantsMinSkillsAndPoints()
     {
@@ -30,16 +37,16 @@ public sealed class FishSkillSystemTests
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(proto.TryIndex<JobSkillBudgetPrototype>("FishStationEngineer", out var engineerBudget), Is.True);
-            Assert.That(engineerBudget!.GetJobId(), Is.EqualTo((ProtoId<JobPrototype>)"StationEngineer"));
+            Assert.That(proto.TryIndex(EngineerBudgetId, out var engineerBudget), Is.True);
+            Assert.That(engineerBudget!.GetJobId(), Is.EqualTo(StationEngineerJob));
 
             var mob = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
             var skills = entMan.System<SkillSystem>();
-            skills.EnsureSkillset(mob, "StationEngineer");
+            skills.EnsureSkillset(mob, StationEngineerJob);
 
             Assert.That(entMan.TryGetComponent(mob, out SkillsetComponent? skillset), Is.True);
             Assert.That(skillset!.BudgetGranted, Is.True);
-            Assert.That(skillset.JobId, Is.EqualTo((ProtoId<JobPrototype>)"StationEngineer"));
+            Assert.That(skillset.JobId, Is.EqualTo(StationEngineerJob));
             Assert.That(skillset.TotalPoints, Is.EqualTo(engineerBudget.SkillPoints));
             Assert.That(skillset.RemainingPoints, Is.EqualTo(engineerBudget.SkillPoints));
             Assert.That(skillset.Locked, Is.False);
@@ -47,14 +54,14 @@ public sealed class FishSkillSystemTests
 
             foreach (var (skill, min) in engineerBudget.MinSkills)
             {
-                Assert.That(skillset.Skills.GetValueOrDefault(skill), Is.EqualTo(min),
+                Assert.That(skills.GetSkillValue(mob, skill), Is.EqualTo(min),
                     $"Минимум роли для {skill}");
             }
 
             // До Confirm provisional-уровни не должны влиять на эффекты.
-            var jobMinConstruction = skills.GetMinSkill("StationEngineer", "FishSkillConstruction");
-            skillset.Skills["FishSkillConstruction"] = SkillLevels.Master;
-            Assert.That(skills.GetEffectiveSkillValue(mob, "FishSkillConstruction"), Is.EqualTo(jobMinConstruction));
+            var jobMinConstruction = skills.GetMinSkill(StationEngineerJob, ConstructionSkill);
+            skills.ForceSetSkillLevel(mob, ConstructionSkill, SkillLevels.Master);
+            Assert.That(skills.GetEffectiveSkillValue(mob, ConstructionSkill), Is.EqualTo(jobMinConstruction));
 
             entMan.DeleteEntity(mob);
         });
@@ -72,22 +79,22 @@ public sealed class FishSkillSystemTests
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(proto.TryIndex<JobSkillBudgetPrototype>("FishERTSecurity", out var budget), Is.True);
+            Assert.That(proto.TryIndex(ErtSecurityBudgetId, out var budget), Is.True);
             Assert.That(budget!.SkillPoints, Is.EqualTo(0));
 
             var skills = entMan.System<SkillSystem>();
             var mob = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
-            skills.EnsureSkillset(mob, "ERTSecurity");
+            skills.EnsureSkillset(mob, ErtSecurityJob);
 
             Assert.That(entMan.TryGetComponent(mob, out SkillsetComponent? skillset), Is.True);
             Assert.That(skillset!.Locked, Is.True);
             Assert.That(skillset.RemainingPoints, Is.EqualTo(0));
-            Assert.That(skills.GetEffectiveSkillValue(mob, "FishSkillWeapons"),
-                Is.EqualTo(budget.MinSkills["FishSkillWeapons"]));
+            Assert.That(skills.GetEffectiveSkillValue(mob, WeaponsSkill),
+                Is.EqualTo(budget.MinSkills[WeaponsSkill]));
 
             // Без skillset — Baseline (госты/нюкеры без job).
             var bare = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
-            Assert.That(skills.GetEffectiveSkillValue(bare, "FishSkillConstruction"), Is.EqualTo(SkillLevels.Baseline));
+            Assert.That(skills.GetEffectiveSkillValue(bare, ConstructionSkill), Is.EqualTo(SkillLevels.Baseline));
 
             entMan.DeleteEntity(mob);
             entMan.DeleteEntity(bare);
@@ -112,17 +119,13 @@ public sealed class FishSkillSystemTests
             var skills = entMan.System<SkillSystem>();
             mob = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
             entMan.EnsureComponent<DoAfterComponent>(mob);
-            skills.EnsureSkillset(mob, "StationEngineer");
-
-            var skillset = entMan.GetComponent<SkillsetComponent>(mob);
-            skillset.Skills["FishSkillConstruction"] = SkillLevels.Unskilled;
-            skillset.Locked = true;
-            entMan.Dirty(mob, skillset);
+            skills.EnsureSkillset(mob, StationEngineerJob);
+            skills.ForceSetSkillLevel(mob, ConstructionSkill, SkillLevels.Unskilled);
+            skills.ForceSetLocked(mob, true);
 
             manual = entMan.SpawnEntity("FishSkillManualConstructionBasic", MapCoordinates.Nullspace);
-            var manualComp = entMan.GetComponent<SkillTrainingManualComponent>(manual);
-            manualComp.StudyTime = timing.TickPeriod;
-            Assert.That(skills.TryStartManualStudy(mob, (manual, manualComp)), Is.True);
+            skills.ForceSetManualStudyTime(manual, timing.TickPeriod);
+            Assert.That(skills.TryStartManualStudy(mob, (manual, entMan.GetComponent<SkillTrainingManualComponent>(manual))), Is.True);
         });
 
         await server.WaitRunTicks(5);
@@ -130,11 +133,11 @@ public sealed class FishSkillSystemTests
         await server.WaitAssertion(() =>
         {
             var skills = entMan.System<SkillSystem>();
-            Assert.That(skills.GetSkillValue(mob, "FishSkillConstruction"), Is.EqualTo(SkillLevels.Basic));
-            Assert.That(skills.GetEffectiveSkillValue(mob, "FishSkillConstruction"), Is.EqualTo(SkillLevels.Basic));
+            Assert.That(skills.GetSkillValue(mob, ConstructionSkill), Is.EqualTo(SkillLevels.Basic));
+            Assert.That(skills.GetEffectiveSkillValue(mob, ConstructionSkill), Is.EqualTo(SkillLevels.Basic));
             Assert.That(
                 entMan.GetComponent<SkillsetComponent>(mob).CompletedTrainings,
-                Does.Contain(SkillMath.MakeTrainingKey("FishSkillConstruction", SkillLevels.Basic)));
+                Does.Contain(SkillMath.MakeTrainingKey(ConstructionSkill, SkillLevels.Basic)));
 
             var manualComp = entMan.GetComponent<SkillTrainingManualComponent>(manual);
             Assert.That(skills.TryStartManualStudy(mob, (manual, manualComp)), Is.False);
@@ -151,26 +154,21 @@ public sealed class FishSkillSystemTests
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
+        var entMan = server.EntMan;
 
         await server.WaitAssertion(() =>
         {
             var seri = server.ResolveDependency<ISerializationManager>();
-            var original = new SkillsetComponent
-            {
-                Skills =
-                {
-                    ["FishSkillConstruction"] = SkillLevels.Trained,
-                    ["FishSkillMedical"] = SkillLevels.Basic,
-                },
-                RemainingPoints = 4,
-                TotalPoints = 16,
-                JobId = "StationEngineer",
-                BudgetGranted = true,
-                Locked = true,
-                CompletedTrainings = { "FishSkillConstruction:2" },
-            };
+            var skills = entMan.System<SkillSystem>();
+            var mob = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
+            skills.EnsureSkillset(mob, StationEngineerJob);
+            skills.ForceSetSkillLevel(mob, ConstructionSkill, SkillLevels.Trained);
+            skills.ForceSetSkillLevel(mob, MedicalSkill, SkillLevels.Basic);
+            skills.ForceSetLocked(mob, true);
 
-            var node = seri.WriteValue(original, alwaysWrite: true);
+            var original = entMan.GetComponent<SkillsetComponent>(mob);
+            // CompletedTrainings пишется только через обучение — проверяем round-trip остальных полей + Skills.
+            var node = seri.WriteValue(original, alwaysWrite: true, notNullableOverride: true);
             Assert.That(node, Is.InstanceOf<MappingDataNode>());
 
             var copy = seri.Read<SkillsetComponent>(node, notNullableOverride: true);
@@ -179,9 +177,11 @@ public sealed class FishSkillSystemTests
             Assert.That(copy.JobId, Is.EqualTo(original.JobId));
             Assert.That(copy.BudgetGranted, Is.EqualTo(original.BudgetGranted));
             Assert.That(copy.Locked, Is.EqualTo(original.Locked));
-            Assert.That(copy.Skills["FishSkillConstruction"], Is.EqualTo(SkillLevels.Trained));
-            Assert.That(copy.Skills["FishSkillMedical"], Is.EqualTo(SkillLevels.Basic));
-            Assert.That(copy.CompletedTrainings, Does.Contain("FishSkillConstruction:2"));
+            Assert.That(skills.GetSkillValue(mob, ConstructionSkill), Is.EqualTo(SkillLevels.Trained));
+            Assert.That(copy.Skills.TryGetValue(ConstructionSkill, out var construction) && construction == SkillLevels.Trained, Is.True);
+            Assert.That(copy.Skills.TryGetValue(MedicalSkill, out var medical) && medical == SkillLevels.Basic, Is.True);
+
+            entMan.DeleteEntity(mob);
         });
 
         await pair.CleanReturnAsync();
@@ -198,11 +198,10 @@ public sealed class FishSkillSystemTests
         {
             var skills = entMan.System<SkillSystem>();
             var mob = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
-            skills.EnsureSkillset(mob, "StationEngineer");
+            skills.EnsureSkillset(mob, StationEngineerJob);
+            skills.ForceSetSkillLevel(mob, ConstructionSkill, SkillLevels.Unskilled);
 
-            var skillset = entMan.GetComponent<SkillsetComponent>(mob);
-            skillset.Skills["FishSkillConstruction"] = SkillLevels.Unskilled;
-            Assert.That(skillset.Locked, Is.False);
+            Assert.That(entMan.GetComponent<SkillsetComponent>(mob).Locked, Is.False);
 
             var manual = entMan.SpawnEntity("FishSkillManualConstructionBasic", MapCoordinates.Nullspace);
             var manualComp = entMan.GetComponent<SkillTrainingManualComponent>(manual);

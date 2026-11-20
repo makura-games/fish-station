@@ -6,7 +6,7 @@ namespace Content.Shared._Fish.Skills;
 /// Учебник: изучение повышает навык на один уровень (до MaxTrainLevel).
 /// </summary>
 [RegisterComponent]
-[Access(typeof(SharedSkillSystem))]
+[Access(typeof(SharedSkillSystem), Other = AccessPermissions.ReadExecute)]
 public sealed partial class SkillTrainingManualComponent : Component
 {
     [DataField(required: true)]

@@ -193,6 +193,41 @@ public abstract partial class SharedSkillSystem : EntitySystem
         return string.Empty;
     }
 
+    /// <summary>
+    /// Прямая запись уровня навыка без траты очков (тесты и админ-инструменты).
+    /// </summary>
+    public void ForceSetSkillLevel(EntityUid uid, ProtoId<SkillPrototype> skill, int level, SkillsetComponent? skillset = null)
+    {
+        if (!Resolve(uid, ref skillset))
+            return;
+
+        skillset.Skills[skill] = Math.Clamp(level, SkillLevels.Min, SkillLevels.Max);
+        Dirty(uid, skillset);
+    }
+
+    /// <summary>
+    /// Прямая установка Confirm/Locked (тесты и админ-инструменты).
+    /// </summary>
+    public void ForceSetLocked(EntityUid uid, bool locked, SkillsetComponent? skillset = null)
+    {
+        if (!Resolve(uid, ref skillset))
+            return;
+
+        skillset.Locked = locked;
+        Dirty(uid, skillset);
+    }
+
+    /// <summary>
+    /// Ускорение StudyTime учебника (тесты).
+    /// </summary>
+    public void ForceSetManualStudyTime(EntityUid uid, TimeSpan studyTime, SkillTrainingManualComponent? manual = null)
+    {
+        if (!Resolve(uid, ref manual))
+            return;
+
+        manual.StudyTime = studyTime;
+    }
+
     private static string FormatPercent(float mult) => $"{Math.Round(mult * 100f):0}%";
 }
 

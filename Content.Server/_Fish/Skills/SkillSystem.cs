@@ -6,6 +6,7 @@ using Content.Shared._Fish.Skills;
 using Content.Shared.Eui;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
 using Content.Shared.Roles;
 using Content.Shared.Verbs;
 using Robust.Shared.Player;
@@ -34,16 +35,19 @@ public sealed partial class SkillSystem : SharedSkillSystem
         base.Initialize();
 
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
-        // ОБР/ERT и прочие ghost takeover с job: на мобе — выдать бюджет (NukeOps без job остаются на Baseline).
-        SubscribeLocalEvent<GhostTakeoverAvailableComponent, MindAddedMessage>(OnGhostTakeoverMindAdded);
+        // Fish-start: ghost role с JobProto (ОБР/ERT) — бюджет на takeover.
+        // Не подписываемся на GhostTakeoverAvailableComponent+MindAddedMessage: слот уже занят GhostRoleSystem.
+        SubscribeLocalEvent<GhostRoleComponent, MindAddedMessage>(OnGhostRoleMindAdded);
+        // Fish-end
         SubscribeLocalEvent<SkillsetComponent, GetVerbsEvent<Verb>>(OnGetVerbs);
         SubscribeNetworkEvent<RequestOpenSkillsEuiEvent>(OnRequestOpenSkills);
         InitializeAuthoring();
     }
 
-    private void OnGhostTakeoverMindAdded(EntityUid uid, GhostTakeoverAvailableComponent component, MindAddedMessage args)
+    private void OnGhostRoleMindAdded(EntityUid uid, GhostRoleComponent ghostRole, MindAddedMessage args)
     {
-        if (!TryComp(uid, out GhostRoleComponent? ghostRole) || ghostRole.JobProto is not { } jobId)
+        // NukeOps и прочие antag без JobProto остаются на Baseline (без Skillset).
+        if (ghostRole.JobProto is not { } jobId)
             return;
 
         EnsureSkillset(uid, jobId);

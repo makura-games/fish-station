@@ -9,7 +9,8 @@ namespace Content.Shared._Fish.Skills;
 /// Набор навыков сущности на текущий раунд.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-[Access(typeof(SharedSkillSystem), Other = AccessPermissions.Read)]
+// ReadExecute: тесты и прочие системы читают Skills/CompletedTrainings (TryGetValue, Contains).
+[Access(typeof(SharedSkillSystem), Other = AccessPermissions.ReadExecute)]
 public sealed partial class SkillsetComponent : Component
 {
     /// <summary>
