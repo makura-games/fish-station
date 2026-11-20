@@ -18,8 +18,10 @@
   color: "#0f4e81"
   roles:
     - BlueShieldOfficer
-    - BlueShieldOfficerFish # Fish-edit
+    - CentcommBlueShield # Fish-edit
     - RepresentativeBlueShield #Fish-edit
+    - BlueShieldOfficerFish # Fish-edit
+    - BlueShieldOperative # Fish-edit
   primary: false
   weight: 50
 

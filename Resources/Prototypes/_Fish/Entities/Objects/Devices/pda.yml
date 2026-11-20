@@ -24,8 +24,17 @@
 - type: entity
   parent: BlueShieldOperativePDA
   id: FishRepresentativeBlueShieldPDA
-  name: station blue shield operative PDA
+  name: blue shield operative PDA
   suffix: Fish
   components:
   - type: Pda
     id: FishRepresentativeBlueShieldIDCard
+
+- type: entity
+  parent: BlueShieldOperativePDA
+  id: FishCentcommBlueShieldPDA
+  name: blue shield operative PDA
+  suffix: Fish
+  components:
+  - type: Pda
+    id: FishCentcommBlueShieldIDCard

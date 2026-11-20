@@ -45,7 +45,7 @@
   productEntity: ReinforcementRadioSyndicateNukeops
   icon: { sprite: Objects/Devices/communication.rsi, state: old-radio-nukeop }
   cost:
-    Telecrystal: 30
+    Telecrystal: 18 # Fish-edit
   categories:
   - UplinkAllies
   conditions:
@@ -53,6 +53,7 @@
     whitelist:
       tags:
       - NukeOpsUplink
+      - LoneOpsUplink # Fish-edit так же в аплинк лону.
 
 # Sunrise edit start - листинг перенесён в каталог Sunrise
 #- type: listing
