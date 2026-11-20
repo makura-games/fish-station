@@ -80,6 +80,7 @@
     qualities:
     - Prying
     - Slicing
+  - type: Prying  # Fish-edit: топор может открывать обесточенные шлюзы
   - type: Item
     sprite: _Sunrise/Objects/Weapons/Melee/tactical_axe.rsi
     storedSprite:

@@ -6,7 +6,7 @@
     outerClothing: ClothingOuterHardsuitDeathsquadFish
     shoes: ClothingShoesBootsMagDeathSquadFish
     gloves: ClothingHandsGlovesDeathSquadFish
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: FishClothingEyesHudErtMedic
     back: ClothingDeathSquadronBackpackFish
   inhand: []
 

@@ -53,6 +53,19 @@
       lightingColor: "#CBADFF26"
 
 - type: entity
+  id: FishHardsuitHelmetNightVisionOrange
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#be923a"
+      lightingColor: "#ffba3125"
+
+- type: entity
   parent: ClothingHeadHelmetVoidParamed
   id: ClothingHeadHelmetVoidParamedFish
   name: paramedic void helmet
@@ -154,3 +167,47 @@
     - Snout
     - HeadTop
     - HeadSide
+
+- type: entity
+  parent: [ClothingHeadHelmetCBURN, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionOrange]
+  id: FishClothingHeadHelmetCBURN
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/cburn.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-head
+      - state: equipped-head-unshaded
+        shader: unshaded
+      head-vox:
+      - state: equipped-head-vox
+      - state: equipped-head-unshaded-vox
+        shader: unshaded
+      head-vulpkanin:
+      - state: equipped-head
+      - state: equipped-head-unshaded
+        shader: unshaded
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/cburn.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-head
+      - state: equipped-head-unshaded
+        shader: unshaded
+      head-vox:
+      - state: equipped-head-vox
+      - state: equipped-head-unshaded-vox
+        shader: unshaded
+  - type: ToggleableVisuals
+    clothingVisuals:
+      head:
+      - state: equipped-head-light
+        shader: unshaded
+      head-vox:
+      - state: equipped-head-light-vox
+        shader: unshaded
+  - type: PointLight
+    color: "#ffc267" # Sunrise-Edit - сохраняем цвет фонаря шлема.
+    radius: 6
+    energy: 2

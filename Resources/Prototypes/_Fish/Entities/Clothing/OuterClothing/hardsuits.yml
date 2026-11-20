@@ -78,3 +78,15 @@
     clothingPrototype: FishClothingHeadHelmetHardsuitCentcomBlack
   - type: Item
     size: Huge
+
+- type: entity
+  parent: ClothingOuterHardsuitCBURN
+  id: FishClothingOuterHardsuitCBURN
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/cburn.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/OuterClothing/Hardsuits/cburn.rsi
+  - type: ToggleableClothing
+    clothingPrototype: FishClothingHeadHelmetCBURN
