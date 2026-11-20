@@ -66,12 +66,10 @@ public sealed class FishSkillSystemTests
             }
         });
 
-        int jobMinConstruction = 0;
         await server.WaitPost(() =>
         {
             var skills = entMan.System<SkillSystem>();
-            jobMinConstruction = skills.GetMinSkill(StationEngineerJob, ConstructionSkill);
-            // До Confirm provisional-уровни не должны влиять на эффекты.
+            // Эффекты учитывают уровни сразу — Confirm только закрепляет очки.
             skills.ForceSetSkillLevel(mob, ConstructionSkill, SkillLevels.Master);
         });
 
@@ -79,7 +77,7 @@ public sealed class FishSkillSystemTests
         {
             Assert.That(
                 entMan.System<SkillSystem>().GetEffectiveSkillValue(mob, ConstructionSkill),
-                Is.EqualTo(jobMinConstruction));
+                Is.EqualTo(SkillLevels.Master));
         });
 
         await server.WaitPost(() => entMan.DeleteEntity(mob));

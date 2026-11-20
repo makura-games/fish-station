@@ -35,7 +35,13 @@ public sealed class SkillEui : BaseEui
 
     public override void HandleState(EuiStateBase state)
     {
-        if (state is SkillEuiState skillState)
-            _window.UpdateState(skillState);
+        if (state is not SkillEuiState skillState)
+            return;
+
+        _window.UpdateState(skillState);
+
+        // Если окно уже открыто до прихода state — гарантируем видимость после наполнения.
+        if (!_window.IsOpen)
+            _window.OpenCentered();
     }
 }

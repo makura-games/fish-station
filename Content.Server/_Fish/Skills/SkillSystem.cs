@@ -8,6 +8,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Roles;
+using Content.Shared.Roles.Jobs;
 using Content.Shared.Verbs;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -21,6 +22,7 @@ public sealed partial class SkillSystem : SharedSkillSystem
 {
     [Dependency] private EuiManager _eui = default!;
     [Dependency] private PopupSystem _serverPopup = default!;
+    [Dependency] private SharedJobSystem _jobs = default!;
 
     private static readonly ProtoId<SkillPrototype> ConstructionSkill = "FishSkillConstruction";
     private static readonly ProtoId<SkillPrototype> MedicalSkill = "FishSkillMedical";
@@ -76,7 +78,20 @@ public sealed partial class SkillSystem : SharedSkillSystem
             return;
 
         if (!HasComp<SkillsetComponent>(uid))
-            return;
+        {
+            // Админ-спавн / гонка: skillset мог не выдаться — пробуем по job mind.
+            if (TryComp<MindContainerComponent>(uid, out var mindContainer) &&
+                mindContainer.Mind is { } mindId &&
+                _jobs.MindTryGetJobId(mindId, out var jobId) &&
+                jobId is { } job)
+            {
+                EnsureSkillset(uid, job);
+            }
+            else
+            {
+                return;
+            }
+        }
 
         OpenSkillsUi(uid, args.SenderSession);
     }
@@ -196,7 +211,11 @@ public sealed partial class SkillSystem : SharedSkillSystem
             var current = GetSkillValue(uid, skill.ID, skillset);
             var nextCost = current < max ? skill.GetCostForLevel(current + 1) : 0;
             var prereqOk = CheckPrerequisites(uid, skill, skillset);
-            string? block = prereqOk ? null : Loc.GetString("skills-error-prerequisites");
+            string? block = FormatMissingPrerequisites(uid, skill, skillset);
+            if (block == null && !skillset.Locked && current < max && nextCost > skillset.RemainingPoints)
+                block = Loc.GetString("skills-error-no-points");
+            else if (block == null && !skillset.Locked && current >= max)
+                block = Loc.GetString("skills-window-at-cap");
 
             var canIncrease = !skillset.Locked
                               && prereqOk
@@ -216,6 +235,7 @@ public sealed partial class SkillSystem : SharedSkillSystem
                 canIncrease,
                 !skillset.Locked && current > min,
                 block,
+                FormatAffectsHint(skill),
                 FormatEffectHint(skill.ID, current)));
         }
 

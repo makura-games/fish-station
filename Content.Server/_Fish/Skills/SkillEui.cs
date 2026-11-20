@@ -23,6 +23,13 @@ public sealed class SkillEui : BaseEui
         StateDirty();
     }
 
+    public override void Opened()
+    {
+        base.Opened();
+        // Без StateDirty клиент открывает пустое окно и никогда не получает SkillEuiState.
+        StateDirty();
+    }
+
     public override EuiStateBase GetNewState()
     {
         return _skills.BuildEuiState(_target);

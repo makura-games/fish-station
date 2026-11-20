@@ -1,4 +1,5 @@
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Shared._Fish.Skills;
 
@@ -16,6 +17,19 @@ public sealed partial class SkillPrototype : IPrototype
 
     [DataField]
     public LocId Description = string.Empty;
+
+    /// <summary>
+    /// Короткая строка для UI: на какие игровые системы влияет навык.
+    /// Пусто → в окне показывается «пока без эффекта».
+    /// </summary>
+    [DataField]
+    public LocId? UiAffects;
+
+    /// <summary>
+    /// Иконка карточки навыка в SkillWindow.
+    /// </summary>
+    [DataField]
+    public SpriteSpecifier? Icon;
 
     [DataField]
     public string Category = "general";

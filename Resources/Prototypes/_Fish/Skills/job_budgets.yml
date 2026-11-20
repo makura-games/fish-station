@@ -6,8 +6,7 @@
   id: FishPassenger
   job: Passenger
   skillPoints: 8
-  minSkills:
-    FishSkillAthletics: 1
+  # Без явных minSkills — HumanSkillFloor (Baseline) на все навыки.
   maxSkills:
     FishSkillConstruction: 3
     FishSkillElectrical: 2
@@ -51,8 +50,6 @@
   id: FishMusician
   job: Musician
   skillPoints: 8
-  minSkills:
-    FishSkillAthletics: 1
   maxSkills:
     FishSkillConstruction: 3
     FishSkillMedical: 2
@@ -63,8 +60,6 @@
   id: FishServiceWorker
   job: ServiceWorker
   skillPoints: 8
-  minSkills:
-    FishSkillAthletics: 1
   maxSkills:
     FishSkillConstruction: 3
     FishSkillElectrical: 2

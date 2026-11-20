@@ -13,6 +13,12 @@ public abstract partial class SharedSkillSystem : EntitySystem
 {
     public const int DefaultJobSkillPoints = 14;
 
+    /// <summary>
+    /// Пол «обычного человека» для навыков без явного minSkills роли.
+    /// Иначе skillset роняет всё в Unskilled и делает хуже сущностей без skillset (Baseline).
+    /// </summary>
+    public const int HumanSkillFloor = SkillLevels.Baseline;
+
     private static readonly Dictionary<int, float> _emptySkillTable = new();
 
     [Dependency] protected IPrototypeManager Prototypes = default!;
@@ -34,21 +40,13 @@ public abstract partial class SharedSkillSystem : EntitySystem
     }
 
     /// <summary>
-    /// Уровень навыка для игровых эффектов. До Confirm (<see cref="SkillsetComponent.Locked"/>)
-    /// учитывается только минимум роли — provisional-распределение очков на действия не влияет.
+    /// Уровень навыка для игровых эффектов.
+    /// Учитывает текущее распределение сразу — Confirm только закрепляет очки и открывает учебники.
     /// </summary>
     public int GetEffectiveSkillValue(EntityUid uid, ProtoId<SkillPrototype> skill, SkillsetComponent? skillset = null)
     {
         if (!Resolve(uid, ref skillset, false))
             return SkillLevels.Baseline;
-
-        if (!skillset.Locked)
-        {
-            if (skillset.JobId is { } jobId)
-                return GetMinSkill(jobId, skill);
-
-            return SkillLevels.Unskilled;
-        }
 
         return skillset.Skills.GetValueOrDefault(skill, SkillLevels.Unskilled);
     }
@@ -118,7 +116,7 @@ public abstract partial class SharedSkillSystem : EntitySystem
         if (TryGetBudget(job, out var budget) && budget.MinSkills.TryGetValue(skill, out var min))
             return Math.Clamp(min, SkillLevels.Min, SkillLevels.Max);
 
-        return SkillLevels.Min;
+        return HumanSkillFloor;
     }
 
     public int GetMaxSkill(ProtoId<JobPrototype> job, ProtoId<SkillPrototype> skill)
@@ -144,6 +142,36 @@ public abstract partial class SharedSkillSystem : EntitySystem
         return true;
     }
 
+    /// <summary>
+    /// Текст недостающих требований для UI. null — если всё выполнено.
+    /// </summary>
+    public string? FormatMissingPrerequisites(EntityUid uid, SkillPrototype skill, SkillsetComponent skillset)
+    {
+        if (skill.Prerequisites.Count == 0)
+            return null;
+
+        List<string>? missing = null;
+        foreach (var (reqSkill, reqLevel) in skill.Prerequisites)
+        {
+            if (GetSkillValue(uid, reqSkill, skillset) >= reqLevel)
+                continue;
+
+            missing ??= new List<string>();
+            var name = Prototypes.TryIndex(reqSkill, out var proto)
+                ? Loc.GetString(proto.Name)
+                : reqSkill.ToString();
+            missing.Add(Loc.GetString("skills-error-prerequisite-item",
+                ("skill", name),
+                ("level", Loc.GetString(SkillLevels.GetLevelNameKey(reqLevel)))));
+        }
+
+        if (missing is not { Count: > 0 })
+            return null;
+
+        return Loc.GetString("skills-error-prerequisites-detail",
+            ("requirements", string.Join(", ", missing)));
+    }
+
     public bool TryDenyMissingSkill(
         EntityUid user,
         ProtoId<SkillPrototype> skill,
@@ -167,6 +195,19 @@ public abstract partial class SharedSkillSystem : EntitySystem
         return true;
     }
 
+    public string FormatAffectsHint(SkillPrototype proto)
+    {
+        // LocId? — пустой LocId даёт пустую строку; IsNullOrWhiteSpace через ToString.
+        if (proto.UiAffects is { } affects)
+        {
+            var key = affects.ToString();
+            if (!string.IsNullOrWhiteSpace(key))
+                return Loc.GetString(key);
+        }
+
+        return Loc.GetString("skills-affects-none");
+    }
+
     public string FormatEffectHint(ProtoId<SkillPrototype> skill, int level)
     {
         if (!Prototypes.TryIndex(skill, out SkillPrototype? proto))
@@ -174,23 +215,59 @@ public abstract partial class SharedSkillSystem : EntitySystem
 
         var delay = proto.GetDurationMultiplierForLevel(level);
         var quality = proto.GetQualityMultiplierForLevel(level);
-        var hasDuration = proto.DurationMultipliers.Count > 0 || Math.Abs(delay - 1f) > 0.001f;
-        var hasQuality = proto.QualityMultipliers.Count > 0 || Math.Abs(quality - 1f) > 0.001f;
+        // Есть ли у навыка реальные таблицы/факторы — иначе UI не врёт процентами.
+        var tracksDuration = proto.DurationMultipliers.Count > 0 || Math.Abs(proto.DelayFactor) > 0.001f;
+        var tracksQuality = proto.QualityMultipliers.Count > 0 || Math.Abs(proto.QualityFactor) > 0.001f;
 
-        if (hasDuration && hasQuality)
+        if (!tracksDuration && !tracksQuality)
+            return string.Empty;
+
+        string? speedPart = null;
+        string? qualityPart = null;
+
+        if (tracksDuration)
+            speedPart = FormatSpeedRelative(delay);
+
+        if (tracksQuality)
+            qualityPart = FormatQualityRelative(quality);
+
+        if (speedPart != null && qualityPart != null)
         {
             return Loc.GetString("skills-effect-delay-and-quality",
-                ("delay", FormatPercent(delay)),
-                ("quality", FormatPercent(quality)));
+                ("delay", speedPart),
+                ("quality", qualityPart));
         }
 
-        if (hasQuality)
-            return Loc.GetString("skills-effect-quality", ("quality", FormatPercent(quality)));
+        if (qualityPart != null)
+            return Loc.GetString("skills-effect-quality", ("quality", qualityPart));
 
-        if (hasDuration)
-            return Loc.GetString("skills-effect-delay", ("delay", FormatPercent(delay)));
+        if (speedPart != null)
+            return Loc.GetString("skills-effect-delay", ("delay", speedPart));
 
         return string.Empty;
+    }
+
+    private string FormatSpeedRelative(float mult)
+    {
+        var delta = Math.Round((1f - mult) * 100f);
+        if (Math.Abs(delta) < 0.5)
+            return Loc.GetString("skills-effect-speed-normal");
+
+        // mult < 1 → быстрее; mult > 1 → медленнее
+        return delta > 0
+            ? Loc.GetString("skills-effect-speed-faster", ("percent", Math.Abs(delta)))
+            : Loc.GetString("skills-effect-speed-slower", ("percent", Math.Abs(delta)));
+    }
+
+    private string FormatQualityRelative(float mult)
+    {
+        var delta = Math.Round((mult - 1f) * 100f);
+        if (Math.Abs(delta) < 0.5)
+            return Loc.GetString("skills-effect-quality-normal");
+
+        return delta > 0
+            ? Loc.GetString("skills-effect-quality-better", ("percent", Math.Abs(delta)))
+            : Loc.GetString("skills-effect-quality-worse", ("percent", Math.Abs(delta)));
     }
 
     /// <summary>
@@ -228,6 +305,5 @@ public abstract partial class SharedSkillSystem : EntitySystem
         manual.StudyTime = studyTime;
     }
 
-    private static string FormatPercent(float mult) => $"{Math.Round(mult * 100f):0}%";
 }
 

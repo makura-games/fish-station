@@ -19,6 +19,11 @@ public sealed class SkillUiEntry
     public bool CanIncrease;
     public bool CanDecrease;
     public string? BlockReason;
+
+    /// <summary>На какие системы влияет (человекочитаемо).</summary>
+    public string? AffectsHint;
+
+    /// <summary>Числовой эффект текущего уровня (скорость/качество).</summary>
     public string? EffectHint;
 
     public SkillUiEntry()
@@ -37,6 +42,7 @@ public sealed class SkillUiEntry
         bool canIncrease,
         bool canDecrease,
         string? blockReason,
+        string? affectsHint = null,
         string? effectHint = null)
     {
         SkillId = skillId;
@@ -50,6 +56,7 @@ public sealed class SkillUiEntry
         CanIncrease = canIncrease;
         CanDecrease = canDecrease;
         BlockReason = blockReason;
+        AffectsHint = affectsHint;
         EffectHint = effectHint;
     }
 }
