@@ -12,7 +12,6 @@ using Content.Shared.Popups;
 using Content.Shared.RCD.Components;
 using Content.Shared.Tag;
 using Content.Shared.Tiles;
-using Content.Shared._Fish.Skills; // Fish-edit: навык строительства для РСУ
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -44,7 +43,7 @@ public sealed partial class RCDSystem : EntitySystem
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TagSystem _tags = default!;
-    [Dependency] private SharedSkillSystem _skills = default!; // Fish-edit
+    // _skills — в Content.Shared/_Fish/RCD/RCDSystem.Fish.cs
 
     private readonly int _instantConstructionDelay = 0;
     private readonly EntProtoId _instantConstructionFx = "EffectRCDConstruct0";
@@ -169,7 +168,7 @@ public sealed partial class RCDSystem : EntitySystem
         // Fish-start: РСУ (строительство) требует базового строительства
         if (prototype.Mode is RcdMode.ConstructTile or RcdMode.ConstructObject)
         {
-            if (_skills.TryDenyMissingSkill(args.User, "FishSkillConstruction", SkillLevels.Basic, "skills-rcd-need-construction"))
+            if (TryDenyRcdConstruction(args.User))
             {
                 args.Handled = true;
                 return;
@@ -236,7 +235,7 @@ public sealed partial class RCDSystem : EntitySystem
         #endregion
 
         // Fish-edit: навык строительства влияет и на construct, и на deconstruct
-        delay *= _skills.GetSkillDelayMultiplier(args.User, "FishSkillConstruction");
+        delay *= GetRcdConstructionDelayMultiplier(args.User);
 
         // Try to start the do after
         var effect = Spawn(effectPrototype, _mapSystem.ToCenterCoordinates(tile, mapGrid));

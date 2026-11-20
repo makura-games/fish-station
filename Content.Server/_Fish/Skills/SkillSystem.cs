@@ -150,11 +150,19 @@ public sealed partial class SkillSystem : SharedSkillSystem
         if (!HasComp<SkillsetComponent>(uid))
             return;
 
-        // Уже открыто — привязать к актуальной сущности и обновить; иначе создать заново (после CloseEui).
+        // Уже открыто на той же сущности — только обновить состояние.
+        // При смене сущности закрываем старый EUI: иначе Confirm/Reset из старого окна
+        // могут прийти после Retarget и залочить новую сущность.
         if (_openUis.TryGetValue(session, out var existing))
         {
-            existing.Retarget(uid);
-            return;
+            if (existing.Target == uid)
+            {
+                existing.Refresh();
+                return;
+            }
+
+            _eui.CloseEui(existing);
+            _openUis.Remove(session);
         }
 
         var eui = new SkillEui(uid, this);
@@ -224,8 +232,14 @@ public sealed partial class SkillSystem : SharedSkillSystem
             entries);
     }
 
-    public void TrySetLevel(EntityUid uid, ICommonSession session, string skillId, int level)
+    /// <summary>
+    /// Сдвиг уровня на delta (+1/−1) от актуального серверного значения.
+    /// </summary>
+    public void TryAdjustLevel(EntityUid uid, ICommonSession session, string skillId, int delta)
     {
+        if (delta == 0)
+            return;
+
         if (!TryComp<ActorComponent>(uid, out var actor) || actor.PlayerSession != session)
             return;
 
@@ -240,20 +254,22 @@ public sealed partial class SkillSystem : SharedSkillSystem
 
         var min = GetMinSkill(jobId, skillProto.ID);
         var max = GetMaxSkill(jobId, skillProto.ID);
-        var target = Math.Clamp(level, min, max);
+        var current = GetSkillValue(uid, skillProto.ID, skillset);
+        var target = Math.Clamp(current + delta, min, max);
+        if (target == current)
+            return;
 
         if (!CheckPrerequisites(uid, skillProto, skillset) && target > min)
             return;
 
-        var current = GetSkillValue(uid, skillProto.ID, skillset);
         var currentCost = skillProto.GetLevelCost(min, current);
         var newCost = skillProto.GetLevelCost(min, target);
-        var delta = newCost - currentCost;
+        var pointDelta = newCost - currentCost;
 
-        if (skillset.RemainingPoints - delta < 0)
+        if (skillset.RemainingPoints - pointDelta < 0)
             return;
 
-        skillset.RemainingPoints -= delta;
+        skillset.RemainingPoints -= pointDelta;
         skillset.Skills[skillProto.ID] = target;
         PurgeInvalidPrerequisites((uid, skillset), jobId);
         Dirty(uid, skillset);

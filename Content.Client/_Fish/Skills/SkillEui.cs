@@ -13,8 +13,9 @@ public sealed class SkillEui : BaseEui
     public SkillEui()
     {
         _window = new SkillWindow();
-        _window.OnIncrease += id => SendMessage(new SkillEuiSetLevelMessage(id, _window.GetLevel(id) + 1));
-        _window.OnDecrease += id => SendMessage(new SkillEuiSetLevelMessage(id, _window.GetLevel(id) - 1));
+        // Шаг +1/−1: целевой уровень считает сервер по актуальному Skillset (не по устаревшему UI).
+        _window.OnIncrease += id => SendMessage(new SkillEuiSetLevelMessage(id, 1));
+        _window.OnDecrease += id => SendMessage(new SkillEuiSetLevelMessage(id, -1));
         _window.OnConfirm += () => SendMessage(new SkillEuiConfirmMessage());
         _window.OnReset += () => SendMessage(new SkillEuiResetMessage());
         _window.OnClose += () => SendMessage(new CloseEuiMessage());

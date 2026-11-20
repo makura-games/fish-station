@@ -19,7 +19,6 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Content.Shared.Tag;
-using Content.Shared._Fish.Skills; // Fish-edit: навык медицины
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Utility;
 
@@ -39,7 +38,7 @@ public sealed partial class HealingSystem : EntitySystem
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private TagSystem _tag = default!; // Fish-edit: катушка не лечит мех. урон КПБ
-    [Dependency] private SharedSkillSystem _skills = default!; // Fish-edit: множитель лечения от навыка медицины
+    // _skills — в Content.Shared/_Fish/Medical/HealingSystem.Fish.cs
 
     public override void Initialize()
     {

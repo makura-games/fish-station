@@ -34,12 +34,17 @@ public sealed class SkillEuiState : EuiStateBase
 public sealed class SkillEuiSetLevelMessage : EuiMessageBase
 {
     public string SkillId = string.Empty;
-    public int Level;
 
-    public SkillEuiSetLevelMessage(string skillId, int level)
+    /// <summary>
+    /// Шаг относительно актуального серверного уровня (+1 / −1).
+    /// Клиент не шлёт абсолютный уровень из устаревшего UI-состояния.
+    /// </summary>
+    public int Delta;
+
+    public SkillEuiSetLevelMessage(string skillId, int delta)
     {
         SkillId = skillId;
-        Level = level;
+        Delta = delta;
     }
 
     public SkillEuiSetLevelMessage()

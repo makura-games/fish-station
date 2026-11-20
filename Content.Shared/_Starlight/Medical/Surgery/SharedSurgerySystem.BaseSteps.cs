@@ -7,7 +7,7 @@ using Content.Shared.Item;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Popups;
 using Content.Shared._Fish.Achievements.Events;
-using Content.Shared._Fish.Skills;
+using Content.Shared._Fish.Skills; // Fish-edit: навык анатомии для хирургии
 using Content.Shared.Starlight.Medical.Surgery.Effects.Step;
 using Content.Shared.Starlight.Medical.Surgery.Events;
 using Content.Shared.Starlight.Medical.Surgery.Steps;
@@ -55,12 +55,18 @@ public abstract partial class SharedSurgerySystem
         }
         // Fish-end
 
-        if (!_random.Prob(args.SuccessRate))
+        // Fish-start: при SuccessRate < 1 клиент не крутит свой roll — иначе prediction расходится с сервером
+        if (_net.IsClient)
         {
-            if (_net.IsClient) return;
+            if (args.SuccessRate < 1f)
+                return;
+        }
+        else if (!_random.Prob(args.SuccessRate))
+        {
             _popup.PopupEntity("Because of a careless tool, your hand shook. You need to start this step all over again!", args.User, PopupType.SmallCaution);
             return;
         }
+        // Fish-end
 
         var ev = new SurgeryStepEvent(args.User, ent, part, GetTools(args.User))
         {

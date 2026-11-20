@@ -10,15 +10,16 @@ public sealed class SkillEui : BaseEui
     private EntityUid _target;
     private readonly SkillSystem _skills;
 
+    public EntityUid Target => _target;
+
     public SkillEui(EntityUid target, SkillSystem skills)
     {
         _target = target;
         _skills = skills;
     }
 
-    public void Retarget(EntityUid target)
+    public void Refresh()
     {
-        _target = target;
         StateDirty();
     }
 
@@ -34,7 +35,7 @@ public sealed class SkillEui : BaseEui
         switch (msg)
         {
             case SkillEuiSetLevelMessage set:
-                _skills.TrySetLevel(_target, Player, set.SkillId, set.Level);
+                _skills.TryAdjustLevel(_target, Player, set.SkillId, set.Delta);
                 StateDirty();
                 break;
             case SkillEuiConfirmMessage:
