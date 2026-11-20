@@ -394,6 +394,17 @@
   - MobPirateBaseT2
   - MobHumanoidHostileAISimpleRanged
   id: MobPirateBaseT2Ranged
+  components:
+  # Fish-start: Complex (Assault) уже в базе — явно ставим Defense для ranged
+  - type: FishNpcBrain
+    doctrine: Defense
+    visionRadius: 30
+    aggroVisionRadius: 35
+    preferRangedDistance: 9
+    defenseHoldMin: 5
+    defenseHoldMax: 12
+    fleeHealthFraction: 0.28
+  # Fish-end
 
 - type: entity
   abstract: true
@@ -408,6 +419,17 @@
   - MobPirateBaseT3
   - MobHumanoidHostileAISimpleRanged
   id: MobPirateBaseT3Ranged
+  components:
+  # Fish-start: Defense override поверх Complex
+  - type: FishNpcBrain
+    doctrine: Defense
+    visionRadius: 30
+    aggroVisionRadius: 35
+    preferRangedDistance: 9
+    defenseHoldMin: 5
+    defenseHoldMax: 12
+    fleeHealthFraction: 0.28
+  # Fish-end
 
 - type: entity
   abstract: true
@@ -423,6 +445,16 @@
   - MobHumanoidHostileAISimpleRanged
   id: MobPirateVeteranChatterBaseT2Ranged
   components:
+  # Fish-start: Defense override поверх Complex
+  - type: FishNpcBrain
+    doctrine: Defense
+    visionRadius: 30
+    aggroVisionRadius: 35
+    preferRangedDistance: 9
+    defenseHoldMin: 5
+    defenseHoldMax: 12
+    fleeHealthFraction: 0.28
+  # Fish-end
   - type: DatasetVocalizer
     dataset: PirateChatterNPCVeteran
     minVocalizeInterval: 45s
@@ -449,6 +481,16 @@
   - MobHumanoidHostileAISimpleRanged
   id: MobPirateVeteranChatterBaseT3Ranged
   components:
+  # Fish-start: Defense override поверх Complex
+  - type: FishNpcBrain
+    doctrine: Defense
+    visionRadius: 30
+    aggroVisionRadius: 35
+    preferRangedDistance: 9
+    defenseHoldMin: 5
+    defenseHoldMax: 12
+    fleeHealthFraction: 0.28
+  # Fish-end
   - type: DatasetVocalizer
     dataset: PirateChatterNPCVeteran
     minVocalizeInterval: 45s

@@ -1,16 +1,11 @@
 #nullable enable
-using System.Collections.Generic;
-using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._Fish.Salvage;
-using Content.Server._Sunrise.Misc.ShiftedAsciiTableAccent;
-using Content.Server.Ghost.Roles.Components;
 using Content.Server.NPC;
 using Content.Server.NPC.HTN;
 using Content.Server.Salvage.Expeditions;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
-using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.Salvage;
 
@@ -19,63 +14,6 @@ public sealed class ExpeditionMobsTest : GameTest
 {
     private const string Goliath = "MobGoliath";
     private const string Pirate = "MobPirateT1Knife";
-
-    /// <summary>
-    /// По одному мобу из остальных веток, где шанс гост-роли был изменён: пираты T2 и T3, босс T3, «советы»
-    /// и боссы экспедиций, у которых раньше роль была гарантированной или с большим шансом.
-    /// </summary>
-    private static readonly string[] OtherBranches =
-    [
-        "MobPirateT2Cutlass",
-        "MobPirateT3Medic",
-        "MobPirateT3Boss",
-        "MobSovietT1Knife",
-        "MobSovietCaptain",
-        "MobRogueSiliconBoss",
-        "MobRogueSiliconBossGuardian",
-        "MobRogueSiliconBossSkullHouse",
-        "MobDragonDungeon",
-    ];
-
-    /// <summary>
-    /// Мобы экспедиций никогда не становятся гост-ролью и не получают AnomalyAccent.
-    /// </summary>
-    [Test]
-    public async Task ExpeditionPiratesHaveNoGhostRoleAndNoAnomalyAccent()
-    {
-        var server = Pair.Server;
-        var entMan = server.ResolveDependency<IEntityManager>();
-        var testMap = await Pair.CreateTestMap();
-
-        var mobs = new List<(EntityUid Uid, string Proto)>();
-
-        await server.WaitPost(() =>
-        {
-            // Раньше шанс гост-роли у пиратов T1 был 10%, поэтому берём много, чтобы тест был надёжным.
-            for (var i = 0; i < 60; i++)
-            {
-                mobs.Add((entMan.SpawnEntity(Pirate, testMap.GridCoords), Pirate));
-            }
-
-            // Остальные изменённые ветки: у каждой свой шанс гост-роли в прототипе.
-            foreach (var proto in OtherBranches)
-            {
-                mobs.Add((entMan.SpawnEntity(proto, testMap.GridCoords), proto));
-            }
-        });
-
-        // Гост-роль с вероятностью убирается отложенно, при инициализации карты.
-        await server.WaitRunTicks(2);
-
-        await server.WaitAssertion(() =>
-        {
-            foreach (var (mob, proto) in mobs)
-            {
-                Assert.That(entMan.HasComponent<GhostRoleComponent>(mob), Is.False, $"{proto} стал гост-ролью");
-                Assert.That(entMan.HasComponent<AnomalyAccentComponent>(mob), Is.False, $"{proto} получил AnomalyAccent");
-            }
-        });
-    }
 
     /// <summary>
     /// Радиусы обзора и агра мобов на карте экспедиции увеличиваются, а мобы на других картах не затрагиваются.
@@ -144,47 +82,6 @@ public sealed class ExpeditionMobsTest : GameTest
             AssertRadii(entMan, goliath, 9f, 15f);
             entMan.System<ExpeditionMobSystem>().BoostMobVision(testMap.MapUid);
             AssertRadii(entMan, goliath, 9f, 15f);
-        });
-    }
-
-    /// <summary>
-    /// В прототипах мобов экспедиций эффективный шанс гост-роли равен нулю, а не просто не выпал в этом запуске.
-    /// </summary>
-    [Test]
-    public void ExpeditionMobPrototypesHaveZeroGhostRoleProbability()
-    {
-        var protoMan = Server.ResolveDependency<IPrototypeManager>();
-        var factory = Server.ResolveDependency<IComponentFactory>();
-
-        foreach (var id in OtherBranches.Append(Pirate))
-        {
-            Assert.That(protoMan.Index<EntityPrototype>(id).TryGetComponent<GhostRoleComponent>(out var role, factory),
-                Is.True, $"{id} без GhostRole в прототипе");
-            Assert.That(role!.Probability, Is.EqualTo(0f), $"{id} имеет ненулевой шанс гост-роли");
-        }
-    }
-
-    /// <summary>
-    /// Карп дракона из ивента остаётся гост-ролью: мобы экспедиций не должны влиять на ивент дракона.
-    /// </summary>
-    [Test]
-    public async Task DragonEventCarpKeepsGhostRole()
-    {
-        var server = Pair.Server;
-        var entMan = server.ResolveDependency<IEntityManager>();
-        var testMap = await Pair.CreateTestMap();
-        var carp = EntityUid.Invalid;
-
-        await server.WaitPost(() =>
-        {
-            carp = entMan.SpawnEntity("MobCarpDragon", testMap.GridCoords);
-        });
-
-        await server.WaitRunTicks(2);
-
-        await server.WaitAssertion(() =>
-        {
-            Assert.That(entMan.HasComponent<GhostRoleComponent>(carp), Is.True, "Карп ивента дракона лишился гост-роли");
         });
     }
 

@@ -257,6 +257,13 @@
   id: MobHumanoidHostileAISimpleMelee
   abstract: true
   components:
+  # Fish-start: режимный мозг штурма вместо тупого HTN
+  - type: FishNpcBrain
+    doctrine: Assault
+    visionRadius: 30
+    aggroVisionRadius: 35
+    assaultMeleeCommitDistance: 5
+    fleeHealthFraction: 0.15
   - type: HTN
     rootTask:
        task: PirateSimpleHostileCompound
@@ -273,11 +280,21 @@
         30
       AggroVisionRadius: !type:Single
         35
+  # Fish-end
 
 - type: entity
   id: MobHumanoidHostileAISimpleRanged
   abstract: true
   components:
+  # Fish-start: оборона — держит дистанцию
+  - type: FishNpcBrain
+    doctrine: Defense
+    visionRadius: 30
+    aggroVisionRadius: 35
+    preferRangedDistance: 9
+    defenseHoldMin: 5
+    defenseHoldMax: 12
+    fleeHealthFraction: 0.28
   - type: HTN
     rootTask:
        task: PirateSimpleRangedHostileCompound
@@ -294,14 +311,22 @@
         30
       AggroVisionRadius: !type:Single
         35
-      # Fish-edit: стрельба через RangedRange (раньше MeleeRange=4 был костыль под баг GunCombat)
       RangedRange: !type:Single
         12
+  # Fish-end
 
 - type: entity
   id: MobHumanoidHostileAIComplex
   abstract: true
   components:
+  # Fish-start: комплексные гуманоиды — штурмовая доктрина
+  - type: FishNpcBrain
+    doctrine: Assault
+    visionRadius: 28
+    aggroVisionRadius: 35
+    preferRangedDistance: 7
+    assaultMeleeCommitDistance: 4.5
+    fleeHealthFraction: 0.18
   - type: HTN
     rootTask:
        task: PirateSimpleHumanoidHostileCompound
@@ -314,6 +339,7 @@
         true
       NavSmash: !type:Bool
         true
+  # Fish-end
 #endregion
 
 #region NPC types

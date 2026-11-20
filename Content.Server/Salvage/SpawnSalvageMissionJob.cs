@@ -286,6 +286,10 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
             }
         }
 
+        // Fish-start: vision boost мобов экспедиции после спавна
+        _entManager.System<_Fish.Salvage.ExpeditionMobSystem>().BoostMobVision(mapUid);
+        // Fish-end
+
         return true;
     }
 

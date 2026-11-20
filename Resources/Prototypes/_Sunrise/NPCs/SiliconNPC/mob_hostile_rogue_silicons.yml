@@ -4,6 +4,11 @@
   id: MobRogueSiliconAISimpleMelee
   abstract: true
   components:
+  # Fish-start: штурмовой мозг
+  - type: FishNpcBrain
+    doctrine: Assault
+    assaultMeleeCommitDistance: 5
+    fleeHealthFraction: 0.12
   - type: HTN
     rootTask:
        task: SimpleHostileCompound
@@ -18,11 +23,19 @@
         true
       SoundTargetInLOS: !type:SoundPathSpecifier
         path: /Audio/Effects/double_beep.ogg
+  # Fish-end
 
 - type: entity
   id: MobRogueSiliconAISimpleRanged
   abstract: true
   components:
+  # Fish-start: оборонительный ranged мозг
+  - type: FishNpcBrain
+    doctrine: Defense
+    preferRangedDistance: 10
+    defenseHoldMin: 6
+    defenseHoldMax: 14
+    fleeHealthFraction: 0.25
   - type: HTN
     rootTask:
        task: SimpleRangedHostileCompound
@@ -37,6 +50,7 @@
         true
       SoundTargetInLOS: !type:SoundPathSpecifier
         path: /Audio/Effects/double_beep.ogg
+  # Fish-end
 
 #region Mob base
 - type: entity

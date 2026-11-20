@@ -2,6 +2,7 @@ using Content.Server.NPC;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.Systems;
 using Content.Server.Salvage.Expeditions;
+using Content.Shared._Fish.NPC;
 using Content.Shared.Ghost.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC;
@@ -66,6 +67,8 @@ public sealed partial class ExpeditionMobSystem : EntitySystem
             return;
 
         ApplyVisionBoost(htn.Blackboard);
+        if (TryComp<FishNpcBrainComponent>(uid, out var brain))
+            ApplyBrainVisionBoost(brain);
     }
 
     /// <summary>
@@ -75,12 +78,14 @@ public sealed partial class ExpeditionMobSystem : EntitySystem
     public void BoostMobVision(EntityUid mapUid)
     {
         var query = AllEntityQuery<HTNComponent, TransformComponent>();
-        while (query.MoveNext(out _, out var htn, out var xform))
+        while (query.MoveNext(out var uid, out var htn, out var xform))
         {
             if (xform.MapUid != mapUid)
                 continue;
 
             ApplyVisionBoost(htn.Blackboard);
+            if (TryComp<FishNpcBrainComponent>(uid, out var brain))
+                ApplyBrainVisionBoost(brain);
         }
     }
 
@@ -93,6 +98,24 @@ public sealed partial class ExpeditionMobSystem : EntitySystem
         ScaleRadius(blackboard, VisionRadiusKey);
         ScaleRadius(blackboard, AggroVisionRadiusKey);
         blackboard.SetValue(VisionBoostedKey, true);
+    }
+
+    /// <summary>
+    /// Буст радиусов FishNpcBrain на экспедиции (отдельно от HTN blackboard).
+    /// </summary>
+    public void ApplyBrainVisionBoost(FishNpcBrainComponent brain)
+    {
+        if (brain.ExpeditionVisionBoosted)
+            return;
+
+        brain.VisionRadius = ScaleRadiusValue(brain.VisionRadius);
+        brain.AggroVisionRadius = ScaleRadiusValue(brain.AggroVisionRadius);
+        brain.ExpeditionVisionBoosted = true;
+    }
+
+    private static float ScaleRadiusValue(float radius)
+    {
+        return MathF.Min(radius * RadiusMultiplier, MathF.Max(radius, RadiusCap));
     }
 
     /// <summary>
