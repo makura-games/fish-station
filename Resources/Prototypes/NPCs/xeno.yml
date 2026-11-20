@@ -1,9 +1,7 @@
+# Fish-edit: тонкая обёртка над SimpleHostileCompound (раньше был полный дубль)
 - type: htnCompound
   id: XenoCompound
   branches:
     - tasks:
         - !type:HTNCompoundTask
-          task: MeleeCombatCompound
-    - tasks:
-        - !type:HTNCompoundTask
-          task: IdleCompound
+          task: SimpleHostileCompound

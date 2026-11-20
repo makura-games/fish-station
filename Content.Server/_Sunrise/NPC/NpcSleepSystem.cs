@@ -83,9 +83,10 @@ public sealed partial class NpcSleepSystem : EntitySystem
 
     private bool AllowNpc(EntityUid uid, TransformComponent xform)
     {
-        // НЕ СПАТЬ НА ЭКСПЕ!!
+        // Fish-start: sleep/wake на экспе ведёт ExpeditionMobSystem (proximity + hysteresis)
         if (xform.MapUid is { } mapUid && HasComp<SalvageExpeditionComponent>(mapUid))
-            return true;
+            return _activeQuery.HasComponent(uid);
+        // Fish-end
 
         var npcCoords = _transform.GetMapCoordinates(uid, xform);
 

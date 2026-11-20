@@ -70,6 +70,9 @@ namespace Content.Server.NPC.Systems
         public void OnNPCMapInit(EntityUid uid, HTNComponent component, MapInitEvent args)
         {
             WakeNPC(uid, component);
+            // Fish-start: vision boost на карте экспедиции при MapInit HTN
+            EntityManager.System<_Fish.Salvage.ExpeditionMobSystem>().TryBoostOnMapInit(uid, component);
+            // Fish-end
         }
 
         public void OnNPCShutdown(EntityUid uid, HTNComponent component, ComponentShutdown args)

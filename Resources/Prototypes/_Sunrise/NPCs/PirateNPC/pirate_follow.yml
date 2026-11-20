@@ -1,3 +1,4 @@
+# Fish-edit: общие корни = vanilla combat + Follow перед Idle (не дублировать деревья боя)
 - type: htnCompound
   id: PirateSimpleHostileCompound
   branches:

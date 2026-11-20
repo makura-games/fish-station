@@ -16,7 +16,8 @@
             targetKey: TargetCoordinates
             pathfindKey: TargetPathfind
             stopOnLineOfSight: true
-            rangeKey: MeleeRange
+            # Fish-edit: подход на дистанцию стрельбы, не MeleeRange
+            rangeKey: RangedRange
 
         - !type:HTNPrimitiveTask
           operator: !type:JukeOperator
@@ -127,8 +128,27 @@
         - !type:HTNCompoundTask
           task: GunCombatCompound
 
-    # Reload gun
-    # TODO
+    # Fish-start: перезарядка из инвентаря / подбор патронов рядом
+    - preconditions:
+        - !type:ActiveHandComponentPrecondition
+          components:
+            - type: Gun
+        - !type:GunAmmoPrecondition
+          maxPercent: 0.001
+      tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:ReloadGunOperator
+
+    - preconditions:
+        - !type:GunAmmoPrecondition
+          maxPercent: 0.001
+      tasks:
+        - !type:HTNCompoundTask
+          task: ClearActiveHandCompound
+
+        - !type:HTNCompoundTask
+          task: PickupAmmoCompound
+    # Fish-end
 
     # Equip a gun from inventory if one found, preferring over pickup.
     # TODO: Doing inventory cleanly will be a PITA so deferring to later
@@ -144,17 +164,6 @@
     #
     #   - !type:HTNPrimitiveTask
     #     operator: !type:EquipOperator
-
-    # Pickup ammo if any nearby
-    #- preconditions:
-    #    - !type:GunAmmoPrecondition
-    #      maxPercent: 0.0
-    #  tasks:
-    #    - !type:HTNCompoundTask
-    #      task: ClearActiveHandCompound
-#
-#        - !type:HTNCompoundTask
-#          task: PickupAmmoCompound
 
     # Pickup gun with ammo if we have no ammo
     - preconditions:
@@ -175,5 +184,3 @@
           preconditions:
             - !type:ActiveHandEntityPrecondition
           operator: !type:DropOperator
-
-# TODO: Reload a nearby gun

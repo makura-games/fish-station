@@ -294,8 +294,9 @@
         30
       AggroVisionRadius: !type:Single
         35
-      MeleeRange: !type:Single
-        4
+      # Fish-edit: стрельба через RangedRange (раньше MeleeRange=4 был костыль под баг GunCombat)
+      RangedRange: !type:Single
+        12
 
 - type: entity
   id: MobHumanoidHostileAIComplex
