@@ -121,7 +121,7 @@ public sealed partial class ContentTileDefinition : IPrototype, IInheritingProto
         /// When false, this tile does not hard-collide with other grids unless a dense
         /// anchored entity blocks the cell (see GridTileCollisionSystem).
         /// </summary>
-        // FIsh edit - прозрачные тайлы без собственной grid-grid collision
+        // Fish-edit - прозрачные тайлы без собственной grid-grid collision
         [DataField("enableGridCollision")]
         public bool EnableGridCollision { get; private set; } = true;
 

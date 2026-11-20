@@ -18,7 +18,8 @@
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    - type: FishThermalVision
+  - type: FishVisionDevice
   - type: ToggleClothing
     action: ActionToggleThermalVision
     disableOnUnequip: true

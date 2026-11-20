@@ -86,9 +86,9 @@ namespace Content.Server.Entry
         [Dependency] private JobWhitelistManager _job = default!;
         [Dependency] private MultiServerKickManager _multiServerKick = default!;
         [Dependency] private PlayTimeTrackingManager _playTimeTracking = default!;
-        // ===== FISH EDIT START: ACHIEVEMENTS =====
+        // ===== Fish-start: ACHIEVEMENTS =====
         [Dependency] private AchievementManager _achievements = default!;
-        // ===== FISH EDIT END: ACHIEVEMENTS =====
+        // ===== Fish-end: ACHIEVEMENTS =====
         [Dependency] private PlayerRateLimitManager _rateLimit = default!;
         [Dependency] private RulesManager _rules = default!;
         [Dependency] private ServerApi _serverApi = default!;
@@ -179,9 +179,9 @@ namespace Content.Server.Entry
             _voteManager.Initialize();
             _updateManager.Initialize();
             _playTimeTracking.Initialize();
-            // ===== FISH EDIT START: ACHIEVEMENTS =====
+            // ===== Fish-start: ACHIEVEMENTS =====
             _achievements.Initialize();
-            // ===== FISH EDIT END: ACHIEVEMENTS =====
+            // ===== Fish-end: ACHIEVEMENTS =====
             _watchlistWebhookManager.Initialize();
             _job.Initialize();
             _rateLimit.Initialize();

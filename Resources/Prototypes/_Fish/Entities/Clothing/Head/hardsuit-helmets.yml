@@ -1,3 +1,57 @@
+# Fish-оптика для шлемов без собственного переключателя ПНВ.
+# Цвета совпадают с прежними вариантами Sunrise, чтобы не менять внешний вид.
+- type: entity
+  id: FishHardsuitHelmetNightVisionCyan
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#00FFFF"
+      lightingColor: "#00FFFF26"
+
+- type: entity
+  id: FishHardsuitHelmetNightVisionWhite
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#FFFFFF"
+      lightingColor: "#FFFFFF26"
+
+- type: entity
+  id: FishHardsuitHelmetNightVisionMint
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#ADFFEC"
+      lightingColor: "#ADFFEC26"
+
+- type: entity
+  id: FishHardsuitHelmetNightVisionPurple
+  suffix: Fish
+  abstract: true
+  components:
+  - type: FishVisionDevice
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: FishNightVision
+      color: "#CBADFF"
+      lightingColor: "#CBADFF26"
+
 - type: entity
   parent: ClothingHeadHelmetVoidParamed
   id: ClothingHeadHelmetVoidParamedFish
@@ -66,7 +120,7 @@
     targetSlot: head
 
 - type: entity
-  parent: ClothingHeadHelmetHardsuitSecurityRed
+  parent: [ ClothingHeadHelmetHardsuitSecurityRed, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ]
   id: FishClothingHeadHelmetHardsuitCentcomBlack
   categories: [ HideSpawnMenu, DoNotMap ]
   name: field hardsuit helmet
@@ -82,10 +136,14 @@
       map: [ light ]
   - type: Clothing
     sprite: _Fish/Clothing/Head/Hardsuits/centcom_officer_black.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
   - type: ToggleableVisuals
     spriteLayer: light
     clothingVisuals:
-      head: []
+      head:
+      - state: on-equipped-HELMET
   - type: PointLight
     color: '#4ac4ff'
     radius: 6

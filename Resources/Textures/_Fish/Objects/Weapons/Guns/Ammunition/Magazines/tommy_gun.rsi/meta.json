@@ -1,0 +1,18 @@
+{
+    "version": 1,
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "license": "CC-BY-SA-4.0",
+    "copyright": "Created by STchekstep (discord)",
+    "states": [
+        {
+            "name": "base"
+        },
+        {
+            "name": "mag-1"
+
+        }
+    ]
+}

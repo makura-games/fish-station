@@ -175,17 +175,17 @@
   # Sunrise-Edit
   - type: StationAiVision
     enabled: false
-  # FIsh edit start - модули только через встроенный магазин (бюджет ~15)
+  # Fish-start - модули только через встроенный магазин (бюджет ~15)
   - type: InnateItem
     instantActions: []
     entityTargetActions: []
-  # FIsh edit end
+  # Fish-end
   - type: Biocode
     factions:
     - Syndicate
     - Thief
   # Sunrise-End
-  # FIsh edit start - Syndicate pAI medical suite / master binding / module shop
+  # Fish-start - Syndicate pAI medical suite / master binding / module shop
   - type: SyndicatePai
   - type: UserInterface
     interfaces:
@@ -204,7 +204,7 @@
       enum.SyndicatePaiUiKey.Key:
         type: SyndicatePaiBoundUserInterface
         requireInputValidation: false
-      # FIsh edit: ванильный CriminalRecords UI убран; SunriseCriminalRecordsConsole вешается в SyndicatePaiSystem
+      # Fish-edit: ванильный CriminalRecords UI убран; SunriseCriminalRecordsConsole вешается в SyndicatePaiSystem
   - type: Store
     categories:
     - SyndicatePAIModules
@@ -212,7 +212,7 @@
     - SiliconMemory
     balance:
       SiliconMemory: 15
-  # FIsh edit end
+  # Fish-end
 
 - type: entity
   parent: PersonalAI

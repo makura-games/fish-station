@@ -1334,9 +1334,8 @@
     energy: 2.5
     color: "#47f8ff"
   # Ghost role stuff
-  # Fish-start - без гостроли у боссов кремниевых экспедиций
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     allowMovement: true
     name: ghost-role-information-guardian-unit-dungeon-name
     description: ghost-role-information-one-star-unit-dungeon-description
@@ -1346,7 +1345,6 @@
     mindRoles:
     - MindRoleGhostRoleTeamAntagonist
   - type: GhostTakeoverAvailable
-  # Fish-end
 
 - type: entity
   parent:
@@ -1462,9 +1460,8 @@
     footstepSoundCollection:
       path: /Audio/Mecha/sound_mecha_powerloader_step.ogg
   # Ghost role stuff
-  # Fish-start - без гостроли у one-star босса
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     allowMovement: true
     name: ghost-role-information-one-star-unit-dungeon-name
     description: ghost-role-information-one-star-unit-dungeon-description
@@ -1474,7 +1471,6 @@
     mindRoles:
     - MindRoleGhostRoleTeamAntagonist
   - type: GhostTakeoverAvailable
-  # Fish-end
 
 
 - type: entity
@@ -1646,7 +1642,6 @@
   - type: AutoImplant
     implants:
     - CreepyLaughImplant
-  # Fish-start - без гостроли у Skull House
   - type: GhostRole
     allowMovement: true
     name: ghost-role-information-one-star-unit-dungeon-name
@@ -1656,10 +1651,9 @@
       settings: default
     mindRoles:
     - MindRoleGhostRoleTeamAntagonist
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
   - type: GhostTakeoverAvailable
-  # Fish-end
 
 #region Asteroid
 ## Tier 1

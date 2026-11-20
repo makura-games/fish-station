@@ -56,11 +56,15 @@
     clothingPrototype: ClothingOuterWingsBlack
     requiredSlot: innerClothing
     slot: outerClothing
-  # Fish-edit: keep medal slot from ClothingUniformBase (override replaces parent ContainerContainer)
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
-      medal: !type:ContainerSlot
+      # Fish-start - медали на форме
+      medal1: !type:ContainerSlot
+      medal2: !type:ContainerSlot
+      medal3: !type:ContainerSlot
+      medal4: !type:ContainerSlot
+      # Fish-end
 
 - type: entity
   parent: ClothingUniformBase
@@ -76,11 +80,15 @@
     clothingPrototype: ClothingOuterWingsWhite
     requiredSlot: innerClothing
     slot: outerClothing
-  # Fish-edit: keep medal slot from ClothingUniformBase (override replaces parent ContainerContainer)
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
-      medal: !type:ContainerSlot
+      # Fish-start - медали на форме
+      medal1: !type:ContainerSlot
+      medal2: !type:ContainerSlot
+      medal3: !type:ContainerSlot
+      medal4: !type:ContainerSlot
+      # Fish-end
 
 - type: entity
   parent: ClothingUniformBase

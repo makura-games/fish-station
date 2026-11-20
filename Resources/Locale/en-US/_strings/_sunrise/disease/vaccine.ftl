@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 reagent-name-disease-blood = turbid blood
 reagent-name-disease-blood-first = turbid blood
 reagent-description-disease-blood-first = a very strange turbid liquid. Resembles blood.

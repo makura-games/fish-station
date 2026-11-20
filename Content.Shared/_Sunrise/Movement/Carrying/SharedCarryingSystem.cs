@@ -55,6 +55,7 @@ public abstract partial class SharedCarryingSystem : EntitySystem
         SubscribeLocalEvent<ActiveCanBeCarriedComponent, PullAttemptEvent>(OnPullAttempt);
         SubscribeLocalEvent<ActiveCanBeCarriedComponent, StartClimbEvent>(OnStartClimb);
         SubscribeLocalEvent<ActiveCanBeCarriedComponent, BuckledEvent>(OnBuckleChange);
+        SubscribeLocalEvent<ActiveCanBeCarriedComponent, UnstrappedEvent>(OnUnstrapped);
         SubscribeLocalEvent<ActiveCanBeCarriedComponent, InteractionAttemptEvent>(OnInteractionAttempt);
     }
 
@@ -304,6 +305,17 @@ public abstract partial class SharedCarryingSystem : EntitySystem
     private void OnBuckleChange(Entity<ActiveCanBeCarriedComponent> ent, ref BuckledEvent args)
     {
         TryDropCarriedByTarget(ent.AsNullable());
+    }
+
+    private void OnUnstrapped(Entity<ActiveCanBeCarriedComponent> ent, ref UnstrappedEvent args)
+    {
+        // Переносимый страп прикреплён к носильщику, поэтому отстёгнутая сущность ставится рядом с ним
+        // и становится ребёнком носильщика. Возвращаем её на грид, иначе она ходит вместе с ним сквозь стены.
+        var buckleXform = Transform(args.Buckle);
+        if (buckleXform.ParentUid == buckleXform.GridUid || buckleXform.ParentUid == buckleXform.MapUid)
+            return;
+
+        _transform.AttachToGridOrMap(args.Buckle, buckleXform);
     }
 
     private void OnInteractionAttempt(Entity<ActiveCanBeCarriedComponent> ent, ref InteractionAttemptEvent args)

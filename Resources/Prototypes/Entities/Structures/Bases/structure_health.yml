@@ -259,7 +259,7 @@
   - type: Destructible
     thresholds:
     - trigger: !type:DamageTrigger
-        damage: 350
+        damage: 1500  # Fish-edit: порог разрушения усиленной двери
       behaviors: *DoDestruction
 
 #endregion

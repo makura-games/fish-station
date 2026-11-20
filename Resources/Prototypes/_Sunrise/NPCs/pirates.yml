@@ -269,11 +269,11 @@
     prioritized: false
     lightingColor: '#FF983326'
   - type: ComplexInteraction
-  # Fish-start - убираем AnomalyAccent и гостроль у экспедиционных пиратов
+  # Fish-edit: убран AnomalyAccent у мобов экспедиций
   - type: TTS
     voice: necrophos_dota_2
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-pirate-name
     description: ghost-role-information-expedition-pirate-description
@@ -281,7 +281,6 @@
     raffle:
       settings: short
   - type: GhostTakeoverAvailable
-  # Fish-end
   - type: GuideHelp
     guides:
     - MobsExpeditionGuidePirates
@@ -352,16 +351,14 @@
   - type: NoSlip
   - type: Damageable
     damageModifierSet: MobPirateT2
-  # Fish-start - без гостроли у T2
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-pirate-name
     description: ghost-role-information-expedition-pirate-description
     rules: ghost-role-information-expedition-pirate-rules
     raffle:
       settings: short
-  # Fish-end
 
 - type: entity
   abstract: true
@@ -371,16 +368,14 @@
   - type: NoSlip
   - type: Damageable
     damageModifierSet: MobPirateT3
-  # Fish-start - без гостроли у T3
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-pirate-name
     description: ghost-role-information-expedition-pirate-description
     rules: ghost-role-information-expedition-pirate-rules
     raffle:
       settings: default
-  # Fish-end
 
 - type: entity
   abstract: true
@@ -4419,10 +4414,8 @@
   - type: AutoImplant
     implants:
     - CreepyLaughImplant
-  # Fish-start - без гостроли у босса T3
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
-  # Fish-end
 
 

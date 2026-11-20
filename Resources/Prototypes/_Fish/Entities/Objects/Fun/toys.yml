@@ -223,3 +223,34 @@
   - type: EmitSoundOnUse
     sound:
       path: /Audio/_Sunrise/Voice/Felinid/cat_meow2.ogg
+
+- type: entity
+  id: PlushieLusain
+  parent: BasePlushie
+  name: Plushie Andre Lusain
+  description: A small purple-haired plushie in dark clothes. On her right wrist you can make out a purple tattoo that reads "LusainFamily". She is terribly tired and dreams only of a warm blanket and some quiet.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Fun/toys.rsi
+    state: Lusain
+  - type: UseDelay
+    delay: 7
+  - type: TriggerOnActivate
+  - type: TriggerOnUse
+  - type: UseDelayOnTrigger
+  - type: UseDelayTriggerCondition
+  - type: SpeakOnTrigger
+    pack: FigurinesLusain
+  - type: Speech
+    speechSounds: Pai
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/_Sunrise/Felinid/lick.ogg
+    handle: false
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Voice/Human/cry_female_3.ogg
+      params:
+        volume: -4
+  - type: TTS
+    voice: HeartstoneDjaina

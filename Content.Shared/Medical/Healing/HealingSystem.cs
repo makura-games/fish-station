@@ -1,4 +1,4 @@
-﻿using Content.Shared.Administration.Logs;
+using Content.Shared.Administration.Logs;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
 using System.Linq;
@@ -18,7 +18,8 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
-using Content.Shared._Fish.Skills; // Fish-edit: РЅР°РІС‹РєРё РјРµРґРёС†РёРЅС‹
+using Content.Shared.Tag;
+using Content.Shared._Fish.Skills; // Fish-edit: навык медицины
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Utility;
 
@@ -37,7 +38,8 @@ public sealed partial class HealingSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popupSystem = default!;
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private MobStateSystem _mobState = default!;
-    [Dependency] private SharedSkillSystem _skills = default!; // Fish-edit: РјРЅРѕР¶РёС‚РµР»СЊ РІСЂРµРјРµРЅРё Р»РµС‡РµРЅРёСЏ
+    [Dependency] private TagSystem _tag = default!; // Fish-edit: катушка не лечит мех. урон КПБ
+    [Dependency] private SharedSkillSystem _skills = default!; // Fish-edit: множитель лечения от навыка медицины
 
     public override void Initialize()
     {
@@ -69,7 +71,7 @@ public sealed partial class HealingSystem : EntitySystem
 
         TryComp<BloodstreamComponent>(target, out var bloodstream);
 
-        // Fish-start: РІРµР»РёС‡РёРЅР° Р»РµС‡РµРЅРёСЏ РѕС‚ РЅР°РІС‹РєР° РјРµРґРёС†РёРЅС‹
+        // Fish-start: величина лечения от навыка медицины
         var healAmountMod = _skills.GetSkillQualityMultiplier(args.User, "FishSkillMedical");
         // Fish-end
 
@@ -77,7 +79,7 @@ public sealed partial class HealingSystem : EntitySystem
         if (healing.BloodlossModifier != 0 && bloodstream != null)
         {
             var isBleeding = bloodstream.BleedAmount > 0;
-            // Fish-edit: РјРѕРґРёС„РёРєР°С‚РѕСЂ РєСЂРѕРІРѕС‚РµС‡РµРЅРёСЏ РјР°СЃС€С‚Р°Р±РёСЂСѓРµС‚СЃСЏ РЅР°РІС‹РєРѕРј
+            // Fish-edit: модификатор кровотечения масштабируется навыком
             _bloodstreamSystem.TryModifyBleedAmount((target.Owner, bloodstream), healing.BloodlossModifier * healAmountMod);
             if (isBleeding != bloodstream.BleedAmount > 0)
             {
@@ -90,12 +92,23 @@ public sealed partial class HealingSystem : EntitySystem
 
         // Restores missing blood
         if (healing.ModifyBloodLevel != 0 && bloodstream != null)
-            // Fish-edit: РѕР±СЉС‘Рј РєСЂРѕРІРё РѕС‚ РЅР°РІС‹РєР°
+            // Fish-edit: объём крови от навыка
             _bloodstreamSystem.TryModifyBloodLevel((target.Owner, bloodstream), healing.ModifyBloodLevel * healAmountMod);
 
-        // Fish-edit: СѓСЂРѕРЅ Р»РµС‡РµРЅРёСЏ * HEAL_AMOUNT_MOD
-        if (!_damageable.TryChangeDamage(target.Owner, healing.Damage * _damageable.UniversalTopicalsHealModifier * healAmountMod, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
+        var healDamage = healing.Damage;
+        // Fish-start: катушка не снимает Blunt/Slash/Piercing с КПБ. Нанопаста и прочие силиконы без тега CableCoil не затронуты.
+        if (args.Used is { } used && IgnoresIpcCableMechanical(target.Owner, used))
+            healDamage = WithoutIpcMechanical(healDamage);
+        // Fish-end
+
+        // Fish-edit: величина лечения масштабируется навыком медицины
+        healDamage *= healAmountMod;
+
+        if (!_damageable.TryChangeDamage(target.Owner, healDamage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User) && healing.BloodlossModifier != 0)
             return;
+
+        // Fish-edit: малое лечение слепоты (например, нанопастой)
+        ApplyEyeDamageHeal(healing, target.Owner);
 
         var total = healed.GetTotal();
 
@@ -165,7 +178,8 @@ public sealed partial class HealingSystem : EntitySystem
         // Update our self heal delay so it shortens as we heal more damage.
         if (args.User == target.Owner)
         {
-            // Fish-start: РїРѕРІС‚РѕСЂ self-heal СѓС‡РёС‚С‹РІР°РµС‚ РЅР°РІС‹Рє РјРµРґРёС†РёРЅС‹
+            // Fish-start: штраф самолечения как у органиков, длительность ещё умножается на навык медицины
+            // args.Args.Delay = healing.Delay * GetScaledHealingPenalty(target.Owner, IpcSelfHealCap(target.Owner, healing.SelfHealPenaltyMultiplier));
             args.Args.Delay = healing.Delay
                 * GetScaledHealingPenalty(target.Owner, healing.SelfHealPenaltyMultiplier)
                 * _skills.GetSkillDelayMultiplier(args.User, "FishSkillMedical");
@@ -181,8 +195,13 @@ public sealed partial class HealingSystem : EntitySystem
         {
             if (damageableDict.TryGetValue(type.Key, out var amount)
                 && amount > 0
-                && (type.Key != "Mangleness" || type.Value < 0)) // Sunrise-Edit вЂ” Mangleness РЅРµР»СЊР·СЏ РЅР°РЅРѕСЃРёС‚СЊ Р»РµС‡РµР±РЅС‹Рј РїСЂРµРґРјРµС‚РѕРј
+                && (type.Key != "Mangleness" || type.Value < 0)) // Sunrise-Edit — Mangleness нельзя наносить лечебным предметом
             {
+                // Fish-start: у КПБ катушка не считает мех. урон поводом для лечения
+                if (IgnoresIpcCableMechanical(target.Owner, healing.Owner) && IsIpcMechanical(type.Key))
+                    continue;
+                // Fish-end
+
                 return true;
             }
         }
@@ -203,6 +222,11 @@ public sealed partial class HealingSystem : EntitySystem
                 return true;
             }
         }
+
+        // Fish-start: можно применять для лечения повреждений глаз
+        if (CanHealEyeDamage(healing.Comp, target.Owner))
+            return true;
+        // Fish-end
 
         return false;
     }
@@ -232,6 +256,14 @@ public sealed partial class HealingSystem : EntitySystem
 
         if (!TryComp<InjurableComponent>(target, out var injurable))
             return false;
+
+        // Fish-start: органика не лечит КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target.Owner) && !IpcAllowsHeal(healing.Comp))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("fish-ipc-not-organic"), target.Owner, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
 
         if (healing.Comp.DamageContainers is not null &&
             injurable.DamageContainer is not null &&
@@ -288,9 +320,12 @@ public sealed partial class HealingSystem : EntitySystem
 
         var delay = isNotSelf
             ? healing.Comp.Delay
+            // Fish-start: у КПБ штраф самолечения приравнен к органикам (до ×3 от урона)
+            // : healing.Comp.Delay * GetScaledHealingPenalty(target, IpcSelfHealCap(target, healing.Comp.SelfHealPenaltyMultiplier));
             : healing.Comp.Delay * GetScaledHealingPenalty(target, healing.Comp.SelfHealPenaltyMultiplier);
+            // Fish-end
 
-        // Fish-start: РјРЅРѕР¶РёС‚РµР»СЊ РІСЂРµРјРµРЅРё Р»РµС‡РµРЅРёСЏ РѕС‚ РЅР°РІС‹РєР° РјРµРґРёС†РёРЅС‹
+        // Fish-start: множитель времени лечения от навыка медицины
         delay *= _skills.GetSkillDelayMultiplier(user, "FishSkillMedical");
         // Fish-end
 

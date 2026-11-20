@@ -435,13 +435,14 @@ internal sealed partial class FishBloomOverlay : Overlay
         return layerMatrix * spriteMatrix * Matrix3Helpers.CreateTransform(worldPosition, worldRotation) * worldToTarget;
     }
 
+    /// <summary>Maps normalized strength to a perceptual bloom intensity capped at 2.5.</summary>
     internal static float GetBloomStrength(float strength)
     {
         if (!float.IsFinite(strength) || strength <= 0f)
             return 0f;
 
         var value = Math.Clamp(strength, 0f, 1f);
-        return value * (2.5f + 2.5f * value);
+        return value * (2.5f + 2.5f * value) * 0.5f;
     }
 
     internal static int GetResolutionDivisor(FishBloomQuality quality)

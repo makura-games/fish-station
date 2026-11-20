@@ -129,14 +129,13 @@ public sealed partial class JukeboxSystem : SharedJukeboxSystem
         if (!Resolve(ent, ref ent.Comp))
             return;
 
-        if (!Audio.IsPlaying(ent.Comp.AudioStream))
-        {
-            ent.Comp.SelectedSongId = track;
-            DirectSetVisualState(ent, JukeboxVisualState.Select);
-            ent.Comp.Selecting = true;
-            ent.Comp.AudioStream = Audio.Stop(ent.Comp.AudioStream);
-            Dirty(ent);
-        }
+        // Fish-start: выбор во время воспроизведения больше не игнорируется — останавливаем текущий поток и записываем новый трек
+        ent.Comp.SelectedSongId = track;
+        DirectSetVisualState(ent, JukeboxVisualState.Select);
+        ent.Comp.Selecting = true;
+        ent.Comp.AudioStream = Audio.Stop(ent.Comp.AudioStream);
+        Dirty(ent);
+        // Fish-end
     }
 
     /// <summary>

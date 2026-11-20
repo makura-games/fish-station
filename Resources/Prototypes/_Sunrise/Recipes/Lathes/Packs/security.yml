@@ -221,6 +221,7 @@
     - MagazineBoxBelt127Emp
     #
     - EnergyDomeDirectionalTurtle
+    - SunriseEnergyShieldSec
     - WeaponTemperatureGun
     #- ModularReceiverAuto
     - LecterUpgrade
@@ -307,10 +308,10 @@
   id: SecurityDynamicSunriseClothing
   recipes:
     - ClothingHeadHelmetPubg
-    # FIsh edit start - цветные варианты Алтына
+    # Fish-start - цветные варианты Алтына
     - FishClothingHeadHelmetPubgBlack
     - FishClothingHeadHelmetPubgGreen
-    # FIsh edit end
+    # Fish-end
     - ClothingShoesBootsMagSec
     - ClothingShoesBootsMagCombat
     - VestSecUpgradePlate

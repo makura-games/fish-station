@@ -1,3 +1,4 @@
+# Fish-edit: To remove - прототипы разумной болезни
 - type: entity
   parent: BaseAction
   id: ActionInfect
@@ -8,7 +9,7 @@
   - type: Action
     useDelay: 1
     itemIconStyle: BigAction
-
+    checkCanInteract: false # Fish-edit: не блокировать через ActionBlocker.CanInteract
   # Fish-start: перенос иконки в компонент Sprite
   - type: Sprite
     sprite: _Sunrise/Actions/disease.rsi
@@ -16,6 +17,8 @@
     - state: action
   # Fish-end
   - type: TargetAction
+    range: 2.5 # Fish-edit: дистанция заражения
+    checkCanAccess: false # Fish-edit: преодоление препятствий
     interactOnMiss: false
   - type: EntityTargetAction
     whitelist:
@@ -23,6 +26,8 @@
       - HumanoidProfile
     canTargetSelf: false
     event: !type:InfectEvent
+  - type: LimitedCharges # Fish-edit: заряды для попыток заражения
+    maxCharges: 3
 
 - type: entity
   parent: BaseAction

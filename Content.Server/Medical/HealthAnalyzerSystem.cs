@@ -93,6 +93,15 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (args.Target == null || !args.CanReach || !HasComp<MobStateComponent>(args.Target) || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
 
+        // Fish-start: обычный медсканер не читает КПБ; робо- и мех-анализаторы читают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value) && !AcceptsFishIpc(uid.Comp))
+        {
+            args.Handled = true;
+            _popupSystem.PopupEntity(Loc.GetString("fish-ipc-health-analyzer-refuse"), args.Target.Value, args.User, PopupType.SmallCaution);
+            return;
+        }
+        // Fish-end
+
         _audio.PlayPvs(uid.Comp.ScanningBeginSound, uid);
 
         var doAfterCancelled = !_doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, uid.Comp.ScanDelay, new HealthAnalyzerDoAfterEvent(), uid, target: args.Target, used: uid)
@@ -112,6 +121,11 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     {
         if (args.Handled || args.Cancelled || args.Target == null || !_cell.HasDrawCharge(uid.Owner, user: args.User))
             return;
+
+        // Fish-start: обычный медсканер не читает КПБ; робо- и мех-анализаторы читают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(args.Target.Value) && !AcceptsFishIpc(uid.Comp))
+            return;
+        // Fish-end
 
         if (!uid.Comp.Silent)
             _audio.PlayPvs(uid.Comp.ScanningEndSound, uid);
@@ -242,7 +256,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         var bloodAmount = float.NaN;
         var bleeding = false;
         var unrevivable = false;
-        // FIsh edit - реагенты, отличные от базового состава крови
+        // Fish-edit - реагенты, отличные от базового состава крови
         var reagents = new List<ReagentQuantity>();
 
         if (TryComp<BloodstreamComponent>(entity, out var bloodstream) &&
@@ -252,7 +266,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             bloodAmount = _bloodstreamSystem.GetBloodLevel(entity);
             bleeding = bloodstream.BleedAmount > 0;
 
-            CollectForeignReagents(bloodSolution, bloodstream.BloodReferenceSolution, reagents); // FIsh edit - состав для сканера
+            CollectForeignReagents(bloodSolution, bloodstream.BloodReferenceSolution, reagents); // Fish-edit - состав для сканера
         }
 
         if (TryComp<UnrevivableComponent>(entity, out var unrevivableComp) && unrevivableComp.Analyzable)
@@ -291,7 +305,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             unrevivable,
             hungerLevel,
             thirstLevel,
-            reagents // FIsh edit - посторонние реагенты в показаниях
+            reagents // Fish-edit - посторонние реагенты в показаниях
         );
         // Sunrise-Edit end
     }

@@ -112,7 +112,7 @@ namespace Content.Shared.Preferences
         /// <summary>
         /// When spawning into a round what's the preferred spot to spawn.
         /// </summary>
-        // Fish-start: приоритет спавна по умолчанию — криокапсулы
+        // Fish-start - Приоритет спавна по умолчанию криокапсулы
         // [DataField]
         // public SpawnPriorityPreference SpawnPriority { get; private set; } = SpawnPriorityPreference.None;
         [DataField]
@@ -233,9 +233,6 @@ namespace Content.Shared.Preferences
                 Sex = sex.Value,
                 Appearance = HumanoidCharacterAppearance.DefaultWithSpecies(species.Value, sex.Value),
                 SunriseProfile = SunriseCharacterProfile.DefaultForSpecies(species.Value, sex.Value), // Sunrise-Edit
-                // Fish-start - защита от целей антагов включена по умолчанию
-                _traitPreferences = new HashSet<ProtoId<TraitPrototype>> { "FishAntagTargetProtection" },
-                // Fish-end
             };
         }
 
@@ -281,7 +278,10 @@ namespace Content.Shared.Preferences
             var random = IoCManager.Resolve<IRobustRandom>();
 
             var pool = prototypeManager.EnumeratePrototypes<SpeciesPrototype>()
-                .Where(x => x.RoundStart && !x.SponsorOnly && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID))) // Sunrise-Edit
+                // Fish-start: исключаем расы с excludeFromRandomSpecies (например, КПБ) из случайных спавнеров
+                // .Where(x => x.RoundStart && !x.SponsorOnly && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID))) // Sunrise-Edit
+                .Where(x => x.RoundStart && !x.SponsorOnly && !x.ExcludeFromRandomSpecies && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID)))
+                // Fish-end
                 .ToArray();
             var species = random.Pick(pool);
             return species;
@@ -344,9 +344,7 @@ namespace Content.Shared.Preferences
         public static HumanoidCharacterProfile Random(HashSet<string>? ignoredSpecies = null)
         {
             var config = RandomizeConfigAll;
-            // Fish-start - случайный профиль тоже получает защиту от целей антагов
-            var baseProfile = DefaultWithSpecies();
-            // Fish-end
+            var baseProfile = new HumanoidCharacterProfile();
             if (ignoredSpecies != null)
             {
                 baseProfile.Species = RandomSpecies(ignoredSpecies);
@@ -413,12 +411,10 @@ namespace Content.Shared.Preferences
         {
             species ??= DefaultSpecies;
 
-            // Fish-start - базовый профиль через DefaultWithSpecies (защита от целей антагов)
             return Random(
                 RandomizeConfigAll ^ RandomizeCfg.Species,
-                DefaultWithSpecies(species)
+                new HumanoidCharacterProfile().WithSpecies(species)
             );
-            // Fish-end
         }
 
         public HumanoidCharacterProfile WithName(string name)

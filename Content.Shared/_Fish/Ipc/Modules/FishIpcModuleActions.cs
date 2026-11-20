@@ -1,0 +1,28 @@
+using Content.Shared.Actions;
+using Content.Shared.DoAfter;
+using Robust.Shared.Serialization;
+
+namespace Content.Shared._Fish.Ipc.Modules;
+
+/// <summary>Action: вкл/выкл накладок встроенного дефиба КПБ.</summary>
+public sealed partial class FishIpcDefibActionEvent : InstantActionEvent;
+
+/// <summary>Action: jumpstarter — толчок себя из crit.</summary>
+public sealed partial class FishIpcJumpstarterActionEvent : InstantActionEvent;
+
+/// <summary>Общий toggle модулей (ремонт / HUD / питание модуля).</summary>
+public sealed partial class FishIpcModuleToggleActionEvent : InstantActionEvent;
+
+/// <summary>Модуль включили или выключили кнопкой. Хост уже обновлён.</summary>
+[ByRefEvent]
+public readonly record struct FishIpcModulePowerToggledEvent(EntityUid Host, bool Enabled);
+
+/// <summary>
+/// Батарея шасси села или снова появился заряд.
+/// Эффекты модулей слушателя должны совпасть с <see cref="Powered"/>, тумблер не сбрасывается.
+/// </summary>
+[ByRefEvent]
+public readonly record struct FishIpcChassisPowerChangedEvent(bool Powered);
+
+[Serializable, NetSerializable]
+public sealed partial class FishIpcDefibDoAfterEvent : SimpleDoAfterEvent;

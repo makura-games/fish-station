@@ -1,6 +1,8 @@
+# Fish-start: To remove - функционал разумной болезни
 - type: mixingCategory
   id: Vaccinator
   verbText: mixing-verb-vaccinator
   icon:
     sprite: Structures/Machines/vaccinator.rsi
     state: icon
+# Fish-end

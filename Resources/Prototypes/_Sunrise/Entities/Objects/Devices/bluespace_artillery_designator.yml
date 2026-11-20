@@ -2,7 +2,7 @@
   parent: Binoculars
   id: BluespaceArtilleryDesignator
   name: BSA LCU
-  description: A handheld laser designator for requesting NanoTrasen bluespace artillery strikes. Three non-rechargeable charges. Wield (Z) to look far and designate targets at range. (use LMB to designate a target, after several seconds a marker will appear where the BSA will strike) # Fish edit
+  description: A handheld laser designator for requesting NanoTrasen bluespace artillery strikes. Three non-rechargeable charges. Wield (Z) to look far and designate targets at range. (use LMB to designate a target, after several seconds a marker will appear where the BSA will strike) # Fish-edit
   components:
   - type: Sprite
     sprite: _Sunrise/Objects/Devices/bluespace_artillery_designator.rsi
@@ -19,12 +19,12 @@
     maxCharges: 3
     lastCharges: 3
   - type: BluespaceArtilleryDesignator
-    targetingDelay: 2
-    strikeDelay: 7
+    targetingDelay: 3 # Fish-edit - было 2с, +1с
+    strikeDelay: 9 # Fish-edit - было 7с, +2с
     targetMarker: EffectBluespaceArtilleryTarget
     announcement: bluespace-artillery-announcement
     announcementSender: bluespace-artillery-announcement-sender
-    announcementColor: "#00D4FF" # Fish edit
+    announcementColor: "#00D4FF" # Fish-edit
     announcementSound:
       path: /Audio/_Fish/Misc/artillery.ogg # Fish-edit
       params:
@@ -57,14 +57,14 @@
   id: AdminBluespaceArtilleryDesignator
   suffix: Admin
   name: ADMIN BSA LCU
-  description: An admin bluespace artillery designator with nearly unlimited charges and instant targeting lock. (use LMB to designate a target, after several seconds a marker will appear where the BSA will strike) # Fish edit
+  description: An admin bluespace artillery designator with nearly unlimited charges and instant targeting lock. (use LMB to designate a target, after several seconds a marker will appear where the BSA will strike) # Fish-edit
   components:
   - type: LimitedCharges
     maxCharges: 999
     lastCharges: 999
   - type: BluespaceArtilleryDesignator
     targetingDelay: 0
-    strikeDelay: 7
+    strikeDelay: 9 # Fish-edit - было 7с, +2с
 
 - type: entity
   id: EffectBluespaceArtilleryTarget
@@ -79,9 +79,9 @@
     layers:
     - state: laser_target
       shader: unshaded
-      scale: 0.5, 0.5
+      scale: 1, 1 # Fish-edit - было 0.5, ×2 для ЛЦУ БСА
   - type: TimedDespawn
-    lifetime: 9
+    lifetime: 12 # Fish-edit - targeting 3с + strike 9с
   - type: Tag
     tags:
     - HideContextMenu

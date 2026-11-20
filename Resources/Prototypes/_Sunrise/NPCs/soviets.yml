@@ -159,9 +159,8 @@
     voice: Sidorovich
   - type: Vocal
     emoteSounds: MaleHuman
-  # Fish-start - без гостроли у экспедиционных советов
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     makeSentient: true
     name: ghost-role-information-expedition-soviet-name
     description: ghost-role-information-expedition-soviet-description
@@ -169,7 +168,6 @@
     raffle:
       settings: short
   - type: GhostTakeoverAvailable
-  # Fish-end
   - type: GhostOnMove
     mustBeDead: true
   - type: Puller
@@ -1736,9 +1734,8 @@
     maxOffset: 5
     pvsIncrease: 1.5
   # Ghost role stuff
-  # Fish-start - без гостроли у капитана-данжен босса советов
   - type: GhostRole
-    prob: 0
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     allowMovement: true
     name: ghost-role-information-mercenary-captain-dungeon-name
     description: ghost-role-information-mercenary-captain-dungeon-description
@@ -1748,7 +1745,6 @@
     mindRoles:
     - MindRoleGhostRoleTeamAntagonist
   - type: GhostTakeoverAvailable
-  # Fish-end
   - type: SunriseActionGun
     action: ActionSideArmFan
     gunProto: GunSideArmFan

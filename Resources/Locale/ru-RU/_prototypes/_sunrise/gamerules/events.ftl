@@ -1,5 +1,7 @@
+# Fish-start: To remove - функционал разумной болезни
 ent-DiseaseSpawn = { ent-BaseGameRule }
     .desc = { ent-BaseGameRule.desc }
+# Fish-end
 ent-VentbullMigration = { ent-BaseGameRule }
     .desc = { ent-BaseGameRule.desc }
 ent-AbductorsSpawn = { ent-BaseGameRule }

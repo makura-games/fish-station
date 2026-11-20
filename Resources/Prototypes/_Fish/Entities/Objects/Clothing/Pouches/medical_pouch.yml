@@ -3,6 +3,7 @@
   parent: [BaseClothingBeltSounds, ClothingBeltStorageBase, ContentsExplosionResistanceBase]
   id: FishPouchMedical
   name: medical pouch
+  suffix: Fish
   description: A pouch for carrying medicine bottles.
   components:
   - type: Sprite
@@ -12,21 +13,22 @@
     - state: icon
   - type: Appearance
   - type: Item
-    size: Normal # внешний размер 2x2
+    size: Normal
+    shape:
+    - 0,0,1,1
   - type: Clothing
     quickEquip: false
     slots:
-    - pocket # позволяет класть подсумок в обычный карман несмотря на размер
+    - pocket
   - type: Storage
-    maxItemSize: Small # строго меньше Normal, иначе ремень не примет вложенную ёмкость
+    maxItemSize: Small
     grid:
-    - 0,0,4,1 # 5x2 = 10 слотов
+    - 0,0,4,1
     whitelist:
       tags:
-      - Bottle # используется общий тег флаконов, а не проверка содержащихся в них реагентов
-  # Защита распространяется на содержимое без передачи владельцу; Damageable самому подсумку не добавляется.
+      - Bottle
   - type: ExplosionResistance
-    damageCoefficient: 0.01 # содержимому наносится 1% взрывного урона
+    damageCoefficient: 0.01
     worn: false # защита не передаётся владельцу
 
 - type: entity
@@ -72,10 +74,10 @@
   - type: Item
     size: Small
     shape:
-    - 0,0,0,1 # внешний размер 1 столбец на 2 строки не зависит от размера кадра спрайта
+    - 0,0,0,1
   - type: Storage
     grid:
-    - 0,0,4,2 # внутреннее хранилище: 5 столбцов и 3 строки, 15 ячеек по горизонтали
+    - 0,0,6,2
   - type: Tag
     tags:
     - WhitelistChameleon
@@ -91,7 +93,7 @@
     sprite: _Fish/Objects/Clothing/Pouches/medical_syndicate.rsi
   - type: Storage
     grid:
-    - 0,0,7,1 # 8 столбцов и 2 строки = 16 ячеек, горизонтально
+    - 0,0,7,1
   - type: Tag
     tags:
     - WhitelistChameleon

@@ -3038,7 +3038,7 @@
     - type: ActionGrant
       actions:
       - ActionOpenPlanetWarGuide
-    # Fish edit - for meme gamemode, do not remove
+    # Fish-edit - for meme gamemode, do not remove
     - type: PWVulpkaninCursePending
     - type: IdBind
     # NameIdentifier убран: RandomMetadata + name-format-ert уже даёт номер, иначе двойные цифры в имени.

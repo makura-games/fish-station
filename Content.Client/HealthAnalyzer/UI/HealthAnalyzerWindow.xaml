@@ -9,7 +9,7 @@
     SetSize="520 680"
     MinSize="420 520"
     MaxHeight="800">
-    <!-- FIsh edit start - декоративные эффекты интерфейса сканера -->
+    <!-- Fish-start - декоративные эффекты интерфейса сканера -->
     <LayoutContainer
         Name="AnalyzerLayout"
         HorizontalExpand="True"
@@ -22,7 +22,7 @@
             ReserveScrollbarSpace="True"
             VerticalExpand="True">
 
-            <!-- FIsh edit - расширенная панель только для ручного анализатора -->
+            <!-- Fish-edit - расширенная панель только для ручного анализатора -->
             <fishHealth:FishHealthAnalyzerControl
                 Name="HealthAnalyzer"
                 HorizontalExpand="True"/>
@@ -32,5 +32,5 @@
             Name="EffectsLayer"
             RectClipContent="True"/>
     </LayoutContainer>
-    <!-- FIsh edit end -->
+    <!-- Fish-end -->
 </controls:FancyWindow>

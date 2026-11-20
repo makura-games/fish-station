@@ -96,9 +96,9 @@
     - MedkitCombatFilled # End of first line
     - GrenadeShrapnel
     - EmpGrenade
-    # FISH EDIT START - ЛЦУ БСА лидерам ОБР
+    # Fish-start - ЛЦУ БСА лидерам ОБР
     - BluespaceArtilleryDesignator
-    # FISH EDIT END
+    # Fish-end
     belt:
     - Truncheon
     - Handcuffs

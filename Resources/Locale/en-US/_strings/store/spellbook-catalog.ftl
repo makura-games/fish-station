@@ -77,13 +77,13 @@ spellbook-staff-animation-description = Bring inanimate objects to life!
 spellbook-event-summon-ghosts-name = Summon Ghosts
 spellbook-event-summon-ghosts-description = Who ya gonna call?
 
-# Fish-Edit start: updated descriptions to reflect grid requirement
+# Fish-start: updated descriptions to reflect grid requirement
 spellbook-event-summon-guns-name = Summon Guns
 spellbook-event-summon-guns-description = AK47s for everyone! Places a random gun in front of everybody on your current station or ship. Disables refunds when bought!
 
 spellbook-event-summon-magic-name = Summon Magic
 spellbook-event-summon-magic-description = Places a random magical item in front of everybody on your current station or ship. Nothing could go wrong! Disables refunds when bought!
-# Fish-Edit end
+# Fish-end
 
 # Upgrades
 spellbook-upgrade-fireball-name = Upgrade Fireball

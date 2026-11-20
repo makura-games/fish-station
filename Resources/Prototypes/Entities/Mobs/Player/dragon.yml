@@ -86,12 +86,12 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      600: Critical # Sunrise-Edit
-      650: Dead # Sunrise-Edit
+      450: Critical
+      500: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      350: 0.7 # Sunrise-Edit
-      500: 0.5 # Sunrise-Edit
+      250: 0.7
+      400: 0.5
   # disable taking damage from fire, since its a fire breathing dragon
   - type: Flammable
     damage:
@@ -253,6 +253,7 @@
     spread: 280
   # Sunrise-end
   - type: GhostRole
+    prob: 0 # Fish-edit: у мобов экспедиций нет шанса стать гост-ролью
     description: ghost-role-information-space-dragon-dungeon-description
     rules: ghost-role-information-space-dragon-dungeon-rules
     raffle:

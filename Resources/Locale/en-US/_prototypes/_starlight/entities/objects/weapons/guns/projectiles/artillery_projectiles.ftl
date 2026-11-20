@@ -13,11 +13,11 @@ ent-BulletLeviathan240mmNuke = lVT-240N 240mm nuclear shell
 ent-BulletLeviathan240mmCluster = lVT-240C 240mm cluster shell
     .desc = A 240mm cluster shell loaded with submunitions.
 
-# Fish edit start - Добавление локализации для self-explode 240мм фугасного снаряда
+# Fish-start - Добавление локализации для self-explode 240мм фугасного снаряда
 ent-BulletLeviathan240mmHESelfExplode = 240mm HE shell
     .desc = A self-detonating fallback entity that releases a high-explosive blast.
     .suffix = self-explode, NOW, FISH
-# Fish edit end
+# Fish-end
 
 ent-BulletLeviathan240mmNukeSelfExplode = 240mm nuclear shell
     .desc = A self-detonating fallback entity that releases a nuclear payload and shrapnel.

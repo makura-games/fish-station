@@ -14,3 +14,6 @@ ent-PlushieIsaacLow = Plushie Isaac Low
     .desc = { ent-BasePlushie.desc }
 ent-PlushieMina = Plushie Mina Armstrong
     .desc = Plushie Mina Armstrong, kind but moderately strict, loves ice cream and warm communication, a loving and caring mother, very soft to the touch, place it on your desk to brighten up loneliness.
+
+ent-PlushieLusain = Plushie Andre Lusain
+    .desc = A small purple-haired plushie in dark clothes. On her right wrist you can make out a purple tattoo that reads "LusainFamily". She is terribly tired and dreams only of a warm blanket and some quiet.

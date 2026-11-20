@@ -141,91 +141,91 @@
   lawIdentifier: "300"
   title: corplaw-fish-art300-title
   description: corplaw-fish-art300-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish301
   lawIdentifier: "301"
   title: corplaw-fish-art301-title
   description: corplaw-fish-art301-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish302
   lawIdentifier: "302"
   title: corplaw-fish-art302-title
   description: corplaw-fish-art302-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish303
   lawIdentifier: "303"
   title: corplaw-fish-art303-title
   description: corplaw-fish-art303-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish304
   lawIdentifier: "304"
   title: corplaw-fish-art304-title
   description: corplaw-fish-art304-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish305
   lawIdentifier: "305"
   title: corplaw-fish-art305-title
   description: corplaw-fish-art305-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish306
   lawIdentifier: "306"
   title: corplaw-fish-art306-title
   description: corplaw-fish-art306-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish307
   lawIdentifier: "307"
   title: corplaw-fish-art307-title
   description: corplaw-fish-art307-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish308
   lawIdentifier: "308"
   title: corplaw-fish-art308-title
   description: corplaw-fish-art308-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish309
   lawIdentifier: "309"
   title: corplaw-fish-art309-title
   description: corplaw-fish-art309-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish310
   lawIdentifier: "310"
   title: corplaw-fish-art310-title
   description: corplaw-fish-art310-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish311
   lawIdentifier: "311"
   title: corplaw-fish-art311-title
   description: corplaw-fish-art311-desc
-  baseSentence: 17
+  baseSentence: 25
 
 - type: corporateLaw
   id: LawFish312
   lawIdentifier: "312"
   title: corplaw-fish-art312-title
   description: corplaw-fish-art312-desc
-  baseSentence: 17
+  baseSentence: 25
 
 # Laws: 4xx
 - type: corporateLaw
@@ -424,6 +424,8 @@
   title: corplaw-fish-circ-selfsurrender-title
   description: corplaw-fish-circ-selfsurrender-desc
   sentenceMultiplier: 0.5
+  exclusiveGroup: fish-surrender # Fish-edit: вики — признание вины не суммируется с явкой
+  exclusivePriority: 2
 
 - type: corporateLaw
   id: CircFishCooperation
@@ -438,6 +440,8 @@
   title: corplaw-fish-circ-admission-title
   description: corplaw-fish-circ-admission-desc
   sentenceMultiplier: 0.75
+  exclusiveGroup: fish-surrender # Fish-edit: вики — не суммируется с явкой с повинной
+  exclusivePriority: 1
 
 - type: corporateLaw
   id: CircFishNoIntent
@@ -473,14 +477,20 @@
   category: Aggravating
   title: corplaw-fish-circ-nonviolentresistance-title
   description: corplaw-fish-circ-nonviolentresistance-desc
-  sentenceMultiplier: 1.25
+  sentenceMultiplier: 1.0
+  sentenceModifierMinutes: 5 # Fish-edit: вики — фиксированные +5 мин
+  exclusiveGroup: fish-resistance
+  exclusivePriority: 1
 
 - type: corporateLaw
   id: CircFishViolentResistance
   category: Aggravating
   title: corplaw-fish-circ-violentresistance-title
   description: corplaw-fish-circ-violentresistance-desc
-  sentenceMultiplier: 1.5
+  sentenceMultiplier: 1.0
+  sentenceModifierMinutes: 10 # Fish-edit: вики — фиксированные +10 мин
+  exclusiveGroup: fish-resistance
+  exclusivePriority: 2
 
 - type: corporateLaw
   id: CircFishAidAndAbetting
@@ -502,6 +512,15 @@
   title: corplaw-fish-circ-threat-title
   description: corplaw-fish-circ-threat-desc
   sentenceMultiplier: 0.25
+
+# Fish-start: справочная запись рецидива для КПК (расчёт автоматический, без ручного множителя)
+- type: corporateLaw
+  id: CircFishRecidivism
+  category: Aggravating
+  title: corplaw-fish-circ-recidivism-title
+  description: corplaw-fish-circ-recidivism-desc
+  sentenceMultiplier: 1.0
+# Fish-end
 
 # Sections
 - type: corporateLawSection
@@ -598,7 +617,7 @@
 # Lawset
 - type: corporateLawset
   id: FishCorporateLaw
-  permanentSentenceThreshold: 50
+  permanentSentenceThreshold: 60 # Fish-edit: вики — перма при 5xx или суммарно ≥60 мин
   provisions:
   - ProvisionFishOPRS
   - ProvisionFishSentences
@@ -616,6 +635,7 @@
   - CircFishAidAndAbetting
   - CircFishAttempt
   - CircFishThreat
+  - CircFishRecidivism # Fish-edit: справочник КПК; на расчёт не влияет (x1.0)
   articles:
   - SectionFishGeneral
   - SectionFish1xx

@@ -50,12 +50,12 @@
   - type: Storage
     grid:
     - 0,0,4,1
-    whitelist: # Fish-Start
+    whitelist: # Fish-start
       tags:
       - Cigarette
       - Matchstick
       components:
-      - IgnitionSource # Fish-End
+      - IgnitionSource # Fish-end
   - type: EntityTableContainerFill
     containers:
       storagebase:

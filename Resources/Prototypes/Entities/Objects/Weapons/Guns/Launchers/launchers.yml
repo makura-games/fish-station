@@ -372,4 +372,4 @@
   description: It fires slow immovable rods.
   components:
   - type: BallisticAmmoProvider
-    proto: ImmovableRodSlow
+    proto: ImmovableRodKeepTilesStill # Fish-edit

@@ -191,11 +191,13 @@
     interactSuccessSound: /Audio/Effects/thudswoosh.ogg
     messagePerceivedByOthers: hugging-success-generic-others
   # Sunrise-Start
-  - type: NightVision # Sunrise-Edit - настройки ночного зрения Wizden
-    enabled: false
-    action: ActionToggleNightVision
-    prioritized: false
-    lightingColor: '#FF983326'
+  # Fish-start: Убираем врождённое ночное зрение для баланса способностей скелетов.
+  # - type: NightVision
+  #   enabled: false
+  #   action: ActionToggleNightVision
+  #   prioritized: false
+  #   lightingColor: '#FF983326'
+  # Fish-end
   - type: FootprintEmitter
   # Sunrise-End
 

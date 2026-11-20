@@ -26,7 +26,6 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
     [Dependency] private StationRecordsSystem _record = default!;
     [Dependency] private MessengerServerSystem _messenger = default!;
     [Dependency] private StationSystem _station = default!;
-
     protected override void SelectBorgModule(Entity<BorgSwitchableTypeComponent> ent, ProtoId<BorgTypePrototype> borgType)
     {
         var prototype = ProtoMan.Index(borgType);
@@ -40,16 +39,11 @@ public sealed partial class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeS
             activeRadio.Channels = [.. radioChannels];
 
         // Borg transponder for the robotics console
-        if (TryComp(ent, out BorgTransponderComponent? transponder))
-        {
-            _borgSystem.SetTransponderSprite(
-                (ent.Owner, transponder),
-                new SpriteSpecifier.Rsi(new ResPath("Mobs/Silicon/chassis.rsi"), prototype.SpriteBodyState));
-
-            _borgSystem.SetTransponderName(
-                (ent.Owner, transponder),
-                Loc.GetString($"borg-type-{borgType}-transponder"));
-        }
+        // Fish-start
+        // Спрайт и имя транспондера обновляем через общий хелпер: он же используется
+        // при апгрейде до Mk2, где RSI берётся из холста нового borgType.
+        UpdateTransponder(ent, borgType);
+        // Fish-end
 
         // Configure modules
         if (TryComp(ent, out BorgChassisComponent? chassis))

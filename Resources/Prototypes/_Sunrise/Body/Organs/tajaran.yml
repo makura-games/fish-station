@@ -15,10 +15,12 @@
   components:
   - type: FunctionalOrgan
     comps:
-    - type: NightVision
-      enabled: false
-      action: ActionToggleNightVision
-      prioritized: false
-      lightingColor: '#FFFFFF15'
+    # Fish-start: Природное зрение принадлежит телу, поэтому извлечение глаз не должно удалять NightVision.
+    # - type: NightVision
+    #   enabled: false
+    #   action: ActionToggleNightVision
+    #   prioritized: false
+    #   lightingColor: '#FFFFFF15'
+    # Fish-end
     - type: FlashModifier
       modifier: 2

@@ -9,7 +9,7 @@
     size: Small
   - type: Clothing
     slots: [mask]
-  # Fish-start - Защита от инфекции 30% для всех масок
+  # Fish-start: To remove - защита от болезни 30% для всех масок
   - type: DiseaseImmuneClothing
     prob: 0.3
   # Fish-end

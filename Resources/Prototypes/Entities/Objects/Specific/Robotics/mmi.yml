@@ -14,6 +14,7 @@
       map: ["enum.MMIVisualLayers.Base"]
   - type: Input
     context: human
+  - type: InputMover # Fish-edit - релей управления движением для меха
   - type: MMI
     brainSlot:
       name: positronic-brain-slot-component-slot-name-brain
@@ -82,6 +83,7 @@
         map: ["base"]
     - type: Input
       context: human
+    - type: InputMover # Fish-edit - релей управления движением для меха
 #    - type: ToggleableGhostRole
 #      examineTextMindPresent: positronic-brain-installed
 #      examineTextMindSearching: positronic-brain-still-searching

@@ -5,10 +5,13 @@ using Content.Server.Construction.Components;
 using Content.Server.Traits.Assorted;
 using Content.Shared._Sunrise;
 using Content.Shared._Sunrise.FleshCult;
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Part;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.Components.SolutionManager; // Fish-edit
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Cuffs.Components;
@@ -19,11 +22,13 @@ using Content.Shared.Fluids.Components;
 using Content.Shared.Hands.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Implants.Components; // Fish-edit
 using Content.Shared.Maps;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
+using Content.Shared.StatusEffectNew.Components; // Fish-edit
 using Content.Shared.Store;
 using Content.Shared.Traits.Assorted;
 using Robust.Shared.Audio;
@@ -56,7 +61,15 @@ public sealed partial class FleshCultSystem
         SubscribeLocalEvent<FleshAbilitiesComponent, FleshCultistUnlockAbilityEvent>(OnUnlockAbility);
 
         SubscribeLocalEvent<FleshAbilitiesComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<FleshAbilitiesComponent, ComponentShutdown>(OnAbilitiesShutdown); // Fish-edit: останавливаем звук поглощения при удалении компонента
     }
+
+    // Fish-start: остановка активного звука поглощения при выключении компонента
+    private void OnAbilitiesShutdown(Entity<FleshAbilitiesComponent> ent, ref ComponentShutdown args)
+    {
+        ent.Comp.CurrentDevourSound = _audioSystem.Stop(ent.Comp.CurrentDevourSound);
+    }
+    // Fish-end
 
     private int MatchSaturation(int bloodVolume, bool hasAppearance)
     {
@@ -189,11 +202,17 @@ public sealed partial class FleshCultSystem
                             uid, uid);
                         return;
                     }
-                    _doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager ,uid, component.DevourTime,
+                    // Fish-start: запускаем звук поглощения как у генокрада на время DoAfter
+                    if (_doAfterSystem.TryStartDoAfter(new DoAfterArgs(EntityManager ,uid, component.DevourTime,
                         new FleshCultistDevourDoAfterEvent(), uid, target: target, used: uid)
                     {
                         BreakOnMove = true,
-                    });
+                    }))
+                    {
+                        component.CurrentDevourSound = _audioSystem.Stop(component.CurrentDevourSound);
+                        component.CurrentDevourSound = _audioSystem.PlayPvs(component.DevourSound, uid)?.Entity;
+                    }
+                    // Fish-end
                     args.Handled = true;
                     break;
 
@@ -211,7 +230,12 @@ public sealed partial class FleshCultSystem
 
     private void OnDevourDoAfter(EntityUid uid, FleshAbilitiesComponent component, FleshCultistDevourDoAfterEvent args)
     {
-        if (args.Handled || args.Cancelled)
+        if (args.Handled)
+            return;
+
+        component.CurrentDevourSound = _audioSystem.Stop(component.CurrentDevourSound); // Fish-edit: останавливаем звук поглощения по завершении или отмене DoAfter
+
+        if (args.Cancelled)
             return;
 
         if (args.Args.Target == null)
@@ -224,7 +248,6 @@ public sealed partial class FleshCultSystem
 
         var xform = Transform(args.Args.Target.Value);
         var coordinates = xform.Coordinates;
-        _audioSystem.PlayPvs(component.DevourSound, coordinates, AudioParams.Default.WithVariation(0.025f).WithMaxDistance(5f));
         _popup.PopupEntity(Loc.GetString("flesh-cultist-devour-target",
                 ("Entity", uid), ("Target", args.Args.Target)), uid);
 
@@ -235,21 +258,7 @@ public sealed partial class FleshCultSystem
 
         if (TryComp<HumanoidProfileComponent>(args.Args.Target, out var HuAppComponent))
         {
-            if (TryComp(args.Args.Target.Value, out ContainerManagerComponent? container))
-            {
-                foreach (var cont in _containerSystem.GetAllContainers(args.Args.Target.Value, container).ToArray())
-                {
-                    foreach (var ent in cont.ContainedEntities.ToArray())
-                    {
-                        if (HasComp<OrganComponent>(ent))
-                        {
-                            continue;
-                        }
-                        _containerSystem.Remove(ent, cont, force: true);
-                        Transform(ent).Coordinates = coordinates;
-                    }
-                }
-            }
+            DropTargetContainerEntities(args.Args.Target.Value, coordinates); // Fish-edit
 
             // SUNRISE-TODO: Убрать конечности хирургией а тело заменить на скелета
             if (TryComp<BodyComponent>(args.Args.Target, out var body))
@@ -621,5 +630,38 @@ public sealed partial class FleshCultSystem
         _popup.PopupEntity(Loc.GetString("flesh-cultist-throw-hugger-others", ("Entity", uid)),
             uid, Filter.PvsExcept(uid), true, PopupType.LargeCaution);
     }
+
+    // Fish-start: Общий хелпер выброса экипировки и предметов цели без затрагивания служебных контейнеров
+    private void DropTargetContainerEntities(EntityUid target, EntityCoordinates coordinates)
+    {
+        if (!TryComp(target, out ContainerManagerComponent? container))
+            return;
+
+        foreach (var cont in _containerSystem.GetAllContainers(target, container).ToArray())
+        {
+            if (cont.ID == ActionsContainerComponent.ContainerId ||
+                cont.ID == SolutionManagerComponent.DefaultContainerId ||
+                cont.ID == StatusEffectContainerComponent.ContainerId ||
+                cont.ID == ImplanterComponent.ImplantSlotId)
+            {
+                continue;
+            }
+
+            foreach (var ent in cont.ContainedEntities.ToArray())
+            {
+                if (HasComp<OrganComponent>(ent) ||
+                    HasComp<ActionComponent>(ent) ||
+                    HasComp<SolutionComponent>(ent) ||
+                    HasComp<SubdermalImplantComponent>(ent))
+                {
+                    continue;
+                }
+
+                _containerSystem.Remove(ent, cont, force: true);
+                _transformSystem.SetCoordinates(ent, coordinates);
+            }
+        }
+    }
+    // Fish-end
 
 }

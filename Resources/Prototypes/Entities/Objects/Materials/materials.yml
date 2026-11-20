@@ -78,7 +78,7 @@
       types:
         Slash: -0.5
         Piercing: -0.5
-        # Mangleness: 0.5 #SUNRISE-EDIT # Fish-Edit: Removed Mangleness from the damage types
+        # Mangleness: 0.5 #SUNRISE-EDIT # Fish-edit: Removed Mangleness from the damage types
     bloodlossModifier: -4
     healingBeginSound:
       path: "/Audio/Items/Medical/brutepack_begin.ogg"

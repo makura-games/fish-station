@@ -2,7 +2,7 @@ using Robust.Shared.GameStates;
 
 namespace Content.Shared._Fish.Vision;
 
-/// <summary>Active thermal optics granted by existing clothing and battery controls.</summary>
+/// <summary>Настройки активного термального зрения от экипировки или имплантов.</summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class FishThermalVisionComponent : Component
 {

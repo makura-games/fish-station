@@ -1,0 +1,19 @@
+- files: ["buzz-two.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Paradise Station machine emote buzz2. Downmix not required (already mono)."
+  source: "https://github.com/ParadiseSS13/Paradise/blob/master/sound/machines/buzz-two.ogg"
+
+- files: ["ping.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Paradise Station silicon emote ping."
+  source: "https://github.com/ParadiseSS13/Paradise/blob/master/sound/machines/ping.ogg"
+
+- files: ["borg_deathsound.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Paradise Station machine species death sound (IPC deathgasp)."
+  source: "https://github.com/ParadiseSS13/Paradise/blob/master/sound/voice/borg_deathsound.ogg"
+
+- files: ["m_machine_cougha.ogg", "m_machine_coughb.ogg", "m_machine_coughc.ogg", "f_machine_cougha.ogg", "f_machine_coughb.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "Paradise Station machine species coughs. Downmixed to mono OGG so positional PlayPvs can play them."
+  source: "https://github.com/ParadiseSS13/Paradise/tree/master/sound/effects/mob_effects"

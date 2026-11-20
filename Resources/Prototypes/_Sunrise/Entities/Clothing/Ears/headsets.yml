@@ -142,7 +142,7 @@
     containers:
       key_slots:
       - EncryptionKeyBlueShield
-      - EncryptionKeyStationMaster # Fish edit
+      - EncryptionKeyStationMaster # Fish-edit
       - EncryptionKeyCommon
       - EncryptionKeyCommand # Cause we dont have Ensign on station.
   - type: Sprite
@@ -221,6 +221,7 @@
       key_slots:
       - EncryptionKeyCommon
       - EncryptionKeyCommand
+      - EncryptionKeyService  # Fish-edit
   - type: Sprite
     sprite: _Sunrise/Clothing/Ears/Headsets/commaid_headset.rsi
   - type: Clothing

@@ -41,7 +41,7 @@
 - type: startingGear
   id: CentCommOfficerGear
   equipment:
-    # jumpsuit: ClothingUniformJumpsuitCentcomOfficial #Fish-Edit
+    # jumpsuit: ClothingUniformJumpsuitCentcomOfficial #Fish-edit
     id: CentcomPDA
     ears: ClothingHeadsetFishCentCom
   storage:
