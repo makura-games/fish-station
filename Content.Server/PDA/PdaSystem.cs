@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Content.Server.Access.Systems;
-using Content.Server.AlertLevel;
-using Content.Server.CartridgeLoader;
 using Content.Server.Chat.Managers;
 using Content.Server.Instruments;
 using Content.Server.PDA.Ringer;
@@ -10,8 +9,8 @@ using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Server.Store.Systems;
-using Content.Server.Traitor.Uplink;
 using Content.Shared.Access.Components;
+using Content.Shared.AlertLevel;
 using Content.Shared.CartridgeLoader;
 using Content.Shared.Chat;
 using Content.Shared.DeviceNetwork.Components;
@@ -28,6 +27,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using Content.Shared.CCVar;
 using Robust.Shared.Timing;
@@ -49,6 +49,7 @@ namespace Content.Server.PDA
         [Dependency] private RoundEndSystem _roundEndSystem = default!;
         [Dependency] private EmergencyShuttleSystem _emergencyShuttleSystem = default!;
         [Dependency] private IGameTiming _gameTiming = default!;
+        [Dependency] private IPrototypeManager _prototype = default!;
 
         public override void Initialize()
         {
@@ -153,7 +154,7 @@ namespace Content.Server.PDA
             UpdateAllPdaUisOnStation();
         }
 
-        private void OnAlertLevelChanged(AlertLevelChangedEvent args)
+        private void OnAlertLevelChanged(ref AlertLevelChangedEvent args)
         {
             UpdateAllPdaUisOnStation();
         }
@@ -214,7 +215,7 @@ namespace Content.Server.PDA
             if (!TryComp(uid, out CartridgeLoaderComponent? loader))
                 return;
 
-            var programs = _cartridgeLoader.GetAvailablePrograms(uid, loader);
+            var programs = GetNetEntityList(_cartridgeLoader.GetAllPrograms(uid).ToList());
             var id = CompOrNull<IdCardComponent>(pda.ContainedId);
             var state = new PdaUpdateState(
                 programs,
@@ -374,13 +375,12 @@ namespace Content.Server.PDA
         private void UpdateAlertLevel(EntityUid uid, PdaComponent pda)
         {
             var station = _station.GetOwningStation(uid);
-            if (!TryComp(station, out AlertLevelComponent? alertComp) ||
-                alertComp.AlertLevels == null)
+            if (!TryComp(station, out AlertLevelComponent? alertComp))
                 return;
-            pda.StationAlertLevel = alertComp.CurrentLevel;
+            pda.StationAlertLevel = alertComp.CurrentAlertLevel;
             UpdateAdditionalAlertLevels((uid, pda), (station!.Value, alertComp)); // Sunrise-Edit
-            if (alertComp.AlertLevels.Levels.TryGetValue(alertComp.CurrentLevel, out var details))
-                pda.StationAlertColor = details.Color;
+            if (_prototype.Resolve(alertComp.CurrentAlertLevel, out var level))
+                pda.StationAlertColor = level.Color;
         }
 
         private string? GetDeviceNetAddress(EntityUid uid)
@@ -389,7 +389,7 @@ namespace Content.Server.PDA
 
             if (TryComp(uid, out DeviceNetworkComponent? deviceNetworkComponent))
             {
-                address = deviceNetworkComponent?.Address;
+                address = deviceNetworkComponent.Address;
             }
 
             return address;

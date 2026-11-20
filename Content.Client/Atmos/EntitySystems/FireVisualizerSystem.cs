@@ -1,5 +1,7 @@
 using Content.Client.Atmos.Components;
+using Content.Client.DisplacementMap;
 using Content.Shared.Atmos;
+using Content.Shared.DisplacementMap;
 using Robust.Client.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Utility;
@@ -12,12 +14,14 @@ namespace Content.Client.Atmos.EntitySystems;
 public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsComponent>
 {
     [Dependency] private PointLightSystem _lights = default!;
+    [Dependency] private DisplacementMapSystem _displacement = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<FireVisualsComponent, ComponentInit>(OnComponentInit);
+        SubscribeLocalEvent<FireVisualsComponent, ComponentStartup>(OnComponentStartup); // Fish-edit: перенесено в Content.Client/_Fish/Atmos/FireVisualizerSystem.Fish.cs, чтобы спавн LightEntity происходил после инициализации сущности
         SubscribeLocalEvent<FireVisualsComponent, ComponentShutdown>(OnShutdown);
     }
 
@@ -49,7 +53,8 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         if (component.Sprite != null)
             SpriteSystem.LayerSetRsi((uid, sprite), FireVisualLayers.Fire, new ResPath(component.Sprite));
 
-        UpdateAppearance(uid, component, sprite, appearance);
+        // Fish-edit: не вызываем UpdateAppearance до завершения инициализации всех компонентов сущности (перенесено в FireVisualizerSystem.Fish.cs)
+        // UpdateAppearance(uid, component, sprite, appearance);
     }
 
     protected override void OnAppearanceChange(EntityUid uid, FireVisualsComponent component, ref AppearanceChangeEvent args)
@@ -65,6 +70,7 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
 
         AppearanceSystem.TryGetData<bool>(uid, FireVisuals.OnFire, out var onFire, appearance);
         AppearanceSystem.TryGetData<float>(uid, FireVisuals.FireStacks, out var fireStacks, appearance);
+        AppearanceSystem.TryGetData<string?>(uid, FireVisuals.FireDisplacement, out var fireDisplacement, appearance);
         SpriteSystem.LayerSetVisible((uid, sprite), index, onFire);
 
         if (!onFire)
@@ -83,6 +89,20 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         else
             SpriteSystem.LayerSetRsiState((uid, sprite), index, component.NormalState);
 
+        if (component.CurrentDisplacement != fireDisplacement)
+        {
+            if (fireDisplacement != null && ProtoMan.Resolve<DisplacementDataPrototype>(fireDisplacement, out var displacementProto))
+                _displacement.TryAddDisplacement(displacementProto.Displacement, (uid, sprite), index, FireVisualLayers.Fire, out _);
+            else
+                _displacement.EnsureDisplacementIsNotOnSprite((uid, sprite), FireVisualLayers.Fire);
+
+            component.CurrentDisplacement = fireDisplacement;
+        }
+
+        // Fish-start: не спавним LightEntity, пока родитель ещё не прошёл стадию Initialized (например, при AppearanceChange во время Init)
+        if (MetaData(uid).EntityLifeStage < EntityLifeStage.Initialized)
+            return;
+        // Fish-end
         component.LightEntity ??= Spawn(null, new EntityCoordinates(uid, default));
         var light = EnsureComp<PointLightComponent>(component.LightEntity.Value);
 

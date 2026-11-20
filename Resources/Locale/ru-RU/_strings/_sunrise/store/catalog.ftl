@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 listing-disease-base-chance-name = Базовый шанс
 listing-disease-base-chance-description = Увеличивает базовый шанс заражения на 10%. Максимум 5 улучшений.
 listing-disease-infect-chance-name = Шанс заражения

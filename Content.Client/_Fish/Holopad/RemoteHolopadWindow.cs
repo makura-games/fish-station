@@ -8,7 +8,7 @@ public sealed partial class HolopadWindow
 {
 
 
-    partial void UpdateRemoteAppearance(bool lockButtons)
+    partial void UpdateRemoteAppearance()
     {
         if (_owner is not { } owner)
             return;

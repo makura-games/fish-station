@@ -81,6 +81,11 @@ public abstract partial class SharedSurgerySystem
 
     private void OnAnyAccentConditionValid(Entity<SurgeryAnyAccentConditionComponent> ent, ref SurgeryValidEvent args)
     {
+        // Fish-start - серверные акценты отсутствуют на клиенте; сервер проверит запрос операции.
+        if (_net.IsClient)
+            return;
+        // Fish-end
+
         foreach (var accent in _accents)
         {
             if (HasComp(args.Body, accent))

@@ -1,11 +1,11 @@
-﻿using Content.Server._Sunrise.BloodCult.GameRule;
+using Content.Server._Sunrise.BloodCult.GameRule;
 using Content.Server._Sunrise.IncorporealSystem;
 using Content.Shared._Sunrise.BloodCult;
-using Content.Shared._Sunrise.NightVision.Components;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Maps;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Overlays;
 using Content.Shared.Physics;
 
 namespace Content.Server._Sunrise.BloodCult.Runes.Systems
@@ -33,8 +33,10 @@ namespace Content.Server._Sunrise.BloodCult.Runes.Systems
             InitializeConstructActions(uid, component);
 
             // Красное ПНВ только для конструктов (строитель / джаггернаут / жнец).
-            var nightVision = EnsureComp<ToggleableNightVisionComponent>(uid);
-            nightVision.Effect = "EffectNightVisionSyndie";
+            var nightVision = EnsureComp<NightVisionComponent>(uid);
+            nightVision.Enabled = false;
+            nightVision.Action = "ActionToggleNightVision";
+            nightVision.LightingColor = Color.FromHex("#D61B1B26");
             Dirty(uid, nightVision);
         }
 

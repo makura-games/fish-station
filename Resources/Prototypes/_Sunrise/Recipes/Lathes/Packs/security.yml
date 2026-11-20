@@ -64,8 +64,6 @@
     - SpeedLoaderShotgunEmpty
     - SpeedLoaderShotgunSlug
     - SpeedLoaderShotgunBeanbag
-    # PODAVLENIE
-    - BolaSecurity
 ####################################################
 
 - type: latheRecipePack
@@ -195,6 +193,7 @@
     - MagazineBatteryLr60
     - WeaponSunriseLaserPistol
     - FlareGunSecurityUpgrade
+    - EnergyBola
 # Sunrise-TODO: Нужен ребаланс с учетом типов боеприпасов
 #    - BaseMagazinePistolCaselessRifleExtended
 #    - MagazinePPSH41Extended
@@ -222,6 +221,7 @@
     - MagazineBoxBelt127Emp
     #
     - EnergyDomeDirectionalTurtle
+    - SunriseEnergyShieldSec
     - WeaponTemperatureGun
     #- ModularReceiverAuto
     - LecterUpgrade
@@ -308,10 +308,10 @@
   id: SecurityDynamicSunriseClothing
   recipes:
     - ClothingHeadHelmetPubg
-    # FIsh edit start - цветные варианты Алтына
+    # Fish-start - цветные варианты Алтына
     - FishClothingHeadHelmetPubgBlack
     - FishClothingHeadHelmetPubgGreen
-    # FIsh edit end
+    # Fish-end
     - ClothingShoesBootsMagSec
     - ClothingShoesBootsMagCombat
     - VestSecUpgradePlate
@@ -327,6 +327,7 @@
     - ClothingOuterHardsuitMilira
     - ClothingHeadHelmetEVAMilira
     - ClothingEyesHudMilira
+    - PouchAmmo
 
 - type: latheRecipePack
   id: SecurityDynamicSunriseMech

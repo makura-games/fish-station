@@ -14,8 +14,16 @@
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: 'TG'
+        - type: SpawnGridAndDockToStation
+          grids:
+          - gridPath: /Maps/_Sunrise/Shuttles/DSO/Other/gunship.yml
+            priorityTag: DockSecurity
+          - gridPath: /Maps/_Sunrise/Shuttles/DSO/Other/landing.yml
+            priorityTag: DockMining
+          - gridPath: /Maps/_Sunrise/Shuttles/DSO/Other/pts.yml
+            priorityTag: DockPersonal
         - type: StationJobs
           availableJobs:
             #centcom
             CentCommOperator: [ 1, 2 ]
-            BlueShieldOperative: [1, 2]
+            # BlueShieldOperative: [1, 2]

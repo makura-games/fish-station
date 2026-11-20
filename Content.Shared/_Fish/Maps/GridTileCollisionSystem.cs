@@ -236,7 +236,11 @@ public sealed partial class GridTileCollisionSystem : EntitySystem
         if (!_gridQuery.TryGetComponent(gridUid, out var grid))
             return false;
 
-        foreach (var tileRef in _map.GetAllTiles(gridUid, grid))
+        var aabb = grid.LocalAABB.Equals(default(Box2))
+            ? new Box2(-32, -32, 32, 32)
+            : grid.LocalAABB.Enlarged(1f);
+
+        foreach (var tileRef in _map.GetLocalTilesIntersecting(gridUid, grid, aabb))
         {
             if (IsTransparent(tileRef.Tile))
                 return true;

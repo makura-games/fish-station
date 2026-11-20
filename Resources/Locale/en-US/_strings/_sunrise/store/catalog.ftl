@@ -1,3 +1,4 @@
+# Fish-edit: To remove - локализация разумной болезни
 listing-disease-base-chance-name = Base Chance
 listing-disease-base-chance-description = Increases the base infection chance by 10%. Maximum 5 upgrades.
 

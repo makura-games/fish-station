@@ -33,7 +33,7 @@ public sealed partial class AccessReaderSystem
         ICollection<ProtoId<AccessLevelPrototype>> access,
         ProtoId<AccessGroupPrototype> group)
     {
-        if (!_prototype.TryIndex(group, out var accessGroup))
+        if (!ProtoMan.Resolve(group, out var accessGroup))
             return false;
 
         foreach (var tag in accessGroup.Tags)
@@ -54,18 +54,18 @@ public sealed partial class AccessReaderSystem
         IReadOnlyList<string> activeLevels,
         IReadOnlyCollection<ProtoId<AccessGroupPrototype>>? globalGroups = null)
     {
-        // FIsh edit start - отсутствие группы кода не должно создавать пустой ProtoId.
-        if (ent.Comp.AlertAccesses.TryGetValue(primaryLevel, out var primaryGroup))
+        // Fish-start - отсутствие группы кода не должно создавать пустой ProtoId.
+        if (TryGetAlertAccessGroup(ent.Comp, primaryLevel, out var primaryGroup))
             ent.Comp.Group = primaryGroup;
         else
             ent.Comp.Group = null;
-        // FIsh edit end
+        // Fish-end
         ent.Comp.AdditionalGroups.Clear();
 
         foreach (var level in activeLevels)
         {
-            if (level == primaryLevel
-                || !ent.Comp.AlertAccesses.TryGetValue(level, out var group))
+            if (string.Equals(level, primaryLevel, StringComparison.OrdinalIgnoreCase)
+                || !TryGetAlertAccessGroup(ent.Comp, level, out var group))
             {
                 continue;
             }
@@ -82,6 +82,17 @@ public sealed partial class AccessReaderSystem
         }
 
         Dirty(ent);
+    }
+
+    private static bool TryGetAlertAccessGroup(
+        AccessReaderComponent reader,
+        string level,
+        out ProtoId<AccessGroupPrototype> group)
+    {
+        return reader.AlertAccesses.TryGetValue(level, out group)
+               || reader.AlertAccesses.TryGetValue(level.ToLowerInvariant(), out group)
+               || string.Equals(level, "DeltaNuke", StringComparison.OrdinalIgnoreCase)
+               && reader.AlertAccesses.TryGetValue("delta", out group);
     }
 
     private static void AddAdditionalAccessGroup(

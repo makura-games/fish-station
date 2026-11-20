@@ -289,7 +289,7 @@
   - type: ComponentToggler
     parent: true
     components:
-    - type: ThermalVision
+    - type: FishThermalVision # Fish-edit - температурная оптика визора.
   - type: ItemToggle
     predictable: false
     onUse: false

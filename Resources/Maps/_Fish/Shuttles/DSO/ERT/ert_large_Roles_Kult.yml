@@ -7787,7 +7787,7 @@ entities:
       parent: 1
     - type: PowerSupplier
       supplyRate: 80000
-- proto: GhostWarpPoint
+- proto: WarpPoint
   entities:
   - uid: 930
     components:
@@ -9043,7 +9043,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 5.5,12.5
       parent: 1
-- proto: RandomHumanoidSpawnerERTChaplain
+- proto: RandomHumanoidSpawnerERTChaplainGamma
   entities:
   - uid: 1328
     components:

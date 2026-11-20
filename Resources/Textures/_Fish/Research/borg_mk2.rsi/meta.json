@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Derived from _Lust/Mobs/Silicon/chassis.rsi robot_tipped (Taken from Skyrat-tg at commit bb8d8f968abdddc1dcf86ceda8d47001d531e321 and edited by Lust Station), bottom 32x32 crop for the Fish research technology icon",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "icon"
+    }
+  ]
+}

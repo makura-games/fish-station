@@ -1,6 +1,11 @@
 ## Static
 
 - type: latheRecipePack
+  id: XenoborgMachines
+  recipes:
+  - XenoborgExtractorRecipe
+
+- type: latheRecipePack
   id: EmptyXenoborgs
   recipes:
   - XenoborgEngiRecipe
@@ -14,10 +19,20 @@
   recipes:
   # engi xenoborg
   - XenoborgModuleDoorControlRecipe
+  - XenoborgModuleDeflectorFieldRecipe
+  - XenoborgModuleZapRecipe
+  - XenoborgModuleOilGunRecipe
+  - XenoborgModuleNaniteGunRecipe
   # heavy xenoborg
   - XenoborgModuleHeavyLaserRecipe
+  - XenoborgModuleGuidedMissileLauncherRecipe
+  - XenoborgModuleRocketRecipe
+  - XenoborgModuleBurstFireLaserRecipe
+  - XenoborgModuleHeavyRadioactiveRecipe
   # scout xenoborg
   - XenoborgModuleEnergySwordRecipe
+  - XenoborgModuleJumpRecipe
+  - XenoborgModuleBioKinfeRecipe
   # stealth xenoborg
   - XenoborgModuleSuperCloakDeviceRecipe
 
@@ -25,16 +40,9 @@
 - type: latheRecipePack
   id: XenoborgSunrise
   recipes:
-  - XenoborgCircuitBoard
-  - NanopasteFull
   - CableStack
   - CableMVStack
   - CableHVStack
-  - PowerCellXenoborgAdvance
-  - PowerCellXenoborg
-  - XenoborgModuleXrayRecipe
-  - XenoborgModuleTurboLaserRecipe
-  - XenoborgModuleTemperatureRecipe
   - BorgChargerCircuitboard
   - MicroManipulatorStockPart
 # Sunrise-End

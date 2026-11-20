@@ -1,4 +1,4 @@
-using Content.Server.AlertLevel;
+using Content.Shared.AlertLevel;
 using Content.Shared.PDA;
 
 #pragma warning disable IDE0130 // Пространство имён соответствует расширяемой upstream-системе.
@@ -12,7 +12,7 @@ public sealed partial class PdaSystem
 
     [Dependency] private AlertLevelSystem _alertLevel = default!;
 
-    private void OnAdditionalAlertLevelChanged(AdditionalAlertLevelChangedEvent args)
+    private void OnAdditionalAlertLevelChanged(ref AdditionalAlertLevelChangedEvent args)
     {
         UpdateAllPdaUisOnStation();
     }
@@ -25,7 +25,7 @@ public sealed partial class PdaSystem
         var stationAlertLevels = new List<PdaAlertLevelInfo>(activeLevels.Count);
         foreach (var activeLevel in activeLevels)
         {
-            if (station.Comp.AlertLevels!.Levels.TryGetValue(activeLevel, out var detail))
+            if (_prototype.Resolve(activeLevel, out var detail))
                 stationAlertLevels.Add(new PdaAlertLevelInfo(activeLevel, detail.Color));
         }
 

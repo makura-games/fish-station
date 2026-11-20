@@ -81,10 +81,7 @@
     speechBubbleOffset: -0.5
     allowedEmotes: [ 'Bark', 'Snarl', 'Whine', 'Howl', 'Growl' ]
   - type: Vocal
-    sounds:
-      Male: MaleVulpkanin
-      Female: FemaleVulpkanin
-      Unsexed: MaleVulpkanin
+    emoteSounds: MaleVulpkanin
   - type: TemperatureDamage
     heatDamageThreshold: 400
     coldDamageThreshold: 200
@@ -94,7 +91,16 @@
     heatDamage:
       types:
         Heat: 1.5
-  - type: ToggleableNightVision
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+    prioritized: false
+    lightingColor: '#FFFFFF15'
+  - type: FishNaturalNightVision
+    fullLightRadius: 5
+    lightFadeWidth: 1
+    darkAdaptationSeconds: 0.875
+    lightAdaptationSeconds: 0.1
   - type: NameIdentifier
     group: null
 

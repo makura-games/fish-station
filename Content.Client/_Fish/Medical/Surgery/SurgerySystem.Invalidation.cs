@@ -1,8 +1,8 @@
+using Content.Shared.Body;
 using Content.Shared.Starlight.Medical.Surgery;
 using Robust.Client.GameObjects;
 using Robust.Client.Player;
 
-#pragma warning disable IDE0130 // Пространство имён соответствует расширяемой upstream-системе.
 namespace Content.Client._Starlight.Medical.Surgery;
 
 public sealed partial class SurgerySystem
@@ -15,12 +15,24 @@ public sealed partial class SurgerySystem
         SubscribeLocalEvent<AppearanceComponent, AppearanceChangeEvent>(OnFishAppearanceChanged);
         SubscribeLocalEvent<TransformComponent, MoveEvent>(OnFishMoved);
         SubscribeLocalEvent<SurgeryComponent, ComponentShutdown>(OnFishSurgeryShutdown);
+        SubscribeLocalEvent<SurgeryTargetComponent, OrganInsertedIntoEvent>(OnFishOrganInserted);
+        SubscribeLocalEvent<SurgeryTargetComponent, OrganRemovedFromEvent>(OnFishOrganRemoved);
     }
 
     private void OnFishAppearanceChanged(Entity<AppearanceComponent> ent, ref AppearanceChangeEvent args)
     {
         if (_ui.TryGetOpenUi<SurgeryBui>(ent.Owner, SurgeryUIKey.Key, out var bui))
             bui.RefreshFishAppearance();
+    }
+
+    private void OnFishOrganInserted(Entity<SurgeryTargetComponent> ent, ref OrganInsertedIntoEvent args)
+    {
+        RefreshFishAnatomy(ent);
+    }
+
+    private void OnFishOrganRemoved(Entity<SurgeryTargetComponent> ent, ref OrganRemovedFromEvent args)
+    {
+        RefreshFishAnatomy(ent);
     }
 
     private void OnFishMoved(Entity<TransformComponent> ent, ref MoveEvent args)
@@ -61,5 +73,15 @@ public sealed partial class SurgerySystem
             if (_ui.TryGetOpenUi<SurgeryBui>(patient, SurgeryUIKey.Key, out var bui))
                 bui.QueueFishUiRefresh();
         }
+    }
+
+    private void RefreshFishAnatomy(EntityUid patient)
+    {
+        if (!_ui.TryGetOpenUi<SurgeryBui>(patient, SurgeryUIKey.Key, out var bui))
+            return;
+
+        // Состояние контейнера и снимок BUI могут прийти в разном порядке.
+        bui.RefreshFishAppearance();
+        bui.QueueFishUiRefresh();
     }
 }

@@ -1756,3 +1756,7 @@ ent-MagazineBoxShotgunWM = короб дроби (.50)
 ent-MagazineBoxShotgunSlugWM = короб пуль (.50 slug)
     .desc = Короб с пулевыми патронами для дробовиков PlanetWar.
 
+
+# Метки медикаментов Planet War
+label-reagent-bicaridine-puncturase = Бикаридин-Пункта
+label-reagent-tricomet = Трикомет

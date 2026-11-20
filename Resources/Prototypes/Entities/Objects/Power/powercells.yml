@@ -24,8 +24,8 @@
   - type: Extractable
     juiceSolution:
       reagents:
-        - ReagentId: Zinc
-          Quantity: 5
+      - ReagentId: Zinc
+        Quantity: 5
   - type: Tag
     tags:
       - PowerCell
@@ -118,6 +118,11 @@
   - type: BatterySelfRecharger
     autoRechargeRate: 36 # 10 seconds to recharge
     autoRechargePauseTime: 30
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Uranium
+        Quantity: 5
 
 - type: entity
   name: medium-capacity power cell
@@ -136,6 +141,11 @@
   - type: Battery
     maxCharge: 720
     startingCharge: 720
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Lithium
+        Quantity: 5
 
 - type: entity
   id: PowerCellMediumPrinted
@@ -171,6 +181,11 @@
   - type: Battery
     maxCharge: 1080
     startingCharge: 1080
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Lithium
+        Quantity: 5
   # Sunrise added start - для вайтлиста
   - type: Tag
     tags:
@@ -212,6 +227,11 @@
   - type: Battery
     maxCharge: 1800
     startingCharge: 1800
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Lithium
+        Quantity: 5
 
 - type: entity
   id: PowerCellHyperPrinted
@@ -249,6 +269,11 @@
     startingCharge: 720
   - type: BatterySelfRecharger
     autoRechargeRate: 12 # takes 1 minute to charge itself back to full
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Uranium
+        Quantity: 5
 
 - type: entity
   parent: PowerCellMicroreactor
@@ -284,6 +309,11 @@
       startingCharge: 1200
     - type: BatterySelfRecharger
       autoRechargeRate: 40
+    - type: Extractable
+      juiceSolution:
+        reagents:
+        - ReagentId: Uranium
+          Quantity: 5
 
 # Power cage (big heavy power cell for big devices)
 
@@ -294,6 +324,8 @@
   components:
   - type: Item
     size: Ginormous
+    shape:
+    - 0,0,3,5
   - type: MultiHandedItem
   - type: SolutionManager
     solutions:
@@ -305,8 +337,8 @@
   - type: Extractable
     juiceSolution:
       reagents:
-        - ReagentId: Zinc
-          Quantity: 15
+      - ReagentId: Zinc
+        Quantity: 15
   - type: Tag
     tags:
       - PowerCage
@@ -361,6 +393,11 @@
   - type: Battery
     maxCharge: 2700
     startingCharge: 2700
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Lithium
+        Quantity: 10
 
 - type: entity
   id: PowerCageHigh
@@ -379,6 +416,11 @@
   - type: Battery
     maxCharge: 6200
     startingCharge: 6200
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Lithium
+        Quantity: 15
   - type: EmpImmune # Sunrise-Edit: "Эдит" до Фикса Вайтлистов батарей, потом удалим
 
 - type: entity

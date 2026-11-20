@@ -510,7 +510,7 @@
     title: comms-console-announcement-title-centcom
     global: true
     announceVoice: NecoArcTwo
-    allowedAlertLevels: [green, blue, violet, yellow, red, gamma, delta]
+    allowedAlertLevels: [Green, Blue, Violet, Yellow, Red, Gamma, DeltaNuke]
     forceAlertLevelChanges: true
     canSelectAlertStation: true
 

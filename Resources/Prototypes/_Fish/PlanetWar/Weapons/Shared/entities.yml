@@ -979,7 +979,7 @@
     implantAction: ActionActivateBombGrenadeImplantWM
   - type: TriggerOnActivateImplant
   - type: PlanetWarStunDrone
-  # FIsh edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
+  # Fish-edit: контейнер нужен в YAML, иначе PrototypeSaveTest падает на EnsureContainer
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
@@ -1159,7 +1159,8 @@
       PDA-pen: !type:ContainerSlot {}
       PDA-pai: !type:ContainerSlot {}
       Cartridge-Slot: !type:ContainerSlot {}
-      program-container: !type:Container
+      preinstalled-program-container: !type:Container
+      removable-program-container: !type:Container
   - type: ItemSlots
   - type: Clothing
     quickEquip: false
@@ -1177,15 +1178,6 @@
     autoRot: true
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
-    preinstalled:
-     # - CrewManifestCartridge
-     # - NotekeeperCartridge
-     # - NanoTaskCartridge
-     # - NewsReaderCartridge
-    # Sunrise-Start
-    #  - NavigatorCartridge
-      - MessengerCartridge
-    # Sunrise-End
     cartridgeSlot:
       priority: -1
       name: device-pda-slot-component-slot-name-cartridge
@@ -1194,6 +1186,11 @@
       whitelist:
         components:
           - Cartridge
+  - type: EntityTableContainerFill
+    containers:
+      preinstalled-program-container: !type:AllSelector
+        children:
+        - id: MessengerCartridge
   - type: ActivatableUI
     key: enum.PdaUiKey.Key
     singleUser: true

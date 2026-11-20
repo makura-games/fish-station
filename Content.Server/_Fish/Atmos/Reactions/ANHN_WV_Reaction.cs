@@ -35,6 +35,9 @@ public sealed partial class ANHN_WV_Reaction : IGasReactionEffect
         if (produceHalon < 0.08f)
             return ReactionResult.NoReaction;
 
+        // Не даём реакции превратить весь объём за один тик.
+        produceHalon = MathF.Min(produceHalon, mixture.TotalMoles * Atmospherics.MaxConversionFractionPerTick);
+
         // расход
         mixture.AdjustMoles(Gas.WaterVapor,    -produceHalon * 3f);   // большой расход пара
         mixture.AdjustMoles(Gas.AxoNoblium,   -produceHalon * 0.5f);

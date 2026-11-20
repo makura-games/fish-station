@@ -618,9 +618,9 @@ public sealed class FishSurgeryWindowTest
     /// <summary>
     /// Exercises the actual window and UI input, including stale clicks after a state refresh.
     /// </summary>
-    [TestCase("OrganHumanHandLeft", 8, 20)]
-    [TestCase("OrganHumanHandRight", 23, 20)]
-    [TestCase("OrganHumanFootLeft", 12, 30)]
+    [TestCase("OrganHumanHandLeft", 23, 20)]
+    [TestCase("OrganHumanHandRight", 8, 20)]
+    [TestCase("OrganHumanFootLeft", 18, 30)]
     public async Task PartSelectionClearsWithSnapshot(string prototype, float x, float y)
     {
         await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });

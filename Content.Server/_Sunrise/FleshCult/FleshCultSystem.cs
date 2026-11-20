@@ -14,6 +14,7 @@ using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Sunrise.Humanoid;
 using Content.Shared.Alert;
 using Content.Shared.Body;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
@@ -23,6 +24,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Jittering;
 using Content.Shared.Maps;
+using Content.Shared.Mindshield; // Fish-edit
 using Content.Shared.Movement.Systems;
 using Content.Shared.Roles;
 using Content.Shared.Speech.EntitySystems;
@@ -66,16 +68,16 @@ public sealed partial class FleshCultSystem : EntitySystem
     [Dependency] private SharedStunSystem _stunSystem = default!;
     [Dependency] private ChatSystem _chatSystem = default!;
     [Dependency] private SharedJitteringSystem _jittering = default!;
-    [Dependency] private SharedStutteringSystem _stuttering = default!;
+    [Dependency] private StutteringSystem _stuttering = default!;
     [Dependency] private ExplosionSystem _explosionSystem = default!;
     [Dependency] private TransformSystem _transformSystem = default!;
     [Dependency] private ContainerSystem _containerSystem = default!;
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private AntagSelectionSystem _antag = default!;
+    [Dependency] private MindShieldSystem _mindShield = default!; // Fish-edit
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private DamageableSystem _damageableSystem = default!;
     [Dependency] private PopupSystem _popup = default!;
-    [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private StationSystem _stationSystem = default!;
     [Dependency] private RoundEndSystem _roundEndSystem = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -99,7 +101,8 @@ public sealed partial class FleshCultSystem : EntitySystem
         "Predator",
         "Tajaran",
         "Milira",
-        "Kitsune"
+        "Kitsune",
+        "Resomi", // Fish-edit
     ];
 
     public override void Initialize()

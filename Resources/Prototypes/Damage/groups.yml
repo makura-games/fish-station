@@ -47,7 +47,13 @@
   name: damage-group-mangleness
   damageTypes:
     - Mangleness
-# Fish-End
+
+- type: damageGroup
+  id: Structural
+  name: damage-group-structural
+  damageTypes:
+    - Structural
+# Fish-end
 
 # Metaphysical damage types should be used very sparingly, and likely not affect normal crew entities.
 # Revenants and other ghost-like/demonic creatures are more fitting. Healing should never be available via medicine.

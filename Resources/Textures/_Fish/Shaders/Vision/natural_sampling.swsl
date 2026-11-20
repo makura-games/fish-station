@@ -1,0 +1,8 @@
+uniform highp vec4 lighting_geometry;
+uniform highp vec2 lighting_radii;
+
+// Общий спад подсветки и её вычитания: собственный свет не влияет на привыкание глаз.
+highp float natural_light_fraction(highp vec2 uv) {
+    highp float distance = length((uv - lighting_geometry.xy) * lighting_geometry.zw);
+    return 1.0 - smoothstep(lighting_radii.x, lighting_radii.y, distance);
+}

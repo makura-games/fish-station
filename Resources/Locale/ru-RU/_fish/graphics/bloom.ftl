@@ -1,0 +1,9 @@
+fish-options-bloom-label = Свечение (Bloom)
+fish-options-bloom-enabled = Свечение ярких объектов
+fish-options-bloom-enabled-tooltip = Добавляет мягкие ореолы вокруг светящихся частей предметов и напольных плиток.
+fish-options-bloom-strength = Интенсивность свечения
+fish-options-bloom-quality = Качество свечения
+fish-options-bloom-quality-tooltip = Более высокое качество делает ореолы плавнее, но увеличивает нагрузку на видеокарту.
+fish-options-bloom-quality-low = Низкое
+fish-options-bloom-quality-medium = Среднее
+fish-options-bloom-quality-high = Высокое

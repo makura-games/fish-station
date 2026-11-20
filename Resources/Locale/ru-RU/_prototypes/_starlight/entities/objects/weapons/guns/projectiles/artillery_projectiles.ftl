@@ -8,10 +8,20 @@ ent-BulletLeviathan240mmNuke = ядерный снаряд LVT-240N 240мм
     .desc = Стратегический 240мм ядерный снаряд с колоссальной мощностью взрыва.
 ent-BulletLeviathan240mmCluster = кассетный снаряд LVT-240C 240мм
     .desc = 240мм кассетный снаряд, заряженный суббоеприпасами.
+# Fish-start - Добавление локализации для self-explode 240мм фугасного снаряда
+ent-BulletLeviathan240mmHESelfExplode = фугасный снаряд 240мм
+    .desc = Сущность аварийного самоподрыва, высвобождающая фугасный заряд.
+    .suffix = самоподрыв, СЕЙЧАС, FISH
+# Fish-end
+
+# Fish-start - Добавление локализации суффикса self-explode
 ent-BulletLeviathan240mmNukeSelfExplode = ядерный снаряд 240мм
     .desc = Сущность аварийного самоподрыва, высвобождающая ядерную боевую часть и шрапнель.
+    .suffix = самоподрыв, СЕЙЧАС
 ent-BulletLeviathan240mmClusterSelfExplode = кассетный снаряд 240мм
     .desc = Сущность аварийного самоподрыва, рассеивающая кассетные суббоеприпасы.
+    .suffix = самоподрыв, СЕЙЧАС
+# Fish-end
 ent-BulletSyndyClusterGrenade = кассетный снаряд синдиката
     .desc = Кассетный суббоеприпас, распадающийся на мини-бомбы при срабатывании.
 ent-BulletSyndieMiniBombFailsafe = мини-бомба синдиката
@@ -44,3 +54,17 @@ ent-PelletClusterSubnuclearShrapnel = радиоактивная шрапнел�
     .desc = Облученный осколок от субядерной боевой части.
 ent-BulletRocket120mmMetla = 120мм ракета
     .desc = 120мм управляемая ракета с осколочно-фугасной боевой частью.
+
+# Fish-start - Добавление локализации self-explode артиллерийских снарядов
+ent-BulletDravon75mmHESelfExplode = фугасный снаряд двн-75 75мм
+    .desc = 75мм фугасный снаряд для артиллерийской платформы Дравон.
+    .suffix = самоподрыв, СЕЙЧАС
+
+ent-BulletAK57090mmHESelfExplode = фугасный снаряд AK-90 90мм
+    .desc = 90мм фугасный снаряд для артиллерийской платформы AK570.
+    .suffix = самоподрыв, СЕЙЧАС
+
+ent-BulletGrenade120mmBlastSelfExplode = осколочно-фугасный снаряд 120мм
+    .desc = 120мм осколочно-фугасный снаряд с поражающей начинкой.
+    .suffix = самоподрыв, СЕЙЧАС
+# Fish-end

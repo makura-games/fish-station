@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Components;
 using Content.Shared.Database;
+using Content.Shared.Vehicle.Components;
 using Content.Shared.Weapons.Hitscan.Components;
 using Content.Shared.Weapons.Hitscan.Events;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -36,9 +37,10 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         var shooter = args.Shooter ?? args.Gun;
         // Sunrise edit start - ignore shooter's mech for hitscan raycast
         var ignored = shooter;
-        if (TryComp<Content.Shared.Mech.Components.MechPilotComponent>(ignored, out var pilot))
+        if (TryComp<VehicleOperatorComponent>(ignored, out var vehicleOperator) &&
+            vehicleOperator.Vehicle is { } vehicle)
         {
-            ignored = pilot.Mech;
+            ignored = vehicle;
         }
         // Sunrise edit end
         var mapCords = _transform.ToMapCoordinates(args.FromCoordinates);
@@ -59,7 +61,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
 
         // Do visuals without an event. They should always happen and putting it on the attempt event is weird!
         // If more stuff gets added here, it should probably be turned into an event.
-        FireEffects(args.FromCoordinates, distanceTried, args.ShotDirection.ToAngle(), ent.Owner);
+        FireEffects(args.FromCoordinates, distanceTried, args.ShotDirection.ToAngle(), ent.Owner, shooter); // Fish-edit
 
         // Admin logging
         if (result?.HitEntity != null)
@@ -73,6 +75,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         {
             ShotDirection = args.ShotDirection,
             Gun = args.Gun,
+            Hitscan = ent.Owner,
             Shooter = args.Shooter,
             HitEntity = result?.HitEntity,
         };
@@ -85,6 +88,12 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
 
         var hitEvent = new HitscanRaycastFiredEvent { Data = data };
         RaiseLocalEvent(ent, ref hitEvent);
+
+        if (data.HitEntity != null)
+        {
+            var strikeEvent = new HitscanRaycastStrikeEvent { Data = data };
+            RaiseLocalEvent(data.HitEntity.Value, ref strikeEvent);
+        }
     }
 
     /// <summary>
@@ -94,7 +103,8 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
     /// <param name="distance">Distance of the hitscan shot.</param>
     /// <param name="shotAngle">Angle of the shot.</param>
     /// <param name="hitscanUid">The hitscan entity itself.</param>
-    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle shotAngle, EntityUid hitscanUid)
+    /// <param name="shooter">Entity from which the visual effect originates.</param>
+    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle shotAngle, EntityUid hitscanUid, EntityUid shooter) // Fish-edit
     {
         if (distance == 0 || !_visualsQuery.TryComp(hitscanUid, out var vizComp))
             return;
@@ -107,6 +117,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         // We'll get the effects relative to the grid / map of the firer
         // Look you could probably optimise this a bit with redundant transforms at this point.
 
+        var worldShotAngle = shotAngle; // Fish-edit
         var gridUid = fromXform.GridUid;
         if (gridUid != fromCoordinates.EntityId && TryComp(gridUid, out TransformComponent? gridXform))
         {
@@ -145,7 +156,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
                 // Sunrise edit end
             }
 
-            if (travelSprite != null)
+            if (travelSprite != null && vizComp.TravelOriginOffset == null) // Fish-edit
             {
                 var coords = fromCoordinates.Offset(shotAngle.ToVec() * (distance + 0.5f) / 2);
                 var netCoords = GetNetCoordinates(coords);
@@ -155,6 +166,12 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
                 // Sunrise edit end
             }
         }
+
+        // Fish-start
+        if (travelSprite != null && vizComp.TravelOriginOffset is { } offset)
+            sprites.Add(GetOffsetTravelEffect(shooter, fromCoordinates, distance, shotAngle,
+                worldShotAngle, offset, travelSprite, color, scale));
+        // Fish-end
 
         if (vizComp.ImpactFlash != null)
         {

@@ -87,6 +87,7 @@
     - Inorganic
     - Silicon
     - Mech
+    - Ipc # Fish-edit: отображение шкалы здоровья КПБ на визоре
   - type: InnateItem
     instantActions:
     - HandheldStationMapUnpowered

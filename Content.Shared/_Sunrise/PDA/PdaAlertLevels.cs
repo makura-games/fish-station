@@ -1,3 +1,5 @@
+using Content.Shared.AlertLevel;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 #pragma warning disable IDE0130 // Пространство имён соответствует расширяемому upstream-контракту.
@@ -21,7 +23,7 @@ public sealed class PdaAlertLevelInfo
     /// <summary>
     /// Prototype identifier of the alert level.
     /// </summary>
-    public readonly string Level;
+    public readonly ProtoId<AlertLevelPrototype> Level;
 
     /// <summary>
     /// Display color of the alert level.
@@ -31,7 +33,7 @@ public sealed class PdaAlertLevelInfo
     /// <summary>
     /// Creates an alert-level display entry for a PDA.
     /// </summary>
-    public PdaAlertLevelInfo(string level, Color color)
+    public PdaAlertLevelInfo(ProtoId<AlertLevelPrototype> level, Color color)
     {
         Level = level;
         Color = color;

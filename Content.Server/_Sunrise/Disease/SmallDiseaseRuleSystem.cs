@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 using System.Linq;
 using Content.Server.Antag;
 using Content.Shared._Sunrise.Disease;
@@ -6,6 +7,7 @@ using Content.Shared.GameTicking.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Prototypes;
 using Content.Shared.Store;
+using Content.Shared._Fish.Ipc;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mind.Components;
@@ -53,6 +55,10 @@ public sealed partial class SmallDiseaseRuleSystem : GameRuleSystem<SmallDisease
         while (query.MoveNext(out var entity, out _, out _, out _, out var xform))
         {
             if (HasComp<SickComponent>(entity))
+                continue;
+
+            // Fish-edit: КПБ не кандидат на стартовое заражение
+            if (HasComp<FishIpcComponent>(entity))
                 continue;
 
             // Simple check to ensure they are on a station/grid generally

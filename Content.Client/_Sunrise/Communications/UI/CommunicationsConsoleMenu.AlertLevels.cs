@@ -1,3 +1,7 @@
+// Fish-start: импорты для AlertLevelPrototype
+using Content.Shared.AlertLevel;
+using Robust.Shared.Prototypes;
+// Fish-end
 using Content.Shared.Communications;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -11,10 +15,18 @@ public sealed partial class CommunicationsConsoleMenu
      * Controls for additional alert levels and remote station selection.
      */
 
+    // Fish-start: внедрение зависимостей локализации и прототипов
+    [Dependency] private ILocalizationManager _loc = default!;
+    [Dependency] private IPrototypeManager _protoManager = default!;
+    // Fish-end
+
     /// <summary>
     /// Raised when an additional alert level is toggled.
     /// </summary>
-    public event Action<string, bool>? OnAdditionalAlertLevel;
+    // Fish-start: типизированный ProtoId<AlertLevelPrototype> вместо string
+    // public event Action<string, bool>? OnAdditionalAlertLevel;
+    public event Action<ProtoId<AlertLevelPrototype>, bool>? OnAdditionalAlertLevel;
+    // Fish-end
 
     /// <summary>
     /// Raised when another target station is selected.
@@ -33,6 +45,19 @@ public sealed partial class CommunicationsConsoleMenu
         };
     }
 
+    // Fish-start: метод обновления состояния дополнительных кодов и станций
+    public void UpdateAdditionalAlertLevelState(
+        CommunicationsConsoleInterfaceState commsState,
+        bool hasAccess)
+    {
+        UpdateAlertStations(
+            commsState.AlertStations,
+            commsState.SelectedAlertStation,
+            hasAccess);
+        UpdateAdditionalAlertLevels(commsState.AdditionalAlertLevels, hasAccess);
+    }
+    // Fish-end
+
     /// <summary>
     /// Rebuilds the independently selectable additional alert-level controls.
     /// </summary>
@@ -43,9 +68,13 @@ public sealed partial class CommunicationsConsoleMenu
         AdditionalAlertLevelsContainer.RemoveAllChildren();
         foreach (var alert in alerts)
         {
-            var name = alert.Level;
-            if (_loc.TryGetString($"alert-level-{alert.Level}", out var localizedName))
+            // Fish-start: получение локализованного названия кода тревоги
+            var name = alert.Level.Id;
+            if (_protoManager.TryIndex(alert.Level, out var proto))
+                name = proto.LocalizedName;
+            else if (_loc.TryGetString($"alert-level-{alert.Level.Id.ToLowerInvariant()}", out var localizedName))
                 name = localizedName;
+            // Fish-end
 
             var checkBox = new CheckBox
             {
@@ -95,7 +124,11 @@ public sealed partial class CommunicationsConsoleMenu
     /// </summary>
     public void DisableAlertLevelControls()
     {
-        AlertLevelButton.Disabled = true;
+        // Fish-start: отключение элементов управления в обновлённом AlertLevelControls
+        // AlertLevelButton.Disabled = true;
+        AlertLevelControls.AlertLevelSelector.Disabled = true;
+        AlertLevelControls.ConfirmAlertLevelButton.Disabled = true;
+        // Fish-end
         foreach (var child in AdditionalAlertLevelsContainer.Children)
         {
             if (child is CheckBox checkBox)

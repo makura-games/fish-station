@@ -19,7 +19,10 @@ public sealed partial class PermafrostDecompositionReaction : IGasReactionEffect
             return ReactionResult.NoReaction;
 
         // медленное разложение
-        var decompRate = (50f - temperature) * 0.5f;   
+        // Абсолютная скорость разложения превращала малый объём газа целиком за один тик,
+        // поэтому дополнительно ограничиваем её долей от имеющегося пермафроста.
+        var decompRate = MathF.Min((50f - temperature) * 0.5f,
+            permafrost * Atmospherics.MaxConversionFractionPerTick);
 
         if (tritium > 0.04f)
         {

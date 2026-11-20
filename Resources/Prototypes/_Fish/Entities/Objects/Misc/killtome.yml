@@ -28,35 +28,35 @@
         kill_tome_scrap_slot1:
           name: kill-tome-scrap-slot-component-slot-name-kill-tome-scrap
           startingItem: KillTomeScrap
-          disableInsert: true
+          # disableInsert: true
           whitelist:
             tags:
               - KillTomeScrap
         kill_tome_scrap_slot2:
           name: kill-tome-scrap-slot-component-slot-name-kill-tome-scrap
           startingItem: KillTomeScrap
-          disableInsert: true
+          # disableInsert: true
           whitelist:
             tags:
               - KillTomeScrap
         kill_tome_scrap_slot3:
           name: kill-tome-scrap-slot-component-slot-name-kill-tome-scrap
           startingItem: KillTomeScrap
-          disableInsert: true
+          # disableInsert: true
           whitelist:
             tags:
               - KillTomeScrap
         kill_tome_scrap_slot4:
           name: kill-tome-scrap-slot-component-slot-name-kill-tome-scrap
           startingItem: KillTomeScrap
-          disableInsert: true
+          # disableInsert: true
           whitelist:
             tags:
               - KillTomeScrap
         kill_tome_scrap_slot5:
           name: kill-tome-scrap-slot-component-slot-name-kill-tome-scrap
           startingItem: KillTomeScrap
-          disableInsert: true
+          # disableInsert: true
           whitelist:
             tags:
               - KillTomeScrap

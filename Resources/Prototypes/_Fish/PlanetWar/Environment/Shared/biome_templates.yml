@@ -162,7 +162,7 @@
   layers:
     - !type:BiomeTileLayer
       threshold: -1.0
-      tile: FloorCaveDrought
+      tile: FloorCave
     - !type:BiomeTileLayer
       threshold: -0.85
       tile: FloorAsteroidSand       
@@ -216,7 +216,7 @@
       entities:
         - WallRockWM
     - !type:BiomeTileLayer
-      tile: FloorLowDesert
+      tile: FloorDesert
       threshold: 0.80 
       noise:
         seed: 3
@@ -229,9 +229,9 @@
       allowedTiles:
         - FloorDesert
         - FloorPlanetGrass
-        - FloorCaveDrought
+        - FloorCave
         - FloorAsteroidSand
-        - FloorLowDesert              
+        - FloorDesert              
       threshold: 0.9
       noise:
         seed: 3
@@ -250,7 +250,7 @@
         fractalType: FBm
         frequency: 0.2
       allowedTiles:
-        - FloorCaveDrought
+        - FloorCave
       entities:
         - WallRockWM 
     - !type:BiomeTileLayer

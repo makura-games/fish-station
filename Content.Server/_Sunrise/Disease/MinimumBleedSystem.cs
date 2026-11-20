@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 
 using Content.Shared.Body.Components;
@@ -6,7 +7,7 @@ namespace Content.Server._Sunrise.Disease;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Server.Body.Components;
-using Content.Server.Body.Systems;
+using Content.Shared.Body.Systems;
 using Content.Server.Chat.Systems;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;

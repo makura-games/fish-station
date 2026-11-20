@@ -13,6 +13,7 @@ using Content.Shared.Tools.Systems;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
@@ -24,7 +25,6 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
 {
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private INetManager _net = default!;
-    [Dependency] protected IPrototypeManager PrototypeManager = default!;
     [Dependency] private AnchorableSystem _anchorable = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -81,8 +81,8 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
             return;
         }
 
-        if (!PrototypeManager.Resolve(comp.Entity, out var proto) ||
-            !proto.TryGetComponent<FixturesComponent>(out var fixture, EntityManager.ComponentFactory))
+        if (!ProtoMan.Resolve(comp.Entity, out var proto) ||
+            !proto.TryComp<FixturesComponent>(out var fixture, EntityManager.ComponentFactory))
         {
             return;
         }
@@ -92,9 +92,14 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
 
         if (!_anchorable.TileFree((grid, gridComp), buildPos, layer, mask) && !Transform(uid).Anchored) // Sunrise edit
         {
-            _popup.PopupPredicted(Loc.GetString("flatpack-unpack-no-room"), uid, args.User);
+            _popup.PopupEntity(Loc.GetString("flatpack-unpack-no-room"), uid, args.User);
             return;
         }
+
+        // Fish-start: проверка дополнительных условий распаковки для отдельных прототипов
+        if (!CanUnpack(ent, grid, gridComp, buildPos, args.User, layer, mask))
+            return;
+        // Fish-end
 
         if (_net.IsServer)
         {
@@ -109,6 +114,17 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
         _audio.PlayPredicted(comp.UnpackSound, args.Used, args.User);
     }
 
+    // Fish-start: хук для дополнительных проверок распаковки
+    private partial bool CanUnpack(
+        Entity<FlatpackComponent> ent,
+        EntityUid grid,
+        MapGridComponent gridComp,
+        Vector2i buildPos,
+        EntityUid user,
+        int collisionLayer,
+        int collisionMask);
+    // Fish-end
+
     private void OnFlatpackExamined(Entity<FlatpackComponent> ent, ref ExaminedEvent args)
     {
         if (!args.IsInDetailsRange)
@@ -122,7 +138,7 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
             return;
 
         ent.Comp.Entity = proto;
-        var machinePrototype = PrototypeManager.Index<EntityPrototype>(proto);
+        var machinePrototype = ProtoMan.Index(proto);
 
         var meta = MetaData(ent);
         _metaData.SetEntityName(ent, Loc.GetString("flatpack-entity-name", ("name", machinePrototype.Name)), meta);

@@ -1,9 +1,11 @@
 using Content.Shared.Armor;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Examine;
 using Content.Shared.Explosion.Components;
 using Content.Shared.Foldable;
 using Content.Shared.Verbs;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.Shared._Fish.Clothing;
@@ -60,10 +62,10 @@ public sealed partial class VisorExamineSystem : EntitySystem
             }
         }
 
-        foreach (var (damageType, baseReduction) in armor.Modifiers.FlatReduction)
+        foreach (var (damageType, baseReduction) in armor.Modifiers.FlatReductions)
         {
             var reduction = baseReduction;
-            if (closed && ent.Comp.ClosedDamageModifiers.FlatReduction.TryGetValue(damageType, out var closedReduction))
+            if (closed && ent.Comp.ClosedDamageModifiers.FlatReductions.TryGetValue(damageType, out var closedReduction))
                 reduction += closedReduction;
 
             AddFlatReduction(message, damageType, reduction);
@@ -71,9 +73,9 @@ public sealed partial class VisorExamineSystem : EntitySystem
 
         if (closed)
         {
-            foreach (var (damageType, reduction) in ent.Comp.ClosedDamageModifiers.FlatReduction)
+            foreach (var (damageType, reduction) in ent.Comp.ClosedDamageModifiers.FlatReductions)
             {
-                if (!ContainsDamageType(armor.Modifiers.FlatReduction, damageType))
+                if (!ContainsDamageType(armor.Modifiers.FlatReductions, damageType))
                     AddFlatReduction(message, damageType, reduction);
             }
         }
@@ -120,14 +122,8 @@ public sealed partial class VisorExamineSystem : EntitySystem
         return TryComp<FoldableComponent>(uid, out var foldable) && !foldable.IsFolded;
     }
 
-    private static bool ContainsDamageType(Dictionary<string, float> modifiers, string damageType)
+    private static bool ContainsDamageType(Dictionary<ProtoId<DamageTypePrototype>, float> modifiers, ProtoId<DamageTypePrototype> damageType)
     {
-        foreach (var modifier in modifiers)
-        {
-            if (modifier.Key == damageType)
-                return true;
-        }
-
-        return false;
+        return modifiers.ContainsKey(damageType);
     }
 }

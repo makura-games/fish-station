@@ -2,7 +2,7 @@ using System.Linq;
 using Content.Server._Sunrise.Laws.Systems;
 using Content.Server.Access.Systems;
 using Content.Server.Station.Systems;
-using Content.Server.StationRecords.Systems;
+using Content.Shared.StationRecords.Systems;
 using Content.Server.CriminalRecords.Systems;
 using Content.Shared._Sunrise.CriminalRecords;
 using Content.Shared._Sunrise.CriminalRecords.Components;
@@ -269,7 +269,8 @@ public sealed partial class PrisonerManagementConsoleSystem : EntitySystem
                 var incar = entry.Value;
 
                 // Permanent prisoners (threshold or negative cell index) stay indefinitely
-                if (incar.SentenceMinutes >= threshold || cellIdx < 0)
+                // Fish-edit: порог <= 0 не превращает любой срок в перму
+                if (cellIdx < 0 || (threshold > 0 && incar.SentenceMinutes >= threshold))
                     continue;
 
                 if (curTime >= incar.StartTime + TimeSpan.FromMinutes(incar.SentenceMinutes))

@@ -2,16 +2,14 @@
 using Content.Shared.Chemistry.Reagent;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.List;
 
 namespace Content.Server._Sunrise.FleshCult
 {
     [RegisterComponent]
     public sealed partial class FleshAbilitiesComponent : Component
     {
-        [DataField("startingActions", customTypeSerializer: typeof(PrototypeIdListSerializer<EntityPrototype>))]
-        public List<string> StartingActions = new();
+        [DataField]
+        public List<EntProtoId> StartingActions = [];
 
         public List<EntityUid> Actions = new();
 
@@ -29,7 +27,12 @@ namespace Content.Server._Sunrise.FleshCult
 
         public float DevourTime = 10f;
 
-        public SoundSpecifier DevourSound = new SoundPathSpecifier("/Audio/_Sunrise/FleshCult/devour_flesh_cultist.ogg");
+        // Fish-start: звук пожирания как у экшена Devour генокрада
+        // public SoundSpecifier DevourSound = new SoundPathSpecifier("/Audio/_Sunrise/FleshCult/devour_flesh_cultist.ogg");
+        public SoundSpecifier DevourSound = new SoundCollectionSpecifier("ChangelingDevourConsume", AudioParams.Default.WithMaxDistance(6));
+
+        public EntityUid? CurrentDevourSound;
+        // Fish-end
 
         public Solution AdrenalinReagents = new()
         {

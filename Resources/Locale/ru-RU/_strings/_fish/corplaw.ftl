@@ -1,19 +1,21 @@
 # Fish Station Corporate Law Localization
 
+corplaw-sentence-minutes-short = мин.
+
 # Sections
 corplaw-fish-section-general = Общие положения
-corplaw-fish-section-1xx = 1xx: Малые нарушения
-corplaw-fish-section-2xx = 2xx: Лёгкие нарушения
-corplaw-fish-section-3xx = 3xx: Тяжкие нарушения
-corplaw-fish-section-4xx = 4xx: Особо тяжкие нарушения
-corplaw-fish-section-5xx = 5xx: Критические нарушения
+corplaw-fish-section-1xx = 1xx: Малые нарушения (5 мин или предупреждение)
+corplaw-fish-section-2xx = 2xx: Лёгкие нарушения (10 мин)
+corplaw-fish-section-3xx = 3xx: Тяжкие нарушения (25 мин)
+corplaw-fish-section-4xx = 4xx: Особо тяжкие нарушения (40 мин)
+corplaw-fish-section-5xx = 5xx: Критические нарушения (перма)
 
 # General Provisions
 corplaw-fish-oprs-title = ОПРС: Основные Права Разумных Существ
 corplaw-fish-oprs-desc = Основные Права Разумных Существ (ОПРС) имеют преимущество над всеми другими законами. Включают: право на жизнь, достоинство, свободу, частную жизнь, охрану здоровья, владение имуществом, презумпцию невиновности, свободу вероисповедания. Юридическая неприкосновенность: Капитан, судьи, АВД, сотрудники ЦК и ДСО, «Синий Щит». Обыск/задержание таких лиц запрещены (кроме 4XX/5XX на глазах у СБ). Разумные существа рас: Люди, Унатхи, Арканы, Фелиниды, Ксеноморфы, Дионы, Слаймолюды, Нианы, Вульпканины, Таяраны, Воксы, Кицунэ, Арахниды, Дворфы, Резоми, Милиры, Яутжи, Троттины — защищены ОПРС. Иные разумные — объекты исследований.
 
 corplaw-fish-sentences-title = Общие сроки заключения
-corplaw-fish-sentences-desc = 1XX: 5–7 мин или предупреждение. 2XX: 10–15 мин. 3XX: 17–25 мин. 4XX: 40–45 мин. 5XX: перманентное заключение.
+corplaw-fish-sentences-desc = 1XX: 5 мин или предупреждение. 2XX: 10 мин. 3XX: 25 мин. 4XX: 40 мин. 5XX: перманентное заключение. Пермабриг также при суммарном сроке 60 и более минут.
 
 # 1xx Articles
 corplaw-fish-art100-title = Оскорбительное поведение
@@ -205,7 +207,7 @@ corplaw-fish-circ-cooperation-title = Сделка со следствием
 corplaw-fish-circ-cooperation-desc = Полное раскрытие информации, сдача подельников, помощь в розыске. -50% наказания.
 
 corplaw-fish-circ-admission-title = Признание вины
-corplaw-fish-circ-admission-desc = Добровольное признание до или на первом допросе (не для должностных). -25% наказания.
+corplaw-fish-circ-admission-desc = Добровольное признание до или на первом допросе (не для должностных). -25% наказания. Не суммируется с явкой с повинной.
 
 corplaw-fish-circ-nointent-title = Отсутствие умысла
 corplaw-fish-circ-nointent-desc = Неумышленное преступление. -75% наказания.
@@ -218,7 +220,7 @@ corplaw-fish-circ-medicalreason-desc = Заключённому требуетс
 
 # Circumstances (Aggravating)
 corplaw-fish-circ-recidivism-title = Рецидив
-corplaw-fish-circ-recidivism-desc = Повторное преступление по той же статье после осуждения — удвоение срока.
+corplaw-fish-circ-recidivism-desc = Повторное преступление по той же статье после осуждения — удвоение срока (применяется калькулятором автоматически).
 
 corplaw-fish-circ-nonviolentresistance-title = Ненасильственное сопротивление при аресте
 corplaw-fish-circ-nonviolentresistance-desc = Попытка побега без причинения вреда. +5 минут.

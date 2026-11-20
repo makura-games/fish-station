@@ -47,7 +47,6 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     [Dependency] private IdentitySystem _identity = default!;
     [Dependency] private MetaDataSystem _metaSystem = default!;
     [Dependency] private PdaSystem _pdaSystem = default!;
-    [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private MindSystem _mindSystem = default!;
     private ISharedSponsorsManager? _sponsorsManager; // Sunrise-Sponsors
 
@@ -106,15 +105,15 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         EntityUid? station,
         EntityUid? entity = null)
     {
-        _prototypeManager.Resolve(job, out var prototype);
+        ProtoMan.Resolve(job, out var prototype);
         RoleLoadout? loadout = null;
 
         // Need to get the loadout up-front to handle names if we use an entity spawn override.
         var jobLoadout = LoadoutSystem.GetJobPrototype(prototype?.ID);
 
         // Sunrise-start
-        var effectiveJobLoadout = LoadoutSystem.GetEffectiveRolePrototype(jobLoadout, _prototypeManager);
-        if (_prototypeManager.TryIndex<RoleLoadoutPrototype>(effectiveJobLoadout, out var roleProto))
+        var effectiveJobLoadout = LoadoutSystem.GetEffectiveRolePrototype(jobLoadout, ProtoMan);
+        if (ProtoMan.TryIndex<RoleLoadoutPrototype>(effectiveJobLoadout, out var roleProto))
         // Sunrise-end
         {
             profile?.Loadouts.TryGetValue(jobLoadout, out loadout);
@@ -136,7 +135,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 // Sunrise-End
 
                 loadout = new RoleLoadout(jobLoadout);
-                loadout.SetDefault(profile, _actors.GetSession(entity), _prototypeManager, sponsorsPrototypes);
+                loadout.SetDefault(profile, _actors.GetSession(entity), ProtoMan, sponsorsPrototypes);
             }
         }
 
@@ -153,10 +152,10 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 EquipRoleName(jobEntity, loadout, roleProto!);
             }
 
-            // FIsh edit start - экипировка jobEntity через startingGear (Sunrise), не только Loadout MapInit
+            // Fish-start - экипировка jobEntity через startingGear (Sunrise), не только Loadout MapInit
             if (prototype.StartingGear != null)
             {
-                var startingGear = _prototypeManager.Index(prototype.StartingGear.Value);
+                var startingGear = ProtoMan.Index(prototype.StartingGear.Value);
                 EquipStartingGear(jobEntity, startingGear, raiseEvent: true);
             }
 
@@ -164,7 +163,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             {
                 EquipRoleLoadout(jobEntity, loadout, roleProto!);
             }
-            // FIsh edit end
+            // Fish-end
 
             DoJobSpecials(job, jobEntity);
             _identity.QueueIdentityUpdate(jobEntity);
@@ -173,7 +172,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
         string speciesId = profile != null ? profile.Species : HumanoidCharacterProfile.DefaultSpecies;
 
-        if (!_prototypeManager.TryIndex<SpeciesPrototype>(speciesId, out var species))
+        if (!ProtoMan.TryIndex<SpeciesPrototype>(speciesId, out var species))
             throw new ArgumentException($"Invalid species prototype was used: {speciesId}");
 
         entity ??= Spawn(species.Prototype, coordinates);
@@ -216,7 +215,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
         if (prototype?.StartingGear != null)
         {
-            var startingGear = _prototypeManager.Index<StartingGearPrototype>(prototype.StartingGear);
+            var startingGear = ProtoMan.Index<StartingGearPrototype>(prototype.StartingGear);
             EquipStartingGear(entity.Value, startingGear, raiseEvent: false);
         }
 
@@ -235,7 +234,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
     private void DoJobSpecials(ProtoId<JobPrototype>? job, EntityUid entity)
     {
-        if (!_prototypeManager.Resolve(job, out JobPrototype? prototype))
+        if (!ProtoMan.Resolve(job, out JobPrototype? prototype))
             return;
 
         foreach (var jobSpecial in prototype.Special)
@@ -266,7 +265,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         _cardSystem.TryChangeFullName(cardId, characterName, card);
         _cardSystem.TryChangeJobTitle(cardId, jobPrototype.LocalizedName, card);
 
-        if (_prototypeManager.Resolve(jobPrototype.Icon, out var jobIcon))
+        if (ProtoMan.Resolve(jobPrototype.Icon, out var jobIcon))
             _cardSystem.TryChangeJobIcon(cardId, jobIcon, card);
 
         var extendedAccess = false;

@@ -1,23 +1,37 @@
 - type: entity
-  parent: BaseStructure
-  id: BaseRailing
   abstract: true
+  parent: [ BaseStructure, StructureHealthBarrierWeak ]
+  id: BaseRailing
   name: railing
   description: Basic railing meant to protect idiots like you from falling.
   components:
   - type: Sprite
     drawdepth: SmallObjects
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
   - type: Physics
     bodyType: Static
   - type: InteractionOutline
   - type: Repairable
   - type: Damageable
-    damageModifierSet: FlimsyMetallic
-  - type: Injurable
-    damageContainer: StructuralInorganic
+    damageModifierSet: RodMetalMod
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 30
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+          params:
+            volume: -6
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          PartRodMetal1:
+            min: 0
+            max: 1
   - type: Climbable
   - type: Construction
     graph: Railing
@@ -32,10 +46,10 @@
   suffix: Steel # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: side
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: side
   - type: Fixtures
     fixtures:
@@ -48,30 +62,6 @@
         - TableMask
         layer:
         - TableLayer
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 100
-      behaviors:
-        - !type:DoActsBehavior
-          acts: [ "Destruction" ]
-    - trigger:
-        !type:DamageTrigger
-        damage: 20
-      behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalBreak
-          params:
-            volume: -6
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          PartRodMetal1:
-            min: 0
-            max: 1
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
   - type: Construction
     node: railing
 
@@ -81,10 +71,10 @@
   suffix: Steel, Corner # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner
   - type: Fixtures
     fixtures:
@@ -106,30 +96,6 @@
         - TableMask
         layer:
         - TableLayer
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 100
-      behaviors:
-        - !type:DoActsBehavior
-          acts: [ "Destruction" ]
-    - trigger:
-        !type:DamageTrigger
-        damage: 20
-      behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalBreak
-          params:
-            volume: -6
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          PartRodMetal1:
-            min: 0
-            max: 2
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
   - type: Construction
     node: railingCorner
 
@@ -139,10 +105,10 @@
   suffix: Steel, Corner Small # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner_small
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: corner_small
   - type: Fixtures
     fixtures:
@@ -155,30 +121,6 @@
         - TableMask
         layer:
         - TableLayer
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 100
-      behaviors:
-        - !type:DoActsBehavior
-          acts: [ "Destruction" ]
-    - trigger:
-        !type:DamageTrigger
-        damage: 20
-      behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalBreak
-          params:
-            volume: -6
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          PartRodMetal1:
-            min: 0
-            max: 1
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
   - type: Construction
     node: railingCornerSmall
 
@@ -188,10 +130,10 @@
   suffix: Steel, Round # Sunrise-Add
   components:
   - type: Sprite
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: round
   - type: Icon
-    sprite: _Starlight/Structures/Walls/railing.rsi # Sunrise-Edit
+    sprite: Structures/Walls/railing.rsi # Fish-Edit
     state: round
   - type: Fixtures
     fixtures:
@@ -222,29 +164,5 @@
           - TableMask
         layer:
           - TableLayer
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 100
-      behaviors:
-        - !type:DoActsBehavior
-          acts: [ "Destruction" ]
-    - trigger:
-        !type:DamageTrigger
-        damage: 20
-      behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalBreak
-          params:
-            volume: -6
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          PartRodMetal1:
-            min: 0
-            max: 2
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
   - type: Construction
     node: railingRound

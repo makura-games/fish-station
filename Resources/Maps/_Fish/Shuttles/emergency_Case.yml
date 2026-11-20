@@ -1,11 +1,11 @@
 meta:
   format: 7
   category: Grid
-  engineVersion: 271.1.0
+  engineVersion: 277.0.0
   forkId: ""
   forkVersion: ""
-  time: 07/02/2026 22:09:08
-  entityCount: 626
+  time: 10/01/2026 08:00:22
+  entityCount: 637
 maps: []
 grids:
 - 603
@@ -3671,6 +3671,95 @@ entities:
       parent: 603
     - type: Airtight
       airBlocked: True
+  - uid: 627
+    components:
+    - type: Transform
+      anchored: True
+      pos: -6.5,6.5
+      parent: 603
+    - type: Airtight
+      airBlocked: True
+  - uid: 628
+    components:
+    - type: Transform
+      anchored: True
+      pos: 1.5,6.5
+      parent: 603
+    - type: Airtight
+      airBlocked: True
+- proto: SunriseWallhornBlack
+  entities:
+  - uid: 629
+    components:
+    - type: Transform
+      pos: -2.5,7.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 630
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,-0.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 631
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -1.5,-0.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 632
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -1.5,11.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 633
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,10.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 634
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 2.5,12.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 635
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -7.5,11.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 636
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 4.5,1.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
+  - uid: 637
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -9.5,1.5
+      parent: 603
+    - type: Fixtures
+      fixtures: {}
 - proto: Table
   entities:
   - uid: 466

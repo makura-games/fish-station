@@ -1,0 +1,37 @@
+light_mode unshaded;
+blend_mode none;
+
+
+
+uniform sampler2D SCREEN_TEXTURE;
+#include "/Textures/_Fish/Shaders/Vision/vision_sampling.swsl"
+uniform sampler2D PREVIOUS_TEXTURE;
+uniform highp vec2 viewport_size;
+uniform highp vec2 aperture_radii;
+uniform highp vec2 adaptation;
+uniform bool reset_history;
+
+void fragment() {
+    // Небольшая равномерная сетка внутри окуляра, вычисляется один раз на кадр в RT 1x1.
+    highp float energy = 0.0;
+    highp float weight = 0.0;
+    for (highp int y = 0; y < 16; y++) {
+        for (highp int x = 0; x < 16; x++) {
+            highp vec2 point = (vec2(float(x), float(y)) + 0.5) / 8.0 - 1.0;
+            highp float radius = length(point);
+            highp vec2 uv = 0.5 + point * aperture_radii / viewport_size;
+            if (radius < 0.95 && uv.x > 0.0 && uv.x < 1.0 && uv.y > 0.0 && uv.y < 1.0 && night_visible(uv)) {
+                highp float sample_weight = 1.0 - 0.5 * radius;
+                highp float brightness = luminance(zTextureSpec(SCREEN_TEXTURE, uv).rgb);
+                energy += brightness * brightness * sample_weight;
+                weight += sample_weight;
+            }
+        }
+    }
+    highp float brightness = sqrt(energy / max(weight, 1.0));
+    highp float target = 1.0 / (1.0 + 2.5 * smoothstep(0.04, 0.45, brightness));
+    highp float previous = texture2D(PREVIOUS_TEXTURE, vec2(0.5)).r;
+    highp float rate = target < previous ? adaptation.x : adaptation.y;
+    highp float gain = reset_history ? target : mix(previous, target, rate);
+    COLOR = vec4(gain, 0.0, 0.0, 1.0);
+}

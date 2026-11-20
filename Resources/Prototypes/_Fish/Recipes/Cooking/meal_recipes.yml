@@ -34,3 +34,13 @@
     Egg: 6
   solids:
     FoodMango: 2
+
+# Рецепт торта с мозгами из одного мозга (без обычного торта), по просьбе: мозг в микроволновку на 15 секунд.
+- type: microwaveMealRecipe
+  id: FishRecipeBrainCake
+  name: brain cake recipe
+  result: FoodCakeBrain
+  time: 15
+  group: Cake
+  solids:
+    OrganHumanBrain: 1

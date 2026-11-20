@@ -1,3 +1,4 @@
+# Fish-edit: To remove - прототипы разумной болезни
 - type: entity
   parent: BaseAction
   id: ActionInfect
@@ -8,10 +9,16 @@
   - type: Action
     useDelay: 1
     itemIconStyle: BigAction
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: action
+    checkCanInteract: false # Fish-edit: не блокировать через ActionBlocker.CanInteract
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: action
+  # Fish-end
   - type: TargetAction
+    range: 2.5 # Fish-edit: дистанция заражения
+    checkCanAccess: false # Fish-edit: преодоление препятствий
     interactOnMiss: false
   - type: EntityTargetAction
     whitelist:
@@ -19,6 +26,8 @@
       - HumanoidProfile
     canTargetSelf: false
     event: !type:InfectEvent
+  - type: LimitedCharges # Fish-edit: заряды для попыток заражения
+    maxCharges: 3
 
 - type: entity
   parent: BaseAction
@@ -28,9 +37,13 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: shop
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: shop
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseShopActionEvent
 
@@ -55,9 +68,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: cough
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: cough
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Cough"
@@ -72,9 +89,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: sneeze
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: sneeze
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Sneeze"
@@ -89,9 +110,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: vomit
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: vomit
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Vomit"
@@ -106,9 +131,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: narcolepsy
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: narcolepsy
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Narcolepsy"
@@ -123,9 +152,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: sob
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: sob
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Crying"
@@ -140,9 +173,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: muted
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: muted
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Muted"
@@ -157,9 +194,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: slowness
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: slowness
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Slowness"
@@ -174,9 +215,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: bleed
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: bleed
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Bleed"
@@ -191,9 +236,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: blindness
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: blindness
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Blindness"
@@ -208,9 +257,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: lethal
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: lethal
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseAddSymptomEvent
       symptom: "Insult"
@@ -225,9 +278,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: zombie
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: zombie
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseZombieEvent
 
@@ -240,9 +297,13 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    icon:
-      sprite: _Sunrise/Actions/disease.rsi
-      state: blindness
+
+  # Fish-start: перенос иконки в компонент Sprite
+  - type: Sprite
+    sprite: _Sunrise/Actions/disease.rsi
+    layers:
+    - state: blindness
+  # Fish-end
   - type: InstantAction
     event: !type:DiseaseInfoEvent
 

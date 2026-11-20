@@ -10,7 +10,7 @@
   - CentCommOperatorEyesFish
   - CentCommOperatorBackFish
   - CentCommOperatorWeaponsFish
-  - Trinkets
+  - CentCommJobTrinkets
   - Survival
   - GroupSpeciesBreathTool
   - Bra
@@ -29,7 +29,7 @@
   - CentCommOperatorEyesFish
   - CentCommOperatorBackFish
   - CentCommOperatorWeaponsFish
-  - Trinkets
+  - CentCommJobTrinkets
   - Survival
   - GroupSpeciesBreathTool
   - Bra
@@ -58,18 +58,20 @@
 - type: roleLoadout
   id: JobCentcommBlueShield
   groups:
-  - BlueShieldHead # Fish-edit
+  - BlueShieldHead
+  - SunriseLoadoutGroupBlueShieldMask
+  - BlueShieldNeck
+  - BlueShieldOuterClothing
   - BlueShieldJumpsuit
   - BlueShieldBackpack
   - BlueShieldBelt
-  - BlueShieldNeck
-  - BlueShieldOuterClothing
-  - Trinkets
-  - SurvivalSecurity
+  - BlueShieldBra
+  - BlueShieldPants
+  - SunriseTrinkets
+  - SunriseSurvivalSecurity
   - GroupSpeciesBreathTool
-  - Bra
-  - Pants
   - Socks
+  - Contributors
 
 - type: roleLoadout
   id: JobCentcommMedicalDoctor
@@ -84,7 +86,7 @@
   - SunriseMedicalDoctorNeck
   # Sunrise-end
   - MedicalShoes
-  #- MedicalDoctorPDA
+  - MedicalDoctorPDA # Fish-edit - КПК врача ЦК отсутствовал: группа была закомментирована
   - Glasses
   - SurvivalMedical
   - Trinkets
@@ -146,18 +148,20 @@
 - type: roleLoadout
   id: JobRepresentativeBlueShield
   groups:
-  - BlueShieldHead # Fish-edit
+  - BlueShieldHead
+  - SunriseLoadoutGroupBlueShieldMask
+  - BlueShieldNeck
+  - BlueShieldOuterClothing
   - BlueShieldJumpsuit
   - BlueShieldBackpack
   - BlueShieldBelt
-  - BlueShieldNeck
-  - BlueShieldOuterClothing
-  - Trinkets
-  - SurvivalSecurity
+  - BlueShieldBra
+  - BlueShieldPants
+  - SunriseTrinkets
+  - SunriseSurvivalSecurity
   - GroupSpeciesBreathTool
-  - Bra
-  - Pants
   - Socks
+  - Contributors
 
 - type: roleLoadout
   id: JobOversightOfficer
@@ -179,6 +183,9 @@
   - SpecOpsHatsFish
   - SpecOpsShoesFish
   - SpecOpsGlovesFish
+  - SpecOpsOuterClothingFish
+  - FishSpecOpsBack
+  - FishSpecOpsWeapons
   - Trinkets
   - Survival
   - GroupSpeciesBreathTool
@@ -197,3 +204,20 @@
   - Bra
   - Pants
   - Socks #socks
+
+- type: roleLoadout
+  id: JobBlueShieldEnsign
+  groups:
+  - ComMaidHead
+  - ComMaidNeck
+  - ComMaidJumpsuit
+  - ComMaidGloves
+  - ComMaidShoes
+  - ComMaidBackpack
+  - SunriseSurvival
+  - GroupSpeciesBreathTool
+  - Bra
+  - Pants
+  - Socks
+  - SunriseTrinkets
+  - Contributors

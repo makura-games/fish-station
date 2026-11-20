@@ -53,15 +53,17 @@ spellbook-staff-animation-description = Оживляйте неодушевлё�
 
 spellbook-event-summon-ghosts-name = Призыв призраков
 spellbook-event-summon-ghosts-description = Кого вы позовёте?
-# Fish-Edit start: обновлены описания для отражения работы только на текущем гриде
+# Fish-start: обновлены описания для отражения работы только на текущем гриде
 spellbook-event-summon-guns-name = Призыв оружия
 spellbook-event-summon-guns-description = АК-47 для всех! Размещает перед каждым на текущей локации или корабле случайное огнестрельное оружие. Отключает возврат средств при покупке!
 spellbook-event-summon-magic-name = Призыв магии
 spellbook-event-summon-magic-description = Размещает перед каждым на текущей локации или корабле случайный магический предмет. Что может пойти не так? Отключает возврат средств при покупке!
-# Fish-Edit end
+# Fish-end
 # Upgrades
 spellbook-upgrade-fireball-name = Улучшение Огненного шара
 spellbook-upgrade-fireball-description = Позволяет улучшить Огненный шар до максимального 3-го уровня!
 spellbook-upgrade-jaunt-name = Улучшение Эфирной прогулки
 spellbook-upgrade-jaunt-description = Позволяет улучшить Эфирную прогулку до максимального 3-го уровня!
 spellbook-polymoprh-spider-name = Полиморф-паук
+spellbook-guardian-deck-name = Колода Таро
+spellbook-guardian-deck-description = Странная колода карт, которая при использовании дарует вам призрачного стража.

@@ -1,125 +1,118 @@
-﻿using Content.Shared.CCVar;
+using Content.Shared.CCVar;
 using Content.Shared.Chat;
+using Content.Shared.AlertLevel;
 using Content.Shared.Communications;
+using Content.Shared.Station;
 using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
-using Robust.Shared.Timing;
+using Robust.Shared.Prototypes;
 
-namespace Content.Client.Communications.UI
+namespace Content.Client.Communications.UI;
+
+/// <summary>
+/// The BUI for the communications console.
+/// Handles sending messages back to the server to call the shuttle,
+/// send messages, set the alert level, and set the text on screens.
+/// </summary>
+/// <seealso cref="CommunicationsConsoleComponent"/>
+public sealed partial class CommunicationsConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
 {
-    public sealed partial class CommunicationsConsoleBoundUserInterface : BoundUserInterface
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private SharedStationSystem _station = default!;
+    [Dependency] private AlertLevelSystem _alertLevel = default!;
+
+    [ViewVariables]
+    private CommunicationsConsoleMenu? _menu;
+
+    private static readonly EntProtoId FallbackScreen = "Screen";
+
+    /// <inheritdoc/>
+    protected override void Open()
     {
-        [Dependency] private IConfigurationManager _cfg = default!;
+        base.Open();
 
-        [ViewVariables]
-        private CommunicationsConsoleMenu? _menu;
+        _menu = this.CreateWindow<CommunicationsConsoleMenu>();
+        _menu.OnRadioAnnounce += RadioAnnounceButtonPressed;
+        _menu.OnScreenBroadcast += ScreenBroadcastButtonPressed;
+        _menu.OnAlertLevelChanged += AlertLevelSelected;
+        _menu.OnShuttleCalled += CallShuttle;
+        _menu.OnShuttleRecalled += RecallShuttle;
+        _menu.OnAdditionalAlertLevel += AdditionalAlertLevelSelected; // Sunrise-Edit
+        _menu.OnAlertStation += AlertStationSelected; // Sunrise-Edit
+        _menu.OnToggleRelay += ToggleRelayPressed; // Sunrise-Edit - сохраняем управление ретрансляцией в новом интерфейсе.
 
-        public CommunicationsConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+        if (EntMan.TryGetComponent<CommunicationsConsoleComponent>(Owner, out var console))
+            _menu.SetBroadcastDisplayEntity(console.ScreenDisplayId);
+        else
+            _menu.SetBroadcastDisplayEntity(FallbackScreen);
+    }
+
+    public void AlertLevelSelected(ProtoId<AlertLevelPrototype> level)
+    {
+        // TODO: This does not work until the console UI is predicted and uses component states.
+        // Also someone decided to send BUI states regularly in an update loop, so this just gets randomly bulldozed until the message reaches the server.
+        // _menu.CurrentAlertLevel = level;
+        // _menu.AlertLevelSelectable = false;
+        // _menu.AlertLevelButton.Disabled = true;
+        if (!HasAccess()) // Sunrise-Edit
+            return; // Sunrise-Edit
+
+        SendMessage(new CommunicationsConsoleSelectAlertLevelMessage(level));
+    }
+
+    public void RadioAnnounceButtonPressed(string message)
+    {
+        var maxLength = _cfg.GetCVar(CCVars.ChatMaxAnnouncementLength);
+        var msg = SharedChatSystem.SanitizeAnnouncement(message, maxLength);
+        SendMessage(new CommunicationsConsoleAnnounceMessage(msg));
+    }
+
+    public void ScreenBroadcastButtonPressed(string message)
+    {
+        SendMessage(new CommunicationsConsoleBroadcastMessage(message));
+    }
+
+    public void CallShuttle()
+    {
+        SendMessage(new CommunicationsConsoleCallEmergencyShuttleMessage());
+    }
+
+    public void RecallShuttle()
+    {
+        SendMessage(new CommunicationsConsoleRecallEmergencyShuttleMessage());
+    }
+
+    // TODO: Use component states and update in an AfterAutoHandleState subscription
+    protected override void UpdateState(BoundUserInterfaceState state)
+    {
+        base.UpdateState(state);
+
+        if (state is not CommunicationsConsoleInterfaceState commsState)
+            return;
+
+        // Sunrise edit start - используем серверное состояние кодов тревоги для поддержки удалённых станций и ограничений консолей
+        // var stationUid = _station.GetOwningStation(Owner);
+        //
+        // if (!EntMan.TryGetComponent<AlertLevelComponent>(stationUid, out var alertComp))
+        //     return;
+
+        if (_menu != null)
         {
+            // var currentAlertLevel = alertComp.CurrentAlertLevel;
+            // var selectableAlertLevels = _alertLevel.GetSelectableAlertLevels((stationUid.Value, alertComp));
+            // var canChangeAlertLevel = _alertLevel.CanChangeAlertLevel((stationUid.Value, alertComp));
+            var hasAccess = HasAccess();
+            var currentAlertLevel = commsState.CurrentAlert ?? default;
+            var selectableAlertLevels = commsState.AlertLevels;
+            var canChangeAlertLevel = hasAccess
+                && selectableAlertLevels != null
+                && !float.IsNaN(commsState.CurrentAlertDelay)
+                && commsState.CurrentAlertDelay <= 0;
+            // Sunrise edit end
+
+            _menu.UpdateState(commsState, currentAlertLevel, selectableAlertLevels, canChangeAlertLevel);
+            _menu.UpdateAdditionalAlertLevelState(commsState, hasAccess); // Sunrise-Edit
+            _menu.UpdateSunriseState(commsState); // Sunrise-Edit - обновляем состояние ретрансляции.
         }
-
-        protected override void Open()
-        {
-            base.Open();
-
-            _menu = this.CreateWindow<CommunicationsConsoleMenu>();
-            _menu.OnAnnounce += AnnounceButtonPressed;
-            _menu.OnBroadcast += BroadcastButtonPressed;
-            _menu.OnAlertLevel += AlertLevelSelected;
-            _menu.OnAdditionalAlertLevel += AdditionalAlertLevelSelected; // Sunrise-Edit
-            _menu.OnAlertStation += AlertStationSelected; // Sunrise-Edit
-            _menu.OnEmergencyLevel += EmergencyShuttleButtonPressed;
-            _menu.OnToggleRelay += ToggleRelayPressed; // Sunrise-Edit
-        }
-
-        public void AlertLevelSelected(string level)
-        {
-            if (_menu!.AlertLevelSelectable && HasAccess()) // Sunrise-Edit
-            {
-                _menu.CurrentLevel = level;
-                SendMessage(new CommunicationsConsoleSelectAlertLevelMessage(level));
-            }
-        }
-
-        public void EmergencyShuttleButtonPressed()
-        {
-            if (_menu!.CountdownStarted)
-                RecallShuttle();
-            else
-                CallShuttle();
-        }
-
-        public void AnnounceButtonPressed(string message)
-        {
-            var maxLength = _cfg.GetCVar(CCVars.ChatMaxAnnouncementLength);
-            var msg = SharedChatSystem.SanitizeAnnouncement(message, maxLength);
-            SendMessage(new CommunicationsConsoleAnnounceMessage(msg));
-        }
-
-        public void BroadcastButtonPressed(string message)
-        {
-            SendMessage(new CommunicationsConsoleBroadcastMessage(message));
-        }
-
-        // Sunrise-Start
-        private void ToggleRelayPressed()
-        {
-            SendMessage(new CommunicationsConsoleToggleRelayMessage());
-        }
-        // Sunrise-End
-
-        public void CallShuttle()
-        {
-            SendMessage(new CommunicationsConsoleCallEmergencyShuttleMessage());
-        }
-
-        public void RecallShuttle()
-        {
-            SendMessage(new CommunicationsConsoleRecallEmergencyShuttleMessage());
-        }
-
-        protected override void UpdateState(BoundUserInterfaceState state)
-        {
-            base.UpdateState(state);
-
-            if (state is not CommunicationsConsoleInterfaceState commsState)
-                return;
-
-            if (_menu != null)
-            {
-                var hasAccess = HasAccess(); // Sunrise-Edit
-                _menu.CanAnnounce = commsState.CanAnnounce;
-                _menu.CanBroadcast = commsState.CanBroadcast;
-                _menu.CanCall = commsState.CanCall;
-                _menu.CountdownStarted = commsState.CountdownStarted;
-                _menu.AlertLevelSelectable = hasAccess
-                    && commsState.AlertLevels != null
-                    && !float.IsNaN(commsState.CurrentAlertDelay)
-                    && commsState.CurrentAlertDelay <= 0; // Sunrise-Edit
-                _menu.CurrentLevel = commsState.CurrentAlert;
-                _menu.CountdownEnd = commsState.ExpectedCountdownEnd;
-
-                _menu.UpdateCountdown();
-                _menu.UpdateAlertStations(
-                    commsState.AlertStations,
-                    commsState.SelectedAlertStation,
-                    hasAccess); // Sunrise-Edit
-                _menu.UpdateAlertLevels(commsState.AlertLevels, _menu.CurrentLevel);
-                _menu.UpdateAdditionalAlertLevels(commsState.AdditionalAlertLevels, hasAccess); // Sunrise-Edit
-                _menu.AlertLevelButton.Disabled = !_menu.AlertLevelSelectable;
-                _menu.EmergencyShuttleButton.Disabled = !_menu.CanCall;
-                _menu.AnnounceButton.Disabled = !_menu.CanAnnounce;
-                _menu.BroadcastButton.Disabled = !_menu.CanBroadcast;
-
-                // Sunrise-Start
-                _menu.CanRelay = commsState.CanRelay;
-                _menu.IsRelaying = commsState.IsRelaying;
-                _menu.RelayCooldownRemaining = commsState.RelayCooldownRemaining;
-                _menu.RelayTimeRemaining = commsState.RelayTimeRemaining;
-                _menu.UpdateRelayUi();
-                // Sunrise-End
-            }
-        }
-
     }
 }

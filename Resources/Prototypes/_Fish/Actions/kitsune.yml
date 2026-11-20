@@ -6,11 +6,12 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    icon:
-      sprite: Mobs/Animals/fox.rsi
-      state: fox
     useDelay: 3
     itemIconStyle: NoItem
+  - type: Sprite
+    sprite: Mobs/Animals/fox.rsi
+    layers:
+    - state: fox
   - type: InstantAction
     event: !type:KitsuneTransformActionEvent
 
@@ -22,11 +23,12 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    icon:
-      sprite: _Fish/nine_tailed_fox.rsi
-      state: fox
     useDelay: 3
     itemIconStyle: NoItem
+  - type: Sprite
+    sprite: _Fish/nine_tailed_fox.rsi
+    layers:
+    - state: fox
   - type: InstantAction
     event: !type:KitsuneRevertActionEvent
 
@@ -38,10 +40,13 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    icon: { sprite: _Fish/kitsune_fire.rsi, state: fire }
     useDelay: 15
     itemIconStyle: NoItem
     checkCanInteract: false
+  - type: Sprite
+    sprite: _Fish/kitsune_fire.rsi
+    layers:
+    - state: fire
   - type: TargetAction
     range: 15
     checkCanAccess: false
@@ -57,9 +62,12 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    icon: { sprite: _Fish/kitsune_fire.rsi, state: fire }
     useDelay: 10
     itemIconStyle: NoItem
     checkCanInteract: true
+  - type: Sprite
+    sprite: _Fish/kitsune_fire.rsi
+    layers:
+    - state: fire
   - type: InstantAction
     event: !type:KitsuneFoxLightsActionEvent

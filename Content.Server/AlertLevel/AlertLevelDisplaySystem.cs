@@ -18,7 +18,7 @@ public sealed partial class AlertLevelDisplaySystem : EntitySystem
         SubscribeLocalEvent<AlertLevelDisplayComponent, PowerChangedEvent>(OnPowerChanged);
     }
 
-    private void OnAlertChanged(AlertLevelChangedEvent args)
+    private void OnAlertChanged(ref AlertLevelChangedEvent args)
     {
         UpdateDisplays(args.Station); // Sunrise-Edit
     }
@@ -32,7 +32,10 @@ public sealed partial class AlertLevelDisplaySystem : EntitySystem
                 && TryComp<AlertLevelComponent>(station, out var alert)
                 && _alertLevel.TryGetVisualAlertLevel((station, alert), out var level, out _))
             {
+                // Sunrise edit start - отображение кода с наивысшим визуальным приоритетом
                 _appearance.SetData(uid, AlertLevelDisplay.CurrentLevel, level, appearance);
+                // _appearance.SetData(uid, AlertLevelDisplay.CurrentLevel, alert.CurrentAlertLevel, appearance);
+                // Sunrise edit end
             }
         }
     }

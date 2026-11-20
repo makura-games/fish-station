@@ -46,9 +46,11 @@
     - proto: SalvageSpawnerMobShark
       cost: 8
       prob: 0.1
-    - proto: MobCarpRainbowDragon
-      cost: 3
-      prob: 0.15
+    # Fish-start: MobCarpRainbowDragon удалён в Sunrise #4763
+    # - proto: FishMobCarpRainbowDragonExpedition # Fish-edit: вариант без шанса гост-роли, MobCarpRainbowDragon нужен ивенту дракона
+    #   cost: 3
+    #   prob: 0.15
+    # Fish-end
     # Sunrise-End
     - proto: MobCarpRainbow # carp version of rouny...
       cost: 3

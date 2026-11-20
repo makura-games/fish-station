@@ -1,6 +1,7 @@
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerZenthium
-  tip: xenoarch-trigger-tip-zenthium
+  name: zenthium
   components:
   - type: XATGas
     targetGas: Zenthium
@@ -8,9 +9,10 @@
     reagents:
     - Zenthium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerKrypium
-  tip: xenoarch-trigger-tip-krypium
+  name: krypium
   components:
   - type: XATGas
     targetGas: Krypium
@@ -18,9 +20,10 @@
     reagents:
     - Krypium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerPrallium
-  tip: xenoarch-trigger-tip-prallium
+  name: prallium
   components:
   - type: XATGas
     targetGas: Prallium
@@ -28,9 +31,10 @@
     reagents:
     - Prallium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerChaoson
-  tip: xenoarch-trigger-tip-chaoson
+  name: chaoson
   components:
   - type: XATGas
     targetGas: Chaoson
@@ -38,9 +42,10 @@
     reagents:
     - Chaoson
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerGarodin
-  tip: xenoarch-trigger-tip-garodin
+  name: garodin
   components:
   - type: XATGas
     targetGas: Garodin
@@ -48,9 +53,10 @@
     reagents:
     - Garodin
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerBaratrium
-  tip: xenoarch-trigger-tip-baratrium
+  name: baratrium
   components:
   - type: XATGas
     targetGas: Baratrium
@@ -58,9 +64,10 @@
     reagents:
     - Baratrium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerEthylium
-  tip: xenoarch-trigger-tip-ethylium
+  name: ethylium
   components:
   - type: XATGas
     targetGas: Ethylium
@@ -68,9 +75,10 @@
     reagents:
     - Ethylium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerZimmera
-  tip: xenoarch-trigger-tip-zimmera
+  name: zimmera
   components:
   - type: XATGas
     targetGas: Zimmera
@@ -78,9 +86,10 @@
     reagents:
     - Zimmera
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerFramel
-  tip: xenoarch-trigger-tip-framel
+  name: framel
   components:
   - type: XATGas
     targetGas: Framel
@@ -88,9 +97,10 @@
     reagents:
     - Framel
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerKlemennon
-  tip: xenoarch-trigger-tip-klemennon
+  name: klemennon
   components:
   - type: XATGas
     targetGas: Klemennon
@@ -98,9 +108,10 @@
     reagents:
     - Klemennon
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerProtoUltimium
-  tip: xenoarch-trigger-tip-proto-ultimium
+  name: proto-ultimium
   components:
   - type: XATGas
     targetGas: ProtoUltimium
@@ -108,9 +119,10 @@
     reagents:
     - ProtoUltimium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerZimmerousFrezonite
-  tip: xenoarch-trigger-tip-zimmerous-frezonite
+  name: zimmerous frezonite
   components:
   - type: XATGas
     targetGas: ZimmerousFrezonite
@@ -118,9 +130,10 @@
     reagents:
     - ZimmerousFrezonite
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerAntiUltimium
-  tip: xenoarch-trigger-tip-anti-ultimium
+  name: anti-ultimium
   components:
   - type: XATGas
     targetGas: AntiUltimium
@@ -128,9 +141,10 @@
     reagents:
     - AntiUltimium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerUltimium
-  tip: xenoarch-trigger-tip-ultimium
+  name: ultimium
   components:
   - type: XATGas
     targetGas: Ultimium
@@ -138,9 +152,10 @@
     reagents:
     - Ultimium
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerPermafrost
-  tip: xenoarch-trigger-tip-permafrost
+  name: permafrost
   components:
   - type: XATGas
     targetGas: Permafrost
@@ -148,9 +163,10 @@
     reagents:
     - Permafrost
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerRiminon
-  tip: xenoarch-trigger-tip-riminon
+  name: riminon
   components:
   - type: XATGas
     targetGas: Riminon
@@ -158,9 +174,10 @@
     reagents:
     - Riminon
 
-- type: xenoArchTrigger
+- type: entity
+  parent: BaseXenoArtifactTrigger
   id: TriggerAxoNoblium
-  tip: xenoarch-trigger-tip-axo-noblium
+  name: axo-noblium
   components:
   - type: XATGas
     targetGas: AxoNoblium

@@ -30,6 +30,24 @@
     - Kitsune #Fish-edit
     # Sunrise-End
 
+# Fish-start: КПБ получают ремонтный набор вместо дыхательного
+- type: loadoutEffectGroup
+  id: FishIpcChassis
+  effects:
+  - !type:SpeciesLoadoutEffect
+    species:
+    - Ipc
+
+- type: loadout
+  id: EmergencyFishIpc
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: FishIpcChassis
+  storage:
+    back:
+    - BoxRepairSynth
+# Fish-end
+
 - type: loadoutEffectGroup
   id: EffectSpeciesVox
   effects:
@@ -64,7 +82,7 @@
     proto: OxygenBreather
   storage:
     back:
-    - BoxHug
+    - BoxSurvivalHug
 
 - type: loadout
   id: EmergencyNitrogenClown
@@ -73,7 +91,7 @@
     proto: NitrogenBreather
   storage:
     back:
-    - BoxHugNitrogen
+    - BoxSurvivalHugNitrogen
 
 # Mime
 - type: loadoutEffectGroup
@@ -189,7 +207,26 @@
     back:
     - BoxSurvivalSecurityNitrogen
 
-# Syndicate
+# Antagonist
+
+- type: loadout
+  id: EmergencyOxygenExtendedAntag
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: OxygenBreather
+  storage:
+    back:
+    - BoxSurvivalDeluxeExtended
+
+- type: loadout
+  id: EmergencyNitrogenExtendedAntag
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NitrogenBreather
+  storage:
+    back:
+    - BoxSurvivalDeluxeExtendedNitrogen
+
 - type: loadout
   id: EmergencyOxygenSyndicate
   effects:

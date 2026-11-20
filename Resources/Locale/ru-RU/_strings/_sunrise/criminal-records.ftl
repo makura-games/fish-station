@@ -29,13 +29,15 @@ sunrise-records-sentence-life = ПЕРМА
 sunrise-records-sentence-header = СРОК
 sunrise-records-person-name = Имя:
 sunrise-records-person-job = Должность:
-sunrise-records-breakdown-base-sum = Базовая сумма (Кат. 1-5): { $sum } мин.
+sunrise-records-breakdown-base-sum = Базовая сумма (Кат. 1-4): { $sum } мин.
 sunrise-records-breakdown-cap = Лимит (1.5x Кат. { $cat }): { $cap } мин.
-sunrise-records-breakdown-perma-sum = База (Кат. 6): { $sum } мин.
+sunrise-records-breakdown-perma-sum = База (Кат. 5): { $sum } мин.
+sunrise-records-breakdown-perma-threshold = [color=red]Порог пермы: { $from } → { $to } мин.[/color]
 sunrise-records-breakdown-warning = [color=yellow]{ $id }: Предупреждение (первое нарушение)[/color]
 sunrise-records-breakdown-recidivism = [color=orange]{ $id }: Рецидив { $percent }%[/color]
 sunrise-records-breakdown-escape-penalty = [color=red]Штраф за побег: +{ $penalty } мин.[/color]
 sunrise-records-breakdown-modifier = [color=cyan]{ $id }: { $percent }%[/color]
+sunrise-records-breakdown-modifier-minutes = [color=cyan]{ $id }: { $minutes } мин.[/color]
 sunrise-records-person-age = Возраст:
 sunrise-records-person-dna = ДНК:
 sunrise-records-person-gender = Гендер:

@@ -25,10 +25,9 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedCloningSystem _cloning = default!;
-    [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private SharedChangelingIdentitySystem _changelingIdentity = default!;
-    [Dependency] private SharedForensicsSystem _forensics = default!;
+    [Dependency] private ForensicsSystem _forensics = default!;
     [Dependency] private SharedVisualBodySystem _visualBody = default!;
 
     public override void Initialize()
@@ -136,6 +135,14 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         if (!HasComp<HumanoidProfileComponent>(target))
             return false; // cloning only works for humanoids at the moment
 
+        // Fish-start: у КПБ нет ДНК, образец не снимается
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-no-dna"), target, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
+
         var args = new DoAfterArgs(EntityManager, user, ent.Comp.DoAfter, new ClonerDrawDoAfterEvent(), ent, target: target, used: ent)
         {
             BreakOnDamage = true,
@@ -150,7 +157,7 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         var targetIdentity = Identity.Entity(target, EntityManager);
         var userMsg = Loc.GetString("changeling-cloner-component-draw-user", ("user", userIdentity), ("target", targetIdentity));
         var targetMsg = Loc.GetString("changeling-cloner-component-draw-target", ("user", userIdentity), ("target", targetIdentity));
-        _popup.PopupClient(userMsg, target, user);
+        _popup.PopupEntity(userMsg, target, user);
 
         if (user != target) // don't show the warning if using the item on yourself
             _popup.PopupEntity(targetMsg, user, target, PopupType.LargeCaution);
@@ -172,6 +179,14 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         if (!HasComp<HumanoidProfileComponent>(target))
             return false; // cloning only works for humanoids at the moment
 
+        // Fish-start: в шасси КПБ ДНК не вкалывают
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-no-dna"), target, user, PopupType.SmallCaution);
+            return false;
+        }
+        // Fish-end
+
         var args = new DoAfterArgs(EntityManager, user, ent.Comp.DoAfter, new ClonerInjectDoAfterEvent(), ent, target: target, used: ent)
         {
             BreakOnDamage = true,
@@ -186,7 +201,7 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         var targetIdentity = Identity.Entity(target, EntityManager);
         var userMsg = Loc.GetString("changeling-cloner-component-inject-user", ("user", userIdentity), ("target", targetIdentity));
         var targetMsg = Loc.GetString("changeling-cloner-component-inject-target", ("user", userIdentity), ("target", targetIdentity));
-        _popup.PopupClient(userMsg, target, user);
+        _popup.PopupEntity(userMsg, target, user);
 
         if (user != target) // don't show the warning if using the item on yourself
             _popup.PopupEntity(targetMsg, user, target, PopupType.LargeCaution);
@@ -208,6 +223,10 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
 
         if (!HasComp<HumanoidProfileComponent>(target))
             return; // cloning only works for humanoids at the moment
+
+        // Fish-edit: завершённый do-after не снимает ДНК с КПБ
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+            return;
 
         _adminLogger.Add(LogType.Identity,
             $"{user} is using {ent.Owner} to draw DNA from {target}.");
@@ -239,7 +258,11 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         if (!HasComp<HumanoidProfileComponent>(target))
             return; // cloning only works for humanoids at the moment
 
-        if (!_prototype.Resolve(ent.Comp.Settings, out var settings))
+        // Fish-edit: завершённый do-after не переписывает шасси КПБ чужой ДНК
+        if (HasComp<Content.Shared._Fish.Ipc.FishIpcComponent>(target))
+            return;
+
+        if (!ProtoMan.Resolve(ent.Comp.Settings, out var settings))
             return;
 
         _audio.PlayPredicted(ent.Comp.InjectSound, target, user);
@@ -283,7 +306,7 @@ public sealed partial class ChangelingClonerSystem : EntitySystem
         if (user == null)
             return;
 
-        _popup.PopupClient(Loc.GetString("changeling-cloner-component-reset-popup"), user.Value, user.Value);
+        _popup.PopupEntity(Loc.GetString("changeling-cloner-component-reset-popup"), user.Value, user.Value);
     }
 }
 

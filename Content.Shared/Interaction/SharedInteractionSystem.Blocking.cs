@@ -47,8 +47,12 @@ public partial class SharedInteractionSystem
         // Sunrise-end
 
         // If we're relaying then don't cancel.
-        if (HasComp<RelayInputMoverComponent>(uid))
+        // Fish-start - не отменять блокировку движения, если релей уже завершает работу или удаляется
+        // if (HasComp<RelayInputMoverComponent>(uid))
+        //     return;
+        if (TryComp<RelayInputMoverComponent>(uid, out var relay) && relay.LifeStage <= ComponentLifeStage.Running)
             return;
+        // Fish-end
 
         args.Cancel(); // no more scurrying around
     }

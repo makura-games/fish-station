@@ -1,3 +1,4 @@
+// Fish-edit: To remove - функционал разумной болезни
 // © SUNRISE, An EULA/CLA with a hosting restriction, full text: https://github.com/space-sunrise/space-station-14/blob/master/CLA.txt
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
@@ -32,6 +33,9 @@ public sealed partial class VaccinatorSystem : SharedVaccinatorSystem
     [Dependency] private PaperSystem _paperSystem = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
+    // Fish-start: Аудиосистема для проигрывания звука печати отчета
+    [Dependency] private SharedAudioSystem _audio = default!;
+    // Fish-end
 
     /// <summary>
     /// A cache of all reactions indexed by at most ONE of their required reactants.
@@ -52,7 +56,9 @@ public sealed partial class VaccinatorSystem : SharedVaccinatorSystem
         InitializeReactionCache();
 
         SubscribeLocalEvent<VaccinatorComponent, PowerChangedEvent>(OnPowerChanged);
-        SubscribeNetworkEvent<PaperInputTextMessageLigyb>(OnPaper);
+        // Fish-start: Локальное событие завершения смешивания
+        SubscribeLocalEvent<VaccinatorComponent, VaccineMixFinishedEvent>(OnVaccineMixFinished);
+        // Fish-end
     }
 
 
@@ -84,12 +90,13 @@ public sealed partial class VaccinatorSystem : SharedVaccinatorSystem
         _reactions = dict.ToFrozenDictionary();
     }
 
-    private void OnPaper(PaperInputTextMessageLigyb args)
+    // Fish-start: Обработка завершения смешивания вакцины и безопасная печать отчета
+    private void OnVaccineMixFinished(Entity<VaccinatorComponent> ent, ref VaccineMixFinishedEvent args)
     {
         EntityUid? paper = null;
         bool printeds = false;
         List<string> wasProto = new List<string>();
-        foreach (var reactant in args.ReagentQuantity)
+        foreach (var reactant in args.Solution.Contents)
         {
             if (_prototypeManager.TryIndex(reactant.Reagent.Prototype, out ReagentPrototype? protoss))
             {
@@ -108,7 +115,7 @@ public sealed partial class VaccinatorSystem : SharedVaccinatorSystem
             {
                 if (printeds) continue;
                 else printeds = true;
-                var printed = Spawn("ForensicReportPaper", Transform(GetEntity(args.Uid)).Coordinates);
+                var printed = Spawn(ent.Comp.MachineOutput, Transform(ent).Coordinates);
                 paper = printed;
                 _metaData.SetEntityName(printed, "Технология изготовления вакцины");
                 var text = new StringBuilder();
@@ -127,13 +134,15 @@ public sealed partial class VaccinatorSystem : SharedVaccinatorSystem
                     }
                 }
                 text.AppendLine("После чего положить полученную жидкость в вакцинатор, добавив одну каплю крови здорового человека.");
-                if(TryComp<PaperComponent>(printed, out var paperComp))
+                if (TryComp<PaperComponent>(printed, out var paperComp))
                 {
                     _paperSystem.SetContent((printed, paperComp), text.ToString());
                 }
+                _audio.PlayPvs(ent.Comp.SoundPrint, ent);
             }
         }
     }
+    // Fish-end
 
     private void OnPowerChanged(Entity<VaccinatorComponent> ent, ref PowerChangedEvent args)
     {

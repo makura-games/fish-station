@@ -36,7 +36,7 @@
 
 - type: entity
   id: CultMirrorShield
-  parent: BaseShield
+  parent: BaseGinormousShield
   name: mirror shield
   description: Shield with a mirror on a front side, which has some religious sign.
   suffix: BloodCult
@@ -100,6 +100,7 @@
     - Inorganic
     - Silicon
     - Synth
+    - Ipc # Fish-edit: отображение шкалы здоровья КПБ на визоре
   - type: ShowHealthIcons
     damageContainers:
     - Biological

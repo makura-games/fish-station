@@ -119,13 +119,12 @@ public sealed partial class TeleportSpellEui : BaseEui
 
         _used = true;
 
-        _entityManager.SpawnEntity(TeleportInEffect, runeTransform.Coordinates);
-        _entityManager.SpawnEntity(TeleportOutEffect, targetTransform.Coordinates);
-        _audio.PlayPvs(_teleportInSound, runeTransform.Coordinates);
-        _audio.PlayPvs(_teleportOutSound, targetTransform.Coordinates);
-        _transformSystem.SetCoordinates(_target, runeTransform.Coordinates);
-        var ev = new TeleportSpellUsedEvent();
-        _entityManager.EventBus.RaiseLocalEvent(_performer, ev);
+        var startEv = new CultTeleportStartDoAfterEvent
+        {
+            Target = _target,
+            Rune = runeTransform.Owner
+        };
+        _entityManager.EventBus.RaiseLocalEvent(_performer, startEv);
         Close();
     }
 }
