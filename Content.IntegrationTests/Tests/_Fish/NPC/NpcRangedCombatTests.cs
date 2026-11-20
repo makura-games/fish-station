@@ -3,19 +3,19 @@ using Content.Server.NPC.HTN;
 using Content.Server.NPC.HTN.PrimitiveTasks;
 using Content.Server.NPC.HTN.PrimitiveTasks.Operators;
 using Content.Server._Fish.NPC.HTN;
-using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.NPC;
 
 [TestFixture]
 public sealed class NpcRangedCombatTests
 {
-    private static readonly ProtoId<HTNCompoundPrototype> GunCombatId = "GunCombatCompound";
-    private static readonly ProtoId<HTNCompoundPrototype> RangedCombatId = "RangedCombatCompound";
-    private static readonly ProtoId<HTNCompoundPrototype> XenoId = "XenoCompound";
-    private static readonly ProtoId<HTNCompoundPrototype> PickupAmmoId = "PickupAmmoCompound";
-    private static readonly ProtoId<HTNCompoundPrototype> SimpleHostileId = "SimpleHostileCompound";
-    private static readonly ProtoId<HTNCompoundPrototype> MeleeCombatId = "MeleeCombatCompound";
+    // Строки вместо ProtoId: YAMLLinter не знает kind HTNCompoundPrototype в IntegrationTests.
+    private const string GunCombatId = "GunCombatCompound";
+    private const string RangedCombatId = "RangedCombatCompound";
+    private const string XenoId = "XenoCompound";
+    private const string PickupAmmoId = "PickupAmmoCompound";
+    private const string SimpleHostileId = "SimpleHostileCompound";
+    private const string MeleeCombatId = "MeleeCombatCompound";
 
     /// <summary>
     /// GunCombat подходит к цели на RangedRange, а не MeleeRange.
@@ -24,7 +24,7 @@ public sealed class NpcRangedCombatTests
     public async Task GunCombatCompoundUsesRangedRange()
     {
         await using var pair = await PoolManager.GetServerClient();
-        var compound = pair.Server.ProtoMan.Index(GunCombatId);
+        var compound = pair.Server.ProtoMan.Index<HTNCompoundPrototype>(GunCombatId);
 
         Assert.That(compound.Branches, Is.Not.Empty);
         var move = FindMoveTo(compound);
@@ -41,7 +41,7 @@ public sealed class NpcRangedCombatTests
     public async Task RangedCombatCompoundHasReloadAndPickupAmmo()
     {
         await using var pair = await PoolManager.GetServerClient();
-        var compound = pair.Server.ProtoMan.Index(RangedCombatId);
+        var compound = pair.Server.ProtoMan.Index<HTNCompoundPrototype>(RangedCombatId);
 
         Assert.That(HasOperator<ReloadGunOperator>(compound), Is.True, "Нет ReloadGunOperator");
         Assert.That(HasCompoundTask(compound, PickupAmmoId), Is.True, "Нет PickupAmmoCompound");
@@ -56,7 +56,7 @@ public sealed class NpcRangedCombatTests
     public async Task XenoCompoundDelegatesToSimpleHostile()
     {
         await using var pair = await PoolManager.GetServerClient();
-        var compound = pair.Server.ProtoMan.Index(XenoId);
+        var compound = pair.Server.ProtoMan.Index<HTNCompoundPrototype>(XenoId);
 
         Assert.That(HasCompoundTask(compound, SimpleHostileId), Is.True);
         Assert.That(HasCompoundTask(compound, MeleeCombatId), Is.False);
@@ -92,7 +92,7 @@ public sealed class NpcRangedCombatTests
         return false;
     }
 
-    private static bool HasCompoundTask(HTNCompoundPrototype compound, ProtoId<HTNCompoundPrototype> taskId)
+    private static bool HasCompoundTask(HTNCompoundPrototype compound, string taskId)
     {
         foreach (var branch in compound.Branches)
         {
