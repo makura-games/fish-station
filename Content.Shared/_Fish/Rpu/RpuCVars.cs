@@ -73,10 +73,6 @@ public static class RpuCVars
     public static readonly CVarDef<float> PressureDropChance =
         CVarDef.Create("rpu.pressure.drop_chance", 0.05f, CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>Насколько больнее нарушителю получать урон (1.0 — без изменений).</summary>
-    public static readonly CVarDef<float> PressureIncomingDamage =
-        CVarDef.Create("rpu.pressure.incoming_damage", 1.08f, CVar.SERVERONLY | CVar.ARCHIVE);
-
     /// <summary>Отбрасывание на прошлую позицию (заметно, по умолчанию выключено).</summary>
     public static readonly CVarDef<bool> PressureRubberband =
         CVarDef.Create("rpu.pressure.rubberband", false, CVar.SERVERONLY | CVar.ARCHIVE);
@@ -112,7 +108,10 @@ public static class RpuCVars
     public static readonly CVarDef<float> MaxExtraUnits =
         CVarDef.Create("rpu.penalty.max_extra", RpuMaths.MaxExtraPenalty, CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>Минимальное снятие очков за вменяемое нарушение.</summary>
+    /// <summary>
+    /// Минимальное снятие очков за вменяемое нарушение (0.1 — одна десятая очка).
+    /// Полное освобождение задаётся не этим значением, а списком waives в rpuAdjust.
+    /// </summary>
     public static readonly CVarDef<float> MinPenalty =
         CVarDef.Create("rpu.penalty.min", RpuMaths.MinPenalty, CVar.SERVERONLY | CVar.ARCHIVE);
 }

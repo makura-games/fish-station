@@ -25,32 +25,33 @@ public sealed partial class RpuSlipSystem : EntitySystem
         SubscribeLocalEvent<SlipperyComponent, SlipEvent>(OnSlip);
     }
 
-    private void OnDropped(EntityUid uid, SlipperyComponent component, DroppedEvent args)
+    private void OnDropped(Entity<SlipperyComponent> ent, ref DroppedEvent args)
     {
-        Mark(uid, args.User);
+        Mark(ent.Owner, args.User);
     }
 
-    private void OnThrown(EntityUid uid, SlipperyComponent component, ThrowEvent args)
+    private void OnThrown(Entity<SlipperyComponent> ent, ref ThrowEvent args)
     {
-        if (args.User is { } user)
-            Mark(uid, user);
+        Mark(ent.Owner, args.User);
     }
 
-    private void Mark(EntityUid uid, EntityUid user)
+    /// <summary>
+    /// Ответственность всегда у того, кто последним положил или бросил предмет.
+    /// Если это сделал не игрок (шахтёр-бот, конвейер, выпавший из рук хлам),
+    /// прежний виновник снимается: с человека за чужие действия карму не берём.
+    /// </summary>
+    private void Mark(EntityUid uid, EntityUid? user)
     {
-        if (CompOrNull<ActorComponent>(user) == null)
-            return;
-
         var culprit = EnsureComp<RpuSlipCulpritComponent>(uid);
-        culprit.Culprit = user;
+        culprit.Culprit = user != null && HasComp<ActorComponent>(user.Value) ? user : null;
     }
 
-    private void OnSlip(EntityUid uid, SlipperyComponent component, SlipEvent args)
+    private void OnSlip(Entity<SlipperyComponent> ent, ref SlipEvent args)
     {
         if (!_rpu.Active)
             return;
 
-        if (!TryComp<RpuSlipCulpritComponent>(uid, out var culprit) || culprit.Culprit == null)
+        if (!TryComp<RpuSlipCulpritComponent>(ent.Owner, out var culprit) || culprit.Culprit == null)
             return;
 
         var culpritEntity = culprit.Culprit.Value;
@@ -85,6 +86,7 @@ public sealed partial class RpuSlipSystem : EntitySystem
 
 /// <summary>
 /// Серверная пометка: кто ответил за то, что скользкий предмет оказался на полу.
+/// Обнуляется, когда предмет положил или бросил не игрок.
 /// </summary>
 [RegisterComponent]
 public sealed partial class RpuSlipCulpritComponent : Component

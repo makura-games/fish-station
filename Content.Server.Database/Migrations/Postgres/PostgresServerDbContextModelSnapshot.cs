@@ -959,6 +959,7 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.ToTable("custom_vote_log_option", (string)null);
                 });
 
+            // Fish-start - модели fish: достижения и профиль кармы РПУ
             modelBuilder.Entity("Content.Server.Database.FishAchievementProgress", b =>
                 {
                     b.Property<int>("Id")
@@ -1028,6 +1029,7 @@ namespace Content.Server.Database.Migrations.Postgres
 
                     b.ToTable("fish_rpu_profile", (string)null);
                 });
+            // Fish-end
 
             modelBuilder.Entity("Content.Server.Database.IPIntelCache", b =>
                 {

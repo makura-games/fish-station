@@ -1,6 +1,7 @@
 using Content.Server._Fish.Rpu;
 using Content.Shared._Fish.Rpu;
 using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Doors.Components;
 using Content.Shared.Doors.Systems;
 using Content.Shared.Emag.Systems;
@@ -11,7 +12,9 @@ using Robust.Shared.Prototypes;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
-/// Взлом шлюзов и перерезанные провода.
+/// Взлом шлюзов и перерезанные провода. Пара (AccessReaderComponent, GotEmaggedEvent)
+/// занята движком, (WiresComponent, WireDoAfterEvent) — проводовщиком, поэтому подписываемся
+/// на те же события по компоненту шлюза: нам именно двери и интересны.
 /// Шлюз командования, СБ и ЦК наказывается сильно, бесправный — слабо.
 /// </summary>
 public sealed partial class RpuAirlockSystem : EntitySystem
@@ -22,33 +25,29 @@ public sealed partial class RpuAirlockSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<AccessReaderComponent, GotEmaggedEvent>(OnEmagged);
-        SubscribeLocalEvent<AirlockComponent, DoorEmaggedEvent>(OnAirlockEmagged);
-        SubscribeLocalEvent<WiresComponent, WireDoAfterEvent>(OnWireDoAfter, after: [typeof(WiresSystem)]);
+        // Ждём, пока отработают дверь и читалка доступов: нам важно, что взлом удался
+        // (args.Handled), а это решают они.
+        SubscribeLocalEvent<AirlockComponent, GotEmaggedEvent>(OnEmagged,
+            after: [typeof(SharedDoorSystem), typeof(AccessReaderSystem)]);
+        SubscribeLocalEvent<AirlockComponent, WireDoAfterEvent>(OnWireDoAfter,
+            after: [typeof(WiresSystem)]);
     }
 
-    private void OnAirlockEmagged(EntityUid uid, AirlockComponent component, DoorEmaggedEvent args)
-    {
-        Charge(args.UserUid, uid, AirlockViolation(uid));
-    }
-
-    private void OnEmagged(EntityUid uid, AccessReaderComponent component, ref GotEmaggedEvent args)
+    private void OnEmagged(Entity<AirlockComponent> ent, ref GotEmaggedEvent args)
     {
         if (!args.Handled)
             return;
 
-        // Emag по двери — это взлом шлюза; по остальному оборудованию считаем возней с проводами.
-        Charge(args.UserUid, uid, HasComp<DoorComponent>(uid) ? AirlockViolation(uid) : RpuPrototypeIds.WireCut);
+        Charge(args.UserUid, ent.Owner, AirlockViolation(ent.Owner));
     }
 
-    private void OnWireDoAfter(EntityUid uid, WiresComponent component, WireDoAfterEvent args)
+    private void OnWireDoAfter(Entity<AirlockComponent> ent, ref WireDoAfterEvent args)
     {
         if (args.Cancelled || args.Action != WiresAction.Cut)
             return;
 
-        var isAirlock = HasComp<AirlockComponent>(uid) || HasComp<DoorBoltComponent>(uid);
-
-        Charge(args.User, uid, isAirlock ? AirlockViolation(uid) : RpuPrototypeIds.WireCut);
+        // Перерезанный провод шлюза — тот же уровень взлома, что и emag: цена по доступам двери.
+        Charge(args.User, ent.Owner, AirlockViolation(ent.Owner));
     }
 
     /// <summary>Насколько «жирный» шлюз взломали.</summary>

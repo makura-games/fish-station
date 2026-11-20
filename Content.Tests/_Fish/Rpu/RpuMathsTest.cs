@@ -49,9 +49,12 @@ public sealed class RpuMathsTest
     [Test]
     public void PenaltyNeverGoesBelowMinimum()
     {
-        // Сколько бы смягчающих очков ни набралось, минимум — одно очко.
+        // Сколько бы смягчающих очков ни набралось, вменяемое нарушение стоит
+        // хотя бы одну десятую очка: ноль получает только полное освобождение (waives).
+        Assert.That(RpuMaths.MinPenalty, Is.EqualTo(0.1f));
         Assert.That(RpuMaths.Penalty(2f, new[] { -1f, -2f, -3f }), Is.EqualTo(RpuMaths.MinPenalty));
-        Assert.That(RpuMaths.Penalty(0.5f, Array.Empty<float>()), Is.EqualTo(RpuMaths.MinPenalty));
+        Assert.That(RpuMaths.Penalty(0.05f, Array.Empty<float>()), Is.EqualTo(RpuMaths.MinPenalty));
+        Assert.That(RpuMaths.Penalty(0.5f, Array.Empty<float>()), Is.EqualTo(0.5f));
     }
 
     [Test]
@@ -115,6 +118,35 @@ public sealed class RpuMathsTest
     }
 
     [Test]
+    public void BanThresholdShiftAppliesToLastResortTier()
+    {
+        // Игрок перешагнул все ступени: сдвиг истории банов обязан действовать и там,
+        // иначе ветеранам с бэкграундом порог не ужесточается вовсе.
+        var tiers = new List<RpuBanTier>
+        {
+            new() { MaxHours = 5, Threshold = -40 },
+        };
+
+        Assert.That(RpuMaths.BanThreshold(10, tiers, 10, true), Is.EqualTo(-90f));
+        Assert.That(RpuMaths.BanThreshold(10, tiers, 0, true), Is.EqualTo(-100f));
+        Assert.That(RpuMaths.BanThreshold(10, tiers, 10, false), Is.EqualTo(float.NegativeInfinity));
+    }
+
+    [Test]
+    public void PenaltyHonoursConfiguredBounds()
+    {
+        // Рамки приходят из конфигов: проверяем, что они действительно работают,
+        // и что перевёрнутые границы не роняют Math.Clamp.
+        Assert.That(RpuMaths.Penalty(2f, new[] { 10f }, minPenalty: 0.5f, maxExtra: 1f), Is.EqualTo(3f));
+        Assert.That(RpuMaths.Penalty(2f, new[] { -10f }, minPenalty: 0.5f, maxExtra: 1f), Is.EqualTo(0.5f));
+        Assert.That(RpuMaths.Penalty(2f, new[] { 10f }, minPenalty: 0.5f, maxExtra: -1f), Is.EqualTo(2f));
+
+        // Перевёрнутые границы (рамка больше потолка) не должны бросать исключение:
+        // тогда верхом становится сама рамка.
+        Assert.That(RpuMaths.Penalty(0.1f, new[] { 10f }, minPenalty: 5f, maxExtra: 0f), Is.EqualTo(5f));
+    }
+
+    [Test]
     public void ScaleByKarmaIsZeroAboveStart()
     {
         Assert.That(RpuMaths.ScaleByKarma(10, 0, -100, 0.1f, 0.5f), Is.EqualTo(0f));
@@ -171,8 +203,12 @@ public sealed class RpuMathsTest
     [TestCase("abc")]
     [TestCase("5 parsecs")]
     [TestCase("1 2 3")]
+    [TestCase("99999999 years")]
+    [TestCase("1e400 minutes")]
     public void BanDurationRejectsGarbage(string text)
     {
+        // Переполнение TimeSpan должно возвращать отказ с текстом, а не исключение:
+        // вызывающий код на отказе не банит вовсе.
         Assert.That(RpuBanDuration.TryParse(text, out _, out var error), Is.False);
         Assert.That(error, Is.Not.Null);
         Assert.That(error, Is.Not.Empty);

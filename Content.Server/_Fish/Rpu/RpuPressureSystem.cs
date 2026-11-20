@@ -1,7 +1,8 @@
 using Content.Shared._Fish.Rpu;
 using Content.Shared.Damage;
 using Content.Shared.Hands.EntitySystems;
-using Content.Shared.StatusEffectNew;
+using Content.Shared.Jittering;
+using Content.Shared.Stunnable;
 using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -21,12 +22,9 @@ public sealed partial class RpuPressureSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private RpuSystem _rpu = default!;
-    [Dependency] private StatusEffectsSystem _effects = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
+    [Dependency] private SharedJitteringSystem _jitter = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
-
-    private static readonly EntProtoId StunEffect = "Stun";
-    private static readonly EntProtoId JitterEffect = "Jitter";
-    private static readonly EntProtoId SlowedEffect = "SlowedDown";
 
     private bool _enabled;
     private float _startKarma;
@@ -37,9 +35,15 @@ public sealed partial class RpuPressureSystem : EntitySystem
     private float _slipChance;
     private float _jamChance;
     private float _dropChance;
-    private float _incomingScale;
 
+    /// <summary>Как часто устраиваем нарушителю «невезение».</summary>
     private const float TickSeconds = 4f;
+
+    /// <summary>На сколько секунд ноги уходят из-под ног при подкашивании.</summary>
+    private static readonly TimeSpan SlipDuration = TimeSpan.FromSeconds(1.2f);
+
+    /// <summary>Как долго трясёт после подкашивания.</summary>
+    private static readonly TimeSpan JitterDuration = TimeSpan.FromSeconds(4f);
 
     /// <summary>Текущая глубина давления для игрока.</summary>
     public sealed class Pressure
@@ -51,7 +55,6 @@ public sealed partial class RpuPressureSystem : EntitySystem
         public float SlipChance;
         public float JamChance;
         public float DropChance;
-        public float IncomingScale;
         public TimeSpan NextTick;
     }
 
@@ -70,7 +73,6 @@ public sealed partial class RpuPressureSystem : EntitySystem
         Subs.CVar(_cfg, RpuCVars.PressureSlipChance, value => _slipChance = value, true);
         Subs.CVar(_cfg, RpuCVars.PressureJamChance, value => _jamChance = value, true);
         Subs.CVar(_cfg, RpuCVars.PressureDropChance, value => _dropChance = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureIncomingDamage, value => _incomingScale = value, true);
 
         SubscribeLocalEvent<DamageableComponent, BeforeDamageChangedEvent>(OnBeforeDamage);
         SubscribeLocalEvent<ShotAttemptedEvent>(OnShotAttempted);
@@ -79,7 +81,7 @@ public sealed partial class RpuPressureSystem : EntitySystem
 
     /// <summary>
     /// Считает глубину давления по карме. Возвращает null, когда давить нельзя.
-    /// Новички (< границы новичка) получают поправку ×1.25 к глубине.
+    /// Новички (< границы новичка) получают более глубокое давление.
     /// </summary>
     private Pressure? GetPressure(ICommonSession? session)
     {
@@ -87,7 +89,12 @@ public sealed partial class RpuPressureSystem : EntitySystem
             return null;
 
         if (!_rpu.TryGetSuspect(session.UserId, out var suspect) || suspect.Karma >= _startKarma)
+        {
+            // Карма подросла (восстановление либо правка администратора) — забываем давление,
+            // иначе эффекты продолжат работать с прежними вероятностями.
+            _pressures.Remove(session.UserId);
             return null;
+        }
 
         var depth = Math.Clamp((_startKarma - suspect.Karma) / Math.Abs(RpuMaths.KarmaMin), 0f, 1f);
 
@@ -102,11 +109,10 @@ public sealed partial class RpuPressureSystem : EntitySystem
 
         pressure.Depth = depth;
         pressure.LatencyMs = (int)Math.Round(_latencyBase + (_latencyMax - _latencyBase) * depth);
-        pressure.MissChance = (_missBase + (_missMax - _missBase) * depth);
+        pressure.MissChance = _missBase + (_missMax - _missBase) * depth;
         pressure.SlipChance = _slipChance * depth;
         pressure.JamChance = _jamChance * depth;
         pressure.DropChance = _dropChance * depth;
-        pressure.IncomingScale = 1f + (_incomingScale - 1f) * depth;
 
         return pressure;
     }
@@ -120,31 +126,22 @@ public sealed partial class RpuPressureSystem : EntitySystem
     }
 
     /// <summary>
-    /// Промахи и «незарегистрированные» попадания, плюс чуть больнее получать удары.
+    /// Удар нарушителя может «не зарегистрироваться». Лечение под этот удар не попадает:
+    /// отменять его было бы заметно, а эффект и так виден по остальным симптомам.
     /// </summary>
     private void OnBeforeDamage(Entity<DamageableComponent> ent, ref BeforeDamageChangedEvent args)
     {
         if (args.Cancelled || args.Origin == null)
             return;
 
+        // Нулевой или отрицательный итог — это лечение: не трогаем.
+        if (args.Damage.GetTotal() <= 0)
+            return;
+
         var attacker = GetPressureForEntity(args.Origin);
 
-        // Удар нарушителя не засчитывается.
-        if (attacker != null && attacker.MissChance > 0f && _random.Prob(attacker.MissChance))
-        {
+        if (attacker is { MissChance: > 0f } && _random.Prob(attacker.MissChance))
             args.Cancelled = true;
-            return;
-        }
-
-        // Нарусителю чуть больнее: выглядит как невдалось заблокировать/уклониться.
-        if (attacker != null)
-            return;
-
-        var victim = GetPressureForEntity(ent.Owner);
-        if (victim == null || victim.IncomingScale <= 1f || victim.IncomingScale >= 1.5f)
-            return;
-
-        args.Damage *= victim.IncomingScale;
     }
 
     /// <summary>Осечки оружия.</summary>
@@ -196,19 +193,19 @@ public sealed partial class RpuPressureSystem : EntitySystem
                 continue;
 
             // Микропауза: длительность берём из «пинга», но в долях, чтобы не оглушать надолго.
-            // Шанс растёт вместе с глубиной: на минимальном минусе игрока ничего не заметит.
+            // Визуал оглушения выключаем: игроку это выглядит как потерянный пакет,
+            // а не как «меня оглушили».
             if (pressure.LatencyMs > 0 && _random.Prob(0.25f * pressure.Depth))
             {
                 var pause = TimeSpan.FromMilliseconds(pressure.LatencyMs * 2.5f);
-                _effects.TryAddStatusEffectDuration(mob, StunEffect, pause);
+                _stun.TryAddStunDuration(mob, pause, visualized: false);
             }
 
-            // Подкашивание на ровном месте.
+            // Подкашивание на ровном месте: ноги едут, руки трясутся, предмет валится.
             if (pressure.SlipChance > 0f && _random.Prob(pressure.SlipChance))
             {
-                _effects.TryAddStatusEffectDuration(mob, StunEffect, TimeSpan.FromSeconds(1.2f));
-                _effects.TryAddStatusEffectDuration(mob, JitterEffect, TimeSpan.FromSeconds(4f));
-                _effects.TryAddStatusEffectDuration(mob, SlowedEffect, TimeSpan.FromSeconds(2f));
+                _stun.TryKnockdown(mob, SlipDuration, autoStand: true, drop: true);
+                _jitter.DoJitter(mob, JitterDuration, refresh: true);
             }
 
             // Что-то вываливается из рук.

@@ -1,4 +1,4 @@
-using Content.Shared.Damage;
+using Content.Shared._Fish.Rpu;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Fish.Rpu;
@@ -11,35 +11,44 @@ public sealed partial class RpuAggressionSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
 
-    private const int MemoryEntries = 512;
     private static readonly TimeSpan AggressionWindow = TimeSpan.FromSeconds(120);
 
-    private readonly List<AggressionRecord> _records = new();
+    /// <summary>Не больше скольких пар держим в памяти одновременно.</summary>
+    private const int MemoryEntries = 2048;
 
-    private readonly record struct AggressionRecord(EntityUid Attacker, EntityUid Victim, TimeSpan Time);
+    /// <summary>Последний удар по паре «нападавший -> жертва».</summary>
+    private readonly Dictionary<(EntityUid Attacker, EntityUid Victim), TimeSpan> _lastHit = new();
+
+    private TimeSpan _nextPrune;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<DamageableComponent, DamageDealtEvent>(OnDamageDealt);
-    }
-
-    private void OnDamageDealt(Entity<DamageableComponent> ent, ref DamageDealtEvent args)
-    {
-        if (args.Damage.GetTotal() <= 0 || args.Origin is not { } origin)
-            return;
-
-        if (origin == ent.Owner)
-            return;
-
-        _records.Add(new AggressionRecord(origin, ent.Owner, _timing.CurTime));
-        while (_records.Count > MemoryEntries)
-            _records.RemoveAt(0);
+        SubscribeLocalEvent<RoundStartedEvent>(_ => _lastHit.Clear());
     }
 
     /// <summary>
-    /// Наносил ли атаковавший урон жертве (или её соседу по телу) в последние две минуты.
+    /// Запоминаем удар. Сущность приводим к игроку: урон по руке или шлему того же человека
+    /// считается нападением на него самого, а не на отдельный предмет.
+    /// </summary>
+    public void RecordDamage(EntityUid victim, EntityUid? origin, FixedPoint2 total)
+    {
+        if (total <= 0 || origin is not { } rawAttacker)
+            return;
+
+        var attacker = Normalize(rawAttacker);
+        var target = Normalize(victim);
+
+        if (attacker == target)
+            return;
+
+        Prune();
+        _lastHit[(attacker, target)] = _timing.CurTime;
+    }
+
+    /// <summary>
+    /// Наносил ли атаковавший урон жертве в последние две минуты.
     /// </summary>
     public bool AttackedRecently(EntityUid? attacker, EntityUid? victim)
     {
@@ -48,31 +57,49 @@ public sealed partial class RpuAggressionSystem : EntitySystem
 
         var cutoff = _timing.CurTime - AggressionWindow;
 
-        for (var index = _records.Count - 1; index >= 0; index--)
-        {
-            var record = _records[index];
-            if (record.Time < cutoff)
-                break;
-
-            if (record.Attacker == attacker.Value && record.Victim == victim.Value)
-                return true;
-
-            // Урон по мобильной части того же игрока тоже считается нападением.
-            if (record.Attacker == attacker.Value && IsSamePlayer(record.Victim, victim.Value))
-                return true;
-        }
-
-        return false;
+        return _lastHit.TryGetValue((Normalize(attacker.Value), Normalize(victim.Value)), out var time)
+               && time >= cutoff;
     }
 
-    private bool IsSamePlayer(EntityUid first, EntityUid second)
+    private EntityUid Normalize(EntityUid uid)
     {
-        if (first == second)
-            return true;
+        return CompOrNull<ActorComponent>(uid)?.Owner ?? uid;
+    }
 
-        var sessionFirst = CompOrNull<ActorComponent>(first)?.PlayerSession;
-        var sessionSecond = CompOrNull<ActorComponent>(second)?.PlayerSession;
+    /// <summary>
+    /// Чистим просроченное не по количеству событий, а по времени: иначе пятьсот ударов
+    /// по ящику стирают память о нападении два минуты назад.
+    /// </summary>
+    private void Prune()
+    {
+        if (_timing.CurTime < _nextPrune)
+            return;
 
-        return sessionFirst != null && sessionFirst == sessionSecond;
+        _nextPrune = _timing.CurTime + TimeSpan.FromSeconds(10);
+
+        var cutoff = _timing.CurTime - AggressionWindow;
+
+        if (_lastHit.Count > MemoryEntries)
+        {
+            _lastHit.Clear();
+            return;
+        }
+
+        List<(EntityUid, EntityUid)>? expired = null;
+
+        foreach (var (key, time) in _lastHit)
+        {
+            if (time >= cutoff)
+                continue;
+
+            expired ??= new List<(EntityUid, EntityUid)>();
+            expired.Add(key);
+        }
+
+        if (expired == null)
+            return;
+
+        foreach (var key in expired)
+            _lastHit.Remove(key);
     }
 }

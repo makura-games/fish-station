@@ -38,8 +38,7 @@ public static class RpuBanDuration
             if (bare <= 0)
                 return true;
 
-            duration = TimeSpan.FromMinutes(bare);
-            return true;
+            return TryFromMinutes(bare, out duration, out error);
         }
 
         if (parts.Length != 2)
@@ -63,7 +62,34 @@ public static class RpuBanDuration
             return false;
         }
 
-        duration = TimeSpan.FromMinutes(amount * unitMinutes);
+        return TryFromMinutes(amount * unitMinutes, out duration, out error);
+    }
+
+    /// <summary>
+    /// TimeSpan.FromMinutes бросает исключение на переполнении, а нам нужен отказ с текстом:
+    /// срок вроде «99999999 years» — это ошибка конфига, а не вечный бан.
+    /// </summary>
+    private static bool TryFromMinutes(double minutes, out TimeSpan? duration, out string? error)
+    {
+        duration = null;
+        error = null;
+
+        if (!double.IsFinite(minutes))
+        {
+            error = $"Срок бана не число: {minutes}. {Help}";
+            return false;
+        }
+
+        if (minutes <= 0)
+            return true;
+
+        if (minutes > TimeSpan.MaxValue.TotalMinutes)
+        {
+            error = $"Срок бана слишком большой: {minutes} минут. {Help}";
+            return false;
+        }
+
+        duration = TimeSpan.FromMinutes(minutes);
         return true;
     }
 

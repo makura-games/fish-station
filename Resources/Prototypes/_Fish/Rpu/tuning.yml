@@ -1,6 +1,6 @@
 # Fish-start - служебные таблицы режима персонального угнетения
 - type: rpuTuning
-  id: RpuDefault
+  id: FishRpuDefault
   # Крупные антагонисты и угрозы фауны: их смерть никому не стоит кармы.
   freeKillAntags:
   - Nukeops

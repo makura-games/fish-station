@@ -24,14 +24,12 @@ public sealed partial class RpuSystem
 
     /// <summary>
     /// Одно уведомление админ-чату: когда карма впервые пересекла порог сверху вниз.
-    /// Пока игрок не поднимется выше нуля, повторов не будет.
+    /// Флаг открывает обратно любое поднятие кармы выше нуля (награда, восстановление,
+    /// ручная правка) — см. RpuSuspect.OpenChatLogGateIfCleared.
     /// </summary>
-    private void CheckChatThreshold(ICommonSession session, RpuSuspect suspect, float before, float penalty)
+    private void CheckChatThreshold(ICommonSession session, RpuSuspect suspect, float before)
     {
         var threshold = _cfg.GetCVar(RpuCVars.ChatLogThreshold);
-
-        if (suspect.Karma > 0f)
-            suspect.ResetChatLogGate();
 
         if (suspect.ChatLogSent || before <= threshold || suspect.Karma > threshold)
             return;

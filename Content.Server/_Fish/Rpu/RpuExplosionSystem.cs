@@ -11,13 +11,13 @@ namespace Content.Server._Fish.Rpu;
 /// <summary>
 /// Взрывы. Движок не отдаёт источник взрыва в событии, поэтому система сама помнит,
 /// кто ставил/бросал взрывчатку, и сопоставляет это с фактом взрыва.
+/// Запись одна на предмет: повторная активация обновляет её, а не добавляет вторую.
 /// </summary>
 public sealed partial class RpuExplosionSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private RpuSystem _rpu = default!;
     [Dependency] private SharedTransformSystem _transforms = default!;
-    [Dependency] private IPlayerManager _players = default!;
 
     /// <summary>Интенсивность и размер взрыва по тоннам прототипов: до 6 — мелочь, до 25 — средний, дальше крупный.</summary>
     public const float SmallIntensity = 6f;
@@ -26,61 +26,66 @@ public sealed partial class RpuExplosionSystem : EntitySystem
     private static readonly TimeSpan MemoryWindow = TimeSpan.FromSeconds(30);
     private static readonly float NearbyRadius = 12f;
 
-    private readonly List<Priming> _primings = new();
+    private readonly record struct Priming(NetUserId User, EntityCoordinates Position, TimeSpan Time);
 
-    private readonly record struct Priming(EntityUid Entity, NetUserId User, EntityCoordinates Position, TimeSpan Time);
+    private readonly Dictionary<EntityUid, Priming> _primings = new();
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<SunriseExplosionEvent>(OnExplosion);
-        SubscribeLocalEvent<ExplosiveComponent, TriggerEvent>(OnTrigger);
-        SubscribeLocalEvent<ExplosiveComponent, ActiveTimerTriggerEvent>(OnTimerStarted);
+        SubscribeLocalEvent<ExplosiveComponent, TriggerEvent>((_, ref args) => Remember(args.User));
+        SubscribeLocalEvent<ExplosiveComponent, ActiveTimerTriggerEvent>((_, ref args) => Remember(args.User));
         SubscribeLocalEvent<ExplosiveComponent, LandEvent>(OnLand);
     }
 
-    private void OnTrigger(EntityUid uid, ExplosiveComponent component, TriggerEvent args)
+    private void Remember(EntityUid? userEntity)
     {
-        if (args.User is { } user)
-            Remember(uid, user);
+        if (userEntity == null || !_rpu.Active)
+            return;
+
+        if (CompOrNull<ActorComponent>(userEntity.Value)?.PlayerSession is not { } session)
+            return;
+
+        Remember(userEntity.Value, session);
     }
 
-    private void OnTimerStarted(EntityUid uid, ExplosiveComponent component, ActiveTimerTriggerEvent args)
+    private void Remember(EntityUid userEntity, ICommonSession session)
     {
-        if (args.User is { } user)
-            Remember(uid, user);
+        // Предмет мог быть активирован дважды (таймер и ручной запуск): держим одну запись.
+        _primings[userEntity] = new Priming(session.UserId, Transform(userEntity).Coordinates, _timing.CurTime);
+        Prune();
     }
 
-    private void OnLand(EntityUid uid, ExplosiveComponent component, LandEvent args)
+    private void OnLand(Entity<ExplosiveComponent> ent, ref LandEvent args)
     {
         // Снаряд приземлился: обновляем позицию, чтобы сопоставить её с эпицентром взрыва.
-        for (var index = 0; index < _primings.Count; index++)
-        {
-            if (_primings[index].Entity != uid)
-                continue;
-
-            _primings[index] = _primings[index] with { Position = Transform(uid).Coordinates };
-            return;
-        }
-    }
-
-    private void Remember(EntityUid uid, EntityUid userEntity)
-    {
-        if (!_rpu.Active)
+        if (!_primings.TryGetValue(ent.Owner, out var priming))
             return;
 
-        if (CompOrNull<ActorComponent>(userEntity)?.PlayerSession is not { } session)
-            return;
-
-        _primings.Add(new Priming(uid, session.UserId, Transform(uid).Coordinates, _timing.CurTime));
-        Prune();
+        _primings[ent.Owner] = priming with { Position = Transform(ent.Owner).Coordinates };
     }
 
     private void Prune()
     {
         var cutoff = _timing.CurTime - MemoryWindow;
-        _primings.RemoveAll(priming => priming.Time < cutoff);
+        List<EntityUid>? expired = null;
+
+        foreach (var (uid, priming) in _primings)
+        {
+            if (priming.Time >= cutoff)
+                continue;
+
+            expired ??= new List<EntityUid>();
+            expired.Add(uid);
+        }
+
+        if (expired == null)
+            return;
+
+        foreach (var uid in expired)
+            _primings.Remove(uid);
     }
 
     private void OnExplosion(SunriseExplosionEvent args)
@@ -99,35 +104,42 @@ public sealed partial class RpuExplosionSystem : EntitySystem
         var extra = Math.Clamp((float)Math.Floor((args.AffectedTiles - 10) / 10f), 0f, 6f);
 
         var cutoff = _timing.CurTime - MemoryWindow;
-        var charged = false;
 
-        for (var index = _primings.Count - 1; index >= 0; index--)
+        // Автор — тот, чей заряд ближе всего к эпицентру на той же карте. Один взрыв
+        // снимает карму один раз: соседняя чужая взрывчатка остаётся нетронутой.
+        EntityUid? author = null;
+        Priming authorRecord = default;
+        var bestDistance = float.MaxValue;
+
+        foreach (var (uid, priming) in _primings)
         {
-            var priming = _primings[index];
-
             if (priming.Time < cutoff)
-            {
-                _primings.RemoveAt(index);
-                continue;
-            }
-
-            // Сопоставляем взрыв с тем, кто поставил эту взрывчатку: либо она уже исчезла
-            // (взрыв удаляет предмет), либо она рядом с эпицентром.
-            var gone = Deleted(priming.Entity);
-            var distance = (_transforms.ToMapCoordinates(priming.Position).Position - args.Epicenter.Position).Length();
-
-            if (!gone && distance > NearbyRadius)
                 continue;
 
-            if (!_rpu.TryGetSession(priming.User, out var session) || session.Status != SessionStatus.InGame)
+            var position = _transforms.ToMapCoordinates(priming.Position);
+            if (position.MapId != args.Epicenter.MapId)
                 continue;
 
-            _rpu.Penalize(session, violation, extra: extra, details: "explosion");
-            _primings.RemoveAt(index);
-            charged = true;
+            var distance = (position.Position - args.Epicenter.Position).Length();
+            if (distance > NearbyRadius || distance >= bestDistance)
+                continue;
+
+            bestDistance = distance;
+            author = uid;
+            authorRecord = priming;
         }
 
-        if (!charged)
+        if (author == null)
+        {
             Prune();
+            return;
+        }
+
+        _primings.Remove(author.Value);
+
+        if (!_rpu.TryGetSession(authorRecord.User, out var session) || session.Status != SessionStatus.InGame)
+            return;
+
+        _rpu.Penalize(session, violation, extra: extra, details: "explosion");
     }
 }

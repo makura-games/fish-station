@@ -1,3 +1,4 @@
+using System.Globalization;
 using Content.Server.Administration;
 using Content.Shared.Administration;
 using Content.Shared._Fish.Rpu;
@@ -51,10 +52,10 @@ public sealed partial class RpuKarmaCommand : LocalizedEntityCommands
             case "clear":
                 adjustment = -suspect.Karma;
                 break;
-            case "add" when args.Length == 3 && float.TryParse(args[2], out var delta):
+            case "add" when args.Length == 3 && TryNumber(args[2], out var delta):
                 adjustment = delta;
                 break;
-            case "set" when args.Length == 3 && float.TryParse(args[2], out var value):
+            case "set" when args.Length == 3 && TryNumber(args[2], out var value):
                 adjustment = value - suspect.Karma;
                 break;
             default:
@@ -69,6 +70,16 @@ public sealed partial class RpuKarmaCommand : LocalizedEntityCommands
         }
 
         shell.WriteLine($"karma={suspect.Karma:0.##}");
+    }
+
+    /// <summary>
+    /// Число для правки кармы. NaN и бесконечность culture-dependent парсятся как валидные
+    /// значения, а карму потом не вернуть в диапазон простыми штрафами.
+    /// </summary>
+    private static bool TryNumber(string text, out float value)
+    {
+        return float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)
+               && float.IsFinite(value);
     }
 
     private bool TryResolve(string name, out ICommonSession session)

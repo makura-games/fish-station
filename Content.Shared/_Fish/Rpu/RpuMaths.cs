@@ -7,20 +7,6 @@ namespace Content.Shared._Fish.Rpu;
 /// столько-то очков, сверху прибавляем очки за отягчающие, снизу вычитаем очки за смягчающие.
 /// Единственные ограничения — минимальное снятие и потолок надбавки.
 /// </summary>
-/// <remarks>
-/// Нормативные правила (совместно с <c>RpuSystem.Penalize</c>):
-/// <list type="number">
-/// <item>Берём базовую цену нарушения в очках кармы (прототип rpuViolation, поле base).</item>
-/// <item>Прибавляем очки за тяжесть конкретного случая (сколько разлил реактива,
-/// насколько большой получился взрыв и так далее).</item>
-/// <item>Прибавляем очки за отягчающие (новичок, серия убийств, прежние баны) и вычитаем очки
-/// за смягчающие (роль, отдел, обстановка, код тревоги). Каждая поправка — целое число очков.</item>
-/// <item>Снятие не может быть меньше <see cref="MinPenalty"/> очка и больше базы на
-/// <see cref="MaxExtraPenalty"/> очков.</item>
-/// <item>Карма после вычитания ограничена диапазонами <see cref="KarmaMin"/>..<see cref="KarmaMax"/>.</item>
-/// <item>Если категория нарушения игроку вообще не вменяется (освобождение), не снимается ничего.</item>
-/// </list>
-/// </remarks>
 public static class RpuMaths
 {
     /// <summary>Нижняя рамка кармы.</summary>
@@ -29,15 +15,19 @@ public static class RpuMaths
     /// <summary>Верхняя рамка кармы.</summary>
     public const float KarmaMax = 100f;
 
-    /// <summary>Минимальное снятие за нарушение, которое вообще вменяется.</summary>
-    public const float MinPenalty = 1f;
+    /// <summary>
+    /// Минимальное снятие за нарушение, которое вообще вменяется: десятая часть очка.
+    /// Льготы не должны превращать вменяемый проступок в ноль — для этого есть waives.
+    /// </summary>
+    public const float MinPenalty = 0.1f;
 
     /// <summary>Сколько очков можно добавить к базовой цене нарушения сверху, не больше.</summary>
     public const float MaxExtraPenalty = 6f;
 
     /// <summary>
     /// Итоговое снятие очков: база + тяжесть случая + все поправки (со знаком).
-    /// Ограничено снизу одним очком, сверху — базой плюс <see cref="MaxExtraPenalty"/>.
+    /// Ограничено снизу <see cref="MinPenalty"/> (одна десятая очка), сверху — базой плюс
+    /// <see cref="MaxExtraPenalty"/>.
     /// </summary>
     public static float Penalty(float baseUnits,
         IReadOnlyList<float> adjustments,
@@ -49,7 +39,11 @@ public static class RpuMaths
         foreach (var unit in adjustments)
             sum += unit;
 
-        return Math.Clamp(baseUnits + sum, minPenalty, baseUnits + Math.Max(0f, maxExtra));
+        // Потолок не может оказаться ниже рамки: Math.Clamp на перевёрнутых границах бросает
+        // исключение, а кривой конфиг не должен ронять обработку нарушения.
+        var ceiling = Math.Max(minPenalty, baseUnits + Math.Max(0f, maxExtra));
+
+        return Math.Clamp(baseUnits + sum, minPenalty, ceiling);
     }
 
     /// <summary>
@@ -113,7 +107,8 @@ public static class RpuMaths
         if (!banVeterans)
             return float.NegativeInfinity;
 
-        return fallback;
+        // Сдвиг от истории банов действует и на последней ступени тоже.
+        return fallback + Math.Abs(thresholdShift);
     }
 
     /// <summary>

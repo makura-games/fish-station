@@ -35,10 +35,14 @@ public sealed partial class RpuKillSystem : EntitySystem
     {
         base.Initialize();
 
-        // DamageDealtEvent звучит раньше, чем урон ляжет на компонент, значит журнал
-        // будет заполнен к моменту смены состояния моба.
-        SubscribeLocalEvent<DamageableComponent, DamageDealtEvent>(OnDamageDealt);
-        SubscribeLocalEvent<MobStateComponent, MobStateChangedEvent>(OnMobStateChanged);
+        // Урон приходит через RpuDamageRouterSystem: направленная подписка на
+        // (DamageableComponent, DamageDealtEvent) в движке может быть только одна.
+        // Смена состояния моба звучит на всех сущностях, поэтому подписываемся без
+        // привязки к компоненту: пара (MobStateComponent, MobStateChangedEvent) занята
+        // оглушением, а в самом событии уже лежит и жертва, и источник урона.
+        // Смена состояния моба — событие по значению (не ByRefEvent), поэтому обработчик
+        // принимает его без ref: иначе движок падает на смешанной подписке.
+        SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<MobStateComponent, BeingGibbedEvent>(OnGibbed);
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
     }
@@ -54,19 +58,14 @@ public sealed partial class RpuKillSystem : EntitySystem
         _deathCharged.Clear();
     }
 
-    private void OnDamageDealt(Entity<DamageableComponent> ent, ref DamageDealtEvent args)
+    /// <summary>Запоминаем вклад в урон по живому существу. Зовёт маршрутизатор урона.</summary>
+    public void RecordDamage(EntityUid uid, EntityUid? origin, FixedPoint2 dealt)
     {
-        var dealt = args.Damage.GetTotal();
-        if (dealt <= 0)
+        var attacker = ResolveAttacker(origin, uid);
+        if (attacker == null || dealt <= 0)
             return;
-
-        var uid = ent.Owner;
 
         if (!HasComp<MobStateComponent>(uid))
-            return;
-
-        var attacker = ResolveAttacker(args.Origin, uid);
-        if (attacker == null)
             return;
 
         if (_ledger.Count > LedgerLimit && !_ledger.ContainsKey(uid))
@@ -82,18 +81,25 @@ public sealed partial class RpuKillSystem : EntitySystem
         perAttacker[attacker.Value] = existing + dealt;
     }
 
-    private void OnMobStateChanged(EntityUid uid, MobStateComponent component, MobStateChangedEvent args)
+    private void OnMobStateChanged(MobStateChangedEvent args)
     {
-        if (args.NewMobState == MobState.Critical)
+        var uid = args.Target;
+
+        switch (args.NewMobState)
         {
-            Charge(uid, args.Origin, RpuPrototypeIds.Crit, crit: true);
-            return;
+            case MobState.Alive:
+                // Существо ожили: снимаем отметку, иначе следующее убийство не учтём.
+                _deathCharged.Remove(uid);
+                return;
+            case MobState.Critical:
+                Charge(uid, args.Origin, RpuPrototypeIds.Crit, crit: true);
+                return;
+            case MobState.Dead:
+                ChargeDeath(uid, args.Origin);
+                return;
+            default:
+                return;
         }
-
-        if (args.NewMobState != MobState.Dead)
-            return;
-
-        ChargeDeath(uid, args.Origin);
     }
 
     private void OnGibbed(EntityUid uid, MobStateComponent component, BeingGibbedEvent args)
@@ -122,13 +128,14 @@ public sealed partial class RpuKillSystem : EntitySystem
         if (!_ledger.TryGetValue(victim, out var contributions))
         {
             // Урон шёл без журнала (например, мгновенная смерть): разбираем хотя бы источник.
-            if (origin == null)
+            // Самоубийство нарушением не считается ни на каком пути.
+            if (origin == null || origin == victim)
                 return;
 
             contributions = new Dictionary<EntityUid, FixedPoint2> { [origin.Value] = FixedPoint2.New(1) };
         }
 
-        if (PickKiller(origin, contributions) is not { } killer)
+        if (PickKiller(victim, origin, contributions) is not { } killer)
             return;
 
         if (GetSession(killer) is not { } session)
@@ -145,10 +152,11 @@ public sealed partial class RpuKillSystem : EntitySystem
 
     /// <summary>
     /// Убивший — тот, кто нанёс последний удар, а если удар был окружением, тот, кто набрал больше всего урона.
+    /// Свои руки и сама жертва в расчёт не берутся: самоубийство — не нарушение.
     /// </summary>
-    private EntityUid? PickKiller(EntityUid? origin, Dictionary<EntityUid, FixedPoint2> contributions)
+    private EntityUid? PickKiller(EntityUid victim, EntityUid? origin, Dictionary<EntityUid, FixedPoint2> contributions)
     {
-        if (origin != null && GetSession(origin.Value) != null)
+        if (origin != null && origin != victim && GetSession(origin.Value) != null)
             return origin;
 
         EntityUid? best = null;
@@ -156,6 +164,9 @@ public sealed partial class RpuKillSystem : EntitySystem
 
         foreach (var (attacker, damage) in contributions)
         {
+            if (attacker == victim)
+                continue;
+
             if (damage < bestDamage || GetSession(attacker) == null)
                 continue;
 

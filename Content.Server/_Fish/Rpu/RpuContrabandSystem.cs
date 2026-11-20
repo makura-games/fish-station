@@ -45,6 +45,10 @@ public sealed partial class RpuContrabandSystem : EntitySystem
 
         _nextCheck = _timing.CurTime + TimeSpan.FromSeconds(CheckInterval);
 
+        // Записи за игроками, которых больше нет в списке сессий, иначе время отсутствия
+        // зачтётся как время ношения контрабанды после переподключения.
+        SweepStale();
+
         if (!_rpu.Active)
             return;
 
@@ -85,5 +89,28 @@ public sealed partial class RpuContrabandSystem : EntitySystem
             _rpu.Penalize(session, RpuPrototypeIds.ContrabandItem,
                 details: $"carrying {found.Count} contraband groups");
         }
+    }
+
+    private void SweepStale()
+    {
+        if (_since.Count == 0)
+            return;
+
+        List<NetUserId>? stale = null;
+
+        foreach (var userId in _since.Keys)
+        {
+            if (_players.SessionsDict.ContainsKey(userId))
+                continue;
+
+            stale ??= new List<NetUserId>();
+            stale.Add(userId);
+        }
+
+        if (stale == null)
+            return;
+
+        foreach (var userId in stale)
+            _since.Remove(userId);
     }
 }

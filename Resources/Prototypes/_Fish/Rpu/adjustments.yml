@@ -6,7 +6,7 @@
 
 # ---------------- Отделы ----------------
 - type: rpuAdjust
-  id: RpuDeptSecurity
+  id: FishRpuDeptSecurity
   source: Department
   departments: [Security, PlanetPrisonSecurity, BlueShield, Court, Law]
   units:
@@ -18,7 +18,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuDeptCommand
+  id: FishRpuDeptCommand
   source: Department
   departments: [Command, CentralCommand, TSF]
   units:
@@ -31,7 +31,7 @@
 
 # Инженерия: трубы, провода иразбор — это их работа.
 - type: rpuAdjust
-  id: RpuDeptEngineering
+  id: FishRpuDeptEngineering
   source: Department
   departments: [Engineering]
   waives: [Destruction, Deconstruction, WireCut, Sabotage]
@@ -43,7 +43,7 @@
 
 # Наука: свои эксперименты, свои разлитые реактивы.
 - type: rpuAdjust
-  id: RpuDeptScience
+  id: FishRpuDeptScience
   source: Department
   departments: [Science]
   waives: [Deconstruction]
@@ -57,7 +57,7 @@
     AirlockHack: -1
 
 - type: rpuAdjust
-  id: RpuDeptMedical
+  id: FishRpuDeptMedical
   source: Department
   departments: [Medical]
   waives: [Spill]
@@ -71,7 +71,7 @@
 # ---------------- Должности ----------------
 # Работа с реактивами и убора: разливать можно.
 - type: rpuAdjust
-  id: RpuRoleSpillWork
+  id: FishRpuRoleSpillWork
   source: Job
   jobs: [Chemist, ChiefMedicalOfficer, MedicalDoctor, Paramedic, Brigmedic, SeniorPhysician,
          CentcommMedicalDoctor, Janitor, ERTJanitor, JanitorBorg, Barber,
@@ -83,7 +83,7 @@
 
 # Грузчик и шабатовщики: таскать и разбирать ящики, сносить стены ради прохода — работа.
 - type: rpuAdjust
-  id: RpuRoleCargoDestruction
+  id: FishRpuRoleCargoDestruction
   source: Job
   jobs: [Quartermaster, SalvageSpecialist, MiningSpecialist, Borg, MiningBorg]
   waives: [Destruction, Deconstruction]
@@ -92,7 +92,7 @@
 
 # Отряды реагирования пришли разбираться с нарушителями: оружие, шлюзы, взрывы — их работа.
 - type: rpuAdjust
-  id: RpuRoleSpecialResponse
+  id: FishRpuRoleSpecialResponse
   source: Job
   jobs: [SpecOpsOfficer, ERTLeader, ERTChaplain, ERTEngineer, ERTMedical, CBURN, CBURNLeader,
          CBURNAgentEVA, DeathSquad, SecurityPilot, BlueShieldOperative, NtrLeader, NtrOfficer,
@@ -112,7 +112,7 @@
 
 # Кремни: свои шлюзы и свой хлам.
 - type: rpuAdjust
-  id: RpuRoleSilicon
+  id: FishRpuRoleSilicon
   source: Job
   jobs: [StationAi, Borg, SecurityBorg, MedicalBorg, EngineerBorg, JanitorBorg, ServiceBorg,
          MiningBorg, PeaceBorg, ClownBorg, Adjutant]
@@ -122,7 +122,7 @@
 
 # ---------------- Антагонисты ----------------
 - type: rpuAdjust
-  id: RpuAntagTraitor
+  id: FishRpuAntagTraitor
   source: Antag
   antags: [Traitor, TraitorSleeper]
   units:
@@ -139,7 +139,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagThief
+  id: FishRpuAntagThief
   source: Antag
   antags: [Thief]
   waives: [Contraband]
@@ -151,7 +151,7 @@
     Spill: -1
 
 - type: rpuAdjust
-  id: RpuAntagChangeling
+  id: FishRpuAntagChangeling
   source: Antag
   antags: [Changeling]
   units:
@@ -165,7 +165,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagCult
+  id: FishRpuAntagCult
   source: Antag
   antags: [FleshCultistLeader]
   units:
@@ -179,7 +179,7 @@
 
 # Мятежники: СБ им не нарушение, а цель.
 - type: rpuAdjust
-  id: RpuAntagRevolution
+  id: FishRpuAntagRevolution
   source: Antag
   antags: [HeadRev, Rev]
   waives: [KillSecurityChain]
@@ -194,14 +194,14 @@
     Sabotage: -1
 
 - type: rpuAdjust
-  id: RpuAntagSurvivor
+  id: FishRpuAntagSurvivor
   source: Antag
   antags: [Survivor]
   units:
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagParadox
+  id: FishRpuAntagParadox
   source: Antag
   antags: [ParadoxClone]
   units:
@@ -210,7 +210,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagSubvertedSilicon
+  id: FishRpuAntagSubvertedSilicon
   source: Antag
   antags: [SubvertedSilicon]
   units:
@@ -223,7 +223,7 @@
     Deconstruction: -1
 
 - type: rpuAdjust
-  id: RpuAntagAbductor
+  id: FishRpuAntagAbductor
   source: Antag
   antags: [LoneAbductorAntag, AbductorVictim]
   units:
@@ -235,7 +235,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagFugitive
+  id: FishRpuAntagFugitive
   source: Antag
   antags: [Fugitive]
   units:
@@ -246,7 +246,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagSelf
+  id: FishRpuAntagSelf
   source: Antag
   antags: [SELFAgent]
   units:
@@ -257,7 +257,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagGeneric
+  id: FishRpuAntagGeneric
   source: Antag
   antags: [GenericAntagonist, GenericFreeAgent, GenericTeamAntagonist, GenericSiliconAntagonist]
   units:
@@ -272,7 +272,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAntagPlanetPrisoner
+  id: FishRpuAntagPlanetPrisoner
   source: Antag
   antags: [PlanetPrisoner]
   units:
@@ -283,7 +283,7 @@
 
 # ---------------- Обстановка: только для самих антагонистов ----------------
 - type: rpuAdjust
-  id: RpuSituationWar
+  id: FishRpuSituationWar
   source: StationSituation
   onlyForAntagonists: true
   antags: [Nukeops, NukeopsCommander, NukeopsMedic, AssaultOperative, AssaultCommander]
@@ -293,7 +293,7 @@
     Explosion: -1
 
 - type: rpuAdjust
-  id: RpuSituationHorde
+  id: FishRpuSituationHorde
   source: StationSituation
   onlyForAntagonists: true
   antags: [Zombie, InitialInfected, Xenoborg, MothershipCore]
@@ -303,7 +303,7 @@
     Crit: -1
 
 - type: rpuAdjust
-  id: RpuSituationBigAntag
+  id: FishRpuSituationBigAntag
   source: StationSituation
   onlyForAntagonists: true
   antags: [Wizard, Dragon, SpaceNinja]
@@ -313,7 +313,7 @@
     Sabotage: -1
 
 - type: rpuAdjust
-  id: RpuSituationRevolution
+  id: FishRpuSituationRevolution
   source: StationSituation
   onlyForAntagonists: true
   antags: [HeadRev, Rev]
@@ -323,7 +323,7 @@
 
 # ---------------- Код тревоги ----------------
 - type: rpuAdjust
-  id: RpuAlertElevated
+  id: FishRpuAlertElevated
   source: AlertLevel
   alertLevels: [Yellow, Red]
   units:
@@ -331,7 +331,7 @@
     Contraband: -1
 
 - type: rpuAdjust
-  id: RpuAlertMaximum
+  id: FishRpuAlertMaximum
   source: AlertLevel
   alertLevels: [Gamma, BaseDelta, DeltaNuke, Epsilon, Sierra, Violet]
   units:

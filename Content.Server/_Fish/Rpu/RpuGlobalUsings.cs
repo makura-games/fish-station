@@ -5,6 +5,7 @@ global using Robust.Shared.Enums;
 global using Content.Shared.Damage;
 global using Content.Shared.Damage.Components;
 global using Content.Shared.Damage.Systems;
+global using Content.Shared.FixedPoint;
 global using Content.Shared.GameTicking;
 global using Content.Shared.Gibbing;
 global using Content.Shared.Interaction;

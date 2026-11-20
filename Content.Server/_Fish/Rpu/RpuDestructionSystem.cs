@@ -30,7 +30,8 @@ public sealed partial class RpuDestructionSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<DamageableComponent, DamageDealtEvent>(OnDamageDealt);
+        // Урон приходит через RpuDamageRouterSystem: направленная подписка на эту пару
+        // компонента и события в движке может быть только одна.
         SubscribeLocalEvent<WallComponent, BeforeUnanchoredEvent>(OnUnanchored);
         SubscribeLocalEvent<AirlockComponent, BeforeUnanchoredEvent>(OnUnanchored);
     }
@@ -45,18 +46,21 @@ public sealed partial class RpuDestructionSystem : EntitySystem
                || _tags.HasTag(uid, WindowTag);
     }
 
-    private void OnDamageDealt(Entity<DamageableComponent> ent, ref DamageDealtEvent args)
+    /// <summary>
+    /// Запоминаем, кто бил конструкцию. Зовёт маршрутизатор урона.
+    /// </summary>
+    public void RecordDamage(EntityUid uid, EntityUid? origin, FixedPoint2 total)
     {
-        if (!_rpu.Active || args.Damage.GetTotal() <= 0)
+        if (!_rpu.Active || total <= 0)
             return;
 
-        if (!IsStructure(ent.Owner))
+        if (!IsStructure(uid))
             return;
 
-        if (args.Origin is not { } origin || CompOrNull<ActorComponent>(origin) == null)
+        if (origin is not { } attacker || CompOrNull<ActorComponent>(attacker) == null)
             return;
 
-        _lastDamager[ent.Owner] = (origin, _timing.CurTime);
+        _lastDamager[uid] = (attacker, _timing.CurTime);
         Trim();
     }
 
@@ -133,10 +137,21 @@ public sealed partial class RpuDestructionSystem : EntitySystem
             return;
 
         var cutoff = _timing.CurTime - TimeSpan.FromSeconds(30);
+        List<EntityUid>? expired = null;
+
         foreach (var (uid, entry) in _lastDamager)
         {
-            if (entry.Time < cutoff)
-                _lastDamager.Remove(uid);
+            if (entry.Time >= cutoff)
+                continue;
+
+            expired ??= new List<EntityUid>();
+            expired.Add(uid);
         }
+
+        if (expired == null)
+            return;
+
+        foreach (var uid in expired)
+            _lastDamager.Remove(uid);
     }
 }

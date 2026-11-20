@@ -2,7 +2,6 @@ using Content.Shared._Fish.Rpu;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Fluids.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.Spillable;
 using Robust.Shared.Player;
@@ -13,6 +12,8 @@ namespace Content.Server._Fish.Rpu;
 /// <summary>
 /// Разливание опасных веществ: лекарства, наркотики, токсины, пиротехника.
 /// Химики, медики, сервис и уборщик — на них не действует (их работа проливать).
+/// Пара (SpillableComponent, SpillDoAfterEvent) занята лужами, поэтому подписываемся
+/// по DrainableSolutionComponent: вылить содержимое можно только из того, что сливается.
 /// </summary>
 public sealed partial class RpuSpillSystem : EntitySystem
 {
@@ -29,11 +30,12 @@ public sealed partial class RpuSpillSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<SpillableComponent, SpillDoAfterEvent>(OnSpill,
+        // До луж: нам нужно содержимое сосуда до того, как его выльют.
+        SubscribeLocalEvent<DrainableSolutionComponent, SpillDoAfterEvent>(OnSpill,
             before: [typeof(Content.Server.Fluids.EntitySystems.PuddleSystem)]);
     }
 
-    private void OnSpill(Entity<SpillableComponent> ent, ref SpillDoAfterEvent args)
+    private void OnSpill(Entity<DrainableSolutionComponent> ent, ref SpillDoAfterEvent args)
     {
         if (!_rpu.Active || args.Handled || args.Cancelled)
             return;
