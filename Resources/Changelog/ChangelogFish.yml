@@ -1833,3 +1833,10 @@
     message: Добавлено 100 новых фамилий и имён КПБ для генерации автоимён.
   id: 186
   url: https://github.com/makura-games/fish-station/pull/679
+- author: YARP0d
+  time: '2026-11-20T21:30:44.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Изменена форма заявления на ВрИО.
+  id: 187
+  url: https://github.com/makura-games/fish-station/pull/680
