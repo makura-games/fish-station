@@ -78,9 +78,9 @@ skills-affects-atmos = atmos pipe layer change speed
 skills-affects-medical = healing speed and strength for gauze, ointment and medipens
 skills-affects-anatomy = surgery (needs at least Basic): speed and success chance
 skills-affects-chemistry = mixing and solution transfer speed
-skills-affects-weapons = firearm fire rate, spread and recoil
+skills-affects-weapons = firearm fire rate/spread/recoil and melee damage
 skills-affects-computer = encryption key extraction speed
-skills-affects-athletics = digging, crowbar prying and melee attack speed
+skills-affects-athletics = digging, crowbar prying, melee attack speed and movement speed
 skills-affects-none = no gameplay effect yet — spend points on active skills instead
 
 skills-effect-delay = speed — { $delay }

@@ -142,12 +142,19 @@
   difficulty: 2
   defaultMax: 3
   delayFactor: 0.3
+  qualityFactor: 0.15
   durationMultipliers:
     1: 1.5
     2: 1.25
     3: 1.0
     4: 0.8
     5: 0.65
+  qualityMultipliers:
+    1: 0.85
+    2: 0.95
+    3: 1.0
+    4: 1.1
+    5: 1.2
 
 - type: skill
   id: FishSkillComputer

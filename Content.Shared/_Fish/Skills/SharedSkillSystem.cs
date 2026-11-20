@@ -36,7 +36,8 @@ public abstract partial class SharedSkillSystem : EntitySystem
         if (!Resolve(uid, ref skillset, false))
             return SkillLevels.Baseline;
 
-        return skillset.Skills.GetValueOrDefault(skill, SkillLevels.Unskilled);
+        // Отсутствующий ключ = HumanSkillFloor, не Unskilled: обычный человек не беспомощен.
+        return skillset.Skills.GetValueOrDefault(skill, HumanSkillFloor);
     }
 
     /// <summary>
@@ -48,7 +49,7 @@ public abstract partial class SharedSkillSystem : EntitySystem
         if (!Resolve(uid, ref skillset, false))
             return SkillLevels.Baseline;
 
-        return skillset.Skills.GetValueOrDefault(skill, SkillLevels.Unskilled);
+        return skillset.Skills.GetValueOrDefault(skill, HumanSkillFloor);
     }
 
     public bool SkillCheck(EntityUid uid, ProtoId<SkillPrototype> skill, int needed, SkillsetComponent? skillset = null)

@@ -22,7 +22,7 @@ public sealed class FishAchievementCard : ContainerButton
 
     private readonly PanelContainer _panel;
     private readonly TextureRect _icon;
-    private readonly Label _title;
+    private readonly RichTextLabel _title;
     private readonly ProgressBar _progress;
     private readonly Label _progressLabel;
     private readonly SpriteSystem _sprite;
@@ -70,11 +70,10 @@ public sealed class FishAchievementCard : ContainerButton
             MouseFilter = MouseFilterMode.Ignore,
         };
 
-        _title = new Label
+        // RichTextLabel переносит длинные RU-названия вместо обрезки.
+        _title = new RichTextLabel
         {
-            StyleClasses = { StyleClass.LabelHeading },
             HorizontalExpand = true,
-            ClipText = false,
             MouseFilter = MouseFilterMode.Ignore,
         };
 
@@ -114,12 +113,13 @@ public sealed class FishAchievementCard : ContainerButton
         AchievementId = proto.ID;
         var unlocked = state.Unlocked;
 
-        _title.Text = Loc.GetString(proto.Name);
-        _title.FontColorOverride = unlocked
+        var titleColor = unlocked
             ? GoodColor
             : proto.Secret
                 ? StyleNano.ConcerningOrangeFore
-                : null;
+                : Color.White;
+        _title.SetMessage(FormattedMessage.FromMarkupOrThrow(
+            $"[color={titleColor.ToHex()}]{FormattedMessage.EscapeText(Loc.GetString(proto.Name))}[/color]"));
 
         SetIcon(proto, unlocked);
 

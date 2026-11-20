@@ -78,9 +78,9 @@ skills-affects-atmos = скорость смены слоёв атмосферн
 skills-affects-medical = скорость и сила лечения бинтами, мазями и медипенами
 skills-affects-anatomy = хирургия (нужен минимум «базовый»): скорость и шанс успеха
 skills-affects-chemistry = скорость смешивания и переливания растворов
-skills-affects-weapons = темп стрельбы, разброс и отдача огнестрела
+skills-affects-weapons = темп стрельбы, разброс/отдача и урон ближнего боя
 skills-affects-computer = скорость извлечения ключей шифрования
-skills-affects-athletics = копание, вскрытие (лом) и скорость ближнего боя
+skills-affects-athletics = копание, вскрытие (лом), скорость атаки и передвижения
 skills-affects-none = пока не влияет на геймплей — очки лучше вложить в рабочие навыки
 
 skills-effect-delay = скорость — { $delay }

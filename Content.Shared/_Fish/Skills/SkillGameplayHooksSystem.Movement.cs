@@ -1,7 +1,6 @@
 using Content.Shared.Movement.Systems;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
-using Robust.Shared.GameStates;
 
 namespace Content.Shared._Fish.Skills;
 
@@ -10,12 +9,9 @@ namespace Content.Shared._Fish.Skills;
 /// </summary>
 public sealed partial class SkillGameplayHooksSystem
 {
-    [Dependency] private readonly MovementSpeedModifierSystem _moveSpeed = default!;
-
     partial void InitializeFishMovementHooks()
     {
         SubscribeLocalEvent<SkillsetComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovementSpeed);
-        SubscribeLocalEvent<SkillsetComponent, AfterAutoHandleStateEvent>(OnSkillsetState);
         SubscribeLocalEvent<MeleeWeaponComponent, GetMeleeDamageEvent>(OnMeleeDamage);
     }
 
@@ -37,10 +33,5 @@ public sealed partial class SkillGameplayHooksSystem
 
         var speed = Math.Clamp(1f / mult, 0.85f, 1.12f);
         args.ModifySpeed(speed);
-    }
-
-    private void OnSkillsetState(Entity<SkillsetComponent> ent, ref AfterAutoHandleStateEvent args)
-    {
-        _moveSpeed.RefreshMovementSpeedModifiers(ent.Owner);
     }
 }

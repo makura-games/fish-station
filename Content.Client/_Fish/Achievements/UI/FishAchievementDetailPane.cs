@@ -19,9 +19,9 @@ public sealed class FishAchievementDetailPane : PanelContainer
 
     private readonly SpriteSystem _sprite;
     private readonly TextureRect _icon;
-    private readonly Label _title;
+    private readonly RichTextLabel _title;
     private readonly Label _status;
-    private readonly Label _description;
+    private readonly RichTextLabel _description;
     private readonly ProgressBar _progress;
     private readonly Label _progressLabel;
     private readonly Label _placeholder;
@@ -72,12 +72,10 @@ public sealed class FishAchievementDetailPane : PanelContainer
             HorizontalAlignment = HAlignment.Center,
         };
 
-        _title = new Label
+        _title = new RichTextLabel
         {
-            StyleClasses = { StyleClass.LabelHeading },
             HorizontalAlignment = HAlignment.Center,
             HorizontalExpand = true,
-            ClipText = false,
         };
 
         _status = new Label
@@ -87,10 +85,9 @@ public sealed class FishAchievementDetailPane : PanelContainer
             ClipText = false,
         };
 
-        _description = new Label
+        _description = new RichTextLabel
         {
             HorizontalExpand = true,
-            ClipText = false,
         };
 
         _progress = new ProgressBar
@@ -139,7 +136,8 @@ public sealed class FishAchievementDetailPane : PanelContainer
         _content.Visible = true;
 
         var unlocked = state.Unlocked;
-        _title.Text = Loc.GetString(proto.Name);
+        _title.SetMessage(FormattedMessage.FromMarkupOrThrow(
+            $"[bold]{FormattedMessage.EscapeText(Loc.GetString(proto.Name))}[/bold]"));
 
         try
         {
@@ -167,13 +165,16 @@ public sealed class FishAchievementDetailPane : PanelContainer
 
         if (proto.Secret && !unlocked)
         {
-            _description.Text = Loc.GetString(proto.SecretDescription ?? "fish-achievements-secret-placeholder");
+            _description.SetMessage(FormattedMessage.FromMarkupOrThrow(
+                FormattedMessage.EscapeText(
+                    Loc.GetString(proto.SecretDescription ?? "fish-achievements-secret-placeholder"))));
             _status.Text = Loc.GetString("fish-achievements-status-secret");
             _status.FontColorOverride = StyleNano.ConcerningOrangeFore;
         }
         else
         {
-            _description.Text = Loc.GetString(proto.Description);
+            _description.SetMessage(FormattedMessage.FromMarkupOrThrow(
+                FormattedMessage.EscapeText(Loc.GetString(proto.Description))));
             _status.Text = unlocked
                 ? Loc.GetString("fish-achievements-status-unlocked")
                 : Loc.GetString("fish-achievements-status-locked");

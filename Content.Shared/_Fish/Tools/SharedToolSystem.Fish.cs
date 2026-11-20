@@ -11,6 +11,7 @@ public abstract partial class SharedToolSystem
     private static readonly ProtoId<ToolQualityPrototype> WeldingQuality = "Welding";
     private static readonly ProtoId<ToolQualityPrototype> AnchoringQuality = "Anchoring";
     private static readonly ProtoId<ToolQualityPrototype> PryingQuality = "Prying";
+    private static readonly ProtoId<ToolQualityPrototype> PulsingQuality = "Pulsing";
     private static readonly ProtoId<SkillPrototype> ConstructionSkill = "FishSkillConstruction";
     private static readonly ProtoId<SkillPrototype> ElectricalSkill = "FishSkillElectrical";
     private static readonly ProtoId<SkillPrototype> AthleticsSkill = "FishSkillAthletics";
@@ -26,7 +27,7 @@ public abstract partial class SharedToolSystem
             float? skillMult = null;
             if (quality == WeldingQuality || quality == AnchoringQuality)
                 skillMult = _skills.GetSkillDelayMultiplier(user, ConstructionSkill);
-            else if (quality == PulseQuality)
+            else if (quality == PulsingQuality)
                 skillMult = _skills.GetSkillDelayMultiplier(user, ElectricalSkill);
             else if (quality == PryingQuality)
                 skillMult = _skills.GetSkillDelayMultiplier(user, AthleticsSkill);
