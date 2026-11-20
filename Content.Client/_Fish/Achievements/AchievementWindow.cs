@@ -36,8 +36,8 @@ public sealed class AchievementWindow : DefaultWindow
     public AchievementWindow()
     {
         Title = Loc.GetString("fish-achievements-window-title");
-        MinSize = new Vector2(880, 580);
-        SetSize = new Vector2(960, 640);
+        MinSize = new Vector2(920, 620);
+        SetSize = new Vector2(1020, 700);
 
         var root = new BoxContainer
         {
@@ -141,9 +141,10 @@ public sealed class AchievementWindow : DefaultWindow
             Margin = new Thickness(10),
         };
 
+        // Одна колонка: длинные RU-названия не режутся и не наезжают на прогресс.
         _grid = new GridContainer
         {
-            Columns = 2,
+            Columns = 1,
             HSeparationOverride = 8,
             VSeparationOverride = 8,
             HorizontalExpand = true,
@@ -154,8 +155,8 @@ public sealed class AchievementWindow : DefaultWindow
 
         _detail = new FishAchievementDetailPane
         {
-            MinWidth = 300,
-            SizeFlagsStretchRatio = 1f,
+            MinWidth = 320,
+            SizeFlagsStretchRatio = 0.95f,
         };
 
         body.AddChild(catalogPanel);

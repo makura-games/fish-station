@@ -159,6 +159,9 @@ public sealed partial class PryingSystem : EntitySystem
         RaiseLocalEvent(target, ref modEv);
         // Sunrise-Start - skip redundant short pry doafters
         var pryDelay = modEv.BaseTime * modEv.PryTimeModifier / toolModifier;
+        // Fish-start: атлетика ускоряет/замедляет вскрытие
+        pryDelay *= GetAthleticsPryDelayMultiplier(user);
+        // Fish-end
 
         if (HasComp<PryUnpoweredComponent>(target) && pryDelay < InstantUnpoweredDoorPryThreshold)
             pryDelay = TimeSpan.Zero;

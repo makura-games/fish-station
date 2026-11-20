@@ -7,6 +7,7 @@ using Content.Shared.Eui;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Verbs;
@@ -23,6 +24,7 @@ public sealed partial class SkillSystem : SharedSkillSystem
     [Dependency] private EuiManager _eui = default!;
     [Dependency] private PopupSystem _serverPopup = default!;
     [Dependency] private SharedJobSystem _jobs = default!;
+    [Dependency] private MovementSpeedModifierSystem _moveSpeed = default!;
 
     private static readonly ProtoId<SkillPrototype> ConstructionSkill = "FishSkillConstruction";
     private static readonly ProtoId<SkillPrototype> MedicalSkill = "FishSkillMedical";
@@ -293,6 +295,7 @@ public sealed partial class SkillSystem : SharedSkillSystem
         skillset.Skills[skillProto.ID] = target;
         PurgeInvalidPrerequisites((uid, skillset), jobId);
         Dirty(uid, skillset);
+        _moveSpeed.RefreshMovementSpeedModifiers(uid);
     }
 
     public void TryConfirm(EntityUid uid, ICommonSession session)

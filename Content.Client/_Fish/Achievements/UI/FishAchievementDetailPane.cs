@@ -1,18 +1,24 @@
+using System.Numerics;
 using Content.Client.Stylesheets;
 using Content.Shared._Fish.Achievements;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Utility;
 
 namespace Content.Client._Fish.Achievements.UI;
 
 /// <summary>
-/// Правая панель описания достижения (Nano, без CRT).
+/// Правая панель описания: иконка, статус, полное описание без обрезки.
 /// </summary>
 public sealed class FishAchievementDetailPane : PanelContainer
 {
     private static readonly Color MutedColor = StyleNano.DisabledFore;
     private static readonly Color GoodColor = StyleNano.GoodGreenFore;
+    private static readonly ResPath FallbackIcon = new("/Textures/Interface/VerbIcons/information.svg.192dpi.png");
 
+    private readonly SpriteSystem _sprite;
+    private readonly TextureRect _icon;
     private readonly Label _title;
     private readonly Label _status;
     private readonly Label _description;
@@ -23,6 +29,8 @@ public sealed class FishAchievementDetailPane : PanelContainer
 
     public FishAchievementDetailPane()
     {
+        _sprite = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<SpriteSystem>();
+
         AddStyleClass(StyleClass.PanelDark);
         HorizontalExpand = true;
         VerticalExpand = true;
@@ -44,6 +52,7 @@ public sealed class FishAchievementDetailPane : PanelContainer
             VerticalAlignment = VAlignment.Center,
             HorizontalExpand = true,
             VerticalExpand = true,
+            ClipText = false,
         };
 
         _content = new BoxContainer
@@ -55,21 +64,33 @@ public sealed class FishAchievementDetailPane : PanelContainer
             Visible = false,
         };
 
+        _icon = new TextureRect
+        {
+            MinSize = new Vector2(72, 72),
+            MaxSize = new Vector2(72, 72),
+            Stretch = TextureRect.StretchMode.KeepAspectCentered,
+            HorizontalAlignment = HAlignment.Center,
+        };
+
         _title = new Label
         {
             StyleClasses = { StyleClass.LabelHeading },
             HorizontalAlignment = HAlignment.Center,
+            HorizontalExpand = true,
+            ClipText = false,
         };
 
         _status = new Label
         {
             FontColorOverride = MutedColor,
             HorizontalAlignment = HAlignment.Center,
+            ClipText = false,
         };
 
         _description = new Label
         {
             HorizontalExpand = true,
+            ClipText = false,
         };
 
         _progress = new ProgressBar
@@ -80,13 +101,17 @@ public sealed class FishAchievementDetailPane : PanelContainer
             MinHeight = 10,
             HorizontalExpand = true,
         };
+        _progress.BackgroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = StyleNano.PanelDark };
+        _progress.ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = StyleNano.NanoGold };
 
         _progressLabel = new Label
         {
             FontColorOverride = MutedColor,
             Visible = false,
+            ClipText = false,
         };
 
+        _content.AddChild(_icon);
         _content.AddChild(_title);
         _content.AddChild(_status);
         _content.AddChild(_description);
@@ -115,6 +140,30 @@ public sealed class FishAchievementDetailPane : PanelContainer
 
         var unlocked = state.Unlocked;
         _title.Text = Loc.GetString(proto.Name);
+
+        try
+        {
+            if (proto.Secret && !unlocked)
+            {
+                _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+                _icon.Modulate = StyleNano.ConcerningOrangeFore;
+            }
+            else if (proto.Icon is { } icon)
+            {
+                _icon.Texture = _sprite.Frame0(icon);
+                _icon.Modulate = unlocked ? Color.White : new Color(180, 180, 180);
+            }
+            else
+            {
+                _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+                _icon.Modulate = MutedColor;
+            }
+        }
+        catch
+        {
+            _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+            _icon.Modulate = MutedColor;
+        }
 
         if (proto.Secret && !unlocked)
         {

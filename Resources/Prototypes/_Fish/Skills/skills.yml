@@ -10,7 +10,6 @@
     state: icon
   category: engineering
   difficulty: 2
-  # defaultMax: потолок без явной записи в maxSkills бюджета роли (Trained).
   defaultMax: 3
   delayFactor: 0.3
   durationMultipliers:
@@ -43,16 +42,20 @@
   id: FishSkillAtmos
   name: skills-atmos-name
   description: skills-atmos-desc
-  uiAffects: skills-affects-none
+  uiAffects: skills-affects-atmos
   icon:
     sprite: Objects/Tanks/oxygen.rsi
     state: icon
   category: engineering
   difficulty: 2
   defaultMax: 3
-  # Нет игровых потребителей — как у chemistry/weapons, чтобы UI не обещал скорость.
-  delayFactor: 0
-  qualityFactor: 0
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
 
 - type: skill
   id: FishSkillMedical
@@ -112,55 +115,74 @@
   id: FishSkillChemistry
   name: skills-chemistry-name
   description: skills-chemistry-desc
-  uiAffects: skills-affects-none
+  uiAffects: skills-affects-chemistry
   icon:
     sprite: Objects/Specific/Chemistry/beaker.rsi
     state: beaker
   category: medical
   difficulty: 4
   defaultMax: 3
-  # Нет игровых потребителей — нейтральные факторы, чтобы UI не показывал ложные эффекты.
-  delayFactor: 0
-  qualityFactor: 0
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
 
 - type: skill
   id: FishSkillWeapons
   name: skills-weapons-name
   description: skills-weapons-desc
-  uiAffects: skills-affects-none
+  uiAffects: skills-affects-weapons
   icon:
     sprite: Objects/Weapons/Guns/Pistols/viper.rsi
     state: icon
   category: security
   difficulty: 2
   defaultMax: 3
-  delayFactor: 0
-  qualityFactor: 0
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
 
 - type: skill
   id: FishSkillComputer
   name: skills-computer-name
   description: skills-computer-desc
-  uiAffects: skills-affects-none
+  uiAffects: skills-affects-computer
   icon:
     sprite: Objects/Tools/network_configurator.rsi
     state: icon
   category: general
   difficulty: 1
   defaultMax: 3
-  delayFactor: 0
-  qualityFactor: 0
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65
 
 - type: skill
   id: FishSkillAthletics
   name: skills-athletics-name
   description: skills-athletics-desc
-  uiAffects: skills-affects-none
+  uiAffects: skills-affects-athletics
   icon:
     sprite: Objects/Tools/shovel.rsi
     state: icon
   category: general
   difficulty: 1
   defaultMax: 3
-  delayFactor: 0
-  qualityFactor: 0
+  delayFactor: 0.3
+  durationMultipliers:
+    1: 1.5
+    2: 1.25
+    3: 1.0
+    4: 0.8
+    5: 0.65

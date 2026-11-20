@@ -10,8 +10,10 @@ public abstract partial class SharedToolSystem
 
     private static readonly ProtoId<ToolQualityPrototype> WeldingQuality = "Welding";
     private static readonly ProtoId<ToolQualityPrototype> AnchoringQuality = "Anchoring";
+    private static readonly ProtoId<ToolQualityPrototype> PryingQuality = "Prying";
     private static readonly ProtoId<SkillPrototype> ConstructionSkill = "FishSkillConstruction";
     private static readonly ProtoId<SkillPrototype> ElectricalSkill = "FishSkillElectrical";
+    private static readonly ProtoId<SkillPrototype> AthleticsSkill = "FishSkillAthletics";
 
     /// <summary>
     /// Множитель задержки DoAfter по навыку, соответствующему качеству инструмента.
@@ -26,6 +28,8 @@ public abstract partial class SharedToolSystem
                 skillMult = _skills.GetSkillDelayMultiplier(user, ConstructionSkill);
             else if (quality == PulseQuality)
                 skillMult = _skills.GetSkillDelayMultiplier(user, ElectricalSkill);
+            else if (quality == PryingQuality)
+                skillMult = _skills.GetSkillDelayMultiplier(user, AthleticsSkill);
 
             if (skillMult is { } m)
                 worst = worst is { } w ? Math.Max(w, m) : m;

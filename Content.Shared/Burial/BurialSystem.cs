@@ -43,7 +43,10 @@ public sealed partial class BurialSystem : EntitySystem
 
         if (TryComp<ShovelComponent>(args.Used, out var shovel))
         {
-            var doAfterEventArgs = new DoAfterArgs(EntityManager, args.User, component.DigDelay / shovel.SpeedModifier, new GraveDiggingDoAfterEvent(), uid, target: args.Target, used: uid)
+            // Fish-start: атлетика влияет на скорость копания
+            var digDelay = component.DigDelay / shovel.SpeedModifier * GetAthleticsDigDelayMultiplier(args.User);
+            // Fish-end
+            var doAfterEventArgs = new DoAfterArgs(EntityManager, args.User, digDelay, new GraveDiggingDoAfterEvent(), uid, target: args.Target, used: uid)
             {
                 BreakOnMove = true,
                 BreakOnDamage = true,
@@ -164,7 +167,10 @@ public sealed partial class BurialSystem : EntitySystem
         if (!_actionBlocker.CanMove(args.Entity))
             return;
 
-        var doAfterEventArgs = new DoAfterArgs(EntityManager, args.Entity, component.DigDelay / component.DigOutByHandModifier, new GraveDiggingDoAfterEvent(), uid, target: uid)
+            // Fish-start: атлетика влияет на копание руками
+            var handDigDelay = component.DigDelay / component.DigOutByHandModifier * GetAthleticsDigDelayMultiplier(args.Entity);
+            // Fish-end
+            var doAfterEventArgs = new DoAfterArgs(EntityManager, args.Entity, handDigDelay, new GraveDiggingDoAfterEvent(), uid, target: uid)
         {
             NeedHand = false,
             BreakOnMove = true,

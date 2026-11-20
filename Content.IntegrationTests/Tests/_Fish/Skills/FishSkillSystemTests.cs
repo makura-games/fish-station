@@ -257,4 +257,35 @@ public sealed class FishSkillSystemTests
         });
         await pair.CleanReturnAsync();
     }
+
+    [Test]
+    public async Task HumanSkillFloor_AppliesToSkillsWithoutJobMin()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+
+        EntityUid mob = default;
+
+        await server.WaitPost(() =>
+        {
+            mob = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
+            entMan.System<SkillSystem>().EnsureSkillset(mob, StationEngineerJob);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var skills = entMan.System<SkillSystem>();
+            // Медицина не в minSkills инженера — должен быть HumanSkillFloor (Baseline).
+            Assert.That(skills.GetMinSkill(StationEngineerJob, MedicalSkill),
+                Is.EqualTo(SharedSkillSystem.HumanSkillFloor));
+            Assert.That(skills.GetSkillValue(mob, MedicalSkill),
+                Is.EqualTo(SharedSkillSystem.HumanSkillFloor));
+            Assert.That(skills.GetEffectiveSkillValue(mob, MedicalSkill),
+                Is.EqualTo(SharedSkillSystem.HumanSkillFloor));
+        });
+
+        await server.WaitPost(() => entMan.DeleteEntity(mob));
+        await pair.CleanReturnAsync();
+    }
 }
