@@ -1826,3 +1826,10 @@
     description: изображение
   - url: https://github.com/user-attachments/assets/9470af52-64a8-49da-a229-d72f677ecd2d
     description: изображение
+- author: YARP0d
+  time: '2026-11-20T20:44:04.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено 100 новых фамилий и имён КПБ для генерации автоимён.
+  id: 186
+  url: https://github.com/makura-games/fish-station/pull/679
