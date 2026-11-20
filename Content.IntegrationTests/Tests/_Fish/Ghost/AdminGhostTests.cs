@@ -1,13 +1,18 @@
 ﻿#nullable enable
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Fixtures.Attributes;
 using Content.Server.Administration.Managers;
 using Content.Shared._Fish.Ghost;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
+using Content.Shared.CCVar;
 using Content.Shared.Hands;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
+using Content.Shared.Inventory;
+using Content.Shared.Inventory.Events;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Robust.Server.Console;
@@ -175,6 +180,71 @@ public sealed class AdminGhostTests : GameTest
             entMan.EventBus.RaiseLocalEvent(ghost, dropAttempt);
             Assert.That(dropAttempt.Cancelled, Is.False);
         });
+    }
+
+    [TestCase("id", "AdminPDA")]
+    [TestCase("back", "ClothingBackpackSatchelAdmin")]
+    public async Task AghostSlotClickKeepsEquippedItemWhileRestricted(string slot, string prototype)
+    {
+        await OverrideCVar(Side.Server, FishCVars.AghostDefaultInteractionRestricted, true);
+        await OverrideCVar(Side.Server, FishCVars.AghostUnrestrictOnLocalhost, false);
+
+        var (ghost, action) = await SpawnAghost();
+        var server = Pair.Server;
+        var client = Pair.Client;
+        var inventory = server.System<InventorySystem>();
+        var network = server.ResolveDependency<IServerEntityNetworkManager>();
+        var session = Pair.Player!;
+
+        // Запас тиков на доставку сообщения и продвижение сервера до тика клиента.
+        const int acknowledgementBudget = 30;
+        EntityUid item = default;
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(inventory.TryGetSlotEntity(ghost, slot, out var equipped), Is.True);
+            item = equipped!.Value;
+            Assert.That(server.EntMan.GetComponent<MetaDataComponent>(item).EntityPrototype?.ID, Is.EqualTo(prototype));
+        });
+        await Pair.RunUntilSynced();
+
+        await SendAndWaitForServer(new UseSlotNetworkMessage(slot));
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(inventory.TryGetSlotEntity(ghost, slot, out var equipped), Is.True);
+            Assert.That(equipped, Is.EqualTo(item));
+        });
+
+        await SendAndWaitForServer(new RequestPerformActionEvent(action));
+        await server.WaitAssertion(() =>
+            Assert.That(server.EntMan.GetComponent<AdminGhostComponent>(ghost).InteractionRestricted, Is.False));
+
+        await SendAndWaitForServer(new UseSlotNetworkMessage(slot));
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(inventory.TryGetSlotEntity(ghost, slot, out _), Is.False);
+            Assert.That(server.System<SharedHandsSystem>().GetActiveItem(ghost), Is.EqualTo(item));
+        });
+
+        async Task SendAndWaitForServer<T>(T message) where T : EntityEventArgs
+        {
+            uint previousSequence = 0;
+            await server.WaitPost(() => previousSequence = network.GetLastMessageSequence(session));
+            await client.WaitPost(() => client.EntMan.RaisePredictiveEvent(message));
+
+            for (var tick = 0; tick < acknowledgementBudget; tick++)
+            {
+                await Pair.RunTicksSync(1);
+                var processed = false;
+                await server.WaitPost(() => processed = network.GetLastMessageSequence(session) > previousSequence);
+                if (!processed)
+                    continue;
+
+                await Pair.RunUntilSynced();
+                return;
+            }
+
+            Assert.Fail($"Server did not process {typeof(T).Name} within {acknowledgementBudget} ticks.");
+        }
     }
 
     /// <summary>

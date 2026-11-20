@@ -221,6 +221,7 @@
       key_slots:
       - EncryptionKeyCommon
       - EncryptionKeyCommand
+      - EncryptionKeyService  # Fish-edit
   - type: Sprite
     sprite: _Sunrise/Clothing/Ears/Headsets/commaid_headset.rsi
   - type: Clothing
