@@ -86,8 +86,7 @@
 
 - type: entity
   abstract: true
-  # Fish-edit - слот медали из FishClothingUniformMedalBase
-  parent: [UnsensoredClothingUniformBase, FishClothingUniformMedalBase]
+  parent: UnsensoredClothingUniformBase
   id: ClothingUniformBase
   components:
   - type: SuitSensor

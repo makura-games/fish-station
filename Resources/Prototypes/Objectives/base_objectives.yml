@@ -73,10 +73,6 @@
       whitelist:
         components:
         - KillPersonCondition
-    # Fish-start - не выбирать защищённых персонажей
-    - !type:AntagTargetingProtectedCondition
-      inverted: true
-    # Fish-end
 
 # requires that the player interact socially with someone
 # disables kill objectives and is disabled by kill objectives

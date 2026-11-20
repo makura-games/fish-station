@@ -10,7 +10,6 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.ContentPack;
-using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.Guidebook.Controls;
@@ -20,7 +19,6 @@ public sealed partial class GuidebookWindow : FancyWindow, ILinkClickHandler, IA
 {
     [Dependency] private DocumentParsingManager _parsingMan = default!;
     [Dependency] private IResourceManager _resourceManager = default!;
-    [Dependency] private ILocalizationManager _localization = default!;
 
     private Dictionary<ProtoId<GuideEntryPrototype>, GuideEntry> _entries = [];
 
@@ -140,7 +138,7 @@ public sealed partial class GuidebookWindow : FancyWindow, ILinkClickHandler, IA
         EntryContainer.Visible = true;
         SearchBar.Text = "";
         EntryContainer.RemoveAllChildren();
-        using var file = _resourceManager.ContentFileReadText(entry.ResolveText(_localization.DefaultCulture));
+        using var file = _resourceManager.ContentFileReadText(entry.Text);
 
         SearchContainer.Visible = entry.FilterEnabled;
 
