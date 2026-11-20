@@ -422,3 +422,285 @@
     FishSkillWeapons: 3
     FishSkillComputer: 4
     FishSkillAthletics: 3
+
+# --- Off-station / response: 0 свободных очков, минимумы уже «готовы к работе».
+# Без JobId на спавне (гост-роль / NukeOps antag) skillset не вешается — действует Baseline.
+
+- type: jobSkillBudget
+  id: FishERTLeader
+  job: ERTLeader
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 3
+    FishSkillAthletics: 3
+    FishSkillComputer: 2
+    FishSkillMedical: 2
+    FishSkillConstruction: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillComputer: 4
+    FishSkillMedical: 3
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+
+- type: jobSkillBudget
+  id: FishERTSecurity
+  job: ERTSecurity
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 4
+    FishSkillAthletics: 3
+    FishSkillMedical: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillMedical: 3
+    FishSkillComputer: 2
+
+- type: jobSkillBudget
+  id: FishERTEngineer
+  job: ERTEngineer
+  skillPoints: 0
+  minSkills:
+    FishSkillConstruction: 4
+    FishSkillElectrical: 4
+    FishSkillAtmos: 3
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillConstruction: 5
+    FishSkillElectrical: 5
+    FishSkillAtmos: 5
+    FishSkillComputer: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishERTMedical
+  job: ERTMedical
+  skillPoints: 0
+  minSkills:
+    FishSkillMedical: 4
+    FishSkillAnatomy: 3
+    FishSkillChemistry: 3
+  maxSkills:
+    FishSkillMedical: 5
+    FishSkillAnatomy: 5
+    FishSkillChemistry: 5
+    FishSkillAthletics: 2
+
+- type: jobSkillBudget
+  id: FishERTChaplain
+  job: ERTChaplain
+  skillPoints: 0
+  minSkills:
+    FishSkillAthletics: 2
+    FishSkillMedical: 2
+  maxSkills:
+    FishSkillAthletics: 3
+    FishSkillMedical: 3
+    FishSkillComputer: 2
+
+- type: jobSkillBudget
+  id: FishERTJanitor
+  job: ERTJanitor
+  skillPoints: 0
+  minSkills:
+    FishSkillAthletics: 2
+    FishSkillConstruction: 2
+  maxSkills:
+    FishSkillAthletics: 3
+    FishSkillConstruction: 3
+    FishSkillElectrical: 2
+
+- type: jobSkillBudget
+  id: FishCBURN
+  job: CBURN
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 4
+    FishSkillAthletics: 3
+    FishSkillMedical: 2
+    FishSkillAtmos: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillMedical: 3
+    FishSkillAtmos: 3
+
+- type: jobSkillBudget
+  id: FishCBURNLeader
+  job: CBURNLeader
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 4
+    FishSkillAthletics: 3
+    FishSkillMedical: 2
+    FishSkillComputer: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillMedical: 3
+    FishSkillComputer: 3
+
+- type: jobSkillBudget
+  id: FishCBURNAgentEVA
+  job: CBURNAgentEVA
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 4
+    FishSkillAthletics: 3
+    FishSkillAtmos: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillAtmos: 3
+
+- type: jobSkillBudget
+  id: FishDeathSquad
+  job: DeathSquad
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 4
+    FishSkillMedical: 3
+    FishSkillConstruction: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillMedical: 4
+    FishSkillConstruction: 3
+
+- type: jobSkillBudget
+  id: FishBlueShieldOperative
+  job: BlueShieldOperative
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 4
+    FishSkillAthletics: 3
+    FishSkillMedical: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillMedical: 3
+    FishSkillComputer: 2
+
+- type: jobSkillBudget
+  id: FishCentCommOfficial
+  job: CentCommOfficial
+  skillPoints: 0
+  minSkills:
+    FishSkillComputer: 3
+    FishSkillWeapons: 2
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillComputer: 5
+    FishSkillWeapons: 3
+    FishSkillAthletics: 3
+    FishSkillMedical: 2
+
+- type: jobSkillBudget
+  id: FishCentCommOfficer
+  job: CentCommOfficer
+  skillPoints: 0
+  minSkills:
+    FishSkillComputer: 3
+    FishSkillWeapons: 2
+  maxSkills:
+    FishSkillComputer: 5
+    FishSkillWeapons: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishCentCommOperator
+  job: CentCommOperator
+  skillPoints: 0
+  minSkills:
+    FishSkillComputer: 4
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillComputer: 5
+    FishSkillAthletics: 3
+    FishSkillWeapons: 2
+
+- type: jobSkillBudget
+  id: FishCentCommHead
+  job: CentCommHead
+  skillPoints: 0
+  minSkills:
+    FishSkillComputer: 4
+    FishSkillWeapons: 2
+    FishSkillAthletics: 2
+  maxSkills:
+    FishSkillComputer: 5
+    FishSkillWeapons: 3
+    FishSkillAthletics: 3
+
+- type: jobSkillBudget
+  id: FishCentCommTrainee
+  job: CentCommTrainee
+  skillPoints: 0
+  minSkills:
+    FishSkillComputer: 2
+  maxSkills:
+    FishSkillComputer: 4
+    FishSkillAthletics: 2
+
+- type: jobSkillBudget
+  id: FishCentcommBlueShield
+  job: CentcommBlueShield
+  skillPoints: 0
+  minSkills:
+    FishSkillWeapons: 4
+    FishSkillAthletics: 3
+    FishSkillMedical: 2
+  maxSkills:
+    FishSkillWeapons: 5
+    FishSkillAthletics: 5
+    FishSkillMedical: 3
+
+- type: jobSkillBudget
+  id: FishCentcommMedicalDoctor
+  job: CentcommMedicalDoctor
+  skillPoints: 0
+  minSkills:
+    FishSkillMedical: 4
+    FishSkillAnatomy: 3
+    FishSkillChemistry: 3
+  maxSkills:
+    FishSkillMedical: 5
+    FishSkillAnatomy: 5
+    FishSkillChemistry: 5
+
+- type: jobSkillBudget
+  id: FishCentcommBartender
+  job: CentcommBartender
+  skillPoints: 0
+  minSkills:
+    FishSkillAthletics: 2
+    FishSkillWeapons: 2
+  maxSkills:
+    FishSkillAthletics: 3
+    FishSkillWeapons: 3
+    FishSkillComputer: 2
+
+- type: jobSkillBudget
+  id: FishCentcommChef
+  job: CentcommChef
+  skillPoints: 0
+  minSkills:
+    FishSkillAthletics: 2
+    FishSkillChemistry: 2
+  maxSkills:
+    FishSkillAthletics: 3
+    FishSkillChemistry: 3
+    FishSkillMedical: 2
+
+- type: jobSkillBudget
+  id: FishCentcommSectoralJudge
+  job: CentcommSectoralJudge
+  skillPoints: 0
+  minSkills:
+    FishSkillComputer: 3
+  maxSkills:
+    FishSkillComputer: 5
+    FishSkillAthletics: 2

@@ -2,6 +2,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualConstructionBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -19,6 +20,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualConstructionTrained
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -36,6 +38,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualConstructionExperienced
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -53,6 +56,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualElectricalBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -70,6 +74,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualElectricalTrained
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillElectrical
@@ -80,6 +85,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualAtmosBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -97,6 +103,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualAtmosTrained
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillAtmos
@@ -107,6 +114,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualMedicalBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -124,6 +132,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualMedicalTrained
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillMedical
@@ -134,6 +143,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualMedicalExperienced
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillMedical
@@ -144,6 +154,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualAnatomyBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -161,6 +172,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualAnatomyTrained
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -178,6 +190,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualAnatomyExperienced
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillAnatomy
@@ -188,6 +201,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualChemistryBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -205,6 +219,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualChemistryTrained
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillChemistry
@@ -215,6 +230,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualWeaponsBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -232,6 +248,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualWeaponsTrained
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillWeapons
@@ -242,6 +259,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualComputerBasic
+  suffix: Fish
   components:
   - type: Sprite
     sprite: Objects/Misc/books.rsi
@@ -259,6 +277,7 @@
 - type: entity
   parent: BookBase
   id: FishSkillManualComputerTrained
+  suffix: Fish
   components:
   - type: SkillTrainingManual
     skill: FishSkillComputer

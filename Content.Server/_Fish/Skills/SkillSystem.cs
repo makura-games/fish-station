@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using Content.Server.EUI;
+using Content.Server.Ghost.Roles.Components;
 using Content.Server.Popups;
 using Content.Shared._Fish.Skills;
 using Content.Shared.Eui;
 using Content.Shared.GameTicking;
+using Content.Shared.Mind;
 using Content.Shared.Roles;
 using Content.Shared.Verbs;
 using Robust.Shared.Player;
@@ -32,9 +34,19 @@ public sealed partial class SkillSystem : SharedSkillSystem
         base.Initialize();
 
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
+        // ОБР/ERT и прочие ghost takeover с job: на мобе — выдать бюджет (NukeOps без job остаются на Baseline).
+        SubscribeLocalEvent<GhostTakeoverAvailableComponent, MindAddedMessage>(OnGhostTakeoverMindAdded);
         SubscribeLocalEvent<SkillsetComponent, GetVerbsEvent<Verb>>(OnGetVerbs);
         SubscribeNetworkEvent<RequestOpenSkillsEuiEvent>(OnRequestOpenSkills);
         InitializeAuthoring();
+    }
+
+    private void OnGhostTakeoverMindAdded(EntityUid uid, GhostTakeoverAvailableComponent component, MindAddedMessage args)
+    {
+        if (!TryComp(uid, out GhostRoleComponent? ghostRole) || ghostRole.JobProto is not { } jobId)
+            return;
+
+        EnsureSkillset(uid, jobId);
     }
 
     private void OnPlayerSpawnComplete(PlayerSpawnCompleteEvent args)
@@ -44,9 +56,10 @@ public sealed partial class SkillSystem : SharedSkillSystem
 
         EnsureSkillset(args.Mob, jobId);
 
-        // Автооткрытие при спавне, пока очки ещё не подтверждены.
+        // Автооткрытие только если есть свободные очки и распределение ещё не зафиксировано.
         if (TryComp<SkillsetComponent>(args.Mob, out var skillset) &&
             !skillset.Locked &&
+            skillset.RemainingPoints > 0 &&
             TryComp<ActorComponent>(args.Mob, out var actor))
         {
             OpenSkillsUi(args.Mob, actor.PlayerSession);
@@ -93,9 +106,15 @@ public sealed partial class SkillSystem : SharedSkillSystem
             skillset.Skills[skill.ID] = GetMinSkill(jobId, skill.ID);
 
         skillset.BudgetGranted = true;
+
+        // Fish-start: бюджет без свободных очков (ОБР/ЦК и т.п.) сразу фиксируем — без окна на спавне
+        if (skillset.RemainingPoints <= 0)
+            skillset.Locked = true;
+        // Fish-end
+
         Dirty(mob, skillset);
 
-        if (TryComp<ActorComponent>(mob, out var actor))
+        if (TryComp<ActorComponent>(mob, out var actor) && skillset.RemainingPoints > 0)
         {
             _serverPopup.PopupEntity(
                 Loc.GetString("skills-popup-budget-granted", ("points", skillset.RemainingPoints)),
