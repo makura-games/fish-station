@@ -513,7 +513,7 @@ public sealed class SkillWindow : DefaultWindow
 
         foreach (var skill in state.Skills)
         {
-            if (!_confirmSnapshotLevels.TryGetValue(skill.SkillId, out var level) || level != skill.Level)
+            if (!_confirmSnapshotLevels.TryGetValue(skill.SkillId, out var level) || level != skill.CurrentLevel)
                 return true;
         }
 
