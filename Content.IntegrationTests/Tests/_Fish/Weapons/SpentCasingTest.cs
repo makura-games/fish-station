@@ -11,6 +11,7 @@ using Content.Shared.Weapons.Ranged.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Spawners;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Fish.Weapons;
 
@@ -19,33 +20,77 @@ public sealed class SpentCasingTest
 {
     private const float DespawnSeconds = 60f;
 
+    /// <summary>
+    /// Несколько тиков при 30 Гц. Меньше секунды ожидания, поэтому сброс таймера на полные 60 с не проходит.
+    /// </summary>
+    private const float LifetimeTickTolerance = 0.15f;
+
     [Test]
     public async Task LooseRounds_OnlySpentCasingsDespawnAndRejectPickup()
     {
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
         var entMan = server.EntMan;
+        var timing = server.ResolveDependency<IGameTiming>();
         var map = await pair.CreateTestMap();
+        EntityUid user = default;
+        EntityUid live = default;
+        EntityUid pistol = default;
+        EntityUid rifle = default;
+        EntityUid shell = default;
+        EntityUid alreadySpent = default;
+        EntityUid caseless = default;
+        var pickedUp = false;
+        var pistolPickup = true;
+        var riflePickup = true;
+        var shellPickup = true;
+        var spentPickup = true;
 
         await server.WaitPost(() =>
         {
-            var user = entMan.SpawnEntity("MobHuman", map.GridCoords.Offset(new Vector2(0f, 6f)));
+            user = entMan.SpawnEntity("MobHuman", map.GridCoords.Offset(new Vector2(0f, 6f)));
             var gun = entMan.SpawnEntity("WeaponPistolMk58", map.GridCoords);
             var gunComp = entMan.GetComponent<GunComponent>(gun);
-            var hands = entMan.System<SharedHandsSystem>();
             var guns = entMan.System<SharedGunSystem>();
+            var userCoords = entMan.GetComponent<TransformComponent>(user).Coordinates;
 
-            AssertLiveRound(entMan, hands, user, "CartridgePistolFMJ");
-            AssertSpentAfterShot(entMan, guns, hands, user, (gun, gunComp), "CartridgePistolFMJ");
-            AssertSpentAfterShot(entMan, guns, hands, user, (gun, gunComp), "CartridgeRifleFMJ");
-            AssertSpentAfterShot(entMan, guns, hands, user, (gun, gunComp), "ShellShotgun");
-
-            var alreadySpent = entMan.SpawnEntity("CartridgePistolSpent", map.GridCoords);
-            AssertSpentCasing(entMan, hands, user, alreadySpent, DespawnSeconds);
-
-            var caseless = entMan.SpawnEntity("CartridgeCaselessRifle", map.GridCoords);
+            live = entMan.SpawnEntity("CartridgePistolFMJ", userCoords);
+            pistol = ShootRound(entMan, guns, (gun, gunComp), "CartridgePistolFMJ");
+            rifle = ShootRound(entMan, guns, (gun, gunComp), "CartridgeRifleFMJ");
+            shell = ShootRound(entMan, guns, (gun, gunComp), "ShellShotgun");
+            alreadySpent = entMan.SpawnEntity("CartridgePistolSpent", map.GridCoords);
+            caseless = entMan.SpawnEntity("CartridgeCaselessRifle", map.GridCoords);
             Shoot(entMan, guns, (gun, gunComp), caseless);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            var hands = entMan.System<SharedHandsSystem>();
+            AssertLiveRound(entMan, hands, user, live);
+            AssertSpentCasing(entMan, timing, hands, user, pistol);
+            AssertSpentCasing(entMan, timing, hands, user, rifle);
+            AssertSpentCasing(entMan, timing, hands, user, shell);
+            AssertSpentCasing(entMan, timing, hands, user, alreadySpent);
             Assert.That(entMan.Deleted(caseless), Is.True, "Безгильзовый патрон должен исчезнуть сразу.");
+        });
+
+        await server.WaitPost(() =>
+        {
+            var hands = entMan.System<SharedHandsSystem>();
+            pickedUp = hands.TryPickupAnyHand(user, live);
+            pistolPickup = hands.TryPickupAnyHand(user, pistol);
+            riflePickup = hands.TryPickupAnyHand(user, rifle);
+            shellPickup = hands.TryPickupAnyHand(user, shell);
+            spentPickup = hands.TryPickupAnyHand(user, alreadySpent);
+        });
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(pickedUp, Is.True);
+            Assert.That(pistolPickup, Is.False);
+            Assert.That(riflePickup, Is.False);
+            Assert.That(shellPickup, Is.False);
+            Assert.That(spentPickup, Is.False);
         });
 
         await pair.CleanReturnAsync();
@@ -57,10 +102,12 @@ public sealed class SpentCasingTest
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
         var entMan = server.EntMan;
+        var timing = server.ResolveDependency<IGameTiming>();
         var map = await pair.CreateTestMap();
         EntityUid user = default;
         EntityUid revolver = default;
         EntityUid spent = default;
+        var ammoTaken = false;
 
         await server.WaitPost(() =>
         {
@@ -70,14 +117,14 @@ public sealed class SpentCasingTest
             var coords = entMan.GetComponent<TransformComponent>(revolver).Coordinates;
             var taken = new TakeAmmoEvent(1, new List<(EntityUid? Entity, IShootable Shootable)>(), coords, user);
             entMan.EventBus.RaiseLocalEvent(revolver, taken);
-            Assert.That(taken.Ammo, Is.Not.Empty, "Револьвер не отдал патрон.");
+            ammoTaken = taken.Ammo.Count > 0;
             entMan.System<SharedGunSystem>().Shoot((revolver, gunComp), taken.Ammo, coords, coords.Offset(new Vector2(1f, 0f)), out _);
-
             spent = entMan.GetComponent<RevolverAmmoProviderComponent>(revolver).AmmoSlots.Single(slot => slot != null)!.Value;
         });
 
         await server.WaitAssertion(() =>
         {
+            Assert.That(ammoTaken, Is.True, "Револьвер не отдал патрон.");
             Assert.That(entMan.GetComponent<CartridgeAmmoComponent>(spent).Spent, Is.True);
             Assert.That(entMan.HasComponent<SpentCasingComponent>(spent), Is.True);
             Assert.That(entMan.HasComponent<TimedDespawnComponent>(spent), Is.False,
@@ -88,16 +135,22 @@ public sealed class SpentCasingTest
         await pair.RunSeconds(1f);
 
         HashSet<EntityUid> before = default!;
+        var spentPickup = true;
         await server.WaitPost(() =>
         {
             before = CollectCartridges(entMan);
             entMan.System<SharedGunSystem>().EmptyRevolver((revolver, entMan.GetComponent<RevolverAmmoProviderComponent>(revolver)), user);
+            spentPickup = entMan.System<SharedHandsSystem>().TryPickupAnyHand(user, spent);
         });
 
         await server.WaitAssertion(() =>
         {
             var hands = entMan.System<SharedHandsSystem>();
-            AssertSpentCasing(entMan, hands, user, spent, DespawnSeconds - 1f);
+            AssertSpentCasing(entMan, timing, hands, user, spent);
+            var age = CasingAge(entMan, timing, spent);
+            Assert.That(age, Is.GreaterThan(LifetimeTickTolerance),
+                "После секунды ожидания возраст гильзы должен быть больше допуска, иначе сброс на 60 с не отличить.");
+            Assert.That(spentPickup, Is.False);
 
             var live = CollectCartridges(entMan).Where(uid => !before.Contains(uid)).ToList();
             Assert.That(live, Is.Not.Empty, "Досыл револьвера должен выбросить целые патроны.");
@@ -118,22 +171,25 @@ public sealed class SpentCasingTest
         await using var pair = await PoolManager.GetServerClient();
         var server = pair.Server;
         var entMan = server.EntMan;
+        var timing = server.ResolveDependency<IGameTiming>();
         var map = await pair.CreateTestMap();
         EntityUid user = default;
         EntityUid shotgun = default;
         EntityUid spent = default;
+        var loaded = false;
+        var ammoTaken = false;
+        var spentPickup = true;
 
         await server.WaitPost(() =>
         {
             user = entMan.SpawnEntity("MobHuman", map.GridCoords.Offset(new Vector2(0f, 6f)));
             shotgun = entMan.SpawnEntity("WeaponShotgunRiotSawn", map.GridCoords);
-            var provider = entMan.GetComponent<BallisticAmmoProviderComponent>(shotgun);
-            Assert.That(provider.UnspawnedCount, Is.GreaterThan(0));
+            loaded = entMan.GetComponent<BallisticAmmoProviderComponent>(shotgun).UnspawnedCount > 0;
 
             var coords = entMan.GetComponent<TransformComponent>(shotgun).Coordinates;
             var taken = new TakeAmmoEvent(1, new List<(EntityUid? Entity, IShootable Shootable)>(), coords, user);
             entMan.EventBus.RaiseLocalEvent(shotgun, taken);
-            Assert.That(taken.Ammo, Is.Not.Empty, "Помповое ружьё не отдало патрон.");
+            ammoTaken = taken.Ammo.Count > 0;
             var gunComp = entMan.GetComponent<GunComponent>(shotgun);
             entMan.System<SharedGunSystem>().Shoot((shotgun, gunComp), taken.Ammo, coords, coords.Offset(new Vector2(1f, 0f)), out _);
             spent = entMan.GetComponent<BallisticAmmoProviderComponent>(shotgun).Entities[^1];
@@ -141,6 +197,8 @@ public sealed class SpentCasingTest
 
         await server.WaitAssertion(() =>
         {
+            Assert.That(loaded, Is.True);
+            Assert.That(ammoTaken, Is.True, "Помповое ружьё не отдало патрон.");
             Assert.That(entMan.GetComponent<CartridgeAmmoComponent>(spent).Spent, Is.True);
             Assert.That(entMan.HasComponent<TimedDespawnComponent>(spent), Is.False,
                 "Гильза в помпе не должна исчезнуть до передёргивания.");
@@ -150,24 +208,31 @@ public sealed class SpentCasingTest
         {
             var use = new UseInHandEvent(user);
             entMan.EventBus.RaiseLocalEvent(shotgun, use);
+            spentPickup = entMan.System<SharedHandsSystem>().TryPickupAnyHand(user, spent);
         });
 
         await server.WaitAssertion(() =>
         {
-            AssertSpentCasing(entMan, entMan.System<SharedHandsSystem>(), user, spent, DespawnSeconds);
+            AssertSpentCasing(entMan, timing, entMan.System<SharedHandsSystem>(), user, spent);
+            Assert.That(spentPickup, Is.False);
         });
 
         EntityUid live = default;
+        var foundLive = false;
         await server.WaitPost(() =>
         {
             var before = CollectCartridges(entMan);
             var use = new UseInHandEvent(user);
             entMan.EventBus.RaiseLocalEvent(shotgun, use);
-            live = CollectCartridges(entMan).Single(uid => !before.Contains(uid));
+            var ejected = CollectCartridges(entMan).Where(uid => !before.Contains(uid)).ToList();
+            foundLive = ejected.Count == 1;
+            if (foundLive)
+                live = ejected[0];
         });
 
         await server.WaitAssertion(() =>
         {
+            Assert.That(foundLive, Is.True);
             Assert.That(entMan.GetComponent<CartridgeAmmoComponent>(live).Spent, Is.False);
             Assert.That(entMan.HasComponent<TimedDespawnComponent>(live), Is.False);
             Assert.That(entMan.System<SharedHandsSystem>().CanPickupAnyHand(user, live), Is.True);
@@ -176,27 +241,19 @@ public sealed class SpentCasingTest
         await pair.CleanReturnAsync();
     }
 
-    private static void AssertLiveRound(IEntityManager entMan, SharedHandsSystem hands, EntityUid user, string prototype)
+    private static void AssertLiveRound(IEntityManager entMan, SharedHandsSystem hands, EntityUid user, EntityUid round)
     {
-        var round = entMan.SpawnEntity(prototype, entMan.GetComponent<TransformComponent>(user).Coordinates);
         Assert.That(entMan.GetComponent<CartridgeAmmoComponent>(round).Spent, Is.False);
         Assert.That(entMan.HasComponent<SpentCasingComponent>(round), Is.False);
         Assert.That(entMan.HasComponent<TimedDespawnComponent>(round), Is.False);
         Assert.That(hands.CanPickupAnyHand(user, round), Is.True);
     }
 
-    private static void AssertSpentAfterShot(
-        IEntityManager entMan,
-        SharedGunSystem guns,
-        SharedHandsSystem hands,
-        EntityUid user,
-        Entity<GunComponent> gun,
-        string prototype)
+    private static EntityUid ShootRound(IEntityManager entMan, SharedGunSystem guns, Entity<GunComponent> gun, string prototype)
     {
         var round = entMan.SpawnEntity(prototype, entMan.GetComponent<TransformComponent>(gun).Coordinates);
         Shoot(entMan, guns, gun, round);
-        Assert.That(entMan.GetComponent<CartridgeAmmoComponent>(round).Spent, Is.True, prototype);
-        AssertSpentCasing(entMan, hands, user, round, DespawnSeconds);
+        return round;
     }
 
     private static void Shoot(IEntityManager entMan, SharedGunSystem guns, Entity<GunComponent> gun, EntityUid ammo)
@@ -207,17 +264,23 @@ public sealed class SpentCasingTest
 
     private static void AssertSpentCasing(
         IEntityManager entMan,
+        IGameTiming timing,
         SharedHandsSystem hands,
         EntityUid user,
-        EntityUid casing,
-        float expectedLifetime)
+        EntityUid casing)
     {
-        Assert.That(entMan.HasComponent<SpentCasingComponent>(casing), Is.True);
-        Assert.That(entMan.HasComponent<TimedDespawnComponent>(casing), Is.True);
-        Assert.That(entMan.GetComponent<TimedDespawnComponent>(casing).Lifetime, Is.EqualTo(expectedLifetime).Within(1.5f));
-        Assert.That(entMan.GetComponent<SpentCasingComponent>(casing).DespawnSeconds, Is.EqualTo(DespawnSeconds));
+        var spent = entMan.GetComponent<SpentCasingComponent>(casing);
+        var lifetime = entMan.GetComponent<TimedDespawnComponent>(casing).Lifetime;
+        var age = CasingAge(entMan, timing, casing);
+        Assert.That(spent.DespawnSeconds, Is.EqualTo(DespawnSeconds));
+        Assert.That(lifetime, Is.EqualTo(spent.DespawnSeconds - age).Within(LifetimeTickTolerance));
         Assert.That(hands.CanPickupAnyHand(user, casing), Is.False);
-        Assert.That(hands.TryPickupAnyHand(user, casing), Is.False);
+    }
+
+    private static float CasingAge(IEntityManager entMan, IGameTiming timing, EntityUid casing)
+    {
+        var spentAt = entMan.GetComponent<SpentCasingComponent>(casing).SpentAt;
+        return (float)(timing.CurTime - spentAt).TotalSeconds;
     }
 
     private static HashSet<EntityUid> CollectCartridges(IEntityManager entMan)
