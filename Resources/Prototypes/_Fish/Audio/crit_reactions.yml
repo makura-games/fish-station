@@ -1,0 +1,162 @@
+# Fish: кровь / огонь / падение + библиотека реальных человеческих вокалов (CC0 OpenGameArt).
+
+- type: soundCollection
+  id: FishCritBleed
+  files:
+  - /Audio/Effects/Fluids/blood1.ogg
+  - /Audio/Effects/Fluids/blood2.ogg
+  - /Audio/Effects/Footsteps/blood1.ogg
+  - /Audio/Effects/Footsteps/blood2.ogg
+
+- type: soundCollection
+  id: FishCritBurn
+  files:
+  - /Audio/Effects/burning.ogg
+
+- type: soundCollection
+  id: FishCritFall
+  files:
+  - /Audio/Effects/bodyfall1.ogg
+  - /Audio/Effects/bodyfall2.ogg
+  - /Audio/Effects/bodyfall3.ogg
+  - /Audio/Effects/bodyfall4.ogg
+
+# --- Боль: резкий вскрик ---
+- type: soundCollection
+  id: FishPainSharpMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_05.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_06.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_07.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_08.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_09.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_10.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_11.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_12.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_13.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_14.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_15.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_16.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_17.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_male/sharp_m_18.ogg
+
+- type: soundCollection
+  id: FishPainSharpFemale
+  files:
+  - /Audio/_Fish/Crit/Reactions/sharp_female/sharp_f_01.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_female/sharp_f_02.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_female/sharp_f_03.ogg
+  - /Audio/_Fish/Crit/Reactions/sharp_female/sharp_f_04.ogg
+
+# --- Стоны ---
+- type: soundCollection
+  id: FishPainMoanMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_05.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_06.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_07.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_male/moan_m_08.ogg
+
+- type: soundCollection
+  id: FishPainMoanFemale
+  files:
+  - /Audio/_Fish/Crit/Reactions/moan_female/moan_f_01.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_female/moan_f_02.ogg
+  - /Audio/_Fish/Crit/Reactions/moan_female/moan_f_03.ogg
+
+# --- Продолжительная боль ---
+- type: soundCollection
+  id: FishPainLongMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/long_male/long_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/long_male/long_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/long_male/long_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/long_male/long_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/long_male/long_m_05.ogg
+  - /Audio/_Fish/Crit/Reactions/long_male/long_m_06.ogg
+  - /Audio/_Fish/Crit/Reactions/long_male/long_m_07.ogg
+
+# --- Ожог ---
+- type: soundCollection
+  id: FishPainBurnMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/burn_male/burn_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/burn_male/burn_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/burn_male/burn_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/burn_male/burn_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/burn_male/burn_m_05.ogg
+  - /Audio/_Fish/Crit/Reactions/burn_male/burn_m_06.ogg
+
+# --- Падение ---
+- type: soundCollection
+  id: FishPainFallMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/fall_male/fall_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/fall_male/fall_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/fall_male/fall_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/fall_male/fall_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/fall_male/fall_m_05.ogg
+
+# --- Паника / взрыв ---
+- type: soundCollection
+  id: FishPainPanicMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_05.ogg
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_06.ogg
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_07.ogg
+  - /Audio/_Fish/Crit/Reactions/panic_male/panic_m_08.ogg
+
+# --- Дыхание / хрип ---
+- type: soundCollection
+  id: FishPainGasp
+  files:
+  - /Audio/_Fish/Crit/Reactions/gasp/gasp_01.ogg
+  - /Audio/_Fish/Crit/Reactions/gasp/gasp_02.ogg
+  - /Audio/_Fish/Crit/Reactions/gasp/gasp_03.ogg
+  - /Audio/_Fish/Crit/Reactions/gasp/gasp_04.ogg
+
+# --- Попытка встать ---
+- type: soundCollection
+  id: FishPainStandMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/stand_male/stand_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/stand_male/stand_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/stand_male/stand_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/stand_male/stand_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/stand_male/stand_m_05.ogg
+
+# --- Тяжёлое / предсмертное ---
+- type: soundCollection
+  id: FishPainDeathMale
+  files:
+  - /Audio/_Fish/Crit/Reactions/death_male/death_m_01.ogg
+  - /Audio/_Fish/Crit/Reactions/death_male/death_m_02.ogg
+  - /Audio/_Fish/Crit/Reactions/death_male/death_m_03.ogg
+  - /Audio/_Fish/Crit/Reactions/death_male/death_m_04.ogg
+  - /Audio/_Fish/Crit/Reactions/death_male/death_m_05.ogg
+  - /Audio/_Fish/Crit/Reactions/death_male/death_m_06.ogg
+
+# Кашель — уже лицензированные записи Voice/Human
+- type: soundCollection
+  id: FishPainCoughMale
+  files:
+  - /Audio/Voice/Human/male_cough_1.ogg
+  - /Audio/Voice/Human/male_cough_2.ogg
+
+- type: soundCollection
+  id: FishPainCoughFemale
+  files:
+  - /Audio/Voice/Human/female_cough_1.ogg
+  - /Audio/Voice/Human/female_cough_2.ogg
