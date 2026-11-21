@@ -8,7 +8,7 @@ namespace Content.Client._Fish.UserInterface.FishUi;
 /// Базовое окно Fish UI: FancyWindow + Station-палитра CRT без scanline-шума.
 /// Сюда сажаем навыки, достижения и следующие Fish-окна — не размазывать ванильный StyleNano.
 /// </summary>
-public class FishUiWindow : FancyWindow
+public abstract class FishUiWindow : FancyWindow
 {
     protected FishCrtThemeScope ThemeScope { get; }
     protected BoxContainer ContentRoot { get; }
