@@ -950,7 +950,7 @@
   # Fish-Start
     baseWalkSpeed: 1.35
     baseSprintSpeed: 1.8
-  # Fish-Start
+  # Fish-End
   # Sunrise-Start
   - type: Loadout
     prototypes: [ MechArmorHeavyNTLoadout ]
