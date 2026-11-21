@@ -1205,7 +1205,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         return false;
     }
 
-    private Dictionary<EntityPrototype, StorytellerMetadataPrototype> GetEligibleHeuristicEvents(StorytellerRuleComponent comp, StationMetrics metrics, bool isMajor)
+    // Fish-edit: добавлен параметр ignoreBudget для выборки без отсева по текущей цене
+    private Dictionary<EntityPrototype, StorytellerMetadataPrototype> GetEligibleHeuristicEvents(StorytellerRuleComponent comp, StationMetrics metrics, bool isMajor, bool ignoreBudget = false)
     {
         var result = new Dictionary<EntityPrototype, StorytellerMetadataPrototype>();
         var currentDuration = GameTicker.RoundDuration();
@@ -1318,7 +1319,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             // In Peak, all threats (including MajorAntag) are allowed and will spawn smoothly over time
 
             // Budget check
-            if (metadata.ThreatType != StorytellerThreatType.Helpful && metadata.ThreatType != StorytellerThreatType.Neutral)
+            // Fish-edit: пропуск проверки бюджета при ignoreBudget
+            if (!ignoreBudget && metadata.ThreatType != StorytellerThreatType.Helpful && metadata.ThreatType != StorytellerThreatType.Neutral)
             {
                 if (metadata.ThreatType == StorytellerThreatType.MajorAntag)
                 {
@@ -2643,7 +2645,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             }
         }
 
-        // Жадный сброс бюджета Major: выбираем самые дорогие из доступных крупных событий, пока есть бюджет
+        // Сброс бюджета Major: случайный выбор среди всех доступных MajorAntag без отсева самых дорогих
         const int maxIterations = 5;
         for (var i = 0; i < maxIterations; i++)
         {
@@ -2654,30 +2656,42 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             metrics = CalculateStationMetrics(entity.Comp);
             entity.Comp.CrewStress = CalculateCrewStress(ref metrics);
 
-            var eligible = GetEligibleHeuristicEvents(entity.Comp, metrics, isMajor: true);
-            var majorAntags = eligible
+            // 1) Выбирается случайный режим из всех доступных MajorAntag без учёта бюджета
+            var eligibleIgnoreBudget = GetEligibleHeuristicEvents(entity.Comp, metrics, isMajor: true, ignoreBudget: true);
+            var allMajorAntags = eligibleIgnoreBudget
                 .Where(kv => kv.Value.ThreatType == StorytellerThreatType.MajorAntag
-                    && kv.Value.ThreatCost <= entity.Comp.MajorThreatBudget
                     && GetEventWeight(kv.Key, kv.Value) > 0f)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
 
-            if (majorAntags.Count == 0)
+            if (allMajorAntags.Count == 0)
                 break;
 
-            var maxCost = majorAntags.Values.Max(m => m.ThreatCost);
-            if (maxCost <= 0f)
-                break;
-
-            var candidates = majorAntags
-                .Where(kv => MathF.Abs(kv.Value.ThreatCost - maxCost) < 0.01f)
-                .ToDictionary(kv => kv.Key, kv => kv.Value);
-
-            var selected = PickEventFromEligible(candidates);
+            var selected = PickEventFromEligible(allMajorAntags);
             if (selected == null)
                 break;
 
-            Log.Info($"Storyteller draining major budget before Peak exit: triggering '{selected.Value.Item1.ID}' (cost {selected.Value.Item2.ThreatCost}, remaining major budget {entity.Comp.MajorThreatBudget})");
-            TriggerEvent(entity, selected.Value.Item1, selected.Value.Item2);
+            // 2) Если очков достаточно — режим запускается и цикл повторяется на оставшийся бюджет
+            if (selected.Value.Item2.ThreatCost <= entity.Comp.MajorThreatBudget)
+            {
+                Log.Info($"Storyteller draining major budget before Peak exit: triggering '{selected.Value.Item1.ID}' (cost {selected.Value.Item2.ThreatCost}, remaining major budget {entity.Comp.MajorThreatBudget})");
+                TriggerEvent(entity, selected.Value.Item1, selected.Value.Item2);
+                continue;
+            }
+
+            // 3) Если очков недостаточно — проверяем, можно ли вызвать хоть одного антага на оставшиеся очки
+            var affordableMajorAntags = allMajorAntags
+                .Where(kv => kv.Value.ThreatCost <= entity.Comp.MajorThreatBudget)
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+            if (affordableMajorAntags.Count == 0)
+                break;
+
+            var fallback = PickEventFromEligible(affordableMajorAntags);
+            if (fallback == null)
+                break;
+
+            Log.Info($"Storyteller draining major budget before Peak exit (affordable fallback): triggering '{fallback.Value.Item1.ID}' (cost {fallback.Value.Item2.ThreatCost}, remaining major budget {entity.Comp.MajorThreatBudget})");
+            TriggerEvent(entity, fallback.Value.Item1, fallback.Value.Item2);
         }
     }
     // Fish-end

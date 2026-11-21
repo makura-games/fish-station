@@ -540,7 +540,7 @@
   threatCost: 200
   minStationStrength: 30
   maxStress: 75
-  weightModifier: 0.8
+  weightModifier: 2000.0 # Fish-edit: нормализован итоговый вес до 10.0 (0.005 * 2000)
 
 - type: storytellerMetadata
   id: LoneOpsSpawn
@@ -603,7 +603,7 @@
   threatCost: 200
   minStationStrength: 30
   maxStress: 75
-  weightModifier: 0.8
+  weightModifier: 1.0 # Fish-edit: нормализован итоговый вес до 10.0
 
 - type: storytellerMetadata
   id: FleshCult
@@ -611,7 +611,7 @@
   threatCost: 200
   minStationStrength: 30
   maxStress: 75
-  weightModifier: 0.8
+  weightModifier: 1.0 # Fish-edit: нормализован итоговый вес до 10.0
 
 - type: storytellerMetadata
   id: PirateMedium
