@@ -213,6 +213,7 @@ public sealed partial class NetrunnerSystem
     {
         if (!CanSelectCamera(ent, user, camera))
             return false;
+        CancelHack(ent);
         var remote = ent.Comp.RemoteEye!.Value;
         _transform.SetCoordinates(remote, Transform(camera).Coordinates);
         _transform.AttachToGridOrMap(remote);

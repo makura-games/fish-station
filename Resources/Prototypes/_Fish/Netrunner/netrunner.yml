@@ -79,6 +79,7 @@
     - id: FishNetrunnerImplanter
     - id: FishNetrunnerChairCircuitboard
     - id: FishNetrunnerManual
+    - id: FishClothingOuterCyberpunkJacket
 
 - type: entity
   id: FishClothingOuterCyberpunkJacket
@@ -213,8 +214,6 @@
   name: fish-netrunner-uplink-name
   description: fish-netrunner-uplink-description
   productEntity: FishNetrunnerKit
-  productEvent: !type:NetrunnerKitPurchasedEvent
-  raiseProductEventOnUser: true
   cost:
     Telecrystal: 15
   categories:

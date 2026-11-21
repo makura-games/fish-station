@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using Content.Server._Fish.Netrunner;
 using Content.Shared._Fish.Netrunner;
-using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Implants;
-using Content.Shared.Store;
 using NUnit.Framework;
 using Robust.Client.UserInterface;
 using Robust.Shared.GameObjects;
@@ -13,8 +11,6 @@ namespace Content.IntegrationTests.Tests._Fish.Netrunner;
 
 public sealed partial class NetrunnerTest
 {
-    private static readonly ProtoId<ListingPrototype> KitListing = "FishUplinkNetrunnerKit";
-
     [Test]
     public async Task ShopPurchasesFromClientAndRejectsDuplicate()
     {
@@ -60,35 +56,6 @@ public sealed partial class NetrunnerTest
             Assert.That(resources.GrantedActions, Has.Count.EqualTo(1));
             Assert.That(resources.MaxRam, Is.EqualTo(14));
             Assert.That(resources.Ram, Is.LessThan(resources.MaxRam), "Added capacity must not refill RAM.");
-        });
-    }
-
-    [Test]
-    public async Task KitListingDeliversJacketToBuyer()
-    {
-        var map = await Pair.CreateTestMap();
-        var listing = SProtoMan.Index(KitListing);
-        Assert.Multiple(() =>
-        {
-            Assert.That(listing.ProductEntity, Is.EqualTo(new EntProtoId("FishNetrunnerKit")));
-            Assert.That(listing.ProductEvent, Is.TypeOf<NetrunnerKitPurchasedEvent>());
-            Assert.That(listing.RaiseProductEventOnUser, Is.True);
-        });
-        EntityUid user = default;
-        EntityUid? held = null;
-        var pickedUp = false;
-        await Server.WaitPost(() =>
-        {
-            user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
-            SEntMan.EventBus.RaiseLocalEvent(user, new NetrunnerKitPurchasedEvent());
-            pickedUp = SEntMan.System<SharedHandsSystem>().TryGetActiveItem((user, null), out held);
-        });
-        await Server.WaitAssertion(() =>
-        {
-            Assert.That(pickedUp, Is.True);
-            Assert.That(held, Is.Not.Null);
-            Assert.That(SEntMan.GetComponent<MetaDataComponent>(held!.Value).EntityPrototype?.ID,
-                Is.EqualTo("FishClothingOuterCyberpunkJacket"));
         });
     }
 

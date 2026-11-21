@@ -85,7 +85,8 @@ public sealed class NetrunnerPendingHack
     public required ProtoId<NetrunnerAbilityPrototype> Ability;
     public required EntityUid Target;
     public required EntityUid Device;
-    /// <summary>Fixed origin used for range checks while the program is in flight.</summary>
+    public required EntityUid Origin;
+    /// <summary>Movement of the remote viewer interrupts an in-flight program.</summary>
     public required EntityCoordinates OriginCoordinates;
     public required TimeSpan FinishesAt;
     /// <summary>Fixed location chosen for an area activation.</summary>

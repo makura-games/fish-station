@@ -372,17 +372,26 @@ public sealed partial class NetrunnerTest : GameTest
         });
     }
 
-    [Test]
-    public async Task MovingCancelsLocalHackAndCapsCooldown()
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task MovingCancelsHackAndClearsPending(bool remote)
     {
         var map = await Pair.CreateTestMap();
         EntityUid user = default;
         EntityUid target = default;
         EntityUid implant = default;
+        EntityUid origin = default;
+        EntityUid? remoteViewer = null;
+        bool buckled = false;
         bool started = false;
-        var ability = SProtoMan.Index(NeuralOverload);
         await Server.WaitPost(() =>
         {
+            if (remote)
+            {
+                // Fish-edit: Создаём покрытую камерами плитку до спавна цели, чтобы она принадлежала станции.
+                SEntMan.System<SharedMapSystem>().SetTile(map.Grid, map.Grid.Comp,
+                    new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX), map.Tile.Tile);
+            }
             user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
             target = SEntMan.SpawnEntity("MobHuman",
                 new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX));
@@ -394,7 +403,28 @@ public sealed partial class NetrunnerTest : GameTest
             SEntMan.System<NetrunnerSystem>().TryBuyProgram(
                 (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, NeuralOverload);
             implants.AddImplant(target, "MindShieldImplant");
+            origin = user;
+            if (remote)
+            {
+                var station = SEntMan.SpawnEntity(null, MapCoordinates.Nullspace);
+                SEntMan.EnsureComponent<StationMemberComponent>(map.Grid).Station = station;
+                var cameraCoordinates = new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX);
+                var camera = SEntMan.SpawnEntity("SurveillanceCameraEngineering", cameraCoordinates);
+                SetPowered(camera);
+                var chair = SEntMan.SpawnEntity("FishNetrunnerChair", map.GridCoords);
+                SetPowered(chair);
+                SEntMan.System<TagSystem>().AddTag(user, InstantDoAftersTag);
+                buckled = SEntMan.System<SharedBuckleSystem>().TryBuckle(user, user, chair);
+                SEntMan.System<TagSystem>().RemoveTag(user, InstantDoAftersTag);
+                remoteViewer = SEntMan.GetComponent<NetrunnerImplantComponent>(implant).RemoteEye;
+                origin = remoteViewer ?? user;
+            }
         });
+        if (remote)
+        {
+            Assert.That(buckled, Is.True, "The operator must be buckled before the remote cast.");
+            Assert.That(remoteViewer, Is.Not.Null, "The instant chair connection must create a viewer.");
+        }
         await Pair.RunSeconds(0.25f);
         await Server.WaitPost(() =>
         {
@@ -402,7 +432,7 @@ public sealed partial class NetrunnerTest : GameTest
                 (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, target, "FishNetrunnerNeuralOverload");
         });
         await Server.WaitAssertion(() => Assert.That(started, Is.True));
-        await Server.WaitPost(() => SEntMan.System<SharedTransformSystem>().SetCoordinates(user,
+        await Server.WaitPost(() => SEntMan.System<SharedTransformSystem>().SetCoordinates(origin,
             new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitY * 2)));
         await Pair.RunSeconds(0.5f);
         await Server.WaitAssertion(() =>
@@ -411,107 +441,8 @@ public sealed partial class NetrunnerTest : GameTest
             Assert.That(resources.Pending, Is.Null);
             Assert.That(resources.Journal, Has.Count.EqualTo(1));
             Assert.That(resources.Journal[0].Success, Is.False);
-            Assert.That(resources.Ram, Is.EqualTo(resources.MaxRam - 5));
+            Assert.That(resources.Ram, Is.EqualTo(resources.MaxRam - 5 - (remote ? 1 : 0)));
             Assert.That(SEntMan.HasComponent<StunnedComponent>(target), Is.False);
-            var remaining = resources.Cooldowns[NeuralOverload] - SGameTiming.CurTime;
-            Assert.That(remaining, Is.LessThanOrEqualTo(TimeSpan.FromSeconds(4)));
-            Assert.That(remaining, Is.GreaterThan(TimeSpan.FromSeconds(3)));
-            var action = resources.GrantedActions.Find(uid =>
-                SEntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID == ability.Action);
-            Assert.That(SEntMan.GetComponent<ActionComponent>(action).Cooldown?.End,
-                Is.EqualTo(resources.Cooldowns[NeuralOverload]),
-                "The action button must reflect the shortened cooldown.");
-        });
-    }
-
-    [Test]
-    public async Task RemoteCameraMovementAndSelectionDoNotCancelHack()
-    {
-        var map = await Pair.CreateTestMap();
-        EntityUid user = default;
-        EntityUid target = default;
-        EntityUid implant = default;
-        EntityUid secondCamera = default;
-        EntityUid? remoteViewer = null;
-        bool buckled = false;
-        bool started = false;
-        bool switched = false;
-        var ability = SProtoMan.Index(NeuralOverload);
-        await Server.WaitPost(() =>
-        {
-            var maps = SEntMan.System<SharedMapSystem>();
-            maps.SetTile(map.Grid, map.Grid.Comp,
-                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX), map.Tile.Tile);
-            maps.SetTile(map.Grid, map.Grid.Comp,
-                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX * 2), map.Tile.Tile);
-            user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
-            target = SEntMan.SpawnEntity("MobHuman",
-                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX));
-            SEntMan.RemoveComponent<RespiratorComponent>(user);
-            SEntMan.RemoveComponent<RespiratorComponent>(target);
-            Server.PlayerMan.SetAttachedEntity(ServerSession!, user);
-            var implants = SEntMan.System<SharedSubdermalImplantSystem>();
-            implant = implants.AddImplant(user, "FishNetrunnerImplant")!.Value;
-            SEntMan.System<NetrunnerSystem>().TryBuyProgram(
-                (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, NeuralOverload);
-            implants.AddImplant(target, "MindShieldImplant");
-            var station = SEntMan.SpawnEntity(null, MapCoordinates.Nullspace);
-            SEntMan.EnsureComponent<StationMemberComponent>(map.Grid).Station = station;
-            var camera = SEntMan.SpawnEntity("SurveillanceCameraEngineering",
-                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX));
-            SetPowered(camera);
-            secondCamera = SEntMan.SpawnEntity("SurveillanceCameraEngineering",
-                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX * 2));
-            SetPowered(secondCamera);
-            var chair = SEntMan.SpawnEntity("FishNetrunnerChair", map.GridCoords);
-            SetPowered(chair);
-            SEntMan.System<TagSystem>().AddTag(user, InstantDoAftersTag);
-            buckled = SEntMan.System<SharedBuckleSystem>().TryBuckle(user, user, chair);
-            SEntMan.System<TagSystem>().RemoveTag(user, InstantDoAftersTag);
-            remoteViewer = SEntMan.GetComponent<NetrunnerImplantComponent>(implant).RemoteEye;
-        });
-        Assert.That(buckled, Is.True, "The operator must be buckled before the remote cast.");
-        Assert.That(remoteViewer, Is.Not.Null, "The instant chair connection must create a viewer.");
-        await Pair.RunSeconds(0.25f);
-        await Server.WaitAssertion(() =>
-        {
-            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
-            Assert.That(resources.RemoteEye, Is.Not.Null);
-            resources.NextCameraSwitch = SGameTiming.CurTime;
-            resources.NextConnectionCharge = SGameTiming.CurTime + TimeSpan.FromMinutes(1);
-            resources.Ram = resources.MaxRam;
-        });
-        await Server.WaitPost(() =>
-        {
-            started = SEntMan.System<NetrunnerSystem>().TryStartHack(
-                (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, target, "FishNetrunnerNeuralOverload");
-        });
-        await Server.WaitAssertion(() => Assert.That(started, Is.True));
-        await Server.WaitPost(() => SEntMan.System<SharedTransformSystem>().SetCoordinates(remoteViewer!.Value,
-            new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitY * 2)));
-        await Server.WaitPost(() =>
-        {
-            switched = SEntMan.System<NetrunnerSystem>().TrySelectCamera(
-                (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, secondCamera);
-        });
-        await Server.WaitAssertion(() =>
-        {
-            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
-            Assert.That(switched, Is.True);
-            Assert.That(resources.Pending, Is.Not.Null, "Camera movement must not cancel the hack.");
-            Assert.That(resources.Camera, Is.EqualTo(secondCamera));
-        });
-        await Pair.RunSeconds((float)ability.CastTime.TotalSeconds + 0.5f);
-        await Server.WaitAssertion(() =>
-        {
-            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
-            Assert.That(resources.Pending, Is.Null);
-            Assert.That(resources.Journal, Has.Count.EqualTo(1));
-            Assert.That(resources.Journal[0].Success, Is.True);
-            Assert.That(resources.Ram, Is.EqualTo(resources.MaxRam - ability.RamCost));
-            Assert.That(SEntMan.HasComponent<StunnedComponent>(target), Is.True);
-            Assert.That(resources.Cooldowns[NeuralOverload] - SGameTiming.CurTime,
-                Is.GreaterThan(TimeSpan.FromSeconds(100)));
         });
     }
 

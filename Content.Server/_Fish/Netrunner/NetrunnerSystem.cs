@@ -31,7 +31,6 @@ using Content.Shared.SurveillanceCamera.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Player;
-using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Prototypes;
@@ -80,7 +79,6 @@ public sealed partial class NetrunnerSystem : EntitySystem
         base.Initialize();
         InitializeShop();
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundCleanup);
-        SubscribeLocalEvent<TransformComponent, NetrunnerKitPurchasedEvent>(OnKitPurchased);
         SubscribeLocalEvent<NetrunnerImplantComponent, ImplantImplantedEvent>(OnImplanted);
         SubscribeLocalEvent<NetrunnerImplantComponent, ImplantRemovedEvent>(OnRemoved);
         SubscribeLocalEvent<NetrunnerImplantComponent, ComponentShutdown>(OnImplantShutdown);
@@ -145,12 +143,6 @@ public sealed partial class NetrunnerSystem : EntitySystem
             EndRemoteSession(new Entity<NetrunnerImplantComponent>(uid, implant));
         _stationAlerts.Clear();
         _remoteSessions.Clear();
-    }
-
-    private void OnKitPurchased(EntityUid buyer, TransformComponent xform, ref NetrunnerKitPurchasedEvent args)
-    {
-        var jacket = Spawn("FishClothingOuterCyberpunkJacket", xform.Coordinates);
-        _hands.PickupOrDrop(buyer, jacket);
     }
 
     private void OnRemoved(Entity<NetrunnerImplantComponent> ent, ref ImplantRemovedEvent args) => RemoveUser(ent);
@@ -261,8 +253,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
             ent.Owner, target: areaCoordinates == null ? target : null)
         {
             NeedHand = false,
-            // Fish-edit: при удалённом взломе эффективный mover — это камера, её движение не должно сбивать DoAfter.
-            BreakOnMove = ent.Comp.RemoteEye == null,
+            BreakOnMove = true,
             BreakOnDamage = true,
             DistanceThreshold = null,
             AttemptFrequency = AttemptFrequency.EveryTick,
@@ -274,6 +265,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
             Ability = id,
             Target = target,
             Device = device,
+            Origin = origin,
             OriginCoordinates = Transform(origin).Coordinates,
             FinishesAt = _timing.CurTime + castTime,
             AreaCoordinates = areaCoordinates,
@@ -334,20 +326,22 @@ public sealed partial class NetrunnerSystem : EntitySystem
     private bool CanContinueHack(Entity<NetrunnerImplantComponent> ent)
     {
         if (ent.Comp.Pending is not { } pending || ent.Comp.User is not { } user
-            || !IsOperator(ent, user) || pending.AreaCoordinates == null && Terminating(pending.Device))
+            || !IsOperator(ent, user) || pending.AreaCoordinates == null && Terminating(pending.Device)
+            || (ent.Comp.RemoteEye ?? user) != pending.Origin
+            || pending.Origin != user && !_transform.InRange(
+                Transform(pending.Origin).Coordinates, pending.OriginCoordinates, 0.15f))
             return false;
         var ability = ProtoMan.Index(pending.Ability);
         if (pending.AreaCoordinates is { } areaCoordinates)
-            return CanTargetArea(ent, areaCoordinates, ability, pending.OriginCoordinates);
-        if (!CanTarget(ent, pending.Target, ability, pending.OriginCoordinates))
+            return CanTargetArea(ent, areaCoordinates, ability);
+        if (!CanTarget(ent, pending.Target, ability))
             return false;
         var check = new NetrunnerValidateHackEvent(user, ability);
         RaiseLocalEvent(pending.Target, ref check);
         return check.Supported && check.Allowed && check.Device == pending.Device;
     }
 
-    private bool CanTarget(Entity<NetrunnerImplantComponent> ent, EntityUid target,
-        NetrunnerAbilityPrototype ability, EntityCoordinates? originOverride = null)
+    private bool CanTarget(Entity<NetrunnerImplantComponent> ent, EntityUid target, NetrunnerAbilityPrototype ability)
     {
         if (Terminating(target) || Paused(target) || _container.IsEntityInContainer(target)
             || ent.Comp.User is not { } user || target == user)
@@ -357,9 +351,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
             return false;
         if (ent.Comp.RemoteEye is { } remote)
         {
-            var originCoordinates = originOverride ?? Transform(remote).Coordinates;
-            if (Terminating(remote)
-                || !_transform.InRange(originCoordinates, Transform(target).Coordinates, ability.Range)
+            if (Terminating(remote) || !_transform.InRange((remote, null), (target, null), ability.Range)
                 || !TryComp<NetrunnerRemoteEyeComponent>(remote, out var viewer)
                 || _station.GetOwningStation(target) != viewer.Station)
                 return false;
@@ -395,8 +387,6 @@ public sealed partial class NetrunnerSystem : EntitySystem
             : ability.Kind == NetrunnerHackKind.NeuralOverload ? ability.RamCost * 0.5f : 0;
         if (!ent.Comp.DebugMode)
             ent.Comp.Ram -= cost;
-        if (!success)
-            CapInterruptedCooldown(ent, pending.Ability, ability);
         ent.Comp.ReadyAt = _timing.CurTime + GetGlobalCooldown(ent);
         ent.Comp.RecoverAt = _timing.CurTime + (ent.Comp.DebugMode ? TimeSpan.Zero : ent.Comp.RecoveryDelay);
         if (ent.Comp.Chair is { } chair && TryComp<NetrunnerChairComponent>(chair, out var cooling))

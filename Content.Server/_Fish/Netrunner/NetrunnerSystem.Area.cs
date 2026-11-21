@@ -46,14 +46,13 @@ public sealed partial class NetrunnerSystem
             && ability.AreaRadius > 0 && CanTargetArea(ent, coordinates, ability);
 
     private bool CanTargetArea(Entity<NetrunnerImplantComponent> ent, EntityCoordinates coordinates,
-        NetrunnerAbilityPrototype ability, EntityCoordinates? originOverride = null)
+        NetrunnerAbilityPrototype ability)
     {
         if (!_transform.IsValid(coordinates) || ent.Comp.User is not { } user
             || ent.Comp.Chair != null && !CanUseChair(ent))
             return false;
         var origin = ent.Comp.RemoteEye ?? user;
-        var originCoordinates = originOverride ?? Transform(origin).Coordinates;
-        if (!_transform.InRange(originCoordinates, coordinates, ability.Range))
+        if (!_transform.InRange(Transform(origin).Coordinates, coordinates, ability.Range))
             return false;
         if (ent.Comp.RemoteEye is not { } remote)
             return _interaction.InRangeUnobstructed(origin, coordinates, ability.Range, CollisionGroup.Opaque);

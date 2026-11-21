@@ -56,7 +56,7 @@ fish-netrunner-visor-inactive = VISOR / OFFLINE
 fish-netrunner-wallet-infinite = Links: ∞ | Scripts: { $count }
 fish-netrunner-wallet = Links: { $links } | Scripts: { $count }
 fish-netrunner-empty-hint = No scripts purchased yet. Open the shop and select your first programs using neural links.
-fish-netrunner-remote-hint = Use ordinary movement controls. Working cameras on your station provide vision. Moving the camera does not interrupt script activation. Closing this window preserves the connection.
+fish-netrunner-remote-hint = Use ordinary movement controls. Working cameras on your station provide vision. Moving interrupts script activation. Closing this window preserves the connection.
 fish-netrunner-shop-open = Script shop
 fish-netrunner-shop-title = Cybersun catalog
 fish-netrunner-shop-balance = Neural links: { $links }
@@ -85,7 +85,7 @@ fish-netrunner-combat-warning = Your electronics have been subjected to network 
 fish-netrunner-weapon-jammed = The weapon's electronic controller is temporarily locked.
 fish-netrunner-uplink-name = Netrunner kit
     .suffix = Fish
-fish-netrunner-uplink-description = An implant with 12 initial neural links, a chair board, a jacket (delivered separately from the box) and a Cybersun instruction sheet. Scripts, memory expansions, accelerators and the visor are purchased in a separate shop. The chair provides a mobile camera view, faster memory recovery and link compilation. Interference leaves a trace and heats the body.
+fish-netrunner-uplink-description = An implant with 12 initial neural links, a chair board, a jacket and a Cybersun instruction sheet. Scripts, memory expansions, accelerators and the visor are purchased in a separate shop. The chair provides a mobile camera view, faster memory recovery and link compilation. Interference leaves a trace and heats the body.
 
 ent-FishNetrunnerImplant = netrunner implant
     .desc = A compact neural interface with a miniature cooling assembly.
@@ -205,7 +205,7 @@ fish-netrunner-manual-content =
     Operating instructions:
 
     1. Contents and installation
-    The kit contains an implanter, a neural interface machine board, a corporate jacket (delivered separately from the box) and this document. Metal, cable, manipulators and power must be obtained separately. Install the implant using the supplied implanter, then open the neural terminal action. A new implant has no purchased scripts. It receives 12 neural links once. The Script shop button opens the program and expansion catalog. Purchasing a script grants its action.
+    The kit contains an implanter, a neural interface machine board, a corporate jacket and this document. Metal, cable, manipulators and power must be obtained separately. Install the implant using the supplied implanter, then open the neural terminal action. A new implant has no purchased scripts. It receives 12 neural links once. The Script shop button opens the program and expansion catalog. Purchasing a script grants its action.
 
     2. Hardware expansions
     Three memory expansions each add 2 RAM, for a maximum capacity of 18 RAM. Three activation accelerators each remove 10 percent of the original activation time, up to 30 percent. Successive upgrades of the same type cost 6, 10 and 14 links. Added memory starts empty and fills during recovery. Acceleration does not reduce RAM costs, trace or cooldowns. Neural overload always requires at least 6 seconds to activate.
@@ -216,7 +216,7 @@ fish-netrunner-manual-content =
 
     4. Neural interface
     Assemble a machine frame with the supplied board, 5 units of steel, 5 cable and 2 manipulators. Anchor the machine and connect it to power. Lie in the chair. Connection takes 5 seconds and consumes 1 RAM. The terminal selects the nearest available camera automatically.
-    Ordinary movement controls move the observation channel through physical walls. Only functioning cameras on the chair's station supply an image. Uncovered areas, disabled cameras and other stations provide no vision. Selecting a camera moves the channel to that camera. Remote scripts require camera coverage and their normal range. Moving the channel does not interrupt activation.
+    Ordinary movement controls move the observation channel through physical walls. Only functioning cameras on the chair's station supply an image. Uncovered areas, disabled cameras and other stations provide no vision. Selecting a camera moves the channel to that camera. Remote scripts require camera coverage and their normal range. Moving the channel interrupts activation.
     Closing the terminal window preserves the connection. Use Disconnect or release the chair restraints to leave. Power failure, implant extraction, loss of consciousness, death or session termination disconnect the operator.
 
     5. Cooling and neural links

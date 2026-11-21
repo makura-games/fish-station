@@ -1,12 +1,9 @@
 using Content.Shared._Fish.Netrunner;
-using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.Netrunner;
 
 public sealed partial class NetrunnerSystem
 {
-    private static readonly TimeSpan InterruptedCooldown = TimeSpan.FromSeconds(4);
-
     // Fish-edit: Ускоритель работает только в слоте глаз, нагрев оплачивается в начале активации.
     private NetrunnerVisorComponent? GetWornVisor(Entity<NetrunnerImplantComponent> ent)
     {
@@ -40,23 +37,6 @@ public sealed partial class NetrunnerSystem
                 _actions.SetUseDelay(action, cooldown);
                 break;
             }
-        }
-    }
-
-    // Fish-edit: Прерванный скрипт не должен оставлять полную перезарядку.
-    private void CapInterruptedCooldown(Entity<NetrunnerImplantComponent> ent,
-        ProtoId<NetrunnerAbilityPrototype> id, NetrunnerAbilityPrototype ability)
-    {
-        var end = _timing.CurTime + InterruptedCooldown;
-        if (ent.Comp.Cooldowns.GetValueOrDefault(id) <= end)
-            return;
-        ent.Comp.Cooldowns[id] = end;
-        foreach (var action in ent.Comp.GrantedActions)
-        {
-            if (MetaData(action).EntityPrototype?.ID != ability.Action.Id)
-                continue;
-            _actions.SetCooldown(action, _timing.CurTime, end);
-            break;
         }
     }
 
