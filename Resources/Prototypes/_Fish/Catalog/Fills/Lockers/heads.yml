@@ -1,0 +1,21 @@
+﻿- type: entityTable
+  id: FishFillQuarterMasterHardsuit
+  table: !type:AllSelector
+    children:
+    - id: ClothingMaskBreath
+    - id: FishClothingOuterHardsuitQuartermaster
+    - id: OxygenTankFilled
+
+- type: entity
+  id: FishLockerQuarterMasterFilledHardsuit
+  suffix: Filled, Hardsuit
+  parent: LockerQuarterMaster
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - !type:NestedSelector
+          tableId: LockerFillQuarterMaster
+        - !type:NestedSelector
+          tableId: FishFillQuarterMasterHardsuit
