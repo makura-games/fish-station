@@ -133,6 +133,11 @@ public sealed partial class FishHealthAnalyzerControl : BoxContainer
             : Loc.GetString("health-analyzer-window-entity-unknown-value-text");
         SetPercentageStyle(BloodLabel, state.BloodLevel * 100f);
 
+        NeuroLabel.Text = state.NeuroLevel.HasValue
+            ? $"{state.NeuroLevel.Value:F1} %"
+            : Loc.GetString("health-analyzer-window-entity-unknown-value-text");
+        SetPercentageStyle(NeuroLabel, state.NeuroLevel);
+
         // обновление показателей голода и жажды
         HungerLabel.Text = state.HungerLevel.HasValue && !float.IsNaN(state.HungerLevel.Value)
             ? $"{state.HungerLevel.Value:F1} %"

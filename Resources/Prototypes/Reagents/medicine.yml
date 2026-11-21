@@ -1464,7 +1464,7 @@
           Burn: -6
 
 - type: reagent
-  id : Mannitol # currently this is just a way to create psicodine
+  id: Mannitol # Fish-edit: маннитол также восстанавливает нейроны
   name: reagent-name-mannitol
   group: Medicine
   desc: reagent-desc-mannitol
@@ -1474,6 +1474,12 @@
   metabolisms:
     Bloodstream:
       effects:
+      # Fish-start - маннитол восстанавливает нейроны
+      - !type:ChemRestoreNeuro
+        sourceId: Mannitol
+        restorePerUnit: 5
+        addictionPerDose: 8
+      # Fish-end
       - !type:PopupMessage
         conditions:
         - !type:ReagentCondition
@@ -1602,6 +1608,10 @@
       - !type:AdjustReagent
         reagent: MindbreakerToxin
         amount: -3.0
+      # Fish-start: галоперидол снижает психоз как антипсихотическое средство
+      - !type:ChemReducePsychosis
+        reducePerUnit: 1
+      # Fish-end
 
 - type: reagent
   id: Heparin

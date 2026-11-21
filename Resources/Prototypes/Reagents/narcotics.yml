@@ -311,6 +311,13 @@
   metabolisms:
     Bloodstream:
       effects:
+      # Fish-start - стимуляторы снимают стресс и формируют зависимость
+      - !type:ChemMentalHealth
+        substanceId: SpaceDrugs
+        stressPerUnit: -4
+        neuroPerUnit: -0.5
+        addictionPerDose: 8
+      # Fish-end
       - !type:ModifyStatusEffect
         effectProto: StatusEffectSeeingRainbow
         type: Add
@@ -687,7 +694,6 @@
         effectProto: StatusEffectSeeingRainbow
         type: Add
         time: 5
-
 - type: reagent
   id: Nyctalon
   name: reagent-name-nyctalon

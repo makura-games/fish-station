@@ -73,5 +73,15 @@ namespace Content.Shared.CCVar
         /// </summary>
         public static readonly CVarDef<bool> AghostUnrestrictOnLocalhost =
             CVarDef.Create("fish.aghost_unrestrict_on_localhost", false, CVar.SERVERONLY | CVar.ARCHIVE);
+
+        /// <summary>
+        /// Стресс, психоз и нейроны для игрока.
+        /// </summary>
+      	public static readonly CVarDef<bool> EnableStressEffects =
+			      CVarDef.Create("fish.mental_health.stress_effects", true, CVar.CLIENTONLY);
+		    public static readonly CVarDef<bool> EnablePsychosisEffects =
+			      CVarDef.Create("fish.mental_health.psychosis_effects", true, CVar.CLIENTONLY);
+		    public static readonly CVarDef<bool> EnableNeuroEffects =
+			      CVarDef.Create("fish.mental_health.neuro_effects", true, CVar.CLIENTONLY);
     }
 }

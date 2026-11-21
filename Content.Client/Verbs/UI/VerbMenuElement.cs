@@ -26,6 +26,7 @@ namespace Content.Client.Verbs.UI
 
         // Top quality variable naming
         public readonly Verb? Verb;
+        public readonly VerbCategory? Category; // Fish-edit: категория нужна для исключения админских действий из искажения.
 
         public VerbMenuElement(Verb verb) : base(verb.Text)
         {
@@ -78,6 +79,7 @@ namespace Content.Client.Verbs.UI
 
         public VerbMenuElement(VerbCategory category, string styleClass) : base(category.Text)
         {
+            Category = category; // Fish-edit: сохраняем категорию действия.
             Label.SetOnlyStyleClass(styleClass);
 
             Icon.AddChild(new TextureRect()

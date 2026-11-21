@@ -1,0 +1,18 @@
+- type: reagent
+  id: FishDeliriumine
+  name: reagent-name-fish-deliriumine
+  desc: reagent-desc-fish-deliriumine
+  group: Toxins
+  physicalDesc: reagent-physical-desc-vile
+  contrabandSeverity: Syndicate
+  color: "#493430"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Poison: 2
+      - !type:ChemPsychosis
+        sourceId: FishDeliriumine
+        amountPerUnit: 4

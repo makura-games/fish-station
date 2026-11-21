@@ -1,0 +1,9 @@
+- type: shader
+  id: FishPsychosis
+  kind: source
+  path: "/Textures/_Fish/Shaders/psychosis.swsl"
+
+- type: shader
+  id: FishPsychosisMild
+  kind: source
+  path: "/Textures/_Fish/Shaders/psychosis_mild.swsl"
