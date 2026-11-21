@@ -241,6 +241,9 @@
     sprite: _Sunrise/Clothing/Ears/Headsets/centcom.rsi
   - type: Clothing
     sprite: _Sunrise/Clothing/Ears/Headsets/centcom.rsi
+  # Fish-edit: EMP-устойчивость alt-гарнитуры ЦК (паттерн ClothingHeadsetNinja)
+  - type: EmpResistance
+    strengthMultiplier: 0
 
 - type: entity
   parent: ClothingHeadsetNokey
@@ -317,6 +320,9 @@
   - type: Clothing
     sprite: _Sunrise/Clothing/Ears/Headsets/ert.rsi
   - type: EncryptionKeyHolder
+  # Fish-edit: EMP-устойчивость гарнитуры ОБР (паттерн ClothingHeadsetNinja)
+  - type: EmpResistance
+    strengthMultiplier: 0
 
 - type: entity
   parent: ClothingHeadsetAlt
@@ -337,6 +343,9 @@
     sprite: _Sunrise/Clothing/Ears/Headsets/deathsquad.rsi
   - type: EncryptionKeyHolder
     keySlots: 5
+  # Fish-edit: EMP-устойчивость гарнитуры ДСО (паттерн ClothingHeadsetNinja)
+  - type: EmpResistance
+    strengthMultiplier: 0
 
 - type: entity
   parent: ClothingHeadsetAlt
@@ -358,6 +367,9 @@
     sprite: _Sunrise/Clothing/Ears/Headsets/specopsofficer.rsi
   - type: EncryptionKeyHolder
     keySlots: 6
+  # Fish-edit: EMP-устойчивость гарнитуры офицера спецопераций (паттерн ClothingHeadsetNinja)
+  - type: EmpResistance
+    strengthMultiplier: 0
 
 - type: entity
   parent: [ClothingHeadsetAlt, BaseCommandContraband]
