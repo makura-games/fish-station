@@ -22,4 +22,16 @@ public sealed partial class FishIpcRoleModuleLoadoutPrototype : IPrototype
     /// </summary>
     [DataField(required: true)]
     public List<EntProtoId> Modules = new();
+
+    /// <summary>
+    /// Батарея шасси (для ОБР/NukeOps — PowerCellSyndicate из аплинка).
+    /// </summary>
+    [DataField]
+    public EntProtoId? PowerCell;
+
+    /// <summary>
+    /// Запретить изъятие/замену батареи после установки <see cref="PowerCell"/>.
+    /// </summary>
+    [DataField]
+    public bool SealPowerCell;
 }

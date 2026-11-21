@@ -138,8 +138,22 @@ public sealed class FishIpcConnectedTest : FishIpcGameTest
                 AssertHasModules(ertMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
                 AssertHasModules(nukeOp, "FishIpcModuleEmpScreen", "FishIpcModuleNightVision", "FishIpcModuleNanoRepair");
                 AssertHasModules(nukeMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
+                AssertSealedSyndicateCell(ertSec);
+                AssertSealedSyndicateCell(nukeOp);
             });
         });
+    }
+
+    private void AssertSealedSyndicateCell(EntityUid ipc)
+    {
+        Assert.That(SEntMan.HasComponent<FishIpcSealedBatteryComponent>(ipc), Is.True);
+        var slots = Server.System<ItemSlotsSystem>();
+        var cellSlot = SComp<PowerCellSlotComponent>(ipc);
+        Assert.That(slots.TryGetSlot(ipc, cellSlot.CellSlotId, out var slot), Is.True);
+        Assert.That(slot!.Item, Is.Not.Null);
+        Assert.That(SEntMan.GetComponent<MetaDataComponent>(slot.Item!.Value).EntityPrototype?.ID,
+            Is.EqualTo("PowerCellSyndicate"));
+        Assert.That(slots.TryEject(ipc, cellSlot.CellSlotId, null, out _), Is.False);
     }
 
     private void AssertHasModules(EntityUid ipc, params string[] expected)

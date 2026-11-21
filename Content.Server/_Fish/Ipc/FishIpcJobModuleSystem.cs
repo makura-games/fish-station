@@ -3,7 +3,9 @@ using Content.Server._Fish.Ipc.Modules;
 using Content.Server.Antag;
 using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Ipc.Modules;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.GameTicking;
+using Content.Shared.PowerCell.Components;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Robust.Shared.Containers;
@@ -13,6 +15,7 @@ namespace Content.Server._Fish.Ipc;
 
 /// <summary>
 /// Стартовые модули шасси: ОБР/NukeOps по роли (EmpScreen + профа), станция — HUD отдела.
+/// Боевым ролям — PowerCellSyndicate и запечатанный слот.
 /// </summary>
 public sealed partial class FishIpcJobModuleSystem : EntitySystem
 {
@@ -21,6 +24,7 @@ public sealed partial class FishIpcJobModuleSystem : EntitySystem
 
     [Dependency] private SharedJobSystem _jobs = default!;
     [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private ItemSlotsSystem _itemSlots = default!;
     [Dependency] private FishIpcModuleSystem _modules = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
 
@@ -83,6 +87,8 @@ public sealed partial class FishIpcJobModuleSystem : EntitySystem
         if (_loadoutsByRole.TryGetValue(roleId, out var loadout))
         {
             GrantModules(ipc, loadout.Modules);
+            if (loadout.PowerCell is { } cell)
+                EnsureCombatBattery(ipc, cell, loadout.SealPowerCell);
             return;
         }
 
@@ -103,6 +109,40 @@ public sealed partial class FishIpcJobModuleSystem : EntitySystem
         }
 
         GrantModules(ipc, [moduleId]);
+    }
+
+    private void EnsureCombatBattery(EntityUid ipc, EntProtoId cellProto, bool seal)
+    {
+        if (!TryComp<PowerCellSlotComponent>(ipc, out var cellSlot) ||
+            !_itemSlots.TryGetSlot(ipc, cellSlot.CellSlotId, out var slot) ||
+            slot.ContainerSlot is not { } container)
+            return;
+
+        // Уже стоит нужный прототип — только печать.
+        if (slot.Item is { } existing &&
+            MetaData(existing).EntityPrototype?.ID == cellProto.Id)
+        {
+            if (seal)
+                EnsureComp<FishIpcSealedBatteryComponent>(ipc);
+            return;
+        }
+
+        // Сразу убираем старую ячейку: QueueDel оставит её в слоте до конца тика.
+        foreach (var old in container.ContainedEntities.ToArray())
+        {
+            _container.Remove(old, container, force: true);
+            Del(old);
+        }
+
+        var cell = Spawn(cellProto);
+        if (!_container.Insert(cell, container))
+        {
+            Del(cell);
+            return;
+        }
+
+        if (seal)
+            EnsureComp<FishIpcSealedBatteryComponent>(ipc);
     }
 
     private void GrantModules(EntityUid ipc, IReadOnlyList<EntProtoId> moduleIds)
