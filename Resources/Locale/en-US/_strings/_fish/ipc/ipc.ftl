@@ -31,4 +31,5 @@ fish-ipc-emag-access = Chassis access locks cleared. Anyone can open the panel.
 fish-ipc-module-toggled-on = { $module }: enabled.
 fish-ipc-module-toggled-off-named = { $module }: disabled.
 fish-ipc-cell-panel-closed = Open the chassis panel before swapping the battery.
+fish-ipc-cell-sealed = The combat chassis battery is sealed and cannot be removed.
 id-card-access-level-fish-ipc-chassis = IPC chassis

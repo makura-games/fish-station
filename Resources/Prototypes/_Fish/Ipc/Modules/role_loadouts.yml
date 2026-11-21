@@ -1,0 +1,145 @@
+# Fish-start: встроенные модули КПБ для ОБР / CBURN / DeathSquad / NukeOps
+# Кап хоста = 3. EmpScreen всем. Vision-слот один (exclusionGroup: vision).
+# Батарея — PowerCellSyndicate (аплинк нюкеров), sealPowerCell: не извлекается.
+# ApcAdapter / ToolHand не выдаём: зарядка от ЛКП уже есть у FishBatteryDrinker.
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTLeader
+  role: ERTLeader
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTSecurity
+  role: ERTSecurity
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTMedical
+  role: ERTMedical
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleMedHud
+  - FishIpcModuleDefib
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTEngineer
+  role: ERTEngineer
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleMeson
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTJanitor
+  role: ERTJanitor
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNanoRepair
+  - FishIpcModuleJumpstarter
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTChaplain
+  role: ERTChaplain
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleJumpstarter
+  - FishIpcModuleVocalMod
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesCBURN
+  role: CBURN
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleRadFilter
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesCBURNLeader
+  role: CBURNLeader
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleRadFilter
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesCBURNAgentEVA
+  role: CBURNAgentEVA
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleRadFilter
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesDeathSquad
+  role: DeathSquad
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesNukeopsOperative
+  role: NukeopsOperative
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesNukeopsMedic
+  role: NukeopsMedic
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleMedHud
+  - FishIpcModuleDefib
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesNukeopsCommander
+  role: NukeopsCommander
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesLoneOp
+  role: LoneOp
+  powerCell: PowerCellSyndicate
+  sealPowerCell: true
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+# Fish-end

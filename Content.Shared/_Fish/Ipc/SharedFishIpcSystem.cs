@@ -104,6 +104,15 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
         if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
 
+        // Fish-edit: запечатанная боевая батарея ОБР/NukeOps
+        if (HasComp<FishIpcSealedBatteryComponent>(ent.Owner))
+        {
+            if (args.User != null)
+                _popup.PopupEntity(Loc.GetString("fish-ipc-cell-sealed"), ent.Owner, args.User.Value);
+            args.Cancelled = true;
+            return;
+        }
+
         if (!CanAccessInternals(ent.Owner, args.User))
             args.Cancelled = true;
     }
@@ -112,6 +121,15 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
     {
         if (args.Cancelled || !IsCellSlot(ent.Owner, args.Slot))
             return;
+
+        // Fish-edit: запечатанная боевая батарея ОБР/NukeOps
+        if (HasComp<FishIpcSealedBatteryComponent>(ent.Owner))
+        {
+            if (args.User != null)
+                _popup.PopupEntity(Loc.GetString("fish-ipc-cell-sealed"), ent.Owner, args.User.Value);
+            args.Cancelled = true;
+            return;
+        }
 
         if (!CanAccessInternals(ent.Owner, args.User))
             args.Cancelled = true;
@@ -157,6 +175,13 @@ public abstract partial class SharedFishIpcSystem : EntitySystem
 
     private bool TrySwapPowerCell(EntityUid ipc, EntityUid user, EntityUid cell)
     {
+        // Fish-edit: запечатанная боевая батарея ОБР/NukeOps
+        if (HasComp<FishIpcSealedBatteryComponent>(ipc))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-ipc-cell-sealed"), ipc, user);
+            return false;
+        }
+
         if (!CanAccessInternals(ipc, user))
             return false;
 

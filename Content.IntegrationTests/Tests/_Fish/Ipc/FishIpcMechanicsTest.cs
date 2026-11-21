@@ -743,14 +743,27 @@ public sealed class FishIpcMechanicsTest : FishIpcGameTest
             }
 
             var randomHumanoid = Server.System<RandomHumanoidSystem>();
-            foreach (var settings in new[] { "DeathSquad", "DeathSquadFish", "ERTLeader", "EventHumanoid" })
+            // Обычные event-спавнеры по-прежнему без КПБ.
+            for (var i = 0; i < 30; i++)
             {
-                for (var i = 0; i < 15; i++)
-                {
-                    var spawned = randomHumanoid.SpawnRandomHumanoid(settings, map.GridCoords, "Test");
-                    Assert.That(SEntMan.HasComponent<FishIpcComponent>(spawned), Is.False, settings);
-                }
+                var spawned = randomHumanoid.SpawnRandomHumanoid("EventHumanoid", map.GridCoords, "Test");
+                Assert.That(SEntMan.HasComponent<FishIpcComponent>(spawned), Is.False, "EventHumanoid");
             }
+
+            // ОБР / DeathSquad допускают КПБ через includeExcludedSpecies.
+            ProtoId<RandomHumanoidSettingsPrototype> ertLeader = "ERTLeader";
+            ProtoId<RandomHumanoidSettingsPrototype> deathSquad = "DeathSquad";
+            Assert.That(SProtoMan.Index(ertLeader).IncludeExcludedSpecies, Is.True);
+            Assert.That(SProtoMan.Index(deathSquad).IncludeExcludedSpecies, Is.True);
+
+            var sawIpc = false;
+            for (var i = 0; i < 200 && !sawIpc; i++)
+            {
+                if (HumanoidCharacterProfile.RandomSpecies(includeExcludedSpecies: true).ID == "Ipc")
+                    sawIpc = true;
+            }
+
+            Assert.That(sawIpc, Is.True, "includeExcludedSpecies должен допускать Ipc в пул");
         });
     }
 
