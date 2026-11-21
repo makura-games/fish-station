@@ -1,0 +1,340 @@
+# Fish-start - поправки в очках кармы.
+# Плюс — отягчающие (снимаем больше), минус — смягчающие (снимаем меньше).
+# waives — категории, за которые игрок вообще не отвечает: с него не снимается ничего.
+# Итоговое снятие не может превысить базовую цену нарушения больше, чем на rpu.penalty.max_extra,
+# и не может опуститься ниже rpu.penalty.min.
+
+# ---------------- Отделы ----------------
+- type: rpuAdjust
+  id: FishRpuDeptSecurity
+  source: Department
+  departments: [Security, PlanetPrisonSecurity, BlueShield, Court, Law]
+  units:
+    Kill: -1
+    KillSecurityChain: -1
+    Crit: -1
+    AirlockHack: -1
+    WireCut: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuDeptCommand
+  source: Department
+  departments: [Command, CentralCommand, TSF]
+  units:
+    Kill: -1
+    KillSecurityChain: -1
+    Crit: -1
+    AirlockHack: -1
+    WireCut: -1
+    Contraband: -1
+
+# Инженерия: трубы, провода иразбор — это их работа.
+- type: rpuAdjust
+  id: FishRpuDeptEngineering
+  source: Department
+  departments: [Engineering]
+  waives: [Destruction, Deconstruction, WireCut, Sabotage]
+  units:
+    AirlockHack: -4
+    Explosion: -3
+    Crit: -1
+    Spill: -1
+
+# Наука: свои эксперименты, свои разлитые реактивы.
+- type: rpuAdjust
+  id: FishRpuDeptScience
+  source: Department
+  departments: [Science]
+  waives: [Deconstruction]
+  units:
+    Destruction: -1
+    WireCut: -2
+    Explosion: -2
+    Sabotage: -2
+    Spill: -1
+    Crit: -1
+    AirlockHack: -1
+
+- type: rpuAdjust
+  id: FishRpuDeptMedical
+  source: Department
+  departments: [Medical]
+  waives: [Spill]
+  units:
+    Crit: -1
+    AirlockHack: -1
+    Destruction: -1
+    Deconstruction: -1
+    Sabotage: -1
+
+# ---------------- Должности ----------------
+# Работа с реактивами и убора: разливать можно.
+- type: rpuAdjust
+  id: FishRpuRoleSpillWork
+  source: Job
+  jobs: [Chemist, ChiefMedicalOfficer, MedicalDoctor, Paramedic, Brigmedic, SeniorPhysician,
+         CentcommMedicalDoctor, Janitor, ERTJanitor, JanitorBorg, Barber,
+         Bartender, Chef, Botanist, ServiceWorker, Musician, Mime, Clown, ClownBorg,
+         Lawyer, Librarian, Chaplain, Psychologist, Reporter, ComMaid, CentcommBartender,
+         CentcommChef, NanoTrasenRepresentative, IAA, MailCarrier, ServiceBorg, PeaceBorg,
+         PrisonScientist]
+  waives: [Spill]
+
+# Грузчик и шабатовщики: таскать и разбирать ящики, сносить стены ради прохода — работа.
+- type: rpuAdjust
+  id: FishRpuRoleCargoDestruction
+  source: Job
+  jobs: [Quartermaster, SalvageSpecialist, MiningSpecialist, Borg, MiningBorg]
+  waives: [Destruction, Deconstruction]
+  units:
+    Sabotage: -1
+
+# Отряды реагирования пришли разбираться с нарушителями: оружие, шлюзы, взрывы — их работа.
+- type: rpuAdjust
+  id: FishRpuRoleSpecialResponse
+  source: Job
+  jobs: [SpecOpsOfficer, ERTLeader, ERTChaplain, ERTEngineer, ERTMedical, CBURN, CBURNLeader,
+         CBURNAgentEVA, DeathSquad, SecurityPilot, BlueShieldOperative, NtrLeader, NtrOfficer,
+         NtrGuard, USSPCaptain, USSPOfficer, USSPOfficerAlt, USSPSoldier]
+  units:
+    Kill: -3
+    KillSecurityChain: -2
+    Crit: -3
+    Explosion: -2
+    AirlockHack: -4
+    WireCut: -2
+    Destruction: -3
+    Deconstruction: -3
+    Sabotage: -2
+    Spill: -2
+    Contraband: -2
+
+# Кремни: свои шлюзы и свой хлам.
+- type: rpuAdjust
+  id: FishRpuRoleSilicon
+  source: Job
+  jobs: [StationAi, Borg, SecurityBorg, MedicalBorg, EngineerBorg, JanitorBorg, ServiceBorg,
+         MiningBorg, PeaceBorg, ClownBorg, Adjutant]
+  units:
+    AirlockHack: -1
+    Deconstruction: -1
+
+# ---------------- Антагонисты ----------------
+- type: rpuAdjust
+  id: FishRpuAntagTraitor
+  source: Antag
+  antags: [Traitor, TraitorSleeper]
+  units:
+    Kill: -2
+    KillSecurityChain: -2
+    Crit: -1
+    Explosion: -2
+    AirlockHack: -3
+    WireCut: -2
+    Destruction: -1
+    Deconstruction: -1
+    Sabotage: -1
+    Spill: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagThief
+  source: Antag
+  antags: [Thief]
+  waives: [Contraband]
+  units:
+    AirlockHack: -2
+    WireCut: -1
+    Destruction: -1
+    Deconstruction: -1
+    Spill: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagChangeling
+  source: Antag
+  antags: [Changeling]
+  units:
+    Kill: -3
+    KillSecurityChain: -3
+    Crit: -1
+    AirlockHack: -2
+    WireCut: -1
+    Destruction: -1
+    Deconstruction: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagCult
+  source: Antag
+  antags: [FleshCultistLeader]
+  units:
+    Kill: -3
+    KillSecurityChain: -3
+    Crit: -1
+    AirlockHack: -2
+    WireCut: -1
+    Destruction: -1
+    Contraband: -1
+
+# Мятежники: СБ им не нарушение, а цель.
+- type: rpuAdjust
+  id: FishRpuAntagRevolution
+  source: Antag
+  antags: [HeadRev, Rev]
+  waives: [KillSecurityChain]
+  units:
+    Kill: -1
+    Crit: -1
+    Explosion: -1
+    AirlockHack: -2
+    WireCut: -2
+    Destruction: -1
+    Deconstruction: -1
+    Sabotage: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagSurvivor
+  source: Antag
+  antags: [Survivor]
+  units:
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagParadox
+  source: Antag
+  antags: [ParadoxClone]
+  units:
+    AirlockHack: -2
+    WireCut: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagSubvertedSilicon
+  source: Antag
+  antags: [SubvertedSilicon]
+  units:
+    Kill: -2
+    Crit: -1
+    Explosion: -1
+    AirlockHack: -3
+    WireCut: -2
+    Destruction: -1
+    Deconstruction: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagAbductor
+  source: Antag
+  antags: [LoneAbductorAntag, AbductorVictim]
+  units:
+    Kill: -1
+    Crit: -1
+    AirlockHack: -2
+    WireCut: -1
+    Destruction: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagFugitive
+  source: Antag
+  antags: [Fugitive]
+  units:
+    AirlockHack: -2
+    WireCut: -1
+    Destruction: -1
+    Deconstruction: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagSelf
+  source: Antag
+  antags: [SELFAgent]
+  units:
+    Kill: -2
+    Crit: -1
+    AirlockHack: -3
+    WireCut: -2
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagGeneric
+  source: Antag
+  antags: [GenericAntagonist, GenericFreeAgent, GenericTeamAntagonist, GenericSiliconAntagonist]
+  units:
+    Kill: -1
+    Crit: -1
+    Explosion: -1
+    AirlockHack: -3
+    WireCut: -2
+    Destruction: -1
+    Deconstruction: -1
+    Spill: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAntagPlanetPrisoner
+  source: Antag
+  antags: [PlanetPrisoner]
+  units:
+    AirlockHack: -1
+    Destruction: -1
+    Deconstruction: -1
+    Contraband: -1
+
+# ---------------- Обстановка: только для самих антагонистов ----------------
+- type: rpuAdjust
+  id: FishRpuSituationWar
+  source: StationSituation
+  onlyForAntagonists: true
+  antags: [Nukeops, NukeopsCommander, NukeopsMedic, AssaultOperative, AssaultCommander]
+  units:
+    Kill: -1
+    KillSecurityChain: -1
+    Explosion: -1
+
+- type: rpuAdjust
+  id: FishRpuSituationHorde
+  source: StationSituation
+  onlyForAntagonists: true
+  antags: [Zombie, InitialInfected, Xenoborg, MothershipCore]
+  units:
+    Kill: -1
+    KillSecurityChain: -1
+    Crit: -1
+
+- type: rpuAdjust
+  id: FishRpuSituationBigAntag
+  source: StationSituation
+  onlyForAntagonists: true
+  antags: [Wizard, Dragon, SpaceNinja]
+  units:
+    Explosion: -1
+    Destruction: -1
+    Sabotage: -1
+
+- type: rpuAdjust
+  id: FishRpuSituationRevolution
+  source: StationSituation
+  onlyForAntagonists: true
+  antags: [HeadRev, Rev]
+  units:
+    Kill: -1
+    KillSecurityChain: -1
+
+# ---------------- Код тревоги ----------------
+- type: rpuAdjust
+  id: FishRpuAlertElevated
+  source: AlertLevel
+  alertLevels: [Yellow, Red]
+  units:
+    Explosion: -1
+    Contraband: -1
+
+- type: rpuAdjust
+  id: FishRpuAlertMaximum
+  source: AlertLevel
+  alertLevels: [Gamma, BaseDelta, DeltaNuke, Epsilon, Sierra, Violet]
+  units:
+    Explosion: -2
+    Contraband: -2
+# Fish-end

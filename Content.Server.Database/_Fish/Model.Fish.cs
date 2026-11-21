@@ -10,10 +10,16 @@ public abstract partial class ServerDbContext
 {
     public DbSet<FishAchievementProgress> FishAchievementProgress { get; set; } = default!;
 
+    public DbSet<FishRpuProfile> FishRpuProfile { get; set; } = default!;
+
     private static void ConfigureFishModel(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FishAchievementProgress>()
             .HasIndex(e => new { e.PlayerUserId, e.AchievementId })
+            .IsUnique();
+
+        modelBuilder.Entity<FishRpuProfile>()
+            .HasIndex(e => e.PlayerUserId)
             .IsUnique();
     }
 }
@@ -37,5 +43,24 @@ public sealed class FishAchievementProgress
 
     public DateTimeOffset? UnlockedAt { get; set; }
 
+    public DateTimeOffset UpdatedAt { get; set; }
+}
+
+/// <summary>
+/// Карма игрока для режима персонального угнетения. Хранится по аккаунту, переживает раунды.
+/// </summary>
+[Table("fish_rpu_profile")]
+public sealed class FishRpuProfile
+{
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+
+    [Required, ForeignKey("Player")]
+    public Guid PlayerUserId { get; set; }
+
+    /// <summary>Текущая карма от -100 до +100.</summary>
+    public float Karma { get; set; }
+
+    /// <summary>Карма на момент последнего сохранения (для отладки сбросов).</summary>
     public DateTimeOffset UpdatedAt { get; set; }
 }
