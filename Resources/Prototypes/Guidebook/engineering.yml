@@ -16,6 +16,7 @@
   children:
   - Airlocks
   - ExpandingRepairingStation
+  - FishGridWelding # Fish-edit: руководство по сварке гридов
   - WirePanels
 
 - type: guideEntry
