@@ -1,0 +1,30 @@
+<controls:ObrNadzorWindow
+    xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client._Fish.ObrNadzor"
+    xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
+    MinSize="420 420">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0 0 0 10">
+            <Button Name="StationsButton" Access="Public" Text="{Loc 'obr-nadzor-ui-stations'}"
+                    HorizontalExpand="True" StyleClasses="OpenBoth" />
+            <Button Name="BeaconsButton" Access="Public" Text="{Loc 'obr-nadzor-ui-beacons'}"
+                    HorizontalExpand="True" StyleClasses="OpenBoth" />
+            <Button Name="ControlButton" Access="Public" Text="{Loc 'obr-nadzor-ui-control'}"
+                    HorizontalExpand="True" StyleClasses="OpenBoth" />
+        </BoxContainer>
+        <cc:HSeparator />
+        <ScrollContainer VScrollEnabled="True" HorizontalExpand="True" VerticalExpand="True">
+            <BoxContainer Name="Stations" Access="Public" Orientation="Vertical" Visible="False" />
+            <BoxContainer Name="Beacons" Access="Public" Orientation="Vertical" Visible="False" />
+            <BoxContainer Name="ControlPanel" Access="Public" Orientation="Vertical" Visible="False" Margin="8">
+                <Label Name="ControlStatus" Access="Public" HorizontalExpand="True" />
+                <Button Name="TakeoverButton" Access="Public" Text="{Loc 'obr-nadzor-ui-takeover'}"
+                        HorizontalExpand="True" Margin="0 8 0 0" />
+                <Button Name="StopObserveButton" Access="Public" Text="{Loc 'obr-nadzor-ui-stop-observe'}"
+                        HorizontalExpand="True" Margin="0 4 0 0" />
+                <Button Name="ReleaseButton" Access="Public" Text="{Loc 'obr-nadzor-ui-release'}"
+                        HorizontalExpand="True" Margin="0 4 0 0" />
+            </BoxContainer>
+        </ScrollContainer>
+    </BoxContainer>
+</controls:ObrNadzorWindow>

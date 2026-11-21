@@ -1,0 +1,46 @@
+- type: entity
+  id: FishComputerObrNadzor
+  parent: BaseComputerSunrise
+  name: DSO surveillance console
+  suffix: Fish
+  description: Special Operations console for remote station observation and systems control.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: cameras
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: ObrNadzorConsole
+  - type: ActivatableUI
+    key: enum.ObrNadzorUiKey.Key
+  - type: ActivatableUIRequiresAccess
+  - type: UserInterface
+    interfaces:
+      enum.ObrNadzorUiKey.Key:
+        type: ObrNadzorBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Computer
+    board: FishObrNadzorComputerCircuitboard
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#c22532"
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: FishObrNadzorComputerCircuitboard
+  name: DSO surveillance console board
+  suffix: Fish
+  components:
+  - type: ComputerBoard
+    prototype: FishComputerObrNadzor
+  - type: Sprite
+    state: cpu_command
