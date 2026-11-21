@@ -78,6 +78,20 @@ public sealed partial class RpuSystem
         _sawmill.Info($"Automatic ban issued for {session.Name}: karma {karma}, " +
                        $"threshold {threshold.ToString("0.##", CultureInfo.InvariantCulture)}, " +
                        $"duration {(duration is null ? "permanent" : duration.Value.ToString())}");
+
+        var limit = threshold.ToString("0.##", CultureInfo.InvariantCulture);
+
+        // Запись в логи сущности и уведомление админам: без этого бан остаётся только
+        // строчкой в консоли, а её никто не увидит после перезапуска.
+        if (session.AttachedEntity is { } mob)
+        {
+            _adminLogs.Add(LogType.Karma, LogImpact.High,
+                $"{session} ({mob}) reached karma {karma} against limit {limit}; " +
+                $"restriction applied for {(duration is null ? "permanent" : duration.Value.ToString())}");
+        }
+
+        NotifyAdmins($"Automatic restriction applied to {session.Name} " +
+                     $"(karma {karma}, limit {limit}). Review the player's logs.");
     }
 
     /// <summary>

@@ -86,6 +86,13 @@ public sealed partial class PmSystem : EntitySystem
 
     public IEnumerable<PmSession> Sessions => _sessions.Values;
 
+    /// <summary>Забыть всё накопленное по сессии: используется после ручной проверки админом.</summary>
+    public void ResetSession(NetUserId userId)
+    {
+        if (_sessions.TryGetValue(userId, out var session))
+            session.Reset();
+    }
+
     /// <summary>
     /// Признать выброс метрики. То же основание не учитываем повторно в пределах кулдауна,
     /// а реакция включается только когда независимых оснований набралось достаточно.

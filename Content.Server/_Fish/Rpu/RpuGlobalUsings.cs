@@ -2,6 +2,7 @@
 global using System.Linq;
 global using Content.Shared._Fish.Rpu;
 global using Robust.Shared.Enums;
+global using Robust.Shared.Audio.Systems;
 global using Content.Shared.Damage;
 global using Content.Shared.Damage.Components;
 global using Content.Shared.Damage.Systems;

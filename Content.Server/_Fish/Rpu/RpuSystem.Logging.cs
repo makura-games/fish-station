@@ -1,5 +1,7 @@
 using System.Globalization;
 using Content.Shared.Database;
+using Robust.Shared.Audio;
+using Robust.Shared.Enums;
 using Robust.Shared.Player;
 
 namespace Content.Server._Fish.Rpu;
@@ -11,15 +13,47 @@ public sealed partial class RpuSystem
 {
     /// <summary>
     /// Пишем только сам факт изменения кармы. Никаких упоминаний системы и описаний действий.
+    /// Игрока и сущности подставляем в строку как объекты, а не как готовые имена:
+    /// иначе запись не попадёт в логи игрока и сущности, их ищут по этим ссылкам.
     /// </summary>
-    private void LogKarmaChange(ICommonSession session, float delta, string reason)
+    private void LogKarmaChange(ICommonSession session, float delta, string reason, EntityUid? other = null)
     {
         var amount = Math.Abs(delta).ToString("0.##", CultureInfo.InvariantCulture);
         var sign = delta >= 0 ? "+" : "-";
-        var character = session.AttachedEntity is { } entity ? ToPrettyString(entity) : "unknown";
+
+        if (session.AttachedEntity is { } entity && other is { } victim && victim != EntityUid.Invalid)
+        {
+            _adminLogs.Add(LogType.Karma, LogImpact.Low,
+                $"{session} ({entity}) karma {sign}{amount} ({reason}) affecting {victim}");
+            return;
+        }
+
+        if (session.AttachedEntity is { } alone)
+        {
+            _adminLogs.Add(LogType.Karma, LogImpact.Low,
+                $"{session} ({alone}) karma {sign}{amount} ({reason})");
+            return;
+        }
 
         _adminLogs.Add(LogType.Karma, LogImpact.Low,
-            $"{session.Name} ({character}) karma {sign}{amount} ({reason})");
+            $"{session} karma {sign}{amount} ({reason})");
+    }
+
+    /// <summary>
+    /// Уведомление админам: строка в админ-чат и короткий сигнал тем, кто сейчас
+    /// в статусе админа. Игроки этого не видят вовсе.
+    /// </summary>
+    private void NotifyAdmins(string message)
+    {
+        _chat.SendAdminAnnouncement(message);
+
+        var admins = _admins.ActiveAdmins.ToArray();
+        if (admins.Length == 0)
+            return;
+
+        _audio.PlayGlobal("/Audio/Effects/alert.ogg",
+            Filter.Empty().AddPlayers(admins), false,
+            AudioParams.Default.AddVolume(-6f));
     }
 
     /// <summary>
@@ -36,11 +70,11 @@ public sealed partial class RpuSystem
 
         suspect.ChatLogSent = true;
 
-        var character = session.AttachedEntity is { } entity ? ToPrettyString(entity) : "unknown";
+        var karma = suspect.Karma.ToString("0.##", CultureInfo.InvariantCulture);
         var position = DescribePosition(session.AttachedEntity);
 
-        _chat.SendAdminAnnouncement(
-            $"Suspicious activity detected for {session.Name} ({character}) at {position}. Review recommended.");
+        NotifyAdmins($"Activity level for {session.Name} crossed the review threshold " +
+                     $"(karma {karma}, limit {threshold:0.##}) at {position}. Review recommended.");
     }
 
     private string DescribePosition(EntityUid? uid)

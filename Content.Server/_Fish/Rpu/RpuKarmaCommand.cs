@@ -42,6 +42,24 @@ public sealed partial class RpuKarmaCommand : LocalizedEntityCommands
             shell.WriteLine($"karma={suspect.Karma:0.##} base={suspect.BaseKarma:0.##} " +
                             $"roleHours={suspect.RoleHours:0.#} kills={suspect.KillsThisRound} " +
                             $"recentBans={suspect.RecentBans} exempt={_rpu.IsExempt(session)}");
+
+            // Прогноз по тем же функциям, что и наказание: сверить расчёт можно
+            // не перезапуская раунд.
+            var limit = _rpu.CurrentBanThreshold(session);
+            var crew = _rpu.PreviewPenalty(session, RpuPrototypeIds.KillCrew);
+
+            if (float.IsNegativeInfinity(limit))
+                shell.WriteLine("ban limit: none for this player");
+            else
+            {
+                var remaining = Math.Abs(limit) - Math.Abs(suspect.Karma);
+                var until = crew > 0f ? (int)Math.Ceiling(remaining / crew) : 0;
+                shell.WriteLine($"ban limit: {limit:0.##}  crewKill cost: {crew:0.##}  " +
+                                $"until limit: {remaining:0.##} points (~{Math.Max(0, until)} crew kills)");
+            }
+
+            var securityChain = _rpu.PreviewPenalty(session, RpuPrototypeIds.KillSecurityChain);
+            shell.WriteLine($"securityChainKill cost: {securityChain:0.##}");
             return;
         }
 

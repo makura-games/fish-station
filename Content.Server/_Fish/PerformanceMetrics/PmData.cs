@@ -24,8 +24,26 @@ public enum PmFlag
     /// <summary>Частота действий выше человеческой.</summary>
     Actions,
 
+    /// <summary>Попадания туда, где цель не могла быть воспринята: препятствие или дистанция.</summary>
+    Los,
+
+    /// <summary>Доля попаданий близка к единице при нулевой угловой ошибке.</summary>
+    Ratio,
+
     /// <summary>Личность не подтверждена: много аккаунтов с того же адреса или со слабого hwid.</summary>
     Identity,
+}
+
+/// <summary>Одна попытка обращения к оружию.</summary>
+public record struct PmAttempt
+{
+    public TimeSpan At;
+
+    /// <summary>Попытка привела к урону.</summary>
+    public bool Realised;
+
+    /// <summary>Угловая ошибка того удара, в градусах; float.NaN — неизвестно.</summary>
+    public float ErrorDegrees;
 }
 
 /// <summary>Состояние наблюдения за одной сессией.</summary>
@@ -50,6 +68,15 @@ public sealed class PmSession
 
     /// <summary>Сколько окон подряд действия шли чаще лимита.</summary>
     public int ActionStrikes;
+
+    /// <summary>Сколько подряд замеров дали долю попаданий выше нормы.</summary>
+    public int RatioStrikes;
+
+    /// <summary>Сколько попаданий пришло сквозь препятствие или с недостижимой дистанции.</summary>
+    public int LosStrikes;
+
+    /// <summary>Последние попытки выстрела: когда, реализована ли, и с какой угловой ошибкой.</summary>
+    public readonly List<PmAttempt> Attempts = new();
 
     /// <summary>Действий в текущем окне.</summary>
     public int ActionsInWindow;
@@ -77,6 +104,23 @@ public sealed class PmSession
 
     /// <summary>Сколько всего признаков набралось за сессию.</summary>
     public int TotalFlags;
+
+    public void Reset()
+    {
+        FlaggedAt.Clear();
+        MotionStrikes = 0;
+        PerfectHits = 0;
+        FlickStrikes = 0;
+        ReachStrikes = 0;
+        ActionStrikes = 0;
+        RatioStrikes = 0;
+        LosStrikes = 0;
+        ActionsInWindow = 0;
+        HitGaps.Clear();
+        Attempts.Clear();
+        LastAim = null;
+        TotalFlags = 0;
+    }
 
     public bool HasFlag(PmFlag flag) => FlaggedAt.ContainsKey(flag);
 

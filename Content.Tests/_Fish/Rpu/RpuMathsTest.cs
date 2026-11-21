@@ -213,4 +213,58 @@ public sealed class RpuMathsTest
         Assert.That(error, Is.Not.Null);
         Assert.That(error, Is.Not.Empty);
     }
+
+    /// <summary>
+    /// Лестница убийств экипажа: капитан (отдел Command, −1 очко) без банов,
+        /// базовая цена 6 очков + серия + очки за малое наигранное время.
+    /// Проверено вручную и закреплено, чтобы изменение таблиц было видно сразу.
+    /// </summary>
+    [TestCase(0d, 6, -40f)]
+    [TestCase(4d, 7, -40f)]
+    [TestCase(7d, 9, -55f)]
+    [TestCase(30d, 13, -70f)]
+    public void KillLadderCrossesBanLimitOnExpectedKill(double roleHours, int expectedKill, float expectedLimit)
+    {
+        var tiers = new[]
+        {
+            new RpuBanTier { MaxHours = 5, Threshold = -40f },
+            new RpuBanTier { MaxHours = 25, Threshold = -55f },
+            new RpuBanTier { MaxHours = 60, Threshold = -70f },
+            new RpuBanTier { MaxHours = 100000, Threshold = -100f, VeteransOnly = true },
+        };
+
+        var limit = RpuMaths.BanThreshold(roleHours, tiers, 0f, false);
+        Assert.That(limit, Is.EqualTo(expectedLimit));
+
+        // Очки за наигранное время: до 3 часов +3, до 10 часов +2, дальше ничего.
+        var playtime = roleHours < 3 ? 3f : roleHours < 10 ? 2f : 0f;
+
+        var karma = 0f;
+        var crossed = 0;
+
+        for (var kills = 1; kills <= 20 && crossed == 0; kills++)
+        {
+            var units = new List<float> { RpuMaths.KillUnits(kills), playtime, -1f };
+            var penalty = RpuMaths.Penalty(6f, units);
+
+            karma = RpuMaths.ClampKarma(karma - penalty);
+            if (karma <= limit)
+                crossed = kills;
+        }
+
+        Assert.That(crossed, Is.EqualTo(expectedKill),
+            $"roleHours {roleHours}: limit {limit}, karma {karma}");
+    }
+
+    [Test]
+    public void KillSeriesIsCheaperAtTheStartAndCostsMoreLater()
+    {
+        Assert.That(RpuMaths.KillUnits(1), Is.EqualTo(-2f));
+        Assert.That(RpuMaths.KillUnits(2), Is.EqualTo(-2f));
+        Assert.That(RpuMaths.KillUnits(3), Is.EqualTo(0f));
+        Assert.That(RpuMaths.KillUnits(6), Is.EqualTo(0f));
+        Assert.That(RpuMaths.KillUnits(7), Is.EqualTo(1f));
+        Assert.That(RpuMaths.KillUnits(11), Is.EqualTo(2f));
+        Assert.That(RpuMaths.KillUnits(400), Is.EqualTo(4f));
+    }
 }

@@ -47,6 +47,7 @@ public sealed partial class RpuSystem : EntitySystem
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private SharedJobSystem _jobs = default!;
     [Dependency] private SharedTransformSystem _transforms = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private PlayTimeTrackingManager _playTime = default!;
     [Dependency] private RpuAdjustSystem _adjust = default!;
 
@@ -465,13 +466,47 @@ public sealed partial class RpuSystem : EntitySystem
         var actual = before - suspect.Karma;
         if (actual > 0f)
         {
-            LogKarmaChange(session, -actual, proto.Category.ToString());
+            LogKarmaChange(session, -actual, proto.Category.ToString(), victim);
             CheckChatThreshold(session, suspect, before);
         }
 
         // Порог автобана сверяем после любого учтённого нарушения: игрок мог встретиться
         // с ним уже на нижней рамке кармы, где фактическое снятие равно нулю.
         CheckAutoBan(session, suspect);
+    }
+
+    /// <summary>
+    /// Текущий порог автобана для игрока. NegativeInfinity — «не банить никогда».
+    /// Тот же расчёт, что делает CheckAutoBan, но ничего не меняя.
+    /// </summary>
+    public float CurrentBanThreshold(ICommonSession session)
+    {
+        var suspect = GetSuspect(session.UserId);
+
+        return RpuMaths.BanThreshold(
+            suspect.RoleHours,
+            Tuning.BanTiers,
+            suspect.BanThresholdShift,
+            _cfg.GetCVar(RpuCVars.BanVeterans));
+    }
+
+    /// <summary>Сколько очков снятия получится за нарушение прямо сейчас; 0 — не вменяется.</summary>
+    public float PreviewPenalty(ICommonSession session,
+        ProtoId<RpuViolationPrototype> violation,
+        EntityUid? victim = null,
+        float extra = 0f)
+    {
+        if (IsExempt(session) || !TryGetViolation(violation, out var proto))
+            return 0f;
+
+        var suspect = GetSuspect(session.UserId);
+        if (!suspect.KarmaLoaded || _adjust.IsWaived(session, suspect, proto.Category, victim))
+            return 0f;
+
+        var units = _adjust.CollectUnits(session, suspect, proto.Category, victim);
+        var penalty = RpuMaths.Penalty(proto.Base, units, extra, _minPenalty, _maxExtraUnits);
+
+        return float.IsFinite(penalty) && penalty > 0f ? penalty : 0f;
     }
 
     /// <summary>Начисление кармы (восстановление, отмена ошибочного штрафа).</summary>

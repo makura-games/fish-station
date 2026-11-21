@@ -64,6 +64,59 @@ public static class PmMaths
         return movedTiles - allowedSpeed * margin * seconds;
     }
 
+    /// <summary>
+    /// Доля попыток, закончившихся попаданием, среди последних <paramref name="count"/>.
+    /// Возвращает -1, когда выборка слишком мала и доля ничего не значит.
+    /// </summary>
+    public static float RealisedShare(IReadOnlyList<PmAttempt> attempts, int windowSeconds, int count)
+    {
+        if (attempts.Count < count)
+            return -1f;
+
+        var newest = attempts[^1].At;
+        var realised = 0;
+        var considered = 0;
+
+        for (var i = attempts.Count - count; i < attempts.Count; i++)
+        {
+            // Совсем старые попытки не в счёт: они относятся к другой схватке.
+            if ((newest - attempts[i].At).TotalSeconds > windowSeconds)
+                continue;
+
+            considered++;
+            if (attempts[i].Realised)
+                realised++;
+        }
+
+        return considered < count ? -1f : (float) realised / considered;
+    }
+
+    /// <summary>
+    /// Среди реализованных попыток — доля ударов с угловой ошибкой не больше порога.
+    /// -1, когда считать не по чему.
+    /// </summary>
+    public static float PerfectShareOfRealised(IReadOnlyList<PmAttempt> attempts, int count, float maxErrorDegrees)
+    {
+        if (attempts.Count < count)
+            return -1f;
+
+        var realised = 0;
+        var perfect = 0;
+
+        for (var i = attempts.Count - count; i < attempts.Count; i++)
+        {
+            var attempt = attempts[i];
+            if (!attempt.Realised || float.IsNaN(attempt.ErrorDegrees))
+                continue;
+
+            realised++;
+            if (attempt.ErrorDegrees <= maxErrorDegrees)
+                perfect++;
+        }
+
+        return realised == 0 ? -1f : (float) perfect / realised;
+    }
+
     /// <summary>Сколько действий в секунду вышло за окно.</summary>
     public static float ActionsPerSecond(int actions, float windowSeconds)
     {

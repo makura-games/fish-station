@@ -18,6 +18,7 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedTransformSystem _transforms = default!;
     [Dependency] private PmSystem _pm = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
 
     private EntityQuery<ActorComponent> _actorQuery = default!;
     private EntityQuery<TransformComponent> _xformQuery = default!;
@@ -46,6 +47,7 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         CountRate(pm, now);
         CountCadence(pm, now);
         CountAngle(pm, attacker, ev.Victim, now);
+        CountRatio(pm);
     }
 
     /// <summary>Частота обращений: сколько ударов прошло за окно.</summary>
@@ -118,6 +120,9 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         var aim = Math.Atan2(delta.Y, delta.X);
         var error = PmMaths.AngularErrorDegrees(attackerXform.WorldRotation.Theta, aim);
 
+        PairAttempt(pm, now, error);
+        CountPerception(pm, attacker, victim, error, distance);
+
         if (error <= PmTuning.AimPerfectDegrees)
             pm.PerfectHits++;
         else
@@ -176,6 +181,88 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         pm.ReachStrikes++;
         if (pm.ReachStrikes >= PmTuning.ReachStrikeCount)
             _pm.Note(pm, PmFlag.Reach, $"{pm.ReachStrikes} perfect-angle hits at {distance:0.#} tiles");
+    }
+
+    /// <summary>
+    /// Закрываем последнюю незакрытую попытку выстрела: так становится видна доля
+    /// попаданий и то, насколько точно цель была взята на прицеле.
+    /// </summary>
+    private void PairAttempt(PmSession pm, TimeSpan now, float error)
+    {
+        for (var i = pm.Attempts.Count - 1; i >= 0; i--)
+        {
+            var attempt = pm.Attempts[i];
+            if (attempt.Realised)
+                continue;
+
+            // Стрелок мог выстрелить раньше, а урон дошёл позже: дальше секунды не связываем.
+            if ((now - attempt.At).TotalSeconds > 1.5f)
+                return;
+
+            pm.Attempts[i] = attempt with { Realised = true, ErrorDegrees = error };
+            return;
+        }
+
+        // Попадания без попытки выстрела (ближний бой, зона, отражённый урон) не считаем.
+    }
+
+    /// <summary>
+    /// Удар по тому, что не могло быть воспринято: дальше дистанции видимого контакта
+    /// или сквозь препятствие. Такой признак появляется только когда игрок действительно
+    /// бьёт туда, где по данным сервера цели видеть нельзя.
+    /// </summary>
+    private void CountPerception(PmSession pm, EntityUid attacker, EntityUid victim, float error, float distance)
+    {
+        if (pm.HasFlag(PmFlag.Los) || error > PmTuning.AimPerfectDegrees)
+            return;
+
+        if (distance <= PmTuning.MeleeReachMeters)
+            return;
+
+        if (distance <= PmTuning.PerceiveMeters &&
+            _interaction.InRangeUnobstructed(
+                _transforms.GetMapCoordinates(attacker),
+                _transforms.GetMapCoordinates(victim),
+                PmTuning.PerceiveMeters))
+        {
+            return;
+        }
+
+        pm.LosStrikes++;
+
+        if (pm.LosStrikes >= PmTuning.LosStrikeCount)
+            _pm.Note(pm, PmFlag.Los,
+                $"{pm.LosStrikes} perfect hits at {distance:0.#} tiles with no clear line");
+    }
+
+    /// <summary>Доля попыток, дошедших до цели, при том что каждая — точно в центр.</summary>
+    private void CountRatio(PmSession pm)
+    {
+        if (pm.HasFlag(PmFlag.Ratio) ||
+            pm.Attempts.Count < PmTuning.RatioSampleCount)
+        {
+            return;
+        }
+
+        var realised = PmMaths.RealisedShare(pm.Attempts, 30, PmTuning.RatioSampleCount);
+        if (realised < PmTuning.RatioMinimum)
+        {
+            pm.RatioStrikes = 0;
+            return;
+        }
+
+        var perfect = PmMaths.PerfectShareOfRealised(pm.Attempts, PmTuning.RatioSampleCount, PmTuning.AimPerfectDegrees);
+        if (perfect < 0.9f)
+        {
+            pm.RatioStrikes = 0;
+            return;
+        }
+
+        pm.RatioStrikes++;
+
+        if (pm.RatioStrikes >= PmTuning.RatioStrikeCount)
+            _pm.Note(pm, PmFlag.Ratio,
+                $"{PmTuning.RatioSampleCount} shots: {realised:P0} landed, {perfect:P0} of them dead-centre");
     }
 
     /// <summary>

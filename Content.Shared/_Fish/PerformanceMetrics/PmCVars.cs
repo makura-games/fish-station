@@ -19,7 +19,7 @@ public static class PmCVars
 
     /// <summary>Разрывать ли соединение при устойчивом превышении частоты обращений.</summary>
     public static readonly CVarDef<bool> Disconnect =
-        CVarDef.Create("perfmon.disconnect", false, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("perfmon.disconnect", true, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>Показывать ли сводку по сессии в админ-чате.</summary>
     public static readonly CVarDef<bool> Report =

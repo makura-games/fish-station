@@ -62,7 +62,7 @@ public static class PmTuning
     public static readonly TimeSpan KarmaCooldown = TimeSpan.FromMinutes(2);
 
     /// <summary>Сколько очков кармы снимаем за подтверждённый признак.</summary>
-    public const float KarmaPerFlag = 4f;
+    public const float KarmaPerFlag = 8f;
 
     /// <summary>Столько независимых признаков нужно для отключения сессии (только явный спам).</summary>
     public const int FlagsForDisconnect = 3;
@@ -80,4 +80,21 @@ public static class PmTuning
 
     /// <summary>Окно наблюдения для обоих предыдущих пунктов.</summary>
     public static readonly TimeSpan IdentityWindow = TimeSpan.FromHours(6);
+
+    // ---------- доля попаданий и воспринимаемость ----------
+
+    /// <summary>Доля попыток, закончившихся попаданием, выше этой — подозрение.</summary>
+    public const float RatioMinimum = 0.94f;
+
+    /// <summary>Сколько попыток нужно, чтобы доля вообще о чём-то говорила.</summary>
+    public const int RatioSampleCount = 12;
+
+    /// <summary>Столько замеров подряд высокой доли нужно для признания.</summary>
+    public const int RatioStrikeCount = 3;
+
+    /// <summary>Дальность, с которой существо способно воспринять цель.</summary>
+    public const float PerceiveMeters = 12f;
+
+    /// <summary>Столько попаданий сквозь препятствие или дальше восприятия нужно для признания.</summary>
+    public const int LosStrikeCount = 4;
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Content.Server._Fish.PerformanceMetrics;
 using NUnit.Framework;
 
@@ -98,5 +99,55 @@ public sealed class PmMathsTest
         Assert.That(PmMaths.Score(1, 0, 0, 0, 0), Is.EqualTo(1));
         Assert.That(PmMaths.Score(99, 99, 99, 99, 99), Is.EqualTo(5));
         Assert.That(PmMaths.Score(0, 0, 0, 0, 0), Is.EqualTo(0));
+    }
+
+    private static List<PmAttempt> Attempts(int total, int realised, float error)
+    {
+        var list = new List<PmAttempt>();
+        var start = new TimeSpan(0, 0, 0, 0);
+
+        for (var i = 0; i < total; i++)
+        {
+            list.Add(new PmAttempt
+            {
+                At = start + TimeSpan.FromSeconds(i),
+                Realised = i < realised,
+                ErrorDegrees = i < realised ? error : float.NaN,
+            });
+        }
+
+        return list;
+    }
+
+    [Test]
+    public void RealisedShareNeedsEnoughSamples()
+    {
+        Assert.That(PmMaths.RealisedShare(Attempts(6, 6, 0.1f), 30, 12), Is.EqualTo(-1f));
+    }
+
+    [Test]
+    public void RealisedShareCountsLandedShots()
+    {
+        Assert.That(PmMaths.RealisedShare(Attempts(20, 20, 0.1f), 60, 20), Is.EqualTo(1f));
+        Assert.That(PmMaths.RealisedShare(Attempts(20, 10, 0.1f), 60, 20), Is.EqualTo(0.5f).Within(0.001f));
+    }
+
+    /// <summary>Свежих попыток внутри окна мало — вывод не выносим.</summary>
+    [Test]
+    public void StaleSamplesAreNotEnoughEvidence()
+    {
+        // 20 попыток с шагом в секунду, окно 5 секунд: свежих всего шесть — этого мало.
+        Assert.That(PmMaths.RealisedShare(Attempts(20, 12, 0.1f), 5, 20), Is.EqualTo(-1f));
+
+        // То же, но окно покрывает всю серию.
+        Assert.That(PmMaths.RealisedShare(Attempts(20, 12, 0.1f), 60, 20), Is.EqualTo(0.6f).Within(0.001f));
+    }
+
+    [Test]
+    public void PerfectShareOnlyLooksAtLandedShots()
+    {
+        Assert.That(PmMaths.PerfectShareOfRealised(Attempts(12, 12, 0.4f), 12, 1.5f), Is.EqualTo(1f));
+        Assert.That(PmMaths.PerfectShareOfRealised(Attempts(12, 12, 8f), 12, 1.5f), Is.EqualTo(0f));
+        Assert.That(PmMaths.PerfectShareOfRealised(Attempts(12, 0, 0f), 12, 1.5f), Is.EqualTo(-1f));
     }
 }
