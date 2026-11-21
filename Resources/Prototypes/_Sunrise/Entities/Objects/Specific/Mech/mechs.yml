@@ -514,7 +514,7 @@
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
   # Fish-Start
-    baseWalkSpeed: 2.15
+    baseWalkSpeed: 2.25
     baseSprintSpeed: 3.6
   # Fish-End
   - type: PointLight
