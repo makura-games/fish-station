@@ -191,6 +191,11 @@ binds:
 - function: OpenCharacterMenu
   type: State
   key: U
+# Fish-start - меню навыков (J: K занят OpenAbilitiesMenu)
+- function: OpenSkillsMenu
+  type: State
+  key: J
+# Fish-end
 - function: OpenEmotesMenu
   type: State
   key: Y

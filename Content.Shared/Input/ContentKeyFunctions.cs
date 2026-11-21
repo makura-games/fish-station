@@ -79,6 +79,10 @@ namespace Content.Shared.Input
         public static readonly BoundKeyFunction OpenMessenger = "OpenMessenger";
         // Sunrise-End
 
+        // Fish-start - меню навыков
+        public static readonly BoundKeyFunction OpenSkillsMenu = "OpenSkillsMenu";
+        // Fish-end
+
         public static readonly BoundKeyFunction ArcadeUp = "ArcadeUp";
         public static readonly BoundKeyFunction ArcadeDown = "ArcadeDown";
         public static readonly BoundKeyFunction ArcadeLeft = "ArcadeLeft";
