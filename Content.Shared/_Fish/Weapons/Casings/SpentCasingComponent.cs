@@ -5,7 +5,7 @@ namespace Content.Shared._Fish.Weapons.Casings;
 /// но <see cref="Robust.Shared.Spawners.TimedDespawnComponent"/> вешается только когда гильза
 /// уже не лежит в контейнере оружия.
 /// </summary>
-[RegisterComponent]
+[RegisterComponent, AutoGenerateComponentPause]
 public sealed partial class SpentCasingComponent : Component
 {
     /// <summary>
@@ -16,7 +16,10 @@ public sealed partial class SpentCasingComponent : Component
     public float DespawnSeconds = 60f;
 
     /// <summary>
-    /// Момент выстрела. Нужен, чтобы выброс из барабана или помпы не продлевал жизнь гильзы.
+    /// Момент выстрела в шкале CurTime без уже идущей паузы.
+    /// <see cref="AutoPausedFieldAttribute"/> сдвигает поле при снятии паузы,
+    /// чтобы простой на паузе не съедал срок.
     /// </summary>
+    [AutoPausedField]
     public TimeSpan SpentAt;
 }

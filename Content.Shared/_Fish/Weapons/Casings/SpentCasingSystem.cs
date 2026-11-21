@@ -20,6 +20,7 @@ public sealed partial class SpentCasingSystem : EntitySystem
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private INetManager _net = default!;
+    [Dependency] private MetaDataSystem _metadata = default!;
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
 
@@ -143,7 +144,8 @@ public sealed partial class SpentCasingSystem : EntitySystem
         {
             spent = AddComp<SpentCasingComponent>(uid);
             spent.DespawnSeconds = Math.Max(0f, _cfg.GetCVar(FishCVars.CasingDespawnSeconds));
-            spent.SpentAt = _timing.CurTime;
+            // Текущая пауза ещё не попала в AutoPausedField: её вычитаем сразу.
+            spent.SpentAt = _timing.CurTime - _metadata.GetPauseTime(uid);
         }
 
         TryArmDespawn((uid, spent));
@@ -162,7 +164,7 @@ public sealed partial class SpentCasingSystem : EntitySystem
         if (!_net.IsServer || TerminatingOrDeleted(ent) || _container.IsEntityInContainer(ent))
             return;
 
-        var elapsed = (float)(_timing.CurTime - ent.Comp.SpentAt).TotalSeconds;
+        var elapsed = (float)(_timing.CurTime - ent.Comp.SpentAt - _metadata.GetPauseTime(ent)).TotalSeconds;
         var remaining = ent.Comp.DespawnSeconds - elapsed;
         if (remaining < MinLifetimeSeconds)
             remaining = MinLifetimeSeconds;
