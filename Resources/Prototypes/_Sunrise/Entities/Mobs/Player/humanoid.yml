@@ -14,6 +14,7 @@
   id: EventHumanoidERTSunrise
   parent: EventHumanoidMindShielded
   randomizeName: false
+  includeExcludedSpecies: true # Fish-edit: КПБ могут спавниться в ОБР
   components:
   - type: AutoImplant
     implants:
@@ -25,6 +26,7 @@
   id: EventHumanoidDeathSquadSunrise
   parent: EventHumanoidMindShielded
   randomizeName: false
+  includeExcludedSpecies: true # Fish-edit: КПБ могут спавниться в DeathSquad
   components:
   - type: AutoImplant
     implants:

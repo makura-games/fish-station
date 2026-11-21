@@ -40,7 +40,8 @@ public sealed partial class RandomHumanoidSystem : EntitySystem
         if (!ProtoMan.TryIndex<RandomHumanoidSettingsPrototype>(prototypeId, out var prototype))
             throw new ArgumentException("Could not get random humanoid settings");
 
-        var profile = HumanoidCharacterProfile.Random(prototype.SpeciesBlacklist);
+        // Fish-edit: IncludeExcludedSpecies для ОБР/DeathSquad (КПБ)
+        var profile = HumanoidCharacterProfile.Random(prototype.SpeciesBlacklist, prototype.IncludeExcludedSpecies);
         var speciesProto = ProtoMan.Index<SpeciesPrototype>(profile.Species);
         var humanoid = EntityManager.CreateEntityUninitialized(speciesProto.Prototype, coordinates);
 

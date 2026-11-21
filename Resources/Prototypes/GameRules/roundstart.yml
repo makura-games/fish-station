@@ -147,6 +147,7 @@
   - type: AntagSelection
     antags: [] # Sunrise-Edit: пустой список, Nukeops переопределяет
   - type: AntagLoadProfileRule
+    allowExcludedSpecies: true # Fish-edit: КПБ из профиля на NukeOps
     speciesOverride: Human
     speciesOverrideBlacklist:
     #Species that do not work with nukies should be included in this list.

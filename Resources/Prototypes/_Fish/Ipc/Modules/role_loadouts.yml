@@ -1,0 +1,115 @@
+# Fish-start: встроенные модули КПБ для ОБР / CBURN / DeathSquad / NukeOps
+# Кап хоста = 3. EmpScreen всем. Vision-слот один (exclusionGroup: vision).
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTLeader
+  role: ERTLeader
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTSecurity
+  role: ERTSecurity
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTMedical
+  role: ERTMedical
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleMedHud
+  - FishIpcModuleDefib
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTEngineer
+  role: ERTEngineer
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleMeson
+  - FishIpcModuleToolHand
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTJanitor
+  role: ERTJanitor
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNanoRepair
+  - FishIpcModuleToolHand
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesERTChaplain
+  role: ERTChaplain
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleJumpstarter
+  - FishIpcModuleVocalMod
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesCBURN
+  role: CBURN
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleRadFilter
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesCBURNLeader
+  role: CBURNLeader
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleRadFilter
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesCBURNAgentEVA
+  role: CBURNAgentEVA
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleRadFilter
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesDeathSquad
+  role: DeathSquad
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesNukeopsOperative
+  role: NukeopsOperative
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesNukeopsMedic
+  role: NukeopsMedic
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleMedHud
+  - FishIpcModuleDefib
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesNukeopsCommander
+  role: NukeopsCommander
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+
+- type: fishIpcRoleModuleLoadout
+  id: FishIpcModulesLoneOp
+  role: LoneOp
+  modules:
+  - FishIpcModuleEmpScreen
+  - FishIpcModuleNightVision
+  - FishIpcModuleNanoRepair
+# Fish-end

@@ -69,6 +69,7 @@
   abstract: true
   parent: RestrictedAntag
   id: BaseNukeops
+  allowFishIpc: true # Fish-edit: КПБ могут быть NukeOps (модули EmpScreen + профа)
   prefRoles:
   - GenericTeamAntagonist # For antag ban purposes
   roleLoadout:

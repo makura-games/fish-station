@@ -110,6 +110,50 @@ public sealed class FishIpcConnectedTest : FishIpcGameTest
     }
 
     [Test]
+    public async Task CombatRole_GrantsEmpAndProfessionModules()
+    {
+        EntityUid ertSec = default;
+        EntityUid ertMed = default;
+        EntityUid nukeOp = default;
+        EntityUid nukeMed = default;
+
+        await Server.WaitPost(() =>
+        {
+            var modules = Server.System<Content.Server._Fish.Ipc.FishIpcJobModuleSystem>();
+            ertSec = SSpawn("MobIpc");
+            ertMed = SSpawn("MobIpc");
+            nukeOp = SSpawn("MobIpc");
+            nukeMed = SSpawn("MobIpc");
+            modules.TryGrantForRole(ertSec, "ERTSecurity");
+            modules.TryGrantForRole(ertMed, "ERTMedical");
+            modules.TryGrantForRole(nukeOp, "NukeopsOperative");
+            modules.TryGrantForRole(nukeMed, "NukeopsMedic");
+        });
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                AssertHasModules(ertSec, "FishIpcModuleEmpScreen", "FishIpcModuleNightVision", "FishIpcModuleNanoRepair");
+                AssertHasModules(ertMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
+                AssertHasModules(nukeOp, "FishIpcModuleEmpScreen", "FishIpcModuleNightVision", "FishIpcModuleNanoRepair");
+                AssertHasModules(nukeMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
+            });
+        });
+    }
+
+    private void AssertHasModules(EntityUid ipc, params string[] expected)
+    {
+        var host = SComp<FishIpcModuleHostComponent>(ipc);
+        Assert.That(host.ModuleCount, Is.EqualTo(expected.Length), ipc.ToString());
+        var ids = host.ModuleContainer.ContainedEntities
+            .Select(uid => SEntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID)
+            .ToHashSet();
+        foreach (var id in expected)
+            Assert.That(ids, Does.Contain(id), $"{ipc}: missing {id}");
+    }
+
+    [Test]
     public async Task BatteryEjectAndInsert_ClientDoesNotCrash()
     {
         var catcher = new LogCatcher();
