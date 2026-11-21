@@ -287,6 +287,10 @@ namespace Content.Client.Paper.UI
             {
                 StampDisplay.AddStamp(new StampWidget{ StampInfo = stamper });
             }
+
+            // Fish-start - панель навигации по страницам пакета
+            UpdatePageNavigation(state);
+            // Fish-end
         }
 
         /// <summary>

@@ -1,0 +1,19 @@
+# Fish stapler — скрепляет бумаги в многостраничный пакет
+- type: entity
+  parent: BaseItem
+  id: FishStapler
+  name: stapler
+  description: An office stapler for binding paperwork into multi-page document bundles.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Misc/stapler.rsi
+    state: icon
+  - type: Item
+    sprite: _Fish/Objects/Misc/stapler.rsi
+    size: Small
+  - type: FishStapler
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 50
+      Plastic: 50

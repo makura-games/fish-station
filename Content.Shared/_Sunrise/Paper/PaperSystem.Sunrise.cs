@@ -44,19 +44,6 @@ public sealed partial class PaperSystem
         return true;
     }
 
-    private void OnTemplateRequest(Entity<PaperComponent> entity, ref PaperComponent.PaperTemplateRequestMessage args)
-    {
-        switch (args.Type)
-        {
-            case PaperComponent.PaperTemplateRequestType.Signature:
-                HandleSignatureRequest(entity, args.Actor, args.Index);
-                break;
-            case PaperComponent.PaperTemplateRequestType.Job:
-                HandleJobRequest(entity, args.Actor, args.Index);
-                break;
-        }
-    }
-
     private bool TryValidateTemplateWriteRequest(Entity<PaperComponent> entity, EntityUid actor, int index)
     {
         if (!PaperInteractiveTagParsing.ContainsInteractiveTags(entity.Comp.Content))
@@ -133,17 +120,4 @@ public sealed partial class PaperSystem
         UpdateUserInterface(entity);
     }
 
-    private PaperComponent.PaperBoundUserInterfaceState GetPaperUiState(Entity<PaperComponent> entity)
-    {
-        var templateFieldsEnabled = PaperInteractiveTagParsing.ContainsInteractiveTags(entity.Comp.Content);
-
-        return new PaperComponent.PaperBoundUserInterfaceState(
-            entity.Comp.Content,
-            entity.Comp.DefaultColor,
-            entity.Comp.StampedBy,
-            entity.Comp.Mode,
-            entity.Comp.ImageContent,
-            entity.Comp.ImageScale,
-            templateFieldsEnabled);
-    }
 }

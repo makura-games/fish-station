@@ -11,6 +11,7 @@
     Paper: 10
     Envelope: 10
     HandLabeler: 2
+    FishStapler: 3 # Fish-edit - степлер для документов
     EncryptionKeyCargo: 2
     EncryptionKeyEngineering: 2
     EncryptionKeyMedical: 2
