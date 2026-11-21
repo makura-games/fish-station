@@ -1,72 +1,80 @@
-using Content.Client._Fish.UserInterface.Crt;
-using Content.Shared._Fish.Achievements;
-using Robust.Client.Graphics;
-using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.Controls;
 using System.Numerics;
+using Content.Client.Stylesheets;
+using Content.Shared._Fish.Achievements;
+using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
+using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Utility;
 
 namespace Content.Client._Fish.Achievements.UI;
 
 /// <summary>
-/// Компактная карточка в сетке каталога.
+/// Карточка достижения: иконка + переносимый заголовок + прогресс (без обрезки/наложения).
 /// </summary>
-public sealed class FishAchievementCard : ContainerButton, IFishCrtThemedControl
+public sealed class FishAchievementCard : ContainerButton
 {
+    private static readonly Color MutedColor = StyleNano.DisabledFore;
+    private static readonly Color GoodColor = StyleNano.GoodGreenFore;
+    private static readonly Color SelectedBorder = StyleNano.NanoGold;
+    private static readonly ResPath FallbackIcon = new("/Textures/Interface/VerbIcons/information.svg.192dpi.png");
+
     public string AchievementId { get; private set; } = string.Empty;
 
-    private readonly FishCrtPanel _panel;
-    private readonly FishCrtIcon _icon;
-    private readonly FishCrtLabel _title;
+    private readonly PanelContainer _panel;
+    private readonly TextureRect _icon;
+    private readonly RichTextLabel _title;
     private readonly ProgressBar _progress;
-    private readonly FishCrtLabel _progressLabel;
+    private readonly Label _progressLabel;
+    private readonly SpriteSystem _sprite;
     private bool _selected;
 
     public FishAchievementCard()
     {
-        MinSize = new Vector2(200, 96);
+        _sprite = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<SpriteSystem>();
+
+        HorizontalExpand = true;
+        MinHeight = 72;
         StyleBoxOverride = new StyleBoxFlat { BackgroundColor = Color.Transparent };
 
-        _panel = new FishCrtPanel
+        _panel = new PanelContainer
         {
             HorizontalExpand = true,
             VerticalExpand = true,
-            Variant = FishCrtPanelVariant.Surface,
-            Rounded = true,
-            Effects = FishCrtEffects.None,
-            BackgroundOpacity = 0.78f,
-            BorderThickness = 1,
             MouseFilter = MouseFilterMode.Ignore,
         };
+        _panel.AddStyleClass(StyleClass.BackgroundPanelDark);
 
         var root = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
             HorizontalExpand = true,
-            VerticalExpand = true,
             SeparationOverride = 10,
             Margin = new Thickness(10, 8),
+            MouseFilter = MouseFilterMode.Ignore,
         };
 
-        _icon = new FishCrtIcon
+        _icon = new TextureRect
         {
-            IconState = FishCrtIcons.Medal,
-            SetWidth = 36,
-            SetHeight = 36,
-            VerticalAlignment = VAlignment.Center,
+            MinSize = new Vector2(40, 40),
+            MaxSize = new Vector2(40, 40),
+            Stretch = TextureRect.StretchMode.KeepAspectCentered,
+            VerticalAlignment = VAlignment.Top,
+            MouseFilter = MouseFilterMode.Ignore,
         };
 
-        var textColumn = new BoxContainer
+        var textCol = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
-            VerticalExpand = true,
-            SeparationOverride = 3,
+            SeparationOverride = 4,
+            MouseFilter = MouseFilterMode.Ignore,
         };
 
-        _title = new FishCrtLabel
+        // RichTextLabel переносит длинные RU-названия вместо обрезки.
+        _title = new RichTextLabel
         {
-            Heading = true,
-            TextFontSize = 12,
+            HorizontalExpand = true,
+            MouseFilter = MouseFilterMode.Ignore,
         };
 
         _progress = new ProgressBar
@@ -74,31 +82,30 @@ public sealed class FishAchievementCard : ContainerButton, IFishCrtThemedControl
             MinValue = 0,
             MaxValue = 1,
             Visible = false,
-            MinHeight = 6,
+            MinHeight = 8,
             HorizontalExpand = true,
+            MouseFilter = MouseFilterMode.Ignore,
         };
+        _progress.BackgroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = StyleNano.PanelDark };
+        _progress.ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = StyleNano.NanoGold };
 
-        _progressLabel = new FishCrtLabel
+        _progressLabel = new Label
         {
-            TextFontSize = 10,
-            Tone = FishCrtTone.Muted,
+            FontColorOverride = MutedColor,
             Visible = false,
+            HorizontalExpand = true,
+            ClipText = false,
+            MouseFilter = MouseFilterMode.Ignore,
         };
 
-        textColumn.AddChild(_title);
-        textColumn.AddChild(_progress);
-        textColumn.AddChild(_progressLabel);
+        textCol.AddChild(_title);
+        textCol.AddChild(_progress);
+        textCol.AddChild(_progressLabel);
 
         root.AddChild(_icon);
-        root.AddChild(textColumn);
+        root.AddChild(textCol);
         _panel.AddChild(root);
         AddChild(_panel);
-    }
-
-    public void SetSelected(bool selected)
-    {
-        _selected = selected;
-        ApplyPanelStyle();
     }
 
     public void Bind(AchievementPrototype proto, AchievementPlayerState state)
@@ -106,73 +113,87 @@ public sealed class FishAchievementCard : ContainerButton, IFishCrtThemedControl
         AchievementId = proto.ID;
         var unlocked = state.Unlocked;
 
-        _title.Text = Loc.GetString(proto.Name);
-        _title.Tone = unlocked ? FishCrtTone.Good : FishCrtTone.Default;
+        var titleColor = unlocked
+            ? GoodColor
+            : proto.Secret
+                ? StyleNano.ConcerningOrangeFore
+                : Color.White;
+        _title.SetMessage(FormattedMessage.FromMarkupOrThrow(
+            $"[color={titleColor.ToHex()}]{FormattedMessage.EscapeText(Loc.GetString(proto.Name))}[/color]"));
 
-        if (proto.Secret && !unlocked)
-        {
-            _icon.IconState = FishCrtIcons.Warning;
-            _icon.Tone = FishCrtTone.Warning;
-            _title.Tone = FishCrtTone.Warning;
-        }
-        else
-        {
-            _icon.IconState = FishCrtIcons.Medal;
-            _icon.Tone = unlocked ? FishCrtTone.Good : FishCrtTone.Muted;
-        }
+        SetIcon(proto, unlocked);
 
-        var target = System.Math.Max(1, proto.ProgressTarget);
+        var target = Math.Max(1, proto.ProgressTarget);
         var showProgress = target > 1 && proto.Condition != AchievementConditionKeys.Manual;
         if (showProgress)
         {
             _progress.Visible = true;
             _progressLabel.Visible = true;
             _progress.MaxValue = target;
-            _progress.Value = System.Math.Clamp(state.Progress, 0, target);
-            _progressLabel.Text = $"{state.Progress}/{target}";
-            _progressLabel.Tone = unlocked ? FishCrtTone.Good : FishCrtTone.Muted;
+            _progress.Value = Math.Clamp(state.Progress, 0, target);
+            _progressLabel.Text = Loc.GetString(
+                "fish-achievements-progress-count",
+                ("current", state.Progress),
+                ("target", target));
+            _progressLabel.FontColorOverride = unlocked ? GoodColor : MutedColor;
         }
         else
         {
             _progress.Visible = false;
-            _progressLabel.Visible = false;
+            _progressLabel.Visible = true;
+            _progressLabel.Text = unlocked
+                ? Loc.GetString("fish-achievements-status-unlocked")
+                : proto.Secret
+                    ? Loc.GetString("fish-achievements-status-secret")
+                    : Loc.GetString("fish-achievements-status-locked");
+            _progressLabel.FontColorOverride = unlocked ? GoodColor : MutedColor;
         }
 
-        ApplyPanelStyle();
+        ApplyChrome();
     }
 
-    void IFishCrtThemedControl.ApplyCrtTheme(FishCrtThemeContext context)
+    public void SetSelected(bool selected)
     {
-        _icon.ApplyAppearance(context);
-        _title.ApplyAppearance(context);
-        _progressLabel.ApplyAppearance(context);
-        ApplyPanelStyle(context);
+        _selected = selected;
+        ApplyChrome();
     }
 
-    protected override void EnteredTree()
+    private void SetIcon(AchievementPrototype proto, bool unlocked)
     {
-        base.EnteredTree();
-        ((IFishCrtThemedControl) this).ApplyCrtTheme(FishCrtThemeHelpers.FindContext(this));
-    }
-
-    private void ApplyPanelStyle(FishCrtThemeContext? context = null)
-    {
-        context ??= FishCrtThemeHelpers.FindContext(this);
-        var palette = context.Value.Palette;
-
-        _panel.BackgroundOpacity = _selected ? 0.92f : 0.72f;
-        _panel.BorderThickness = _selected ? 2 : 1;
-        _panel.SetColorOverrides(
-            null,
-            _selected ? palette.Border : palette.Muted.WithAlpha(0.35f));
-
-        _progress.BackgroundStyleBoxOverride = new StyleBoxFlat
+        try
         {
-            BackgroundColor = palette.Background.WithAlpha(0.95f),
-        };
-        _progress.ForegroundStyleBoxOverride = new StyleBoxFlat
+            if (proto.Secret && !unlocked)
+            {
+                _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+                _icon.Modulate = StyleNano.ConcerningOrangeFore;
+                return;
+            }
+
+            if (proto.Icon is { } icon)
+            {
+                _icon.Texture = _sprite.Frame0(icon);
+                _icon.Modulate = unlocked ? Color.White : new Color(180, 180, 180);
+                return;
+            }
+        }
+        catch
         {
-            BackgroundColor = palette.Good,
-        };
+            // fallback below
+        }
+
+        _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+        _icon.Modulate = MutedColor;
+    }
+
+    private void ApplyChrome()
+    {
+        _panel.PanelOverride = _selected
+            ? new StyleBoxFlat
+            {
+                BackgroundColor = StyleNano.PanelDark,
+                BorderColor = SelectedBorder,
+                BorderThickness = new Thickness(2),
+            }
+            : null;
     }
 }

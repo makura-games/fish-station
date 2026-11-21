@@ -7,6 +7,7 @@ using Content.Shared.Item;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Popups;
 using Content.Shared._Fish.Achievements.Events;
+using Content.Shared._Fish.Skills; // Fish-edit: навык анатомии для хирургии
 using Content.Shared.Starlight.Medical.Surgery.Effects.Step;
 using Content.Shared.Starlight.Medical.Surgery.Events;
 using Content.Shared.Starlight.Medical.Surgery.Steps;
@@ -46,12 +47,26 @@ public abstract partial class SharedSurgerySystem
             return;
         }
 
-        if (!_random.Prob(args.SuccessRate))
+        // Fish-start: повторная проверка анатомии на завершении DoAfter
+        if (_skills.TryDenyMissingSkill(args.User, "FishSkillAnatomy", SkillLevels.Basic, "skills-surgery-need-anatomy"))
         {
-            if (_net.IsClient) return;
-            _popup.PopupEntity("Because of a careless tool, your hand shook. You need to start this step all over again!", args.User, PopupType.SmallCaution);
+            Dirty(ent);
             return;
         }
+        // Fish-end
+
+        // Fish-start: при SuccessRate < 1 клиент не крутит свой roll — иначе prediction расходится с сервером
+        if (_net.IsClient)
+        {
+            if (args.SuccessRate < 1f)
+                return;
+        }
+        else if (!_random.Prob(args.SuccessRate))
+        {
+            _popup.PopupEntity(Loc.GetString("fish-surgery-careless-tool"), args.User, PopupType.SmallCaution);
+            return;
+        }
+        // Fish-end
 
         var ev = new SurgeryStepEvent(args.User, ent, part, GetTools(args.User))
         {
@@ -256,6 +271,11 @@ public abstract partial class SharedSurgerySystem
             return;
         }
 
+        // Fish-start: хирургия требует базовой анатомии
+        if (_skills.TryDenyMissingSkill(user, "FishSkillAnatomy", SkillLevels.Basic, "skills-surgery-need-anatomy"))
+            return;
+        // Fish-end
+
         if (_net.IsServer && TryComp(step, out MetaDataComponent? meta))
         {
             var surgeonName = MetaData(user).EntityName;
@@ -274,6 +294,14 @@ public abstract partial class SharedSurgerySystem
                 if(toolComp.SuccessRate < SmallestSuccessRate)
                     SmallestSuccessRate = toolComp.SuccessRate;
             }
+
+        // Fish-start: скорость и шанс успеха хирургии от анатомии
+        duration *= _skills.GetSkillDelayMultiplier(user, "FishSkillAnatomy");
+        SmallestSuccessRate = Math.Clamp(
+            SmallestSuccessRate * _skills.GetSkillQualityMultiplier(user, "FishSkillAnatomy"),
+            0.05f,
+            1f);
+        // Fish-end
 
         if (TryComp(body, out TransformComponent? xform))
             _rotateToFace.TryFaceCoordinates(user, _transform.GetMapCoordinates(body, xform).Position);

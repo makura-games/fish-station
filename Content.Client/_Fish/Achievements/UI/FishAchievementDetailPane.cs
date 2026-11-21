@@ -1,36 +1,39 @@
-using Content.Client._Fish.UserInterface.Crt;
+using System.Numerics;
+using Content.Client.Stylesheets;
 using Content.Shared._Fish.Achievements;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Utility;
 
 namespace Content.Client._Fish.Achievements.UI;
 
 /// <summary>
-/// Правая панель с описанием выбранного достижения.
+/// Правая панель описания: иконка, статус, полное описание без обрезки.
 /// </summary>
 public sealed class FishAchievementDetailPane : PanelContainer
 {
-    private readonly FishCrtPanel _shell;
-    private readonly FishCrtIcon _icon;
-    private readonly FishCrtLabel _title;
-    private readonly FishCrtLabel _status;
-    private readonly FishCrtLabel _description;
+    private static readonly Color MutedColor = StyleNano.DisabledFore;
+    private static readonly Color GoodColor = StyleNano.GoodGreenFore;
+    private static readonly ResPath FallbackIcon = new("/Textures/Interface/VerbIcons/information.svg.192dpi.png");
+
+    private readonly SpriteSystem _sprite;
+    private readonly TextureRect _icon;
+    private readonly RichTextLabel _title;
+    private readonly Label _status;
+    private readonly RichTextLabel _description;
     private readonly ProgressBar _progress;
-    private readonly FishCrtLabel _progressLabel;
-    private readonly FishCrtLabel _placeholder;
+    private readonly Label _progressLabel;
+    private readonly Label _placeholder;
+    private readonly BoxContainer _content;
 
     public FishAchievementDetailPane()
     {
-        _shell = new FishCrtPanel
-        {
-            Variant = FishCrtPanelVariant.Inset,
-            Rounded = true,
-            Effects = FishCrtEffects.None,
-            BackgroundOpacity = 0.55f,
-            BorderThickness = 0,
-            HorizontalExpand = true,
-            VerticalExpand = true,
-        };
+        _sprite = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<SpriteSystem>();
+
+        AddStyleClass(StyleClass.PanelDark);
+        HorizontalExpand = true;
+        VerticalExpand = true;
 
         var root = new BoxContainer
         {
@@ -41,45 +44,50 @@ public sealed class FishAchievementDetailPane : PanelContainer
             Margin = new Thickness(16, 14),
         };
 
-        var iconFrame = new FishCrtPanel
+        _placeholder = new Label
         {
-            Variant = FishCrtPanelVariant.Surface,
-            Rounded = true,
-            Effects = FishCrtEffects.None,
-            BackgroundOpacity = 0.75f,
-            BorderThickness = 0,
+            Text = Loc.GetString("fish-achievements-detail-hint"),
+            FontColorOverride = MutedColor,
+            HorizontalAlignment = HAlignment.Center,
+            VerticalAlignment = VAlignment.Center,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            ClipText = false,
+        };
+
+        _content = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            SeparationOverride = 8,
+            Visible = false,
+        };
+
+        _icon = new TextureRect
+        {
+            MinSize = new Vector2(72, 72),
+            MaxSize = new Vector2(72, 72),
+            Stretch = TextureRect.StretchMode.KeepAspectCentered,
             HorizontalAlignment = HAlignment.Center,
         };
 
-        _icon = new FishCrtIcon
+        _title = new RichTextLabel
         {
-            IconState = FishCrtIcons.Medal,
-            SetWidth = 72,
-            SetHeight = 72,
-            Margin = new Thickness(18),
-        };
-        iconFrame.AddChild(_icon);
-
-        _title = new FishCrtLabel
-        {
-            Heading = true,
-            TextFontSize = 18,
             HorizontalAlignment = HAlignment.Center,
+            HorizontalExpand = true,
         };
 
-        _status = new FishCrtLabel
+        _status = new Label
         {
-            TextFontSize = 11,
-            Tone = FishCrtTone.Muted,
+            FontColorOverride = MutedColor,
             HorizontalAlignment = HAlignment.Center,
+            ClipText = false,
         };
 
-        var divider = new FishCrtSeparator { Orientation = FishCrtSeparatorOrientation.Horizontal };
-
-        _description = new FishCrtLabel
+        _description = new RichTextLabel
         {
             HorizontalExpand = true,
-            TextFontSize = 12,
         };
 
         _progress = new ProgressBar
@@ -89,48 +97,35 @@ public sealed class FishAchievementDetailPane : PanelContainer
             Visible = false,
             MinHeight = 10,
             HorizontalExpand = true,
-            Margin = new Thickness(0, 4, 0, 0),
         };
+        _progress.BackgroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = StyleNano.PanelDark };
+        _progress.ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = StyleNano.NanoGold };
 
-        _progressLabel = new FishCrtLabel
+        _progressLabel = new Label
         {
-            TextFontSize = 11,
-            Tone = FishCrtTone.Muted,
+            FontColorOverride = MutedColor,
             Visible = false,
+            ClipText = false,
         };
 
-        _placeholder = new FishCrtLabel
-        {
-            Text = Loc.GetString("fish-achievements-detail-hint"),
-            Tone = FishCrtTone.Muted,
-            TextFontSize = 13,
-            HorizontalExpand = true,
-            VerticalExpand = true,
-            VerticalAlignment = VAlignment.Center,
-            HorizontalAlignment = HAlignment.Center,
-        };
+        _content.AddChild(_icon);
+        _content.AddChild(_title);
+        _content.AddChild(_status);
+        _content.AddChild(_description);
+        _content.AddChild(_progress);
+        _content.AddChild(_progressLabel);
 
-        root.AddChild(iconFrame);
-        root.AddChild(_title);
-        root.AddChild(_status);
-        root.AddChild(divider);
-        root.AddChild(_description);
-        root.AddChild(_progress);
-        root.AddChild(_progressLabel);
         root.AddChild(_placeholder);
+        root.AddChild(_content);
+        AddChild(root);
 
-        _shell.AddChild(root);
-        AddChild(_shell);
         ShowPlaceholder();
     }
 
     public void ShowPlaceholder()
     {
         _placeholder.Visible = true;
-        _icon.Visible = false;
-        _title.Visible = false;
-        _status.Visible = false;
-        _description.Visible = false;
+        _content.Visible = false;
         _progress.Visible = false;
         _progressLabel.Visible = false;
     }
@@ -138,59 +133,67 @@ public sealed class FishAchievementDetailPane : PanelContainer
     public void Bind(AchievementPrototype proto, AchievementPlayerState state)
     {
         _placeholder.Visible = false;
-        _icon.Visible = true;
-        _title.Visible = true;
-        _status.Visible = true;
-        _description.Visible = true;
+        _content.Visible = true;
 
         var unlocked = state.Unlocked;
-        _title.Text = Loc.GetString(proto.Name);
-        _title.Tone = unlocked ? FishCrtTone.Good : FishCrtTone.Default;
+        _title.SetMessage(FormattedMessage.FromMarkupOrThrow(
+            $"[bold]{FormattedMessage.EscapeText(Loc.GetString(proto.Name))}[/bold]"));
+
+        try
+        {
+            if (proto.Secret && !unlocked)
+            {
+                _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+                _icon.Modulate = StyleNano.ConcerningOrangeFore;
+            }
+            else if (proto.Icon is { } icon)
+            {
+                _icon.Texture = _sprite.Frame0(icon);
+                _icon.Modulate = unlocked ? Color.White : new Color(180, 180, 180);
+            }
+            else
+            {
+                _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+                _icon.Modulate = MutedColor;
+            }
+        }
+        catch
+        {
+            _icon.Texture = _sprite.Frame0(new SpriteSpecifier.Texture(FallbackIcon));
+            _icon.Modulate = MutedColor;
+        }
 
         if (proto.Secret && !unlocked)
         {
-            _icon.IconState = FishCrtIcons.Warning;
-            _icon.Tone = FishCrtTone.Warning;
-            _description.Text = Loc.GetString(proto.SecretDescription ?? "fish-achievements-secret-placeholder");
-            _description.Tone = FishCrtTone.Warning;
+            _description.SetMessage(FormattedMessage.FromMarkupOrThrow(
+                FormattedMessage.EscapeText(
+                    Loc.GetString(proto.SecretDescription ?? "fish-achievements-secret-placeholder"))));
             _status.Text = Loc.GetString("fish-achievements-status-secret");
-            _status.Tone = FishCrtTone.Warning;
+            _status.FontColorOverride = StyleNano.ConcerningOrangeFore;
         }
         else
         {
-            _icon.IconState = FishCrtIcons.Medal;
-            _icon.Tone = unlocked ? FishCrtTone.Good : FishCrtTone.Muted;
-            _description.Text = Loc.GetString(proto.Description);
-            _description.Tone = FishCrtTone.Default;
+            _description.SetMessage(FormattedMessage.FromMarkupOrThrow(
+                FormattedMessage.EscapeText(Loc.GetString(proto.Description))));
             _status.Text = unlocked
                 ? Loc.GetString("fish-achievements-status-unlocked")
                 : Loc.GetString("fish-achievements-status-locked");
-            _status.Tone = unlocked ? FishCrtTone.Good : FishCrtTone.Muted;
+            _status.FontColorOverride = unlocked ? GoodColor : MutedColor;
         }
 
-        var target = System.Math.Max(1, proto.ProgressTarget);
+        var target = Math.Max(1, proto.ProgressTarget);
         var showProgress = target > 1 && proto.Condition != AchievementConditionKeys.Manual;
         if (showProgress)
         {
             _progress.Visible = true;
             _progressLabel.Visible = true;
             _progress.MaxValue = target;
-            _progress.Value = System.Math.Clamp(state.Progress, 0, target);
+            _progress.Value = Math.Clamp(state.Progress, 0, target);
             _progressLabel.Text = Loc.GetString(
                 "fish-achievements-progress-count",
                 ("current", state.Progress),
                 ("target", target));
-            _progressLabel.Tone = unlocked ? FishCrtTone.Good : FishCrtTone.Muted;
-
-            var palette = FishCrtThemeHelpers.FindContext(this).Palette;
-            _progress.BackgroundStyleBoxOverride = new StyleBoxFlat
-            {
-                BackgroundColor = palette.Background.WithAlpha(0.95f),
-            };
-            _progress.ForegroundStyleBoxOverride = new StyleBoxFlat
-            {
-                BackgroundColor = unlocked ? palette.Good : palette.Border,
-            };
+            _progressLabel.FontColorOverride = unlocked ? GoodColor : MutedColor;
         }
         else
         {

@@ -40,9 +40,12 @@ public sealed partial class ReactionMixerSystem : EntitySystem
         if (!CanMix(ent.AsNullable(), ent))
             return;
 
+        // Fish-start: химия влияет на время смешивания
+        var mixTime = GetChemistryMixDelay(args.User, ent.Comp.TimeToMix);
+        // Fish-end
         var doAfterArgs = new DoAfterArgs(EntityManager,
             args.User,
-            ent.Comp.TimeToMix,
+            mixTime,
             new ReactionMixDoAfterEvent(),
             ent,
             ent,
@@ -67,7 +70,10 @@ public sealed partial class ReactionMixerSystem : EntitySystem
         if (!CanMix(ent.AsNullable(), args.Target.Value))
             return;
 
-        var doAfterArgs = new DoAfterArgs(EntityManager, args.User, ent.Comp.TimeToMix, new ReactionMixDoAfterEvent(), ent, args.Target.Value, ent);
+        // Fish-start: химия влияет на время смешивания
+        var mixTime = GetChemistryMixDelay(args.User, ent.Comp.TimeToMix);
+        var doAfterArgs = new DoAfterArgs(EntityManager, args.User, mixTime, new ReactionMixDoAfterEvent(), ent, args.Target.Value, ent);
+        // Fish-end
 
         if (_doAfter.TryStartDoAfter(doAfterArgs))
             ent.Comp.AudioStream = _audio.PlayPredicted(ent.Comp.MixingSound, ent, args.User)?.Entity ?? ent.Comp.AudioStream;

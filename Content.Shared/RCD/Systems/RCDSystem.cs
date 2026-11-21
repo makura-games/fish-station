@@ -43,6 +43,7 @@ public sealed partial class RCDSystem : EntitySystem
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TagSystem _tags = default!;
+    // _skills — в Content.Shared/_Fish/RCD/RCDSystem.Fish.cs
 
     private readonly int _instantConstructionDelay = 0;
     private readonly EntProtoId _instantConstructionFx = "EffectRCDConstruct0";
@@ -164,6 +165,17 @@ public sealed partial class RCDSystem : EntitySystem
         if (!IsRCDOperationStillValid(uid, component, gridUid.Value, mapGrid, tile, position, component.ConstructionDirection, args.Target, args.User))
             return;
 
+        // Fish-start: РСУ (строительство) требует базового строительства
+        if (prototype.Mode is RcdMode.ConstructTile or RcdMode.ConstructObject)
+        {
+            if (TryDenyRcdConstruction(args.User))
+            {
+                args.Handled = true;
+                return;
+            }
+        }
+        // Fish-end
+
         if (!_net.IsServer)
             return;
 
@@ -221,6 +233,9 @@ public sealed partial class RCDSystem : EntitySystem
         }
 
         #endregion
+
+        // Fish-edit: навык строительства влияет и на construct, и на deconstruct
+        delay *= GetRcdConstructionDelayMultiplier(args.User);
 
         // Try to start the do after
         var effect = Spawn(effectPrototype, _mapSystem.ToCenterCoordinates(tile, mapGrid));

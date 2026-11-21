@@ -104,7 +104,9 @@ public abstract partial class SharedAtmosPipeLayersSystem : EntitySystem
                     DoContactInteraction = true,
                     Act = () =>
                     {
-                        _tool.UseTool(tool.Value, user, ent, ent.Comp.Delay, tool.Value.Comp.Qualities, new TrySettingPipeLayerCompletedEvent((AtmosPipeLayer)index));
+                        // Fish-start: атмосфера влияет на смену слоя труб
+                        _tool.UseTool(tool.Value, user, ent, GetAtmosPipeDelay(user, ent.Comp.Delay), tool.Value.Comp.Qualities, new TrySettingPipeLayerCompletedEvent((AtmosPipeLayer)index));
+                        // Fish-end
                     }
                 };
 
@@ -127,7 +129,9 @@ public abstract partial class SharedAtmosPipeLayersSystem : EntitySystem
             return;
         }
 
-        _tool.UseTool(args.Used, args.User, ent, ent.Comp.Delay, tool.Qualities, new TrySetNextPipeLayerCompletedEvent());
+        // Fish-start: атмосфера влияет на смену слоя труб
+        _tool.UseTool(args.Used, args.User, ent, GetAtmosPipeDelay(args.User, ent.Comp.Delay), tool.Qualities, new TrySetNextPipeLayerCompletedEvent());
+        // Fish-end
     }
 
     private void OnUseInHandEvent(Entity<AtmosPipeLayersComponent> ent, ref UseInHandEvent args)
@@ -148,7 +152,9 @@ public abstract partial class SharedAtmosPipeLayersSystem : EntitySystem
             return;
         }
 
-        _tool.UseTool(tool.Value, args.User, ent, ent.Comp.Delay, tool.Value.Comp.Qualities, new TrySetNextPipeLayerCompletedEvent());
+        // Fish-start: атмосфера влияет на смену слоя труб
+        _tool.UseTool(tool.Value, args.User, ent, GetAtmosPipeDelay(args.User, ent.Comp.Delay), tool.Value.Comp.Qualities, new TrySetNextPipeLayerCompletedEvent());
+        // Fish-end
     }
 
     private void OnSetNextPipeLayerCompleted(Entity<AtmosPipeLayersComponent> ent, ref TrySetNextPipeLayerCompletedEvent args)

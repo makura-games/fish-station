@@ -1,0 +1,7 @@
+﻿{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Fish Station, derived from SS14 VerbIcons plus icon scaled to menubar size",
+  "size": { "x": 48, "y": 48 },
+  "states": [ { "name": "skills" } ]
+}
