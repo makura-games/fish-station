@@ -53,6 +53,7 @@
   parent: BaseCartridgeRifleHeavy
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavySP
   - type: Sprite
     layers:
@@ -68,6 +69,7 @@
   parent: BaseCartridgeRifleHeavy
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyFMJ
   - type: Sprite
     layers:
@@ -83,6 +85,7 @@
   parent: BaseCartridgeRifleHeavy
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyAP
   - type: Sprite
     layers:
@@ -98,6 +101,7 @@
   parent: BaseCartridgeRifleHeavy
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyPractice
   - type: Sprite
     layers:
@@ -113,6 +117,7 @@
   parent: BaseCartridgeRifleHeavy
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleHeavyIncendiary
   - type: Sprite
     layers:
@@ -128,6 +133,7 @@
   parent: BaseCartridgeRifleHeavy
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyUranium
   - type: Sprite
     layers:
@@ -143,6 +149,7 @@
   parent: BaseCartridgeRifleHeavy
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleHeavy127mm
   - type: Sprite
     scale: 0.7, 0.7
@@ -160,6 +167,7 @@
   parent: BaseCartridgeHeavyRifleR
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavySP
   - type: Sprite
     layers:
@@ -175,6 +183,7 @@
   parent: BaseCartridgeHeavyRifleR
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyFMJ
   - type: Sprite
     layers:
@@ -190,6 +199,7 @@
   parent: BaseCartridgeHeavyRifleR
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyAP
   - type: Sprite
     layers:
@@ -205,6 +215,7 @@
   parent: BaseCartridgeHeavyRifleR
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyPractice
   - type: Sprite
     layers:
@@ -220,6 +231,7 @@
   parent: BaseCartridgeHeavyRifleR
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleHeavyIncendiary
   - type: Sprite
     layers:
@@ -235,6 +247,7 @@
   parent: BaseCartridgeHeavyRifleR
   components:
   - type: CartridgeAmmo
+    deleteOnSpawn: true  # Fish-edit
     proto: BulletRifleTraceHeavyUranium
   - type: Sprite
     layers:
