@@ -35,7 +35,7 @@ public sealed class FishSkillSystemTests
     [Test]
     public async Task JobBudget_GrantsMinSkillsAndPoints()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var server = pair.Server;
         var entMan = server.EntMan;
         var proto = server.ProtoMan;
