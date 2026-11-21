@@ -14,10 +14,12 @@ public abstract partial class SharedSkillSystem : EntitySystem
     public const int DefaultJobSkillPoints = 14;
 
     /// <summary>
-    /// Пол «обычного человека» для навыков без явного minSkills роли.
-    /// Иначе skillset роняет всё в Unskilled и делает хуже сущностей без skillset (Baseline).
+    /// Старт для навыков без явного minSkills роли.
+    /// Unskilled: иначе роли вроде Passenger/Musician залипают на Baseline=3 и не могут тратить очки
+    /// (потоки maxSkills часто ≤3, GetMaxSkill поднимает их до пола).
+    /// Сущности без Skillset по-прежнему получают Baseline в GetEffectiveSkillValue.
     /// </summary>
-    public const int HumanSkillFloor = SkillLevels.Baseline;
+    public const int HumanSkillFloor = SkillLevels.Unskilled;
 
     private static readonly Dictionary<int, float> _emptySkillTable = new();
 

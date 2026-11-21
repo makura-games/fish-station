@@ -6,7 +6,11 @@
   id: FishPassenger
   job: Passenger
   skillPoints: 8
-  # Без явных minSkills — HumanSkillFloor (Baseline) на все навыки.
+  # Бытовые/повседневные (category: general) — Basic; остальное HumanSkillFloor (Unskilled).
+  # Отдельного Cooking в списке навыков нет.
+  minSkills:
+    FishSkillComputer: 2
+    FishSkillAthletics: 2
   maxSkills:
     FishSkillConstruction: 3
     FishSkillElectrical: 2

@@ -22,11 +22,15 @@ public sealed class FishSkillSystemTests
 {
     private static readonly ProtoId<JobSkillBudgetPrototype> EngineerBudgetId = "FishStationEngineer";
     private static readonly ProtoId<JobSkillBudgetPrototype> ErtSecurityBudgetId = "FishERTSecurity";
+    private static readonly ProtoId<JobSkillBudgetPrototype> PassengerBudgetId = "FishPassenger";
     private static readonly ProtoId<JobPrototype> StationEngineerJob = "StationEngineer";
     private static readonly ProtoId<JobPrototype> ErtSecurityJob = "ERTSecurity";
+    private static readonly ProtoId<JobPrototype> PassengerJob = "Passenger";
     private static readonly ProtoId<SkillPrototype> ConstructionSkill = "FishSkillConstruction";
     private static readonly ProtoId<SkillPrototype> MedicalSkill = "FishSkillMedical";
     private static readonly ProtoId<SkillPrototype> WeaponsSkill = "FishSkillWeapons";
+    private static readonly ProtoId<SkillPrototype> ComputerSkill = "FishSkillComputer";
+    private static readonly ProtoId<SkillPrototype> AthleticsSkill = "FishSkillAthletics";
 
     [Test]
     public async Task JobBudget_GrantsMinSkillsAndPoints()
@@ -66,21 +70,73 @@ public sealed class FishSkillSystemTests
             }
         });
 
+        var previousAttached = pair.Player?.AttachedEntity;
         await server.WaitPost(() =>
         {
             var skills = entMan.System<SkillSystem>();
-            // Эффекты учитывают уровни сразу — Confirm только закрепляет очки.
-            skills.ForceSetSkillLevel(mob, ConstructionSkill, SkillLevels.Master);
+            Assert.That(pair.Player, Is.Not.Null);
+            // Повышение через API распределения: эффект сразу, Locked ещё false.
+            server.PlayerMan.SetAttachedEntity(pair.Player!, mob);
+            var beforePoints = entMan.GetComponent<SkillsetComponent>(mob).RemainingPoints;
+            var beforeLevel = skills.GetSkillValue(mob, ConstructionSkill);
+            skills.TryAdjustLevel(mob, pair.Player!, ConstructionSkill, 1);
+            Assert.That(skills.GetEffectiveSkillValue(mob, ConstructionSkill), Is.EqualTo(beforeLevel + 1));
+            Assert.That(entMan.GetComponent<SkillsetComponent>(mob).RemainingPoints, Is.LessThan(beforePoints));
+            Assert.That(entMan.GetComponent<SkillsetComponent>(mob).Locked, Is.False);
+        });
+
+        await server.WaitPost(() =>
+        {
+            if (pair.Player != null)
+                server.PlayerMan.SetAttachedEntity(pair.Player, previousAttached);
+            entMan.DeleteEntity(mob);
+        });
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task PassengerBudget_HouseholdMinsAndUnskilledFloor()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.EntMan;
+        var proto = server.ProtoMan;
+
+        EntityUid passenger = default;
+        EntityUid musician = default;
+        JobSkillBudgetPrototype? passengerBudget = null;
+
+        await server.WaitPost(() =>
+        {
+            Assert.That(proto.TryIndex(PassengerBudgetId, out passengerBudget), Is.True);
+            var skills = entMan.System<SkillSystem>();
+            passenger = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
+            skills.EnsureSkillset(passenger, PassengerJob);
+            musician = entMan.SpawnEntity("MobHuman", MapCoordinates.Nullspace);
+            skills.EnsureSkillset(musician, "Musician");
         });
 
         await server.WaitAssertion(() =>
         {
-            Assert.That(
-                entMan.System<SkillSystem>().GetEffectiveSkillValue(mob, ConstructionSkill),
-                Is.EqualTo(SkillLevels.Master));
+            var skills = entMan.System<SkillSystem>();
+            Assert.That(entMan.TryGetComponent(passenger, out SkillsetComponent? skillset), Is.True);
+            Assert.That(skillset!.RemainingPoints, Is.EqualTo(passengerBudget!.SkillPoints));
+            Assert.That(skills.GetSkillValue(passenger, ComputerSkill), Is.EqualTo(SkillLevels.Basic));
+            Assert.That(skills.GetSkillValue(passenger, AthleticsSkill), Is.EqualTo(SkillLevels.Basic));
+            Assert.That(skills.GetSkillValue(passenger, ConstructionSkill), Is.EqualTo(SkillLevels.Unskilled));
+            Assert.That(skills.GetSkillValue(passenger, MedicalSkill), Is.EqualTo(SkillLevels.Unskilled));
+            Assert.That(skills.GetMinSkill(PassengerJob, ConstructionSkill), Is.LessThan(skills.GetMaxSkill(PassengerJob, ConstructionSkill)));
+
+            // Роли без minSkills не залипают на Baseline=3.
+            Assert.That(skills.GetSkillValue(musician, ConstructionSkill), Is.EqualTo(SkillLevels.Unskilled));
+            Assert.That(skills.GetMinSkill("Musician", ConstructionSkill), Is.EqualTo(SkillLevels.Unskilled));
         });
 
-        await server.WaitPost(() => entMan.DeleteEntity(mob));
+        await server.WaitPost(() =>
+        {
+            entMan.DeleteEntity(passenger);
+            entMan.DeleteEntity(musician);
+        });
         await pair.CleanReturnAsync();
     }
 
