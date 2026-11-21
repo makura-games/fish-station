@@ -71,10 +71,8 @@ public sealed partial class GridWeldingSystem
     {
         var a = Comp<PhysicsComponent>(first);
         var b = Comp<PhysicsComponent>(second);
-        if (a.BodyType == BodyType.Static)
-            return first;
-        if (b.BodyType == BodyType.Static)
-            return second;
+        if ((a.BodyType == BodyType.Static) != (b.BodyType == BodyType.Static))
+            return a.BodyType == BodyType.Static ? first : second;
 
         var roleA = HasPersistentRole(first);
         var roleB = HasPersistentRole(second);

@@ -139,6 +139,61 @@ public sealed class GridWeldingRegressionTest
         await pair.CleanReturnAsync();
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task HumanWeldsWhileStandingOnSecondGrid(bool keepSecond)
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true, Dirty = true });
+        var server = pair.Server;
+        var entities = server.EntMan;
+        var session = pair.Player!;
+        var previous = session.AttachedEntity;
+        WeldingScene scene = default;
+        NetEntity user = default;
+        NetEntity survivingGrid = default;
+        NetEntity secondGrid = default;
+        await server.WaitPost(() =>
+        {
+            server.CfgMan.SetCVar(Robust.Shared.CVars.NetPVS, true);
+            scene = CreateScene(pair, humanOnSecond: true);
+            if (keepSecond)
+                entities.System<SharedMapSystem>().SetTile(scene.Second,
+                    entities.GetComponent<MapGridComponent>(scene.Second), Vector2i.Right * 2, Plating(pair));
+            server.PlayerMan.SetAttachedEntity(session, scene.User);
+            user = entities.GetNetEntity(scene.User);
+            secondGrid = entities.GetNetEntity(scene.Second);
+            survivingGrid = entities.GetNetEntity(keepSecond ? scene.Second : scene.First);
+        });
+        try
+        {
+            var clientEntities = pair.Client.EntMan;
+            await pair.RunTicksSync(20);
+            await pair.Client.WaitAssertion(() =>
+                Assert.That(clientEntities.GetComponent<TransformComponent>(clientEntities.GetEntity(user)).GridUid,
+                    Is.EqualTo(clientEntities.GetEntity(secondGrid))));
+            await server.WaitAssertion(() =>
+            {
+                AssertReady(scene);
+                Assert.That(StartWelding(entities, scene), Is.True);
+            });
+            await GridWeldingTestHelpers.WaitForWeldingAsync(pair, scene.Welder);
+            await server.WaitAssertion(() => Assert.That(entities.EntityExists(keepSecond ? scene.First : scene.Second), Is.False));
+            await pair.RunTicksSync(20);
+            await pair.Client.WaitAssertion(() =>
+                Assert.That(clientEntities.GetComponent<TransformComponent>(clientEntities.GetEntity(user)).GridUid,
+                    Is.EqualTo(clientEntities.GetEntity(survivingGrid))));
+        }
+        finally
+        {
+            await server.WaitPost(() =>
+            {
+                server.PlayerMan.SetAttachedEntity(session, previous);
+                entities.DeleteEntity(scene.Map);
+            });
+        }
+        await pair.CleanReturnAsync();
+    }
+
     [TestPrototypes]
     private const string Prototypes = """
         - type: entity
@@ -886,7 +941,7 @@ public sealed class GridWeldingRegressionTest
     }
 
     private static WeldingScene CreateScene(TestPair pair, Vector2 origin = default, EntityUid? existingMap = null,
-        bool quarterTurn = false)
+        bool quarterTurn = false, bool humanOnSecond = false)
     {
         var entities = pair.Server.EntMan;
         var maps = entities.System<SharedMapSystem>();
@@ -905,10 +960,13 @@ public sealed class GridWeldingRegressionTest
         physics.SetBodyType(second.Owner, BodyType.Dynamic);
 
         // Пользователь остаётся под гридом, чтобы его тело и инструмент не влияли на массу напольных фикстур.
-        var coordinates = new EntityCoordinates(map, origin + new Vector2(0.5f, -0.5f));
-        var user = entities.SpawnEntity("AdminObserver", coordinates);
+        var coordinates = humanOnSecond
+            ? new EntityCoordinates(second, 1.5f, 0.5f)
+            : new EntityCoordinates(map, origin + new Vector2(0.5f, -0.5f));
+        var user = entities.SpawnEntity(humanOnSecond ? "MobHuman" : "AdminObserver", coordinates);
         var welder = entities.SpawnEntity("FishGridWeldingTestWelder", coordinates);
-        entities.System<AdminGhostSystem>().TrySetInteractionRestricted(user, false);
+        if (!humanOnSecond)
+            entities.System<AdminGhostSystem>().TrySetInteractionRestricted(user, false);
         var pickedUp = entities.System<SharedHandsSystem>().TryPickupAnyHand(user, welder);
         var activated = entities.System<ItemToggleSystem>().TryActivate(welder, user);
         return new WeldingScene(map, first.Owner, second.Owner, user, welder,

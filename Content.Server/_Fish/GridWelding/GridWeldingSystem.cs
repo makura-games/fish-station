@@ -34,7 +34,7 @@ public sealed partial class GridWeldingSystem : EntitySystem
     [Dependency] private PopupSystem _popup = default!;
 
     private const string WeldingQuality = "Welding";
-    private const float WeldingTime = 5f;
+    private const float WeldingTime = 10f;
     private const float WeldingFuel = 2f;
 
     public override void Initialize()
@@ -119,6 +119,16 @@ public sealed partial class GridWeldingSystem : EntitySystem
         if (!CanStartWelding(welder, user, second, secondTile, out var ev, out var delay, out var handled))
             return handled;
 
+        var userAttempt = new ToolUserAttemptUseEvent(null);
+        RaiseLocalEvent(user, ref userAttempt);
+        if (userAttempt.Cancelled)
+            return false;
+
+        var toolAttempt = new ToolUseAttemptEvent(user, WeldingFuel);
+        RaiseLocalEvent(welder, toolAttempt);
+        if (toolAttempt.Cancelled)
+            return false;
+
         StartWelding(welder, user, ev, delay);
         return true;
     }
@@ -140,13 +150,6 @@ public sealed partial class GridWeldingSystem : EntitySystem
             Popup(user, reason);
             return false;
         }
-
-        var userAttempt = new ToolUserAttemptUseEvent(null);
-        RaiseLocalEvent(user, ref userAttempt);
-        var toolAttempt = new ToolUseAttemptEvent(user, WeldingFuel);
-        RaiseLocalEvent(welder, toolAttempt);
-        if (userAttempt.Cancelled || toolAttempt.Cancelled)
-            return false;
 
         var tool = Comp<ToolComponent>(welder);
         if (!float.IsFinite(tool.SpeedModifier) || tool.SpeedModifier <= 0)

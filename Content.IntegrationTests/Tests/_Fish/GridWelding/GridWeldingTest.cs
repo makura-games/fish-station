@@ -29,6 +29,7 @@ public sealed class GridWeldingTest
     /// </summary>
     [TestCase("moving", true)]
     [TestCase("larger-second", true)]
+    [TestCase("larger-static-second", true)]
     [TestCase("quarter-turn", true)]
     [TestCase("lattice-survivor", true)]
     [TestCase("one-tile-gap", true)]
@@ -96,7 +97,7 @@ public sealed class GridWeldingTest
             var secondTile = new Vector2i(1, 0);
             survivor = first;
             consumed = second;
-            if (scenario == "larger-second")
+            if (scenario is "larger-second" or "larger-static-second")
             {
                 maps.SetTile(b, new Vector2i(1, 2), tile);
                 survivor = second;
@@ -165,6 +166,11 @@ public sealed class GridWeldingTest
                 physics.SetBodyType(second, BodyType.Static);
                 physics.SetLinearVelocity(first, Vector2.Zero);
             }
+            if (scenario == "larger-static-second")
+            {
+                physics.SetBodyType(first, BodyType.Static);
+                physics.SetBodyType(second, BodyType.Static);
+            }
             if (scenario == "fast-separation")
                 physics.SetLinearVelocity(second, new Vector2(4, 0));
             if (scenario == "shared-spin")
@@ -221,7 +227,7 @@ public sealed class GridWeldingTest
             {
                 Assert.That(entities.GetComponent<TransformComponent>(item).GridUid, Is.EqualTo(survivor));
                 var body = entities.GetComponent<PhysicsComponent>(survivor);
-                if (scenario is "large-first-rotation-snap" or "large-rotation-snap")
+                if (scenario is "large-first-rotation-snap" or "large-rotation-snap" or "larger-static-second")
                     Assert.That(body.BodyType, Is.EqualTo(BodyType.Static));
                 else
                 {

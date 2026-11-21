@@ -2,9 +2,11 @@ using System.Numerics;
 using Content.IntegrationTests.Tests.Helpers;
 using Content.Server._Fish.GridWelding;
 using Content.Shared.DoAfter;
+using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Item.ItemToggle;
+using Content.Shared.Tools.Components;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -17,13 +19,24 @@ public sealed class GridWeldingInteractionTest
 {
     private sealed class InteractUsingListenerSystem : TestListenerSystem<InteractUsingEvent>;
 
+    private sealed class DenyGridWeldSystem : EntitySystem
+    {
+        public override void Initialize()
+        {
+            SubscribeLocalEvent<TestDenyGridWeldComponent, ToolUserAttemptUseEvent>(
+                (Entity<TestDenyGridWeldComponent> ent, ref ToolUserAttemptUseEvent args) => args.Cancelled = true);
+        }
+    }
+
     /// <summary>
     /// Resolves tile and grid clicks, including overlapping grids, without consuming ordinary item interactions.
     /// </summary>
+    [TestCase("user-denied", false)]
     [TestCase("item-target", false)]
     [TestCase("grid-target", true)]
     [TestCase("overlapping-grids", true)]
     [TestCase("overlapping-world-pick", true)]
+    [TestCase("overlapping-first-target", true)]
     [TestCase("edge-in-reach", true)]
     [TestCase("blocked-edge", false)]
     [TestCase("same-grid-item", false)]
@@ -59,7 +72,7 @@ public sealed class GridWeldingInteractionTest
                 transform.SetWorldPosition(second, new Vector2(1, 0));
                 secondClick = new EntityCoordinates(second, 1.05f, 0.5f);
             }
-            if (scenario is "overlapping-grids" or "overlapping-world-pick")
+            if (scenario is "overlapping-grids" or "overlapping-world-pick" or "overlapping-first-target")
             {
                 transform.SetWorldPosition(second, new Vector2(-0.75f, 0));
                 Assert.That(maps.TryFindGridAt(new MapCoordinates(0.75f, 0.5f, mapId), out var lookup, out _));
@@ -68,7 +81,9 @@ public sealed class GridWeldingInteractionTest
                 firstClick = lookup == first.Owner
                     ? new EntityCoordinates(first, 0.1f, 0.5f)
                     : new EntityCoordinates(second, 1.9f, 0.5f);
-                var secondReference = scenario == "overlapping-world-pick"
+                if (scenario == "overlapping-first-target")
+                    target = lookup;
+                var secondReference = scenario is "overlapping-world-pick" or "overlapping-first-target"
                     ? lookup
                     : lookup == first.Owner ? second.Owner : first.Owner;
                 secondClick = transform.WithEntityId(new EntityCoordinates(map, 0.75f, 0.5f), secondReference);
@@ -94,6 +109,8 @@ public sealed class GridWeldingInteractionTest
             Assert.That(entities.System<ItemToggleSystem>().TryActivate(welder, user));
 
             var interaction = entities.System<SharedInteractionSystem>();
+            if (scenario == "user-denied")
+                entities.AddComponent<TestDenyGridWeldComponent>(user);
             selectedTile = firstClick.Position.Floored();
             if (scenario != "ordinary-item-use")
                 interaction.UserInteraction(user, firstClick, null);
@@ -104,6 +121,8 @@ public sealed class GridWeldingInteractionTest
         {
             var state = entities.GetComponent<GridWeldingComponent>(welder);
             Assert.That(state.DoAfter != null, Is.EqualTo(startsWelding));
+            if (scenario == "user-denied")
+                Assert.That(entities.GetComponent<BlindableComponent>(user).EyeDamage, Is.Zero);
             if (scenario != "ordinary-item-use")
             {
                 Assert.That(state.Grid, Is.EqualTo(selected), "The second click must not replace the first selected grid.");
@@ -234,3 +253,6 @@ public sealed class GridWeldingInteractionTest
         await pair.CleanReturnAsync();
     }
 }
+
+[RegisterComponent]
+public sealed partial class TestDenyGridWeldComponent : Component;

@@ -143,11 +143,13 @@ public sealed partial class ReplaySpectatorSystem
             return;
         }
 
-        if (data.Eye != null && _player.LocalSession.AttachedEntity is {} spectator && TryComp(spectator, out InputMoverComponent? newMover))
+        // Fish-start: регистрируем опорный грид наблюдателя для обработки сварки
+        if (data.Eye != null && _player.LocalSession.AttachedEntity is { } spectator && TryComp(spectator, out InputMoverComponent? newMover))
         {
             _mover.SetRelativeEntity((spectator, newMover), data.Eye.Value.Ent);
             newMover.TargetRelativeRotation = newMover.RelativeRotation = data.Eye.Value.Rot;
         }
+        // Fish-end
     }
 
     private bool TryFindFallbackSpawn(out EntityCoordinates coords)

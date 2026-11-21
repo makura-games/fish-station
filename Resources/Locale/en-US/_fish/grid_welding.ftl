@@ -1,4 +1,4 @@
-fish-grid-welding-selected = First edge selected. Touch the other part's edge with the welder. Unequip the welder to clear the selection.
+fish-grid-welding-selected = First edge selected. Select an exposed edge on the other part, such as lattice made from rods. Unequip the welder to clear the selection.
 fish-grid-welding-started = Both edges selected. Welding in progress.
 fish-grid-welding-same-grid = These tiles already belong to the same structure. Select another grid's edge.
 fish-grid-welding-cleared = Edge selection cleared.
@@ -15,3 +15,4 @@ fish-grid-welding-protected = These structures are protected from this connectio
 fish-grid-welding-interrupted = Welding interrupted. Check the parts' alignment and click the second tile again.
 fish-grid-welding-complete = The parts have been welded into one structure.
 fish-grid-welding-too-large = This fragment is too large to weld in one piece.
+guide-entry-fish-grid-welding = Grid welding

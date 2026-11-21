@@ -95,7 +95,7 @@ public sealed partial class GridWeldingSystem
     private bool TryGetClickedGrid(EntityCoordinates location, EntityUid? target, EntityUid? selected,
         out Entity<MapGridComponent> grid)
     {
-        if (target is { } entity && TryGetSolidGrid(_transform.GetGrid(entity), location, out grid))
+        if (target is { } entity && entity != selected && TryGetSolidGrid(_transform.GetGrid(entity), location, out grid))
             return true;
 
         var hasReference = TryGetSolidGrid(location.EntityId, location, out grid);

@@ -1,4 +1,4 @@
-fish-grid-welding-selected = Первый край выбран. Коснитесь сваркой края другой части. Для сброса уберите сварку из руки.
+fish-grid-welding-selected = Первый край выбран. Выберите свободный край другой части, например решётку из прутьев. Для сброса уберите сварку из руки.
 fish-grid-welding-started = Оба края выбраны. Идёт сварка.
 fish-grid-welding-same-grid = Эти тайлы уже принадлежат одной конструкции. Выберите край другого грида.
 fish-grid-welding-cleared = Выбор края сброшен.
@@ -15,3 +15,4 @@ fish-grid-welding-protected = Эти конструкции защищены о�
 fish-grid-welding-interrupted = Сварка прервана. Проверьте положение частей и повторите второй клик.
 fish-grid-welding-complete = Части сварены в одну конструкцию.
 fish-grid-welding-too-large = Обломок слишком большой, чтобы приварить его целиком.
+guide-entry-fish-grid-welding = Сварка гридов
