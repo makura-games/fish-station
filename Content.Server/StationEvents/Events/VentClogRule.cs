@@ -30,8 +30,14 @@ public sealed partial class VentClogRule : StationEventSystem<VentClogRuleCompon
             .Where(x => !x.Abstract)
             .Select(x => new ProtoId<ReagentPrototype>(x.ID)).ToList();
 
-        foreach (var (_, transform) in EntityQuery<GasVentPumpComponent, TransformComponent>())
+        var vents = EntityQueryEnumerator<GasVentPumpComponent, TransformComponent>(); // Fish-edit: перечислитель даёт UID вентиля.
+        while (vents.MoveNext(out var ventUid, out _, out var transform)) // Fish-edit: UID нужен для проверки карты ЦК.
         {
+            // Fish-start: не выбираем вентиляцию ЦК.
+            if (IsOnCentcomm(ventUid))
+                continue;
+            // Fish-end
+
             if (CompOrNull<StationMemberComponent>(transform.GridUid)?.Station != chosenStation)
             {
                 continue;

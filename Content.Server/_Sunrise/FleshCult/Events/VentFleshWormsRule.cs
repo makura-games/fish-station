@@ -17,7 +17,11 @@ public sealed partial class VentFleshWormsRule : StationEventSystem<VentFleshWor
     {
         base.Started(uid, component, gameRule, args);
 
-        var targetStation = _stationSystem.GetStations().FirstOrNull();
+        // Fish-start: выбираем только обычную станцию, не карту ЦК.
+        var targetStation = _stationSystem.GetStations()
+            .Where(station => !IsOnCentcomm(station)) // Fish-edit: исключаем ЦК из выбора станции.
+            .FirstOrNull();
+        // Fish-end
 
         if (!TryComp(targetStation, out StationDataComponent? data))
         {
@@ -28,9 +32,12 @@ public sealed partial class VentFleshWormsRule : StationEventSystem<VentFleshWor
         var spawnLocations = EntityQuery<VentCritterSpawnLocationComponent, TransformComponent>().ToList();
 
         var grids = data.Grids.ToHashSet();
+        // Fish-start: исключаем точки спавна ЦК и гриды вне выбранной станции.
         spawnLocations.RemoveAll(
             backupSpawnLoc =>
-                backupSpawnLoc.Item2.GridUid.HasValue && !grids.Contains(backupSpawnLoc.Item2.GridUid.Value));
+                IsOnCentcomm(backupSpawnLoc.Item1.Owner) // Fish-edit: исключаем точки спавна на ЦК.
+                || backupSpawnLoc.Item2.GridUid.HasValue && !grids.Contains(backupSpawnLoc.Item2.GridUid.Value));
+        // Fish-end
 
         RobustRandom.Shuffle(spawnLocations);
 
