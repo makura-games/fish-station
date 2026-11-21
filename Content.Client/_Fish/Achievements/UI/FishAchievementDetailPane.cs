@@ -15,7 +15,7 @@ public sealed class FishAchievementDetailPane : PanelContainer
 
     private readonly Label _title;
     private readonly Label _status;
-    private readonly Label _description;
+    private readonly RichTextLabel _description;
     private readonly ProgressBar _progress;
     private readonly Label _progressLabel;
     private readonly Label _placeholder;
@@ -67,9 +67,10 @@ public sealed class FishAchievementDetailPane : PanelContainer
             HorizontalAlignment = HAlignment.Center,
         };
 
-        _description = new Label
+        _description = new RichTextLabel
         {
             HorizontalExpand = true,
+            MaxWidth = 420,
         };
 
         _progress = new ProgressBar
@@ -118,13 +119,13 @@ public sealed class FishAchievementDetailPane : PanelContainer
 
         if (proto.Secret && !unlocked)
         {
-            _description.Text = Loc.GetString(proto.SecretDescription ?? "fish-achievements-secret-placeholder");
+            _description.SetMessage(Loc.GetString(proto.SecretDescription ?? "fish-achievements-secret-placeholder"));
             _status.Text = Loc.GetString("fish-achievements-status-secret");
             _status.FontColorOverride = StyleNano.ConcerningOrangeFore;
         }
         else
         {
-            _description.Text = Loc.GetString(proto.Description);
+            _description.SetMessage(Loc.GetString(proto.Description));
             _status.Text = unlocked
                 ? Loc.GetString("fish-achievements-status-unlocked")
                 : Loc.GetString("fish-achievements-status-locked");
