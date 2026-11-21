@@ -595,6 +595,7 @@
   threatCost: 200
   minStationStrength: 25
   maxStress: 85
+  weightModifier: 1.0 # Fish-edit: нормализован итоговый вес до 10.0
 
 - type: storytellerMetadata
   id: BloodCult
