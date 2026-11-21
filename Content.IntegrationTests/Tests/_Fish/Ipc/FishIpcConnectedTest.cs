@@ -116,6 +116,10 @@ public sealed class FishIpcConnectedTest : FishIpcGameTest
         EntityUid ertMed = default;
         EntityUid nukeOp = default;
         EntityUid nukeMed = default;
+        var ertEject = true;
+        var nukeEject = true;
+        EntityUid? ertCell = null;
+        EntityUid? nukeCell = null;
 
         await Server.WaitPost(() =>
         {
@@ -128,6 +132,15 @@ public sealed class FishIpcConnectedTest : FishIpcGameTest
             modules.TryGrantForRole(ertMed, "ERTMedical");
             modules.TryGrantForRole(nukeOp, "NukeopsOperative");
             modules.TryGrantForRole(nukeMed, "NukeopsMedic");
+
+            // Печать проверяем при открытой панели: иначе TryEject=false из-за замка/панели.
+            OpenChassisPanel(ertSec);
+            OpenChassisPanel(nukeOp);
+            ertCell = GetCellUid(ertSec);
+            nukeCell = GetCellUid(nukeOp);
+            var slots = Server.System<ItemSlotsSystem>();
+            ertEject = slots.TryEject(ertSec, SComp<PowerCellSlotComponent>(ertSec).CellSlotId, null, out _);
+            nukeEject = slots.TryEject(nukeOp, SComp<PowerCellSlotComponent>(nukeOp).CellSlotId, null, out _);
         });
 
         await Server.WaitAssertion(() =>
@@ -138,22 +151,37 @@ public sealed class FishIpcConnectedTest : FishIpcGameTest
                 AssertHasModules(ertMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
                 AssertHasModules(nukeOp, "FishIpcModuleEmpScreen", "FishIpcModuleNightVision", "FishIpcModuleNanoRepair");
                 AssertHasModules(nukeMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
-                AssertSealedSyndicateCell(ertSec);
-                AssertSealedSyndicateCell(nukeOp);
+                AssertSealedSyndicateCell(ertSec, ertCell, ertEject);
+                AssertSealedSyndicateCell(nukeOp, nukeCell, nukeEject);
             });
         });
     }
 
-    private void AssertSealedSyndicateCell(EntityUid ipc)
+    private void OpenChassisPanel(EntityUid ipc)
+    {
+        Server.System<LockSystem>().Unlock(ipc, ipc);
+        var panel = SComp<WiresPanelComponent>(ipc);
+        Assert.That(Server.System<SharedWiresSystem>().TogglePanel(ipc, panel, true), Is.True);
+    }
+
+    private EntityUid? GetCellUid(EntityUid ipc)
+    {
+        var slots = Server.System<ItemSlotsSystem>();
+        Assert.That(slots.TryGetSlot(ipc, SComp<PowerCellSlotComponent>(ipc).CellSlotId, out var slot), Is.True);
+        return slot!.Item;
+    }
+
+    private void AssertSealedSyndicateCell(EntityUid ipc, EntityUid? expectedCell, bool ejectSucceeded)
     {
         Assert.That(SEntMan.HasComponent<FishIpcSealedBatteryComponent>(ipc), Is.True);
+        Assert.That(ejectSucceeded, Is.False);
         var slots = Server.System<ItemSlotsSystem>();
         var cellSlot = SComp<PowerCellSlotComponent>(ipc);
         Assert.That(slots.TryGetSlot(ipc, cellSlot.CellSlotId, out var slot), Is.True);
-        Assert.That(slot!.Item, Is.Not.Null);
-        Assert.That(SEntMan.GetComponent<MetaDataComponent>(slot.Item!.Value).EntityPrototype?.ID,
+        Assert.That(slot!.Item, Is.EqualTo(expectedCell));
+        Assert.That(expectedCell, Is.Not.Null);
+        Assert.That(SEntMan.GetComponent<MetaDataComponent>(expectedCell!.Value).EntityPrototype?.ID,
             Is.EqualTo("PowerCellSyndicate"));
-        Assert.That(slots.TryEject(ipc, cellSlot.CellSlotId, null, out _), Is.False);
     }
 
     private void AssertHasModules(EntityUid ipc, params string[] expected)
