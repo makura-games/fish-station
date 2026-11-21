@@ -14,7 +14,8 @@
   - type: Eye
     pvsScale: 1.5
   - type: Visibility
-    layer: 2
+    # Normal: слой 2 — только призраки, оператор тогда не получает глаз по PVS.
+    layer: 1
   - type: Sprite
     sprite: Mobs/Silicon/station_ai.rsi
     layers:
