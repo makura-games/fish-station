@@ -43,7 +43,7 @@ public sealed partial class RCDSystem : EntitySystem
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TagSystem _tags = default!;
-    // _skills — в Content.Shared/_Fish/RCD/RCDSystem.Fish.cs
+    // Fish-edit: _skills — в Content.Shared/_Fish/RCD/RCDSystem.Fish.cs
 
     private readonly int _instantConstructionDelay = 0;
     private readonly EntProtoId _instantConstructionFx = "EffectRCDConstruct0";

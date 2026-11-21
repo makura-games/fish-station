@@ -38,7 +38,7 @@ public sealed partial class HealingSystem : EntitySystem
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private TagSystem _tag = default!; // Fish-edit: катушка не лечит мех. урон КПБ
-    // _skills — в Content.Shared/_Fish/Medical/HealingSystem.Fish.cs
+    // Fish-edit: _skills — в Content.Shared/_Fish/Medical/HealingSystem.Fish.cs
 
     public override void Initialize()
     {
