@@ -22,8 +22,8 @@ jobs:
 
       - name: Save PR metadata
         run: |
-          echo "${{ github.event.pull_request.title }}" > pr_title.txt
-          echo "${{ github.event.pull_request.body }}" > pr_body.txt
+          jq -r '.pull_request.title' "$GITHUB_EVENT_PATH" > pr_title.txt
+          jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH" > pr_body.txt
 
       - name: Setup Python
         uses: actions/setup-python@v4
