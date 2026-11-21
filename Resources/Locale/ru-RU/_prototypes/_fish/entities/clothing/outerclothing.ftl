@@ -21,3 +21,7 @@ ent-FishClothingOuterHardsuitCentcomBlack = скафандр C-115M
 ent-FishClothingOuterCoatSpecOps = бронированная шинель
     .desc = Шинель, сотканная специально под Офицера, из качественной тёмной ткани со скрытой защитой из карбонита кремния. На правом нагрудном кармане изображена величественная эмблема NanoTrasen. Такую шинель носят только достойные.
     .suffix = Fish
+
+ent-FishClothingOuterHardsuitCBURN = { ent-ClothingOuterHardsuitCBURN }
+    .desc = { ent-ClothingOuterHardsuitCBURN.desc }
+    .suffix = Fish

@@ -1,0 +1,7 @@
+- type: factionIcon
+  id: FishNanoTrasenFaction
+  priority: 0
+  locationPreference: Left
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: Nanotrasen

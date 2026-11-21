@@ -46,7 +46,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBrown
     back: ClothingBackpackDuffelCBURN
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesGlassesSecurity
+    eyes: FishClothingEyesHudErt  # Fish-edit
     ears: ClothingHeadsetAltERT
     outerClothing: ClothingOuterSoftsuitCBURN
     shoes: ClothingShoesBootsCombatFilled
@@ -78,7 +78,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBrown
     back: ClothingBackpackDuffelCBURN
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesGlassesSecurity
+    eyes: FishClothingEyesHudErtMedic  # Fish-edit
     ears: ClothingHeadsetAltERT
     outerClothing: ClothingOuterHardsuitCBURNLeader
     shoes: ClothingShoesBootsCombatFilled

@@ -89,7 +89,7 @@
       footstepSoundCollection:
         collection: FootstepThud
         params:
-          volume: -6
+          volume: -3  # Fish-edit
 ## ERT Leader
 
 - type: entity
@@ -837,7 +837,7 @@
   - Kitsune # Fish-edit
   components:
     - type: Loadout
-      prototypes: [CBURNGear]
+      prototypes: [FishCBURNGear]  # Fish-edit
       roleLoadout: [ RoleSurvivalEVA ]
     - type: GhostRole
       name: ghost-role-information-cburn-agent-name

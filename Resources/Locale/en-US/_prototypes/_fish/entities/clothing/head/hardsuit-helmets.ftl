@@ -9,3 +9,7 @@ ent-ClothingHeadHelmetHardsuitDeathsquadFish = { ent-ClothingHeadHelmetHardsuitD
 ent-FishClothingHeadHelmetHardsuitCentcomBlack = field hardsuit helmet
     .desc = Designed for an elite special operations officer.
     .suffix = Fish
+
+ent-FishClothingHeadHelmetCBURN = { ent-ClothingHeadHelmetCBURN }
+    .desc = { ent-ClothingHeadHelmetCBURN.desc }
+    .suffix = Fish

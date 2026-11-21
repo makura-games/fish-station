@@ -1,3 +1,3 @@
-ent-RandomHumanoidSpawnerCBURNLeader = CBURN Leader
-    .suffix = ERT Role, Leader
+ent-FishRandomHumanoidSpawnerCBURNLeader = CBURN Leader
+    .suffix = Fish, ERT Role
     .desc = { ent-SpawnPointJobBase.desc }

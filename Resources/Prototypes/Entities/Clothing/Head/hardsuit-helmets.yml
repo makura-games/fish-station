@@ -596,7 +596,12 @@
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
   - type: Sprite
-    sprite: Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
   - type: PointLight
     color: cyan # Sunrise-Edit - сохраняем цвет фонаря шлема.
   - type: Armor
@@ -616,7 +621,12 @@
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
   - type: Sprite
-    sprite: Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
   - type: PointLight
     color: "#ffffff"
   - type: FlashImmunity # Sunrise-Edit - сохраняем защиту от вспышек.
@@ -629,7 +639,12 @@
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
   - type: Sprite
-    sprite: Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
   - type: PointLight
     color: cyan # Sunrise-Edit - сохраняем цвет фонаря шлема.
   - type: FireProtection
@@ -654,7 +669,12 @@
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
   - type: Sprite
-    sprite: Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
   - type: PointLight
     color: "#adffec"
   - type: FlashImmunity # Sunrise-Edit - сохраняем защиту от вспышек.
@@ -667,7 +687,12 @@
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
   - type: Sprite
-    sprite: Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
   - type: PointLight
     color: cyan # Sunrise-Edit - сохраняем цвет фонаря шлема.
   - type: Armor
@@ -689,14 +714,19 @@
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
   - type: Sprite
-    sprite: Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
   - type: PointLight
     color: "#cbadff"
   - type: FlashImmunity # Sunrise-Edit - сохраняем защиту от вспышек.
 
 #CBURN Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ] # Fish-edit - ПНВ для костюма ОБР-химзащиты.
+  parent: [ BaseCentcommContraband, ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
   id: ClothingHeadHelmetCBURN
   name: CBURN exosuit helmet
   description: A pressure resistant and fireproof hood worn by special cleanup units.
@@ -727,7 +757,12 @@
   components:
   - type: BreathMask
   - type: Sprite
-    sprite: Clothing/Head/Hardsuits/deathsquad.rsi
+    sprite: _Fish/Clothing/Head/Hardsuits/deathsquad.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/deathsquad.rsi
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
     # Sunrise edit start - сохраняем фонарь старого спрайта.
     layers:
     - state: icon

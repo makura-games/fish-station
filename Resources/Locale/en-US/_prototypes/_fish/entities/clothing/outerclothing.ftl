@@ -21,3 +21,7 @@ ent-FishClothingOuterHardsuitCentcomBlack = C-115M field hardsuit
 ent-FishClothingOuterCoatSpecOps = armored greatcoat
     .desc = An overcoat woven specifically for an Officer, with high-quality dark fabric concealing silicon carbonite protection. The right chest pocket features the majestic NanoTrasen emblem. Only the worthy wear such an overcoat.
     .suffix = Fish
+
+ent-FishClothingOuterHardsuitCBURN = { ent-ClothingOuterHardsuitCBURN }
+    .desc = { ent-ClothingOuterHardsuitCBURN.desc }
+    .suffix = Fish
