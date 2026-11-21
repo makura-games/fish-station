@@ -1,0 +1,221 @@
+- type: entity
+  id: FishNetrunnerImplant
+  parent: [BaseSubdermalImplant, BaseSyndicateContraband]
+  name: netrunner implant
+  description: A compact neural interface with a miniature cooling assembly.
+  suffix: Fish
+  components:
+  - type: SubdermalImplant
+    implantAction: FishActionNetrunnerTerminal
+    whitelist:
+      components:
+      - MobState
+  - type: NetrunnerImplant
+    abilities:
+    - FishNetrunnerOpenAirlock
+    - FishNetrunnerDisableCamera
+    - FishNetrunnerDisableLight
+    - FishNetrunnerDisableSensors
+    - FishNetrunnerDisableHeadset
+    - FishNetrunnerNeuralOverload
+    - FishNetrunnerShortCircuit
+    - FishNetrunnerMotorInterference
+    - FishNetrunnerOpticalGlitch
+    - FishNetrunnerLockWeapon
+    - FishNetrunnerGripShock
+    - FishNetrunnerNeuralStatic
+    - FishNetrunnerThermalSurge
+    - FishNetrunnerBatteryDrain
+    - FishNetrunnerLockAirlock
+    - FishNetrunnerEraseTrace
+  - type: UserInterface
+    interfaces:
+      enum.NetrunnerUiKey.Terminal:
+        type: NetrunnerBoundUserInterface
+      enum.NetrunnerUiKey.Shop:
+        type: NetrunnerShopBoundUserInterface
+
+- type: entity
+  id: FishNetrunnerImplanter
+  parent: BaseImplantOnlyImplanterSyndi
+  name: netrunner implanter
+  description: A disposable syringe containing a neural interface.
+  suffix: Fish
+  components:
+  - type: Implanter
+    implant: FishNetrunnerImplant
+
+- type: entity
+  id: FishNetrunnerImplantDebug
+  parent: FishNetrunnerImplant
+  name: debug netrunner implant
+  description: A demonstration neural terminal with unrestricted software access.
+  suffix: Fish
+  categories: [DoNotMap]
+  components:
+  - type: NetrunnerImplant
+    debugMode: true
+
+- type: entity
+  id: FishNetrunnerImplanterDebug
+  parent: BaseImplantOnlyImplanterSyndi
+  name: debug netrunner implanter
+  description: An administrative demonstration syringe containing a neural terminal.
+  suffix: Fish
+  categories: [DoNotMap]
+  components:
+  - type: Implanter
+    implant: FishNetrunnerImplantDebug
+
+- type: entity
+  id: FishNetrunnerKit
+  parent: [BoxCardboard, BaseSyndicateContraband]
+  name: netrunner kit
+  description: A neural interface and a circuit board packed in protective foam.
+  suffix: Fish
+  components:
+  - type: StorageFill
+    contents:
+    - id: FishNetrunnerImplanter
+    - id: FishNetrunnerChairCircuitboard
+    - id: FishNetrunnerManual
+
+- type: entity
+  id: FishClothingOuterCyberpunkJacket
+  parent: ClothingOuterJacketBase
+  name: cyberpunk jacket
+  description: The jacket of a legendary cyberpsycho.
+  suffix: Fish
+  components:
+  # Fish-edit: Временная заглушка; готовый спрайт куртки заменяется в Sprite и Clothing.
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Coats/jensencoat.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Coats/jensencoat.rsi
+
+- type: entity
+  id: FishClothingEyesNetrunnerVisor
+  parent: [ClothingEyesGlassesJensen, BaseSyndicateContraband]
+  name: netrunner visor
+  description: A neural accelerator behind tinted lenses. Its frame grows warm against the skin.
+  suffix: Fish
+  components:
+  - type: NetrunnerVisor
+  - type: ShowMindShieldIcons
+
+- type: entity
+  id: FishNetrunnerManual
+  parent: Paper
+  name: neural terminal manual
+  description: An instruction sheet bearing the Cybersun Industries LLC logo.
+  suffix: Fish
+  components:
+  - type: Paper
+    content: fish-netrunner-manual-content
+    contentSize: 12000
+
+- type: entity
+  id: FishNetrunnerRemoteEye
+  name: neural camera viewer
+  description: A mobile viewer for a neural interface.
+  suffix: Fish
+  categories: [HideSpawnMenu, DoNotMap]
+  save: false
+  components:
+  - type: NetrunnerRemoteEye
+  - type: Eye
+    drawFov: false
+    pvsScale: 1
+  - type: InputMover
+  - type: MovementSpeedModifier
+    baseSprintSpeed: 12
+    baseWalkSpeed: 8
+  - type: MovementIgnoreGravity
+  - type: CanMoveInAir
+  - type: Physics
+    bodyType: KinematicController
+    bodyStatus: InAir
+  - type: Fixtures
+    fixtures:
+      viewer:
+        shape: !type:PhysShapeCircle
+          radius: 0.35
+        density: 15
+        hard: false
+        layer:
+        - GhostImpassable
+
+- type: entity
+  id: FishNetrunnerChairCircuitboard
+  parent: [BaseMachineCircuitboard, BaseSyndicateContraband]
+  name: netrunner chair board
+  description: A machine circuit board with an unusually large neural interface connector.
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: medical
+  - type: MachineBoard
+    prototype: FishNetrunnerChair
+    stackRequirements:
+      Manipulator: 2
+      Cable: 5
+      Steel: 5
+
+- type: entity
+  id: FishNetrunnerChair
+  parent: [BaseMachinePowered, ConstructibleMachine, BaseConstructibleMachineDestructible, BaseSyndicateContraband]
+  name: netrunner chair
+  description: A reclining terminal with a neural interface and a cooling unit.
+  suffix: Fish
+  components:
+  - type: NetrunnerChair
+  - type: Sprite
+    sprite: Structures/Machines/stasis_bed.rsi
+    noRot: true
+    drawdepth: HighFloorObjects
+    layers:
+    - state: icon
+    - state: unlit
+      shader: unshaded
+      map: ["unlit"]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        unlit:
+          True: { visible: true }
+          False: { visible: false }
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: ExtensionCableReceiver
+  - type: Strap
+    position: Down
+    rotation: -90
+    buckleOffsets:
+    - "0,-0.15"
+    size: 100
+  - type: Machine
+    board: FishNetrunnerChairCircuitboard
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.05"
+        density: 190
+        mask:
+        - LowImpassable
+  - type: PowerSwitch
+
+- type: listing
+  id: FishUplinkNetrunnerKit
+  name: fish-netrunner-uplink-name
+  description: fish-netrunner-uplink-description
+  productEntity: FishNetrunnerKit
+  productEvent: !type:NetrunnerKitPurchasedEvent
+  raiseProductEventOnUser: true
+  cost:
+    Telecrystal: 15
+  categories:
+  - UplinkImplants

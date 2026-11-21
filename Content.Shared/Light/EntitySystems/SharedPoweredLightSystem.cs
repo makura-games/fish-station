@@ -285,10 +285,14 @@ public abstract partial class SharedPoweredLightSystem : EntitySystem
             return;
         }
 
+        // Fish-start
+        var enabledEvent = new GetPoweredLightEnabledEvent(light.On);
+        RaiseLocalEvent(uid, ref enabledEvent);
+        // Fish-end
         switch (lightBulb.State)
         {
             case LightBulbState.Normal:
-                if (powerReceiver.Powered && light.On)
+                if (powerReceiver.Powered && enabledEvent.Enabled) // Fish-edit
                 {
                     SetLight(uid, true, lightBulb.Color, light, lightBulb.LightRadius, lightBulb.LightEnergy, lightBulb.LightSoftness);
                     _appearance.SetData(uid, PoweredLightVisuals.BulbState, PoweredLightState.On, appearance);
@@ -316,7 +320,7 @@ public abstract partial class SharedPoweredLightSystem : EntitySystem
                 break;
         }
 
-        powerReceiver.Load = (light.On && lightBulb.State == LightBulbState.Normal) ? lightBulb.PowerUse : 0;
+        powerReceiver.Load = (enabledEvent.Enabled && lightBulb.State == LightBulbState.Normal) ? lightBulb.PowerUse : 0; // Fish-edit
     }
 
     /// <summary>
