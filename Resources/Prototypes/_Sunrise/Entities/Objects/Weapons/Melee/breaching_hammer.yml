@@ -71,8 +71,10 @@
   - type: IncreaseDamageOnWield
     damage:
       types:
-        Blunt: 15
+  # Fish-Start
+        Blunt: 20
         Structural: 130
+  # Fish-End
   - type: Tool
     qualities:
       - Prying
