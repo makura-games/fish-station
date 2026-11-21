@@ -3,7 +3,10 @@ using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Interaction.Components;
+using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Silicons.Borgs;
 using Content.Shared.Verbs;
 
 namespace Content.Shared._Fish.Hands;
@@ -17,6 +20,7 @@ public sealed partial class HandOfferSystem : EntitySystem
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedChatSystem _chat = default!;
+    [Dependency] private SharedBorgSystem _borg = default!;
 
     /// <summary>
     ///     Приоритет действий передачи: выше остальных Alt-действий, чтобы Alt + ЛКМ запускал именно передачу.
@@ -80,7 +84,26 @@ public sealed partial class HandOfferSystem : EntitySystem
     /// </summary>
     public bool CanOffer(EntityUid user, EntityUid target, EntityUid item)
     {
-        return _hands.IsHolding(user, item) && !_mobState.IsIncapacitated(target);
+        // Отдающая сторона: предмет должен обычным образом отпускаться из руки.
+        return !_mobState.IsIncapacitated(target) && CanHandOff(user, item);
+    }
+
+    /// <summary>
+    ///     Предмет можно передать, только если держатель мог бы выбросить его из руки.
+    ///     Виртуальные предметы, неудаляемые и содержимое модулей борга не передаются:
+    ///     <see cref="SharedHandsSystem.TryDrop"/> для виртуального предмета возвращает успех,
+    ///     удаляя его, а руки модуля с whitelist не помечают вещь как <see cref="UnremoveableComponent"/>.
+    /// </summary>
+    public bool CanHandOff(EntityUid holder, EntityUid item)
+    {
+        if (HasComp<VirtualItemComponent>(item) || HasComp<UnremoveableComponent>(item))
+            return false;
+
+        if (_borg.IsBorgModuleContent(holder, item))
+            return false;
+
+        // Общий запрет дропа: контейнер руки, CanDropHeld и блокер действия.
+        return _hands.CanDrop(holder, item);
     }
 
     /// <summary>
@@ -120,9 +143,11 @@ public sealed partial class HandOfferSystem : EntitySystem
     {
         item = default;
 
+        // Принимающая сторона повторяет ту же проверку: предложение могло устареть,
+        // если предмет стал виртуальным, неудаляемым или содержимым модуля.
         if (!TryComp<HandOfferComponent>(giver, out var offer) ||
             offer.Target != user ||
-            !_hands.IsHolding(giver, offer.Item) ||
+            !CanHandOff(giver, offer.Item) ||
             !_hands.CanPickupAnyHand(user, offer.Item))
             return false;
 
@@ -144,7 +169,10 @@ public sealed partial class HandOfferSystem : EntitySystem
     /// </summary>
     public bool DoTake(EntityUid user, EntityUid giver, EntityUid item)
     {
-        // Отдающий должен иметь право выпустить предмет из рук.
+        // Повтор проверки на самом переносе: TryDrop виртуального предмета удаляет его и всё равно возвращает true.
+        if (!CanHandOff(giver, item))
+            return false;
+
         if (!_hands.TryDrop(giver, item, doDropInteraction: false))
             return false;
 
