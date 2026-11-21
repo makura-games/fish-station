@@ -13,3 +13,22 @@
       whitelist:
         tags:
           - CBURN
+
+# region Ближний бой
+- type: listing
+  id: FishERTUplinkHammer
+  productEntity: FishERTHammer
+  icon: { sprite: _Fish/Objects/Weapons/Melee/fish_ert_hammer.rsi, state: icon }
+  cost:
+    Bluecrystal: 16
+  categories:
+    - FishNTMelee
+
+- type: listing
+  id: FishERTUplinkSword
+  productEntity: FishERTSword
+  icon: { sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi, state: icon }
+  cost:
+    Bluecrystal: 16
+  categories:
+    - FishNTMelee

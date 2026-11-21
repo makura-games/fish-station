@@ -13,3 +13,7 @@
   name: store-category-blueshield-pistols
   priority: 2
 
+- type: storeCategory
+  id: FishNTMelee
+  name: store-category-fish-melee
+  priority: 3

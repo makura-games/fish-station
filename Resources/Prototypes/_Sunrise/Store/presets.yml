@@ -8,6 +8,9 @@
     - NTAutoGun
     - NTLasers
     - NTPistols
+    # Fish-start: Секция ближнего боя для аплинков ОБР
+    - FishNTMelee
+    # Fish-end
     - NTAmmo
     - NTMedicine
     - NTAdditional

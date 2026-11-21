@@ -1,0 +1,54 @@
+- type: entity
+  name: ert assault hammer
+  parent: BaseItem
+  id: FishERTHammer
+  suffix: FISH
+  description: An assault hammer utilized by Nanotrasen emergency response teams.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Weapons/Melee/fish_ert_hammer.rsi
+    state: icon
+  - type: Item
+    size: Ginormous
+  - type: MeleeWeapon
+    wideAnimationRotation: -120
+    attackRate: 0.8
+    range: 2
+    damage:
+      types:
+        Blunt: 10
+        Structural: 50
+    soundHit:
+      collection: MetalThud
+    bluntStaminaDamageFactor: 1.5
+  - type: Wieldable
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Blunt: 35
+        Structural: 150
+
+  - type: UseDelay
+    delay: 5
+  - type: UseDelayOnMeleeHit
+  - type: MeleeThrowOnHit
+    distance: 4
+    speed: 6
+    stunTime: 0.5
+  - type: Tool
+    qualities:
+      - Prying
+    useSound: /Audio/Items/jaws_pry.ogg
+  - type: Prying
+    speedModifier: 4.0
+    pryPowered: true
+    useSound: /Audio/Items/jaws_pry.ogg
+  - type: Clothing
+    sprite: _Fish/Objects/Weapons/Melee/fish_ert_hammer.rsi
+    quickEquip: false
+    slots:
+    - back
+    - suitStorage
+  - type: HeldSpeedModifier
+    walkModifier: 0.8
+    sprintModifier: 0.8
