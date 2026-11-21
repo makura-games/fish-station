@@ -595,7 +595,6 @@
   threatCost: 200
   minStationStrength: 25
   maxStress: 85
-  weightModifier: 0.7
 
 - type: storytellerMetadata
   id: BloodCult
