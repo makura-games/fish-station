@@ -38,10 +38,8 @@ public sealed class SkillEui : BaseEui
         if (state is not SkillEuiState skillState)
             return;
 
+        // Не OpenCentered здесь: Opened() уже открывает окно.
+        // Повторный open после локального CloseEuiMessage снова вытаскивал окно.
         _window.UpdateState(skillState);
-
-        // Если окно уже открыто до прихода state — гарантируем видимость после наполнения.
-        if (!_window.IsOpen)
-            _window.OpenCentered();
     }
 }

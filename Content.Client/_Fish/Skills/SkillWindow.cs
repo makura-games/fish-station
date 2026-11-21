@@ -42,6 +42,9 @@ public sealed class SkillWindow : DefaultWindow
     private SkillConfirmDialog? _confirmDialog;
     private int _remainingPoints;
     private int _totalPoints;
+    private readonly Dictionary<string, int> _confirmSnapshotLevels = new();
+    private int _confirmSnapshotRemaining = -1;
+    private int _confirmSnapshotTotal = -1;
 
     public SkillWindow()
     {
@@ -260,7 +263,7 @@ public sealed class SkillWindow : DefaultWindow
         _confirm.Disabled = state.Locked;
         _reset.Disabled = state.Locked;
 
-        if (state.Locked)
+        if (state.Locked || ConfirmDialogStale(state))
             CloseConfirmDialog();
 
         _skillsList.RemoveAllChildren();
@@ -464,11 +467,18 @@ public sealed class SkillWindow : DefaultWindow
         CloseConfirmDialog();
         var dialog = new SkillConfirmDialog();
         _confirmDialog = dialog;
+        _confirmSnapshotRemaining = _remainingPoints;
+        _confirmSnapshotTotal = _totalPoints;
+        _confirmSnapshotLevels.Clear();
+        foreach (var (id, level) in _levels)
+            _confirmSnapshotLevels[id] = level;
+
         dialog.OnAccepted += () => OnConfirm?.Invoke();
         dialog.OnClose += () =>
         {
             if (ReferenceEquals(_confirmDialog, dialog))
                 _confirmDialog = null;
+            ClearConfirmSnapshot();
         };
         dialog.OpenFor(_remainingPoints, _totalPoints);
     }
@@ -477,6 +487,37 @@ public sealed class SkillWindow : DefaultWindow
     {
         _confirmDialog?.Close();
         _confirmDialog = null;
+        ClearConfirmSnapshot();
+    }
+
+    private void ClearConfirmSnapshot()
+    {
+        _confirmSnapshotLevels.Clear();
+        _confirmSnapshotRemaining = -1;
+        _confirmSnapshotTotal = -1;
+    }
+
+    /// <summary>
+    /// Диалог держит снимок очков/уровней; если сервер уже сдвинул распределение — закрыть.
+    /// </summary>
+    private bool ConfirmDialogStale(SkillEuiState state)
+    {
+        if (_confirmDialog == null || !_confirmDialog.IsOpen)
+            return false;
+
+        if (state.RemainingPoints != _confirmSnapshotRemaining || state.TotalPoints != _confirmSnapshotTotal)
+            return true;
+
+        if (state.Skills.Count != _confirmSnapshotLevels.Count)
+            return true;
+
+        foreach (var skill in state.Skills)
+        {
+            if (!_confirmSnapshotLevels.TryGetValue(skill.SkillId, out var level) || level != skill.Level)
+                return true;
+        }
+
+        return false;
     }
 
     private bool TryGetSkillIcon(string skillId, out Texture? texture)
