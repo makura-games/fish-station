@@ -236,7 +236,7 @@ dm-arena-leave-01 = { $user } vanishes, tired of the killing.
 
 # Админ-команда
 cmd-dmarena-desc = Enables or disables the DM arena.
-cmd-dmarena-help = dmarena [on|off|status]. Shows the current state when called without arguments. The arena is closed for the first 20 minutes of a round, on opens it earlier. Disabling returns every fighter as a ghost and closes the loadout windows. Debug tools: dmarena debug.
+cmd-dmarena-help = dmarena [on|off|status]. Shows the current state when called without arguments. The arena is closed for the first 5 minutes of a round, on opens it earlier. Disabling returns every fighter as a ghost and closes the loadout windows. Debug tools: dmarena debug.
 cmd-dmarena-no-access = You do not have permission to use this command.
 cmd-dmarena-bad-argument = Valid values: on, off, status.
 cmd-dmarena-hint = on, off or status
@@ -310,15 +310,10 @@ dm-arena-set-dome = Dome
 dm-arena-set-desc-dome = A belt shield generator, a Cobra and a vest. The dome soaks damage while the charge lasts
 dm-arena-item-vp78 = VP78 pistol
 dm-arena-desc-vp78 = A compact pistol and a spare magazine
-dm-arena-item-thompson = Thompson SMG
-dm-arena-desc-thompson = A heavy .40 submachine gun with two spare magazines
 dm-arena-item-p90 = P-90
 dm-arena-desc-p90 = A fast compact SMG and two spare magazines
 dm-arena-item-am-vp78 = VP78 magazines
-dm-arena-item-am-thompson = Thompson magazines
 dm-arena-item-am-p90 = P-90 magazines
-dm-arena-set-gangster = Gangster
-dm-arena-set-desc-gangster = A Thompson, a vest and field dressings. Spray and move on
 dm-arena-set-agent = Agent
 dm-arena-set-desc-agent = A VP78, a knife and light armor. Quiet and precise
 dm-arena-set-paladin = Paladin

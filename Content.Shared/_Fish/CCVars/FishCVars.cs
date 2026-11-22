@@ -75,7 +75,14 @@ namespace Content.Shared.CCVar
         public static readonly CVarDef<bool> AghostUnrestrictOnLocalhost =
             CVarDef.Create("fish.aghost_unrestrict_on_localhost", false, CVar.SERVERONLY | CVar.ARCHIVE);
 
-
+        /// <summary>
+        /// Через сколько секунд после выстрела стреляная гильза исчезает.
+        /// Целые патроны не затрагиваются. 0 — исчезнуть на следующем тике после выброса.
+        /// </summary>
+        public static readonly CVarDef<float> CasingDespawnSeconds =
+            CVarDef.Create("fish.casing_despawn_seconds", 60f, CVar.SERVERONLY);
+			
+			
         // ==== RpuCVars ====
         public static readonly CVarDef<bool> RpuEnabled =
             CVarDef.Create("rpu.enabled", true, CVar.SERVERONLY | CVar.ARCHIVE);
