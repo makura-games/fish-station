@@ -70,10 +70,11 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
     {
         for (var i = pm.Attempts.Count - 1; i >= 0; i--)
         {
-            if (pm.Attempts[i].Shooter != attacker)
+            var attempt = pm.Attempts[i];
+            if (attempt.Shooter != attacker)
                 continue;
 
-            return (now - pm.Attempts[i].At).TotalSeconds <= PmTuning.ShotMatchSeconds;
+            return (now - attempt.At).TotalSeconds <= PmTuning.ShotMatchSeconds;
         }
 
         return false;
@@ -261,23 +262,39 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
     /// </summary>
     private void PairAttempt(PmSession pm, EntityUid attacker, TimeSpan now, float error)
     {
+        var matchIndex = -1;
+        var matches = 0;
+
         for (var i = pm.Attempts.Count - 1; i >= 0; i--)
         {
             var attempt = pm.Attempts[i];
-            if (attempt.Realised || attempt.Shooter != attacker)
+            if (attempt.Shooter != attacker ||
+                (now - attempt.At).TotalSeconds > PmTuning.ShotMatchSeconds)
+            {
                 continue;
+            }
 
-            // Стрелок мог выстрелить раньше, а урон дошёл позже: дальше окна не связываем.
-            // Незакрытые попытки при этом не удаляем и не добавляем новых: они только
-            // смягчают статистику, а не доказывают нарушение.
-            if ((now - attempt.At).TotalSeconds > PmTuning.ShotMatchSeconds)
+            // Урон не несёт идентификатор снаряда, поэтому точное сопоставление по id
+            // невозможно на этом событии. Если в окне больше одной попытки, попадание
+            // неоднозначно: не закрываем старый промах и не искажаем долю попаданий.
+            // Для дроби/пробития попытка закрывается только первым уроном.
+            if (attempt.Realised)
                 return;
 
-            pm.Attempts[i] = attempt with { Realised = true, ErrorDegrees = error };
-            return;
+            matchIndex = i;
+            matches++;
+            if (matches > 1)
+                return;
         }
 
-        // Попадания без попытки выстрела (ближний бой, зона, отражённый урон) не считаем.
+        if (matches != 1)
+            return;
+
+        pm.Attempts[matchIndex] = pm.Attempts[matchIndex] with
+        {
+            Realised = true,
+            ErrorDegrees = error,
+        };
     }
 
     /// <summary>

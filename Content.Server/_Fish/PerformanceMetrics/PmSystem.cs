@@ -152,7 +152,7 @@ public sealed partial class PmSystem : EntitySystem
         // приостановки учёта, но не трогает тех, кого наказывать нельзя в принципе.
         if (_disconnect &&
             session.TotalFlags >= PmTuning.FlagsForDisconnect &&
-            _rpu.PunishmentAllowed(player))
+            _rpu.PerformanceDisconnectAllowed(player))
         {
             player.Channel.Disconnect("Input rate out of range for this server.");
         }

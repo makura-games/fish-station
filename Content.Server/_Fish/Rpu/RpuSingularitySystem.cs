@@ -55,17 +55,17 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         public TimeSpan UnattendedSince;
         public bool EscapedCharged;
 
-        /// <summary>
-        /// Кто отвечал за этот колодец и когда в последний раз трогал оборудование содержания.
-        /// Ключ — игрок, а не сессия: после переподключения сессия другая, а ответственность та же.
-        /// </summary>
-        public readonly Dictionary<NetUserId, TimeSpan> Caretakers = new();
+        /// <summary>Оборудование именно этого колодца -> игроки и время касания.</summary>
+        public readonly Dictionary<EntityUid, Dictionary<NetUserId, TimeSpan>> EquipmentCaretakers = new();
     }
 
     private readonly Dictionary<EntityUid, WellState> _wells = new();
 
-    /// <summary>Кто трогал оборудование содержания. Раздаётся новым колодцам при появлении.</summary>
-    private readonly Dictionary<NetUserId, TimeSpan> _caretakers = new();
+    /// <summary>Игроки, касавшиеся конкретной единицы оборудования до привязки к колодцу.</summary>
+    private readonly Dictionary<EntityUid, Dictionary<NetUserId, TimeSpan>> _equipmentCaretakers = new();
+
+    /// <summary>Радиус связи оборудования установки с её колодцем.</summary>
+    private const float EquipmentLinkRange = 20f;
 
     private TimeSpan _nextCheck;
 
@@ -73,12 +73,12 @@ public sealed partial class RpuSingularitySystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<RadiationCollectorComponent, InteractUsingEvent>((_, ref args) => Touched(ref args));
-        SubscribeLocalEvent<ParticleAcceleratorControlBoxComponent, InteractUsingEvent>((_, ref args) => Touched(ref args));
-        SubscribeLocalEvent<EmitterComponent, InteractUsingEvent>((_, ref args) => Touched(ref args));
-        SubscribeLocalEvent<ContainmentFieldGeneratorComponent, InteractUsingEvent>((_, ref args) => Touched(ref args));
-        SubscribeLocalEvent<SingularityGeneratorComponent, InteractUsingEvent>((_, ref args) => Touched(ref args));
-        SubscribeLocalEvent<TeslaCoilComponent, InteractUsingEvent>((_, ref args) => Touched(ref args));
+        SubscribeLocalEvent<RadiationCollectorComponent, InteractUsingEvent>((ent, ref args) => Touched(ent.Owner, ref args));
+        SubscribeLocalEvent<ParticleAcceleratorControlBoxComponent, InteractUsingEvent>((ent, ref args) => Touched(ent.Owner, ref args));
+        SubscribeLocalEvent<EmitterComponent, InteractUsingEvent>((ent, ref args) => Touched(ent.Owner, ref args));
+        SubscribeLocalEvent<ContainmentFieldGeneratorComponent, InteractUsingEvent>((ent, ref args) => Touched(ent.Owner, ref args));
+        SubscribeLocalEvent<SingularityGeneratorComponent, InteractUsingEvent>((ent, ref args) => Touched(ent.Owner, ref args));
+        SubscribeLocalEvent<TeslaCoilComponent, InteractUsingEvent>((ent, ref args) => Touched(ent.Owner, ref args));
 
         // ComponentStartup на этих сущностях уже занят движком, поэтому колодцы находим
         // опросом в Update, а удаление слушаем явно: чистим только состояние ушедшего колодца.
@@ -91,10 +91,10 @@ public sealed partial class RpuSingularitySystem : EntitySystem
     private void OnRoundStarted(RoundStartedEvent args)
     {
         _wells.Clear();
-        _caretakers.Clear();
+        _equipmentCaretakers.Clear();
     }
 
-    private void Touched(ref InteractUsingEvent args)
+    private void Touched(EntityUid equipment, ref InteractUsingEvent args)
     {
         if (args.Handled || !_rpu.Active)
             return;
@@ -103,18 +103,25 @@ public sealed partial class RpuSingularitySystem : EntitySystem
             return;
 
         var now = _timing.CurTime;
-        _caretakers[session.UserId] = now;
 
-        // За оборудованием следит тот, кто его трогает: ответственность переходит и на
-        // уже стоящие колодцы, иначе штраф достался бы только тем, кто успел до спавна.
-        foreach (var state in _wells.Values)
-            state.Caretakers[session.UserId] = now;
+        if (!_equipmentCaretakers.TryGetValue(equipment, out var caretakers))
+        {
+            caretakers = new Dictionary<NetUserId, TimeSpan>();
+            _equipmentCaretakers[equipment] = caretakers;
+        }
+
+        caretakers[session.UserId] = now;
+
+        // Связываем эту деталь только с ближайшим колодцем на той же карте.
+        LinkEquipment(equipment, caretakers, FindNearestWell(equipment));
     }
 
     private void OnWellGone<T>(Entity<T> ent, ref ComponentRemove args) where T : IComponent
     {
-        // Ушёл именно этот колодец: остальные продолжают считаться.
+        // Ушёл именно этот колодец: остальные продолжают считаться. Оборудование,
+        // которое было ближе к нему, перепривязываем к следующему ближайшему.
         _wells.Remove(ent.Owner);
+        LinkNearbyEquipment();
     }
 
     public override void Update(float frameTime)
@@ -126,7 +133,7 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         if (!_rpu.Active)
         {
             _wells.Clear();
-            _caretakers.Clear();
+            _equipmentCaretakers.Clear();
             return;
         }
 
@@ -169,21 +176,79 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         if (_wells.ContainsKey(uid))
             return;
 
-        var now = _timing.CurTime;
-
         var state = new WellState
         {
             Spawn = _transform.GetMoverCoordinates(uid),
-            UnattendedSince = now,
+            UnattendedSince = _timing.CurTime,
         };
 
-        foreach (var (userId, at) in _caretakers)
+        _wells[uid] = state;
+        LinkNearbyEquipment();
+    }
+
+    /// <summary>
+    /// Каждая деталь связана только с ближайшим колодцем на той же карте. Связь хранится
+    /// на конкретном колодце, чтобы касание оборудования B не отвечало за установку A.
+    /// </summary>
+    private void LinkNearbyEquipment()
+    {
+        var stale = new List<EntityUid>();
+
+        foreach (var (equipment, caretakers) in _equipmentCaretakers)
         {
-            if (now - at <= CaretakerMemory)
-                state.Caretakers[userId] = at;
+            if (Deleted(equipment))
+            {
+                stale.Add(equipment);
+                continue;
+            }
+
+            LinkEquipment(equipment, caretakers, FindNearestWell(equipment));
         }
 
-        _wells[uid] = state;
+        foreach (var equipment in stale)
+            _equipmentCaretakers.Remove(equipment);
+    }
+
+    private void LinkEquipment(
+        EntityUid equipment,
+        Dictionary<NetUserId, TimeSpan> caretakers,
+        WellState? target)
+    {
+        foreach (var state in _wells.Values)
+            state.EquipmentCaretakers.Remove(equipment);
+
+        if (target != null)
+            target.EquipmentCaretakers[equipment] = caretakers;
+    }
+
+    /// <summary>Ближайший колодец на той же карте в радиусе связи с оборудованием.</summary>
+    private WellState? FindNearestWell(EntityUid equipment)
+    {
+        if (Deleted(equipment))
+            return null;
+
+        var equipmentCoords = _transform.GetMapCoordinates(equipment);
+        WellState? nearest = null;
+        var nearestDistanceSquared = EquipmentLinkRange * EquipmentLinkRange;
+
+        foreach (var (uid, state) in _wells)
+        {
+            if (Deleted(uid))
+                continue;
+
+            var spawn = _transform.ToMapCoordinates(state.Spawn);
+            if (spawn.MapId != equipmentCoords.MapId)
+                continue;
+
+            var distanceSquared = (spawn.Position - equipmentCoords.Position).LengthSquared();
+            if (distanceSquared >= nearestDistanceSquared)
+                continue;
+
+            nearest = state;
+            nearestDistanceSquared = distanceSquared;
+        }
+
+        return nearest;
     }
 
     private void CheckWell(EntityUid uid, WellState state)
@@ -241,39 +306,66 @@ public sealed partial class RpuSingularitySystem : EntitySystem
     {
         var cutoff = _timing.CurTime - CaretakerMemory;
 
-        // Убрался из игры — ответственность осталась: окно измеряется временем
-        // прикосновения, а не присутствием в сети. Иначе короткий выход снимал бы
-        // вину с того, кто собрал сингулярность.
-        List<NetUserId>? stale = null;
-
-        foreach (var (userId, time) in _caretakers)
+        foreach (var (equipment, caretakers) in _equipmentCaretakers.ToArray())
         {
-            if (time >= cutoff)
+            if (Deleted(equipment))
+            {
+                _equipmentCaretakers.Remove(equipment);
                 continue;
+            }
 
-            stale ??= new List<NetUserId>();
-            stale.Add(userId);
+            foreach (var (userId, time) in caretakers.ToArray())
+            {
+                if (time >= cutoff)
+                    continue;
+
+                caretakers.Remove(userId);
+            }
+
+            if (caretakers.Count == 0)
+                _equipmentCaretakers.Remove(equipment);
         }
 
-        if (stale == null)
-            return;
+        foreach (var state in _wells.Values)
+        {
+            foreach (var (equipment, caretakers) in state.EquipmentCaretakers.ToArray())
+            {
+                if (Deleted(equipment))
+                {
+                    state.EquipmentCaretakers.Remove(equipment);
+                    continue;
+                }
 
-        foreach (var userId in stale)
-            _caretakers.Remove(userId);
+                foreach (var (userId, time) in caretakers.ToArray())
+                {
+                    if (time >= cutoff)
+                        continue;
+
+                    caretakers.Remove(userId);
+                }
+
+                if (caretakers.Count == 0)
+                    state.EquipmentCaretakers.Remove(equipment);
+            }
+        }
     }
 
     private void Charge(WellState state, ProtoId<RpuViolationPrototype> violation, string details)
     {
         var now = _timing.CurTime;
+        var responsible = new HashSet<NetUserId>();
 
-        foreach (var (userId, at) in state.Caretakers.ToArray())
+        foreach (var caretakers in state.EquipmentCaretakers.Values)
         {
-            if (now - at > CaretakerMemory)
+            foreach (var (userId, time) in caretakers)
             {
-                state.Caretakers.Remove(userId);
-                continue;
+                if (now - time <= CaretakerMemory)
+                    responsible.Add(userId);
             }
+        }
 
+        foreach (var userId in responsible)
+        {
             // Игрок мог выйти и вернуться: ищем его текущую сессию по идентификатору.
             if (!_rpu.TryGetSession(userId, out var session) || session.Status != SessionStatus.InGame)
                 continue;
@@ -281,4 +373,5 @@ public sealed partial class RpuSingularitySystem : EntitySystem
             _rpu.Penalize(session, violation, details: details);
         }
     }
+
 }

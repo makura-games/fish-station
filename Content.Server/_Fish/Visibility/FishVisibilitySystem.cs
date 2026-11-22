@@ -130,7 +130,6 @@ public sealed partial class FishVisibilitySystem : EntitySystem
     private void OnRoundStarted(RoundStartedEvent args)
     {
         _seen.Clear();
-        _managed.Clear();
         RefreshAdminMasks();
     }
 
@@ -297,10 +296,17 @@ public sealed partial class FishVisibilitySystem : EntitySystem
     /// <summary>Вернуть сущность обычным клиентам.</summary>
     public void Reveal(EntityUid uid)
     {
-        if (!_managed.Remove(uid, out var entry))
+        if (!_managed.TryGetValue(uid, out var entry))
             return;
 
-        SetLayer(uid, _visQuery.CompOrNull(uid), entry.PreviousLayer);
+        var vis = _visQuery.CompOrNull(uid);
+        var current = vis?.Layer ?? (ushort)VisibilityFlags.Normal;
+
+        // Если слой уже сменён другой системой (например, Subfloor), не стираем её
+        // ограничение. Запись всё равно удаляется: теперь владение слоем уже не наше.
+        _managed.Remove(uid);
+        if (current == AdminOnlyLayer)
+            SetLayer(uid, vis, entry.PreviousLayer);
 
         // Список прототипов могут вернуть целиком: сущность нужно разобрать заново.
         _seen.Remove(uid);

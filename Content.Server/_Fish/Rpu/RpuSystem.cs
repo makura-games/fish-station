@@ -488,6 +488,16 @@ public sealed partial class RpuSystem : EntitySystem
         return _adminMode == RpuAdminMode.Off;
     }
 
+    /// <summary>Разрешено ли отключить игрока по срабатываниям метрик: исключения и админы
+    /// в режиме LogOnly защищены, но состояние РПУ (раунд, эвакуация, cvar) не влияет.</summary>
+    public bool PerformanceDisconnectAllowed(ICommonSession session)
+    {
+        if (IsExempt(session))
+            return false;
+
+        return !IsActiveAdmin(session) || _adminMode != RpuAdminMode.LogOnly;
+    }
+
     /// <summary>Действуют ли на игрока «тихие» эффекты и автобан.</summary>
     public bool PunishmentAllowed(ICommonSession session)
     {
