@@ -1903,3 +1903,10 @@
     message: Успешный толчок (disarm) теперь прерывает попытку цели самостоятельно снять с себя наручники и сбрасывает прогресс.
   id: 194
   url: https://github.com/makura-games/fish-station/pull/654
+- author: TiFeRi
+  time: '2026-11-22T19:20:28.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Небольшое обновление рефайнери
+  id: 195
+  url: https://github.com/makura-games/fish-station/pull/691
