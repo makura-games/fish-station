@@ -124,7 +124,7 @@ public sealed partial class NetrunnerSystem
             return;
         }
         if (!ent.Comp.DebugMode)
-            ent.Comp.Ram -= config.ConnectionCost;
+            ent.Comp.Ram = MathF.Max(0f, ent.Comp.Ram - config.ConnectionCost);
         ent.Comp.RecoverAt = _timing.CurTime + ent.Comp.RecoveryDelay;
         AddTrace(ent, config.ConnectionTrace);
         ent.Comp.NextConnectionCharge = _timing.CurTime + config.ChargeInterval;
@@ -197,9 +197,25 @@ public sealed partial class NetrunnerSystem
         _remoteSessions[ent.Owner] = Comp<ActorComponent>(user).PlayerSession;
         _eye.SetTarget(user, remote, bodyEye);
         _eye.SetDrawFov(user, false, bodyEye);
+        _eye.RefreshVisibilityMask(remote);
+        _eye.RefreshVisibilityMask(user);
+        _actions.AddAction(user, ref ent.Comp.JumpToChairAction, "FishActionNetrunnerJumpToChair", ent);
         _mover.SetRelay(user, remote);
         _mover.ResetCamera(user);
         return true;
+    }
+
+    private void OnJumpToChair(Entity<NetrunnerImplantComponent> ent, ref NetrunnerJumpToChairActionEvent args)
+    {
+        if (args.Handled || !IsOperator(ent, args.Performer) || !CanUseChair(ent)
+            || ent.Comp.Chair is not { } chair || ent.Comp.RemoteEye is not { } remote || Terminating(remote))
+            return;
+        _transform.SetCoordinates(remote, Transform(chair).Coordinates);
+        _transform.AttachToGridOrMap(remote);
+        _mover.ResetCamera(args.Performer);
+        ent.Comp.Camera = null;
+        Publish(ent);
+        args.Handled = true;
     }
 
     private void OnSelectCamera(Entity<NetrunnerImplantComponent> ent, ref NetrunnerSelectCameraMessage args)
@@ -258,6 +274,11 @@ public sealed partial class NetrunnerSystem
             return;
         if (ent.Comp.User is { } user && !Terminating(user))
         {
+            if (ent.Comp.JumpToChairAction is { } jumpAction)
+            {
+                _actions.RemoveAction(user, jumpAction);
+                ent.Comp.JumpToChairAction = null;
+            }
             if (TryComp<RelayInputMoverComponent>(user, out var relay) && relay.RelayEntity == active)
                 _mover.RemoveRelay(user);
             if (TryComp<EyeComponent>(user, out var bodyEye) && bodyEye.Target == active)
@@ -266,6 +287,7 @@ public sealed partial class NetrunnerSystem
                 _eye.SetTarget(user, original is { } target && !Terminating(target) ? target : null, bodyEye);
                 _eye.SetDrawFov(user, ent.Comp.OriginalDrawFov, bodyEye);
             }
+            _eye.RefreshVisibilityMask(user);
         }
         if (session != null)
             _viewSubscriber.RemoveViewSubscriber(active, session);
@@ -292,7 +314,7 @@ public sealed partial class NetrunnerSystem
             || !_userQuery.TryComp(user, out var state) || state.Implant != ent.Owner
             || state.LifeStage >= ComponentLifeStage.Stopping)
             return;
-        state.Ram = ent.Comp.Ram;
+        state.Ram = MathF.Max(0f, ent.Comp.Ram);
         state.MaxRam = ent.Comp.MaxRam;
         state.Trace = ent.Comp.Trace;
         state.ReadyAt = ent.Comp.ReadyAt;
@@ -303,7 +325,7 @@ public sealed partial class NetrunnerSystem
         var reserved = ent.Comp.Pending == null ? 0 : ProtoMan.Index(ent.Comp.Pending.Ability).RamCost;
         var snapshot = new NetrunnerUiState
         {
-            Ram = ent.Comp.Ram - reserved,
+            Ram = MathF.Max(0f, ent.Comp.Ram - reserved),
             MaxRam = ent.Comp.MaxRam,
             Trace = ent.Comp.Trace,
             NeuralLinks = ent.Comp.NeuralLinks,

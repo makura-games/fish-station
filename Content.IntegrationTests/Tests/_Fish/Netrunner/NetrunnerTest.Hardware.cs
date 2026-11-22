@@ -148,9 +148,17 @@ public sealed partial class NetrunnerTest
                 Assert.That(duplicateAccepted, Is.False);
                 Assert.That(SEntMan.GetComponent<NetrunnerImplantComponent>(implant).NeuralLinks, Is.EqualTo(1));
             }
-            Assert.That(heat, Is.EqualTo(ability.RamCost * 0.18f * (wearVisor ? 2 : 1)).Within(0.001f));
+            Assert.That(heat, Is.EqualTo(ability.RamCost * 0.135f * (wearVisor ? 2 : 1)).Within(0.001f));
             Assert.That(cooldown, Is.EqualTo(ability.Cooldown.TotalSeconds / (wearVisor ? 1.5 : 1)).Within(0.001));
+            Assert.That(Robust.Shared.Localization.Loc.GetString("fish-netrunner-manual-content"),
+                Is.Not.EqualTo("fish-netrunner-manual-content"));
         });
+        if (wearVisor)
+        {
+            await Pair.RunUntilSynced();
+            await Client.WaitAssertion(() =>
+                Assert.That(Client.System<Content.Client._Fish.Netrunner.ShowNetrunnerMindShieldIconsSystem>().IsActive, Is.True));
+        }
     }
 
     [Test]
@@ -194,6 +202,51 @@ public sealed partial class NetrunnerTest
         {
             Assert.That(SEntMan.HasComponent<NetrunnerAuditComponent>(door), Is.False);
             Assert.That(SEntMan.GetComponent<NetrunnerImplantComponent>(implant).Journal, Has.Count.EqualTo(1));
+        });
+    }
+
+    [Test]
+    public async Task CoolantPackCoolsDownToTwentyCelsiusWithoutWarming()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid user = default;
+        EntityUid hotPack = default;
+        EntityUid coldPack = default;
+        bool warmApplied = false;
+        bool coldApplied = true;
+        await Server.WaitPost(() =>
+        {
+            user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
+            SEntMan.RemoveComponent<RespiratorComponent>(user);
+            Server.PlayerMan.SetAttachedEntity(ServerSession!, user);
+            var temp = SEntMan.GetComponent<TemperatureComponent>(user);
+            SEntMan.System<Content.Shared.Temperature.Systems.SharedTemperatureSystem>().ChangeHeat(
+                (user, temp), (330f - temp.Temperature) * temp.HeatCapacity, ignoreHeatResistance: true);
+            hotPack = SEntMan.SpawnEntity("FishCoolantPack1", map.GridCoords);
+            SEntMan.System<SharedHandsSystem>().TryPickupAnyHand(user, hotPack);
+            warmApplied = SEntMan.System<NetrunnerCoolantSystem>().TryApplyCoolant(
+                (hotPack, SEntMan.GetComponent<NetrunnerCoolantPackComponent>(hotPack)), user, user);
+        });
+        await Pair.RunSeconds(3.5f);
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(warmApplied, Is.True);
+            Assert.That(SEntMan.GetComponent<TemperatureComponent>(user).Temperature, Is.EqualTo(293.15f).Within(1.0f));
+        });
+        await Server.WaitPost(() =>
+        {
+            var temp = SEntMan.GetComponent<TemperatureComponent>(user);
+            SEntMan.System<Content.Shared.Temperature.Systems.SharedTemperatureSystem>().ChangeHeat(
+                (user, temp), (280f - temp.Temperature) * temp.HeatCapacity, ignoreHeatResistance: true);
+            coldPack = SEntMan.SpawnEntity("FishCoolantPack1", map.GridCoords);
+            SEntMan.System<SharedHandsSystem>().TryPickupAnyHand(user, coldPack);
+            coldApplied = SEntMan.System<NetrunnerCoolantSystem>().TryApplyCoolant(
+                (coldPack, SEntMan.GetComponent<NetrunnerCoolantPackComponent>(coldPack)), user, user);
+        });
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(coldApplied, Is.False);
+            Assert.That(SEntMan.GetComponent<TemperatureComponent>(user).Temperature, Is.EqualTo(280f).Within(0.1f));
         });
     }
 }

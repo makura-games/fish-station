@@ -3,40 +3,40 @@
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:net="clr-namespace:Content.Client._Fish.Netrunner.UI"
                       Title="{Loc fish-netrunner-shop-title}"
-                      MinSize="650 500" SetSize="820 680">
+                      MinSize="740 520" SetSize="820 680">
     <PanelContainer StyleClasses="{x:Static net:NetrunnerSheetlet.Frame}">
         <BoxContainer Orientation="Vertical" SeparationOverride="8">
             <BoxContainer Orientation="Horizontal" SeparationOverride="8">
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                    <Label Text="{Loc fish-netrunner-brand}" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
-                    <Label Text="{Loc fish-netrunner-shop-heading}" StyleClasses="{x:Static net:NetrunnerSheetlet.Heading}" />
+                    <Label Text="{Loc fish-netrunner-brand}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+                    <Label Text="{Loc fish-netrunner-shop-heading}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Heading}" />
                 </BoxContainer>
                 <Label Name="Balance" StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" VAlign="Center" ClipText="True" />
             </BoxContainer>
-            <Label Name="DebugStatus" Text="{Loc fish-netrunner-debug-status}" Visible="False" StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" />
-            <RichTextLabel Name="EarningHint" />
+            <Label Name="DebugStatus" Text="{Loc fish-netrunner-debug-status}" Visible="False" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" />
+            <RichTextLabel Name="EarningHint" HorizontalExpand="True" Margin="0 0 16 0" />
             <PanelContainer StyleClasses="{x:Static net:NetrunnerSheetlet.Panel}">
                 <BoxContainer Orientation="Vertical" SeparationOverride="6">
-                    <Label Text="{Loc fish-netrunner-shop-upgrades}" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+                    <Label Text="{Loc fish-netrunner-shop-upgrades}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
                     <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                        <Button Name="Memory" HorizontalExpand="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Button}" />
-                        <Button Name="Speed" HorizontalExpand="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Button}" />
+                        <Button Name="Memory" HorizontalExpand="True" />
+                        <Button Name="Speed" HorizontalExpand="True" />
                     </BoxContainer>
-                    <RichTextLabel Name="Hardware" HorizontalExpand="True" />
-                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
-                        <RichTextLabel Name="VisorHint" HorizontalExpand="True" />
-                        <Button Name="Visor" StyleClasses="{x:Static net:NetrunnerSheetlet.DangerButton}" VerticalAlignment="Center" />
+                    <RichTextLabel Name="Hardware" HorizontalExpand="True" Margin="0 0 16 0" />
+                    <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                        <RichTextLabel Name="VisorHint" HorizontalExpand="True" Margin="0 0 16 0" />
+                        <Button Name="Visor" HorizontalAlignment="Left" />
                     </BoxContainer>
                 </BoxContainer>
             </PanelContainer>
-            <Label Text="{Loc fish-netrunner-shop-programs}" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+            <Label Text="{Loc fish-netrunner-shop-programs}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
             <BoxContainer Orientation="Horizontal" SeparationOverride="6">
                 <LineEdit Name="Search" PlaceHolder="{Loc fish-netrunner-shop-search}" HorizontalExpand="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Search}" />
-                <OptionButton Name="Category" StyleClasses="{x:Static net:NetrunnerSheetlet.Button}" />
+                <OptionButton Name="Category" />
             </BoxContainer>
             <Label Name="EmptySearch" Text="{Loc fish-netrunner-shop-empty}" Visible="False" />
             <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
-                <GridContainer Name="Programs" Columns="2" HSeparationOverride="8" VSeparationOverride="8" HorizontalExpand="True" />
+                <GridContainer Name="Programs" Columns="2" HSeparationOverride="8" VSeparationOverride="8" HorizontalExpand="True" Margin="0 0 12 0" />
             </ScrollContainer>
         </BoxContainer>
     </PanelContainer>

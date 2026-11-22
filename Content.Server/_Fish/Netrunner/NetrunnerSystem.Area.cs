@@ -1,4 +1,6 @@
 using Content.Shared._Fish.Netrunner;
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Doors.Components;
 using Content.Shared.Light.Components;
 using Content.Shared.Physics;
@@ -13,6 +15,7 @@ public sealed partial class NetrunnerSystem
 {
     // Fish-edit: Массовый скрипт выбирает точку и оплачивается один раз за всю область.
     [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private AccessReaderSystem _accessReader = default!;
 
     /// <summary>Starts a blackout at a validated location with a bounded set of lights.</summary>
     public bool TryStartAreaHack(Entity<NetrunnerImplantComponent> ent, EntityUid user,
@@ -46,21 +49,22 @@ public sealed partial class NetrunnerSystem
             && ability.AreaRadius > 0 && CanTargetArea(ent, coordinates, ability);
 
     private bool CanTargetArea(Entity<NetrunnerImplantComponent> ent, EntityCoordinates coordinates,
-        NetrunnerAbilityPrototype ability)
+        NetrunnerAbilityPrototype ability, bool enforceRange = true)
     {
         if (!_transform.IsValid(coordinates) || ent.Comp.User is not { } user
             || ent.Comp.Chair != null && !CanUseChair(ent))
             return false;
         var origin = ent.Comp.RemoteEye ?? user;
-        if (!_transform.InRange(Transform(origin).Coordinates, coordinates, ability.Range))
+        var range = ent.Comp.RemoteEye != null && !enforceRange ? RemoteViewVisibilityRange : ability.Range;
+        if (!_transform.InRange(Transform(origin).Coordinates, coordinates, range))
             return false;
         if (ent.Comp.RemoteEye is not { } remote)
             return _interaction.InRangeUnobstructed(origin, coordinates, ability.Range, CollisionGroup.Opaque);
         return TryComp<NetrunnerRemoteEyeComponent>(remote, out var viewer)
-            && IsAreaCellVisible(coordinates, viewer.Station);
+            && IsAreaCellVisible(coordinates, viewer.Station, ent.Comp.Chair);
     }
 
-    private bool IsAreaCellVisible(EntityCoordinates coordinates, EntityUid station)
+    private bool IsAreaCellVisible(EntityCoordinates coordinates, EntityUid station, EntityUid? chair = null)
     {
         var gridUid = _transform.GetGrid(coordinates);
         if (gridUid is not { } grid || _station.GetOwningStation(grid) != station
@@ -69,7 +73,7 @@ public sealed partial class NetrunnerSystem
             return false;
         var local = _transform.WithEntityId(coordinates, grid);
         return _vision.IsNetrunnerAccessible((grid, broadphase, mapGrid),
-            _maps.LocalToTile(grid, mapGrid, local), station);
+            _maps.LocalToTile(grid, mapGrid, local), station, chair);
     }
 
     private bool CanAffectAreaLight(Entity<NetrunnerImplantComponent> ent, EntityUid light,
@@ -80,7 +84,7 @@ public sealed partial class NetrunnerSystem
             || Transform(light).GridUid != _transform.GetGrid(center))
             return false;
         if (ent.Comp.RemoteEye is { } remote && TryComp<NetrunnerRemoteEyeComponent>(remote, out var viewer)
-            && !IsAreaCellVisible(Transform(light).Coordinates, viewer.Station))
+            && !IsAreaCellVisible(Transform(light).Coordinates, viewer.Station, ent.Comp.Chair))
             return false;
         var check = new NetrunnerValidateHackEvent(ent.Comp.User!.Value, ability);
         RaiseLocalEvent(light, ref check);
@@ -128,5 +132,17 @@ public sealed partial class NetrunnerSystem
         if (HasComp<AirlockComponent>(device))
             audit.Retention = TimeSpan.FromMinutes(10);
         AppendJournal(audit.Entries, entry);
+        // Fish-start: Логирование взлома шлюза для зонда логов в формате журнала терминала.
+        if (entry.Success && entry.Kind is NetrunnerHackKind.OpenAirlock or NetrunnerHackKind.LockAirlock
+            && TryComp<AccessReaderComponent>(device, out var accessReader))
+        {
+            var context = Loc.GetString("fish-netrunner-log-entry",
+                ("time", entry.Time.ToString(@"mm\:ss")),
+                ("program", Loc.GetString(entry.Kind.GetLocId())),
+                ("target", entry.Target),
+                ("result", Loc.GetString("fish-netrunner-log-success")));
+            _accessReader.LogAccess((device, accessReader), context);
+        }
+        // Fish-end
     }
 }

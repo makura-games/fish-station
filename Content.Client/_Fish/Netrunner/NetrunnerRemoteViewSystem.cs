@@ -21,6 +21,7 @@ public sealed partial class NetrunnerRemoteViewSystem : EntitySystem
         UpdatesAfter.Add(typeof(EyeLerpingSystem));
         base.Initialize();
         _overlays.AddOverlay(new NetrunnerCameraOverlay());
+        _overlays.AddOverlay(new NetrunnerEyeProgressOverlay());
     }
 
     public override void FrameUpdate(float frameTime)
@@ -49,6 +50,7 @@ public sealed partial class NetrunnerRemoteViewSystem : EntitySystem
     {
         RestoreEye();
         _overlays.RemoveOverlay<NetrunnerCameraOverlay>();
+        _overlays.RemoveOverlay<NetrunnerEyeProgressOverlay>();
         base.Shutdown();
     }
 

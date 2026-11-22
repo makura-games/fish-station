@@ -12,6 +12,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.GameTicking;
 using Content.Shared.Implants;
 using Content.Shared.Implants.Components;
+using Content.Shared.Input;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
@@ -30,6 +31,8 @@ using Content.Shared.Stunnable;
 using Content.Shared.SurveillanceCamera.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
+using Robust.Shared.Input.Binding;
+using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
@@ -70,6 +73,8 @@ public sealed partial class NetrunnerSystem : EntitySystem
     [Dependency] private SharedTemperatureSystem _temperature = default!;
     [Dependency] private EntityQuery<TemperatureComponent> _temperatureQuery = default!;
 
+    private const float RemoteViewVisibilityRange = 12f;
+
     private readonly Dictionary<EntityUid, TimeSpan> _stationAlerts = new();
     private readonly Dictionary<EntityUid, ICommonSession> _remoteSessions = new();
     private TimeSpan _nextUpdate;
@@ -84,6 +89,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
         SubscribeLocalEvent<NetrunnerImplantComponent, ComponentShutdown>(OnImplantShutdown);
         SubscribeLocalEvent<NetrunnerImplantComponent, EntityUnpausedEvent>(OnUnpaused);
         SubscribeLocalEvent<NetrunnerImplantComponent, NetrunnerTerminalActionEvent>(OnTerminal);
+        SubscribeLocalEvent<NetrunnerImplantComponent, NetrunnerJumpToChairActionEvent>(OnJumpToChair);
         SubscribeLocalEvent<NetrunnerImplantComponent, NetrunnerHackActionEvent>(OnHackAction);
         SubscribeLocalEvent<NetrunnerImplantComponent, NetrunnerAreaHackActionEvent>(OnAreaHackAction);
         SubscribeLocalEvent<NetrunnerImplantComponent, NetrunnerHackDoAfterEvent>(OnHackFinished);
@@ -99,6 +105,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
         SubscribeLocalEvent<NetrunnerChairComponent, PowerChangedEvent>(OnChairPower);
         SubscribeLocalEvent<NetrunnerChairComponent, ComponentShutdown>(OnChairShutdown);
         SubscribeLocalEvent<NetrunnerRemoteEyeComponent, ComponentShutdown>(OnRemoteEyeShutdown);
+        SubscribeLocalEvent<TransformComponent, NetrunnerGrantBundleItemEvent>(OnGrantBundleItem);
         Subs.BuiEvents<NetrunnerImplantComponent>(NetrunnerUiKey.Terminal, subs =>
         {
             subs.Event<NetrunnerSelectCameraMessage>(OnSelectCamera);
@@ -106,6 +113,31 @@ public sealed partial class NetrunnerSystem : EntitySystem
             subs.Event<NetrunnerRefreshMessage>(OnRefresh);
             subs.Event<NetrunnerOpenShopMessage>(OnOpenShop);
         });
+        // Fish-start: Отмена активного скрипта по нажатию клавиши использования предмета в мире (E/У).
+        CommandBinds.Builder
+            .BindBefore(ContentKeyFunctions.ActivateItemInWorld,
+                new PointerInputCmdHandler(HandleCancelHackInput, outsidePrediction: true),
+                typeof(SharedInteractionSystem))
+            .Register<NetrunnerSystem>();
+        // Fish-end
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        CommandBinds.Unregister<NetrunnerSystem>();
+    }
+
+    private bool HandleCancelHackInput(ICommonSession? session, EntityCoordinates coords, EntityUid uid)
+    {
+        if (session?.AttachedEntity is not { } user
+            || !_userQuery.TryComp(user, out var state)
+            || !_implantQuery.TryComp(state.Implant, out var implant)
+            || implant.Pending == null)
+            return false;
+
+        CancelHack((state.Implant.Value, implant));
+        return true;
     }
 
     private void OnImplanted(Entity<NetrunnerImplantComponent> ent, ref ImplantImplantedEvent args)
@@ -227,6 +259,13 @@ public sealed partial class NetrunnerSystem : EntitySystem
     }
     private void OnUserShutdown(Entity<NetrunnerUserComponent> ent, ref ComponentShutdown args) => StopUser(ent);
 
+    private void OnGrantBundleItem(EntityUid uid, TransformComponent xform, NetrunnerGrantBundleItemEvent args)
+    {
+        // Fish-edit: Выдаём дополнительный предмет комплекта отдельно от коробки.
+        var item = Spawn(args.Prototype, xform.Coordinates);
+        _hands.PickupOrDrop(uid, item);
+    }
+
     /// <summary>Starts one validated program, reserving its RAM until completion.</summary>
     public bool TryStartHack(Entity<NetrunnerImplantComponent> ent, EntityUid user, EntityUid target,
         ProtoId<NetrunnerAbilityPrototype> id)
@@ -253,7 +292,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
             ent.Owner, target: areaCoordinates == null ? target : null)
         {
             NeedHand = false,
-            BreakOnMove = true,
+            BreakOnMove = false,
             BreakOnDamage = true,
             DistanceThreshold = null,
             AttemptFrequency = AttemptFrequency.EveryTick,
@@ -266,7 +305,6 @@ public sealed partial class NetrunnerSystem : EntitySystem
             Target = target,
             Device = device,
             Origin = origin,
-            OriginCoordinates = Transform(origin).Coordinates,
             FinishesAt = _timing.CurTime + castTime,
             AreaCoordinates = areaCoordinates,
             AreaTargets = areaTargets,
@@ -279,6 +317,12 @@ public sealed partial class NetrunnerSystem : EntitySystem
             return false;
         }
         pending.DoAfter = doAfter;
+        if (ent.Comp.RemoteEye is { } remoteEye && TryComp<NetrunnerRemoteEyeComponent>(remoteEye, out var viewer))
+        {
+            viewer.CastStart = _timing.CurTime;
+            viewer.CastEnd = pending.FinishesAt;
+            Dirty(remoteEye, viewer);
+        }
         ent.Comp.ReadyAt = _timing.CurTime + GetGlobalCooldown(ent);
         var cooldown = GetCooldown(ent, ability);
         ent.Comp.Cooldowns[id] = _timing.CurTime + cooldown;
@@ -327,21 +371,20 @@ public sealed partial class NetrunnerSystem : EntitySystem
     {
         if (ent.Comp.Pending is not { } pending || ent.Comp.User is not { } user
             || !IsOperator(ent, user) || pending.AreaCoordinates == null && Terminating(pending.Device)
-            || (ent.Comp.RemoteEye ?? user) != pending.Origin
-            || pending.Origin != user && !_transform.InRange(
-                Transform(pending.Origin).Coordinates, pending.OriginCoordinates, 0.15f))
+            || (ent.Comp.RemoteEye ?? user) != pending.Origin)
             return false;
         var ability = ProtoMan.Index(pending.Ability);
         if (pending.AreaCoordinates is { } areaCoordinates)
-            return CanTargetArea(ent, areaCoordinates, ability);
-        if (!CanTarget(ent, pending.Target, ability))
+            return CanTargetArea(ent, areaCoordinates, ability, enforceRange: false);
+        if (!CanTarget(ent, pending.Target, ability, enforceRange: false))
             return false;
         var check = new NetrunnerValidateHackEvent(user, ability);
         RaiseLocalEvent(pending.Target, ref check);
         return check.Supported && check.Allowed && check.Device == pending.Device;
     }
 
-    private bool CanTarget(Entity<NetrunnerImplantComponent> ent, EntityUid target, NetrunnerAbilityPrototype ability)
+    private bool CanTarget(Entity<NetrunnerImplantComponent> ent, EntityUid target, NetrunnerAbilityPrototype ability,
+        bool enforceRange = true)
     {
         if (Terminating(target) || Paused(target) || _container.IsEntityInContainer(target)
             || ent.Comp.User is not { } user || target == user)
@@ -351,7 +394,8 @@ public sealed partial class NetrunnerSystem : EntitySystem
             return false;
         if (ent.Comp.RemoteEye is { } remote)
         {
-            if (Terminating(remote) || !_transform.InRange((remote, null), (target, null), ability.Range)
+            var range = enforceRange ? ability.Range : RemoteViewVisibilityRange;
+            if (Terminating(remote) || !_transform.InRange((remote, null), (target, null), range)
                 || !TryComp<NetrunnerRemoteEyeComponent>(remote, out var viewer)
                 || _station.GetOwningStation(target) != viewer.Station)
                 return false;
@@ -360,7 +404,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
                 || !TryComp<BroadphaseComponent>(gridUid, out var broadphase))
                 return false;
             var tile = _maps.LocalToTile(gridUid, grid, targetXform.Coordinates);
-            return _vision.IsNetrunnerAccessible((gridUid, broadphase, grid), tile, viewer.Station);
+            return _vision.IsNetrunnerAccessible((gridUid, broadphase, grid), tile, viewer.Station, ent.Comp.Chair);
         }
         return _interaction.InRangeUnobstructed((origin, null), (target, null), ability.Range,
             collisionMask: CollisionGroup.Opaque,
@@ -382,12 +426,27 @@ public sealed partial class NetrunnerSystem : EntitySystem
         if (ent.Comp.Pending is not { } pending)
             return;
         ent.Comp.Pending = null;
+        if (ent.Comp.RemoteEye is { } remoteEye && TryComp<NetrunnerRemoteEyeComponent>(remoteEye, out var viewer))
+        {
+            viewer.CastStart = TimeSpan.Zero;
+            viewer.CastEnd = TimeSpan.Zero;
+            Dirty(remoteEye, viewer);
+        }
         var ability = ProtoMan.Index(pending.Ability);
         var cost = success ? ability.RamCost
             : ability.Kind == NetrunnerHackKind.NeuralOverload ? ability.RamCost * 0.5f : 0;
+        var deficit = ent.Comp.DebugMode ? 0f : MathF.Max(0f, cost - ent.Comp.Ram);
         if (!ent.Comp.DebugMode)
-            ent.Comp.Ram -= cost;
+            ent.Comp.Ram = MathF.Max(0f, ent.Comp.Ram - cost);
         ent.Comp.ReadyAt = _timing.CurTime + GetGlobalCooldown(ent);
+        if (!success)
+        {
+            // Fish-edit: После прерывания перезарядка программы ограничивается 4 секундами.
+            var interruptedCooldown = TimeSpan.FromSeconds(Math.Min(GetCooldown(ent, ability).TotalSeconds, 4.0));
+            var cooldownEnd = _timing.CurTime + interruptedCooldown;
+            ent.Comp.Cooldowns[pending.Ability] = cooldownEnd;
+            SetProgramCooldown(ent, ability, _timing.CurTime, cooldownEnd);
+        }
         ent.Comp.RecoverAt = _timing.CurTime + (ent.Comp.DebugMode ? TimeSpan.Zero : ent.Comp.RecoveryDelay);
         if (ent.Comp.Chair is { } chair && TryComp<NetrunnerChairComponent>(chair, out var cooling))
             ent.Comp.NextLinkAt = _timing.CurTime + cooling.LinkInterval;
@@ -397,7 +456,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
             if (success)
             {
                 RewardResearch(ent, pending.Device);
-                ApplyOverload(ent, user, ability.Kind == NetrunnerHackKind.NeuralOverload);
+                ApplyOverload(ent, user, deficit, ability.Kind == NetrunnerHackKind.NeuralOverload);
             }
             var name = Deleted(pending.Target) ? string.Empty : Name(pending.Target);
             var entry = new NetrunnerLogEntry(_timing.CurTime, ability.Kind, name, success);
@@ -419,14 +478,14 @@ public sealed partial class NetrunnerSystem : EntitySystem
         FinishHack(ent, false);
     }
 
-    private void ApplyOverload(Entity<NetrunnerImplantComponent> ent, EntityUid user, bool silent = false)
+    private void ApplyOverload(Entity<NetrunnerImplantComponent> ent, EntityUid user, float deficit, bool silent = false)
     {
         if (ent.Comp.DebugMode)
             return;
         ent.Comp.BurstCount = _timing.CurTime - ent.Comp.LastHackAt < TimeSpan.FromSeconds(12)
             ? ent.Comp.BurstCount + 1 : 1;
         ent.Comp.LastHackAt = _timing.CurTime;
-        var severity = MathF.Max(0, -ent.Comp.Ram) + Math.Max(0, ent.Comp.BurstCount - 2);
+        var severity = MathF.Max(0, deficit) + Math.Max(0, ent.Comp.BurstCount - 2);
         if (severity <= 0)
             return;
         _bloodstream.TryModifyBleedAmount((user, null), severity * 0.25f);
@@ -472,7 +531,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
             else if (implant.Connection == null && implant.Pending == null)
             {
                 var ramRate = cooling?.RamPerSecond ?? implant.RamPerSecond;
-                implant.Ram = Math.Min(implant.MaxRam, implant.Ram + ramRate * (float)recoveryTime);
+                implant.Ram = Math.Clamp(implant.Ram + ramRate * (float)recoveryTime, 0f, implant.MaxRam);
             }
             if (implant.Chair != null)
             {
@@ -487,7 +546,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
                     else
                     {
                         if (!implant.DebugMode)
-                            implant.Ram -= config.UpkeepCost;
+                            implant.Ram = MathF.Max(0f, implant.Ram - config.UpkeepCost);
                         AddTrace(ent, config.UpkeepTrace);
                         implant.NextConnectionCharge = _timing.CurTime + config.ChargeInterval;
                     }

@@ -1,6 +1,7 @@
 using Content.Shared.Armor;
 using Content.Shared.Atmos;
 using Content.Shared.Chat;
+using Content.Shared._Fish.Netrunner; // Fish-edit: Релей уникального HUD визора нетраннера.
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Events;
 using Content.Shared.Climbing.Events;
@@ -112,6 +113,7 @@ public partial class InventorySystem
         SubscribeLocalEvent<InventoryComponent, RefreshEquipmentHudEvent<ShowHealthIconsComponent>>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, RefreshEquipmentHudEvent<ShowSatiationIconsComponent>>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, RefreshEquipmentHudEvent<ShowMindShieldIconsComponent>>(RefRelayInventoryEvent);
+        SubscribeLocalEvent<InventoryComponent, RefreshEquipmentHudEvent<ShowNetrunnerMindShieldIconsComponent>>(RefRelayInventoryEvent); // Fish-edit: Релей уникального HUD визора нетраннера.
         SubscribeLocalEvent<InventoryComponent, RefreshEquipmentHudEvent<ShowSyndicateIconsComponent>>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, RefreshEquipmentHudEvent<ShowCriminalRecordIconsComponent>>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, RefreshEquipmentHudEvent<BlackAndWhiteOverlayComponent>>(RefRelayInventoryEvent);

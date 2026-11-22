@@ -79,7 +79,7 @@
     - id: FishNetrunnerImplanter
     - id: FishNetrunnerChairCircuitboard
     - id: FishNetrunnerManual
-    - id: FishClothingOuterCyberpunkJacket
+    - id: FishCoolantPack3
 
 - type: entity
   id: FishClothingOuterCyberpunkJacket
@@ -102,13 +102,13 @@
   suffix: Fish
   components:
   - type: NetrunnerVisor
-  - type: ShowMindShieldIcons
+  - type: ShowNetrunnerMindShieldIcons
 
 - type: entity
   id: FishNetrunnerManual
-  parent: Paper
+  parent: HolographicPaper
   name: neural terminal manual
-  description: An instruction sheet bearing the Cybersun Industries LLC logo.
+  description: A holographic instruction manual bearing the Cybersun Industries LLC logo.
   suffix: Fish
   components:
   - type: Paper
@@ -117,7 +117,7 @@
 
 - type: entity
   id: FishNetrunnerRemoteEye
-  name: neural camera viewer
+  name: netrunner eye
   description: A mobile viewer for a neural interface.
   suffix: Fish
   categories: [HideSpawnMenu, DoNotMap]
@@ -127,6 +127,16 @@
   - type: Eye
     drawFov: false
     pvsScale: 1
+  - type: Visibility
+    layer: 16
+  - type: Sprite
+    sprite: _Sunrise/Abductor/Structures/Machines/abductor_camera_console.rsi
+    noRot: true
+    drawdepth: Ghosts
+    layers:
+    - state: eye
+      color: "#33E6DF"
+      shader: unshaded
   - type: InputMover
   - type: MovementSpeedModifier
     baseSprintSpeed: 12
@@ -170,30 +180,19 @@
   suffix: Fish
   components:
   - type: NetrunnerChair
+  - type: StationAiVision
+    needsAnchoring: true
   - type: Sprite
-    sprite: Structures/Machines/stasis_bed.rsi
+    sprite: _Sunrise/Structures/Furniture/abductor_chair.rsi
+    state: abductor_chair
     noRot: true
-    drawdepth: HighFloorObjects
-    layers:
-    - state: icon
-    - state: unlit
-      shader: unshaded
-      map: ["unlit"]
-  - type: Appearance
-  - type: GenericVisualizer
-    visuals:
-      enum.PowerDeviceVisuals.Powered:
-        unlit:
-          True: { visible: true }
-          False: { visible: false }
   - type: ApcPowerReceiver
     powerLoad: 1000
   - type: ExtensionCableReceiver
   - type: Strap
-    position: Down
-    rotation: -90
+    position: Stand
     buckleOffsets:
-    - "0,-0.15"
+    - "0,-0.05"
     size: 100
   - type: Machine
     board: FishNetrunnerChairCircuitboard
@@ -214,7 +213,76 @@
   name: fish-netrunner-uplink-name
   description: fish-netrunner-uplink-description
   productEntity: FishNetrunnerKit
+  productEvent: !type:NetrunnerGrantBundleItemEvent
+    prototype: FishClothingOuterCyberpunkJacket
+  raiseProductEventOnUser: true
   cost:
     Telecrystal: 15
   categories:
   - UplinkImplants
+
+- type: stack
+  parent: BaseSmallStack
+  id: FishCoolantPack
+  name: stack-fish-coolant-pack
+  icon: { sprite: "/Textures/Objects/Specific/Medical/medical.rsi", state: bloodpack-blue }
+  spawn: FishCoolantPack
+
+- type: entity
+  parent: BaseHealingItem
+  id: FishCoolantPack
+  name: coolant pack
+  description: A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
+  suffix: Fish
+  components:
+  - type: Item
+    heldPrefix: bloodpack
+  - type: Sprite
+    state: bloodpack-blue
+  - type: NetrunnerCoolantPack
+    targetTemperature: 293.15
+    delay: 3
+    beginSound:
+      path: "/Audio/Items/Medical/brutepack_begin.ogg"
+      params:
+        volume: 1.0
+        variation: 0.125
+    endSound:
+      path: "/Audio/Items/Medical/brutepack_end.ogg"
+      params:
+        volume: 1.0
+        variation: 0.125
+  - type: Stack
+    stackType: FishCoolantPack
+    count: 10
+  - type: StackPrice
+    price: 10
+
+- type: entity
+  parent: FishCoolantPack
+  id: FishCoolantPack3
+  suffix: Fish
+  components:
+  - type: Stack
+    stackType: FishCoolantPack
+    count: 3
+
+- type: entity
+  parent: FishCoolantPack
+  id: FishCoolantPack1
+  suffix: Fish
+  components:
+  - type: Stack
+    stackType: FishCoolantPack
+    count: 1
+
+- type: shader
+  id: FishNetrunnerMindShieldOutline
+  kind: source
+  path: "/Textures/Shaders/outline.swsl"
+  params:
+    outline_color: "#22CCFFCC"
+    outline_fullbright: false
+    light_boost: 1.5
+    light_gamma: 1.2
+    light_whitepoint: 1

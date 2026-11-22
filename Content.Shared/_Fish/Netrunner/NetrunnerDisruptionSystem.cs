@@ -1,3 +1,4 @@
+using Content.Shared.Eye;
 using Content.Shared.Light.EntitySystems;
 using Content.Shared.Medical.SuitSensors;
 using Content.Shared.Radio;
@@ -5,8 +6,10 @@ using Content.Shared.Eye.Blinding.Systems;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Movement.Systems;
+using Content.Shared.Silicons.StationAi;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Doors;
+using Robust.Shared.GameObjects;
 
 namespace Content.Shared._Fish.Netrunner;
 
@@ -15,6 +18,7 @@ public sealed partial class NetrunnerDisruptionSystem : EntitySystem
 {
     [Dependency] private MovementSpeedModifierSystem _movementSpeedModifier = default!;
     [Dependency] private BlindableSystem _blindable = default!;
+    [Dependency] private SharedEyeSystem _eye = default!;
 
     public override void Initialize()
     {
@@ -32,6 +36,33 @@ public sealed partial class NetrunnerDisruptionSystem : EntitySystem
         SubscribeLocalEvent<NetrunnerDisruptionComponent, AfterAutoHandleStateEvent>(OnState);
         SubscribeLocalEvent<NetrunnerDisruptionComponent, GotEquippedEvent>(OnEquipped);
         SubscribeLocalEvent<NetrunnerDisruptionComponent, GotUnequippedEvent>(OnUnequipped);
+        SubscribeLocalEvent<StationAiHeldComponent, ComponentStartup>(OnStationAiVisibilityRefresh);
+        SubscribeLocalEvent<StationAiHeldComponent, ComponentShutdown>(OnStationAiVisibilityRefresh);
+        SubscribeLocalEvent<StationAiHeldComponent, GetVisMaskEvent>(OnStationAiVisMask);
+        SubscribeLocalEvent<NetrunnerRemoteEyeComponent, GetVisMaskEvent>(OnRemoteEyeVisMask);
+        SubscribeLocalEvent<NetrunnerUserComponent, GetVisMaskEvent>(OnNetrunnerUserVisMask);
+    }
+
+    private void OnStationAiVisibilityRefresh<TEvent>(Entity<StationAiHeldComponent> ent, ref TEvent args)
+    {
+        _eye.RefreshVisibilityMask(ent.Owner);
+    }
+
+    private void OnStationAiVisMask(Entity<StationAiHeldComponent> ent, ref GetVisMaskEvent args)
+    {
+        if (ent.Comp.LifeStage < ComponentLifeStage.Stopping)
+            args.VisibilityMask |= (int) VisibilityFlags.Netrunner;
+    }
+
+    private void OnRemoteEyeVisMask(Entity<NetrunnerRemoteEyeComponent> ent, ref GetVisMaskEvent args)
+    {
+        args.VisibilityMask |= (int) VisibilityFlags.Netrunner;
+    }
+
+    private void OnNetrunnerUserVisMask(Entity<NetrunnerUserComponent> ent, ref GetVisMaskEvent args)
+    {
+        if (ent.Comp.RemoteEye != null)
+            args.VisibilityMask |= (int) VisibilityFlags.Netrunner;
     }
 
     private void OnShoot(Entity<NetrunnerDisruptionComponent> ent, ref ShotAttemptedEvent args)

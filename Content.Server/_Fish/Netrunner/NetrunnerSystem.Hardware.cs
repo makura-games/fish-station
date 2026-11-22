@@ -40,6 +40,19 @@ public sealed partial class NetrunnerSystem
         }
     }
 
+    private void SetProgramCooldown(Entity<NetrunnerImplantComponent> ent,
+        NetrunnerAbilityPrototype ability, TimeSpan start, TimeSpan end)
+    {
+        foreach (var action in ent.Comp.GrantedActions)
+        {
+            if (MetaData(action).EntityPrototype?.ID == ability.Action.Id)
+            {
+                _actions.SetCooldown(action, start, end);
+                break;
+            }
+        }
+    }
+
     private void ApplyActivationHeat(Entity<NetrunnerImplantComponent> ent, EntityUid user,
         NetrunnerAbilityPrototype ability)
     {

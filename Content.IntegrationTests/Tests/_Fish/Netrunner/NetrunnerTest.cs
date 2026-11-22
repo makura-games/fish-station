@@ -234,6 +234,8 @@ public sealed partial class NetrunnerTest : GameTest
                 case NetrunnerHackKind.ShortCircuit:
                     Assert.That(SEntMan.System<DamageableSystem>().GetTotalDamage(target),
                         Is.GreaterThan(FixedPoint2.Zero));
+                    Assert.That(SEntMan.HasComponent<StunnedComponent>(target), Is.True);
+                    Assert.That(SEntMan.HasComponent<KnockedDownComponent>(target), Is.True);
                     break;
                 default:
                     Assert.That(SEntMan.GetComponent<NetrunnerDisruptionComponent>(device).Kind, Is.EqualTo(ability.Kind));
@@ -374,7 +376,7 @@ public sealed partial class NetrunnerTest : GameTest
 
     [TestCase(false)]
     [TestCase(true)]
-    public async Task MovingCancelsHackAndClearsPending(bool remote)
+    public async Task MovingWithinRangeKeepsHackAndOutOfRangeCancelsWithShortCooldown(bool remote)
     {
         var map = await Pair.CreateTestMap();
         EntityUid user = default;
@@ -432,8 +434,18 @@ public sealed partial class NetrunnerTest : GameTest
                 (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, target, "FishNetrunnerNeuralOverload");
         });
         await Server.WaitAssertion(() => Assert.That(started, Is.True));
+        // Fish-edit: Перемещение в пределах дальности больше не прерывает активацию скрипта.
         await Server.WaitPost(() => SEntMan.System<SharedTransformSystem>().SetCoordinates(origin,
             new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitY * 2)));
+        await Pair.RunSeconds(0.5f);
+        await Server.WaitAssertion(() =>
+        {
+            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
+            Assert.That(resources.Pending, Is.Not.Null, "Movement within range must not cancel the hack.");
+        });
+        // Fish-edit: Выход за пределы зоны видимости прерывает скрипт и сокращает перезарядку до 4 секунд.
+        await Server.WaitPost(() => SEntMan.System<SharedTransformSystem>().SetCoordinates(origin,
+            new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitY * 14)));
         await Pair.RunSeconds(0.5f);
         await Server.WaitAssertion(() =>
         {
@@ -443,6 +455,11 @@ public sealed partial class NetrunnerTest : GameTest
             Assert.That(resources.Journal[0].Success, Is.False);
             Assert.That(resources.Ram, Is.EqualTo(resources.MaxRam - 5 - (remote ? 1 : 0)));
             Assert.That(SEntMan.HasComponent<StunnedComponent>(target), Is.False);
+            var remainingCooldown = (resources.Cooldowns[NeuralOverload] - SGameTiming.CurTime).TotalSeconds;
+            Assert.That(remainingCooldown, Is.GreaterThan(0).And.LessThanOrEqualTo(4.0));
+            var actionPrototype = SProtoMan.Index(NeuralOverload).Action;
+            var action = resources.GrantedActions.Find(uid => SEntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID == actionPrototype);
+            Assert.That(SEntMan.GetComponent<ActionComponent>(action).Cooldown?.End, Is.EqualTo(resources.Cooldowns[NeuralOverload]));
         });
     }
 

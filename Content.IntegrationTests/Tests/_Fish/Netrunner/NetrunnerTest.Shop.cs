@@ -101,4 +101,32 @@ public sealed partial class NetrunnerTest
             Assert.That(duration.TotalSeconds, Is.EqualTo(7).Within(0.001));
         });
     }
+
+    private static readonly ProtoId<Content.Shared.Store.ListingPrototype> UplinkKit = "FishUplinkNetrunnerKit";
+
+    [Test]
+    public async Task UplinkKitListingGrantsJacketSeparatelyFromBox()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid user = default;
+        var foundJacket = false;
+        await Server.WaitPost(() =>
+        {
+            user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
+            var listing = SProtoMan.Index(UplinkKit);
+            Assert.That(listing.ProductEvent, Is.TypeOf<NetrunnerGrantBundleItemEvent>());
+            Assert.That(listing.RaiseProductEventOnUser, Is.True);
+            SEntMan.EventBus.RaiseLocalEvent(user, listing.ProductEvent!);
+            var query = SEntMan.EntityQueryEnumerator<MetaDataComponent>();
+            while (query.MoveNext(out _, out var meta))
+            {
+                if (meta.EntityPrototype?.ID == "FishClothingOuterCyberpunkJacket")
+                {
+                    foundJacket = true;
+                    break;
+                }
+            }
+        });
+        await Server.WaitAssertion(() => Assert.That(foundJacket, Is.True));
+    }
 }

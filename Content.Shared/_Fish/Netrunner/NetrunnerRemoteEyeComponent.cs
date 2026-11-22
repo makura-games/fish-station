@@ -10,4 +10,7 @@ public sealed partial class NetrunnerRemoteEyeComponent : Component
     [AutoNetworkedField] public EntityUid User;
     /// <summary>Only cameras belonging to this station may provide vision.</summary>
     [AutoNetworkedField] public EntityUid Station;
+    /// <summary>Active script cast window for rendering progress above the netrunner eye.</summary>
+    [AutoNetworkedField] public TimeSpan CastStart;
+    [AutoNetworkedField] public TimeSpan CastEnd;
 }

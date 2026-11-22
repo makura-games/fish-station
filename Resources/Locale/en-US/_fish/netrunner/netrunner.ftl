@@ -7,7 +7,7 @@ fish-netrunner-target-hint = Use script actions to select a visible target. For 
 fish-netrunner-resources = RAM: { $ram }/{ $max } | Trace: { $trace }% | Cooling: { $cooldown } s
 fish-netrunner-connecting = Connecting to the chair...
 fish-netrunner-connected = Remote connection active. Your body is exposed.
-fish-netrunner-local = Local mode. Lie in a powered chair to access cameras.
+fish-netrunner-local = Local mode. Sit in a powered chair to access cameras.
 fish-netrunner-casting = Executing program: { $seconds } s
 fish-netrunner-duplicate = Only one netrunner implant can be active.
 fish-netrunner-unavailable = Program unavailable. Check RAM, cooldown, target and line of sight.
@@ -56,7 +56,7 @@ fish-netrunner-visor-inactive = VISOR / OFFLINE
 fish-netrunner-wallet-infinite = Links: ∞ | Scripts: { $count }
 fish-netrunner-wallet = Links: { $links } | Scripts: { $count }
 fish-netrunner-empty-hint = No scripts purchased yet. Open the shop and select your first programs using neural links.
-fish-netrunner-remote-hint = Use ordinary movement controls. Working cameras on your station provide vision. Moving interrupts script activation. Closing this window preserves the connection.
+fish-netrunner-remote-hint = Use ordinary movement controls. Working cameras on your station provide vision. Closing this window preserves the connection.
 fish-netrunner-shop-open = Script shop
 fish-netrunner-shop-title = Cybersun catalog
 fish-netrunner-shop-balance = Neural links: { $links }
@@ -127,6 +127,10 @@ ent-FishActionNetrunnerTerminal = netrunner terminal
     .desc = Check memory, camera connection and recent programs, or open the script shop.
     .suffix = Fish
 
+ent-FishActionNetrunnerJumpToChair = jump to chair
+    .desc = Returns your netrunner eye back to the chair.
+    .suffix = Fish
+
 ent-FishActionNetrunnerOpenAirlock = open airlock
     .desc = Opens one powered, unbolted airlock. Physical locks are not bypassed.
     .suffix = Fish
@@ -155,20 +159,35 @@ ent-FishNetrunnerManual = neural terminal manual
     .desc = An instruction sheet bearing the Cybersun Industries LLC logo.
     .suffix = Fish
 
-ent-FishNetrunnerRemoteEye = neural camera viewer
+ent-FishNetrunnerRemoteEye = netrunner eye
     .desc = A mobile viewer for a neural interface.
     .suffix = Fish
 
+stack-fish-coolant-pack = coolant pack
+fish-coolant-pack-already-cool = The body is already cool enough.
+
+ent-FishCoolantPack = coolant pack
+    .desc = A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
+    .suffix = Fish
+
+ent-FishCoolantPack3 = coolant pack
+    .desc = A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
+    .suffix = Fish
+
+ent-FishCoolantPack1 = coolant pack
+    .desc = A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
+    .suffix = Fish
+
 ent-FishActionNetrunnerShortCircuit = short circuit
-    .desc = Damages a borg's electronic chassis with an electrical overload. Organic targets are incompatible.
+    .desc = Damages a borg's or IPC's electronic chassis with an electrical overload and knocks them down for 5 seconds. Organic targets are incompatible.
     .suffix = Fish
 
 ent-FishActionNetrunnerMotorInterference = motor interference
-    .desc = Slows a borg or a genuine mindshield implant wearer by 35 percent for 7 seconds. Does not paralyze the target.
+    .desc = Slows a borg, IPC or a genuine mindshield implant wearer by 35 percent for 7 seconds. Does not paralyze the target.
     .suffix = Fish
 
 ent-FishActionNetrunnerOpticalGlitch = optical glitch
-    .desc = Obscures a borg's vision or a worn electronic HUD visor for 3 seconds. Removing the visor restores sight immediately.
+    .desc = Obscures a borg's or IPC's optics or a worn electronic HUD visor for 3 seconds. Removing the visor restores sight immediately.
     .suffix = Fish
 
 ent-FishActionNetrunnerLockWeapon = lock energy weapon
@@ -176,19 +195,19 @@ ent-FishActionNetrunnerLockWeapon = lock energy weapon
     .suffix = Fish
 
 ent-FishActionNetrunnerGripShock = grip shock
-    .desc = Makes a borg or a genuine mindshield wearer drop their active item. Unimplanted humans are incompatible.
+    .desc = Makes a borg, IPC or a genuine mindshield wearer drop their active item. Unimplanted humans are incompatible.
     .suffix = Fish
 
 ent-FishActionNetrunnerNeuralStatic = neural static
-    .desc = Inflicts 30 stamina damage on a borg or a genuine mindshield wearer, subject to resistance. One activation does not guarantee a stun.
+    .desc = Inflicts 30 stamina damage on a borg, IPC or a genuine mindshield wearer, subject to resistance. One activation does not guarantee a stun.
     .suffix = Fish
 
 ent-FishActionNetrunnerThermalSurge = thermal surge
-    .desc = Raises a borg's or genuine mindshield wearer's temperature by up to 6 degrees, subject to heat resistance. Repeated use increases overheating risk.
+    .desc = Raises a borg's, IPC's or genuine mindshield wearer's temperature by up to 6 degrees, subject to heat resistance. Repeated use increases overheating risk.
     .suffix = Fish
 
 ent-FishActionNetrunnerBatteryDrain = battery drain
-    .desc = Removes up to 10 percent of a borg's or energy weapon's full battery capacity. Target the gun or its holder with the gun in the active hand; conventional firearms are incompatible.
+    .desc = Removes up to 10 percent of a borg's, IPC's or energy weapon's full battery capacity. Target the gun or its holder with the gun in the active hand; conventional firearms are incompatible.
     .suffix = Fish
 
 ent-FishActionNetrunnerLockAirlock = hold airlock
@@ -200,41 +219,34 @@ ent-FishActionNetrunnerEraseTrace = buffer purge
     .suffix = Fish
 
 fish-netrunner-manual-content =
-    Thank you for purchasing the new Neural Terminal kit from Cybersun Industries LLC!
+    { "[head=1]" }Manual: Neural Terminal[/head]
+    ================================================
+    Thank you for purchasing the [bold]Neural Terminal[/bold] kit from [bold]Cybersun Industries LLC[/bold]!
 
-    Operating instructions:
+    { "[head=2]" }1. Contents and installation[/head]
+    The kit includes an implanter, a neural interface chair board, 3 coolant packs, this holographic manual, and a corporate jacket (delivered separately from the box). Metal, cable, manipulators and power must be obtained separately. Install the implant and invoke the neural terminal interface. A new implant starts with no purchased scripts and receives [bold]12 neural links[/bold] once. Open [bold]Script shop[/bold] to download programs and expansions into quick access.
 
-    1. Contents and installation
-    The kit contains an implanter, a neural interface machine board, a corporate jacket and this document. Metal, cable, manipulators and power must be obtained separately. Install the implant using the supplied implanter, then open the neural terminal action. A new implant has no purchased scripts. It receives 12 neural links once. The Script shop button opens the program and expansion catalog. Purchasing a script grants its action.
+    { "[head=2]" }2. Hardware expansions[/head]
+    Three memory expansions each add [bold]2 RAM[/bold] (max [bold]18 RAM[/bold]). Three activation accelerators each remove [bold]10%[/bold] of base activation time (max [bold]30%[/bold]). Successive upgrades of the same type cost [bold]6, 10 and 14 links[/bold]. Added memory starts empty and fills during recovery. Neural overload always requires at least 6 seconds to activate.
+    The [bold]netrunner visor[/bold] costs [bold]30 links[/bold] (one order per implant). Worn over the eyes, it divides cooldowns by 1.5, doubles body heating per activation and outlines genuine mindshield wearers with a blue-cyan contour that dims in darkness.
 
-    2. Hardware expansions
-    Three memory expansions each add 2 RAM, for a maximum capacity of 18 RAM. Three activation accelerators each remove 10 percent of the original activation time, up to 30 percent. Successive upgrades of the same type cost 6, 10 and 14 links. Added memory starts empty and fills during recovery. Acceleration does not reduce RAM costs, trace or cooldowns. Neural overload always requires at least 6 seconds to activate.
-    The netrunner visor costs 30 links. When worn in the eyes slot, it divides script and global cooldowns by 1.5 while preserving memory costs and activation times. It doubles body heating per activation and displays genuine mindshields. One implant permits one visor order. Removing it disables acceleration; network disruption temporarily disables the visor.
+    { "[head=2]" }3. Local operation[/head]
+    Select a purchased script and a visible compatible target (6 m range for infrastructure, 5 m for most combat scripts, 6 m center for area blackout). Walls block local connections.
+    Movement does not cancel activation while the target stays in sight; damage, losing the target, or interacting with your surroundings [bold](E)[/bold] cancels execution. An interrupted script's cooldown is capped at [bold]4 seconds[/bold]. Baseline recovery is 1 RAM every 10 seconds after an 8-second delay.
 
-    3. Local operation
-    Select a purchased script and a visible compatible target. Infrastructure scripts have a 6 metre range and most combat scripts a 5 metre range. Area blackout requires a visible center within 6 metres. Walls and closed obstructions prevent local connections. Movement or damage to the operator interrupts activation. Only one script may activate at a time. Baseline memory recovery is 1 RAM every 10 seconds, beginning 8 seconds after operation.
+    { "[head=2]" }4. Chair and netrunner eye[/head]
+    Assemble a machine frame with the board, [bold]5 steel, 5 cable and 2 manipulators[/bold], anchor and power it, then sit in the chair. Connection takes 5 seconds and 1 RAM, switches view to the [bold]netrunner eye[/bold] at the nearest camera and enables [bold]Jump to chair[/bold].
+    Guide the eye through bulkheads with ordinary movement effort. Working cameras on your station and the area around your chair provide vision; uncovered areas show static. Visible objects can be examined in eye mode. Scripts cancel if the target leaves vision or enters static. Minimizing the terminal interface preserves the connection; use [bold]Disconnect[/bold] or unbuckle to exit.
 
-    4. Neural interface
-    Assemble a machine frame with the supplied board, 5 units of steel, 5 cable and 2 manipulators. Anchor the machine and connect it to power. Lie in the chair. Connection takes 5 seconds and consumes 1 RAM. The terminal selects the nearest available camera automatically.
-    Ordinary movement controls move the observation channel through physical walls. Only functioning cameras on the chair's station supply an image. Uncovered areas, disabled cameras and other stations provide no vision. Selecting a camera moves the channel to that camera. Remote scripts require camera coverage and their normal range. Moving the channel interrupts activation.
-    Closing the terminal window preserves the connection. Use Disconnect or release the chair restraints to leave. Power failure, implant extraction, loss of consciousness, death or session termination disconnect the operator.
+    { "[head=2]" }5. Cooling and neural links[/head]
+    A powered chair restores [bold]0.4 RAM/s[/bold], decays trace by [bold]0.3%/s[/bold], and consumes 1 RAM upkeep every 20 seconds. Each newly hacked device grants [bold]1 neural link[/bold] once. Quiet operation at up to 30% trace compiles 1 link per 60 seconds (up to 20 per implant). Credits, scripts and upgrades survive extraction.
 
-    5. Cooling and neural links
-    A powered chair restores 0.4 RAM per second after the recovery delay. Connection upkeep consumes 1 RAM every 20 seconds. Trace decays by 0.3 percentage points per second in the chair instead of the baseline 0.1. Insufficient upkeep memory causes disconnection.
-    Each newly hacked device grants 1 neural link once. Repeated interference with the same device earns nothing. The chair compiles 1 link per 60 seconds of uninterrupted quiet operation at no more than 30 percent trace. Script activation or higher trace restarts compilation. Passive production is limited to 20 links per implant. Credits, purchased programs and hardware upgrades survive extraction and reinstallation.
+    { "[head=2]" }6. Script compatibility[/head]
+    { "[bold]" }Infrastructure:[/bold] Open airlock opens a powered unbolted airlock; Hold airlock prevents opening a closed airlock for 12 s without changing bolts. Both actions are recorded in the airlock's access log (readable with a log probe). Disrupt camera disables a camera for 20 s. Area blackout suppresses powered lights in a 7 m radius for 5 minutes.
+    { "[bold]" }Covert:[/bold] Disrupt suit sensors (20 s), Disrupt headset (15 s), and Buffer purge (clears device netrunner diagnostics; airlock records also expire after 10 minutes).
+    { "[bold]" }Combat:[/bold] Short circuit (electric damage and 5 s knockdown on borgs or IPCs), Motor interference (35% slow for 7 s on borgs, IPCs or mindshielded), Optical glitch (3 s blindness on borgs, IPCs or HUD glasses), Lock energy weapon (6 s), Grip shock, Neural static (30 stamina damage), Thermal surge (up to +6 °C), Battery drain (up to 10% on borgs, IPCs or energy weapons).
+    { "[bold]" }Neural overload[/bold] requires a genuine mindshield: 6 s paralysis, 10 RAM, 90% trace, 180 s cooldown, with no target or security alerts.
 
-    6. Script compatibility
-    Open airlock performs one opening cycle on a powered, unbolted airlock. Bolts and physical locks are not bypassed. Camera disruption lasts 20 seconds. Area blackout suppresses powered lights within a 7 metre radius for 5 minutes; remote execution only affects camera covered lights. Worn suit sensor suppression lasts 20 seconds and headset transmission and reception suppression 15 seconds. Original device settings are preserved.
-    Short circuit inflicts electrical damage on a borg, subject to chassis protection. Motor interference slows a borg or genuine mindshield implant wearer by 35 percent for 7 seconds. Optical glitch obscures borg optics or a worn electronic HUD visor for 3 seconds. Removing the visor restores sight. Energy weapon lock prevents firing for 6 seconds. Target the gun or a person holding it in their active hand. Conventional firearms are incompatible.
-    Neural overload requires a genuine mindshield implant. Fake implants and unimplanted targets are incompatible. It paralyzes the target for 6 seconds, costs 10 RAM, generates 90 percent trace and has a 180 second cooldown. It transmits no target or security warning and shows no connection or stun indicator. Physiological consequences remain observable.
-    Grip shock makes a borg or genuine mindshield wearer drop their active item. Neural static inflicts 30 stamina damage on compatible targets, subject to resistance. Thermal surge raises their temperature by up to 6 degrees, subject to heat protection. Battery drain removes up to 10 percent of a borg's or energy weapon's full battery capacity. Targeting a person requires a compatible gun in their active hand.
-    Hold airlock prevents a closed, powered, unbolted airlock from opening for 12 seconds without changing its bolts. Buffer purge clears the selected device's interference diagnostics while retaining the operator's journal and server audit. Each airlock netrunner record expires automatically after 10 minutes.
-
-    7. Operating risks
-    The operator's body remains in the chair. Observation does not protect it from attack, suffocation, bleeding or environmental hazards. The chair is neither a medical device nor a stasis unit.
-    Every activation heats the body in proportion to memory cost: 0.18 degrees per RAM normally and 0.36 with the visor. Interruption does not undo heat already applied. Monitor terminal thermometry and take breaks under high load. Faster chair memory recovery does not replace medical body cooling.
-    Some scripts permit consumption of up to 4 RAM beyond available memory. Memory deficit and rapid repeated execution cause bleeding, temporary paralysis and additional trace. New scripts cannot start while RAM is negative. A memory reserve is recommended.
-    Activation immediately generates partial trace even if interrupted. Interrupted neural overload also consumes half its RAM cost. Interference is recorded in terminal and device diagnostics; neural overload leaves no public target record. Trace thresholds of 30, 60 and 90 percent may alert security to the operator's or chair's approximate sector, except during neural overload. Extraction does not clear logs, trace or cooldowns.
-
-    8. Terms of use
-    The operator must supply power, physical protection and compatible targets. Cybersun Industries LLC does not guarantee concealment when combat scripts are used and does not compensate for operation beyond rated load. Store this document separately from working logs.
+    { "[head=2]" }7. Operating risks[/head]
+    Your body remains vulnerable in the chair. Every activation heats the body by [bold]0.135 °C per RAM[/bold] normally and [bold]0.27 °C per RAM[/bold] with the visor. Interruption does not undo heat already applied. Use a [bold]coolant pack[/bold] to rapidly cool the body down to 20 °C.
+    Some scripts allow up to 4 RAM deficit (RAM stops at 0 while the deficit and rapid bursts cause bleeding, brief paralysis and extra trace). Trace thresholds of 30, 60 and 90% may alert security (except neural overload). Cybersun Industries LLC does not guarantee concealment during combat use.

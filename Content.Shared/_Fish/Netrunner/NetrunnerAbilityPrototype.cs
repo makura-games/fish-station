@@ -101,6 +101,9 @@ public sealed partial class NetrunnerAreaHackActionEvent : WorldTargetActionEven
 /// <summary>Opens the implant terminal.</summary>
 public sealed partial class NetrunnerTerminalActionEvent : InstantActionEvent;
 
+/// <summary>Returns the mobile netrunner eye back to the chair.</summary>
+public sealed partial class NetrunnerJumpToChairActionEvent : InstantActionEvent;
+
 /// <summary>Completes the one currently reserved program.</summary>
 [Serializable, NetSerializable]
 public sealed partial class NetrunnerHackDoAfterEvent : SimpleDoAfterEvent;

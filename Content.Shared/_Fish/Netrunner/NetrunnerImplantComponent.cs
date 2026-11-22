@@ -17,7 +17,7 @@ public sealed partial class NetrunnerImplantComponent : Component
     /// <summary>Administrative demonstration mode with free, instant programs.</summary>
     [DataField] public bool DebugMode;
     /// <summary>Body temperature increase per RAM reserved by a normal activation.</summary>
-    [DataField] public float HeatPerRam = 0.18f;
+    [DataField] public float HeatPerRam = 0.135f;
     /// <summary>Price of a physical cooldown accelerator in the private shop.</summary>
     [DataField] public int VisorPrice = 30;
     /// <summary>Prevents duplicate physical visor purchases from one implant.</summary>
@@ -69,6 +69,8 @@ public sealed partial class NetrunnerImplantComponent : Component
     public EntityUid? Camera;
     /// <summary>Mobile, nonphysical viewer controlled through the body.</summary>
     public EntityUid? RemoteEye;
+    /// <summary>Temporary action granted while connected to a netrunner chair.</summary>
+    public EntityUid? JumpToChairAction;
     /// <summary>The body's original eye settings, restored on disconnection.</summary>
     public EntityUid? OriginalEyeTarget;
     public bool OriginalDrawFov;
@@ -86,12 +88,18 @@ public sealed class NetrunnerPendingHack
     public required EntityUid Target;
     public required EntityUid Device;
     public required EntityUid Origin;
-    /// <summary>Movement of the remote viewer interrupts an in-flight program.</summary>
-    public required EntityCoordinates OriginCoordinates;
     public required TimeSpan FinishesAt;
     /// <summary>Fixed location chosen for an area activation.</summary>
     public EntityCoordinates? AreaCoordinates;
     /// <summary>Candidate lights gathered once, then validated again at completion.</summary>
     public List<EntityUid>? AreaTargets;
     public DoAfterId? DoAfter;
+}
+
+/// <summary>Spawns an additional bundle item separately from the purchased kit box.</summary>
+[DataDefinition]
+public sealed partial class NetrunnerGrantBundleItemEvent : EntityEventArgs
+{
+    [DataField(required: true)]
+    public EntProtoId Prototype;
 }

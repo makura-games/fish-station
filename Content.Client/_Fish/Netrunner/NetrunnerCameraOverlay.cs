@@ -80,7 +80,7 @@ public sealed partial class NetrunnerCameraOverlay : Overlay
                 resources.Grid = gridUid;
                 resources.NextUpdate = _timing.CurTime + TimeSpan.FromSeconds(0.1);
                 _entities.System<StationAiVisionSystem>().GetNetrunnerView(
-                    (gridUid, broadphase!, grid), bounds, viewer!.Station, resources.VisibleTiles);
+                    (gridUid, broadphase!, grid), bounds, viewer!.Station, resources.VisibleTiles, user!.Chair);
             }
         }
         else

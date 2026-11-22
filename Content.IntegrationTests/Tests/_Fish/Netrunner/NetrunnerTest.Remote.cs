@@ -5,8 +5,12 @@ using Content.Server.Body.Components;
 using Content.Server.Power.Components;
 using Content.Server.SurveillanceCamera;
 using Content.Shared._Fish.Netrunner;
+using Content.Shared.Access.Components;
+using Content.Shared.Actions;
 using Content.Shared.Buckle;
+using Content.Shared.Eye;
 using Content.Shared.Implants;
+using Content.Shared.Input;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Power;
@@ -212,6 +216,155 @@ public sealed partial class NetrunnerTest
             var broadphase = SEntMan.GetComponent<BroadphaseComponent>(map.Grid);
             Assert.That(SEntMan.System<StationAiVisionSystem>().IsNetrunnerAccessible(
                 (map.Grid, broadphase, map.Grid.Comp), tile, station), Is.False);
+        });
+    }
+
+    [Test]
+    public async Task NetrunnerEyeVisibilityJumpToChairAirlockLogAndActivateCancel()
+    {
+        var map = await Pair.CreateTestMap();
+        EntityUid user = default;
+        EntityUid chair = default;
+        EntityUid implant = default;
+        EntityUid remote = default;
+        EntityUid door = default;
+        EntityUid ghost = default;
+        EntityUid ai = default;
+        EntityUid abductorEye = default;
+        EntityUid revenant = default;
+        EntityUid jaunt = default;
+        EntityUid bystander = default;
+        NetEntity jumpActionNet = default;
+        await Server.WaitPost(() =>
+        {
+            var station = SEntMan.SpawnEntity(null, MapCoordinates.Nullspace);
+            SEntMan.EnsureComponent<StationMemberComponent>(map.Grid).Station = station;
+            for (var i = 1; i <= 5; i++)
+                SEntMan.System<SharedMapSystem>().SetTile(map.Grid, map.Grid.Comp,
+                    new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX * i), map.Tile.Tile);
+
+            user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
+            SEntMan.RemoveComponent<RespiratorComponent>(user);
+            Server.PlayerMan.SetAttachedEntity(ServerSession!, user);
+            implant = SEntMan.System<SharedSubdermalImplantSystem>().AddImplant(user, "FishNetrunnerImplant")!.Value;
+            SEntMan.System<NetrunnerSystem>().TryBuyProgram(
+                (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, "FishNetrunnerOpenAirlock");
+            SEntMan.System<NetrunnerSystem>().TryBuyProgram(
+                (implant, SEntMan.GetComponent<NetrunnerImplantComponent>(implant)), user, "FishNetrunnerLockAirlock");
+
+            door = SEntMan.SpawnEntity("Airlock",
+                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX));
+            SetPowered(door);
+
+            chair = SEntMan.SpawnEntity("FishNetrunnerChair", map.GridCoords);
+            SetPowered(chair);
+            var camera = SEntMan.SpawnEntity("SurveillanceCameraEngineering",
+                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX * 3));
+            SetPowered(camera);
+
+            SEntMan.System<TagSystem>().AddTag(user, InstantDoAftersTag);
+            SEntMan.System<SharedBuckleSystem>().TryBuckle(user, user, chair);
+            SEntMan.System<TagSystem>().RemoveTag(user, InstantDoAftersTag);
+
+            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
+            remote = resources.RemoteEye!.Value;
+            jumpActionNet = SEntMan.GetNetEntity(resources.JumpToChairAction!.Value);
+
+            ghost = SEntMan.SpawnEntity("MobObserver", map.GridCoords);
+            ai = SEntMan.SpawnEntity("StationAiBrain", map.GridCoords);
+            SEntMan.EnsureComponent<StationAiHeldComponent>(ai);
+            abductorEye = SEntMan.SpawnEntity("AbductorHumanObservationConsoleEye", map.GridCoords);
+            revenant = SEntMan.SpawnEntity("MobRevenant", map.GridCoords);
+            jaunt = SEntMan.SpawnEntity("EtherealJaunt", map.GridCoords);
+            bystander = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
+
+            var eyeSys = SEntMan.System<SharedEyeSystem>();
+            eyeSys.RefreshVisibilityMask(ghost);
+            eyeSys.RefreshVisibilityMask(ai);
+            eyeSys.RefreshVisibilityMask(abductorEye);
+            eyeSys.RefreshVisibilityMask(revenant);
+            eyeSys.RefreshVisibilityMask(jaunt);
+            eyeSys.RefreshVisibilityMask(bystander);
+        });
+
+        await Pair.RunUntilSynced();
+        await Server.WaitAssertion(() =>
+        {
+            var netMask = (int) VisibilityFlags.Netrunner;
+            Assert.That(SEntMan.GetComponent<VisibilityComponent>(remote).Layer, Is.EqualTo(netMask));
+            Assert.That((SEntMan.GetComponent<EyeComponent>(remote).VisibilityMask & netMask) != 0, Is.True);
+            Assert.That((SEntMan.GetComponent<EyeComponent>(ghost).VisibilityMask & netMask) != 0, Is.True);
+            Assert.That((SEntMan.GetComponent<EyeComponent>(ai).VisibilityMask & netMask) != 0, Is.True);
+            Assert.That((SEntMan.GetComponent<EyeComponent>(abductorEye).VisibilityMask & netMask) != 0, Is.False);
+            Assert.That((SEntMan.GetComponent<EyeComponent>(revenant).VisibilityMask & netMask) != 0, Is.False);
+            Assert.That((SEntMan.GetComponent<EyeComponent>(jaunt).VisibilityMask & netMask) != 0, Is.False);
+            Assert.That((SEntMan.GetComponent<EyeComponent>(bystander).VisibilityMask & netMask) != 0, Is.False);
+            Assert.That(SEntMan.GetComponent<NetrunnerImplantComponent>(implant).JumpToChairAction, Is.Not.Null);
+        });
+
+        // Verify jump to chair returns eye to chair coordinates.
+        await Server.WaitPost(() => SEntMan.System<SharedTransformSystem>().SetCoordinates(remote,
+            new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitX * 4)));
+        await Client.WaitPost(() => CEntMan.RaisePredictiveEvent(new RequestPerformActionEvent(jumpActionNet)));
+        await Pair.RunSeconds(0.25f);
+        await Server.WaitAssertion(() =>
+        {
+            var xform = SEntMan.System<SharedTransformSystem>();
+            Assert.That(Vector2.Distance(xform.GetWorldPosition(remote), xform.GetWorldPosition(chair)), Is.LessThan(0.1f));
+        });
+
+        // Verify airlock script logs to AccessReaderComponent for LogProbe.
+        await Server.WaitPost(() =>
+        {
+            SEntMan.System<SharedBuckleSystem>().TryUnbuckle(user, user);
+            SEntMan.System<TagSystem>().AddTag(user, InstantDoAftersTag);
+            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
+            SEntMan.System<NetrunnerSystem>().TryStartHack((implant, resources), user, door, "FishNetrunnerOpenAirlock");
+            SEntMan.System<TagSystem>().RemoveTag(user, InstantDoAftersTag);
+        });
+        await Server.WaitAssertion(() =>
+        {
+            var accessReader = SEntMan.GetComponent<AccessReaderComponent>(door);
+            var doorName = SEntMan.GetComponent<MetaDataComponent>(door).EntityName;
+            var hasLog = false;
+            foreach (var record in accessReader.AccessLog)
+            {
+                if (record.Accessor.Contains(doorName))
+                    hasLog = true;
+            }
+            Assert.That(hasLog, Is.True);
+            Assert.That(SEntMan.GetComponent<NetrunnerImplantComponent>(implant).JumpToChairAction, Is.Null);
+        });
+
+        // Verify pressing ActivateItemInWorld (E/У) cancels an active script.
+        await Server.WaitPost(() =>
+        {
+            var closedDoor = SEntMan.SpawnEntity("Airlock",
+                new EntityCoordinates(map.GridCoords.EntityId, map.GridCoords.Position + Vector2.UnitY));
+            SetPowered(closedDoor);
+            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
+            resources.ReadyAt = TimeSpan.Zero;
+            resources.Cooldowns.Clear();
+            Assert.That(SEntMan.System<NetrunnerSystem>().TryStartHack((implant, resources), user, closedDoor, "FishNetrunnerLockAirlock"), Is.True);
+        });
+        await Pair.RunSeconds(0.25f);
+        await Client.WaitPost(() =>
+        {
+            var key = ContentKeyFunctions.ActivateItemInWorld;
+            var functionId = Client.ResolveDependency<IInputManager>().NetworkBindMap.KeyFunctionID(key);
+            var message = new ClientFullInputCmdMessage(CGameTiming.CurTick, CGameTiming.TickFraction, functionId)
+            {
+                State = BoundKeyState.Down,
+                Coordinates = EntityCoordinates.Invalid,
+                Uid = EntityUid.Invalid,
+            };
+            Client.System<Robust.Client.GameObjects.InputSystem>().HandleInputCommand(Client.Session, key, message);
+        });
+        await Pair.RunSeconds(0.25f);
+        await Server.WaitAssertion(() =>
+        {
+            var resources = SEntMan.GetComponent<NetrunnerImplantComponent>(implant);
+            Assert.That(resources.Pending, Is.Null, "Pressing ActivateItemInWorld must cancel the active script.");
         });
     }
 }

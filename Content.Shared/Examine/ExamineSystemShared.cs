@@ -145,6 +145,10 @@ namespace Content.Shared.Examine
             if (!examinerComp.CheckInRangeUnOccluded)
                 return true;
 
+            // Fish-edit: В режиме глаза нетраннера осмотр проверяется по зоне видимости камер и кресла.
+            if (TryCanExamineFromNetrunnerEye(examiner, target, out var netrunnerCanExamine))
+                return netrunnerCanExamine;
+
             if (Comp<TransformComponent>(examiner).MapID != target.MapId)
                 return false;
 

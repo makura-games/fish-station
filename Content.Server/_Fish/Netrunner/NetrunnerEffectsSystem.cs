@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Netrunner;
 using Content.Shared.Doors.Components;
 using Content.Shared.Doors.Systems;
@@ -21,6 +22,7 @@ using Content.Shared.Overlays;
 using Content.Shared.Radio.Components;
 using Content.Shared.Stunnable;
 using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared.Silicons.Laws.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.SurveillanceCamera.Components;
 using Content.Server.SurveillanceCamera;
@@ -206,7 +208,15 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
                 if (!CanAffectCombatTarget(ent, args.Ability.Kind, out var device) || device != args.Device)
                     break;
                 if (args.Ability.Kind == NetrunnerHackKind.ShortCircuit)
-                    args.Applied = _damageable.TryChangeDamage((ent.Owner, null), args.Ability.Damage, origin: args.User);
+                {
+                    var damaged = _damageable.TryChangeDamage((ent.Owner, null), args.Ability.Damage, origin: args.User);
+                    // Fish-edit: Короткое замыкание опрокидывает борга/КПБ аналогично ЭМАГ/ФриМАГ.
+                    var stunTime = TryComp<EmagSiliconLawComponent>(ent, out var emagLaw) && emagLaw.StunTime > TimeSpan.Zero
+                        ? emagLaw.StunTime
+                        : TimeSpan.FromSeconds(5);
+                    var stunned = _stun.TryUpdateParalyzeDuration(ent, stunTime);
+                    args.Applied = damaged || stunned;
+                }
                 else
                 {
                     Suppress(args.Device, args.Ability, ent);
@@ -262,6 +272,9 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
         => HasComp<GunComponent>(weapon) && HasComp<BatteryAmmoProviderComponent>(weapon)
             && !HasComp<NetrunnerDisruptionComponent>(weapon);
 
+    private bool IsSyntheticTarget(EntityUid target)
+        => HasComp<BorgChassisComponent>(target) || HasComp<FishIpcComponent>(target);
+
     private bool CanAffectCombatTarget(EntityUid target, NetrunnerHackKind kind, out EntityUid device)
     {
         device = target;
@@ -270,19 +283,20 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
         switch (kind)
         {
             case NetrunnerHackKind.ShortCircuit:
-                return HasComp<BorgChassisComponent>(target) && HasComp<DamageableComponent>(target);
+                return IsSyntheticTarget(target) && HasComp<DamageableComponent>(target);
             case NetrunnerHackKind.MotorInterference:
-                return (HasComp<BorgChassisComponent>(target) || HasMindshieldImplant(target))
+                return (IsSyntheticTarget(target) || HasMindshieldImplant(target))
                     && !HasComp<NetrunnerDisruptionComponent>(target);
             case NetrunnerHackKind.OpticalGlitch:
                 if (!HasComp<BlindableComponent>(target))
                     return false;
-                if (HasComp<BorgChassisComponent>(target))
+                if (IsSyntheticTarget(target))
                     return !HasComp<NetrunnerDisruptionComponent>(target);
                 if (!_inventory.TryGetSlotEntity(target, "eyes", out var glasses)
                     || !(HasComp<ShowHealthBarsComponent>(glasses) || HasComp<ShowHealthIconsComponent>(glasses)
                         || HasComp<ShowJobIconsComponent>(glasses) || HasComp<ShowCriminalRecordIconsComponent>(glasses)
-                        || HasComp<ShowMindShieldIconsComponent>(glasses)))
+                        || HasComp<ShowMindShieldIconsComponent>(glasses)
+                        || HasComp<ShowNetrunnerMindShieldIconsComponent>(glasses)))
                     return false;
                 device = glasses.Value;
                 return !HasComp<NetrunnerDisruptionComponent>(device);
@@ -292,13 +306,13 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
                 device = gun.Value;
                 return true;
             case NetrunnerHackKind.GripShock:
-                return (HasComp<BorgChassisComponent>(target) || HasMindshieldImplant(target))
+                return (IsSyntheticTarget(target) || HasMindshieldImplant(target))
                     && _hands.TryGetActiveItem((target, null), out _);
             case NetrunnerHackKind.NeuralStatic:
-                return (HasComp<BorgChassisComponent>(target) || HasMindshieldImplant(target))
+                return (IsSyntheticTarget(target) || HasMindshieldImplant(target))
                     && HasComp<StaminaComponent>(target);
             case NetrunnerHackKind.ThermalSurge:
-                return (HasComp<BorgChassisComponent>(target) || HasMindshieldImplant(target))
+                return (IsSyntheticTarget(target) || HasMindshieldImplant(target))
                     && TryComp<TemperatureComponent>(target, out var temperature) && temperature.HeatCapacity > 0;
             case NetrunnerHackKind.BatteryDrain:
                 return TryGetDrainBattery(target, out device);
@@ -412,7 +426,7 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
     {
         device = default;
         var source = target;
-        if (!HasComp<BorgChassisComponent>(target) && !HasComp<BatteryAmmoProviderComponent>(target))
+        if (!IsSyntheticTarget(target) && !HasComp<BatteryAmmoProviderComponent>(target))
         {
             if (!_hands.TryGetActiveItem((target, null), out var gun) || !HasComp<BatteryAmmoProviderComponent>(gun))
                 return false;

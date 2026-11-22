@@ -1,3 +1,4 @@
+using System.Globalization;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Fish.Netrunner;
@@ -38,16 +39,17 @@ public sealed partial class NetrunnerWindow : FancyWindow
     public void UpdateState(NetrunnerUiState state)
     {
         DebugStatus.Visible = state.DebugMode;
-        RamLabel.Text = _loc.GetString("fish-netrunner-ram", ("ram", Round(state.Ram)), ("max", Round(state.MaxRam)));
-        RamMeter.MaxValue = MathF.Max(1, Round(state.MaxRam));
-        RamMeter.Value = Math.Clamp(state.Ram, 0, RamMeter.MaxValue);
+        var displayRam = MathF.Max(0f, state.Ram);
+        RamLabel.Text = _loc.GetString("fish-netrunner-ram", ("ram", Round(displayRam)), ("max", Round(state.MaxRam)));
+        RamMeter.MaxValue = MathF.Max(1, MathF.Round(state.MaxRam, 1));
+        RamMeter.Value = Math.Clamp(displayRam, 0, RamMeter.MaxValue);
         TraceLabel.Text = _loc.GetString("fish-netrunner-trace", ("trace", Round(state.Trace)));
         TraceMeter.Value = Math.Clamp(state.Trace, 0, 100);
         Resources.Text = _loc.GetString("fish-netrunner-terminal-cooldown", ("seconds", Round(state.Cooldown)));
         Wallet.Text = state.DebugMode ? _loc.GetString("fish-netrunner-wallet-infinite", ("count", state.UnlockedCount))
             : _loc.GetString("fish-netrunner-wallet", ("links", state.NeuralLinks), ("count", state.UnlockedCount));
         Temperature.Text = state.HasBodyTemperature
-            ? _loc.GetString("fish-netrunner-temperature", ("temperature", MathF.Round(state.BodyTemperature, 1)))
+            ? _loc.GetString("fish-netrunner-temperature", ("temperature", Round(state.BodyTemperature)))
             : _loc.GetString("fish-netrunner-temperature-unavailable");
         var temperatureStyle = !state.HasBodyTemperature || state.BodyTemperature < 40 ? null
             : state.BodyTemperature >= 43 ? StyleClass.StatusCritical : StyleClass.StatusWarning;
@@ -90,5 +92,9 @@ public sealed partial class NetrunnerWindow : FancyWindow
         Journal.SetMessage(string.Join("\n", entries));
     }
 
-    private static float Round(float value) => MathF.Round(value, 1);
+    private static string Round(float value)
+    {
+        var rounded = MathF.Round(value, 1);
+        return (rounded == 0f ? 0f : rounded).ToString("0.#", CultureInfo.InvariantCulture);
+    }
 }

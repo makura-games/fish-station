@@ -3,50 +3,50 @@
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:net="clr-namespace:Content.Client._Fish.Netrunner.UI"
                       Title="{Loc fish-netrunner-title}"
-                      MinSize="420 510" SetSize="480 660">
+                      MinSize="440 520" SetSize="500 660">
     <PanelContainer StyleClasses="{x:Static net:NetrunnerSheetlet.Frame}">
-        <BoxContainer Orientation="Vertical" SeparationOverride="8">
-            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
-                <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                    <Label Text="{Loc fish-netrunner-brand}" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
-                    <Label Text="{Loc fish-netrunner-terminal-heading}" StyleClasses="{x:Static net:NetrunnerSheetlet.Heading}" />
+        <ScrollContainer HScrollEnabled="False" ReserveScrollbarSpace="True" VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" SeparationOverride="8" HorizontalExpand="True">
+                <BoxContainer Orientation="Vertical">
+                    <Label Text="{Loc fish-netrunner-brand}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+                    <Label Text="{Loc fish-netrunner-terminal-heading}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Heading}" />
                 </BoxContainer>
                 <Label Name="DebugStatus" Text="{Loc fish-netrunner-debug-status}" Visible="False" ClipText="True"
-                       StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" VAlign="Center" />
-            </BoxContainer>
-            <PanelContainer StyleClasses="{x:Static net:NetrunnerSheetlet.Panel}">
-                <BoxContainer Orientation="Vertical" SeparationOverride="4">
-                    <Label Name="RamLabel" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
-                    <ProgressBar Name="RamMeter" MinHeight="10" StyleClasses="{x:Static net:NetrunnerSheetlet.MemoryBar}" />
-                    <Label Name="TraceLabel" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
-                    <ProgressBar Name="TraceMeter" MinHeight="10" MaxValue="100" StyleClasses="{x:Static net:NetrunnerSheetlet.TraceBar}" />
-                    <Label Name="Resources" />
-                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
-                        <Label Name="Temperature" HorizontalExpand="True" />
-                        <Label Name="VisorStatus" StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" />
+                       StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" />
+                <PanelContainer StyleClasses="{x:Static net:NetrunnerSheetlet.Panel}">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                        <Label Name="RamLabel" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+                        <ProgressBar Name="RamMeter" MinHeight="10" StyleClasses="{x:Static net:NetrunnerSheetlet.MemoryBar}" />
+                        <Label Name="TraceLabel" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+                        <ProgressBar Name="TraceMeter" MinHeight="10" MaxValue="100" StyleClasses="{x:Static net:NetrunnerSheetlet.TraceBar}" />
+                        <Label Name="Resources" ClipText="True" />
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                            <Label Name="Temperature" HorizontalExpand="True" ClipText="True" />
+                            <Label Name="VisorStatus" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" />
+                        </BoxContainer>
                     </BoxContainer>
+                </PanelContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                    <Label Name="Wallet" HorizontalExpand="True" VAlign="Center" ClipText="True" />
+                    <Button Name="Shop" Text="{Loc fish-netrunner-shop-open}" VerticalAlignment="Center" />
                 </BoxContainer>
-            </PanelContainer>
-            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
-                <Label Name="Wallet" HorizontalExpand="True" VAlign="Center" ClipText="True" />
-                <Button Name="Shop" Text="{Loc fish-netrunner-shop-open}" StyleClasses="{x:Static net:NetrunnerSheetlet.Button}" VerticalAlignment="Center" />
+                <RichTextLabel Name="ConnectionStatus" HorizontalExpand="True" Margin="0 0 16 0"
+                               StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" />
+                <RichTextLabel Name="CastStatus" HorizontalExpand="True" Margin="0 0 16 0" />
+                <Label Text="{Loc fish-netrunner-camera-list}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+                <ItemList Name="Cameras" MinHeight="90" VerticalExpand="True" StyleClasses="{x:Static net:NetrunnerSheetlet.CameraList}" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                    <Button Name="Refresh" Text="{Loc fish-netrunner-refresh}" HorizontalExpand="True" />
+                    <Button Name="Disconnect" Text="{Loc fish-netrunner-disconnect}" HorizontalExpand="True" />
+                </BoxContainer>
+                <RichTextLabel Name="ControlHint" HorizontalExpand="True" Margin="0 0 16 0" />
+                <Label Text="{Loc fish-netrunner-journal}" ClipText="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
+                <PanelContainer StyleClasses="{x:Static net:NetrunnerSheetlet.Panel}" VerticalExpand="True">
+                    <ScrollContainer MinHeight="75" VerticalExpand="True" HScrollEnabled="False">
+                        <RichTextLabel Name="Journal" HorizontalExpand="True" Margin="0 0 16 0" StyleClasses="LabelMonospaceText" />
+                    </ScrollContainer>
+                </PanelContainer>
             </BoxContainer>
-            <RichTextLabel Name="ConnectionStatus" HorizontalExpand="True"
-                           StyleClasses="{x:Static net:NetrunnerSheetlet.Accent}" />
-            <RichTextLabel Name="CastStatus" HorizontalExpand="True" />
-            <Label Text="{Loc fish-netrunner-camera-list}" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
-            <ItemList Name="Cameras" MinHeight="90" VerticalExpand="True" StyleClasses="{x:Static net:NetrunnerSheetlet.CameraList}" />
-            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                <Button Name="Refresh" Text="{Loc fish-netrunner-refresh}" HorizontalExpand="True" StyleClasses="{x:Static net:NetrunnerSheetlet.Button}" />
-                <Button Name="Disconnect" Text="{Loc fish-netrunner-disconnect}" HorizontalExpand="True" StyleClasses="{x:Static net:NetrunnerSheetlet.DangerButton}" />
-            </BoxContainer>
-            <RichTextLabel Name="ControlHint" />
-            <Label Text="{Loc fish-netrunner-journal}" StyleClasses="{x:Static net:NetrunnerSheetlet.Caption}" />
-            <PanelContainer StyleClasses="{x:Static net:NetrunnerSheetlet.Panel}" VerticalExpand="True">
-                <ScrollContainer MinHeight="75" VerticalExpand="True" HScrollEnabled="False">
-                    <RichTextLabel Name="Journal" HorizontalExpand="True" StyleClasses="LabelMonospaceText" />
-                </ScrollContainer>
-            </PanelContainer>
-        </BoxContainer>
+        </ScrollContainer>
     </PanelContainer>
 </controls:FancyWindow>

@@ -12,5 +12,6 @@ namespace Content.Shared.Eye
         Subfloor = 1 << 2, // Pipes, disposal chutes, cables etc. while hidden under tiles. Can be revealed with a t-ray.
         Abductor  = 1 << 2, // Starlight-abductor
         Admin = 1 << 3, // Reserved for admins in stealth mode and admin tools.
+        Netrunner = 1 << 4, // Fish-edit: Глаз нетраннера, видимый только другим глазам нетраннера, ИИ станции и призракам.
     }
 }
