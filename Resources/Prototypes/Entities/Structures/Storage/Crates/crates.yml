@@ -194,6 +194,18 @@
     state: icon
   - type: Sprite
     sprite: Structures/Storage/Crates/sec_gear.rsi
+  # Fish-start
+  - type: Damageable
+    damageModifierSet: FishReinforcedPlasteelMod
+  - type: RattleOnDamage
+    radioChannels:
+    - Security
+    damageThreshold: 10
+    sound:
+      path: /Audio/Machines/warning_buzzer.ogg
+      params:
+        volume: 10
+  # Fish-end
   - type: AccessReader
     access: [["Security"]]
 
@@ -334,6 +346,18 @@
     sprite: Structures/Storage/Crates/weapon.rsi
   - type: Sprite
     sprite: Structures/Storage/Crates/weapon.rsi
+  # Fish-start
+  - type: Damageable
+    damageModifierSet: FishReinforcedPlasteelMod
+  - type: RattleOnDamage
+    radioChannels:
+    - Security
+    damageThreshold: 10
+    sound:
+      path: /Audio/Machines/warning_buzzer.ogg
+      params:
+        volume: 10
+  # Fish-end
   - type: AccessReader
     access: [["Armory"]]
   - type: Pierceable # Sunrise-edit - прострел ящиков
@@ -349,6 +373,18 @@
   components:
   - type: Sprite
     sprite: Structures/Storage/Crates/sec_gear.rsi
+  # Fish-start
+  - type: Damageable
+    damageModifierSet: FishReinforcedPlasteelMod
+  - type: RattleOnDamage
+    radioChannels:
+    - Security
+    damageThreshold: 10
+    sound:
+      path: /Audio/Machines/warning_buzzer.ogg
+      params:
+        volume: 10
+  # Fish-end
   - type: AccessReader
     access: [["Armory"]]
 
@@ -361,6 +397,19 @@
     sprite: Structures/Storage/Crates/command.rsi
   - type: Sprite
     sprite: Structures/Storage/Crates/command.rsi
+  # Fish-start
+  - type: Damageable
+    damageModifierSet: FishReinforcedPlasteelMod
+  - type: RattleOnDamage
+    radioChannels:
+    - Security
+    - Command
+    damageThreshold: 10
+    sound:
+      path: /Audio/Machines/warning_buzzer.ogg
+      params:
+        volume: 10
+  # Fish-end
   - type: AccessReader
     access: [["Command"]]
     # Sunrise-start
@@ -380,6 +429,10 @@
     sprite: Structures/Storage/Crates/syndicate_secure.rsi
   - type: Sprite
     sprite: Structures/Storage/Crates/syndicate_secure.rsi
+  # Fish-start
+  - type: Damageable
+    damageModifierSet: FishReinforcedPlasteelMod
+  # Fish-end
   - type: AccessReader
     access: [["SyndicateAgent", "NuclearOperative"]]
 
