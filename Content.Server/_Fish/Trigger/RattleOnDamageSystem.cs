@@ -4,10 +4,12 @@ using Content.Server.Pinpointer;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Shared._Fish.Trigger;
+using Content.Shared._Sunrise.TTS;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Lock;
+using Content.Shared.Radio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -100,7 +102,7 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
             }
 
             if (ProtoMan.TryIndex(channelId, out var channel))
-                _radio.SendRadioMessage(ent.Owner, message, channel, ent.Owner);
+                SendRadioWithOptionalTts((ent.Owner, ent.Comp), message, channel);
         }
 
         if (ent.Comp.Sound != null)
@@ -145,5 +147,29 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
     private FixedPoint2 GetTotalDamage(Entity<DamageableComponent> ent)
     {
         return _damageable.GetPositiveDamage(ent).GetTotal();
+    }
+
+    private void SendRadioWithOptionalTts(Entity<RattleOnDamageComponent> ent, string message, RadioChannelPrototype channel)
+    {
+        if (ent.Comp.TtsVoice is not { } voiceId)
+        {
+            _radio.SendRadioMessage(ent.Owner, message, channel, ent.Owner);
+            return;
+        }
+
+        var hadTts = TryComp<TTSComponent>(ent.Owner, out var existingTts);
+        var ttsComp = hadTts ? existingTts! : AddComp<TTSComponent>(ent.Owner);
+        if (!hadTts)
+            ttsComp.VoicePrototypeId = voiceId;
+
+        try
+        {
+            _radio.SendRadioMessage(ent.Owner, message, channel, ent.Owner);
+        }
+        finally
+        {
+            if (!hadTts)
+                RemComp<TTSComponent>(ent.Owner);
+        }
     }
 }

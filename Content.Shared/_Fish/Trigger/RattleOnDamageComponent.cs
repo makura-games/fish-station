@@ -1,3 +1,4 @@
+using Content.Shared._Sunrise.TTS;
 using Content.Shared.FixedPoint;
 using Content.Shared.Radio;
 using Robust.Shared.Audio;
@@ -36,6 +37,13 @@ public sealed partial class RattleOnDamageComponent : Component
     /// </summary>
     [DataField]
     public SoundSpecifier? Sound;
+
+    /// <summary>
+    /// Голос TTS для озвучивания радиооповещения. Если <c>null</c>, TTS для радио отключён.
+    /// Используется только при отправке в радиоканал (не влияет на мессенджер).
+    /// </summary>
+    [DataField]
+    public ProtoId<TTSVoicePrototype>? TtsVoice = "Portal2FactCore";
 
     /// <summary>
     /// Если <c>true</c>, сначала пытается отправить системное сообщение в группу мессенджера
