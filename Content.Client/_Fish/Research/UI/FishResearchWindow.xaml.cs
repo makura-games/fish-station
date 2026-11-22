@@ -98,11 +98,10 @@ public sealed partial class FishResearchWindow : FancyWindow
         TierDisplay.Children.Clear();
         _cards.Clear();
         _catalog.Clear();
-        var discipline = _main is { } id ? _prototypes.Index(id) : null;
+        _prototypes.TryIndex(_main, out var discipline);
         MainDisciplineLabel.SetMessage(FormattedMessage.FromMarkupOrThrow(Loc.GetString("research-console-menu-main-discipline",
             ("name", Loc.GetString(discipline?.Name ?? "research-discipline-none")),
             ("color", discipline?.Color ?? Color.Gray))));
-        EmptyOffers.Visible = _offers.Length == 0;
         if (db != null)
         {
             var tiers = _research.GetDisciplineTiers(db);
@@ -122,6 +121,9 @@ public sealed partial class FishResearchWindow : FancyWindow
 
             foreach (var tech in _prototypes.EnumeratePrototypes<TechnologyPrototype>())
             {
+                if (!_prototypes.HasIndex(tech.Discipline))
+                    continue;
+
                 var studied = _unlocked.Contains(tech.ID);
                 var offered = _offers.Contains(tech.ID);
                 if (!studied && !offered && (tech.Hidden || !tiers.ContainsKey(tech.Discipline)))
@@ -145,12 +147,15 @@ public sealed partial class FishResearchWindow : FancyWindow
             BoxContainer row = default!;
             foreach (var key in _offers)
             {
+                var entry = _catalog.FirstOrDefault(item => item.Tech.ID == key);
+                if (entry == null)
+                    continue;
+
                 if (_cards.Count % 2 == 0)
                 {
                     row = new BoxContainer { SeparationOverride = 8 };
                     CardRows.AddChild(row);
                 }
-                var entry = _catalog.First(item => item.Tech.ID == key);
                 var card = new FishTechnologyCard(entry.Tech, _prototypes.Index(entry.Tech.Discipline), _sprites,
                     entry.Unlocks, tech => OnTechnologyCardPressed?.Invoke(tech));
                 _cards.Add(card);
@@ -160,6 +165,7 @@ public sealed partial class FishResearchWindow : FancyWindow
                 row.AddChild(new Control { HorizontalExpand = true });
         }
 
+        EmptyOffers.Visible = _cards.Count == 0;
         _catalog.Sort((a, b) => StringComparer.CurrentCultureIgnoreCase.Compare(a.Name, b.Name));
         FilterCatalog();
     }
@@ -284,7 +290,10 @@ public sealed partial class FishResearchWindow : FancyWindow
         {
             AddText(Details, Loc.GetString("research-console-prereqs-list-start"), "LabelKeyText");
             foreach (var prerequisite in entry.Tech.TechnologyPrerequisites)
-                AddText(Details, Loc.GetString(_prototypes.Index(prerequisite).Name));
+            {
+                if (_prototypes.TryIndex(prerequisite, out var requiredTech))
+                    AddText(Details, Loc.GetString(requiredTech.Name));
+            }
         }
         if (entry.Unlocks.Count != 0)
             AddText(Details, Loc.GetString("research-console-unlocks-list-start"), "LabelKeyText");

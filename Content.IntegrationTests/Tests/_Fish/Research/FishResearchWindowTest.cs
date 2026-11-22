@@ -16,6 +16,9 @@ namespace Content.IntegrationTests.Tests._Fish.Research;
 [TestFixture]
 public sealed class FishResearchWindowTest
 {
+    private static readonly ProtoId<TechDisciplinePrototype> Industrial = "Industrial";
+    private static readonly ProtoId<TechnologyPrototype> AdvancedPowercells = "AdvancedPowercells";
+
     [TestPrototypes]
     private const string Prototypes = """
         - type: entity
@@ -24,7 +27,7 @@ public sealed class FishResearchWindowTest
           components:
           - type: TechnologyDatabase
             supportedDisciplines: [Industrial]
-            currentTechnologyCards: [AdvancedPowercells]
+            currentTechnologyCards: [FishRemovedTechnology, AdvancedPowercells]
         """;
 
     [Test]
@@ -34,7 +37,9 @@ public sealed class FishResearchWindowTest
         var client = pair.Client;
         await client.WaitAssertion(() =>
         {
-            var console = client.EntMan.SpawnEntity("FishTestResearchCatalog", MapCoordinates.Nullspace);
+            var console = client.EntMan.CreateEntityUninitialized("FishTestResearchCatalog", MapCoordinates.Nullspace);
+            // MapInit заменяет заданные в тесте предложения случайной выборкой.
+            client.EntMan.InitializeAndStartEntity(console, doMapInit: false);
             var window = new FishResearchWindow();
             window.Refresh(console, new ResearchConsoleBoundInterfaceState(0));
             window.Measure(new Vector2(790, 580));
@@ -51,7 +56,7 @@ public sealed class FishResearchWindowTest
             var first = leaves.Single(leaf => leaf.Pressed);
             var next = leaves.First(leaf => !leaf.Pressed);
             next.Pressed = true;
-            var accent = client.ResolveDependency<IPrototypeManager>().Index<TechDisciplinePrototype>("Industrial").Color;
+            var accent = client.ResolveDependency<IPrototypeManager>().Index(Industrial).Color;
             Assert.That(((StyleBoxFlat) next.StyleBoxOverride!).BorderColor, Is.EqualTo(accent));
             Assert.That(first.StyleBoxOverride, Is.Null);
             var query = client.System<LatheSystem>().GetRecipeName("PowerCellHigh");
@@ -71,8 +76,7 @@ public sealed class FishResearchWindowTest
             Assert.That(SelectedLeaf().Text, Is.EqualTo(client.ResolveDependency<ILocalizationManager>().GetString("research-technology-advanced-powercells")));
             Assert.That(window.FindControl<BoxContainer>("Details").ChildCount, Is.Positive);
 
-            var offer = client.EntMan.GetComponent<TechnologyDatabaseComponent>(console).CurrentTechnologyCards.Single();
-            var price = client.ResolveDependency<IPrototypeManager>().Index<TechnologyPrototype>(offer).Cost;
+            var price = client.ResolveDependency<IPrototypeManager>().Index(AdvancedPowercells).Cost;
             window.Refresh(console, new ResearchConsoleBoundInterfaceState(price));
             Assert.That(buy.Disabled, Is.False);
             Assert.That(search.Text, Is.EqualTo(query));
