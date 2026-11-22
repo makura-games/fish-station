@@ -6,9 +6,13 @@
   description: A Nanotrasen combat vibroblade for special forces. In passive mode it easily slices through enemies of the corporation, while in active mode it becomes a rapier that pierces armor like a knife through butter.
   components:
   - type: Sprite
-    scale: 0.6, 0.6
     sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
-    state: icon
+    layers:
+    - state: e_sword
+    - state: e_sword_blade
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
   - type: Clothing
     sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
     quickEquip: false
@@ -24,6 +28,27 @@
     size: Huge
     shape:
     - 0,0,3,3
+    inhandVisuals:
+      left:
+      - state: inhand-left-off
+      right:
+      - state: inhand-right-off
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.SwitchableVisuals.Switched:
+        blade:
+          cut: { visible: false }
+          ap: { visible: true }
+  - type: ItemSwitchVisuals
+    inhandVisuals:
+      ap:
+        left:
+        - state: inhand-left-on
+          shader: unshaded
+        right:
+        - state: inhand-right-on
+          shader: unshaded
   - type: UseDelay
     delay: 3
   - type: DisarmMalus
@@ -45,9 +70,6 @@
         verb: vibroblade-cut
         soundStateActivate:
           path: /Audio/Weapons/ebladeoff.ogg
-        sprite:
-          sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
-          state: icon
         components:
         - type: MeleeWeapon
           wideAnimationRotation: -120
@@ -61,9 +83,6 @@
         verb: vibroblade-ap
         soundStateActivate:
           path: /Audio/Weapons/ebladeon.ogg
-        sprite:
-          sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
-          state: icon-on
         components:
         - type: MeleeWeapon
           wideAnimationRotation: -135
