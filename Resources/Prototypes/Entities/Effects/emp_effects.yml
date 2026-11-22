@@ -1,16 +1,15 @@
 - type: entity
+  parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: EffectEmpPulse
   categories: [ HideSpawnMenu ]
   components:
   - type: TimedDespawn
     lifetime: 0.8
   - type: Sprite
-    drawdepth: Effects
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
-      sprite: Effects/emp.rsi
       state: emp_pulse
   - type: EffectVisuals
   - type: Tag
@@ -19,18 +18,17 @@
   - type: AnimationPlayer
 
 - type: entity
+  parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: EffectEmpDisabled
   categories: [ HideSpawnMenu ]
   components:
   - type: TimedDespawn
     lifetime: 0.4
   - type: Sprite
-    drawdepth: Effects
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
-      sprite: Effects/emp.rsi
       state: emp_disable
   - type: EffectVisuals
   - type: Tag

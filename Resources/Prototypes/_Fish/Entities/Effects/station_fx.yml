@@ -1,0 +1,9 @@
+# Состояние слоя задаёт эффект, а TimedDespawn у потомка — длительность одного показа.
+- type: entity
+  id: FishStationEffectBase
+  abstract: true
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Effects/station_fx.rsi
+    drawdepth: Effects

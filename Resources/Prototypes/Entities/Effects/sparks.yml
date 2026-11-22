@@ -1,16 +1,15 @@
 - type: entity
+  parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: EffectSparks
   categories: [ HideSpawnMenu ]
   components:
   - type: TimedDespawn
     lifetime: 0.5
   - type: Sprite
-    drawdepth: Effects
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
-      sprite: Effects/sparks.rsi
       state: sparks
   - type: EffectVisuals
   - type: Tag
@@ -19,19 +18,18 @@
   - type: AnimationPlayer
 
 - type: entity
+  parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: EffectTeslaSparks
   categories: [ HideSpawnMenu ]
   components:
   - type: TimedDespawn
     lifetime: 0.5
   - type: Sprite
-    drawdepth: Effects
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
-      sprite: Effects/atmospherics.rsi
-      state: frezon_old
+      state: tesla # Fish-edit: ветвящаяся дуга Теслы
   - type: EffectVisuals
   - type: Tag
     tags:

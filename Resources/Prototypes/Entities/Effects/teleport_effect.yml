@@ -1,13 +1,12 @@
 - type: entity
+  parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: TeleportEffectSource
   components:
     - type: Sprite
       layers:
-        - sprite: /Textures/_Sunrise/Effects/teleports_effect.rsi
-          state: source
+        - state: source
           shader: unshaded
       netsync: false
-      drawdepth: Effects
     - type: PointLight
       color: "#008DFE"
     - type: EmitSoundOnSpawn
@@ -21,15 +20,14 @@
       anchored: true
 
 - type: entity
+  parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: TeleportEffectTarget
   components:
     - type: Sprite
       layers:
-        - sprite: /Textures/_Sunrise/Effects/teleports_effect.rsi
-          state: target
+        - state: target
           shader: unshaded
       netsync: false
-      drawdepth: Effects
     - type: PointLight
       color: "#008DFE"
     - type: EmitSoundOnSpawn
