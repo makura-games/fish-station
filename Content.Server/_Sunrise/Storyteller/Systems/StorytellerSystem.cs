@@ -1205,7 +1205,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         return false;
     }
 
-    private Dictionary<EntityPrototype, StorytellerMetadataPrototype> GetEligibleHeuristicEvents(StorytellerRuleComponent comp, StationMetrics metrics, bool isMajor)
+    // Fish-edit: добавлен параметр ignoreBudget для выборки без отсева по текущей цене
+    private Dictionary<EntityPrototype, StorytellerMetadataPrototype> GetEligibleHeuristicEvents(StorytellerRuleComponent comp, StationMetrics metrics, bool isMajor, bool ignoreBudget = false)
     {
         var result = new Dictionary<EntityPrototype, StorytellerMetadataPrototype>();
         var currentDuration = GameTicker.RoundDuration();
@@ -1318,7 +1319,8 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
             // In Peak, all threats (including MajorAntag) are allowed and will spawn smoothly over time
 
             // Budget check
-            if (metadata.ThreatType != StorytellerThreatType.Helpful && metadata.ThreatType != StorytellerThreatType.Neutral)
+            // Fish-edit: пропуск проверки бюджета при ignoreBudget
+            if (!ignoreBudget && metadata.ThreatType != StorytellerThreatType.Helpful && metadata.ThreatType != StorytellerThreatType.Neutral)
             {
                 if (metadata.ThreatType == StorytellerThreatType.MajorAntag)
                 {
@@ -2353,11 +2355,12 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
     }
 
     // Fish-start - вспомогательные методы для целевого антагониста, взаимоисключений и поднятия силы станции
-    private void InitializeTargetMajorEvent(StorytellerRuleComponent comp)
+    // Fish-edit: возврат bool о наличии кандидатов
+    private bool InitializeTargetMajorEvent(StorytellerRuleComponent comp)
     {
         var majorCandidates = GetEligibleTargetMajorCandidates(comp);
         if (majorCandidates.Count == 0)
-            return;
+            return false;
 
         var selected = _random.Pick(majorCandidates);
         comp.TargetMajorEvent = selected.id;
@@ -2365,6 +2368,7 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         comp.TargetMajorBudget = 0f;
         comp.TargetMajorTriggered = false;
         Log.Info($"Storyteller selected {selected.id} as TargetMajorEvent with cost {selected.cost}");
+        return true;
     }
 
     private List<(EntProtoId id, float cost)> GetEligibleTargetMajorCandidates(StorytellerRuleComponent comp)
@@ -2610,73 +2614,87 @@ public sealed partial class StorytellerSystem : GameRuleSystem<StorytellerRuleCo
         if (!_cfg.GetCVar(CCVars.EventsEnabled) || _roundEnd.IsRoundEndRequested())
             return;
 
-        var metrics = CalculateStationMetrics(entity.Comp);
+        const int maxIterations = 10;
 
-        // Если целевой антагонист ещё не сработал: пробуем вызвать его прямо сейчас
-        if (entity.Comp.TargetMajorEvent != null && !entity.Comp.TargetMajorTriggered)
+        // Этап 1: пытаемся вызывать TargetMajorEvent с учётом TargetMajorBudget, выбираем новую цель и повторяем
+        if (entity.Comp.StorytellerType is StorytellerType.Classic or StorytellerType.Insane)
         {
-            var targetId = entity.Comp.TargetMajorEvent.Value.Id;
-            var targetProtoExists = ProtoMan.TryIndex<EntityPrototype>(targetId, out var targetProto);
-            var targetMetaExists = ProtoMan.TryIndex<StorytellerMetadataPrototype>(targetId, out var targetMeta);
+            for (var i = 0; i < maxIterations; i++)
+            {
+                if (entity.Comp.TargetMajorEvent == null || entity.Comp.TargetMajorTriggered)
+                {
+                    if (!InitializeTargetMajorEvent(entity.Comp))
+                    {
+                        entity.Comp.TargetMajorEvent = null;
+                        entity.Comp.TargetMajorCost = 0f;
+                        break;
+                    }
+                }
 
-            if (!targetProtoExists || !targetMetaExists || IsTargetMajorPermanentlyDisallowed(targetId))
-            {
-                ReassignOrRefundTargetMajor(entity.Comp);
-            }
-            else
-            {
+                var targetId = entity.Comp.TargetMajorEvent!.Value.Id;
+                var targetProtoExists = ProtoMan.TryIndex<EntityPrototype>(targetId, out var targetProto);
+                var targetMetaExists = ProtoMan.TryIndex<StorytellerMetadataPrototype>(targetId, out var targetMeta);
+
+                if (!targetProtoExists || !targetMetaExists || IsTargetMajorPermanentlyDisallowed(targetId))
+                {
+                    ReassignOrRefundTargetMajor(entity.Comp);
+                    if (entity.Comp.TargetMajorEvent == null)
+                        break;
+
+                    continue;
+                }
+
+                var metrics = CalculateStationMetrics(entity.Comp);
+                entity.Comp.CrewStress = CalculateCrewStress(ref metrics);
+
                 var combinedBudget = entity.Comp.MajorThreatBudget + entity.Comp.TargetMajorBudget;
                 var canTriggerTarget = combinedBudget >= targetMeta!.ThreatCost
                     && IsTargetMajorEligibleExceptStrength(targetProto!, targetMeta!, entity.Comp, metrics)
                     && metrics.StationStrength >= targetMeta!.MinStationStrength;
 
-                if (canTriggerTarget)
+                if (!canTriggerTarget)
                 {
-                    Log.Info($"Storyteller draining major budget before Peak exit: triggering TargetMajorEvent '{targetId}'");
-                    TriggerEvent(entity, targetProto!, targetMeta!);
+                    // Очков не хватает или цель временно недоступна: сохраняем цель и буфер, переходим к добору по остатку
+                    Log.Info($"Storyteller target major '{targetId}' cannot trigger before Peak exit (combined budget {combinedBudget}/{targetMeta.ThreatCost}); retaining target and buffer ({entity.Comp.TargetMajorBudget}).");
+                    break;
                 }
-                else
+
+                Log.Info($"Storyteller draining major budget before Peak exit: triggering TargetMajorEvent '{targetId}'");
+                TriggerEvent(entity, targetProto!, targetMeta!);
+
+                if (!InitializeTargetMajorEvent(entity.Comp))
                 {
-                    // При временной недоступности цели сохраняем её и буфер для повторной попытки после снятия ограничений
-                    Log.Info($"Storyteller target major '{targetId}' temporarily unavailable before Peak exit; retaining target and buffer ({entity.Comp.TargetMajorBudget}/{targetMeta!.ThreatCost}).");
+                    entity.Comp.TargetMajorEvent = null;
+                    entity.Comp.TargetMajorCost = 0f;
+                    break;
                 }
             }
         }
 
-        // Жадный сброс бюджета Major: выбираем самые дорогие из доступных крупных событий, пока есть бюджет
-        const int maxIterations = 5;
+        // Этап 2: если очков на цель не хватило, отсеиваем доступных MajorAntag по MajorThreatBudget (без TargetMajorBudget) и добираем случайных
         for (var i = 0; i < maxIterations; i++)
         {
             if (entity.Comp.MajorThreatBudget <= 0f)
                 break;
 
-            // Обновляем метрики станции и стресс команды перед проверкой доступности
-            metrics = CalculateStationMetrics(entity.Comp);
+            var metrics = CalculateStationMetrics(entity.Comp);
             entity.Comp.CrewStress = CalculateCrewStress(ref metrics);
 
-            var eligible = GetEligibleHeuristicEvents(entity.Comp, metrics, isMajor: true);
-            var majorAntags = eligible
+            var eligible = GetEligibleHeuristicEvents(entity.Comp, metrics, isMajor: true, ignoreBudget: true);
+            var affordableMajorAntags = eligible
                 .Where(kv => kv.Value.ThreatType == StorytellerThreatType.MajorAntag
                     && kv.Value.ThreatCost <= entity.Comp.MajorThreatBudget
                     && GetEventWeight(kv.Key, kv.Value) > 0f)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
 
-            if (majorAntags.Count == 0)
+            if (affordableMajorAntags.Count == 0)
                 break;
 
-            var maxCost = majorAntags.Values.Max(m => m.ThreatCost);
-            if (maxCost <= 0f)
-                break;
-
-            var candidates = majorAntags
-                .Where(kv => MathF.Abs(kv.Value.ThreatCost - maxCost) < 0.01f)
-                .ToDictionary(kv => kv.Key, kv => kv.Value);
-
-            var selected = PickEventFromEligible(candidates);
+            var selected = PickEventFromEligible(affordableMajorAntags);
             if (selected == null)
                 break;
 
-            Log.Info($"Storyteller draining major budget before Peak exit: triggering '{selected.Value.Item1.ID}' (cost {selected.Value.Item2.ThreatCost}, remaining major budget {entity.Comp.MajorThreatBudget})");
+            Log.Info($"Storyteller draining major budget before Peak exit (affordable): triggering '{selected.Value.Item1.ID}' (cost {selected.Value.Item2.ThreatCost}, remaining major budget {entity.Comp.MajorThreatBudget})");
             TriggerEvent(entity, selected.Value.Item1, selected.Value.Item2);
         }
     }

@@ -599,15 +599,6 @@
     - MagazinePistol40FMJ
 
 - type: startingGear
-  id: FishDmArenaThompson
-  equipment:
-    suitstorage: FishWeaponSubMachineGunThompson
-  storage:
-    back:
-    - FishMagazinePistolSubMachineGunThompson
-    - FishMagazinePistolSubMachineGunThompson
-
-- type: startingGear
   id: FishDmArenaP90
   equipment:
     suitstorage: WeaponSubMachineGunP90
@@ -622,13 +613,6 @@
     back:
     - MagazinePistol40FMJ
     - MagazinePistol40FMJ
-
-- type: startingGear
-  id: FishDmArenaAmThompson
-  storage:
-    back:
-    - FishMagazinePistolSubMachineGunThompson
-    - FishMagazinePistolSubMachineGunThompson
 
 - type: startingGear
   id: FishDmArenaAmP90

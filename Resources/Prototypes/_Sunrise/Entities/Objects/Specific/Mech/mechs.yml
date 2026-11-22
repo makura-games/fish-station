@@ -425,8 +425,10 @@
         Structural: 25
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 3.5
-    baseSprintSpeed: 4
+  # Fish-Start
+    baseWalkSpeed: 3.15
+    baseSprintSpeed: 3.6
+  # Fish-End
   - type: Loadout
     prototypes: [ MechArmorHeavySyndiLoadout ]
   - type: Reflect
@@ -511,8 +513,10 @@
         Structural: 10
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2.5
-    baseSprintSpeed: 4
+  # Fish-Start
+    baseWalkSpeed: 2.25
+    baseSprintSpeed: 3.6
+  # Fish-End
   - type: PointLight
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
@@ -601,8 +605,10 @@
     soundHit:
       path: "/Audio/Items/drill_use.ogg"
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2
-    baseSprintSpeed: 3.6
+  # Fish-Start
+    baseWalkSpeed: 1.8
+    baseSprintSpeed: 3.24
+  # Fish-End
   - type: CanMoveInAir
   - type: MovementAlwaysTouching
   - type: Reflect
@@ -680,8 +686,9 @@
         Structural: 180
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2
-    baseSprintSpeed: 3.5
+  # Fish-Start
+    baseWalkSpeed: 1.8
+    baseSprintSpeed: 3.15
   - type: Reflect
     reflectProb: 0.10
     spread: 180
@@ -764,8 +771,10 @@
         Blunt: 20
         Structural: 80
   - type: MovementSpeedModifier
-    baseWalkSpeed: 3.2
-    baseSprintSpeed: 4
+  # Fish-Start
+    baseWalkSpeed: 2.88
+    baseSprintSpeed: 3.6
+  # Fish-End
   - type: Reflect
     reflectProb: 0.5
     spread: 180
@@ -850,8 +859,10 @@
         Structural: 300
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 2
+  # Fish-Start
+    baseWalkSpeed: 1.35
+    baseSprintSpeed: 1.8
+  # Fish-End
   - type: Loadout
     prototypes: [ MechArmorMediumSyndiLoadout ]
   - type: CanMoveInAir
@@ -925,8 +936,10 @@
         Structural: 220
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 2
+  # Fish-Start
+    baseWalkSpeed: 1.35
+    baseSprintSpeed: 1.8
+  # Fish-End
   - type: Loadout
     prototypes: [ MechArmorHeavySyndiLoadout ]
   - type: CanMoveInAir
