@@ -60,7 +60,7 @@
     passiveDrainPerSecond: 0.4
   - type: FishIpcModulePowerToggle
   - type: FishIpcToolHandModule
-    toolPrototype: Multitool
+    toolPrototype: Omnitool
 
 - type: entity
   parent: FishBaseIpcModule
