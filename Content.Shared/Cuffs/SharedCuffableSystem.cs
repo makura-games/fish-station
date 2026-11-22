@@ -8,6 +8,7 @@ using Content.Shared.Alert;
 using Content.Shared.Buckle.Components;
 using Content.Shared.CombatMode;
 using Content.Shared.Cuffs.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands;
@@ -91,6 +92,10 @@ namespace Content.Shared.Cuffs
             SubscribeLocalEvent<HandcuffComponent, MeleeHitEvent>(OnCuffMeleeHit);
             SubscribeLocalEvent<HandcuffComponent, AddCuffDoAfterEvent>(OnAddCuffDoAfter);
             SubscribeLocalEvent<HandcuffComponent, VirtualItemDeletedEvent>(OnCuffVirtualItemDeleted);
+
+            // Fish-start - пуш прерывает самоосвобождение из наручников
+            InitializeFishBreakoutPushInterrupt();
+            // Fish-end
         }
 
         private void CheckInteract(Entity<CuffableComponent> ent, ref InteractionAttemptEvent args)
@@ -296,6 +301,10 @@ namespace Content.Shared.Cuffs
 
         private void OnCuffableDoAfter(EntityUid uid, CuffableComponent component, UnCuffDoAfterEvent args)
         {
+            // Fish-start - сбрасываем трекинг DoAfter самоосвобождения
+            component.SelfBreakoutDoAfter = null;
+            // Fish-end
+
             if (args.Args.Target is not { } target || args.Args.Used is not { } used)
                 return;
             if (args.Handled)
@@ -310,7 +319,17 @@ namespace Content.Shared.Cuffs
             }
             else
             {
-                _popup.PopupEntity(Loc.GetString("cuffable-component-remove-cuffs-fail-message"), user, user);
+                // Fish-start - отдельный popup при прерывании пушем
+                if (component.BreakoutInterruptedByPush)
+                {
+                    component.BreakoutInterruptedByPush = false;
+                    _popup.PopupEntity(Loc.GetString("fish-cuffable-breakout-interrupted"), user, user);
+                }
+                else
+                {
+                    _popup.PopupEntity(Loc.GetString("cuffable-component-remove-cuffs-fail-message"), user, user);
+                }
+                // Fish-end
             }
         }
 
@@ -674,8 +693,13 @@ namespace Content.Shared.Cuffs
                 DistanceThreshold = 1f // shorter than default but still feels good
             };
 
-            if (!_doAfter.TryStartDoAfter(doAfterEventArgs))
+            // Fish-start - сохраняем DoAfter самоосвобождения для прерывания пушем
+            if (!_doAfter.TryStartDoAfter(doAfterEventArgs, out var doAfterId))
                 return;
+
+            if (isOwner)
+                target.Comp.SelfBreakoutDoAfter = doAfterId;
+            // Fish-end
 
             _adminLog.Add(LogType.Action, LogImpact.High, $"{ToPrettyString(user):player} is trying to uncuff {ToPrettyString(target):subject}");
 

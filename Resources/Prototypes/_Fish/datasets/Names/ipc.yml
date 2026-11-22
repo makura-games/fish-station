@@ -3,10 +3,10 @@
   id: NamesIpcFirst
   values:
     prefix: names-ipc-first-dataset-
-    count: 40
+    count: 140
 
 - type: localizedDataset
   id: NamesIpcLast
   values:
     prefix: names-ipc-last-dataset-
-    count: 40
+    count: 140

@@ -1,4 +1,5 @@
 using Content.Server.Popups;
+using Content.Shared._Fish.Weapons.Casings; // Fish-edit: стреляная гильза после казни
 using Content.Shared._Starlight.Weapon.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
@@ -197,6 +198,11 @@ public sealed partial class ExecutionSystem : SharedExecutionSystem
 
                 Dirty(ammoUid.Value, cartridge);
 
+                // Fish-start: казнь не проходит через SetCartridgeSpent
+                var hitscanSpent = new SpentAmmoChangedEvent(true);
+                RaiseLocalEvent(ammoUid.Value, ref hitscanSpent);
+                // Fish-end
+
                 if (cartridge.DeleteOnSpawn)
                     Del(ammoUid.Value);
 
@@ -230,6 +236,11 @@ public sealed partial class ExecutionSystem : SharedExecutionSystem
                 cartridge.Spent = true;
                 _appearanceSystem.SetData(ammoUid!.Value, AmmoVisuals.Spent, true);
                 Dirty(ammoUid.Value, cartridge);
+
+                // Fish-start: казнь не проходит через SetCartridgeSpent
+                var cartridgeSpent = new SpentAmmoChangedEvent(true);
+                RaiseLocalEvent(ammoUid.Value, ref cartridgeSpent);
+                // Fish-end
 
                 if (cartridge.DeleteOnSpawn)
                     Del(ammoUid.Value);
