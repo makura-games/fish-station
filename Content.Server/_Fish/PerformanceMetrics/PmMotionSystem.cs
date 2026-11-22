@@ -8,6 +8,7 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 
+using Robust.Shared.Player;
 namespace Content.Server._Fish.PerformanceMetrics;
 
 /// <summary>
@@ -24,7 +25,8 @@ public sealed partial class PmMotionSystem : EntitySystem
     private EntityQuery<MovementSpeedModifierComponent> _speedQuery = default!;
     private EntityQuery<MobStateComponent> _mobQuery = default!;
 
-    private readonly Dictionary<EntityUid, (MapId Map, Vector2 Position, TimeSpan When)> _previous = new();
+    /// <summary>Прежняя выборка: сетка, локальная позиция на ней и момент съёма.</summary>
+    private readonly Dictionary<EntityUid, (EntityUid? Grid, Vector2 Position, TimeSpan When)> _previous = new();
 
     private int _tickCounter;
 
@@ -51,7 +53,9 @@ public sealed partial class PmMotionSystem : EntitySystem
 
         _tickCounter = 0;
 
-        var seconds = PmTuning.MotionSampleTicks / _timing.TickRate;
+        // TickRate — целое число тиков в секунду, поэтому везде делим на float: иначе 6/30
+        // даёт ноль, и окно выборки исчезает вместе с метрикой.
+        var sampleSeconds = PmTuning.MotionSampleTicks / (float)_timing.TickRate;
         var now = _timing.CurTime;
 
         var query = AllEntityQuery<TransformComponent, ActorComponent>();
@@ -66,22 +70,37 @@ public sealed partial class PmMotionSystem : EntitySystem
             if (!_speedQuery.TryGetComponent(uid, out var speed))
                 continue;
 
-            var map = xform.MapID;
-            var position = _transforms.GetWorldPosition(xform);
             var allowed = Math.Max(speed.CurrentWalkSpeed, speed.CurrentSprintSpeed);
 
-            if (_previous.TryGetValue(uid, out var last) && last.Map == map)
+            // Считаем в локальных координатах сетки: сама станция может ехать (ECS),
+            // и в мировых координатах обычная ходьба выглядела бы как телепорт.
+            // Смена сетки (посадка в шаттл, выход в космос) — это не перемещение, её пропускаем.
+            var grid = xform.GridUid;
+            var position = xform.Coordinates.Position;
+
+            if (_previous.TryGetValue(uid, out var last))
             {
-                var moved = (position - last.Position).Length();
-                var excess = PmMaths.SpeedExcessTiles(moved, allowed, seconds, PmTuning.SpeedMargin);
+                var moved = last.Grid == grid
+                    ? (position - last.Position).Length()
+                    : 0f;
+
+                // Интервал берём фактический, а не «одно выборочное окно»: сущность могла
+                // пропустить съём (мертва, нет компонента скорости), и тогда между выборками
+                // прошло больше времени. С фиксальным окном это выглядело бы как превышение.
+                var elapsed = Math.Max((now - last.When).TotalSeconds, sampleSeconds);
+                var excess = PmMaths.SpeedExcessTiles(moved, allowed, (float)elapsed, PmTuning.SpeedMargin);
 
                 if (excess > PmTuning.MotionMinExcessTiles)
-                    CountMotion(actor, excess, moved, allowed, seconds);
+                    CountMotion(actor, excess, moved, allowed, (float)elapsed);
                 else if (_pm.TryGetSession(actor.PlayerSession.UserId, out var ok))
                     ok.MotionStrikes = 0;
+
+                // Сменил сетку — накопленные подозрения по предыдущему участку обнуляем.
+                if (last.Grid != grid && _pm.TryGetSession(actor.PlayerSession.UserId, out var switched))
+                    switched.MotionStrikes = 0;
             }
 
-            _previous[uid] = (map, position, now);
+            _previous[uid] = (grid, position, now);
         }
 
         // Сущности, которые исчезли из выборки, вычищаем, иначе словарь растёт весь раунд.

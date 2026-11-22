@@ -24,6 +24,21 @@ using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Shared.Containers;
+using Robust.Shared.Player;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -93,18 +108,18 @@ public sealed partial class RpuSystem : EntitySystem
     public bool SystemEnabled => _enabled;
 
     /// <summary>Граница «новичка» в часах игры на должностях (cvar).</summary>
-    public float NewbieBoundaryHours => _cfg.GetCVar(RpuCVars.NewbieHours);
+    public float NewbieBoundaryHours => _cfg.GetCVar(FishCVars.RpuNewbieHours);
 
     /// <summary>Сколько контрабандных предметов считается избыточным.</summary>
-    public int ContrabandLimit => Math.Max(1, _cfg.GetCVar(RpuCVars.ContrabandItemLimit));
+    public int ContrabandLimit => Math.Max(1, _cfg.GetCVar(FishCVars.RpuContrabandItemLimit));
 
-    public float ContrabandDwellMinutes => _cfg.GetCVar(RpuCVars.ContrabandDwellMinutes);
+    public float ContrabandDwellMinutes => _cfg.GetCVar(FishCVars.RpuContrabandDwellMinutes);
 
-    public FixedPoint2 SpillThreshold => FixedPoint2.New(_cfg.GetCVar(RpuCVars.SpillUnitThreshold));
+    public FixedPoint2 SpillThreshold => FixedPoint2.New(_cfg.GetCVar(FishCVars.RpuSpillUnitThreshold));
 
-    public int SingularityWatchTiles => Math.Max(1, _cfg.GetCVar(RpuCVars.SingularityWatchTiles));
+    public int SingularityWatchTiles => Math.Max(1, _cfg.GetCVar(FishCVars.RpuSingularityWatchTiles));
 
-    public float SingularityWatchMinutes => _cfg.GetCVar(RpuCVars.SingularityWatchMinutes);
+    public float SingularityWatchMinutes => _cfg.GetCVar(FishCVars.RpuSingularityWatchMinutes);
 
     public bool TryGetSession(NetUserId userId, out ICommonSession session)
     {
@@ -121,9 +136,22 @@ public sealed partial class RpuSystem : EntitySystem
 
     /// <summary>
     /// Идёт ли сейчас матч арены (Deathmatch-аrena): там убийства — это сама игра.
-    /// Обновляется раз в минуту вместе с восстановлением кармы.
+    /// Правило живёт до конца раунда, поэтому смотрим на признак активного матча,
+    /// а не на наличие компонента. Обновляется раз в минуту.
     /// </summary>
     public bool ArenaRunning { get; private set; }
+
+    private bool IsArenaMatchRunning()
+    {
+        var query = AllEntityQuery<DmArenaRuleComponent>();
+        while (query.MoveNext(out _, out var rule))
+        {
+            if (rule.Active)
+                return true;
+        }
+
+        return false;
+    }
 
     private bool PresetDisabled
     {
@@ -150,15 +178,18 @@ public sealed partial class RpuSystem : EntitySystem
 
         _sawmill = Logger.GetSawmill("rpu");
 
-        Subs.CVar(_cfg, RpuCVars.Enabled, value => _enabled = value, true);
-        Subs.CVar(_cfg, RpuCVars.AdminMode, value => ParseAdminMode(value), true);
-        Subs.CVar(_cfg, RpuCVars.ExemptRanks, value => ParseExemptRanks(value), true);
-        Subs.CVar(_cfg, RpuCVars.MinPenalty, value => _minPenalty = SanitizeUnits(value, RpuMaths.MinPenalty, 25f), true);
-        Subs.CVar(_cfg, RpuCVars.MaxExtraUnits,
+        Subs.CVar(_cfg, FishCVars.RpuEnabled, value => _enabled = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuAdminMode, value => ParseAdminMode(value), true);
+        Subs.CVar(_cfg, FishCVars.RpuExemptRanks, value => ParseExemptRanks(value), true);
+        // Минимум обязан быть положительным: при нуле вменяемое нарушение с выгодной
+        // поправкой свернулось бы в ноль и осталось бы без записи.
+        Subs.CVar(_cfg, FishCVars.RpuMinPenalty,
+            value => _minPenalty = SanitizeUnits(value, RpuMaths.MinPenalty, 25f, true), true);
+        Subs.CVar(_cfg, FishCVars.RpuMaxExtraUnits,
             value => _maxExtraUnits = SanitizeUnits(value, RpuMaths.MaxExtraPenalty, 100f), true);
-        Subs.CVar(_cfg, RpuCVars.SpikeUnits,
+        Subs.CVar(_cfg, FishCVars.RpuSpikeUnits,
             value => _spikeUnits = float.IsFinite(value) && value >= 0f ? value : 70f, true);
-        Subs.CVar(_cfg, RpuCVars.SpikeMinutes,
+        Subs.CVar(_cfg, FishCVars.RpuSpikeMinutes,
             value => _spikeWindow = TimeSpan.FromMinutes(value > 0 && value <= 240 ? value : 10), true);
 
         _userDb.AddOnLoadPlayer(LoadProfile);
@@ -195,9 +226,9 @@ public sealed partial class RpuSystem : EntitySystem
     /// Рамки снятия очков: без NaN, без отрицательных, в разумном диапазоне.
     /// Кривое значение заменяем безопасным и ругаемся в лог.
     /// </summary>
-    private float SanitizeUnits(float value, float fallback, float max)
+    private float SanitizeUnits(float value, float fallback, float max, bool requirePositive = false)
     {
-        if (!float.IsFinite(value) || value < 0f)
+        if (!float.IsFinite(value) || value < 0f || (requirePositive && value <= 0f))
         {
             _sawmill.Error($"Invalid RPU penalty value {value}, falling back to {fallback}.");
             return fallback;
@@ -236,10 +267,17 @@ public sealed partial class RpuSystem : EntitySystem
     {
         var suspect = GetSuspect(session.UserId);
 
+        // Память новее базы, если запись об этом игроке ещё не подтверждена: быстрое
+        // переподключение не должно затираать уже начисленный штраф.
+        var keepMemory = suspect.Dirty || suspect.SaveInFlight;
+
         // Пока карму не прочитали, с ней ничего не делаем: иначе выход игрока
         // запишет в базу ноль вместо настоящих значений.
-        suspect.KarmaLoaded = false;
+        if (!keepMemory)
+            suspect.KarmaLoaded = false;
+
         suspect.Offline = false;
+        suspect.LoadInFlight = true;
 
         try
         {
@@ -249,7 +287,9 @@ public sealed partial class RpuSystem : EntitySystem
             if (cancel.IsCancellationRequested)
                 return;
 
-            suspect.Karma = RpuMaths.ClampKarma(stored ?? 0f);
+            if (!keepMemory)
+                suspect.Karma = RpuMaths.ClampKarma(stored ?? 0f);
+
             suspect.RecentBans = bans;
 
             var (units, shift) = RpuMaths.BanHistory(bans, Tuning.BanHistoryTiers);
@@ -259,12 +299,25 @@ public sealed partial class RpuSystem : EntitySystem
             // Сохранённую карму «базой» не обрезаем: правка администратора должна пережить
             // переподключение. BaseKarma остаётся только потолком пассивного восстановления.
             suspect.KarmaLoaded = true;
+            suspect.LoadRetryAt = TimeSpan.Zero;
         }
         catch (Exception e)
         {
-            _sawmill.Error($"Failed to load karma profile for {session.Name}: {e}");
+            // Временный сбой БД не должен отключать учёт на всю сессию: Update
+            // повторит чтение через паузу.
+            _sawmill.Error($"Failed to load karma profile for {session.Name}: {e}. Will retry.");
+            suspect.LoadRetryAt = _timing.CurTime + LoadRetryDelay;
+        }
+        finally
+        {
+            suspect.LoadInFlight = false;
         }
     }
+
+    /// <summary>Пауза перед повторным чтением профиля после сбоя БД.</summary>
+    private static readonly TimeSpan LoadRetryDelay = TimeSpan.FromSeconds(30);
+
+    private float _loadAccumulator;
 
     /// <summary>
     /// Трекеры наигранного времени готовы: считаем часы на должностях и «базу» кармы.
@@ -274,16 +327,28 @@ public sealed partial class RpuSystem : EntitySystem
         if (!_suspects.TryGetValue(session.UserId, out var suspect))
             return;
 
+        RefreshPlaytime(session, suspect);
+    }
+
+    /// <summary>
+    /// Пересчитывает наигранное время и потолок восстановления. Нужно и в середине
+    /// сессии: вошедший с 4,9 часа игрок за раунд переползает через ступень порогов.
+    /// </summary>
+    private void RefreshPlaytime(ICommonSession session, RpuSuspect suspect)
+    {
+        if (!_playTime.TryGetTrackerTimes(session, out var times) || times.Count == 0)
+            return;
+
         suspect.RoleHours = GetRoleHours(session);
         suspect.BaseKarma = RpuMaths.ClampKarma(
-            (float)(suspect.RoleHours * _cfg.GetCVar(RpuCVars.BaseKarmaPerHour)));
+            (float)(suspect.RoleHours * _cfg.GetCVar(FishCVars.RpuBaseKarmaPerHour)));
     }
 
     private void OnRoundStarted(RoundStartedEvent ev)
     {
         EvacuationDocked = false;
         _tickersPresetDisabledCache = null;
-        ArenaRunning = EntityQuery<DmArenaRuleComponent>().Any();
+        ArenaRunning = IsArenaMatchRunning();
 
         foreach (var suspect in _suspects.Values)
         {
@@ -330,7 +395,9 @@ public sealed partial class RpuSystem : EntitySystem
             return;
         }
 
-        if (!suspect.Dirty)
+        // Профиль держим, пока запись не подтверждена базой: она либо ещё в полёте,
+        // либо помечена на повтор. Иначе FinishSave не найдёт профиль и потеряет изменение.
+        if (!suspect.Dirty && !suspect.SaveInFlight)
         {
             _suspects.Remove(session.UserId);
             return;
@@ -429,7 +496,7 @@ public sealed partial class RpuSystem : EntitySystem
     /// Единственная точка начисления штрафа. Считается в очках:
     /// база нарушения (rpuViolation.base) + тяжесть случая в очках + все поправки в очках,
     /// но не меньше <see cref="RpuMaths.MinPenalty"/> и не больше базы на
-    /// <see cref="RpuCVars.MaxExtraUnits"/>. Если нарушение игроку не вменяется —
+    /// <see cref="FishCVars.RpuMaxExtraUnits"/>. Если нарушение игроку не вменяется —
     /// не снимается ничего.
     /// </summary>
     public void Penalize(ICommonSession? session,
@@ -500,7 +567,7 @@ public sealed partial class RpuSystem : EntitySystem
             suspect.RoleHours,
             Tuning.BanTiers,
             suspect.BanThresholdShift,
-            _cfg.GetCVar(RpuCVars.BanVeterans));
+            _cfg.GetCVar(FishCVars.RpuBanVeterans));
     }
 
     /// <summary>Сколько очков потеряно сейчас в окне всплеска и сам порог всплеска.</summary>
@@ -566,12 +633,12 @@ public sealed partial class RpuSystem : EntitySystem
         if (!float.IsFinite(delta))
             return false;
 
-        if (Math.Abs(delta) < 0.001f)
-            return true;
-
         var suspect = GetSuspect(session.UserId);
         if (!suspect.KarmaLoaded)
             return false;
+
+        if (Math.Abs(delta) < 0.001f)
+            return true;
 
         var before = suspect.Karma;
         suspect.Karma = RpuMaths.ClampKarma(suspect.Karma + delta);
@@ -590,16 +657,20 @@ public sealed partial class RpuSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        var now = _timing.CurTime;
+
+        // Ожидающие записи и повторы чтения идут и при выключенном учёте: иначе
+        // отключение системы оставило бы подтверждение записей зависимым от включения.
+        FlushPending();
+
         if (!_enabled)
             return;
-
-        var now = _timing.CurTime;
 
         _arenaAccumulator += frameTime;
         if (_arenaAccumulator >= ArenaCheckSeconds)
         {
             _arenaAccumulator = 0f;
-            ArenaRunning = EntityQuery<DmArenaRuleComponent>().Any();
+            ArenaRunning = IsArenaMatchRunning();
         }
 
         _recoverAccumulator += frameTime;
@@ -613,13 +684,32 @@ public sealed partial class RpuSystem : EntitySystem
         }
 
         _saveAccumulator += frameTime;
-        if (_saveAccumulator < SaveCheckSeconds)
+    }
+
+    /// <summary>
+    /// Периодическое обслуживание профилей: повторное чтение после сбоя БД и запись
+    /// изменённой кармы. Не зависит от того, включён ли учёт.
+    /// </summary>
+    private void FlushPending()
+    {
+        _loadAccumulator += _timing.TickRate;
+
+        if (_loadAccumulator < SaveCheckSeconds)
             return;
 
-        _saveAccumulator = 0f;
+        _loadAccumulator = 0f;
+        var now = _timing.CurTime;
 
         foreach (var (userId, suspect) in _suspects.ToArray())
         {
+            if (!suspect.KarmaLoaded &&
+                !suspect.LoadInFlight &&
+                now >= suspect.LoadRetryAt &&
+                _players.SessionsDict.TryGetValue(userId, out var online))
+            {
+                _ = LoadProfile(online, CancellationToken.None);
+            }
+
             if (!suspect.Dirty || suspect.SaveInFlight || now < suspect.SaveRetryAt)
                 continue;
 
@@ -633,7 +723,7 @@ public sealed partial class RpuSystem : EntitySystem
     /// </summary>
     private void RecoverHourly(float hours, TimeSpan now)
     {
-        var rate = _cfg.GetCVar(RpuCVars.RecoveryPerHour) * hours;
+        var rate = _cfg.GetCVar(FishCVars.RpuRecoveryPerHour) * hours;
         if (rate <= 0f)
             return;
 
@@ -648,6 +738,10 @@ public sealed partial class RpuSystem : EntitySystem
 
             if (!_players.SessionsDict.TryGetValue(userId, out var session) || session.Status != SessionStatus.InGame)
                 continue;
+
+            // Часы считаются по трекерам, а не по моменту входа: ступень порога не должна
+            // отставать от раунда.
+            RefreshPlaytime(session, suspect);
 
             if (IsExempt(session) || suspect.Karma >= suspect.BaseKarma)
                 continue;

@@ -1,6 +1,7 @@
+using Content.Shared.CCVar;
+using Content.Shared.GameTicking;
 using Content.Server.Chat.Managers;
 using Content.Server._Fish.Rpu;
-using Content.Shared._Fish.PerformanceMetrics;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
@@ -37,12 +38,24 @@ public sealed partial class PmSystem : EntitySystem
 
         _sawmill = Logger.GetSawmill("perfmon");
 
-        Subs.CVar(_cfg, PmCVars.Enabled, value => _enabled = value, true);
-        Subs.CVar(_cfg, PmCVars.Karma, value => _karma = value, true);
-        Subs.CVar(_cfg, PmCVars.Disconnect, value => _disconnect = value, true);
-        Subs.CVar(_cfg, PmCVars.Report, value => _report = value, true);
+        Subs.CVar(_cfg, FishCVars.PerfmonEnabled, value => _enabled = value, true);
+        Subs.CVar(_cfg, FishCVars.PerfmonKarma, value => _karma = value, true);
+        Subs.CVar(_cfg, FishCVars.PerfmonDisconnect, value => _disconnect = value, true);
+        Subs.CVar(_cfg, FishCVars.PerfmonReport, value => _report = value, true);
 
         _players.PlayerStatusChanged += OnPlayerStatusChanged;
+
+        SubscribeLocalEvent<RoundEndedEvent>(OnRoundEnded);
+    }
+
+    /// <summary>
+    /// Конец раунда: накопленные выборки и счётчики обнуляем. Иначе метрика одного
+    /// раунда давит на следующий, а состояние растёт всё время работы сервера.
+    /// </summary>
+    private void OnRoundEnded(RoundEndedEvent args)
+    {
+        foreach (var session in _sessions.Values)
+            session.Reset();
     }
 
     public override void Shutdown()

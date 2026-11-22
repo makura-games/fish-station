@@ -9,6 +9,25 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -89,7 +108,16 @@ public sealed partial class RpuSingularitySystem : EntitySystem
     {
         base.Update(frameTime);
 
-        if (!_rpu.Active || _timing.CurTime < _nextCheck)
+        // Пока счёт не ведётся, память о прикосновениях и колодцах не держим: иначе
+        // после включения нарушением стало бы оборудование, к которому шли в другом состоянии.
+        if (!_rpu.Active)
+        {
+            _wells.Clear();
+            _caretakers.Clear();
+            return;
+        }
+
+        if (_timing.CurTime < _nextCheck)
             return;
 
         _nextCheck = _timing.CurTime + TimeSpan.FromSeconds(15);
@@ -206,16 +234,34 @@ public sealed partial class RpuSingularitySystem : EntitySystem
             stale.Add(session);
         }
 
-        if (stale == null)
-            return;
+        if (stale != null)
+        {
+            foreach (var session in stale)
+                _caretakers.Remove(session);
+        }
 
-        foreach (var session in stale)
-            _caretakers.Remove(session);
+        // Множество наблюдений у каждого колодца живёт отдельно: без этой чистки
+        // штраф ушёл бы игроку, который давно вышел.
+        foreach (var state in _wells.Values)
+        {
+            foreach (var session in state.Caretakers.ToArray())
+            {
+                if (session.Status == SessionStatus.InGame)
+                    continue;
+
+                state.Caretakers.Remove(session);
+            }
+        }
     }
 
     private void Charge(WellState state, ProtoId<RpuViolationPrototype> violation, string details)
     {
         foreach (var session in state.Caretakers.ToArray())
+        {
+            if (session.Status != SessionStatus.InGame)
+                continue;
+
             _rpu.Penalize(session, violation, details: details);
+        }
     }
 }

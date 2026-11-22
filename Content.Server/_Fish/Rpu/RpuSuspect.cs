@@ -1,3 +1,24 @@
+using System.Linq;
+using Content.Shared._Fish.Rpu;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -33,6 +54,12 @@ public sealed class RpuSuspect
 
     /// <summary>Карму успешно прочитали из БД. До этого с ней ничего не делаем.</summary>
     public bool KarmaLoaded;
+
+    /// <summary>Чтение профиля сейчас в полёте (первая загрузка или повтор после сбоя).</summary>
+    public bool LoadInFlight;
+
+    /// <summary>Раньше этого момента не повторяем чтение: так было после сбоя БД.</summary>
+    public TimeSpan LoadRetryAt;
 
     /// <summary>Игрок отключился, но запись кармы ещё не подтверждена.</summary>
     public bool Offline;

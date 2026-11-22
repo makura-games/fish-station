@@ -35,7 +35,15 @@ public static class RpuBanDuration
                 return false;
             }
 
-            if (bare <= 0)
+            if (bare < 0)
+            {
+                // Отрицательное — опечатка, а не «навсегда»: бессрочный бан из-за минуса
+                // в конфиге был бы слишком дорогой ошибкой.
+                error = $"Отрицательное значение недопустимо: {parts[0]}. 0 — это «навсегда», {Help}";
+                return false;
+            }
+
+            if (bare == 0)
                 return true;
 
             return TryFromMinutes(bare, out duration, out error);
@@ -53,7 +61,13 @@ public static class RpuBanDuration
             return false;
         }
 
-        if (amount <= 0)
+        if (amount < 0)
+        {
+            error = $"Отрицательное значение недопустимо: {parts[0]}. 0 — это «навсегда», {Help}";
+            return false;
+        }
+
+        if (amount == 0)
             return true;
 
         if (!TryUnit(parts[1], out var unitMinutes))
@@ -90,6 +104,19 @@ public static class RpuBanDuration
         }
 
         duration = TimeSpan.FromMinutes(minutes);
+
+        // Положительное число, которое округлилось до нуля, отдавать как «навсегда»
+        // нельзя: такой срок админ написал явно, а бессрочный бан — слишком дорогая ошибка.
+        if (duration.Value <= TimeSpan.Zero)
+        {
+            duration = null;
+            error = $"Срок округлился до нуля: {minutes} минут. Укажите значения побольше. {Help}";
+            return false;
+        }
+
+        if (duration.Value < TimeSpan.FromSeconds(1))
+            duration = TimeSpan.FromSeconds(1);
+
         return true;
     }
 

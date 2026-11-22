@@ -3,7 +3,27 @@ using Content.Shared.Database;
 using Robust.Shared.Audio;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
+using Content.Shared.CCVar;
 
+using System.Linq;
+using Content.Shared._Fish.Rpu;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -63,7 +83,7 @@ public sealed partial class RpuSystem
     /// </summary>
     private void CheckChatThreshold(ICommonSession session, RpuSuspect suspect, float before)
     {
-        var threshold = _cfg.GetCVar(RpuCVars.ChatLogThreshold);
+        var threshold = _cfg.GetCVar(FishCVars.RpuChatLogThreshold);
 
         if (suspect.ChatLogSent || before <= threshold || suspect.Karma > threshold)
             return;

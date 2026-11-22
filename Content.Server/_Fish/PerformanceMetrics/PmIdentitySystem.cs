@@ -1,3 +1,6 @@
+using System.Net;
+using System.Net.Sockets;
+using Content.Shared.GameTicking;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
@@ -27,6 +30,17 @@ public sealed partial class PmIdentitySystem : EntitySystem
         base.Initialize();
 
         _players.PlayerStatusChanged += OnStatusChanged;
+        SubscribeLocalEvent<RoundEndedEvent>(OnRoundEnded);
+    }
+
+    /// <summary>
+    /// Конец раунда: блоки и окна забываем целиком, иначе память и следы «ферм»
+    /// перетекают из раунда в раунд.
+    /// </summary>
+    private void OnRoundEnded(RoundEndedEvent args)
+    {
+        _byBlock.Clear();
+        _firstSeen.Clear();
     }
 
     public override void Shutdown()
@@ -71,24 +85,40 @@ public sealed partial class PmIdentitySystem : EntitySystem
     }
 
     /// <summary>
-    /// Ключ адресного блока: для v4 — первые три октета, для v6 — первые четыре группы.
+    /// Ключ адресного блока: /24 для четвёртой версии, /64 для шестой. Разбираем адрес
+    /// числами, а не обрезкой строки: «::ffff:1.2.3.4» и скобки вокруг IPv6 при строковой
+    /// резке дают мусор, а на нём строится обвинение.
     /// Точный адрес не сохраняем: он меняется у мобильных и провайдерских сетей,
     /// а блок остаётся.
     /// </summary>
     private static string? BlockOf(string endpoint)
     {
-        var colon = endpoint.LastIndexOf(':');
-        var address = colon > 0 ? endpoint[..colon] : endpoint;
+        var text = endpoint.AsSpan();
 
-        if (address.Length == 0)
+        var close = text.LastIndexOf(']');
+        if (close >= 0)
+            text = text[1..close];
+        else
+        {
+            var colon = text.LastIndexOf(':');
+            if (colon > 0)
+                text = text[..colon];
+        }
+
+        if (!IPAddress.TryParse(text, out var ip))
             return null;
 
-        var dots = address.Split('.');
-        if (dots.Length == 4)
-            return $"{dots[0]}.{dots[1]}.{dots[2]}";
+        if (ip.IsIPv4MappedToIPv6)
+            ip = ip.MapToIPv4();
 
-        // IPv6 или что-то необычное: первые четыре группы.
-        var groups = address.Split(':');
-        return groups.Length > 1 ? string.Join(":", groups[..Math.Min(4, groups.Length)]) : address;
+        var bytes = ip.GetAddressBytes();
+
+        if (ip.AddressFamily == AddressFamily.InterNetwork && bytes.Length == 4)
+            return $"v4/{bytes[0]}.{bytes[1]}.{bytes[2]}";
+
+        if (ip.AddressFamily == AddressFamily.InterNetworkV6 && bytes.Length == 16)
+            return $"v6/{Convert.ToHexString(bytes[..8])}";
+
+        return null;
     }
 }

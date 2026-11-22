@@ -1,5 +1,5 @@
+using Content.Shared.CCVar;
 using Content.Server.Administration;
-using Content.Shared._Fish.PerformanceMetrics;
 using Content.Shared.Administration;
 using Robust.Shared.Configuration;
 using Robust.Shared.Console;
@@ -83,10 +83,10 @@ public sealed partial class PmStatusCommand : LocalizedEntityCommands
 
     private void WriteConfig(IConsoleShell shell)
     {
-        shell.WriteLine($"perfmon.enabled={_cfg.GetCVar(PmCVars.Enabled)} " +
-                        $"karma={_cfg.GetCVar(PmCVars.Karma)} " +
-                        $"disconnect={_cfg.GetCVar(PmCVars.Disconnect)} " +
-                        $"report={_cfg.GetCVar(PmCVars.Report)}");
+        shell.WriteLine($"perfmon.enabled={_cfg.GetCVar(FishCVars.PerfmonEnabled)} " +
+                        $"karma={_cfg.GetCVar(FishCVars.PerfmonKarma)} " +
+                        $"disconnect={_cfg.GetCVar(FishCVars.PerfmonDisconnect)} " +
+                        $"report={_cfg.GetCVar(FishCVars.PerfmonReport)}");
 
         shell.WriteLine($"thresholds: aim<= {PmTuning.AimPerfectDegrees} deg over {PmTuning.AimStrikeCount} hits, " +
                         $"cadence CV < {PmTuning.CadenceRegularity}, flick > {PmTuning.FlickDegreesPerTick} deg, " +

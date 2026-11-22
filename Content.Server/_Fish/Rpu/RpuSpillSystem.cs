@@ -7,6 +7,24 @@ using Content.Shared.Spillable;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -58,11 +76,25 @@ public sealed partial class RpuSpillSystem : EntitySystem
         }
 
         var threshold = _rpu.SpillThreshold;
+        if (threshold <= FixedPoint2.Zero)
+        {
+            // Нулевой или отрицательный порог делать деление не на что: считаем
+            // опасным любой разлив и не пытаемся вынести за него очки.
+            if (hazard <= FixedPoint2.Zero)
+                return;
+
+            _rpu.Penalize(session, RpuPrototypeIds.SpillHazard, details: "hazard spill");
+            return;
+        }
+
         if (hazard < threshold)
             return;
 
         // Сверх порога — по очку за каждые столько единиц, сколько сам порог (60u), максимум +4.
         var over = (float)(hazard - threshold) / (float)threshold;
+        if (!float.IsFinite(over))
+            return;
+
         var extra = Math.Min(4f, (float)Math.Floor(over));
 
         _rpu.Penalize(session, RpuPrototypeIds.SpillHazard, extra: extra, details: "hazard spill");

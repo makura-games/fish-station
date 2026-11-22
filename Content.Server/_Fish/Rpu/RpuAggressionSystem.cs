@@ -1,6 +1,26 @@
 using Content.Shared._Fish.Rpu;
 using Robust.Shared.Timing;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -21,30 +41,34 @@ public sealed partial class RpuAggressionSystem : EntitySystem
 
     private TimeSpan _nextPrune;
 
+    private EntityQuery<ActorComponent> _actorQuery = default!;
+
     public override void Initialize()
     {
         base.Initialize();
+
+        _actorQuery = GetEntityQuery<ActorComponent>();
 
         SubscribeLocalEvent<RoundStartedEvent>(_ => _lastHit.Clear());
     }
 
     /// <summary>
-    /// Запоминаем удар. Сущность приводим к игроку: урон по руке или шлему того же человека
-    /// считается нападением на него самого, а не на отдельный предмет.
+    /// Запоминаем удар. Репарцуем только пары «игрок -> игрок»: ответный огонь оценивается
+    /// по жертве-игроку, а учёт стен, ящиков и ботов раздувал бы словарь до сброса целиком.
     /// </summary>
     public void RecordDamage(EntityUid victim, EntityUid? origin, FixedPoint2 total)
     {
-        if (total <= 0 || origin is not { } rawAttacker)
+        if (total <= 0 || origin is not { } attacker)
             return;
 
-        var attacker = Normalize(rawAttacker);
-        var target = Normalize(victim);
+        if (attacker == victim)
+            return;
 
-        if (attacker == target)
+        if (!_actorQuery.HasComp(victim) || !_actorQuery.HasComp(attacker))
             return;
 
         Prune();
-        _lastHit[(attacker, target)] = _timing.CurTime;
+        _lastHit[(attacker, victim)] = _timing.CurTime;
     }
 
     /// <summary>
@@ -57,13 +81,8 @@ public sealed partial class RpuAggressionSystem : EntitySystem
 
         var cutoff = _timing.CurTime - AggressionWindow;
 
-        return _lastHit.TryGetValue((Normalize(attacker.Value), Normalize(victim.Value)), out var time)
+        return _lastHit.TryGetValue((attacker.Value, victim.Value), out var time)
                && time >= cutoff;
-    }
-
-    private EntityUid Normalize(EntityUid uid)
-    {
-        return CompOrNull<ActorComponent>(uid)?.Owner ?? uid;
     }
 
     /// <summary>
@@ -79,12 +98,6 @@ public sealed partial class RpuAggressionSystem : EntitySystem
 
         var cutoff = _timing.CurTime - AggressionWindow;
 
-        if (_lastHit.Count > MemoryEntries)
-        {
-            _lastHit.Clear();
-            return;
-        }
-
         List<(EntityUid, EntityUid)>? expired = null;
 
         foreach (var (key, time) in _lastHit)
@@ -96,10 +109,24 @@ public sealed partial class RpuAggressionSystem : EntitySystem
             expired.Add(key);
         }
 
-        if (expired == null)
+        if (expired != null)
+        {
+            foreach (var key in expired)
+                _lastHit.Remove(key);
+        }
+
+        if (_lastHit.Count <= MemoryEntries)
             return;
 
-        foreach (var key in expired)
+        // Совсем редкий случай (толпа на маленькой карте): сбрасываем самые старые пары,
+        // а не всю память — недавние нападения должны остаться видимыми.
+        var oldest = _lastHit
+            .OrderBy(pair => pair.Value)
+            .Take(_lastHit.Count - MemoryEntries)
+            .Select(pair => pair.Key)
+            .ToList();
+
+        foreach (var key in oldest)
             _lastHit.Remove(key);
     }
 }

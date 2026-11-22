@@ -83,18 +83,29 @@ public sealed class PmSession
 
     public TimeSpan WindowEnds;
 
-    /// <summary>Последние межударные интервалы (секунды), для оценки ритма.</summary>
+    /// <summary>Последние межударные интервалы выстрелов (секунды), для оценки ритма.</summary>
     public readonly List<float> HitGaps = new();
 
-    /// <summary>Куда и под каким углом бил в прошлый раз.</summary>
+    /// <summary>То же для ударов в ближнем бою: смешивать выборки нельзя, ритм разный.</summary>
+    public readonly List<float> MeleeGaps = new();
+
+    /// <summary>Куда и под каким углом бил в прошлый раз (выстрел).</summary>
     public TimeSpan LastHitAt;
 
     public bool HasLastHit;
+
+    /// <summary>Когда был предыдущий удар в ближнем бою.</summary>
+    public TimeSpan LastMeleeAt;
+
+    public bool HasLastMelee;
 
     /// <summary>Куда смотрел вектор на цель в прошлый раз и когда.</summary>
     public double? LastAim;
 
     public TimeSpan LastAimAt;
+
+    /// <summary>По кому целились в прошлый раз: смена цели сама по себе не снап.</summary>
+    public EntityUid? LastAimTarget;
 
     /// <summary>Когда в последний раз за это снимали карму.</summary>
     public TimeSpan LastKarmaAt;
@@ -117,8 +128,12 @@ public sealed class PmSession
         LosStrikes = 0;
         ActionsInWindow = 0;
         HitGaps.Clear();
+        MeleeGaps.Clear();
         Attempts.Clear();
         LastAim = null;
+        LastAimTarget = null;
+        HasLastHit = false;
+        HasLastMelee = false;
         TotalFlags = 0;
     }
 

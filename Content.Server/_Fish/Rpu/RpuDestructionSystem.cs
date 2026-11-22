@@ -9,6 +9,23 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -76,6 +93,14 @@ public sealed partial class RpuDestructionSystem : EntitySystem
             return;
 
         _updateAccumulator = 0f;
+
+        // Пока счёт не ведётся (эвакуация, режим, отключение), накопленные возмездия
+        // не выставляем: они были заработаны в другом состоянии счёта.
+        if (!_rpu.Active)
+        {
+            _lastDamager.Clear();
+            return;
+        }
 
         if (_lastDamager.Count == 0)
             return;

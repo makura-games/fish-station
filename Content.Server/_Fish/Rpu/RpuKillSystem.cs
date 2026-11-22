@@ -11,6 +11,22 @@ using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Content.Shared._Fish.Rpu;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage.Components;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -23,8 +39,9 @@ public sealed partial class RpuKillSystem : EntitySystem
     [Dependency] private RpuSystem _rpu = default!;
     [Dependency] private RpuAdjustSystem _mods = default!;
 
-    /// <summary>Виктор -> (нападавший -> накопленный урон).</summary>
-    private readonly Dictionary<EntityUid, Dictionary<EntityUid, FixedPoint2>> _ledger = new();
+    /// <summary>Жертва -> (игрок -> накопленный урон). Ключ — игрок, а не тело:
+    /// тело могут бросить или занять, а отвечать должен тот, кто бил.</summary>
+    private readonly Dictionary<EntityUid, Dictionary<NetUserId, FixedPoint2>> _ledger = new();
 
     /// <summary>За кем уже зарегистрирована смерть, чтобы не считать дважды за один тик.</summary>
     private readonly HashSet<EntityUid> _deathCharged = new();
@@ -102,7 +119,7 @@ public sealed partial class RpuKillSystem : EntitySystem
 
         if (!_ledger.TryGetValue(uid, out var perAttacker))
         {
-            perAttacker = new Dictionary<EntityUid, FixedPoint2>();
+            perAttacker = new Dictionary<NetUserId, FixedPoint2>();
             _ledger[uid] = perAttacker;
         }
 
@@ -131,10 +148,10 @@ public sealed partial class RpuKillSystem : EntitySystem
         }
     }
 
-    private void OnGibbed(EntityUid uid, MobStateComponent component, BeingGibbedEvent args)
+    private void OnGibbed(Entity<MobStateComponent> ent, ref BeingGibbedEvent args)
     {
         // «Гибать» — это распад на органы: считаем как убийство, но не два раза за одну смерть.
-        ChargeDeath(uid, null);
+        ChargeDeath(ent.Owner, null);
     }
 
     private void ChargeDeath(EntityUid victim, EntityUid? origin)
@@ -165,13 +182,17 @@ public sealed partial class RpuKillSystem : EntitySystem
             if (origin == null || origin == victim)
                 return;
 
-            contributions = new Dictionary<EntityUid, FixedPoint2> { [origin.Value] = FixedPoint2.New(1) };
+            if (ResolveAttacker(origin, victim) is not { } direct)
+                return;
+
+            contributions = new Dictionary<NetUserId, FixedPoint2> { [direct] = FixedPoint2.New(1) };
         }
 
         if (PickKiller(victim, origin, contributions) is not { } killer)
             return;
 
-        if (GetSession(killer) is not { } session)
+        // Отвечает тот, кто бил, даже если к моменту смерти он уже вышел из тела.
+        if (!_rpu.TryGetSession(killer, out var session))
             return;
 
         if (!crit)
@@ -184,23 +205,24 @@ public sealed partial class RpuKillSystem : EntitySystem
     }
 
     /// <summary>
-    /// Убивший — тот, кто нанёс последний удар, а если удар был окружением, тот, кто набрал больше всего урона.
-    /// Свои руки и сама жертва в расчёт не берутся: самоубийство — не нарушение.
+    /// Убивший — игрок с наибольшим вкладом, а если журнал пуст, источник последнего удара.
+    /// Самоубийство отсекается до разбора журнала: иначе чужой старый вклад был бы списан
+    /// на того, кто покончил с собой.
     /// </summary>
-    private EntityUid? PickKiller(EntityUid victim, EntityUid? origin, Dictionary<EntityUid, FixedPoint2> contributions)
+    private NetUserId? PickKiller(EntityUid victim, EntityUid? origin, Dictionary<NetUserId, FixedPoint2> contributions)
     {
-        if (origin != null && origin != victim && GetSession(origin.Value) != null)
-            return origin;
+        if (origin != null && origin == victim)
+            return null;
 
-        EntityUid? best = null;
+        if (ResolveAttacker(origin, victim) is { } self)
+            return self;
+
+        NetUserId? best = null;
         var bestDamage = FixedPoint2.Zero;
 
         foreach (var (attacker, damage) in contributions)
         {
-            if (attacker == victim)
-                continue;
-
-            if (damage < bestDamage || GetSession(attacker) == null)
+            if (damage < bestDamage)
                 continue;
 
             best = attacker;
@@ -224,25 +246,20 @@ public sealed partial class RpuKillSystem : EntitySystem
         return roles.Departments.Any(department => tuning.SecurityChainDepartments.Contains(department));
     }
 
-    private ICommonSession? GetSession(EntityUid uid)
-    {
-        return CompOrNull<ActorComponent>(uid)?.PlayerSession;
-    }
-
     /// <summary>
-    /// Приводит источник урона к сущности игрока: оружие и снаряды указывают на стрелка,
-    /// импланты и вживлённые предметы — на носителя.
+    /// Кто бил: игрок, который играет на источнике урона. Оружие и снаряды указывают
+    /// на стрелка, импланты и вживлённые предметы — на носителя.
     /// </summary>
-    private EntityUid? ResolveAttacker(EntityUid? origin, EntityUid victim)
+    private NetUserId? ResolveAttacker(EntityUid? origin, EntityUid victim)
     {
         if (origin is not { } candidate)
             return null;
 
-        if (!HasComp<ActorComponent>(candidate))
+        // Суицид и «сам себе» не считаем нарушением.
+        if (candidate == victim)
             return null;
 
-        // Суицид и «сам себе» не считаем нарушением.
-        return candidate == victim ? null : candidate;
+        return CompOrNull<ActorComponent>(candidate)?.PlayerSession.UserId;
     }
 
     private void PruneFormerPlayers()
@@ -254,7 +271,6 @@ public sealed partial class RpuKillSystem : EntitySystem
     {
         // Простейшая защита от роста памяти: сбрасываем журнал целиком раз в превышении лимита.
         _ledger.Clear();
-        _deathCharged.Clear();
     }
 }
 

@@ -36,6 +36,9 @@ public static class PmTuning
     /// <summary>Поворот больше этого за один тик — снап, человек так не водит.</summary>
     public const float FlickDegreesPerTick = 45f;
 
+    /// <summary>За сколько тиков смена цели с большим доворотом всё ещё считается снапом.</summary>
+    public const int FlickRetargetTicks = 2;
+
     /// <summary>Сколько снапов на счету, прежде чем считать.</summary>
     public const int FlickStrikeCount = 6;
 
@@ -93,6 +96,15 @@ public static class PmTuning
     public const int RatioStrikeCount = 3;
 
     /// <summary>Дальность, с которой существо способно воспринять цель.</summary>
+    /// <summary>Ритм ударов руками: своя норма. Махать монтировкой ровно — нормально,
+    /// а вот нулевой разброс между выстрелами нет.</summary>
+    public const float MeleeCadenceRegularity = 0.05f;
+
+    /// <summary>Сколько межударных интервалов нужно, чтобы вообще говорить о ритме.</summary>
+    public const int CadenceSamples = 10;
+
+    /// <summary>Дальше этого расстояния цель клиент видеть не мог. Значение по умолчанию,
+    /// перекрывается cvar perfmon.perceive_meters, который надо сверять с реальной видимостью.</summary>
     public const float PerceiveMeters = 12f;
 
     /// <summary>Столько попаданий сквозь препятствие или дальше восприятия нужно для признания.</summary>

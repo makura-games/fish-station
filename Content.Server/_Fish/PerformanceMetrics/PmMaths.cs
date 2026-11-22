@@ -70,7 +70,9 @@ public static class PmMaths
     /// </summary>
     public static float RealisedShare(IReadOnlyList<PmAttempt> attempts, int windowSeconds, int count)
     {
-        if (attempts.Count < count)
+        // Нулевой или отрицательный заказ — это не «взять все попытки», а ошибка настройки:
+        // иначе attempts[^1] на пустом списке стреляет исключением.
+        if (count <= 0 || windowSeconds <= 0 || attempts.Count < count)
             return -1f;
 
         var newest = attempts[^1].At;
@@ -97,7 +99,7 @@ public static class PmMaths
     /// </summary>
     public static float PerfectShareOfRealised(IReadOnlyList<PmAttempt> attempts, int count, float maxErrorDegrees)
     {
-        if (attempts.Count < count)
+        if (count <= 0 || attempts.Count < count)
             return -1f;
 
         var realised = 0;

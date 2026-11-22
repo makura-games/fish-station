@@ -3,7 +3,28 @@ using Content.Server.Administration.Managers;
 using Content.Shared.Administration;
 using Content.Shared.Database;
 using Robust.Shared.Player;
+using Content.Shared.CCVar;
 
+using System.Linq;
+using Content.Shared._Fish.Rpu;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -37,7 +58,7 @@ public sealed partial class RpuSystem
             suspect.RoleHours,
             Tuning.BanTiers,
             suspect.BanThresholdShift,
-            _cfg.GetCVar(RpuCVars.BanVeterans));
+            _cfg.GetCVar(FishCVars.RpuBanVeterans));
 
         var lost = suspect.LossInWindow(_timing.CurTime, _spikeWindow);
         var spiked = _spikeUnits > 0f && lost > _spikeUnits;
@@ -109,7 +130,7 @@ public sealed partial class RpuSystem
     /// </summary>
     private bool TryDuration(out TimeSpan? duration)
     {
-        var text = _cfg.GetCVar(RpuCVars.BanDuration);
+        var text = _cfg.GetCVar(FishCVars.RpuBanDuration);
 
         if (RpuBanDuration.TryParse(text, out var parsed, out _))
         {

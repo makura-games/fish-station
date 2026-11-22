@@ -208,6 +208,8 @@ public sealed class RpuMathsTest
     [TestCase("1 2 3")]
     [TestCase("99999999 years")]
     [TestCase("1e400 minutes")]
+    [TestCase("-1")]                // минус — опечатка, а не «навсегда»
+    [TestCase("-30 minutes")]
     public void BanDurationRejectsGarbage(string text)
     {
         // Переполнение TimeSpan должно возвращать отказ с текстом, а не исключение:
@@ -215,6 +217,15 @@ public sealed class RpuMathsTest
         Assert.That(RpuBanDuration.TryParse(text, out _, out var error), Is.False);
         Assert.That(error, Is.Not.Null);
         Assert.That(error, Is.Not.Empty);
+    }
+
+    [Test]
+    public void BanDurationNeverRoundsDownToPermanent()
+    {
+        // Крохотный положительный срок не должен превратиться в бессрочный: его
+        // поднимают до секунды, а не обнуляют.
+        Assert.That(RpuBanDuration.TryParse("0.0000001 minutes", out var duration, out _), Is.True);
+        Assert.That(duration, Is.EqualTo(TimeSpan.FromSeconds(1)));
     }
 
     /// <summary>

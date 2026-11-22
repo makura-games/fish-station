@@ -6,6 +6,11 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
+using Content.Shared.CCVar;
+using Content.Shared.Interaction;
+using Content.Shared.Projectiles;
+using Content.Shared.Weapons.Ranged.Components;
+using Robust.Shared.Configuration;
 namespace Content.Server._Fish.PerformanceMetrics;
 
 /// <summary>
@@ -19,9 +24,13 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transforms = default!;
     [Dependency] private PmSystem _pm = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private EntityQuery<ActorComponent> _actorQuery = default!;
     private EntityQuery<TransformComponent> _xformQuery = default!;
+    private EntityQuery<GunComponent> _gunQuery = default!;
+    private EntityQuery<AmmoComponent> _ammoQuery = default!;
+    private EntityQuery<ProjectileComponent> _projectileQuery = default!;
 
     public override void Initialize()
     {
@@ -29,6 +38,9 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
 
         _actorQuery = GetEntityQuery<ActorComponent>();
         _xformQuery = GetEntityQuery<TransformComponent>();
+        _gunQuery = GetEntityQuery<GunComponent>();
+        _ammoQuery = GetEntityQuery<AmmoComponent>();
+        _projectileQuery = GetEntityQuery<ProjectileComponent>();
 
         SubscribeLocalEvent<PmDamageObservedEvent>(OnDamage);
     }
@@ -44,10 +56,27 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         var pm = _pm.GetSession(session.UserId);
         var now = _timing.CurTime;
 
+        // Выстрел и удар рукой — разные выборки. Признаки точности считаются только по
+        // выстрелам: у ближнего боя сервер фиксирует поворот уже после замаха, и угол
+        // там почти всегда нулевой у любого игрока.
+        var ranged = IsRanged(ev.Source);
+
         CountRate(pm, now);
-        CountCadence(pm, now);
-        CountAngle(pm, attacker, ev.Victim, now);
+        CountCadence(pm, now, ranged);
+        CountAngle(pm, attacker, ev.Victim, now, ranged);
         CountRatio(pm);
+    }
+
+    /// <summary>
+    /// Выстрел ли это: оружие, боеприпас или снаряд. Источник «тело» или предмет в руках
+    /// без признаков стрельбы — ближний бой.
+    /// </summary>
+    private bool IsRanged(EntityUid? source)
+    {
+        if (source is not { } from || from == EntityUid.Invalid)
+            return false;
+
+        return _gunQuery.HasComp(from) || _ammoQuery.HasComp(from) || _projectileQuery.HasComp(from);
     }
 
     /// <summary>Частота обращений: сколько ударов прошло за окно.</summary>
@@ -72,33 +101,55 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         pm.ActionsInWindow++;
     }
 
-    /// <summary>Постоянство ритма между ударами.</summary>
-    private void CountCadence(PmSession pm, TimeSpan now)
+    /// <summary>Постоянство ритма между ударами. Выстрелы и удары руками — порознь.</summary>
+    private void CountCadence(PmSession pm, TimeSpan now, bool ranged)
     {
-        if (pm.HasLastHit)
+        if (ranged)
         {
-            var gap = (float)(now - pm.LastHitAt).TotalSeconds;
-            if (gap > 0.01f)
+            AddGap(pm.HitGaps, pm.HasLastHit, pm.LastHitAt, now);
+            pm.LastHitAt = now;
+            pm.HasLastHit = true;
+
+            if (!pm.HasFlag(PmFlag.Cadence) && pm.HitGaps.Count >= PmTuning.CadenceSamples)
             {
-                pm.HitGaps.Add(gap);
-                if (pm.HitGaps.Count > 24)
-                    pm.HitGaps.RemoveAt(0);
+                var variation = PmMaths.VariationCoefficient(CollectionsMarshal.AsSpan(pm.HitGaps));
+                if (variation < PmTuning.CadenceRegularity)
+                    _pm.Note(pm, PmFlag.Cadence,
+                        $"shot interval variation {variation:0.####} over {pm.HitGaps.Count} shots");
             }
+
+            return;
         }
 
-        pm.LastHitAt = now;
-        pm.HasLastHit = true;
+        AddGap(pm.MeleeGaps, pm.HasLastMelee, pm.LastMeleeAt, now);
+        pm.LastMeleeAt = now;
+        pm.HasLastMelee = true;
 
-        if (pm.HasFlag(PmFlag.Cadence) || pm.HitGaps.Count < 10)
+        if (pm.HasFlag(PmFlag.Cadence) || pm.MeleeGaps.Count < PmTuning.CadenceSamples)
             return;
 
-        var variation = PmMaths.VariationCoefficient(CollectionsMarshal.AsSpan(pm.HitGaps));
-        if (variation < PmTuning.CadenceRegularity)
-            _pm.Note(pm, PmFlag.Cadence, $"hit interval variation {variation:0.####} over {pm.HitGaps.Count} hits");
+        var melee = PmMaths.VariationCoefficient(CollectionsMarshal.AsSpan(pm.MeleeGaps));
+        if (melee < PmTuning.MeleeCadenceRegularity)
+            _pm.Note(pm, PmFlag.Cadence,
+                $"melee interval variation {melee:0.####} over {pm.MeleeGaps.Count} hits");
     }
 
-    /// <summary>Угловая ошибка на момент удара и величина доворота до следующего.</summary>
-    private void CountAngle(PmSession pm, EntityUid attacker, EntityUid victim, TimeSpan now)
+    private static void AddGap(List<float> gaps, bool hasPrevious, TimeSpan previous, TimeSpan now)
+    {
+        if (!hasPrevious)
+            return;
+
+        var gap = (float)(now - previous).TotalSeconds;
+        if (gap <= 0.01f)
+            return;
+
+        gaps.Add(gap);
+        if (gaps.Count > 24)
+            gaps.RemoveAt(0);
+    }
+
+    /// <summary>Угловая ошибка на момент выстрела и величина доворота до следующего.</summary>
+    private void CountAngle(PmSession pm, EntityUid attacker, EntityUid victim, TimeSpan now, bool ranged)
     {
         if (!_xformQuery.TryGetComponent(attacker, out var attackerXform) ||
             !_xformQuery.TryGetComponent(victim, out var victimXform))
@@ -120,6 +171,17 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         var aim = Math.Atan2(delta.Y, delta.X);
         var error = PmMaths.AngularErrorDegrees(attackerXform.WorldRotation.Theta, aim);
 
+        if (!ranged)
+        {
+            // Для ближнего боя счётчик «идеальных» попаданий обнуляем, иначе серия
+            // обычных ударов руками выглядела бы как наведение. Заодно смотрим на длину
+            // удара: сервер сам проверяет дистанцию ближнего боя, и удар дальше своего
+            // оружия возможен только если проверка на клиенте подменена.
+            pm.PerfectHits = 0;
+            CountReach(pm, distance);
+            return;
+        }
+
         PairAttempt(pm, now, error);
         CountPerception(pm, attacker, victim, error, distance);
 
@@ -130,24 +192,27 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
 
         if (!pm.HasFlag(PmFlag.Aim) && pm.PerfectHits >= PmTuning.AimStrikeCount)
             _pm.Note(pm, PmFlag.Aim,
-                $"{pm.PerfectHits} hits in a row within {PmTuning.AimPerfectDegrees} of the target");
+                $"{pm.PerfectHits} shots in a row within {PmTuning.AimPerfectDegrees} of the target");
 
-        CountFlick(pm, aim, now);
-        CountReach(pm, error, distance);
+        CountFlick(pm, victim, aim, now);
     }
 
     /// <summary>
-    /// Доворот: если между двумя близкими по времени ударами вектор на цель меняется
+    /// Доворот: если между двумя близкими по времени выстрелами вектор на цель меняется
     /// больше чем на прямой угол, рука такого разворота за тик не делает.
+    /// Смена цели — не снап: за окно игрок вправе перестрелить на другого. Подозрителен
+    /// только разворот на другого быстрее пары тиков, такого мышчьего рывка не бывает.
     /// </summary>
-    private void CountFlick(PmSession pm, double aim, TimeSpan now)
+    private void CountFlick(PmSession pm, EntityUid victim, double aim, TimeSpan now)
     {
         var hasPrevious = pm.LastAim.HasValue;
         var previous = pm.LastAim ?? 0.0;
         var previousAt = pm.LastAimAt;
+        var previousTarget = pm.LastAimTarget;
 
         pm.LastAim = aim;
         pm.LastAimAt = now;
+        pm.LastAimTarget = victim;
 
         if (!hasPrevious || pm.HasFlag(PmFlag.Flick))
             return;
@@ -156,9 +221,13 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         if (sinceSeconds > PmTuning.ActionWindowSeconds)
             return;
 
-        var turn = Math.Abs(((aim - previous + Math.PI) % (Math.PI * 2.0)) - Math.PI) * (180.0 / Math.PI);
+        var turn = PmMaths.AngularErrorDegrees(aim, previous);
 
         if (turn <= PmTuning.FlickDegreesPerTick)
+            return;
+
+        if (previousTarget != victim &&
+            sinceSeconds > PmTuning.FlickRetargetTicks / (float)_timing.TickRate)
             return;
 
         pm.FlickStrikes++;
@@ -167,20 +236,17 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
     }
 
     /// <summary>
-    /// Попадания «идеально в центр» на дистанции, которой у ближнего боя не бывает:
-    /// либо это стрельба с точностью, недоступной вручную, либо удар по тому, чего не видно.
+    /// Удар дальше, чем достаёт ближний бой. Само по себе это редкость: сервер проверяет
+    /// дистанцию, поэтому ловим только случай, когда проверка на клиенте обоидена.
     /// </summary>
-    private void CountReach(PmSession pm, float error, float distance)
+    private void CountReach(PmSession pm, float distance)
     {
-        if (pm.HasFlag(PmFlag.Reach) || error > PmTuning.AimPerfectDegrees)
-            return;
-
-        if (distance <= PmTuning.MeleeReachMeters)
+        if (pm.HasFlag(PmFlag.Reach) || distance <= PmTuning.MeleeReachMeters)
             return;
 
         pm.ReachStrikes++;
         if (pm.ReachStrikes >= PmTuning.ReachStrikeCount)
-            _pm.Note(pm, PmFlag.Reach, $"{pm.ReachStrikes} perfect-angle hits at {distance:0.#} tiles");
+            _pm.Note(pm, PmFlag.Reach, $"{pm.ReachStrikes} melee hits at {distance:0.#} tiles");
     }
 
     /// <summary>
@@ -196,6 +262,8 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
                 continue;
 
             // Стрелок мог выстрелить раньше, а урон дошёл позже: дальше секунды не связываем.
+            // Незакрытые попытки при этом не удаляем и не добавляем новых: они только
+            // смягчают статистику, а не доказывают нарушение.
             if ((now - attempt.At).TotalSeconds > 1.5f)
                 return;
 
@@ -219,11 +287,15 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         if (distance <= PmTuning.MeleeReachMeters)
             return;
 
-        if (distance <= PmTuning.PerceiveMeters &&
+        // Порог сравнения берём из настройки сервера, а не из кода: что клиент мог увидеть,
+        // зависит от конфигурации видимости, а не оттого, как написан этот метод.
+        var perceive = Math.Max(PmTuning.MeleeReachMeters, _cfg.GetCVar(FishCVars.PerfmonPerceiveMeters));
+
+        if (distance <= perceive &&
             _interaction.InRangeUnobstructed(
                 _transforms.GetMapCoordinates(attacker),
                 _transforms.GetMapCoordinates(victim),
-                PmTuning.PerceiveMeters))
+                perceive))
         {
             return;
         }

@@ -126,6 +126,16 @@ public sealed class PmMathsTest
     }
 
     [Test]
+    public void ShareRejectsDegenerateWindow()
+    {
+        // Нулевой заказ или нулевое окно — это ошибка настройки, а не «взять всё»:
+        // раньше на пустом списке attempts[^1] стрелял исключением.
+        Assert.That(PmMaths.RealisedShare(Attempts(0, 0, 0.1f), 30, 0), Is.EqualTo(-1f));
+        Assert.That(PmMaths.RealisedShare(Attempts(20, 20, 0.1f), 0, 12), Is.EqualTo(-1f));
+        Assert.That(PmMaths.PerfectShareOfRealised(Attempts(0, 0, 0.1f), 0, 1f), Is.EqualTo(-1f));
+    }
+
+    [Test]
     public void RealisedShareCountsLandedShots()
     {
         Assert.That(PmMaths.RealisedShare(Attempts(20, 20, 0.1f), 60, 20), Is.EqualTo(1f));

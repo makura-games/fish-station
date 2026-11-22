@@ -2,6 +2,27 @@ using Content.Shared.Contraband;
 using Content.Shared.Storage.Components;
 using Robust.Shared.Timing;
 
+using System.Linq;
+using Content.Shared._Fish.Rpu;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -50,7 +71,12 @@ public sealed partial class RpuContrabandSystem : EntitySystem
         SweepStale();
 
         if (!_rpu.Active)
+        {
+            // Пока система выключена, период ношения не идёт: иначе после включения
+            // штраф прилетел бы сразу за возвращённую контрабанду.
+            _since.Clear();
             return;
+        }
 
         var limit = _rpu.ContrabandLimit;
         var dwell = TimeSpan.FromMinutes(_rpu.ContrabandDwellMinutes);

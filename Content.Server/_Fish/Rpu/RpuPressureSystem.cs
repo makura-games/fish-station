@@ -7,7 +7,26 @@ using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Content.Shared.CCVar;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -60,19 +79,26 @@ public sealed partial class RpuPressureSystem : EntitySystem
 
     private readonly Dictionary<NetUserId, Pressure> _pressures = new();
 
+    /// <summary>Как часто пересчитывать глубину давления для всех сессий.</summary>
+    private static readonly TimeSpan RecomputeEvery = TimeSpan.FromSeconds(5);
+
+    private TimeSpan _nextRecompute;
+
+    private readonly List<NetUserId> _stale = new();
+
     public override void Initialize()
     {
         base.Initialize();
 
-        Subs.CVar(_cfg, RpuCVars.PressureEnabled, value => _enabled = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureStartKarma, value => _startKarma = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureLatencyMs, value => _latencyBase = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureLatencyMaxMs, value => _latencyMax = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureMissChance, value => _missBase = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureMissMaxChance, value => _missMax = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureSlipChance, value => _slipChance = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureJamChance, value => _jamChance = value, true);
-        Subs.CVar(_cfg, RpuCVars.PressureDropChance, value => _dropChance = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureEnabled, value => _enabled = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureStartKarma, value => _startKarma = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureLatencyMs, value => _latencyBase = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureLatencyMaxMs, value => _latencyMax = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureMissChance, value => _missBase = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureMissMaxChance, value => _missMax = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureSlipChance, value => _slipChance = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureJamChance, value => _jamChance = value, true);
+        Subs.CVar(_cfg, FishCVars.RpuPressureDropChance, value => _dropChance = value, true);
 
         SubscribeLocalEvent<DamageableComponent, BeforeDamageChangedEvent>(OnBeforeDamage);
         SubscribeLocalEvent<ShotAttemptedEvent>(OnShotAttempted);
@@ -164,20 +190,26 @@ public sealed partial class RpuPressureSystem : EntitySystem
         if (!_enabled || !_rpu.Active)
             return;
 
-        // Глубину давления пересчитываем и для тех, кто пока никого не бил:
-        // микропаузы и подкашивания должны прийти к любому нарушителю.
-        foreach (var session in _players.Sessions)
+        // Глубину давления пересчитываем и для тех, кто пока никого не бил: микропаузы
+        // и подкашивания должны прийти к любому нарушителю. Но не каждый кадр —
+        // на сотне сессий это тысячи лишних обращений в секунду.
+        var now = _timing.CurTime;
+
+        if (now >= _nextRecompute)
         {
-            if (session.Status == SessionStatus.InGame)
-                GetPressure(session);
-            else
-                _pressures.Remove(session.UserId);
+            _nextRecompute = now + RecomputeEvery;
+
+            foreach (var session in _players.Sessions)
+            {
+                if (session.Status == SessionStatus.InGame)
+                    GetPressure(session);
+                else
+                    _pressures.Remove(session.UserId);
+            }
         }
 
         if (_pressures.Count == 0)
             return;
-
-        var now = _timing.CurTime;
 
         foreach (var (userId, pressure) in _pressures)
         {
@@ -191,6 +223,13 @@ public sealed partial class RpuPressureSystem : EntitySystem
 
             if (!_rpu.PunishmentAllowed(session))
                 continue;
+
+            // Карма могла подняться между пересчётами: на старом кэше эффекты держать нельзя.
+            if (!_rpu.TryGetSuspect(userId, out var suspect) || suspect.Karma >= _startKarma)
+            {
+                _stale.Add(userId);
+                continue;
+            }
 
             // Микропауза: длительность берём из «пинга», но в долях, чтобы не оглушать надолго.
             // Визуал оглушения выключаем: игроку это выглядит как потерянный пакет,
@@ -219,12 +258,14 @@ public sealed partial class RpuPressureSystem : EntitySystem
             }
         }
 
-        // Подчищаем за отключившимися.
-        foreach (var userId in _pressures.Keys.ToArray())
-        {
-            if (!_players.SessionsDict.ContainsKey(userId))
-                _pressures.Remove(userId);
-        }
+        // Подчищаем за отключившимися и восстановившимися.
+        if (_stale.Count == 0)
+            return;
+
+        foreach (var userId in _stale)
+            _pressures.Remove(userId);
+
+        _stale.Clear();
     }
 }
 

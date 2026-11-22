@@ -5,6 +5,22 @@ using Content.Shared.Slippery;
 using Content.Shared.Throwing;
 using Robust.Shared.Player;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Wires;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -43,7 +59,20 @@ public sealed partial class RpuSlipSystem : EntitySystem
     private void Mark(EntityUid uid, EntityUid? user)
     {
         var culprit = EnsureComp<RpuSlipCulpritComponent>(uid);
-        culprit.Culprit = user != null && HasComp<ActorComponent>(user.Value) ? user : null;
+
+        // Отвечает игрок, а не тело: тело могут освободить, занять или пересоздать,
+        // а наказан должен быть тот, кто положил кожуру.
+        EntityUid? body = null;
+        NetUserId? player = null;
+
+        if (user != null && TryComp<ActorComponent>(user.Value, out var actor))
+        {
+            body = user;
+            player = actor.PlayerSession.UserId;
+        }
+
+        culprit.Culprit = body;
+        culprit.CulpritUser = player;
     }
 
     private void OnSlip(Entity<SlipperyComponent> ent, ref SlipEvent args)
@@ -51,16 +80,16 @@ public sealed partial class RpuSlipSystem : EntitySystem
         if (!_rpu.Active)
             return;
 
-        if (!TryComp<RpuSlipCulpritComponent>(ent.Owner, out var culprit) || culprit.Culprit == null)
+        if (!TryComp<RpuSlipCulpritComponent>(ent.Owner, out var culprit) || culprit.CulpritUser is not { } culpritUser)
             return;
 
-        var culpritEntity = culprit.Culprit.Value;
-
-        // Сам виновник на своей кожуре — не нарушение.
-        if (culpritEntity == args.Slipped)
+        // Сам виновник на своей кожуре — не нарушение. Сравниваем игроков, а не тела:
+        // к моменту скольжения в этом теле мог сидеть совсем другой человек.
+        if (CompOrNull<ActorComponent>(args.Slipped)?.PlayerSession.UserId == culpritUser)
             return;
 
-        if (CompOrNull<ActorComponent>(culpritEntity)?.PlayerSession is not { } session)
+        // Наказываем того, кто положил предмет, даже если он уже вышел из этого тела.
+        if (!_rpu.TryGetSession(culpritUser, out var session))
             return;
 
         var violation = IsVip(args.Slipped)
@@ -93,4 +122,8 @@ public sealed partial class RpuSlipCulpritComponent : Component
 {
     [ViewVariables]
     public EntityUid? Culprit;
+
+    /// <summary>Игрок, который положил или бросил предмет. Именно он отвечает за скольжение.</summary>
+    [ViewVariables]
+    public NetUserId? CulpritUser;
 }

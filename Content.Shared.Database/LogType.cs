@@ -497,7 +497,7 @@ public enum LogType
     SiliconLaw = 106, // Sunrise-Edit - сохраняем числовое значение существующего Interactions для совместимости БД
 
     /// <summary>
-    /// Fish-start - karma accounting (personal oppression mode).
+    // Fish-start - учёт кармы режима персонального угнетения
     /// </summary>
     Karma = 107,
     // Fish-end

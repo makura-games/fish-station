@@ -5,6 +5,25 @@ using Content.Shared._Fish.Rpu;
 using Robust.Shared.Console;
 using Robust.Shared.Player;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -52,7 +71,9 @@ public sealed partial class RpuKarmaCommand : LocalizedEntityCommands
                 shell.WriteLine("ban limit: none for this player");
             else
             {
-                var remaining = Math.Abs(limit) - Math.Abs(suspect.Karma);
+                // До порога осталось столько, насколько карма выше предела: знак здесь
+                // важен, иначе у игрока с +50 и предела -40 выходило «-10 очков».
+                var remaining = Math.Max(0f, suspect.Karma - limit);
                 var until = crew > 0f ? (int)Math.Ceiling(remaining / crew) : 0;
                 shell.WriteLine($"ban limit: {limit:0.##}  crewKill cost: {crew:0.##}  " +
                                 $"until limit: {remaining:0.##} points (~{Math.Max(0, until)} crew kills)");

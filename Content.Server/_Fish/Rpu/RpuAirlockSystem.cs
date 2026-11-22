@@ -9,6 +9,25 @@ using Content.Server.Wires;
 using Content.Shared.Wires;
 using Robust.Shared.Prototypes;
 
+using System.Linq;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
+using Robust.Shared.Random;
 namespace Content.Server._Fish.Rpu;
 
 /// <summary>
@@ -38,7 +57,7 @@ public sealed partial class RpuAirlockSystem : EntitySystem
         if (!args.Handled)
             return;
 
-        Charge(args.UserUid, ent.Owner, AirlockViolation(ent.Owner));
+        Charge(args.UserUid, ent.Owner, AirlockViolation(ent.Owner, args.UserUid));
     }
 
     private void OnWireDoAfter(Entity<AirlockComponent> ent, ref WireDoAfterEvent args)
@@ -47,13 +66,13 @@ public sealed partial class RpuAirlockSystem : EntitySystem
             return;
 
         // Перерезанный провод шлюза — тот же уровень взлома, что и emag: цена по доступам двери.
-        Charge(args.User, ent.Owner, AirlockViolation(ent.Owner));
+        Charge(args.User, ent.Owner, AirlockViolation(ent.Owner, args.User));
     }
 
     /// <summary>Насколько «жирный» шлюз взломали.</summary>
-    private ProtoId<RpuViolationPrototype> AirlockViolation(EntityUid uid)
+    private ProtoId<RpuViolationPrototype> AirlockViolation(EntityUid uid, EntityUid user)
     {
-        var accesses = CollectAccesses(uid);
+        var accesses = CollectAccesses(uid, user);
 
         if (accesses.Count == 0)
             return RpuPrototypeIds.AirlockBasic;
@@ -72,7 +91,7 @@ public sealed partial class RpuAirlockSystem : EntitySystem
         return RpuPrototypeIds.AirlockBasic;
     }
 
-    private HashSet<string> CollectAccesses(EntityUid uid)
+    private HashSet<string> CollectAccesses(EntityUid uid, EntityUid user)
     {
         var result = new HashSet<string>();
 
@@ -86,6 +105,14 @@ public sealed partial class RpuAirlockSystem : EntitySystem
                 foreach (var access in list)
                     result.Add(access.ToString());
             }
+        }
+
+        // Взлом оценивается и по тому, чьи допуски при этом светились: карта может лежать
+        // в слоте, который читалка дверей не перебирает, а взломщик её всё равно показал.
+        if (CompOrNull<AccessComponent>(user) is { } card)
+        {
+            foreach (var tag in card.Tags)
+                result.Add(tag.ToString());
         }
 
         return result;
