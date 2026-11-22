@@ -134,9 +134,17 @@ public sealed partial class FishResearchWindow : FancyWindow
                 var unlocks = new List<FishResearchUnlock>();
                 foreach (var recipeId in tech.RecipeUnlocks)
                 {
-                    var recipe = _prototypes.Index(recipeId);
-                    var productName = recipe.Name != null && recipe.Result is { } product
-                        ? _prototypes.Index(product).Name : null;
+                    if (!_prototypes.TryIndex(recipeId, out var recipe))
+                        continue;
+
+                    string? productName = null;
+                    if (recipe.Result is { } product)
+                    {
+                        if (!_prototypes.TryIndex(product, out var entity))
+                            continue;
+                        if (recipe.Name != null)
+                            productName = entity.Name;
+                    }
                     unlocks.Add(new FishResearchUnlock(_lathe.GetRecipeName(recipe), recipe, productName));
                 }
                 foreach (var effect in tech.GenericUnlocks)
@@ -298,17 +306,7 @@ public sealed partial class FishResearchWindow : FancyWindow
         if (entry.Unlocks.Count != 0)
             AddText(Details, Loc.GetString("research-console-unlocks-list-start"), "LabelKeyText");
         foreach (var unlock in entry.Unlocks)
-        {
-            var row = new BoxContainer { SeparationOverride = 6 };
-            if (unlock.GetIcon(_sprites) is { } icon)
-                row.AddChild(new TextureRect
-                {
-                    Texture = icon, SetSize = new Vector2(32), CanShrink = true,
-                    Stretch = TextureRect.StretchMode.KeepAspectCentered,
-                });
-            AddText(row, unlock.Name);
-            Details.AddChild(row);
-        }
+            Details.AddChild(unlock.CreateRow(_sprites));
     }
 
     private static void AddText(BoxContainer parent, string text, string? style = null)

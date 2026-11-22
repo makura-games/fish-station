@@ -47,6 +47,16 @@ public sealed class FishResearchWindowTest
             var card = (FishTechnologyCard) window.FindControl<BoxContainer>("CardRows").GetChild(0).GetChild(0);
             Assert.That(card.FindControl<TextureRect>("Icon").Texture, Is.Not.Null);
             Assert.That(card.FindControl<BoxContainer>("Preview").ChildCount, Is.Positive);
+            var unlockList = (Collapsible) card.FindControl<BoxContainer>("UnlockDetails").GetChild(0);
+            Assert.That(unlockList.BodyVisible, Is.False);
+            unlockList.BodyVisible = true;
+            var recipeNames = client.ResolveDependency<IPrototypeManager>().Index(AdvancedPowercells).RecipeUnlocks
+                .Select(id => client.System<LatheSystem>().GetRecipeName(id)).ToArray();
+            var visibleNames = unlockList.Body!.GetChild(0).Children
+                .SelectMany(row => row.Children.OfType<RichTextLabel>())
+                .Select(label => label.GetMessage()).ToArray();
+            Assert.That(visibleNames, Is.EqualTo(recipeNames));
+            unlockList.BodyVisible = false;
             var buy = card.FindControl<Button>("ResearchButton");
             Assert.That(buy.Disabled, Is.True);
             var catalog = window.FindControl<BoxContainer>("Results");

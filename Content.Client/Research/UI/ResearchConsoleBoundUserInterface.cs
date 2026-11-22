@@ -11,7 +11,7 @@ namespace Content.Client.Research.UI;
 public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
 {
     [ViewVariables]
-    private FishResearchWindow? _consoleMenu;
+    private FishResearchWindow? _consoleMenu; // Fish-edit: тип окна консоли РНД
 
     public ResearchConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
@@ -21,7 +21,7 @@ public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
     {
         base.Open();
 
-        _consoleMenu = this.CreateWindow<FishResearchWindow>();
+        _consoleMenu = this.CreateWindow<FishResearchWindow>(); // Fish-edit: открываем окно исследований Fish
 
         _consoleMenu.OnTechnologyCardPressed += id =>
         {
@@ -38,14 +38,16 @@ public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
     {
         base.OnProtoReload(args);
 
+        // Fish-start: окно использует рецепты, дисциплины и названия предметов
         if (!args.WasModified<TechnologyPrototype>() && !args.WasModified<LatheRecipePrototype>() &&
             !args.WasModified<TechDisciplinePrototype>() && !args.WasModified<EntityPrototype>())
             return;
+        // Fish-end
 
         if (State is not ResearchConsoleBoundInterfaceState rState)
             return;
 
-        _consoleMenu?.Refresh(Owner, rState, force: true);
+        _consoleMenu?.Refresh(Owner, rState, force: true); // Fish-edit: перестраиваем каталог после перезагрузки
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -54,6 +56,6 @@ public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
 
         if (state is not ResearchConsoleBoundInterfaceState castState)
             return;
-        _consoleMenu?.Refresh(Owner, castState);
+        _consoleMenu?.Refresh(Owner, castState); // Fish-edit: обновляем окно по состоянию консоли
     }
 }
