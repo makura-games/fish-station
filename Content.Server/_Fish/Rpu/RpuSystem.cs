@@ -64,6 +64,12 @@ public sealed partial class RpuSystem : EntitySystem
     // Рамки снятия очков. Держим в полях, а не читаем cvar на каждое нарушение,
     // и чистим значения: кривой конфиг не должен уронить раунд.
     private float _minPenalty = RpuMaths.MinPenalty;
+
+    /// <summary>Сколько очков потери за окно считается всплеском. 0 — правило выключено.</summary>
+    private float _spikeUnits = 70f;
+
+    /// <summary>Окно, за которое смотрим на потерю кармы.</summary>
+    private TimeSpan _spikeWindow = TimeSpan.FromMinutes(10);
     private float _maxExtraUnits = RpuMaths.MaxExtraPenalty;
 
     private float _recoverAccumulator;
@@ -150,6 +156,10 @@ public sealed partial class RpuSystem : EntitySystem
         Subs.CVar(_cfg, RpuCVars.MinPenalty, value => _minPenalty = SanitizeUnits(value, RpuMaths.MinPenalty, 25f), true);
         Subs.CVar(_cfg, RpuCVars.MaxExtraUnits,
             value => _maxExtraUnits = SanitizeUnits(value, RpuMaths.MaxExtraPenalty, 100f), true);
+        Subs.CVar(_cfg, RpuCVars.SpikeUnits,
+            value => _spikeUnits = float.IsFinite(value) && value >= 0f ? value : 70f, true);
+        Subs.CVar(_cfg, RpuCVars.SpikeMinutes,
+            value => _spikeWindow = TimeSpan.FromMinutes(value > 0 && value <= 240 ? value : 10), true);
 
         _userDb.AddOnLoadPlayer(LoadProfile);
         // Часы на должностях берём после загрузки трекеров: обработчики загрузки идут
@@ -466,6 +476,9 @@ public sealed partial class RpuSystem : EntitySystem
         var actual = before - suspect.Karma;
         if (actual > 0f)
         {
+            // Потеря идёт в окно всплеска и тогда, когда рамка по часам игрока неbanящая:
+            // окно ловит короткие серии у ветеранов, у которых рамка кармы далеко.
+            suspect.AddLoss(_timing.CurTime, actual, _spikeWindow * 2);
             LogKarmaChange(session, -actual, proto.Category.ToString(), victim);
             CheckChatThreshold(session, suspect, before);
         }
@@ -488,6 +501,15 @@ public sealed partial class RpuSystem : EntitySystem
             Tuning.BanTiers,
             suspect.BanThresholdShift,
             _cfg.GetCVar(RpuCVars.BanVeterans));
+    }
+
+    /// <summary>Сколько очков потеряно сейчас в окне всплеска и сам порог всплеска.</summary>
+    public (float Lost, float Units, int Minutes) SpikeInfo(ICommonSession session)
+    {
+        var suspect = GetSuspect(session.UserId);
+        var lost = suspect.LossInWindow(_timing.CurTime, _spikeWindow);
+
+        return (lost, _spikeUnits, (int) _spikeWindow.TotalMinutes);
     }
 
     /// <summary>Сколько очков снятия получится за нарушение прямо сейчас; 0 — не вменяется.</summary>

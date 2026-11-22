@@ -78,15 +78,18 @@ public sealed class RpuMathsTest
     [Test]
     public void KillSeriesUnits()
     {
-        // Первые два убийства — на 2 очка дешевле, дальше цена начинает расти.
-        Assert.That(RpuMaths.KillUnits(0), Is.EqualTo(-2f));
-        Assert.That(RpuMaths.KillUnits(2), Is.EqualTo(-2f));
-        Assert.That(RpuMaths.KillUnits(3), Is.EqualTo(0f));
-        Assert.That(RpuMaths.KillUnits(6), Is.EqualTo(0f));
-        Assert.That(RpuMaths.KillUnits(7), Is.EqualTo(1f));
-        Assert.That(RpuMaths.KillUnits(11), Is.EqualTo(2f));
-        Assert.That(RpuMaths.KillUnits(23), Is.EqualTo(4f));
-        Assert.That(RpuMaths.KillUnits(100), Is.EqualTo(4f));
+        // Первые два убийства дешевле полной цены, дальше серия дорожит ступенями.
+        Assert.That(RpuMaths.KillUnits(0), Is.EqualTo(0f));
+        Assert.That(RpuMaths.KillUnits(1), Is.EqualTo(-3f));
+        Assert.That(RpuMaths.KillUnits(2), Is.EqualTo(-1f));
+        Assert.That(RpuMaths.KillUnits(3), Is.EqualTo(1f));
+        Assert.That(RpuMaths.KillUnits(4), Is.EqualTo(3f));
+        Assert.That(RpuMaths.KillUnits(5), Is.EqualTo(5f));
+        Assert.That(RpuMaths.KillUnits(6), Is.EqualTo(5f));
+        Assert.That(RpuMaths.KillUnits(7), Is.EqualTo(8f));
+        Assert.That(RpuMaths.KillUnits(8), Is.EqualTo(10f));
+        Assert.That(RpuMaths.KillUnits(9), Is.EqualTo(12f));
+        Assert.That(RpuMaths.KillUnits(400), Is.EqualTo(12f));
     }
 
     [Test]
@@ -165,18 +168,18 @@ public sealed class RpuMathsTest
     [Test]
     public void WholeViolationChain()
     {
-        // Трейтор убил члена экипажа: база 6, льгота роли -2, третье убийство в раунде 0,
-        // новичок +2 очка. Итого 6 - 2 + 0 + 2 = 6 очков.
+        // Трейтор убил члена экипажа: база 10, льгота роли -2, третье убийство в раунде +1,
+        // новичок +2 очка. Итого 10 - 2 + 1 + 2 = 11 очков.
         var units = new List<float> { -2f, RpuMaths.KillUnits(3), 2f };
-        var penalty = RpuMaths.Penalty(6f, units);
-        Assert.That(penalty, Is.EqualTo(6f));
+        var penalty = RpuMaths.Penalty(10f, units);
+        Assert.That(penalty, Is.EqualTo(11f));
 
         var karma = RpuMaths.ClampKarma(-1f - penalty);
-        Assert.That(karma, Is.EqualTo(-7f));
+        Assert.That(karma, Is.EqualTo(-12f));
 
-        // Ветеран без льгот и с четырьмя банами в истории: 6 + 4 = 10 очков.
-        var veteran = RpuMaths.Penalty(6f, new[] { 4f });
-        Assert.That(veteran, Is.EqualTo(10f));
+        // Потолок надбавки к базе: 10 + 6 = 16, сколько бы очков ни наслоилось.
+        var capped = RpuMaths.Penalty(10f, new[] { 40f });
+        Assert.That(capped, Is.EqualTo(16f));
     }
 
     [TestCase("0", null)]
@@ -219,10 +222,10 @@ public sealed class RpuMathsTest
         /// базовая цена 6 очков + серия + очки за малое наигранное время.
     /// Проверено вручную и закреплено, чтобы изменение таблиц было видно сразу.
     /// </summary>
-    [TestCase(0d, 6, -40f)]
-    [TestCase(4d, 7, -40f)]
-    [TestCase(7d, 9, -55f)]
-    [TestCase(30d, 13, -70f)]
+    [TestCase(0d, 4, -40f)]
+    [TestCase(4d, 4, -40f)]
+    [TestCase(7d, 5, -55f)]
+    [TestCase(30d, 7, -70f)]
     public void KillLadderCrossesBanLimitOnExpectedKill(double roleHours, int expectedKill, float expectedLimit)
     {
         var tiers = new[]
@@ -245,7 +248,7 @@ public sealed class RpuMathsTest
         for (var kills = 1; kills <= 20 && crossed == 0; kills++)
         {
             var units = new List<float> { RpuMaths.KillUnits(kills), playtime, -1f };
-            var penalty = RpuMaths.Penalty(6f, units);
+            var penalty = RpuMaths.Penalty(10f, units);
 
             karma = RpuMaths.ClampKarma(karma - penalty);
             if (karma <= limit)
@@ -257,14 +260,19 @@ public sealed class RpuMathsTest
     }
 
     [Test]
-    public void KillSeriesIsCheaperAtTheStartAndCostsMoreLater()
+    public void LossWindowSumsOnlyRecentLosses()
     {
-        Assert.That(RpuMaths.KillUnits(1), Is.EqualTo(-2f));
-        Assert.That(RpuMaths.KillUnits(2), Is.EqualTo(-2f));
-        Assert.That(RpuMaths.KillUnits(3), Is.EqualTo(0f));
-        Assert.That(RpuMaths.KillUnits(6), Is.EqualTo(0f));
-        Assert.That(RpuMaths.KillUnits(7), Is.EqualTo(1f));
-        Assert.That(RpuMaths.KillUnits(11), Is.EqualTo(2f));
-        Assert.That(RpuMaths.KillUnits(400), Is.EqualTo(4f));
+        var now = TimeSpan.FromMinutes(10);
+        var losses = new List<RpuMaths.RpuLoss>
+        {
+            new(TimeSpan.FromMinutes(1), 30f),
+            new(TimeSpan.FromMinutes(4), 20f),
+            new(TimeSpan.FromMinutes(9), 25f),
+        };
+
+        // Окно в 6 минут: младше него только потери на 4-й и 9-й минутах.
+        Assert.That(RpuMaths.LossInWindow(losses, now, TimeSpan.FromMinutes(6)), Is.EqualTo(45f));
+        Assert.That(RpuMaths.LossInWindow(losses, now, TimeSpan.FromMinutes(60)), Is.EqualTo(75f));
+        Assert.That(RpuMaths.LossInWindow(new List<RpuMaths.RpuLoss>(), now, TimeSpan.FromMinutes(6)), Is.EqualTo(0f));
     }
 }

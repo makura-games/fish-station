@@ -2,13 +2,15 @@
 - type: rpuViolation
   id: FishRpuKillCrew
   category: Kill
-  base: 6
+  # Убийство экипажа — самая дорогая строка: четвёрка трупов за раунд вместе с очками
+  # за серию должна доводить новичка до рамки автобана.
+  base: 10
   description: kill
 
 - type: rpuViolation
   id: FishRpuKillSecurityChain
   category: KillSecurityChain
-  base: 10
+  base: 14
   description: kill of command/security/ERT/CBRN/CentralCommand
 
 - type: rpuViolation

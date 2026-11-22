@@ -31,6 +31,13 @@ public sealed partial class RpuKillSystem : EntitySystem
 
     private const int LedgerLimit = 400;
 
+    /// <summary>
+    /// Существа, за которые когда-либо играл игрок: сюда попадают и те, кто вышел из тела
+    /// (призрак, пересадка мозга). Список нужен потому, что по компонентам «тело без игрока»
+    /// неотличимо от уборщика или пожарного бота, а карму за ботов снимать нельзя.
+    /// </summary>
+    private readonly HashSet<EntityUid> _everPlayer = new();
+
     public override void Initialize()
     {
         base.Initialize();
@@ -45,6 +52,20 @@ public sealed partial class RpuKillSystem : EntitySystem
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<MobStateComponent, BeingGibbedEvent>(OnGibbed);
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
+
+        // Событие звучит на всех сущностях, без привязки к компоненту.
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
+    }
+
+    private void OnPlayerAttached(PlayerAttachedEvent ev)
+    {
+        _everPlayer.Add(ev.Entity);
+    }
+
+    /// <summary>Игровое ли это тело: сейчас под игроком или было под игроком в этом раунде.</summary>
+    private bool IsPlayerBody(EntityUid uid)
+    {
+        return HasComp<ActorComponent>(uid) || _everPlayer.Contains(uid);
     }
 
     private void OnRoundStarted(RoundStartedEvent args)
@@ -56,6 +77,7 @@ public sealed partial class RpuKillSystem : EntitySystem
     {
         _ledger.Clear();
         _deathCharged.Clear();
+        _everPlayer.Clear();
     }
 
     /// <summary>Запоминаем вклад в урон по живому существу. Зовёт маршрутизатор урона.</summary>
@@ -67,6 +89,13 @@ public sealed partial class RpuKillSystem : EntitySystem
 
         if (!HasComp<MobStateComponent>(uid))
             return;
+
+        // Боты, животные и прочий ИИ не люди: урон по ним не копим вовсе.
+        if (!IsPlayerBody(uid))
+            return;
+
+        if (_everPlayer.Count > LedgerLimit * 4)
+            PruneFormerPlayers();
 
         if (_ledger.Count > LedgerLimit && !_ledger.ContainsKey(uid))
             PruneOldest();
@@ -123,6 +152,10 @@ public sealed partial class RpuKillSystem : EntitySystem
     private void Charge(EntityUid victim, EntityUid? origin, ProtoId<RpuViolationPrototype> violation, bool crit)
     {
         if (!_rpu.Active)
+            return;
+
+        // Уборщик, медбот, пожарный, мышь — не экипаж.
+        if (!IsPlayerBody(victim))
             return;
 
         if (!_ledger.TryGetValue(victim, out var contributions))
@@ -210,6 +243,11 @@ public sealed partial class RpuKillSystem : EntitySystem
 
         // Суицид и «сам себе» не считаем нарушением.
         return candidate == victim ? null : candidate;
+    }
+
+    private void PruneFormerPlayers()
+    {
+        _everPlayer.RemoveWhere(uid => Deleted(uid));
     }
 
     private void PruneOldest()

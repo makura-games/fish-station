@@ -39,13 +39,22 @@ public sealed partial class RpuSystem
             suspect.BanThresholdShift,
             _cfg.GetCVar(RpuCVars.BanVeterans));
 
-        if (float.IsNegativeInfinity(threshold) || suspect.Karma > threshold)
+        var lost = suspect.LossInWindow(_timing.CurTime, _spikeWindow);
+        var spiked = _spikeUnits > 0f && lost > _spikeUnits;
+
+        // Оснований два и они независимы: положение кармы относительно рамки и скорость
+        // её потери. Второе ловит и тех, чья рамка слишком далеко или выключена вовсе.
+        if (!spiked && (float.IsNegativeInfinity(threshold) || suspect.Karma > threshold))
             return;
 
-        ApplyAutoBan(session, suspect, threshold);
+        var trigger = spiked
+            ? $"lost {lost.ToString("0.#", CultureInfo.InvariantCulture)} points in {_spikeWindow.TotalMinutes:0} min"
+            : "karma reached its limit";
+
+        ApplyAutoBan(session, suspect, threshold, trigger);
     }
 
-    private void ApplyAutoBan(ICommonSession session, RpuSuspect suspect, float threshold)
+    private void ApplyAutoBan(ICommonSession session, RpuSuspect suspect, float threshold, string trigger)
     {
         // Одна попытка бана на сессию, чтобы не плодить записи при повторяющихся срабатываниях.
         if (!_bannedSessions.Add(session))
@@ -77,6 +86,7 @@ public sealed partial class RpuSystem
         suspect.Dirty = true;
         _sawmill.Info($"Automatic ban issued for {session.Name}: karma {karma}, " +
                        $"threshold {threshold.ToString("0.##", CultureInfo.InvariantCulture)}, " +
+                       $"trigger {trigger}, " +
                        $"duration {(duration is null ? "permanent" : duration.Value.ToString())}");
 
         var limit = threshold.ToString("0.##", CultureInfo.InvariantCulture);
@@ -86,12 +96,12 @@ public sealed partial class RpuSystem
         if (session.AttachedEntity is { } mob)
         {
             _adminLogs.Add(LogType.Karma, LogImpact.High,
-                $"{session} ({mob}) reached karma {karma} against limit {limit}; " +
+                $"{session} ({mob}) karma {karma} against limit {limit} ({trigger}); " +
                 $"restriction applied for {(duration is null ? "permanent" : duration.Value.ToString())}");
         }
 
         NotifyAdmins($"Automatic restriction applied to {session.Name} " +
-                     $"(karma {karma}, limit {limit}). Review the player's logs.");
+                     $"(karma {karma}, limit {limit}, {trigger}). Review the player's logs.");
     }
 
     /// <summary>

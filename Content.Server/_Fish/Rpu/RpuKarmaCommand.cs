@@ -60,6 +60,10 @@ public sealed partial class RpuKarmaCommand : LocalizedEntityCommands
 
             var securityChain = _rpu.PreviewPenalty(session, RpuPrototypeIds.KillSecurityChain);
             shell.WriteLine($"securityChainKill cost: {securityChain:0.##}");
+
+            var (lost, spikeUnits, spikeMinutes) = _rpu.SpikeInfo(session);
+            var spike = spikeUnits > 0f ? spikeUnits.ToString("0.##") : "off";
+            shell.WriteLine($"loss in last {spikeMinutes} min: {lost:0.##} (instant restriction above {spike})");
             return;
         }
 

@@ -47,19 +47,53 @@ public static class RpuMaths
     }
 
     /// <summary>
-    /// Отягчающие очки за серию убийств в раунде: первые два — на 2 очка дешевле,
-    /// с седьмого — плюс очко за каждые четыре следующих, потолок +4 очка.
+    /// Отягчающие очки за серию убийств в раунде. Первые два — дешевле (первое случайное
+    /// попадание или недосмотр не должны стоить полной цены), дальше цена растёт ступенями:
+    /// серия из нескольких трупов стоит заметно дороже одиночного убийства.
+    /// Потолок надбавки к базе всё равно задаёт <see cref="Penalty"/>.
     /// </summary>
     public static float KillUnits(int kills)
     {
-        if (kills <= 2)
-            return -2f;
-
-        if (kills < 7)
+        if (kills <= 0)
             return 0f;
 
-        return Math.Min(4f, 1f + (kills - 7) / 4);
+        return kills switch
+        {
+            1 => -3f,
+            2 => -1f,
+            3 => 1f,
+            4 => 3f,
+            <= 6 => 5f,
+            _ => Math.Min(12f, 6f + (kills - 6) * 2f),
+        };
     }
+
+    /// <summary>
+    /// Сколько очков кармы игрок потерял за последние <paramref name="window"/>.
+    /// Список потерь упорядочен по времени, поэтому идём с конца и останавливаемся
+    /// на первом устаревшем элементе.
+    /// </summary>
+    public static float LossInWindow(IReadOnlyList<RpuLoss> losses, TimeSpan now, TimeSpan window)
+    {
+        if (losses.Count == 0)
+            return 0f;
+
+        var sum = 0f;
+
+        for (var i = losses.Count - 1; i >= 0; i--)
+        {
+            var loss = losses[i];
+            if (now - loss.At > window)
+                break;
+
+            sum += loss.Amount;
+        }
+
+        return sum;
+    }
+
+    /// <summary>Одна учтённая потеря кармы.</summary>
+    public readonly record struct RpuLoss(TimeSpan At, float Amount);
 
     /// <summary>
     /// Очки по истории банов и сдвиг порога автобана (в очках кармы).

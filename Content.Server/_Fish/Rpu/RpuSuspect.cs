@@ -49,6 +49,26 @@ public sealed class RpuSuspect
     /// <summary>Накопленное, но ещё не записанное в лог восстановление кармы.</summary>
     public float RecoveryPending;
 
+    /// <summary>Потери кармы за последнее время, по возрастанию времени.</summary>
+    public readonly List<RpuMaths.RpuLoss> Losses = new();
+
+    /// <summary>Записать потерю и выбросить то, что уже не попадает ни в одно окно.</summary>
+    public void AddLoss(TimeSpan now, float amount, TimeSpan keep)
+    {
+        if (amount <= 0f)
+            return;
+
+        Losses.Add(new RpuMaths.RpuLoss(now, amount));
+
+        Losses.RemoveAll(loss => now - loss.At > keep);
+    }
+
+    /// <summary>Сколько очков потеряно за последние window.</summary>
+    public float LossInWindow(TimeSpan now, TimeSpan window)
+    {
+        return RpuMaths.LossInWindow(Losses, now, window);
+    }
+
     /// <summary>
     /// Карма поднялась выше нуля — порог админ-чата снова открыт, и следующее падение
     /// ниже порога надо увидеть заново.

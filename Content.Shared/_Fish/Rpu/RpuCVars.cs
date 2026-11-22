@@ -20,6 +20,17 @@ public static class RpuCVars
     public static readonly CVarDef<float> ChatLogThreshold =
         CVarDef.Create("rpu.chat_log_threshold", -50f, CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Сколько очков кармы можно потерять за rpu.spike_minutes, чтобы получить бан
+    /// независимо от наигранного времени. 0 — правило выключено.
+    /// </summary>
+    public static readonly CVarDef<float> SpikeUnits =
+        CVarDef.Create("rpu.spike_units", 70f, CVar.SERVERONLY | CVar.ARCHIVE);
+
+    /// <summary>Окно, за которое считается потеря кармы (минуты).</summary>
+    public static readonly CVarDef<int> SpikeMinutes =
+        CVarDef.Create("rpu.spike_minutes", 10, CVar.SERVERONLY | CVar.ARCHIVE);
+
     public static readonly CVarDef<float> BaseKarmaPerHour =
         CVarDef.Create("rpu.base_karma_per_hour", 0.25f, CVar.SERVERONLY | CVar.ARCHIVE);
 
