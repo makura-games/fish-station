@@ -46,19 +46,16 @@ public sealed class FishResearchWindowTest
             window.Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(790, 580)));
             var card = (FishTechnologyCard) window.FindControl<BoxContainer>("CardRows").GetChild(0).GetChild(0);
             Assert.That(card.FindControl<TextureRect>("Icon").Texture, Is.Not.Null);
-            var preview = card.FindControl<BoxContainer>("Preview");
+            Assert.That(card.FindControl<BoxContainer>("Preview").ChildCount, Is.Positive);
             var unlockList = (Collapsible) card.FindControl<BoxContainer>("UnlockDetails").GetChild(0);
             Assert.That(unlockList.BodyVisible, Is.False);
             unlockList.BodyVisible = true;
             var recipeNames = client.ResolveDependency<IPrototypeManager>().Index(AdvancedPowercells).RecipeUnlocks
                 .Select(id => client.System<LatheSystem>().GetRecipeName(id)).ToArray();
-            var previewNames = preview.Children.SelectMany(row => row.Children.OfType<RichTextLabel>())
-                .Select(label => label.GetMessage()).ToArray();
-            Assert.That(previewNames, Is.EqualTo(recipeNames.Take(2)));
-            var remainingNames = unlockList.Body!.GetChild(0).Children
+            var visibleNames = unlockList.Body!.GetChild(0).Children
                 .SelectMany(row => row.Children.OfType<RichTextLabel>())
                 .Select(label => label.GetMessage()).ToArray();
-            Assert.That(remainingNames, Is.EqualTo(recipeNames.Skip(2)));
+            Assert.That(visibleNames, Is.EqualTo(recipeNames));
             unlockList.BodyVisible = false;
             var buy = card.FindControl<Button>("ResearchButton");
             Assert.That(buy.Disabled, Is.True);

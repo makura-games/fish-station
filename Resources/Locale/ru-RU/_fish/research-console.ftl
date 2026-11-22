@@ -12,9 +12,4 @@ fish-rnd-offered = Предложено к изучению
 fish-rnd-in-pool = Может появиться в предложениях
 fish-rnd-tier = Уровень { $tier }
 fish-rnd-locked = Требования для изучения ещё не выполнены
-fish-rnd-more-unlocks = { $count ->
-    [one] Ещё { $count } открытие
-    [few] Ещё { $count } открытия
-   *[other] Ещё { $count } открытий
-}
-fish-rnd-hide-unlocks = Свернуть список
+fish-rnd-all-unlocks = +{ $extra } · Все открытия

@@ -5,7 +5,7 @@
         <TextureRect Name="Icon" SetSize="96 96" CanShrink="True" HorizontalAlignment="Center" Stretch="KeepAspectCentered"/>
         <RichTextLabel Name="TierLabel"/>
         <Label Name="Price" StyleClasses="LabelKeyText"/>
-        <BoxContainer Name="Preview" Orientation="Vertical" SeparationOverride="4" Visible="False"/>
+        <BoxContainer Name="Preview" SeparationOverride="4"/>
         <BoxContainer Name="UnlockDetails" Orientation="Vertical" Visible="False"/>
         <Control VerticalExpand="True"/>
         <Button Name="ResearchButton" StyleClasses="FishResearchPurchase" MinHeight="32"/>

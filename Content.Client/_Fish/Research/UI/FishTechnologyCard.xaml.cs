@@ -27,26 +27,33 @@ public sealed partial class FishTechnologyCard : PanelContainer
             ("tier", technology.Tier), ("color", discipline.Color), ("discipline", Loc.GetString(discipline.Name)))));
         Price.Text = Loc.GetString("fish-rnd-price", ("points", technology.Cost));
 
-        const int previewCount = 2;
-        Preview.Visible = unlocks.Count > 0;
-        for (var i = 0; i < Math.Min(previewCount, unlocks.Count); i++)
-            Preview.AddChild(unlocks[i].CreateRow(sprites));
+        const int maxPreview = 4;
+        for (var i = 0; i < Math.Min(maxPreview, unlocks.Count); i++)
+        {
+            var unlock = unlocks[i];
+            var name = unlock.Name;
+            if (unlock.GetIcon(sprites) is { } texture)
+                Preview.AddChild(new TextureRect
+                {
+                    Texture = texture, SetSize = new Vector2(32), CanShrink = true,
+                    Stretch = TextureRect.StretchMode.KeepAspectCentered, ToolTip = name, MouseFilter = MouseFilterMode.Stop,
+                });
+            else
+                Preview.AddChild(new Label { Text = name, ClipText = true, HorizontalExpand = true, ToolTip = name });
+        }
 
-        if (unlocks.Count > previewCount)
+        if (unlocks.Count > maxPreview)
         {
             var rows = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 4 };
-            for (var i = previewCount; i < unlocks.Count; i++)
-                rows.AddChild(unlocks[i].CreateRow(sprites));
+            foreach (var unlock in unlocks)
+                rows.AddChild(unlock.CreateRow(sprites));
 
             var body = new CollapsibleBody();
             body.AddChild(rows);
-            var moreLabel = Loc.GetString("fish-rnd-more-unlocks", ("count", unlocks.Count - previewCount));
-            var heading = new CollapsibleHeading(moreLabel);
-            heading.OnToggled += args => heading.Title = args.Pressed ? Loc.GetString("fish-rnd-hide-unlocks") : moreLabel;
-            UnlockDetails.AddChild(new Collapsible(heading, body));
+            UnlockDetails.AddChild(new Collapsible(Loc.GetString("fish-rnd-all-unlocks",
+                ("extra", unlocks.Count - maxPreview)), body));
             UnlockDetails.Visible = true;
         }
-
         ResearchButton.OnPressed += _ => research(technology.ID);
     }
 
@@ -78,7 +85,7 @@ internal sealed record FishResearchUnlock(string Name, LatheRecipePrototype? Rec
         return row;
     }
 
-    private Texture? GetIcon(SpriteSystem sprites)
+    public Texture? GetIcon(SpriteSystem sprites)
     {
         if (Recipe?.Icon is { } icon)
             return sprites.Frame0(icon);
