@@ -196,9 +196,10 @@
     sprite: Structures/Storage/Crates/sec_gear.rsi
   # Fish-start
   - type: Damageable
-    damageModifierSet: ReinforcedPlasteelMod
+    damageModifierSet: FishReinforcedPlasteelMod
   - type: RattleOnDamage
-    radioChannel: Security
+    radioChannels:
+    - Security
     damageThreshold: 10
     sound:
       path: /Audio/Machines/warning_buzzer.ogg
@@ -347,9 +348,10 @@
     sprite: Structures/Storage/Crates/weapon.rsi
   # Fish-start
   - type: Damageable
-    damageModifierSet: ReinforcedPlasteelMod
+    damageModifierSet: FishReinforcedPlasteelMod
   - type: RattleOnDamage
-    radioChannel: Security
+    radioChannels:
+    - Security
     damageThreshold: 10
     sound:
       path: /Audio/Machines/warning_buzzer.ogg
@@ -373,9 +375,10 @@
     sprite: Structures/Storage/Crates/sec_gear.rsi
   # Fish-start
   - type: Damageable
-    damageModifierSet: ReinforcedPlasteelMod
+    damageModifierSet: FishReinforcedPlasteelMod
   - type: RattleOnDamage
-    radioChannel: Security
+    radioChannels:
+    - Security
     damageThreshold: 10
     sound:
       path: /Audio/Machines/warning_buzzer.ogg
@@ -396,7 +399,7 @@
     sprite: Structures/Storage/Crates/command.rsi
   # Fish-start
   - type: Damageable
-    damageModifierSet: ReinforcedPlasteelMod
+    damageModifierSet: FishReinforcedPlasteelMod
   - type: RattleOnDamage
     radioChannels:
     - Security
@@ -428,7 +431,7 @@
     sprite: Structures/Storage/Crates/syndicate_secure.rsi
   # Fish-start
   - type: Damageable
-    damageModifierSet: ReinforcedPlasteelMod
+    damageModifierSet: FishReinforcedPlasteelMod
   # Fish-end
   - type: AccessReader
     access: [["SyndicateAgent", "NuclearOperative"]]

@@ -51,6 +51,14 @@ public sealed partial class RattleOnDamageComponent : Component
     public bool ResetOnHeal = true;
 
     /// <summary>
+    /// Пропускать ли срабатывание, если у сущности есть <c>LockComponent</c>
+    /// и она разблокирована (<c>Locked == false</c>).
+    /// На сущностях без <c>LockComponent</c> не мешает срабатыванию.
+    /// </summary>
+    [DataField]
+    public bool IgnoreWhenUnlocked = true;
+
+    /// <summary>
     /// Минимальная задержка между повторными отправками предупреждения.
     /// </summary>
     [DataField]

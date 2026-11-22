@@ -23,7 +23,7 @@
 
 # Усиленные характеристики для ящиков СБ и КМД
 - type: damageModifierSet
-  id: ReinforcedPlasteelMod
+  id: FishReinforcedPlasteelMod
   coefficients:
     Blunt: 0.5
     Slash: 0.5

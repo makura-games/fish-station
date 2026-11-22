@@ -6,6 +6,7 @@ using Content.Shared._Fish.Trigger;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
+using Content.Shared.Lock;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -25,6 +26,7 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
     [Dependency] private RadioSystem _radio = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private StationSystem _station = default!;
+    [Dependency] private EntityQuery<LockComponent> _lockQuery = default!;
 
     public override void Initialize()
     {
@@ -114,6 +116,13 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
 
         if (!damageIncreased || ent.Comp.Triggered)
             return false;
+
+        if (ent.Comp.IgnoreWhenUnlocked &&
+            _lockQuery.TryComp(ent.Owner, out var lockComp) &&
+            !lockComp.Locked)
+        {
+            return false;
+        }
 
         if (_timing.CurTime < ent.Comp.NextAlertTime)
             return false;
