@@ -12,4 +12,8 @@ fish-rnd-offered = Currently offered
 fish-rnd-in-pool = Eligible for future offers
 fish-rnd-tier = Tier { $tier }
 fish-rnd-locked = Research requirements not met
-fish-rnd-all-unlocks = +{ $extra } · All unlocks
+fish-rnd-more-unlocks = { $count ->
+    [one] { $count } more unlock
+   *[other] { $count } more unlocks
+}
+fish-rnd-hide-unlocks = Show less
