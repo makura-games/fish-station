@@ -79,14 +79,22 @@ public static class PmMaths
         var realised = 0;
         var considered = 0;
 
-        for (var i = attempts.Count - count; i < attempts.Count; i++)
+        // Неоднозначные выстрелы — неизвестный результат, а не промах. Ищем count
+        // определённых попыток с конца, пропуская их; иначе частая стрельба искусственно
+        // прижимала бы долю попаданий к нулю.
+        for (var i = attempts.Count - 1; i >= 0 && considered < count; i--)
         {
-            // Совсем старые попытки не в счёт: они относятся к другой схватке.
-            if ((newest - attempts[i].At).TotalSeconds > windowSeconds)
+            var attempt = attempts[i];
+
+            // Выборка ограничена временем, а не количеством всех когда-либо исключённых.
+            if ((newest - attempt.At).TotalSeconds > windowSeconds)
+                break;
+
+            if (attempt.ExcludedFromRatio)
                 continue;
 
             considered++;
-            if (attempts[i].Realised)
+            if (attempt.Realised)
                 realised++;
         }
 
@@ -99,15 +107,20 @@ public static class PmMaths
     /// </summary>
     public static float PerfectShareOfRealised(IReadOnlyList<PmAttempt> attempts, int count, float maxErrorDegrees)
     {
-        if (count <= 0 || attempts.Count < count)
+        if (count <= 0 || attempts.Count == 0)
             return -1f;
 
         var realised = 0;
         var perfect = 0;
+        var considered = 0;
 
-        for (var i = attempts.Count - count; i < attempts.Count; i++)
+        for (var i = attempts.Count - 1; i >= 0 && considered < count; i--)
         {
             var attempt = attempts[i];
+            if (attempt.ExcludedFromRatio)
+                continue;
+
+            considered++;
             if (!attempt.Realised || float.IsNaN(attempt.ErrorDegrees))
                 continue;
 
@@ -116,7 +129,10 @@ public static class PmMaths
                 perfect++;
         }
 
-        return realised == 0 ? -1f : (float) perfect / realised;
+        if (considered < count || realised == 0)
+            return -1f;
+
+        return (float) perfect / realised;
     }
 
     /// <summary>Сколько действий в секунду вышло за окно.</summary>

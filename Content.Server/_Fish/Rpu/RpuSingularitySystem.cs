@@ -112,16 +112,24 @@ public sealed partial class RpuSingularitySystem : EntitySystem
 
         caretakers[session.UserId] = now;
 
-        // Связываем эту деталь только с ближайшим колодцем на той же карте.
-        LinkEquipment(equipment, caretakers, FindNearestWell(equipment));
+        // Уже обнаруженная установка получает касание навсегда в своём собственном
+        // состоянии (до истечения окна). Если установки пока нет — оставляем касание
+        // ожидающим и привяжем его только к следующей подходящей установке.
+        if (FindNearestWell(equipment) is { } well)
+        {
+            well.EquipmentCaretakers[equipment] = caretakers;
+            _equipmentCaretakers.Remove(equipment);
+        }
+        else
+        {
+            _equipmentCaretakers[equipment] = caretakers;
+        }
     }
 
     private void OnWellGone<T>(Entity<T> ent, ref ComponentRemove args) where T : IComponent
     {
-        // Ушёл именно этот колодец: остальные продолжают считаться. Оборудование,
-        // которое было ближе к нему, перепривязываем к следующему ближайшему.
+        // Удалённая установка не передаёт свою историю касаний соседней установке.
         _wells.Remove(ent.Owner);
-        LinkNearbyEquipment();
     }
 
     public override void Update(float frameTime)
@@ -202,23 +210,19 @@ public sealed partial class RpuSingularitySystem : EntitySystem
                 continue;
             }
 
-            LinkEquipment(equipment, caretakers, FindNearestWell(equipment));
+            var target = FindNearestWell(equipment);
+            if (target == null)
+                continue;
+
+            // Переносим только касания, сделанные до появления какой-либо установки.
+            // Уже привязанное оборудование из этого словаря удалено, и его история
+            // никогда не мигрирует к следующему колодцу.
+            target.EquipmentCaretakers[equipment] = caretakers;
+            stale.Add(equipment);
         }
 
         foreach (var equipment in stale)
             _equipmentCaretakers.Remove(equipment);
-    }
-
-    private void LinkEquipment(
-        EntityUid equipment,
-        Dictionary<NetUserId, TimeSpan> caretakers,
-        WellState? target)
-    {
-        foreach (var state in _wells.Values)
-            state.EquipmentCaretakers.Remove(equipment);
-
-        if (target != null)
-            target.EquipmentCaretakers[equipment] = caretakers;
     }
 
     /// <summary>Ближайший колодец на той же карте в радиусе связи с оборудованием.</summary>
@@ -330,12 +334,6 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         {
             foreach (var (equipment, caretakers) in state.EquipmentCaretakers.ToArray())
             {
-                if (Deleted(equipment))
-                {
-                    state.EquipmentCaretakers.Remove(equipment);
-                    continue;
-                }
-
                 foreach (var (userId, time) in caretakers.ToArray())
                 {
                     if (time >= cutoff)
@@ -344,6 +342,8 @@ public sealed partial class RpuSingularitySystem : EntitySystem
                     caretakers.Remove(userId);
                 }
 
+                // Существование оборудования не влияет на срок ответственности: его могли
+                // поглотить или удалить, но касание продолжает действовать до CaretakerMemory.
                 if (caretakers.Count == 0)
                     state.EquipmentCaretakers.Remove(equipment);
             }

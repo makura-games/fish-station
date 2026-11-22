@@ -45,6 +45,9 @@ public record struct PmAttempt
     /// <summary>Попытка привела к урону.</summary>
     public bool Realised;
 
+    /// <summary>Связь с уроном была неоднозначной: не считать ни промахом, ни попаданием.</summary>
+    public bool ExcludedFromRatio;
+
     /// <summary>Угловая ошибка того удара, в градусах; float.NaN — неизвестно.</summary>
     public float ErrorDegrees;
 }

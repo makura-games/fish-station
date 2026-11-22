@@ -142,6 +142,25 @@ public sealed class PmMathsTest
         Assert.That(PmMaths.RealisedShare(Attempts(20, 10, 0.1f), 60, 20), Is.EqualTo(0.5f).Within(0.001f));
     }
 
+    [Test]
+    public void ExcludedAmbiguousShotsAreNotCountedAsMisses()
+    {
+        var attempts = Attempts(12, 9, 0.2f);
+        for (var i = 9; i < 12; i++)
+        {
+            var attempt = attempts[i];
+            attempt.ExcludedFromRatio = true;
+            attempts[i] = attempt;
+        }
+
+        // При 3 неоднозначных и 9 известных попаданиях доля остаётся 100%, а не 75%.
+        Assert.That(PmMaths.RealisedShare(attempts, 30, 9), Is.EqualTo(1f));
+        Assert.That(PmMaths.PerfectShareOfRealised(attempts, 9, 1f), Is.EqualTo(1f));
+
+        // Если известных попыток для порога уже не хватает, метрика ждёт новых данных.
+        Assert.That(PmMaths.RealisedShare(attempts, 30, 10), Is.EqualTo(-1f));
+    }
+
     /// <summary>Свежих попыток внутри окна мало — вывод не выносим.</summary>
     [Test]
     public void StaleSamplesAreNotEnoughEvidence()

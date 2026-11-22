@@ -275,8 +275,8 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
             }
 
             // Урон не несёт идентификатор снаряда, поэтому точное сопоставление по id
-            // невозможно на этом событии. Если в окне больше одной попытки, попадание
-            // неоднозначно: не закрываем старый промах и не искажаем долю попаданий.
+            // невозможно на этом событии. Если в окне несколько попыток, их исход
+            // неоднозначен: исключаем попытки из знаменателя, но не объявляем промахами.
             // Для дроби/пробития попытка закрывается только первым уроном.
             if (attempt.Realised)
                 return;
@@ -284,7 +284,21 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
             matchIndex = i;
             matches++;
             if (matches > 1)
+            {
+                for (var ambiguous = i; ambiguous < pm.Attempts.Count; ambiguous++)
+                {
+                    var candidate = pm.Attempts[ambiguous];
+                    if (candidate.Shooter != attacker || candidate.Realised ||
+                        (now - candidate.At).TotalSeconds > PmTuning.ShotMatchSeconds)
+                    {
+                        continue;
+                    }
+
+                    pm.Attempts[ambiguous] = candidate with { ExcludedFromRatio = true };
+                }
+
                 return;
+            }
         }
 
         if (matches != 1)
@@ -338,6 +352,11 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         {
             return;
         }
+
+        // Сначала удаляем наблюдения из старого временного окна: исключённые попытки
+        // тоже не должны вытеснять недавние выстрелы из скользящей выборки.
+        var newest = pm.Attempts[^1].At;
+        pm.Attempts.RemoveAll(attempt => (newest - attempt.At).TotalSeconds > 30f);
 
         var realised = PmMaths.RealisedShare(pm.Attempts, 30, PmTuning.RatioSampleCount);
         if (realised < PmTuning.RatioMinimum)
