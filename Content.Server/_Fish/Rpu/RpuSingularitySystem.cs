@@ -104,25 +104,53 @@ public sealed partial class RpuSingularitySystem : EntitySystem
 
         var now = _timing.CurTime;
 
-        if (!_equipmentCaretakers.TryGetValue(equipment, out var caretakers))
+        // Если оборудование уже привязано, сохраняем его связь с этой установкой:
+        // повторное касание не должно переносить историю к соседнему колодцу.
+        WellState? well = null;
+        foreach (var state in _wells.Values)
         {
-            caretakers = new Dictionary<NetUserId, TimeSpan>();
-            _equipmentCaretakers[equipment] = caretakers;
+            if (!state.EquipmentCaretakers.ContainsKey(equipment))
+                continue;
+
+            well = state;
+            break;
         }
 
-        caretakers[session.UserId] = now;
+        well ??= FindNearestWell(equipment);
 
-        // Уже обнаруженная установка получает касание навсегда в своём собственном
-        // состоянии (до истечения окна). Если установки пока нет — оставляем касание
-        // ожидающим и привяжем его только к следующей подходящей установке.
-        if (FindNearestWell(equipment) is { } well)
+        // Уже обнаруженная установка получает касание в собственный словарь, не теряя
+        // прежние записи других игроков. Если касание было отложено до обнаружения,
+        // объединяем его с историей установки, сохраняя последнее время каждого игрока.
+        if (well != null)
         {
-            well.EquipmentCaretakers[equipment] = caretakers;
-            _equipmentCaretakers.Remove(equipment);
+            if (!well.EquipmentCaretakers.TryGetValue(equipment, out var linkedCaretakers))
+            {
+                linkedCaretakers = new Dictionary<NetUserId, TimeSpan>();
+                well.EquipmentCaretakers[equipment] = linkedCaretakers;
+            }
+
+            if (_equipmentCaretakers.Remove(equipment, out var pending))
+            {
+                foreach (var (userId, time) in pending)
+                {
+                    if (!linkedCaretakers.TryGetValue(userId, out var previous) || time > previous)
+                        linkedCaretakers[userId] = time;
+                }
+            }
+
+            linkedCaretakers[session.UserId] = now;
         }
         else
         {
-            _equipmentCaretakers[equipment] = caretakers;
+            // Установка ещё не обнаружена — сохраняем ожидание отдельно от истории
+            // уже связанных колодцев.
+            if (!_equipmentCaretakers.TryGetValue(equipment, out var pending))
+            {
+                pending = new Dictionary<NetUserId, TimeSpan>();
+                _equipmentCaretakers[equipment] = pending;
+            }
+
+            pending[session.UserId] = now;
         }
     }
 
