@@ -54,13 +54,18 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         public EntityCoordinates Spawn;
         public TimeSpan UnattendedSince;
         public bool EscapedCharged;
-        public readonly HashSet<ICommonSession> Caretakers = new();
+
+        /// <summary>
+        /// Кто отвечал за этот колодец и когда в последний раз трогал оборудование содержания.
+        /// Ключ — игрок, а не сессия: после переподключения сессия другая, а ответственность та же.
+        /// </summary>
+        public readonly Dictionary<NetUserId, TimeSpan> Caretakers = new();
     }
 
     private readonly Dictionary<EntityUid, WellState> _wells = new();
 
     /// <summary>Кто трогал оборудование содержания. Раздаётся новым колодцам при появлении.</summary>
-    private readonly Dictionary<ICommonSession, TimeSpan> _caretakers = new();
+    private readonly Dictionary<NetUserId, TimeSpan> _caretakers = new();
 
     private TimeSpan _nextCheck;
 
@@ -94,8 +99,16 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         if (args.Handled || !_rpu.Active)
             return;
 
-        if (CompOrNull<ActorComponent>(args.User)?.PlayerSession is { } session)
-            _caretakers[session] = _timing.CurTime;
+        if (CompOrNull<ActorComponent>(args.User)?.PlayerSession is not { } session)
+            return;
+
+        var now = _timing.CurTime;
+        _caretakers[session.UserId] = now;
+
+        // За оборудованием следит тот, кто его трогает: ответственность переходит и на
+        // уже стоящие колодцы, иначе штраф достался бы только тем, кто успел до спавна.
+        foreach (var state in _wells.Values)
+            state.Caretakers[session.UserId] = now;
     }
 
     private void OnWellGone<T>(Entity<T> ent, ref ComponentRemove args) where T : IComponent
@@ -156,14 +169,19 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         if (_wells.ContainsKey(uid))
             return;
 
+        var now = _timing.CurTime;
+
         var state = new WellState
         {
             Spawn = _transform.GetMoverCoordinates(uid),
-            UnattendedSince = _timing.CurTime,
+            UnattendedSince = now,
         };
 
-        foreach (var (session, _) in _caretakers)
-            state.Caretakers.Add(session);
+        foreach (var (userId, at) in _caretakers)
+        {
+            if (now - at <= CaretakerMemory)
+                state.Caretakers[userId] = at;
+        }
 
         _wells[uid] = state;
     }
@@ -223,42 +241,41 @@ public sealed partial class RpuSingularitySystem : EntitySystem
     {
         var cutoff = _timing.CurTime - CaretakerMemory;
 
-        List<ICommonSession>? stale = null;
+        // Убрался из игры — ответственность осталась: окно измеряется временем
+        // прикосновения, а не присутствием в сети. Иначе короткий выход снимал бы
+        // вину с того, кто собрал сингулярность.
+        List<NetUserId>? stale = null;
 
-        foreach (var (session, time) in _caretakers)
+        foreach (var (userId, time) in _caretakers)
         {
-            if (time >= cutoff && session.Status == SessionStatus.InGame)
+            if (time >= cutoff)
                 continue;
 
-            stale ??= new List<ICommonSession>();
-            stale.Add(session);
+            stale ??= new List<NetUserId>();
+            stale.Add(userId);
         }
 
-        if (stale != null)
-        {
-            foreach (var session in stale)
-                _caretakers.Remove(session);
-        }
+        if (stale == null)
+            return;
 
-        // Множество наблюдений у каждого колодца живёт отдельно: без этой чистки
-        // штраф ушёл бы игроку, который давно вышел.
-        foreach (var state in _wells.Values)
-        {
-            foreach (var session in state.Caretakers.ToArray())
-            {
-                if (session.Status == SessionStatus.InGame)
-                    continue;
-
-                state.Caretakers.Remove(session);
-            }
-        }
+        foreach (var userId in stale)
+            _caretakers.Remove(userId);
     }
 
     private void Charge(WellState state, ProtoId<RpuViolationPrototype> violation, string details)
     {
-        foreach (var session in state.Caretakers.ToArray())
+        var now = _timing.CurTime;
+
+        foreach (var (userId, at) in state.Caretakers.ToArray())
         {
-            if (session.Status != SessionStatus.InGame)
+            if (now - at > CaretakerMemory)
+            {
+                state.Caretakers.Remove(userId);
+                continue;
+            }
+
+            // Игрок мог выйти и вернуться: ищем его текущую сессию по идентификатору.
+            if (!_rpu.TryGetSession(userId, out var session) || session.Status != SessionStatus.InGame)
                 continue;
 
             _rpu.Penalize(session, violation, details: details);

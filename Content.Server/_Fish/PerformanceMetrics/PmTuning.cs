@@ -92,6 +92,10 @@ public static class PmTuning
     /// <summary>Сколько попыток нужно, чтобы доля вообще о чём-то говорила.</summary>
     public const int RatioSampleCount = 12;
 
+    /// <summary>За сколько до урона был выстрел, чтобы считать этот урон выстрелом того же игрока.
+    /// Окно шире одной попытки: дробь и очередь дают несколько уронов с одного нажатия.</summary>
+    public const float ShotMatchSeconds = 1.5f;
+
     /// <summary>Столько замеров подряд высокой доли нужно для признания.</summary>
     public const int RatioStrikeCount = 3;
 

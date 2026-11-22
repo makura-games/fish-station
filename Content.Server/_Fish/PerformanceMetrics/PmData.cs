@@ -39,6 +39,9 @@ public record struct PmAttempt
 {
     public TimeSpan At;
 
+    /// <summary>Кто стрелял: нужно, чтобы урон от выстрела не путался с ударом другого игрока.</summary>
+    public EntityUid Shooter;
+
     /// <summary>Попытка привела к урону.</summary>
     public bool Realised;
 

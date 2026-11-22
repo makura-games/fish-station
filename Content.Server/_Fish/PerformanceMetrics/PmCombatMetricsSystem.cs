@@ -8,8 +8,6 @@ using Robust.Shared.Timing;
 
 using Content.Shared.CCVar;
 using Content.Shared.Interaction;
-using Content.Shared.Projectiles;
-using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Configuration;
 namespace Content.Server._Fish.PerformanceMetrics;
 
@@ -28,9 +26,6 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
 
     private EntityQuery<ActorComponent> _actorQuery = default!;
     private EntityQuery<TransformComponent> _xformQuery = default!;
-    private EntityQuery<GunComponent> _gunQuery = default!;
-    private EntityQuery<AmmoComponent> _ammoQuery = default!;
-    private EntityQuery<ProjectileComponent> _projectileQuery = default!;
 
     public override void Initialize()
     {
@@ -38,9 +33,6 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
 
         _actorQuery = GetEntityQuery<ActorComponent>();
         _xformQuery = GetEntityQuery<TransformComponent>();
-        _gunQuery = GetEntityQuery<GunComponent>();
-        _ammoQuery = GetEntityQuery<AmmoComponent>();
-        _projectileQuery = GetEntityQuery<ProjectileComponent>();
 
         SubscribeLocalEvent<PmDamageObservedEvent>(OnDamage);
     }
@@ -56,10 +48,10 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         var pm = _pm.GetSession(session.UserId);
         var now = _timing.CurTime;
 
-        // Выстрел и удар рукой — разные выборки. Признаки точности считаются только по
+        // Выстрел и удар рукой — разные выборки. Признаки наведения считаются только по
         // выстрелам: у ближнего боя сервер фиксирует поворот уже после замаха, и угол
         // там почти всегда нулевой у любого игрока.
-        var ranged = IsRanged(ev.Source);
+        var ranged = IsShot(pm, attacker, now);
 
         CountRate(pm, now);
         CountCadence(pm, now, ranged);
@@ -68,15 +60,23 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
     }
 
     /// <summary>
-    /// Выстрел ли это: оружие, боеприпас или снаряд. Источник «тело» или предмет в руках
-    /// без признаков стрельбы — ближний бой.
+    /// Выстрелом ли был этот урон. По одному источнику отличить выстрел от удара нельзя:
+    /// в обоих случаях приходит тело стрелка (ProjectileSystem передаёт component.Shooter).
+    /// Надёжный признак — попытка выстрела того же игрока: она регистрируется на
+    /// ShotAttemptedEvent раньше, чем урон доходит до цели. Окно шире одной попытки:
+    /// дробь и очередь дают несколько уронов с одного нажатия.
     /// </summary>
-    private bool IsRanged(EntityUid? source)
+    private static bool IsShot(PmSession pm, EntityUid attacker, TimeSpan now)
     {
-        if (source is not { } from || from == EntityUid.Invalid)
-            return false;
+        for (var i = pm.Attempts.Count - 1; i >= 0; i--)
+        {
+            if (pm.Attempts[i].Shooter != attacker)
+                continue;
 
-        return _gunQuery.HasComp(from) || _ammoQuery.HasComp(from) || _projectileQuery.HasComp(from);
+            return (now - pm.Attempts[i].At).TotalSeconds <= PmTuning.ShotMatchSeconds;
+        }
+
+        return false;
     }
 
     /// <summary>Частота обращений: сколько ударов прошло за окно.</summary>
@@ -173,16 +173,16 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
 
         if (!ranged)
         {
-            // Для ближнего боя счётчик «идеальных» попаданий обнуляем, иначе серия
-            // обычных ударов руками выглядела бы как наведение. Заодно смотрим на длину
-            // удара: сервер сам проверяет дистанцию ближнего боя, и удар дальше своего
-            // оружия возможен только если проверка на клиенте подменена.
+            // Урон не от выстрела: удар руками, ногами, отражённая волна. Счётчик
+            // «идеальных» попаданий обнуляем, иначе серия обычных ударов выглядела бы
+            // как наведение. Смотрим только на дистанцию: удар дальше того, что клиент
+            // мог отрисовать, возможен лишь при обойдённой проверке радиуса.
             pm.PerfectHits = 0;
-            CountReach(pm, distance);
+            CountUnreachable(pm, distance);
             return;
         }
 
-        PairAttempt(pm, now, error);
+        PairAttempt(pm, attacker, now, error);
         CountPerception(pm, attacker, victim, error, distance);
 
         if (error <= PmTuning.AimPerfectDegrees)
@@ -236,35 +236,41 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
     }
 
     /// <summary>
-    /// Удар дальше, чем достаёт ближний бой. Само по себе это редкость: сервер проверяет
-    /// дистанцию, поэтому ловим только случай, когда проверка на клиенте обоидена.
+    /// Урон от игрока на дистанции, дальше которой клиент цель уже не видит. Выстрела при
+    /// этом не было, поэтому это не промах статистики, а обойдённая проверка радиуса.
     /// </summary>
-    private void CountReach(PmSession pm, float distance)
+    private void CountUnreachable(PmSession pm, float distance)
     {
-        if (pm.HasFlag(PmFlag.Reach) || distance <= PmTuning.MeleeReachMeters)
+        if (pm.HasFlag(PmFlag.Reach) || distance <= PerceiveRange())
             return;
 
         pm.ReachStrikes++;
         if (pm.ReachStrikes >= PmTuning.ReachStrikeCount)
-            _pm.Note(pm, PmFlag.Reach, $"{pm.ReachStrikes} melee hits at {distance:0.#} tiles");
+            _pm.Note(pm, PmFlag.Reach, $"{pm.ReachStrikes} hits at {distance:0.#} tiles with no shot behind them");
     }
+
+    /// <summary>
+    /// Расстояние, дальше которого клиент цель не увидит. Берётся из настройки сервера,
+    /// а не из кода: видимость зависит от конфигурации, а не от этого метода.
+    /// </summary>
+    private float PerceiveRange() => Math.Max(PmTuning.MeleeReachMeters, _cfg.GetCVar(FishCVars.PerfmonPerceiveMeters));
 
     /// <summary>
     /// Закрываем последнюю незакрытую попытку выстрела: так становится видна доля
     /// попаданий и то, насколько точно цель была взята на прицеле.
     /// </summary>
-    private void PairAttempt(PmSession pm, TimeSpan now, float error)
+    private void PairAttempt(PmSession pm, EntityUid attacker, TimeSpan now, float error)
     {
         for (var i = pm.Attempts.Count - 1; i >= 0; i--)
         {
             var attempt = pm.Attempts[i];
-            if (attempt.Realised)
+            if (attempt.Realised || attempt.Shooter != attacker)
                 continue;
 
-            // Стрелок мог выстрелить раньше, а урон дошёл позже: дальше секунды не связываем.
+            // Стрелок мог выстрелить раньше, а урон дошёл позже: дальше окна не связываем.
             // Незакрытые попытки при этом не удаляем и не добавляем новых: они только
             // смягчают статистику, а не доказывают нарушение.
-            if ((now - attempt.At).TotalSeconds > 1.5f)
+            if ((now - attempt.At).TotalSeconds > PmTuning.ShotMatchSeconds)
                 return;
 
             pm.Attempts[i] = attempt with { Realised = true, ErrorDegrees = error };
@@ -287,9 +293,9 @@ public sealed partial class PmCombatMetricsSystem : EntitySystem
         if (distance <= PmTuning.MeleeReachMeters)
             return;
 
-        // Порог сравнения берём из настройки сервера, а не из кода: что клиент мог увидеть,
+        // Порог сравнения берём из настройки сервера: что клиент мог увидеть,
         // зависит от конфигурации видимости, а не оттого, как написан этот метод.
-        var perceive = Math.Max(PmTuning.MeleeReachMeters, _cfg.GetCVar(FishCVars.PerfmonPerceiveMeters));
+        var perceive = PerceiveRange();
 
         if (distance <= perceive &&
             _interaction.InRangeUnobstructed(

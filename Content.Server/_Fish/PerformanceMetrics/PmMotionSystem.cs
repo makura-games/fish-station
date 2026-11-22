@@ -25,8 +25,8 @@ public sealed partial class PmMotionSystem : EntitySystem
     private EntityQuery<MovementSpeedModifierComponent> _speedQuery = default!;
     private EntityQuery<MobStateComponent> _mobQuery = default!;
 
-    /// <summary>Прежняя выборка: сетка, локальная позиция на ней и момент съёма.</summary>
-    private readonly Dictionary<EntityUid, (EntityUid? Grid, Vector2 Position, TimeSpan When)> _previous = new();
+    /// <summary>Прежняя выборка: родитель, сетка, локальная позиция и момент съёма.</summary>
+    private readonly Dictionary<EntityUid, (EntityUid Parent, EntityUid? Grid, Vector2 Position, TimeSpan When)> _previous = new();
 
     private int _tickCounter;
 
@@ -72,35 +72,41 @@ public sealed partial class PmMotionSystem : EntitySystem
 
             var allowed = Math.Max(speed.CurrentWalkSpeed, speed.CurrentSprintSpeed);
 
-            // Считаем в локальных координатах сетки: сама станция может ехать (ECS),
-            // и в мировых координатах обычная ходьба выглядела бы как телепорт.
-            // Смена сетки (посадка в шаттл, выход в космос) — это не перемещение, её пропускаем.
+            // Позиция локальная (относительно непосредственного родителя), а не мировая:
+            // станция может ехать, и в мировых координатах обычная ходьба выглядела бы
+            // как телепорт. Смена родителя или сетки — граница выборки: при переносе
+            // в контейнер локальная позиция прыгает без какого-либо перемещения.
             var grid = xform.GridUid;
+            var parent = xform.ParentUid;
             var position = xform.Coordinates.Position;
 
             if (_previous.TryGetValue(uid, out var last))
             {
-                var moved = last.Grid == grid
-                    ? (position - last.Position).Length()
-                    : 0f;
+                var continuous = last.Parent == parent && last.Grid == grid;
+                var moved = continuous ? (position - last.Position).Length() : 0f;
 
-                // Интервал берём фактический, а не «одно выборочное окно»: сущность могла
-                // пропустить съём (мертва, нет компонента скорости), и тогда между выборками
-                // прошло больше времени. С фиксальным окном это выглядело бы как превышение.
+                // Интервал берём фактический: сущность могла пропустить съём (мертва,
+                // нет компонента скорости), и между выборками прошло больше времени.
                 var elapsed = Math.Max((now - last.When).TotalSeconds, sampleSeconds);
                 var excess = PmMaths.SpeedExcessTiles(moved, allowed, (float)elapsed, PmTuning.SpeedMargin);
 
-                if (excess > PmTuning.MotionMinExcessTiles)
+                if (!continuous)
+                {
+                    // Граница выборки: накопленные подозрения по прежнему родителю сбрасываем.
+                    if (_pm.TryGetSession(actor.PlayerSession.UserId, out var switched))
+                        switched.MotionStrikes = 0;
+                }
+                else if (excess > PmTuning.MotionMinExcessTiles)
+                {
                     CountMotion(actor, excess, moved, allowed, (float)elapsed);
+                }
                 else if (_pm.TryGetSession(actor.PlayerSession.UserId, out var ok))
+                {
                     ok.MotionStrikes = 0;
-
-                // Сменил сетку — накопленные подозрения по предыдущему участку обнуляем.
-                if (last.Grid != grid && _pm.TryGetSession(actor.PlayerSession.UserId, out var switched))
-                    switched.MotionStrikes = 0;
+                }
             }
 
-            _previous[uid] = (grid, position, now);
+            _previous[uid] = (parent, grid, position, now);
         }
 
         // Сущности, которые исчезли из выборки, вычищаем, иначе словарь растёт весь раунд.

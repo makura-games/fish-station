@@ -267,8 +267,14 @@ public sealed partial class RpuSystem : EntitySystem
     {
         var suspect = GetSuspect(session.UserId);
 
+        // Чтение уже идёт: подписка AddOnLoadPlayer и повтор по таймеру могут совпасть.
+        // Второе чтение, завершившись позже первого, записало бы в карму значение из базы
+        // и потеряло штраф, начисленный между ними.
+        if (suspect.LoadInFlight)
+            return;
+
         // Память новее базы, если запись об этом игроке ещё не подтверждена: быстрое
-        // переподключение не должно затираать уже начисленный штраф.
+        // переподключение не должно стирать уже начисленный штраф.
         var keepMemory = suspect.Dirty || suspect.SaveInFlight;
 
         // Пока карму не прочитали, с ней ничего не делаем: иначе выход игрока
@@ -661,7 +667,7 @@ public sealed partial class RpuSystem : EntitySystem
 
         // Ожидающие записи и повторы чтения идут и при выключенном учёте: иначе
         // отключение системы оставило бы подтверждение записей зависимым от включения.
-        FlushPending();
+        FlushPending(frameTime);
 
         if (!_enabled)
             return;
@@ -690,9 +696,12 @@ public sealed partial class RpuSystem : EntitySystem
     /// Периодическое обслуживание профилей: повторное чтение после сбоя БД и запись
     /// изменённой кармы. Не зависит от того, включён ли учёт.
     /// </summary>
-    private void FlushPending()
+    private void FlushPending(float frameTime)
     {
-        _loadAccumulator += _timing.TickRate;
+        // Накопитель идёт от реально прошедшего времени. TickRate — это число тиков
+        // в секунду, а не длительность тика: при 60 тик/с он сразу перебивал бы
+        // SaveCheckSeconds, и обход делался бы каждый тик.
+        _loadAccumulator += frameTime;
 
         if (_loadAccumulator < SaveCheckSeconds)
             return;

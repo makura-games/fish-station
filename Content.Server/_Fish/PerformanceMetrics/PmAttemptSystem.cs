@@ -43,6 +43,7 @@ public sealed partial class PmAttemptSystem : EntitySystem
         pm.Attempts.Add(new PmAttempt
         {
             At = _timing.CurTime,
+            Shooter = args.User,
             Realised = false,
             ErrorDegrees = float.NaN,
         });

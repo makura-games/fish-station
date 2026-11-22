@@ -52,16 +52,15 @@ public sealed partial class RpuDamageRouterSystem : EntitySystem
         // а основания для ответного огня должны сохраниться.
         _aggression.RecordDamage(ent.Owner, origin, total);
 
+        // Метрики боя живут отдельно от РПУ: сбор включён — данные идут, даже если
+        // учёт кармы сейчас заглушён (эвакуация, режим, rpu.enabled=false).
+        if (_pm.Enabled)
+            RaiseLocalEvent(new PmDamageObservedEvent { Victim = ent.Owner, Source = origin, Total = (float) total });
+
         if (!_rpu.Active)
             return;
 
         _kill.RecordDamage(ent.Owner, origin, total);
         _destruction.RecordDamage(ent.Owner, origin, total);
-
-        // Метрики боя берут те же данные: отдельная направленная подписка на эту пару
-        // занята, поэтому данные раздаём внутренним уведомлением. Пока сбор выключен,
-        // событие не отправляем вовсе: лишний объект на каждый удар никому не нужен.
-        if (_pm.Enabled)
-            RaiseLocalEvent(new PmDamageObservedEvent { Victim = ent.Owner, Source = origin, Total = (float) total });
     }
 }

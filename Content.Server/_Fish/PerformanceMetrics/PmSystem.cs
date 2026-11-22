@@ -140,14 +140,22 @@ public sealed partial class PmSystem : EntitySystem
                 $"Session metrics out of range for {player.Name}: {Describe(session)}. Worth a look.");
         }
 
-        if (_karma && now - session.LastKarmaAt >= PmTuning.KarmaCooldown)
+        // Сбор метрик идёт и при заглушенном РПУ (эвакуация, особый режим), а вот
+        // снятие кармы — нет: карму не двигаем, пока учёт приостановлен.
+        if (_karma && _rpu.Active && now - session.LastKarmaAt >= PmTuning.KarmaCooldown)
         {
             session.LastKarmaAt = now;
             _rpu.TryAdjustKarma(player, -PmTuning.KarmaPerFlag);
         }
 
-        if (_disconnect && session.TotalFlags >= PmTuning.FlagsForDisconnect)
+        // Разрыв соединения — действие над сетью, а не над ролью: оно не зависит от
+        // приостановки учёта, но не трогает тех, кого наказывать нельзя в принципе.
+        if (_disconnect &&
+            session.TotalFlags >= PmTuning.FlagsForDisconnect &&
+            _rpu.PunishmentAllowed(player))
+        {
             player.Channel.Disconnect("Input rate out of range for this server.");
+        }
     }
 
     /// <summary>Сводка по сессии — для админской команды.</summary>

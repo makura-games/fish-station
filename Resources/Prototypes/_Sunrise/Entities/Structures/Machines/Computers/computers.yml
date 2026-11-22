@@ -62,7 +62,7 @@
   - type: Eye
     pvsScale: 1.5
   - type: Visibility
-    layer: 4
+    layer: 16 # Fish: бит Abductor переехал на 1 << 4, раньше было 4
   - type: Sprite
     sprite: _Sunrise/Abductor/Structures/Machines/abductor_camera_console.rsi
     layers:
