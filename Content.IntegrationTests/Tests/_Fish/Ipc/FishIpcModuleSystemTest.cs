@@ -91,6 +91,7 @@ public sealed class FishIpcModuleSystemTest : GameTest
         FishIpcModuleSystem moduleSys = default!;
         var canInsertFourth = false;
         var canInsertFifth = true;
+        var insertedFourth = false;
 
         await Server.WaitPost(() =>
         {
@@ -106,7 +107,7 @@ public sealed class FishIpcModuleSystemTest : GameTest
 
             var fourth = SSpawn("FishIpcModuleToolHand");
             canInsertFourth = moduleSys.CanInsertModule(hostEnt, new Entity<FishIpcModuleComponent>(fourth, SComp<FishIpcModuleComponent>(fourth)));
-            Assert.That(containers.Insert(fourth, host.ModuleContainer), Is.True);
+            insertedFourth = containers.Insert(fourth, host.ModuleContainer);
 
             var fifth = SSpawn("FishIpcModuleNanoRepair");
             canInsertFifth = moduleSys.CanInsertModule(hostEnt, new Entity<FishIpcModuleComponent>(fifth, SComp<FishIpcModuleComponent>(fifth)));
@@ -116,6 +117,7 @@ public sealed class FishIpcModuleSystemTest : GameTest
         {
             Assert.That(host.ModuleCount, Is.EqualTo(4));
             Assert.That(canInsertFourth, Is.True);
+            Assert.That(insertedFourth, Is.True);
             Assert.That(canInsertFifth, Is.False);
         });
     }
