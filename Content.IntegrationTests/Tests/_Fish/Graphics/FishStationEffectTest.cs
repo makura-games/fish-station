@@ -13,7 +13,8 @@ public sealed class FishStationEffectTest : GameTest
         var client = Pair.Client;
         var sprites = client.System<SpriteSystem>();
         string[] effects = ["EffectSparks", "EffectTeslaSparks", "EffectEmpPulse", "EffectEmpDisabled",
-            "TeleportEffectSource", "TeleportEffectTarget"];
+            "TeleportEffectSource", "TeleportEffectTarget", "FishBloodParticle", "FishSlagParticle",
+            "FishWeldParticle", "FishSplashParticle"];
 
         await client.WaitAssertion(() =>
         {
