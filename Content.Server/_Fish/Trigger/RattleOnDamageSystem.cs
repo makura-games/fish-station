@@ -1,4 +1,5 @@
 using Content.Server._Sunrise.Messenger;
+using Content.Server.Destructible;
 using Content.Server.Pinpointer;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Station.Systems;
@@ -33,7 +34,9 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
         base.Initialize();
 
 #pragma warning disable CS0618 // Отслеживаем итоговое состояние DamageableComponent после любого изменения урона/починки
-        SubscribeLocalEvent<RattleOnDamageComponent, DamageChangedEvent>(OnDamageChanged);
+        SubscribeLocalEvent<RattleOnDamageComponent, DamageChangedEvent>(
+            OnDamageChanged,
+            before: [typeof(DestructibleSystem)]);
 #pragma warning restore CS0618
     }
 
@@ -62,6 +65,9 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
         DamageableComponent? damageable = null,
         bool damageIncreased = true)
     {
+        if (TerminatingOrDeleted(ent.Owner))
+            return false;
+
         if (!Resolve(ent, ref ent.Comp, false))
             return false;
 
@@ -75,18 +81,21 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
         var message = Loc.GetString(ent.Comp.Message, ("entity", ent.Owner), ("position", posText));
 
         EntityUid? messengerServer = null;
+        string? messengerMessage = null;
         if (ent.Comp.SendToMessenger &&
             _messenger.GetServerEntity(_station.GetOwningStation(ent.Owner)) is var (server, _))
         {
             messengerServer = server;
+            messengerMessage = Loc.GetString("rattle-on-damage-messenger-wrap", ("entity", ent.Owner), ("message", message));
         }
 
         foreach (var channelId in ent.Comp.RadioChannels)
         {
             if (messengerServer is { } serverUid &&
+                messengerMessage != null &&
                 _messenger.GetGroupIdByRadioChannel(channelId) is { } groupId)
             {
-                _messenger.SendSystemMessageToGroup(serverUid, groupId, message);
+                _messenger.SendSystemMessageToGroup(serverUid, groupId, messengerMessage);
                 continue;
             }
 
@@ -95,7 +104,7 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
         }
 
         if (ent.Comp.Sound != null)
-            _audio.PlayPvs(ent.Comp.Sound, ent.Owner);
+            _audio.PlayPvs(ent.Comp.Sound, Transform(ent.Owner).Coordinates);
 
         return true;
     }
@@ -108,6 +117,9 @@ public sealed partial class RattleOnDamageSystem : EntitySystem
         DamageableComponent? damageable = null,
         bool damageIncreased = true)
     {
+        if (TerminatingOrDeleted(ent.Owner))
+            return false;
+
         if (!Resolve(ent, ref ent.Comp, false))
             return false;
 
