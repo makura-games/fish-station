@@ -89,7 +89,9 @@ public sealed class FishIpcModuleSystemTest : GameTest
         EntityUid ipc = default;
         FishIpcModuleHostComponent host = default!;
         FishIpcModuleSystem moduleSys = default!;
-        var canInsertFourth = true;
+        var canInsertFourth = false;
+        var canInsertFifth = true;
+        var insertedFourth = false;
 
         await Server.WaitPost(() =>
         {
@@ -97,21 +99,26 @@ public sealed class FishIpcModuleSystemTest : GameTest
             host = SComp<FishIpcModuleHostComponent>(ipc);
             moduleSys = Server.System<FishIpcModuleSystem>();
             var containers = Server.System<SharedContainerSystem>();
+            var hostEnt = new Entity<FishIpcModuleHostComponent>(ipc, host);
 
             Assert.That(containers.Insert(SSpawn("FishIpcModuleWireInterface"), host.ModuleContainer), Is.True);
             Assert.That(containers.Insert(SSpawn("FishIpcModuleApcAdapter"), host.ModuleContainer), Is.True);
             Assert.That(containers.Insert(SSpawn("FishIpcModuleVocalMod"), host.ModuleContainer), Is.True);
 
             var fourth = SSpawn("FishIpcModuleToolHand");
-            var hostEnt = new Entity<FishIpcModuleHostComponent>(ipc, host);
-            var modEnt = new Entity<FishIpcModuleComponent>(fourth, SComp<FishIpcModuleComponent>(fourth));
-            canInsertFourth = moduleSys.CanInsertModule(hostEnt, modEnt);
+            canInsertFourth = moduleSys.CanInsertModule(hostEnt, new Entity<FishIpcModuleComponent>(fourth, SComp<FishIpcModuleComponent>(fourth)));
+            insertedFourth = containers.Insert(fourth, host.ModuleContainer);
+
+            var fifth = SSpawn("FishIpcModuleNanoRepair");
+            canInsertFifth = moduleSys.CanInsertModule(hostEnt, new Entity<FishIpcModuleComponent>(fifth, SComp<FishIpcModuleComponent>(fifth)));
         });
 
         await Server.WaitAssertion(() =>
         {
-            Assert.That(host.ModuleCount, Is.EqualTo(3));
-            Assert.That(canInsertFourth, Is.False);
+            Assert.That(host.ModuleCount, Is.EqualTo(4));
+            Assert.That(canInsertFourth, Is.True);
+            Assert.That(insertedFourth, Is.True);
+            Assert.That(canInsertFifth, Is.False);
         });
     }
 }

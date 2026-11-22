@@ -1910,3 +1910,9 @@
     message: Небольшое обновление рефайнери
   id: 195
   url: https://github.com/makura-games/fish-station/pull/691
+- author: Pifagor-Cry
+  time: '2026-11-22T18:32:00.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Добавлен дополнительный слот для модуля КПБ. В инструментальный модуль КПБ вместо мультитула теперь входит омни-инструмент.
+  id: 196
