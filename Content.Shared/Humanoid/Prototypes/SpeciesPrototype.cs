@@ -127,5 +127,7 @@ public enum SpeciesNaming : byte
     FirstLast,
     FirstDashFirst,
     TheFirstofLast,
-    OnlyFirst // Sunrise-Edit - поддержка имён без фамилии
+    OnlyFirst, // Sunrise-Edit - поддержка имён без фамилии
+    // Fish-edit: имена КПБ в стиле First-Last (Paradise Machine)
+    FirstDashLast,
 }

@@ -19,6 +19,7 @@ public sealed class FishNaturalNightVisionTest
 {
     private const int NetworkTicks = 20;
 
+    [TestCase("MobFelinid")]
     [TestCase("MobVulpkanin")]
     [TestCase("MobTajaran")]
     [TestCase("MobResomi")]

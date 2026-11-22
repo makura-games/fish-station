@@ -20,6 +20,7 @@
     - Synth
     - Silicon
     - Xenoborg
+    - Ipc # Fish-edit: HealingSystem принимает нанопасту для MobIpc
     damage:
       types:
         Heat: -10
@@ -27,7 +28,13 @@
         Blunt: -10
         Slash: -10
         Piercing: -10
+        # Fish-start: лечение радиации, клеточного и структурного урона (половина от ушибов)
+        Radiation: -5
+        Cellular: -1
+        Structural: -5
+        # Fish-end
        # Mangleness: -10 # Fish-edit: Removed Mangleness from the damage types
+    eyeDamageHeal: 1 # Fish-edit: лечение слепоты (1 за использование)
     healingBeginSound:
       path: "/Audio/Items/Medical/ointment_begin.ogg"
     healingEndSound:

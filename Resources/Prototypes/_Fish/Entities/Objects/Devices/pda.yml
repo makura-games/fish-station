@@ -20,3 +20,21 @@
     borderColor: "#7C5D00"
   - type: Icon
     state: pda-captain
+
+- type: entity
+  parent: BlueShieldOperativePDA
+  id: FishRepresentativeBlueShieldPDA
+  name: blue shield operative PDA
+  suffix: Fish
+  components:
+  - type: Pda
+    id: FishRepresentativeBlueShieldIDCard
+
+- type: entity
+  parent: BlueShieldOperativePDA
+  id: FishCentcommBlueShieldPDA
+  name: blue shield operative PDA
+  suffix: Fish
+  components:
+  - type: Pda
+    id: FishCentcommBlueShieldIDCard

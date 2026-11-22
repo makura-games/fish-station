@@ -1,11 +1,13 @@
 - type: entity
   # parent: SimpleSpaceMobBase
-  parent:
+  parent: # Fish-start: возвращён MobFlammable для возможности поджога мобов плоти
   - BaseSimpleMob
   - MobAtmosExposed
   - MobCombat
   - MobBloodstream
+  - MobFlammable
   - BaseSlicingRefinable
+  # Fish-end
   id: BaseMobFleshCult
   name: flesh mob
   description: A shambling mass of flesh, animated through anomalous energy.
@@ -74,10 +76,22 @@
           Slash: 3
     - type: ReplacementAccent
       accent: genericAggressive
+    - type: Speech # Fish-edit: речь по умолчанию для использования чата плоти (+п) всеми мобами
     - type: CollectiveMind
       minds:
       - FleshCult
     - type: IgnoreFleshSpiderWeb
+    # Fish-start: ПНВ как у конструктов культа крови, запрет поскальзывания и 0.5x урона по стамине
+    - type: ActionsContainer
+    - type: NightVision
+      enabled: false
+      action: ActionToggleNightVision
+      lightingColor: '#D61B1B26'
+    - type: NoSlip
+    - type: StaminaResistance
+      damageCoefficient: 0.5
+      worn: false
+    # Fish-end
 
 - type: entity
   parent: BaseMobFleshCult
@@ -242,9 +256,9 @@
       animation: WeaponArcSmash
       damage:
         types:
-          Slash: 15
+          Slash: 20 # Fish-edit: увеличено с 15 до 20
           Blunt: 25
-          Structural: 30
+          Structural: 35 # Fish-edit: увеличено с 30 до 35
     - type: GhostRole
       allowMovement: true
       allowSpeech: true

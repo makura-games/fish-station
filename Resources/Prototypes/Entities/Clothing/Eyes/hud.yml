@@ -40,6 +40,7 @@
     - Inorganic
     - Silicon
     - Mech # Sunrise-edit
+    - Ipc # Fish-edit: отображение шкалы здоровья КПБ на визоре
   - type: ShowAccessReaderSettings
 
 - type: entity

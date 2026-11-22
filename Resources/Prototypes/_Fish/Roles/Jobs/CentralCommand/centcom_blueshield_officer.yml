@@ -11,7 +11,7 @@
     - !type:AgeRequirement
       requiredAge: 20
   startingGear: CentcomBlueShieldGear
-  icon: "JobIconBlueShield"
+  icon: FishJobIconFishCentcommBlueShield
 
   overrideConsoleVisibility: false
   supervisors: job-supervisors-centcom
@@ -28,14 +28,13 @@
 - type: startingGear
   id: CentcomBlueShieldGear
   equipment:
-   shoes: ClothingShoesBootsBlueShieldFilled
-   eyes: ClothingEyesGlassesBlueShield
-   # head через BlueShieldHead loadout # Fish-edit
-   id: BlueShieldOperativePDA
-   outerClothing: ClothingOuterArmorBlueShield
-   ears: ClothingHeadsetFishCentCom
-   gloves: ClothingHandsGlovesCombat
+    shoes: ClothingShoesBootsBlueShieldFilled
+    eyes: ClothingEyesGlassesBlueShield
+    id: FishCentcommBlueShieldPDA
+    # Fish-edit: головной убор и броня выдаются через лодаут
+    ears: ClothingHeadsetFishCentCom
+    gloves: ClothingHandsGlovesCombat
   storage:
-   back:
-   - HandheldBSOCrewMonitor
-   - FishUplinkNTERTBlueShield # Fish-edit
+    back:
+    - HandheldBSOCrewMonitor
+    - FishUplinkNTERTBlueShield # Fish-edit
