@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using Content.Shared.Administration.Logs;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
@@ -34,6 +35,7 @@ namespace Content.Shared.Medical.Cryogenics;
 
 public abstract partial class SharedCryoPodSystem : EntitySystem
 {
+    [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] protected IGameTiming Timing = default!;
     [Dependency] private ClimbSystem _climb = default!;
@@ -484,6 +486,7 @@ public abstract partial class SharedCryoPodSystem : EntitySystem
     {
         if (args.Container.ID == CryoPodComponent.BodyContainerName)
         {
+            _fishParticles.Emit(cryoPod, FishParticleKind.Frost); // Fish-edit: холодная дымка при выходе пациента
             ClearInjectionBuffer(cryoPod);
         }
 

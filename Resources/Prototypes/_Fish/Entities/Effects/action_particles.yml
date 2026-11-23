@@ -46,3 +46,105 @@
   components:
   - type: Sprite
     state: splash
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishIgnitionParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    layers:
+    - state: flame
+      shader: unshaded
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishCindersParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    layers:
+    - state: cinder
+      shader: unshaded
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishSmokeParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: smoke
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishFrostParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: frost
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishSteamParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: steam
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishLeavesParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: leaf
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishOreParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: ore
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishGlassParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: glass
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishWoodParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: wood
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishShockParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    layers:
+    - state: arc
+      shader: unshaded
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishSuctionParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: mote
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishBubblesParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: bubble

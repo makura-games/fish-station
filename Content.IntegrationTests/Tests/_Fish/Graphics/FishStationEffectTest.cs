@@ -1,4 +1,6 @@
+using System.Linq;
 using Content.IntegrationTests.Fixtures;
+using Robust.Shared.Prototypes;
 using Robust.Client.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Spawners;
@@ -12,14 +14,16 @@ public sealed class FishStationEffectTest : GameTest
     {
         var client = Pair.Client;
         var sprites = client.System<SpriteSystem>();
-        string[] effects = ["EffectSparks", "EffectTeslaSparks", "EffectEmpPulse", "EffectEmpDisabled",
-            "TeleportEffectSource", "TeleportEffectTarget", "FishBloodParticle", "FishSlagParticle",
-            "FishWeldParticle", "FishSplashParticle"];
+        var prototypes = client.ResolveDependency<IPrototypeManager>();
 
         await client.WaitAssertion(() =>
         {
-            foreach (var id in effects)
+            var effects = prototypes.EnumeratePrototypes<EntityPrototype>().Where(p => !p.Abstract &&
+                p.Parents?.Any(parent => parent is "FishStationEffectBase" or "FishActionParticleBase") == true);
+            Assert.That(effects, Is.Not.Empty);
+            foreach (var prototype in effects)
             {
+                var id = prototype.ID;
                 var entity = client.EntMan.SpawnEntity(id, MapCoordinates.Nullspace);
                 try
                 {

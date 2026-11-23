@@ -1,4 +1,5 @@
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Hands.EntitySystems;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -15,6 +16,18 @@ public enum FishParticleKind : byte
     Weld,
     Slag,
     Splash,
+    Ignition,
+    Cinders,
+    Smoke,
+    Frost,
+    Steam,
+    Leaves,
+    Ore,
+    Glass,
+    Wood,
+    Shock,
+    Suction,
+    Bubbles,
 }
 
 [Serializable, NetSerializable]
@@ -29,11 +42,18 @@ public sealed partial class FishActionParticleSystem : EntitySystem
 {
     [Dependency] private INetManager _net = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
     public void Emit(EntityUid source, FishParticleKind kind, Solution? liquid = null)
     {
-        if (!_net.IsServer || liquid?.Volume == 0 || _containers.IsEntityOrParentInContainer(source))
+        if (!_net.IsServer || liquid?.Volume == 0)
+            return;
+
+        // Эффект предмета в руке виден у владельца, пока сам владелец снаружи.
+        if (_hands.IsHeld(source, out var holder))
+            source = holder.Value;
+        if (_containers.IsEntityOrParentInContainer(source))
             return;
 
         var xform = Transform(source);

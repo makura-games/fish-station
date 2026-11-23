@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using Content.Shared.Administration.Logs;
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Events;
@@ -14,6 +15,7 @@ namespace Content.Shared.Botany.Systems;
 /// </summary>
 public sealed partial class PlantHarvestSystem : EntitySystem
 {
+    [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
     [Dependency] private BotanySystem _botany = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private PlantSystem _plant = default!;
@@ -143,6 +145,10 @@ public sealed partial class PlantHarvestSystem : EntitySystem
 
         var position = Transform(user).Coordinates;
         _botany.SpawnProduce(ent.Owner, position, totalYield);
+        // Fish-start: листья при сборе урожая
+        if (totalYield > 0)
+            _fishParticles.Emit(ent, FishParticleKind.Leaves);
+        // Fish-end
 
         ent.Comp.ReadyForHarvest = false;
         ent.Comp.LastHarvest = ent.Comp.Age;
