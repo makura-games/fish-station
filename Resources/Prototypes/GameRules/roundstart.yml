@@ -323,7 +323,7 @@
     - WizardSurviveObjective
     - WizardDemonstrateObjective
   - type: LoadMapRule
-    mapPath: /Maps/Nonstations/wizardsden.yml
+    mapPath: /Maps/_Fish/Nonstations/wizardsden.yml # Fish-edit
   - type: RuleGrids
   - type: AntagSelection
     agentName: wizard-round-end-name
