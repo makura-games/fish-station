@@ -40,7 +40,7 @@ public sealed partial class FishParticleBurstSystem : EntitySystem
 
     private void OnBurst(FishParticleBurstEvent ev)
     {
-        if (!_enabled)
+        if (!_enabled || _active.Count >= MaxParticles)
             return;
 
         var position = GetCoordinates(ev.Position);
@@ -83,6 +83,7 @@ public sealed partial class FishParticleBurstSystem : EntitySystem
 
     public override void FrameUpdate(float frameTime)
     {
+        var now = _timing.CurTime;
         for (var i = _active.Count - 1; i >= 0; i--)
         {
             var particle = _active[i];
@@ -92,7 +93,7 @@ public sealed partial class FishParticleBurstSystem : EntitySystem
                 continue;
             }
 
-            var t = (float) (_timing.CurTime - particle.Start).TotalSeconds;
+            var t = (float) (now - particle.Start).TotalSeconds;
             var pixels = particle.Velocity * t - new Vector2(0, particle.Gravity * t * t / 2);
             // Пыль идёт от края к центру, а лёгкие частицы качаются в потоке воздуха.
             if (particle.Kind == FishParticleKind.Suction)
@@ -100,7 +101,9 @@ public sealed partial class FishParticleBurstSystem : EntitySystem
             else if (particle.Kind is FishParticleKind.Leaves or FishParticleKind.Cinders or FishParticleKind.Smoke or FishParticleKind.Steam)
                 pixels.X += 3 * (MathF.Sin(10 * t + particle.Velocity.X) - MathF.Sin(particle.Velocity.X));
 
-            _sprites.SetOffset((particle.Entity, sprite), new Vector2(MathF.Round(pixels.X), MathF.Round(pixels.Y)) / 32f);
+            var offset = new Vector2(MathF.Round(pixels.X), MathF.Round(pixels.Y)) / 32f;
+            if (sprite.Offset != offset)
+                _sprites.SetOffset((particle.Entity, sprite), offset);
         }
     }
 }

@@ -2,11 +2,13 @@
   parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: TeleportEffectSource
   components:
+    # Fish-start: текстура и порядок отрисовки наследуются от FishStationEffectBase
     - type: Sprite
       layers:
         - state: source
           shader: unshaded
       netsync: false
+    # Fish-end
     - type: PointLight
       color: "#008DFE"
     - type: EmitSoundOnSpawn
@@ -23,11 +25,13 @@
   parent: FishStationEffectBase # Fish-edit: общая пиксельная графика эффектов
   id: TeleportEffectTarget
   components:
+    # Fish-start: текстура и порядок отрисовки наследуются от FishStationEffectBase
     - type: Sprite
       layers:
         - state: target
           shader: unshaded
       netsync: false
+    # Fish-end
     - type: PointLight
       color: "#008DFE"
     - type: EmitSoundOnSpawn

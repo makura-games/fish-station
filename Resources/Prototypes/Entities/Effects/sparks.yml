@@ -5,12 +5,14 @@
   components:
   - type: TimedDespawn
     lifetime: 0.5
+  # Fish-start: текстура и порядок отрисовки наследуются от FishStationEffectBase
   - type: Sprite
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
       state: sparks
+  # Fish-end
   - type: EffectVisuals
   - type: Tag
     tags:
@@ -24,12 +26,14 @@
   components:
   - type: TimedDespawn
     lifetime: 0.5
+  # Fish-start: текстура и порядок отрисовки наследуются от FishStationEffectBase
   - type: Sprite
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
-      state: tesla # Fish-edit: ветвящаяся дуга Теслы
+      state: tesla
+  # Fish-end
   - type: EffectVisuals
   - type: Tag
     tags:

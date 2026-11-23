@@ -5,12 +5,14 @@
   components:
   - type: TimedDespawn
     lifetime: 0.8
+  # Fish-start: текстура и порядок отрисовки наследуются от FishStationEffectBase
   - type: Sprite
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
       state: emp_pulse
+  # Fish-end
   - type: EffectVisuals
   - type: Tag
     tags:
@@ -24,12 +26,14 @@
   components:
   - type: TimedDespawn
     lifetime: 0.4
+  # Fish-start: текстура и порядок отрисовки наследуются от FishStationEffectBase
   - type: Sprite
     noRot: true
     layers:
     - shader: unshaded
       map: ["enum.EffectLayers.Unshaded"]
       state: emp_disable
+  # Fish-end
   - type: EffectVisuals
   - type: Tag
     tags:

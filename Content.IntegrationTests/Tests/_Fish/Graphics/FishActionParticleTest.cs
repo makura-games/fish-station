@@ -7,12 +7,33 @@ using Content.Shared.CCVar;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reaction;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Robust.Shared.GameObjects;
 
 namespace Content.IntegrationTests.Tests._Fish.Graphics;
 
 public sealed class FishActionParticleTest : InteractionTest
 {
+    [TestCase("TableWood", 1, "FishWoodParticle", 0)]
+    [TestCase("TableWood", 42, "FishWoodParticle", 6)]
+    [TestCase("TableWood", 175, "FishWoodParticle", 6)]
+    [TestCase("Window", 85, "FishGlassParticle", 7)]
+    [TestCase("Window", 200, "FishGlassParticle", 7)]
+    public async Task DamageEmitsDebrisOnDestruction(string prototype, int damage, string particle, int expected)
+    {
+        var target = await Spawn(prototype);
+        await Server.WaitPost(() => Server.System<DamageableSystem>().TryChangeDamage(ToServer(target),
+            new DamageSpecifier { DamageDict = { ["Blunt"] = damage } }, ignoreResistances: true, ignoreVariance: true));
+
+        await RunTicks(3);
+        var count = 0;
+        await Client.WaitPost(() => count = CEntMan.EntityQuery<MetaDataComponent>()
+            .Count(meta => meta.EntityPrototype?.ID == particle));
+        Assert.That(count, Is.EqualTo(expected));
+        await RunTicks((int) (1 / TickPeriod) + 1);
+    }
+
     [Test]
     public async Task DisablingParticlesClearsBurstsAndAllowsReenabling()
     {
