@@ -49,8 +49,8 @@
 - type: entity
   parent: FishBaseIpcModule
   id: FishIpcModuleToolHand
-  name: IPC multitool hand module
-  description: Draws 0.4 J/s. While on, places a multitool in a free hand. Toggleable.
+  name: IPC omnitool hand module
+  description: Draws 0.4 J/s. While on, places an omnitool in a free hand. Toggleable.
   suffix: Fish
   components:
   - type: Sprite
@@ -60,7 +60,7 @@
     passiveDrainPerSecond: 0.4
   - type: FishIpcModulePowerToggle
   - type: FishIpcToolHandModule
-    toolPrototype: Multitool
+    toolPrototype: Omnitool
 
 - type: entity
   parent: FishBaseIpcModule

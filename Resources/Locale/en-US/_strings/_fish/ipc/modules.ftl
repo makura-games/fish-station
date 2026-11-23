@@ -14,8 +14,8 @@ ent-FishIpcModuleVocalMod = IPC vocal modulator module
     .desc = Built-in radio keeps working even when the battery is dead. Toggleable.
     .suffix = Fish
 
-ent-FishIpcModuleToolHand = IPC multitool hand module
-    .desc = While on, puts a multitool in a free hand. Toggleable.
+ent-FishIpcModuleToolHand = IPC omnitool hand module
+    .desc = While on, puts an omnitool in a free hand. Toggleable.
     .suffix = Fish
 
 ent-FishIpcModuleMedHud = IPC medical optics module

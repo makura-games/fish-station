@@ -87,7 +87,7 @@ public sealed class FishIpcPlaytestTest : FishIpcGameTest
     }
 
     [Test]
-    public async Task ToolHand_SpawnsMultitool()
+    public async Task ToolHand_SpawnsOmnitool()
     {
         await Server.WaitAssertion(() =>
         {
@@ -95,7 +95,7 @@ public sealed class FishIpcPlaytestTest : FishIpcGameTest
             var module = InstallModule(ipc, "FishIpcModuleToolHand");
             var spawned = SComp<FishIpcToolHandModuleComponent>(module).SpawnedTool;
             Assert.That(spawned, Is.Not.Null);
-            Assert.That(SEntMan.GetComponent<MetaDataComponent>(spawned!.Value).EntityPrototype?.ID, Is.EqualTo("Multitool"));
+            Assert.That(SEntMan.GetComponent<MetaDataComponent>(spawned!.Value).EntityPrototype?.ID, Is.EqualTo("Omnitool"));
         });
     }
 

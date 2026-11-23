@@ -403,6 +403,11 @@ public partial class SharedGunSystem
                 {
                     ent.Comp.AmmoSlots[index] = null;
                     ent.Comp.Chambers[index] = null;
+
+                    // Fish-start: безгильзовый патрон не остаётся в барабане
+                    if (_netManager.IsServer)
+                        Del(ammoEnt.Value);
+                    // Fish-end
                 }
             }
             else
