@@ -6,6 +6,10 @@ namespace Content.Shared.CCVar
     [CVarDefs]
     public sealed class FishCVars
     {
+        /// <summary>Show local particle bursts for actions such as welding, harvesting and bleeding.</summary>
+        public static readonly CVarDef<bool> ActionParticlesEnabled =
+            CVarDef.Create("fish.action_particles_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
         /// <summary>
         /// Whether the EORG popup is enabled.
         /// </summary>

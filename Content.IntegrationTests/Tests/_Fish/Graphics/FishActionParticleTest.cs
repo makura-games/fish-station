@@ -3,6 +3,7 @@ using Content.IntegrationTests.Tests.Interaction;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Atmos.Components;
 using Content.Shared._Fish.Effects;
+using Content.Shared.CCVar;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reaction;
@@ -12,6 +13,43 @@ namespace Content.IntegrationTests.Tests._Fish.Graphics;
 
 public sealed class FishActionParticleTest : InteractionTest
 {
+    [Test]
+    public async Task DisablingParticlesClearsBurstsAndAllowsReenabling()
+    {
+        var cfg = Client.CfgMan;
+        var original = cfg.GetCVar(FishCVars.ActionParticlesEnabled);
+
+        async Task EmitWeld()
+        {
+            await Server.WaitPost(() => Server.System<FishActionParticleSystem>().Emit(SPlayer, FishParticleKind.Weld));
+            await RunTicks(3);
+        }
+
+        Task AssertWeldCount(int expected) => Client.WaitAssertion(() =>
+            Assert.That(CEntMan.EntityQuery<MetaDataComponent>()
+                .Count(meta => meta.EntityPrototype?.ID == "FishWeldParticle"), Is.EqualTo(expected)));
+
+        try
+        {
+            await Client.WaitPost(() => cfg.SetCVar(FishCVars.ActionParticlesEnabled, true));
+            await EmitWeld();
+            await AssertWeldCount(8);
+
+            await Client.WaitPost(() => cfg.SetCVar(FishCVars.ActionParticlesEnabled, false));
+            await EmitWeld();
+            await AssertWeldCount(0);
+
+            await Client.WaitPost(() => cfg.SetCVar(FishCVars.ActionParticlesEnabled, true));
+            await EmitWeld();
+            await AssertWeldCount(8);
+        }
+        finally
+        {
+            await Client.WaitPost(() => cfg.SetCVar(FishCVars.ActionParticlesEnabled, original));
+            await RunTicks((int) (1 / TickPeriod) + 1);
+        }
+    }
+
     [Test]
     public async Task HeldShakerEmitsBubbles()
     {

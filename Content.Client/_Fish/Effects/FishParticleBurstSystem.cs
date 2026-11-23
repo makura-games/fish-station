@@ -1,6 +1,8 @@
 using System.Numerics;
 using Content.Shared._Fish.Effects;
+using Content.Shared.CCVar;
 using Robust.Client.GameObjects;
+using Robust.Shared.Configuration;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -8,21 +10,39 @@ namespace Content.Client._Fish.Effects;
 
 public sealed partial class FishParticleBurstSystem : EntitySystem
 {
+    [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private SpriteSystem _sprites = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
 
     private const int MaxParticles = 96;
+    private bool _enabled;
     private readonly List<Particle> _active = new(MaxParticles);
     private readonly record struct Particle(EntityUid Entity, Vector2 Velocity, float Gravity, FishParticleKind Kind, TimeSpan Start);
 
     public override void Initialize()
     {
+        Subs.CVar(_cfg, FishCVars.ActionParticlesEnabled, SetEnabled, true);
         SubscribeNetworkEvent<FishParticleBurstEvent>(OnBurst);
+    }
+
+    private void SetEnabled(bool enabled)
+    {
+        _enabled = enabled;
+        if (enabled)
+            return;
+
+        foreach (var particle in _active)
+            TryQueueDel(particle.Entity);
+
+        _active.Clear();
     }
 
     private void OnBurst(FishParticleBurstEvent ev)
     {
+        if (!_enabled)
+            return;
+
         var position = GetCoordinates(ev.Position);
         if (!position.IsValid(EntityManager))
             return;

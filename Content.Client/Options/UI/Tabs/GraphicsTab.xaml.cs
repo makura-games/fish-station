@@ -82,6 +82,7 @@ public sealed partial class GraphicsTab : Control
         Control.AddOptionCheckBox(CCVars.ParallaxLowQuality, ParallaxLowQualityCheckBox);
         Control.AddOptionCheckBox(CCVars.HudFpsCounterVisible, FpsCounterCheckBox);
 
+        Control.AddOptionCheckBox(FishCVars.ActionParticlesEnabled, FishActionParticlesCheckBox); // Fish-edit - переключатель частиц действий.
         InitializeFishBloomOptions(); // Fish-edit - настройки свечения Fish во вкладке графики.
         Control.Initialize();
 
