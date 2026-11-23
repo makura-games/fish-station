@@ -1,0 +1,7 @@
+- type: tile
+  id: FloorSnowAlt
+  parent: BaseFloorPlanet
+  name: tiles-snow
+  sprite: /Textures/Tiles/Snow/snow.png
+  footstepSounds:
+    collection: FootstepSnow
