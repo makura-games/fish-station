@@ -610,7 +610,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
         _stationAlerts[station] = _timing.CurTime + TimeSpan.FromSeconds(30);
         var message = revealLocation
             ? Loc.GetString("fish-netrunner-trace-alert-location",
-                ("position", FormattedMessage.RemoveMarkupOrThrow(_navMap.GetNearestBeaconString(source))))
+                ("position", FormattedMessage.RemoveMarkupPermissive(_navMap.GetNearestBeaconString(source))))
             : Loc.GetString("fish-netrunner-trace-alert");
         _radio.SendRadioMessage(station, message, channel, source);
     }

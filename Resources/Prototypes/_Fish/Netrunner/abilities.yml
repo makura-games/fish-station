@@ -72,13 +72,13 @@
 - type: netrunnerAbility
   id: FishNetrunnerNeuralOverload
   linkCost: 10
-  minCastTime: 6
+  minCastTime: 4
   suffix: Fish
   kind: NeuralOverload
   action: FishActionNetrunnerNeuralOverload
   ramCost: 10
   traceCost: 90
-  castTime: 10
+  castTime: 6
   duration: 6
   cooldown: 180
   range: 6
@@ -185,7 +185,8 @@
   cooldown: 60
   duration: 0
   range: 5
-  temperatureIncrease: 6
+  temperatureIncrease: 12
+  staminaDamage: 20
   allowOverload: false
 
 - type: netrunnerAbility
@@ -200,7 +201,7 @@
   cooldown: 50
   duration: 0
   range: 5
-  chargeFraction: 0.1
+  chargeFraction: 0.3
   allowOverload: false
 
 - type: netrunnerAbility

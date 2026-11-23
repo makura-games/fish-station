@@ -76,6 +76,7 @@ public sealed partial class SharedForensicScannerSystem : EntitySystem
             }
 
             scanner.Comp.LastScannedName = Identity.Name(args.Args.Target.Value, EntityManager, args.Args.User);
+            ScanNetrunnerAnomalies(scanner, args.Args.Target.Value); // Fish-edit: Сбор записей успешных программ нетраннера.
 
             DirtyFields(scanner.AsNullable(),
                 null,
@@ -227,6 +228,7 @@ public sealed partial class SharedForensicScannerSystem : EntitySystem
         {
             text.AppendLine(residue);
         }
+        AppendNetrunnerAnomalies(text, scanner.Comp); // Fish-edit: Печать раздела сетевых аномалий нетраннера.
 
         _paperSystem.SetContent((printed, paperComp), text.ToString());
         var audioParams = scanner.Comp.SoundPrint?.Params ?? AudioParams.Default;
@@ -247,6 +249,7 @@ public sealed partial class SharedForensicScannerSystem : EntitySystem
         scanner.Comp.Fibers = [];
         scanner.Comp.DNAs = [];
         scanner.Comp.LastScannedName = string.Empty;
+        ClearNetrunnerAnomalies(scanner); // Fish-edit: Очистка раздела сетевых аномалий нетраннера.
 
         DirtyFields(scanner.AsNullable(),
             null,

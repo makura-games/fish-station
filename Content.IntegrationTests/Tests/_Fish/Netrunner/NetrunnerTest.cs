@@ -226,7 +226,7 @@ public sealed partial class NetrunnerTest : GameTest
                     break;
                 case NetrunnerHackKind.BatteryDrain:
                     var charge = SEntMan.System<SharedBatterySystem>().GetCharge(device);
-                    Assert.That(charge.Charge, Is.EqualTo(originalCharge - charge.MaxCharge * 0.1f).Within(0.01f));
+                    Assert.That(charge.Charge, Is.EqualTo(originalCharge - charge.MaxCharge * 0.3f).Within(0.01f));
                     break;
                 case NetrunnerHackKind.EraseTrace:
                     Assert.That(SEntMan.HasComponent<NetrunnerAuditComponent>(target), Is.False);

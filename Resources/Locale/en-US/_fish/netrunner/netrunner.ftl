@@ -23,6 +23,7 @@ fish-netrunner-sensors-warning = Your suit sensors lose their connection!
 fish-netrunner-trace-alert = Unusual network activity detected on the station network. Inspect cameras and device logs.
 fish-netrunner-trace-alert-location = Critical network anomaly! Signal source located { $position }. Inspect cameras and device logs.
 fish-netrunner-audit-header = Network anomaly log:
+fish-netrunner-forensic-anomalies = Network anomalies:
 fish-netrunner-log-entry = { $time }: { $program } — { $target } ({ $result })
 fish-netrunner-log-success = executed
 fish-netrunner-log-failure = interrupted
@@ -199,11 +200,11 @@ ent-FishActionNetrunnerNeuralStatic = neural static
     .suffix = Fish
 
 ent-FishActionNetrunnerThermalSurge = thermal surge
-    .desc = Raises a borg's, IPC's or genuine mindshield wearer's temperature by up to 6 degrees, subject to heat resistance. Repeated use increases overheating risk.
+    .desc = Raises an IPC's or genuine mindshield wearer's temperature by 12 degrees ignoring heat resistance. Deals 20 stamina damage to borgs without thermal regulation.
     .suffix = Fish
 
 ent-FishActionNetrunnerBatteryDrain = battery drain
-    .desc = Removes up to 10 percent of a borg's, IPC's or energy weapon's full battery capacity. Target the gun or its holder with the gun in the active hand; conventional firearms are incompatible.
+    .desc = Removes up to 30 percent of a borg's, IPC's or energy weapon's full battery capacity. Target the gun or its holder with the gun in the active hand; conventional firearms are incompatible.
     .suffix = Fish
 
 ent-FishActionNetrunnerLockAirlock = hold airlock
@@ -211,7 +212,7 @@ ent-FishActionNetrunnerLockAirlock = hold airlock
     .suffix = Fish
 
 ent-FishActionNetrunnerEraseTrace = buffer purge
-    .desc = Clears a visible device's netrunner diagnostic records. The operator's journal and server audit remain intact.
+    .desc = Clears successful netrunner intervention traces detectable by a forensic scanner on a visible object. The operator's journal remains intact.
     .suffix = Fish
 
 fish-netrunner-manual-content =
@@ -223,8 +224,8 @@ fish-netrunner-manual-content =
     The kit includes an implanter, a neural interface chair board, a coolant pack, this holographic manual, and a corporate jacket (delivered separately from the box). Metal, cable, manipulators and power must be obtained separately. Install the implant and invoke the neural terminal interface. A new implant starts with no purchased scripts and receives [bold]12 neural links[/bold] once. Open [bold]Script shop[/bold] to download programs and expansions into quick access.
 
     { "[head=2]" }2. Hardware expansions[/head]
-    Three memory expansions each add [bold]2 RAM[/bold] (max [bold]18 RAM[/bold]). Three activation accelerators each remove [bold]10%[/bold] of base activation time (max [bold]30%[/bold]). Successive upgrades of the same type cost [bold]6, 10 and 14 links[/bold]. Added memory starts empty and fills during recovery. Neural overload always requires at least 6 seconds to activate.
-    The [bold]netrunner visor[/bold] costs [bold]30 links[/bold] (one order per implant). Worn over the eyes, it divides cooldowns by 1.5, doubles body heating per activation and outlines genuine mindshield wearers with a blue-cyan contour that dims in darkness.
+    Three memory expansions each add [bold]2 RAM[/bold] (max [bold]18 RAM[/bold]). Three activation accelerators each remove [bold]10%[/bold] of base activation time (max [bold]30%[/bold]). Successive upgrades of the same type cost [bold]6, 10 and 14 links[/bold]. Added memory starts empty and fills during recovery. Neural overload always requires at least 4 seconds to activate.
+    The [bold]netrunner visor[/bold] costs [bold]19 links[/bold] (one order per implant). Worn over the eyes, it divides cooldowns by 1.5, doubles body heating per activation and outlines genuine mindshield wearers with a blue-cyan contour.
 
     { "[head=2]" }3. Local operation[/head]
     Select a purchased script and a visible compatible target (6 m range for infrastructure, 5 m for most combat scripts, 6 m center for area blackout). Walls block local connections.
@@ -239,9 +240,9 @@ fish-netrunner-manual-content =
 
     { "[head=2]" }6. Script compatibility[/head]
     { "[bold]" }Infrastructure:[/bold] Open airlock opens a powered unbolted airlock; Hold airlock prevents opening a closed airlock for 12 s without changing bolts. Both actions are recorded in the airlock's access log (readable with a log probe). Disrupt camera disables a camera for 20 s. Area blackout suppresses powered lights in a 7 m radius for 5 minutes.
-    { "[bold]" }Covert:[/bold] Disrupt suit sensors (20 s), Disrupt headset (15 s), and Buffer purge (clears device netrunner diagnostics; airlock records also expire after 10 minutes).
-    { "[bold]" }Combat:[/bold] Short circuit (electric damage and 5 s knockdown on borgs or IPCs), Motor interference (35% slow for 7 s on borgs, IPCs or mindshielded), Optical glitch (3 s blindness on borgs, IPCs or HUD glasses), Lock energy weapon (6 s), Grip shock, Neural static (30 stamina damage), Thermal surge (up to +6 °C), Battery drain (up to 10% on borgs, IPCs or energy weapons).
-    { "[bold]" }Neural overload[/bold] requires a genuine mindshield: 6 s paralysis, 10 RAM, 90% trace, 180 s cooldown, with no target or security alerts.
+    { "[bold]" }Covert:[/bold] Disrupt suit sensors (20 s), Disrupt headset (15 s), and Buffer purge (clears successful intervention traces on the target; airlock records also expire over time).
+    { "[bold]" }Combat:[/bold] Short circuit (electric damage and 5 s knockdown on borgs or IPCs), Motor interference (35% slow for 7 s on borgs, IPCs or mindshielded), Optical glitch (3 s blindness on borgs, IPCs or HUD glasses), Lock energy weapon (6 s), Grip shock, Neural static (30 stamina damage), Thermal surge (+12 °C ignoring heat resistance, or 20 stamina damage on borgs), Battery drain (up to 30% on borgs, IPCs or energy weapons).
+    { "[bold]" }Neural overload[/bold] requires a genuine mindshield: 6 s activation, 6 s paralysis, 10 RAM, 90% trace, 180 s cooldown, with no target or channel alerts.
 
     { "[head=2]" }7. Operating risks[/head]
     Your body remains vulnerable in the chair. Every activation heats the body by [bold]0.135 °C per RAM[/bold] normally and [bold]0.27 °C per RAM[/bold] with the visor. Interruption does not undo heat already applied. Use a [bold]coolant pack[/bold] to rapidly cool the body down to 20 °C.

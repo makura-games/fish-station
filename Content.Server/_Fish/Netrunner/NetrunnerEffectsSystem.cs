@@ -73,7 +73,7 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
         SubscribeLocalEvent<GunComponent, NetrunnerApplyHackEvent>(OnApplyWeapon);
         SubscribeLocalEvent<NetrunnerDisruptionComponent, SurveillanceCameraSetActiveAttemptEvent>(OnCameraActivate);
         SubscribeLocalEvent<NetrunnerDisruptionComponent, NetrunnerDisruptionEndedEvent>(OnDisruptionRemoved);
-        SubscribeLocalEvent<NetrunnerAuditComponent, ExaminedEvent>(OnExamineAudit);
+        SubscribeLocalEvent<NetrunnerAuditComponent, NetrunnerForensicScanEvent>(OnForensicScanAudit);
         SubscribeLocalEvent<NetrunnerAuditComponent, NetrunnerValidateHackEvent>(OnValidateAudit);
         SubscribeLocalEvent<NetrunnerAuditComponent, NetrunnerApplyHackEvent>(OnApplyAudit);
     }
@@ -330,8 +330,11 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
                 return (IsSyntheticTarget(target) || HasMindshieldImplant(target))
                     && HasComp<StaminaComponent>(target);
             case NetrunnerHackKind.ThermalSurge:
-                return (IsSyntheticTarget(target) || HasMindshieldImplant(target))
-                    && TryComp<TemperatureComponent>(target, out var temperature) && temperature.HeatCapacity > 0;
+                if (!IsSyntheticTarget(target) && !HasMindshieldImplant(target))
+                    return false;
+                if (TryComp<TemperatureComponent>(target, out var temperature) && temperature.HeatCapacity > 0)
+                    return true;
+                return HasComp<BorgChassisComponent>(target) && HasComp<StaminaComponent>(target);
             case NetrunnerHackKind.BatteryDrain:
                 return TryGetDrainBattery(target, out device);
             default:
@@ -402,19 +405,18 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
         }
     }
 
-    private void OnExamineAudit(Entity<NetrunnerAuditComponent> ent, ref ExaminedEvent args)
+    private void OnForensicScanAudit(Entity<NetrunnerAuditComponent> ent, ref NetrunnerForensicScanEvent args)
     {
-        if (!args.IsInDetailsRange)
-            return;
         PruneAudit(ent.Comp);
-        if (ent.Comp.Entries.Count == 0)
-            return;
-        args.PushMarkup(Loc.GetString("fish-netrunner-audit-header"));
         foreach (var entry in ent.Comp.Entries)
         {
-            args.PushText(Loc.GetString("fish-netrunner-log-entry",
-                ("time", entry.Time.ToString(@"mm\:ss")), ("program", Loc.GetString(entry.Kind.GetLocId())),
-                ("target", entry.Target), ("result", Loc.GetString(entry.Success ? "fish-netrunner-log-success" : "fish-netrunner-log-failure"))));
+            if (!entry.Success)
+                continue;
+            args.Anomalies.Add(Loc.GetString("fish-netrunner-log-entry",
+                ("time", entry.Time.ToString(@"mm\:ss")),
+                ("program", Loc.GetString(entry.Kind.GetLocId())),
+                ("target", entry.Target),
+                ("result", Loc.GetString("fish-netrunner-log-success"))));
         }
     }
 
@@ -431,8 +433,14 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
                 _stamina.TakeStaminaDamage(target, ability.StaminaDamage, source: user, visual: false);
                 return true;
             case NetrunnerHackKind.ThermalSurge:
-                var body = Comp<TemperatureComponent>(target);
-                return _temperature.ChangeHeat((target, body), ability.TemperatureIncrease * body.HeatCapacity) > 0;
+                if (TryComp<TemperatureComponent>(target, out var body) && body.HeatCapacity > 0)
+                    return _temperature.ChangeHeat((target, body), ability.TemperatureIncrease * body.HeatCapacity, ignoreHeatResistance: true) > 0;
+                if (HasComp<BorgChassisComponent>(target) && HasComp<StaminaComponent>(target))
+                {
+                    _stamina.TakeStaminaDamage(target, ability.StaminaDamage, source: user, visual: false);
+                    return true;
+                }
+                return false;
             case NetrunnerHackKind.BatteryDrain:
                 return TryDrainBattery(target, device, ability.ChargeFraction);
             default:
@@ -463,7 +471,7 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
             return false;
         var charge = _battery.GetCharge(device);
         return _battery.UseCharge((device, null), Math.Min(charge.Charge,
-            charge.MaxCharge * Math.Clamp(fraction, 0, 0.25f))) != 0;
+            charge.MaxCharge * Math.Clamp(fraction, 0, 1f))) != 0;
     }
 
     private void OnValidateAudit(Entity<NetrunnerAuditComponent> ent, ref NetrunnerValidateHackEvent args)
@@ -474,7 +482,7 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
         args.Device = ent;
         foreach (var entry in ent.Comp.Entries)
         {
-            if (ent.Comp.Retention == null || entry.Time + ent.Comp.Retention > _timing.CurTime)
+            if (entry.Success && (ent.Comp.Retention == null || entry.Time + ent.Comp.Retention > _timing.CurTime))
             {
                 args.Allowed = true;
                 break;

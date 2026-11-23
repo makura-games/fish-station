@@ -97,7 +97,7 @@ public sealed partial class NetrunnerTest
             Assert.That(resources.Trace, Is.Zero);
             Assert.That(resources.ReadyAt, Is.LessThanOrEqualTo(SGameTiming.CurTime));
             var charge = SEntMan.System<SharedBatterySystem>().GetCharge(battery);
-            Assert.That(charge.Charge, Is.EqualTo(initialCharge - charge.MaxCharge * 0.2f).Within(0.01f));
+            Assert.That(charge.Charge, Is.EqualTo(initialCharge - charge.MaxCharge * 0.6f).Within(0.01f));
         });
     }
 
@@ -126,7 +126,7 @@ public sealed partial class NetrunnerTest
             system.TryBuyProgram((implant, resources), user, ability.ID);
             if (wearVisor)
             {
-                resources.NeuralLinks = 30;
+                resources.NeuralLinks = 19;
                 purchased = system.TryBuyVisor((implant, resources), user);
                 duplicateAccepted = system.TryBuyVisor((implant, resources), user);
                 if (SEntMan.System<SharedHandsSystem>().TryGetActiveItem((user, null), out var visor))

@@ -98,7 +98,7 @@ public sealed partial class NetrunnerTest
             Assert.That(resources.MaxRam, Is.EqualTo(18));
             Assert.That(resources.Ram, Is.EqualTo(12));
             var duration = SEntMan.System<NetrunnerSystem>().GetCastTime((implant, resources), SProtoMan.Index(NeuralOverload));
-            Assert.That(duration.TotalSeconds, Is.EqualTo(7).Within(0.001));
+            Assert.That(duration.TotalSeconds, Is.EqualTo(4.2).Within(0.001));
         });
     }
 
