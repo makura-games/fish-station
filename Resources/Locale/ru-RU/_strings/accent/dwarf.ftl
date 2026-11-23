@@ -742,8 +742,6 @@ accent-dwarf-words-388 = диск от ядерной боеголовки
 accent-dwarf-words-replace-388 = круглэшка ядрышнога уполномошэнья
 accent-dwarf-words-389 = оружейка
 accent-dwarf-words-replace-389 = боекомната
-accent-dwarf-words-390 = оружейная
-accent-dwarf-words-replace-390 = боекомната
 accent-dwarf-words-391 = оружейку
 accent-dwarf-words-replace-391 = боекомнату
 accent-dwarf-words-392 = оружейную
@@ -1004,4 +1002,6 @@ accent-dwarf-words-519 = нашёл
 accent-dwarf-words-replace-519 = откопынул
 accent-dwarf-words-520 = нашла
 accent-dwarf-words-replace-520 = откопынулэ
+accent-dwarf-words-521 = оружейная
+accent-dwarf-words-replace-521 = боекомната
 # Fish-end
