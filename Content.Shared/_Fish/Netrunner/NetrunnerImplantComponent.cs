@@ -19,7 +19,7 @@ public sealed partial class NetrunnerImplantComponent : Component
     /// <summary>Body temperature increase per RAM reserved by a normal activation.</summary>
     [DataField] public float HeatPerRam = 0.135f;
     /// <summary>Price of a physical cooldown accelerator in the private shop.</summary>
-    [DataField] public int VisorPrice = 19;
+    [DataField] public int VisorPrice = 26;
     /// <summary>Prevents duplicate physical visor purchases from one implant.</summary>
     [ViewVariables] public bool VisorPurchased;
     [DataField] public List<ProtoId<NetrunnerAbilityPrototype>> Abilities = new();

@@ -1,8 +1,11 @@
 using Content.Shared._Fish.Netrunner;
+using Content.Shared.Eye;
 using Content.Client.Eye;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.Graphics;
+using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.Netrunner;
 
@@ -12,7 +15,9 @@ public sealed partial class NetrunnerRemoteViewSystem : EntitySystem
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IEyeManager _eye = default!;
     [Dependency] private IOverlayManager _overlays = default!;
+    [Dependency] private IGameTiming _timing = default!;
     [Dependency] private EyeLerpingSystem _eyeLerping = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
     private IEye? _remoteEye;
     private EntityUid? _viewer;
 
@@ -28,6 +33,7 @@ public sealed partial class NetrunnerRemoteViewSystem : EntitySystem
     {
         base.FrameUpdate(frameTime);
         var user = _player.LocalEntity;
+        UpdateRemoteEyeVisibility(user);
         if (user is { } actor && TryComp<NetrunnerUserComponent>(actor, out var state)
             && state.RemoteEye is { } camera && TryComp<EyeComponent>(camera, out var cameraEye)
             && (MetaData(camera).Flags & MetaDataFlags.Detached) == 0 && cameraEye.Eye is { } eye)
@@ -44,6 +50,29 @@ public sealed partial class NetrunnerRemoteViewSystem : EntitySystem
             return;
         }
         RestoreEye();
+    }
+
+    private void UpdateRemoteEyeVisibility(EntityUid? localEntity)
+    {
+        var curTime = _timing.CurTime;
+        var isGhost = localEntity is { } local
+            && TryComp<EyeComponent>(local, out var localEye)
+            && (localEye.VisibilityMask & (int) VisibilityFlags.Ghost) != 0;
+        var query = EntityQueryEnumerator<NetrunnerRemoteEyeComponent, SpriteComponent>();
+        while (query.MoveNext(out var uid, out var viewer, out var sprite))
+        {
+            var isCasting = viewer.CastEnd > viewer.CastStart && curTime < viewer.CastEnd;
+            var isOwnEye = localEntity != null && viewer.User == localEntity.Value;
+            var visible = isCasting || isGhost || isOwnEye;
+            if (sprite.Visible != visible)
+                _sprite.SetVisible((uid, sprite), visible);
+
+            var targetColor = isOwnEye && !isCasting
+                ? Color.White.WithAlpha(0.4f)
+                : Color.White;
+            if (sprite.Color != targetColor)
+                _sprite.SetColor((uid, sprite), targetColor);
+        }
     }
 
     public override void Shutdown()

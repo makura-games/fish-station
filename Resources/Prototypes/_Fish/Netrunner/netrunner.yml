@@ -102,6 +102,8 @@
         Heat: 0.9
   - type: StaminaResistance
     damageCoefficient: 0.95
+  - type: CyberpsychosisResistance
+    damageCoefficient: 0.6
 
 - type: entity
   id: FishClothingEyesNetrunnerVisor
@@ -140,6 +142,7 @@
     layer: 16
   - type: Sprite
     sprite: _Sunrise/Abductor/Structures/Machines/abductor_camera_console.rsi
+    visible: false
     noRot: true
     drawdepth: Ghosts
     layers:

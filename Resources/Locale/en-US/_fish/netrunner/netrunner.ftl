@@ -22,6 +22,7 @@ fish-netrunner-headset-warning = Your headset loses its radio connection!
 fish-netrunner-sensors-warning = Your suit sensors lose their connection!
 fish-netrunner-trace-alert = Unusual network activity detected on the station network. Inspect cameras and device logs.
 fish-netrunner-trace-alert-location = Critical network anomaly! Signal source located { $position }. Inspect cameras and device logs.
+fish-netrunner-harvest-alert = Covert telemetry and station data harvesting detected across the network. Signal signatures match known NetRunner activity.
 fish-netrunner-audit-header = Network anomaly log:
 fish-netrunner-forensic-anomalies = Network anomalies:
 fish-netrunner-log-entry = { $time }: { $program } — { $target } ({ $result })
@@ -225,7 +226,7 @@ fish-netrunner-manual-content =
 
     { "[head=2]" }2. Hardware expansions[/head]
     Three memory expansions each add [bold]2 RAM[/bold] (max [bold]18 RAM[/bold]). Three activation accelerators each remove [bold]10%[/bold] of base activation time (max [bold]30%[/bold]). Successive upgrades of the same type cost [bold]6, 10 and 14 links[/bold]. Added memory starts empty and fills during recovery. Neural overload always requires at least 4 seconds to activate.
-    The [bold]netrunner visor[/bold] costs [bold]19 links[/bold] (one order per implant). Worn over the eyes, it divides cooldowns by 1.5, doubles body heating per activation and outlines genuine mindshield wearers with a blue-cyan contour.
+    The [bold]netrunner visor[/bold] costs [bold]26 links[/bold] (one order per implant). Worn over the eyes, it divides cooldowns by 1.5, doubles body heating per activation and outlines genuine mindshield wearers, cyborgs, and IPCs with a blue-cyan contour.
 
     { "[head=2]" }3. Local operation[/head]
     Select a purchased script and a visible compatible target (6 m range for infrastructure, 5 m for most combat scripts, 6 m center for area blackout). Walls block local connections.
@@ -242,7 +243,7 @@ fish-netrunner-manual-content =
     { "[bold]" }Infrastructure:[/bold] Open airlock opens a powered unbolted airlock; Hold airlock prevents opening a closed airlock for 12 s without changing bolts. Both actions are recorded in the airlock's access log (readable with a log probe). Disrupt camera disables a camera for 20 s. Area blackout suppresses powered lights in a 7 m radius for 5 minutes.
     { "[bold]" }Covert:[/bold] Disrupt suit sensors (20 s), Disrupt headset (15 s), and Buffer purge (clears successful intervention traces on the target; airlock records also expire over time).
     { "[bold]" }Combat:[/bold] Short circuit (electric damage and 5 s knockdown on borgs or IPCs), Motor interference (35% slow for 7 s on borgs, IPCs or mindshielded), Optical glitch (3 s blindness on borgs, IPCs or HUD glasses), Lock energy weapon (6 s), Grip shock, Neural static (30 stamina damage), Thermal surge (+12 °C ignoring heat resistance, or 20 stamina damage on borgs), Battery drain (up to 30% on borgs, IPCs or energy weapons).
-    { "[bold]" }Neural overload[/bold] requires a genuine mindshield: 6 s activation, 6 s paralysis, 10 RAM, 90% trace, 180 s cooldown, with no target or channel alerts.
+    { "[bold]" }Neural overload[/bold] requires a genuine mindshield: 6 s activation, 6 s paralysis, 10 RAM, 90% trace, 150 s cooldown, with no target or channel alerts.
 
     { "[head=2]" }7. Operating risks[/head]
     Your body remains vulnerable in the chair. Every activation heats the body by [bold]0.135 °C per RAM[/bold] normally and [bold]0.27 °C per RAM[/bold] with the visor. Interruption does not undo heat already applied. Use a [bold]coolant pack[/bold] to rapidly cool the body down to 20 °C.

@@ -80,7 +80,7 @@
   traceCost: 90
   castTime: 6
   duration: 6
-  cooldown: 180
+  cooldown: 150
   range: 6
   allowOverload: false
 

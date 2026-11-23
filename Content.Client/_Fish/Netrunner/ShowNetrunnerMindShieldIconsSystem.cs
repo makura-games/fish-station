@@ -1,17 +1,19 @@
 using Content.Client.Graphics;
 using Content.Client.Overlays;
 using Content.Client.Viewport;
+using Content.Shared._Fish.Ipc;
 using Content.Shared._Fish.Netrunner;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Mindshield.Components;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Silicons.Borgs.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client._Fish.Netrunner;
 
-/// <summary>Outlines creatures carrying a genuine mindshield implant with a light-sensitive blue-cyan contour while wearing the netrunner visor.</summary>
+/// <summary>Outlines mindshield wearers, cyborgs, and IPCs with a light-sensitive blue-cyan contour while wearing the netrunner visor.</summary>
 public sealed partial class ShowNetrunnerMindShieldIconsSystem : EquipmentHudSystem<ShowNetrunnerMindShieldIconsComponent>
 {
     private static readonly ProtoId<ShaderPrototype> OutlineShader = "FishNetrunnerMindShieldOutline";
@@ -64,22 +66,25 @@ public sealed partial class ShowNetrunnerMindShieldIconsSystem : EquipmentHudSys
         var shader = GetShader(renderScale);
 
         _current.Clear();
-        var query = EntityQueryEnumerator<MindShieldStatusComponent, SpriteComponent>();
-        while (query.MoveNext(out var uid, out var status, out var sprite))
+        var mindshieldQuery = EntityQueryEnumerator<MindShieldStatusComponent, SpriteComponent>();
+        while (mindshieldQuery.MoveNext(out var uid, out var status, out var sprite))
         {
-            if (!status.IsMindshielded || !_mobStateQuery.HasComp(uid))
-                continue;
+            if (status.IsMindshielded && _mobStateQuery.HasComp(uid))
+                OutlineTarget(uid, sprite, shader);
+        }
 
-            _current.Add(uid);
-            _outlined.Add(uid);
+        var borgQuery = EntityQueryEnumerator<BorgChassisComponent, SpriteComponent>();
+        while (borgQuery.MoveNext(out var uid, out _, out var sprite))
+        {
+            if (_mobStateQuery.HasComp(uid))
+                OutlineTarget(uid, sprite, shader);
+        }
 
-            if (_sprite.TryGetPostShader((uid, sprite), PostShaderId, out var existing) && existing.Shader == shader)
-                continue;
-
-            _sprite.SetPostShader((uid, sprite), new SpriteComponent.PostShaderArgs(PostShaderId, shader)
-            {
-                After = ContentPostShaderIds.AfterBaseEffects,
-            });
+        var ipcQuery = EntityQueryEnumerator<FishIpcComponent, SpriteComponent>();
+        while (ipcQuery.MoveNext(out var uid, out _, out var sprite))
+        {
+            if (_mobStateQuery.HasComp(uid))
+                OutlineTarget(uid, sprite, shader);
         }
 
         if (_outlined.Count > _current.Count)
@@ -98,6 +103,20 @@ public sealed partial class ShowNetrunnerMindShieldIconsSystem : EquipmentHudSys
                 _outlined.Remove(uid);
             }
         }
+    }
+
+    private void OutlineTarget(EntityUid uid, SpriteComponent sprite, ShaderInstance shader)
+    {
+        _current.Add(uid);
+        _outlined.Add(uid);
+
+        if (_sprite.TryGetPostShader((uid, sprite), PostShaderId, out var existing) && existing.Shader == shader)
+            return;
+
+        _sprite.SetPostShader((uid, sprite), new SpriteComponent.PostShaderArgs(PostShaderId, shader)
+        {
+            After = ContentPostShaderIds.AfterBaseEffects,
+        });
     }
 
     private void ClearOutlines()

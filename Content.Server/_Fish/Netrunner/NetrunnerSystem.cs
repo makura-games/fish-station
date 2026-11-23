@@ -2,6 +2,7 @@ using Content.Server.Administration.Logs;
 using Content.Server.Pinpointer;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.SurveillanceCamera;
+using Content.Shared._Fish.Cyberpsychosis;
 using Content.Shared._Fish.Netrunner;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
@@ -77,11 +78,13 @@ public sealed partial class NetrunnerSystem : EntitySystem
     [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedTemperatureSystem _temperature = default!;
+    [Dependency] private SharedCyberpsychosisSystem _cyberpsychosis = default!;
     [Dependency] private EntityQuery<TemperatureComponent> _temperatureQuery = default!;
 
     private const float RemoteViewVisibilityRange = 12f;
 
     private readonly Dictionary<EntityUid, TimeSpan> _stationAlerts = new();
+    private readonly Dictionary<EntityUid, TimeSpan> _stationHarvestAlerts = new();
     private readonly Dictionary<EntityUid, ICommonSession> _remoteSessions = new();
     private TimeSpan _nextUpdate;
 
@@ -180,6 +183,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
         while (query.MoveNext(out var uid, out var implant))
             EndRemoteSession(new Entity<NetrunnerImplantComponent>(uid, implant));
         _stationAlerts.Clear();
+        _stationHarvestAlerts.Clear();
         _remoteSessions.Clear();
     }
 
@@ -336,6 +340,8 @@ public sealed partial class NetrunnerSystem : EntitySystem
         ent.Comp.RecoverAt = _timing.CurTime + castTime + (ent.Comp.DebugMode ? TimeSpan.Zero : ent.Comp.RecoveryDelay);
         AddTrace(ent, ability.TraceCost * 0.2f, ability.Kind == NetrunnerHackKind.NeuralOverload);
         ApplyActivationHeat(ent, user, ability);
+        if (!ent.Comp.DebugMode)
+            _cyberpsychosis.TryModifyCyberpsychosis(user, 5f, out _);
         // Fish-edit: Мгновенное завершение обрабатываем после фиксации перезарядки и следа.
         if (!_doAfter.IsRunning(doAfter))
             OnHackFinished(ent, ref finished);
@@ -570,6 +576,8 @@ public sealed partial class NetrunnerSystem : EntitySystem
                     implant.NeuralLinks++;
                     implant.PassiveLinks++;
                     implant.NextLinkAt = _timing.CurTime + cooling.LinkInterval;
+                    if (implant.PassiveLinks == 9)
+                        NotifyDataHarvest(ent);
                 }
             }
             else if (cooling != null)
@@ -613,6 +621,21 @@ public sealed partial class NetrunnerSystem : EntitySystem
                 ("position", FormattedMessage.RemoveMarkupPermissive(_navMap.GetNearestBeaconString(source))))
             : Loc.GetString("fish-netrunner-trace-alert");
         _radio.SendRadioMessage(station, message, channel, source);
+    }
+
+    private void NotifyDataHarvest(Entity<NetrunnerImplantComponent> ent)
+    {
+        if (ent.Comp.User is not { } user)
+            return;
+        var source = ent.Comp.Chair ?? user;
+        if (_station.GetOwningStation(source) is not { } station)
+            return;
+        if (_stationHarvestAlerts.GetValueOrDefault(station) > _timing.CurTime)
+            return;
+        if (!ProtoMan.TryIndex(AlertRadioChannel, out var channel))
+            return;
+        _stationHarvestAlerts[station] = _timing.CurTime + TimeSpan.FromSeconds(120);
+        _radio.SendRadioMessage(station, Loc.GetString("fish-netrunner-harvest-alert"), channel, source);
     }
 
     private void RemoveUser(Entity<NetrunnerImplantComponent> ent)

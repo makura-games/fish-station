@@ -126,7 +126,7 @@ public sealed partial class NetrunnerTest
             system.TryBuyProgram((implant, resources), user, ability.ID);
             if (wearVisor)
             {
-                resources.NeuralLinks = 19;
+                resources.NeuralLinks = 26;
                 purchased = system.TryBuyVisor((implant, resources), user);
                 duplicateAccepted = system.TryBuyVisor((implant, resources), user);
                 if (SEntMan.System<SharedHandsSystem>().TryGetActiveItem((user, null), out var visor))
