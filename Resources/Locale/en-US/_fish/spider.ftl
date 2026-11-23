@@ -1,5 +1,5 @@
 ent-FishActionSpiderLayEgg = lay spider egg
-    .desc = Lay an egg sac on spider web using hunger. A healthy giant spider hatches after 4 minutes.
+    .desc = Lay an egg sac anchored to spider web.
     .suffix = Fish
 
 ent-FishEggGiantSpiderAngry = spider egg

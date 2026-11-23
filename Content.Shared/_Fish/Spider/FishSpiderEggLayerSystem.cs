@@ -86,7 +86,9 @@ public sealed partial class FishSpiderEggLayerSystem : EntitySystem
     }
 
     /// <summary>
-    /// Завершает откладывание яйца: списывает голод и создаёт прикреплённое яйцо на тайле с паутиной.
+    /// Завершает откладывание яйца: списывает <see cref="FishSpiderEggLayerComponent.HungerCost"/> голода
+    /// (с допустимой частичной оплатой — значение зажимается нижней границей в <see cref="SatiationSystem"/>)
+    /// и создаёт прикреплённое яйцо на тайле с паутиной.
     /// </summary>
     public bool TryLayEgg(Entity<FishSpiderEggLayerComponent> ent)
     {
@@ -96,6 +98,7 @@ public sealed partial class FishSpiderEggLayerSystem : EntitySystem
         if (!_satiationQuery.TryComp(ent, out var satiation))
             return false;
 
+        // Допускается частичная оплата: при сытости >= MinHungerRatio списываем HungerCost (с зажатием до минимума в SatiationSystem).
         _satiation.ModifyValue((ent, satiation), SatiationSystem.Hunger, -ent.Comp.HungerCost);
 
         if (_net.IsServer)
@@ -116,7 +119,10 @@ public sealed partial class FishSpiderEggLayerSystem : EntitySystem
     }
 
     /// <summary>
-    /// Проверяет, может ли паук отложить яйцо в текущей позиции.
+    /// Проверяет, может ли паук отложить яйцо в текущей позиции:
+    /// нахождение на сетке, наличие паутины на тайле, отсутствие другого яйца на этом тайле
+    /// и текущая доля сытости не ниже <see cref="FishSpiderEggLayerComponent.MinHungerRatio"/>
+    /// (допускается частичная оплата <see cref="FishSpiderEggLayerComponent.HungerCost"/>).
     /// </summary>
     public bool CanLayEgg(Entity<FishSpiderEggLayerComponent> ent, bool quiet = false)
     {
@@ -142,6 +148,7 @@ public sealed partial class FishSpiderEggLayerSystem : EntitySystem
             return false;
         }
 
+        // По правилу частичной оплаты блокируем создание яйца только если текущая сытость ниже MinHungerRatio (20%).
         if (!_satiationQuery.TryComp(ent, out var satiation) ||
             _satiation.GetValueOrNull((ent, satiation), SatiationSystem.Hunger) is not { } currentHunger ||
             _satiation.GetMaximumValue((ent, satiation), SatiationSystem.Hunger) is not { } maxHunger ||

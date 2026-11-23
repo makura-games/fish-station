@@ -32,13 +32,16 @@ public sealed partial class FishSpiderEggLayerComponent : Component
     public EntProtoId EggPrototype = "FishEggGiantSpiderAngry";
 
     /// <summary>
-    /// Количество голода, расходуемое на создание одного яйца.
+    /// Количество голода, списываемое при создании одного яйца.
+    /// Допускается частичная оплата: откладывание разрешено при сытости не ниже <see cref="MinHungerRatio"/>,
+    /// даже если текущий голод меньше <see cref="HungerCost"/> (итоговое значение ограничивается нижней границей <c>SatiationSystem</c>).
     /// </summary>
     [DataField]
     public float HungerCost = 40f;
 
     /// <summary>
     /// Минимальная доля сытости (от 0 до 1), ниже которой невозможно отложить яйцо.
+    /// Проверяется именно текущий уровень сытости без предварительного вычитания <see cref="HungerCost"/>.
     /// </summary>
     [DataField]
     public float MinHungerRatio = 0.2f;
