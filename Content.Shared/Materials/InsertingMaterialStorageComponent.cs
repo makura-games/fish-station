@@ -3,7 +3,7 @@ using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared.Materials;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true), AutoGenerateComponentPause] // Fish-edit: обновляем слой и при повторной загрузке
 public sealed partial class InsertingMaterialStorageComponent : Component
 {
     /// <summary>
@@ -16,4 +16,9 @@ public sealed partial class InsertingMaterialStorageComponent : Component
 
     [ViewVariables, AutoNetworkedField]
     public Color? MaterialColor;
+
+    // Fish-start: непрозрачность листа без учёта его кромки.
+    [ViewVariables, AutoNetworkedField]
+    public float FishIntakeOpacity = 1f;
+    // Fish-end
 }

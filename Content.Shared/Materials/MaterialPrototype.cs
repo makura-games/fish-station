@@ -42,6 +42,11 @@ namespace Content.Shared.Materials
         [DataField]
         public LocId Unit = "materials-unit-sheet";
 
+        // Fish-start: прозрачность середины листа в приёмнике станка.
+        [DataField]
+        public float FishIntakeOpacity { get; private set; } = 1f;
+        // Fish-end
+
         [DataField]
         public Color Color { get; private set; } = Color.Gray;
 

@@ -3,6 +3,7 @@
   stackEntity: SheetGlass1
   name: materials-glass
   icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: glass }
+  fishIntakeOpacity: 0.38 # Fish-edit: корпус станка просвечивает через стекло
   color: "#a8ccd7"
   price: 0.15 # $15 for one unit
 
@@ -11,6 +12,7 @@
   stackEntity: SheetRGlass1
   name: materials-reinforced-glass
   icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: rglass }
+  fishIntakeOpacity: 0.38 # Fish-edit: корпус станка просвечивает через стекло
   color: "#549bb0"
   price: 0.225 # 1-0.5 mix of glass and metal.
 
@@ -19,6 +21,7 @@
   stackEntity: SheetPGlass1
   name: materials-plasma-glass
   icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: pglass }
+  fishIntakeOpacity: 0.38 # Fish-edit: корпус станка просвечивает через стекло
   color: "#b35989"
   price: 0.50 # 1-1 mix of plasma and glass.
 
@@ -27,6 +30,7 @@
   stackEntity: SheetRPGlass1
   name: materials-reinforced-plasma-glass
   icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: rpglass }
+  fishIntakeOpacity: 0.38 # Fish-edit: корпус станка просвечивает через стекло
   color: "#8c4069"
   price: 0.575 # 1-1-0.5 mix of plasma, glass, and metal.
 
@@ -35,6 +39,7 @@
   stackEntity: SheetClockworkGlass1
   name: materials-clockwork-glass
   icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: cglass }
+  fishIntakeOpacity: 0.38 # Fish-edit: корпус станка просвечивает через стекло
   color: "#9b6f07"
   price: 0.225 # average of glass and brass.
 
@@ -43,6 +48,7 @@
   stackEntity: SheetUGlass1
   name: materials-uranium-glass
   icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: uglass }
+  fishIntakeOpacity: 0.38 # Fish-edit: корпус станка просвечивает через стекло
   color: "#3cab38"
   price: 1.0 # 1-1 mix of uranium and glass.
 
@@ -51,5 +57,6 @@
   stackEntity: SheetRUGlass1
   name: materials-reinforced-uranium-glass
   icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: ruglass }
+  fishIntakeOpacity: 0.38 # Fish-edit: корпус станка просвечивает через стекло
   color: "#2d872a"
   price: 1.075 # 2-2-1 mix of uranium, glass, and metal.
