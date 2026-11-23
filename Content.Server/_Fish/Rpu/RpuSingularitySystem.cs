@@ -18,8 +18,10 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.GameTicking;
 using Content.Shared.Gibbing;
+using Content.Shared.Ghost.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Throwing;
 using Content.Shared.Wires;
 using Content.Shared.Slippery;
@@ -42,6 +44,9 @@ public sealed partial class RpuSingularitySystem : EntitySystem
     [Dependency] private RpuSystem _rpu = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+
+    private EntityQuery<GhostComponent> _ghostQuery;
 
     private static readonly TimeSpan CaretakerMemory = TimeSpan.FromMinutes(20);
 
@@ -86,6 +91,8 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         SubscribeLocalEvent<TeslaEnergyBallComponent, ComponentRemove>(OnWellGone);
 
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
+
+        _ghostQuery = GetEntityQuery<GhostComponent>();
     }
 
     private void OnRoundStarted(RoundStartedEvent args)
@@ -198,28 +205,36 @@ public sealed partial class RpuSingularitySystem : EntitySystem
 
     private void TrackNewWells()
     {
+        // Сначала регистрируем все колодцы, потом связываем оборудование. Если между
+        // опросами появились два колодца, привязка после первого не должна забирать
+        // ожидающие касания до того, как в выбор ближайшего попадёт второй.
+        var linkedAny = false;
+
         var query = EntityQueryEnumerator<SingularityComponent>();
         while (query.MoveNext(out var uid, out _))
-            Track(uid);
+            linkedAny |= Track(uid);
 
         var tesla = EntityQueryEnumerator<TeslaEnergyBallComponent>();
         while (tesla.MoveNext(out var uid, out _))
-            Track(uid);
+            linkedAny |= Track(uid);
+
+        if (linkedAny)
+            LinkNearbyEquipment();
     }
 
-    private void Track(EntityUid uid)
+    /// <returns>True, если колодец был обнаружен впервые.</returns>
+    private bool Track(EntityUid uid)
     {
         if (_wells.ContainsKey(uid))
-            return;
+            return false;
 
-        var state = new WellState
+        _wells[uid] = new WellState
         {
             Spawn = _transform.GetMoverCoordinates(uid),
             UnattendedSince = _timing.CurTime,
         };
 
-        _wells[uid] = state;
-        LinkNearbyEquipment();
+        return true;
     }
 
     /// <summary>
@@ -321,6 +336,11 @@ public sealed partial class RpuSingularitySystem : EntitySystem
         foreach (var session in _players.Sessions)
         {
             if (session.Status != SessionStatus.InGame || session.AttachedEntity is not { } mob)
+                continue;
+
+            // Призрак и другой наблюдатель не обслуживают установку: их присутствие
+            // не должно откладывать нарушение «оставлена без присмотра».
+            if (_ghostQuery.HasComp(mob) || !_mobState.IsAlive(mob))
                 continue;
 
             var position = _transform.GetMapCoordinates(mob);
