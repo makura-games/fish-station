@@ -17,7 +17,7 @@ public abstract partial class SharedSurveillanceCameraSystem : EntitySystem
 
     private void AddVerbs(EntityUid uid, SurveillanceCameraComponent component, GetVerbsEvent<AlternativeVerb> args)
     {
-        if (!args.CanInteract || !args.CanComplexInteract)
+        if (!args.CanAccess || !args.CanInteract || !args.CanComplexInteract) // Fish-edit: Запрещаем настройку камеры вне физической досягаемости.
             return;
 
         if (component.NameSet && component.NetworkSet)

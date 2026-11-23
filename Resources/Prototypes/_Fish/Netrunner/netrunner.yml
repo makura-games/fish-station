@@ -79,7 +79,7 @@
     - id: FishNetrunnerImplanter
     - id: FishNetrunnerChairCircuitboard
     - id: FishNetrunnerManual
-    - id: FishCoolantPack3
+    - id: FishCoolantPack1
 
 - type: entity
   id: FishClothingOuterCyberpunkJacket
@@ -267,15 +267,6 @@
     count: 10
   - type: StackPrice
     price: 10
-
-- type: entity
-  parent: FishCoolantPack
-  id: FishCoolantPack3
-  suffix: Fish
-  components:
-  - type: Stack
-    stackType: FishCoolantPack
-    count: 3
 
 - type: entity
   parent: FishCoolantPack

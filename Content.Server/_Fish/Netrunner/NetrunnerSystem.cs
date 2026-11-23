@@ -1,4 +1,5 @@
 using Content.Server.Administration.Logs;
+using Content.Server.Pinpointer;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.SurveillanceCamera;
 using Content.Shared._Fish.Netrunner;
@@ -25,6 +26,7 @@ using Content.Shared.Physics;
 using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Power.EntitySystems;
+using Content.Shared.Radio;
 using Content.Shared.Station;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.Stunnable;
@@ -38,13 +40,17 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 
 namespace Content.Server._Fish.Netrunner;
 
 /// <summary>Authorizes netrunner sessions and owns all program/resource transactions.</summary>
 public sealed partial class NetrunnerSystem : EntitySystem
 {
+    private static readonly ProtoId<RadioChannelPrototype> AlertRadioChannel = "Binary";
+
     [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private NavMapSystem _navMap = default!;
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
@@ -514,7 +520,8 @@ public sealed partial class NetrunnerSystem : EntitySystem
             var connected = implant.Connection == null && implant.Chair != null && CanUseChair(ent);
             var cooling = connected ? Comp<NetrunnerChairComponent>(implant.Chair!.Value) : null;
             var traceRate = cooling?.TracePerSecond ?? implant.TracePerSecond;
-            implant.Trace = Math.Max(0, implant.Trace - traceRate * (float)elapsed);
+            if (implant.Pending == null)
+                implant.Trace = Math.Max(0, implant.Trace - traceRate * (float)elapsed);
             if (implant.Trace < 25) implant.TraceTier = 0;
             else if (implant.Trace < 55) implant.TraceTier = Math.Min(implant.TraceTier, 1);
             else if (implant.Trace < 85) implant.TraceTier = Math.Min(implant.TraceTier, 2);
@@ -580,27 +587,32 @@ public sealed partial class NetrunnerSystem : EntitySystem
         if (ent.Comp.DebugMode)
             return;
         ent.Comp.Trace = Math.Clamp(ent.Comp.Trace + amount, 0, 100);
-        var tier = ent.Comp.Trace >= 90 ? 3 : ent.Comp.Trace >= 60 ? 2 : ent.Comp.Trace >= 30 ? 1 : 0;
+        var tier = ent.Comp.Trace >= 89.9f ? 3 : ent.Comp.Trace >= 59.9f ? 2 : ent.Comp.Trace >= 29.9f ? 1 : 0;
         if (tier > ent.Comp.TraceTier)
         {
             ent.Comp.TraceTier = tier;
             if (!silent)
-                NotifyStation(ent, false);
+                NotifyStation(ent, tier >= 3);
         }
     }
 
-    private void NotifyStation(Entity<NetrunnerImplantComponent> ent, bool neural)
+    private void NotifyStation(Entity<NetrunnerImplantComponent> ent, bool revealLocation)
     {
-        if (ent.Comp.User is not { } user || _station.GetOwningStation(user) is not { } station)
+        if (ent.Comp.User is not { } user)
             return;
-        if (!neural && _stationAlerts.GetValueOrDefault(station) > _timing.CurTime)
+        var source = ent.Comp.Chair ?? user;
+        if (_station.GetOwningStation(source) is not { } station)
+            return;
+        if (!revealLocation && _stationAlerts.GetValueOrDefault(station) > _timing.CurTime)
+            return;
+        if (!ProtoMan.TryIndex(AlertRadioChannel, out var channel))
             return;
         _stationAlerts[station] = _timing.CurTime + TimeSpan.FromSeconds(30);
-        var source = ent.Comp.Chair ?? user;
-        var position = _transform.GetMapCoordinates(source).Position;
-        var message = Loc.GetString(neural ? "fish-netrunner-neural-alert" : "fish-netrunner-trace-alert",
-            ("x", (int)MathF.Floor(position.X / 16)), ("y", (int)MathF.Floor(position.Y / 16)));
-        _radio.SendRadioMessage(station, message, "Security", source);
+        var message = revealLocation
+            ? Loc.GetString("fish-netrunner-trace-alert-location",
+                ("position", FormattedMessage.RemoveMarkupOrThrow(_navMap.GetNearestBeaconString(source))))
+            : Loc.GetString("fish-netrunner-trace-alert");
+        _radio.SendRadioMessage(station, message, channel, source);
     }
 
     private void RemoveUser(Entity<NetrunnerImplantComponent> ent)

@@ -285,14 +285,14 @@ public abstract partial class SharedPoweredLightSystem : EntitySystem
             return;
         }
 
-        // Fish-start
+        // Fish-start: Проверка временного подавления светильника нетраннером.
         var enabledEvent = new GetPoweredLightEnabledEvent(light.On);
         RaiseLocalEvent(uid, ref enabledEvent);
         // Fish-end
         switch (lightBulb.State)
         {
             case LightBulbState.Normal:
-                if (powerReceiver.Powered && enabledEvent.Enabled) // Fish-edit
+                if (powerReceiver.Powered && enabledEvent.Enabled) // Fish-edit: Учитываем подавление светильника.
                 {
                     SetLight(uid, true, lightBulb.Color, light, lightBulb.LightRadius, lightBulb.LightEnergy, lightBulb.LightSoftness);
                     _appearance.SetData(uid, PoweredLightVisuals.BulbState, PoweredLightState.On, appearance);
@@ -320,7 +320,7 @@ public abstract partial class SharedPoweredLightSystem : EntitySystem
                 break;
         }
 
-        powerReceiver.Load = (enabledEvent.Enabled && lightBulb.State == LightBulbState.Normal) ? lightBulb.PowerUse : 0; // Fish-edit
+        powerReceiver.Load = (enabledEvent.Enabled && lightBulb.State == LightBulbState.Normal) ? lightBulb.PowerUse : 0; // Fish-edit: Сбрасываем нагрузку при подавлении.
     }
 
     /// <summary>

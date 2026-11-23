@@ -20,8 +20,8 @@ fish-netrunner-overloaded = Your neural interface overheats!
 fish-netrunner-neural-warning = Your mindshield implant heats up. External interference detected!
 fish-netrunner-headset-warning = Your headset loses its radio connection!
 fish-netrunner-sensors-warning = Your suit sensors lose their connection!
-fish-netrunner-trace-alert = Unusual network activity detected near sector ({ $x }, { $y }). Inspect camera and device logs.
-fish-netrunner-neural-alert = Neural interference detected near sector ({ $x }, { $y }). Check surveillance cameras.
+fish-netrunner-trace-alert = Unusual network activity detected on the station network. Inspect cameras and device logs.
+fish-netrunner-trace-alert-location = Critical network anomaly! Signal source located { $position }. Inspect cameras and device logs.
 fish-netrunner-audit-header = Network anomaly log:
 fish-netrunner-log-entry = { $time }: { $program } — { $target } ({ $result })
 fish-netrunner-log-success = executed
@@ -170,10 +170,6 @@ ent-FishCoolantPack = coolant pack
     .desc = A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
     .suffix = Fish
 
-ent-FishCoolantPack3 = coolant pack
-    .desc = A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
-    .suffix = Fish
-
 ent-FishCoolantPack1 = coolant pack
     .desc = A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
     .suffix = Fish
@@ -224,7 +220,7 @@ fish-netrunner-manual-content =
     Thank you for purchasing the [bold]Neural Terminal[/bold] kit from [bold]Cybersun Industries LLC[/bold]!
 
     { "[head=2]" }1. Contents and installation[/head]
-    The kit includes an implanter, a neural interface chair board, 3 coolant packs, this holographic manual, and a corporate jacket (delivered separately from the box). Metal, cable, manipulators and power must be obtained separately. Install the implant and invoke the neural terminal interface. A new implant starts with no purchased scripts and receives [bold]12 neural links[/bold] once. Open [bold]Script shop[/bold] to download programs and expansions into quick access.
+    The kit includes an implanter, a neural interface chair board, a coolant pack, this holographic manual, and a corporate jacket (delivered separately from the box). Metal, cable, manipulators and power must be obtained separately. Install the implant and invoke the neural terminal interface. A new implant starts with no purchased scripts and receives [bold]12 neural links[/bold] once. Open [bold]Script shop[/bold] to download programs and expansions into quick access.
 
     { "[head=2]" }2. Hardware expansions[/head]
     Three memory expansions each add [bold]2 RAM[/bold] (max [bold]18 RAM[/bold]). Three activation accelerators each remove [bold]10%[/bold] of base activation time (max [bold]30%[/bold]). Successive upgrades of the same type cost [bold]6, 10 and 14 links[/bold]. Added memory starts empty and fills during recovery. Neural overload always requires at least 6 seconds to activate.
@@ -249,4 +245,4 @@ fish-netrunner-manual-content =
 
     { "[head=2]" }7. Operating risks[/head]
     Your body remains vulnerable in the chair. Every activation heats the body by [bold]0.135 °C per RAM[/bold] normally and [bold]0.27 °C per RAM[/bold] with the visor. Interruption does not undo heat already applied. Use a [bold]coolant pack[/bold] to rapidly cool the body down to 20 °C.
-    Some scripts allow up to 4 RAM deficit (RAM stops at 0 while the deficit and rapid bursts cause bleeding, brief paralysis and extra trace). Trace thresholds of 30, 60 and 90% may alert security (except neural overload). Cybersun Industries LLC does not guarantee concealment during combat use.
+    Some scripts allow up to 4 RAM deficit (RAM stops at 0 while the deficit and rapid bursts cause bleeding, brief paralysis and extra trace). Trace thresholds of 30 and 60% may broadcast warnings on the binary channel, while reaching 90% also reveals the operator's or chair's nearest beacon location (except neural overload). Cybersun Industries LLC does not guarantee concealment during combat use.

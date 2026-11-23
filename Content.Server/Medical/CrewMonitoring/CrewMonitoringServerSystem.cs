@@ -107,17 +107,4 @@ public sealed partial class CrewMonitoringServerSystem : EntitySystem
     {
         component.SensorStatus.Clear();
     }
-
-    // Fish-start: Отзыв записи подавленного датчика костюма со всех серверов мониторинга экипажа.
-    /// <summary>Removes a sensor entry by its device network address so stale coordinates are no longer broadcast.</summary>
-    public void RemoveSensorStatus(string address)
-    {
-        var servers = EntityQueryEnumerator<CrewMonitoringServerComponent>();
-        while (servers.MoveNext(out var id, out var server))
-        {
-            if (server.SensorStatus.Remove(address) && _singletonServerSystem.IsActiveServer(id))
-                BroadcastSensorStatus(id, server);
-        }
-    }
-    // Fish-end
 }
