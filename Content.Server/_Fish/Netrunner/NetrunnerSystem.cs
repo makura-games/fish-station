@@ -455,7 +455,10 @@ public sealed partial class NetrunnerSystem : EntitySystem
         {
             if (success)
             {
-                RewardResearch(ent, pending.Device);
+                var researchedDevice = pending.AreaTargets is { Count: > 0 } areaTargets
+                    ? areaTargets[0]
+                    : pending.Device;
+                RewardResearch(ent, researchedDevice);
                 ApplyOverload(ent, user, deficit, ability.Kind == NetrunnerHackKind.NeuralOverload);
             }
             var name = Deleted(pending.Target) ? string.Empty : Name(pending.Target);

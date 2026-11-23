@@ -12,14 +12,14 @@ using Robust.Shared.Network;
 namespace Content.Shared._Fish.Netrunner;
 
 /// <summary>Predicted handling for stackable coolant packs that lower a character's body temperature down to 20 C.</summary>
-public sealed class NetrunnerCoolantSystem : EntitySystem
+public sealed partial class NetrunnerCoolantSystem : EntitySystem
 {
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedStackSystem _stack = default!;
-    [Dependency] private readonly SharedTemperatureSystem _temperature = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedStackSystem _stack = default!;
+    [Dependency] private SharedTemperatureSystem _temperature = default!;
     [Dependency] private EntityQuery<TemperatureComponent> _temperatureQuery = default!;
     [Dependency] private EntityQuery<MobStateComponent> _mobStateQuery = default!;
     [Dependency] private EntityQuery<StackComponent> _stackQuery = default!;

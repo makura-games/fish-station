@@ -123,17 +123,17 @@ public sealed partial class NetrunnerSystem
             EndRemoteSession(ent);
             return;
         }
+        if (!StartRemoteView(ent))
+        {
+            EndRemoteSession(ent);
+            return;
+        }
         if (!ent.Comp.DebugMode)
             ent.Comp.Ram = MathF.Max(0f, ent.Comp.Ram - config.ConnectionCost);
         ent.Comp.RecoverAt = _timing.CurTime + ent.Comp.RecoveryDelay;
         AddTrace(ent, config.ConnectionTrace);
         ent.Comp.NextConnectionCharge = _timing.CurTime + config.ChargeInterval;
         ent.Comp.NextLinkAt = _timing.CurTime + config.LinkInterval;
-        if (!StartRemoteView(ent))
-        {
-            EndRemoteSession(ent);
-            return;
-        }
         Publish(ent);
     }
 
@@ -144,8 +144,10 @@ public sealed partial class NetrunnerSystem
             && TryComp<NetrunnerChairComponent>(chair, out var config)
             && config.LifeStage < ComponentLifeStage.Stopping && Transform(chair).Anchored
             && _power.IsPowered((chair, null))
+            && _station.GetOwningStation(chair) is { } station
             && TryComp<BuckleComponent>(user, out var buckle) && buckle.BuckledTo == chair
             && (ent.Comp.RemoteEye is not { } remote || !Terminating(remote)
+                && TryComp<NetrunnerRemoteEyeComponent>(remote, out var viewer) && viewer.Station == station
                 && TryComp<RelayInputMoverComponent>(user, out var relay) && relay.RelayEntity == remote);
     }
 
@@ -207,15 +209,30 @@ public sealed partial class NetrunnerSystem
 
     private void OnJumpToChair(Entity<NetrunnerImplantComponent> ent, ref NetrunnerJumpToChairActionEvent args)
     {
-        if (args.Handled || !IsOperator(ent, args.Performer) || !CanUseChair(ent)
-            || ent.Comp.Chair is not { } chair || ent.Comp.RemoteEye is not { } remote || Terminating(remote))
+        if (args.Handled)
             return;
+        if (TryJumpToChair(ent, args.Performer))
+            args.Handled = true;
+    }
+
+    /// <summary>Moves the mobile viewer back to the operator's connected netrunner chair.</summary>
+    public bool TryJumpToChair(Entity<NetrunnerImplantComponent> ent, EntityUid user)
+    {
+        if (!CanJumpToChair(ent, user) || ent.Comp.Chair is not { } chair || ent.Comp.RemoteEye is not { } remote)
+            return false;
         _transform.SetCoordinates(remote, Transform(chair).Coordinates);
         _transform.AttachToGridOrMap(remote);
-        _mover.ResetCamera(args.Performer);
+        _mover.ResetCamera(user);
         ent.Comp.Camera = null;
         Publish(ent);
-        args.Handled = true;
+        return true;
+    }
+
+    /// <summary>Checks whether the operator can jump the remote eye back to their connected chair.</summary>
+    public bool CanJumpToChair(Entity<NetrunnerImplantComponent> ent, EntityUid user)
+    {
+        return IsOperator(ent, user) && CanUseChair(ent)
+            && ent.Comp.Chair != null && ent.Comp.RemoteEye is { } remote && !Terminating(remote);
     }
 
     private void OnSelectCamera(Entity<NetrunnerImplantComponent> ent, ref NetrunnerSelectCameraMessage args)
@@ -299,12 +316,14 @@ public sealed partial class NetrunnerSystem
     public void EndRemoteSession(Entity<NetrunnerImplantComponent> ent)
     {
         var connection = ent.Comp.Connection;
+        var hadSession = connection != null || ent.Comp.Chair != null || ent.Comp.RemoteEye != null;
         ent.Comp.Connection = null;
         ent.Comp.Chair = null;
         StopRemoteView(ent);
         _doAfter.Cancel(connection);
         CancelHack(ent);
-        ent.Comp.RecoverAt = _timing.CurTime + ent.Comp.RecoveryDelay;
+        if (hadSession)
+            ent.Comp.RecoverAt = _timing.CurTime + ent.Comp.RecoveryDelay;
         Publish(ent);
     }
 

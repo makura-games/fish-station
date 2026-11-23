@@ -125,19 +125,28 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
         args.Applied = true;
     }
 
+    private bool CanDisableLight(Entity<PoweredLightComponent> ent)
+    {
+        return ent.Comp.On
+            && _light.GetBulb(ent) is { } bulb
+            && TryComp<LightBulbComponent>(bulb, out var lightBulb)
+            && lightBulb.State == LightBulbState.Normal
+            && _power.IsPowered((ent.Owner, null))
+            && !HasComp<NetrunnerDisruptionComponent>(ent);
+    }
+
     private void OnValidateLight(Entity<PoweredLightComponent> ent, ref NetrunnerValidateHackEvent args)
     {
         if (args.Ability.Kind != NetrunnerHackKind.DisableLight)
             return;
         args.Supported = true;
         args.Device = ent;
-        args.Allowed = ent.Comp.On && _light.GetBulb(ent) != null
-            && _power.IsPowered((ent.Owner, null)) && !HasComp<NetrunnerDisruptionComponent>(ent);
+        args.Allowed = CanDisableLight(ent);
     }
 
     private void OnApplyLight(Entity<PoweredLightComponent> ent, ref NetrunnerApplyHackEvent args)
     {
-        if (args.Ability.Kind != NetrunnerHackKind.DisableLight)
+        if (args.Ability.Kind != NetrunnerHackKind.DisableLight || !CanDisableLight(ent))
             return;
         Suppress(ent, args.Ability);
         _light.RefreshLight(ent);

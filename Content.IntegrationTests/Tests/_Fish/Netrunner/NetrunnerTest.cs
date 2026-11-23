@@ -283,7 +283,12 @@ public sealed partial class NetrunnerTest : GameTest
             or NetrunnerHackKind.LockWeapon or NetrunnerHackKind.LockAirlock)
         {
             await Pair.RunSeconds((float)ability.Duration.TotalSeconds + 0.5f);
-            await Server.WaitAssertion(() => Assert.That(SEntMan.HasComponent<NetrunnerDisruptionComponent>(device), Is.False));
+            await Server.WaitAssertion(() =>
+            {
+                Assert.That(SEntMan.HasComponent<NetrunnerDisruptionComponent>(device), Is.False);
+                if (ability.Kind == NetrunnerHackKind.OpticalGlitch)
+                    Assert.That(SEntMan.GetComponent<BlindableComponent>(target).IsBlind, Is.False);
+            });
         }
     }
 
