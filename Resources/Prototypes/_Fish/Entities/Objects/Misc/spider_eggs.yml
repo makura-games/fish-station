@@ -1,0 +1,57 @@
+- type: entity
+  id: FishEggGiantSpiderAngry
+  name: spider egg
+  description: A dense, pulsing egg sac anchored to spider web. Something is growing inside.
+  suffix: Fish
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: Objects/Misc/eggspider.rsi
+    state: icon
+    drawdepth: Items
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        hard: false
+        density: 10
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.3,0.3,0.3"
+        layer:
+        - MidImpassable
+  - type: Damageable
+    damageModifierSet: Wood
+  - type: Injurable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 25
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Flammable
+    fireSpread: true
+    damage:
+      types:
+        Heat: 5
+  - type: Reactive
+    groups:
+      Flammable: [ Touch ]
+      Extinguish: [ Touch ]
+  - type: FishSpiderEgg
+  - type: TimedSpawner
+    prototypes:
+    - MobGiantSpiderAngry
+    intervalSeconds: 240
+    minimumEntitiesSpawned: 1
+    maximumEntitiesSpawned: 1
+  - type: TimedDespawn
+    lifetime: 241

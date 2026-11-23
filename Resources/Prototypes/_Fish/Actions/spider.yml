@@ -1,0 +1,14 @@
+- type: entity
+  parent: BaseAction
+  id: FishActionSpiderLayEgg
+  name: Lay Spider Egg
+  description: Lay an egg sac on spider web using hunger. A healthy giant spider hatches after 4 minutes.
+  suffix: Fish
+  components:
+  - type: Action
+    useDelay: 10
+  - type: Sprite
+    sprite: Objects/Misc/eggspider.rsi
+    state: icon
+  - type: InstantAction
+    event: !type:FishSpiderLayEggActionEvent
