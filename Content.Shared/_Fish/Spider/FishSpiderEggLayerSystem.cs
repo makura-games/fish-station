@@ -39,13 +39,14 @@ public sealed partial class FishSpiderEggLayerSystem : EntitySystem
 
     private void OnMapInit(Entity<FishSpiderEggLayerComponent> ent, ref MapInitEvent args)
     {
-        _actions.AddAction(ent, ref ent.Comp.ActionEntity, ent.Comp.Action);
+        _actions.AddAction(ent, ref ent.Comp.ActionEntity, ent.Comp.Action, ent);
         Dirty(ent);
     }
 
     private void OnShutdown(Entity<FishSpiderEggLayerComponent> ent, ref ComponentShutdown args)
     {
-        _actions.RemoveAction(ent.Owner, ent.Comp.ActionEntity);
+        if (!TerminatingOrDeleted(ent))
+            _actions.RemoveAction(ent.Owner, ent.Comp.ActionEntity);
     }
 
     private void OnLayEggAction(Entity<FishSpiderEggLayerComponent> ent, ref FishSpiderLayEggActionEvent args)

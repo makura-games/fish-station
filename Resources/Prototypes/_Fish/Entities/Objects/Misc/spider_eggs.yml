@@ -12,6 +12,7 @@
     sprite: Objects/Misc/eggspider.rsi
     state: icon
     drawdepth: Items
+  - type: Appearance
   - type: Clickable
   - type: InteractionOutline
   - type: Physics
