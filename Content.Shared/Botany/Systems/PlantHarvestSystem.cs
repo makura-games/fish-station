@@ -145,9 +145,9 @@ public sealed partial class PlantHarvestSystem : EntitySystem
 
         var position = Transform(user).Coordinates;
         _botany.SpawnProduce(ent.Owner, position, totalYield);
-        // Fish-start: листья при сборе урожая
+        // Fish-start: один всплеск от культуры за весь собранный урожай.
         if (totalYield > 0)
-            _fishParticles.Emit(ent, FishParticleKind.Leaves);
+            _fishParticles.Emit(ent, plantData.HarvestParticle);
         // Fish-end
 
         ent.Comp.ReadyForHarvest = false;

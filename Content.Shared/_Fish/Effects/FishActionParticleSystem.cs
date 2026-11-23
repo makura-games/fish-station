@@ -28,6 +28,8 @@ public enum FishParticleKind : byte
     Shock,
     Suction,
     Bubbles,
+    Pollen,
+    Spores,
 }
 
 [Serializable, NetSerializable]

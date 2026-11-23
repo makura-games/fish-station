@@ -96,6 +96,7 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Specific/Hydroponics/geranium.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-geranium-name
     packetPrototype: GeraniumSeeds
     productPrototypes: [ FoodGeranium ]
@@ -121,6 +122,7 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Specific/Hydroponics/plaststeelcap.rsi
   - type: PlantData
+    harvestParticle: Spores # Fish-edit
     noun: seeds-noun-spores
     name: seeds-plaststeelcap-name
     packetPrototype: PlastSteelcapSeeds
@@ -148,6 +150,7 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Specific/Hydroponics/glasscap.rsi
   - type: PlantData
+    harvestParticle: Spores # Fish-edit
     noun: seeds-noun-spores
     name: seeds-glasscap-name
     packetPrototype: GlasscapSeeds
@@ -254,6 +257,7 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Specific/Hydroponics/redrose.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-redrose-name
     packetPrototype: RedroseSeeds
     productPrototypes: [ FoodRedrose ]
@@ -345,6 +349,7 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Specific/Hydroponics/whiterose.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-whiterose-name
     packetPrototype: WhiteroseSeeds
     productPrototypes: [ FoodWhiterose ]
@@ -374,6 +379,7 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Specific/Hydroponics/sunflower.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-sunflower-name
     packetPrototype: SunflowerSeeds
     productPrototypes: [ FoodSunflower ]
@@ -403,6 +409,7 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Specific/Hydroponics/white_lily.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-white-lily-name
     packetPrototype: WhiteLilySeeds
     productPrototypes: [ FoodWhiteLily ]

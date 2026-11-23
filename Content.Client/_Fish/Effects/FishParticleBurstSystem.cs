@@ -61,6 +61,8 @@ public sealed partial class FishParticleBurstSystem : EntitySystem
             FishParticleKind.Frost => ("FishFrostParticle", 5, 20f, 0f, 8f, 22f),
             FishParticleKind.Steam => ("FishSteamParticle", 4, 7f, 12f, 18f, -12f),
             FishParticleKind.Leaves => ("FishLeavesParticle", 5, 20f, 14f, 22f, 62f),
+            FishParticleKind.Pollen => ("FishPollenParticle", 6, 24f, 15f, 28f, 37f),
+            FishParticleKind.Spores => ("FishSporesParticle", 4, 14f, 10f, 20f, -8f),
             FishParticleKind.Ore => ("FishOreParticle", 6, 32f, 14f, 34f, 142f),
             FishParticleKind.Glass => ("FishGlassParticle", 7, 35f, 12f, 36f, 148f),
             FishParticleKind.Wood => ("FishWoodParticle", 6, 32f, 10f, 30f, 118f),
@@ -98,7 +100,8 @@ public sealed partial class FishParticleBurstSystem : EntitySystem
             // Пыль идёт от края к центру, а лёгкие частицы качаются в потоке воздуха.
             if (particle.Kind == FishParticleKind.Suction)
                 pixels = particle.Velocity * Math.Max(0, 0.48f - t);
-            else if (particle.Kind is FishParticleKind.Leaves or FishParticleKind.Cinders or FishParticleKind.Smoke or FishParticleKind.Steam)
+            else if (particle.Kind is FishParticleKind.Leaves or FishParticleKind.Pollen or FishParticleKind.Spores
+                     or FishParticleKind.Cinders or FishParticleKind.Smoke or FishParticleKind.Steam)
                 pixels.X += 3 * (MathF.Sin(10 * t + particle.Velocity.X) - MathF.Sin(particle.Velocity.X));
 
             var offset = new Vector2(MathF.Round(pixels.X), MathF.Round(pixels.Y)) / 32f;

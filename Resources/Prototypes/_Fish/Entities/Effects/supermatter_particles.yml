@@ -1,0 +1,11 @@
+- type: entity
+  id: FishSupermatterChipParticle
+  parent: FishActionParticleBase
+  suffix: Fish
+  components:
+  - type: Sprite
+    layers:
+    - state: crystal_chip
+      shader: unshaded
+  - type: TimedDespawn
+    lifetime: 2.1

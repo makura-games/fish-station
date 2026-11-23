@@ -613,6 +613,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/towercap.rsi
   - type: PlantData
+    harvestParticle: Spores # Fish-edit
     noun: seeds-noun-spores
     name: seeds-towercap-name
     packetPrototype: TowercapSeeds
@@ -642,6 +643,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/steelcap.rsi
   - type: PlantData
+    harvestParticle: Spores # Fish-edit
     noun: seeds-noun-spores
     name: seeds-steelcap-name
     packetPrototype: SteelcapSeeds
@@ -1124,6 +1126,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/chanterelle.rsi
   - type: PlantData
+    harvestParticle: Spores # Fish-edit
     noun: seeds-noun-spores
     name: seeds-chanterelle-name
     packetPrototype: ChanterelleSeeds
@@ -1450,6 +1453,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/poppy.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-poppy-name
     packetPrototype: PoppySeeds
     productPrototypes: [ FoodPoppy ]
@@ -1483,6 +1487,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/lily.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-lily-name
     packetPrototype: LilySeeds
     productPrototypes: [ FoodLily ]
@@ -1548,6 +1553,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/lingzhi.rsi
   - type: PlantData
+    harvestParticle: Spores # Fish-edit
     noun: seeds-noun-spores
     name: seeds-lingzhi-name
     packetPrototype: LingzhiSeeds
@@ -1658,6 +1664,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/galaxythistle.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-galaxythistle-name
     packetPrototype: GalaxythistleSeeds
     productPrototypes: [ FoodGalaxythistle ]
@@ -1687,6 +1694,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/glasstle.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-glasstle-name
     packetPrototype: GlasstleSeeds
     productPrototypes: [ FoodGlasstle ]
@@ -1717,6 +1725,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/fly_amanita.rsi
   - type: PlantData
+    harvestParticle: Spores # Fish-edit
     noun: seeds-noun-spores
     name: seeds-flyamanita-name
     packetPrototype: FlyAmanitaSeeds
@@ -1904,6 +1913,7 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/spacemans_trumpet.rsi
   - type: PlantData
+    harvestParticle: Pollen # Fish-edit
     name: seeds-spacemans-trumpet-name
     packetPrototype: SpacemansTrumpetSeeds
     productPrototypes: [ FoodSpacemansTrumpet ]

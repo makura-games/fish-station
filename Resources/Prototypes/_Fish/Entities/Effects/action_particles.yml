@@ -101,6 +101,22 @@
 
 - type: entity
   parent: FishActionParticleBase
+  id: FishPollenParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: pollen
+
+- type: entity
+  parent: FishActionParticleBase
+  id: FishSporesParticle
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: spores
+
+- type: entity
+  parent: FishActionParticleBase
   id: FishOreParticle
   suffix: Fish
   components:
