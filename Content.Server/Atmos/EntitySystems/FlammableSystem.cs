@@ -38,7 +38,7 @@ namespace Content.Server.Atmos.EntitySystems
 {
     public sealed partial class FlammableSystem : EntitySystem
     {
-        [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
+        [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
         [Dependency] private ActionBlockerSystem _actionBlockerSystem = default!;
         [Dependency] private AtmosphereSystem _atmosphereSystem = default!;
         [Dependency] private StunSystem _stunSystem = default!;
@@ -311,7 +311,7 @@ namespace Content.Server.Atmos.EntitySystems
             {
                 // Fish-start: прямое поджигание через стаки обходит событие IgnitedEvent
                 if (ignite && !flammable.OnFire)
-                    _fishParticles.Emit(uid, FishParticleKind.Ignition);
+                    _fishActionParticle.Emit(uid, FishParticleKind.Ignition);
                 // Fish-end
                 flammable.OnFire |= ignite;
                 UpdateAppearance(uid, flammable);
@@ -492,7 +492,7 @@ namespace Content.Server.Atmos.EntitySystems
                         continue;
                     }
 
-                    _fishParticles.Emit(uid, FishParticleKind.Cinders); // Fish-edit: угольки при горении в кислороде
+                    _fishActionParticle.Emit(uid, FishParticleKind.Cinders); // Fish-edit: угольки при горении в кислороде
                     var source = EnsureComp<IgnitionSourceComponent>(uid);
                     _ignitionSourceSystem.SetIgnited((uid, source));
 

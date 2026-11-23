@@ -9,6 +9,7 @@ namespace Content.IntegrationTests.Tests._Fish.Graphics;
 public sealed class FishHarvestParticleTest : InteractionTest
 {
     [TestCase("PoppySeeds", "FoodPoppy", 3, "FishPollenParticle", 6)]
+    [TestCase("SunflowerSeeds", "FoodSunflower", 1, "FishPollenParticle", 6)]
     [TestCase("ChanterelleSeeds", "FoodMushroom", 5, "FishSporesParticle", 4)]
     [TestCase("WheatSeeds", "WheatBushel", 3, "FishLeavesParticle", 5)]
     public async Task TrayEmitsOneBurstOnRipeHarvest(string seeds, string produce, int expectedYield, string particle, int count)

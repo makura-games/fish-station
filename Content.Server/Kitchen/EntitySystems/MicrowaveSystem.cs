@@ -45,7 +45,7 @@ namespace Content.Server.Kitchen.EntitySystems
 {
     public sealed partial class MicrowaveSystem : EntitySystem
     {
-        [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
+        [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
         [Dependency] private DeviceLinkSystem _deviceLink = default!;
         [Dependency] private SharedPopupSystem _popupSystem = default!;
         [Dependency] private PowerReceiverSystem _power = default!;
@@ -702,7 +702,7 @@ namespace Content.Server.Kitchen.EntitySystems
                     var coords = Transform(uid).Coordinates;
                     // Fish-start: пар от готовой порции
                     if (active.PortionedRecipe.Item2 > 0)
-                        _fishParticles.Emit(uid, FishParticleKind.Steam);
+                        _fishActionParticle.Emit(uid, FishParticleKind.Steam);
                     // Fish-end
                     for (var i = 0; i < active.PortionedRecipe.Item2; i++)
                     {

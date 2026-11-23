@@ -1,4 +1,3 @@
-using Content.Shared._Fish.Effects; // Fish-edit: вид частиц при сборе урожая.
 using Content.Shared.Database;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -42,11 +41,6 @@ public sealed partial class PlantDataComponent : Component
     /// </summary>
     [DataField(required: true), AutoNetworkedField]
     public List<EntProtoId> ProductPrototypes = [];
-
-    // Fish-start: вид частиц задаёт культура, в том числе после видовой мутации.
-    [DataField]
-    public FishParticleKind HarvestParticle = FishParticleKind.Leaves;
-    // Fish-end
 
     /// <summary>
     /// Log impact for harvest operations.

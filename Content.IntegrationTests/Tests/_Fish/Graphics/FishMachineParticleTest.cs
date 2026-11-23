@@ -1,10 +1,13 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Content.Client._Fish.Effects;
 using Content.IntegrationTests.Tests.Interaction;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Power;
 using Content.Shared.Starlight.Energy.Supermatter;
+using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 
@@ -51,6 +54,7 @@ public sealed class FishMachineParticleTest : InteractionTest
         });
         Assert.That(await WaitForParticles("FishSupermatterChipParticle", 4), Is.True);
         await Server.WaitAssertion(() => Assert.That(SComp<SupermatterComponent>(ToServer(crystal)).Durability.Float(), Is.LessThan(100f)));
+        await RunTicks(Pair.SecondsToTicks(0.55f)); // Даём осколкам завершить разлёт до следующей зарядки.
         await Server.WaitPost(() => SComp<SupermatterComponent>(ToServer(crystal)).AccLighting = 6);
 
         Assert.That(await WaitForParticles("FishSupermatterChipParticle", 5), Is.True);
@@ -58,6 +62,30 @@ public sealed class FishMachineParticleTest : InteractionTest
             ToServer(rod), TeslaCoilVisuals.Lightning, out var struck) && struck;
 
         await Server.WaitAssertion(() => Assert.That(RodWasHit(), Is.False, "The crystal must draw in its chips before firing."));
+        var distances = new Dictionary<EntityUid, float>();
+        await Client.WaitAssertion(() =>
+        {
+            Client.System<FishMachineParticleSystem>().FrameUpdate(0f);
+            var center = ToClient(crystal);
+            var chips = CEntMan.EntityQueryEnumerator<MetaDataComponent, SpriteComponent, TransformComponent>();
+            while (chips.MoveNext(out var uid, out var meta, out var sprite, out var xform))
+            {
+                if (meta.EntityPrototype?.ID == "FishSupermatterChipParticle" && xform.ParentUid == center)
+                    distances.Add(uid, sprite.Offset.LengthSquared());
+            }
+            Assert.That(distances.Count, Is.GreaterThanOrEqualTo(5));
+        });
+
+        await RunTicks(Pair.SecondsToTicks(0.1f));
+        await Server.WaitAssertion(() => Assert.That(RodWasHit(), Is.False));
+        await Client.WaitAssertion(() =>
+        {
+            Client.System<FishMachineParticleSystem>().FrameUpdate(0f);
+            foreach (var (uid, before) in distances)
+                Assert.That(CEntMan.GetComponent<SpriteComponent>(uid).Offset.LengthSquared(), Is.LessThan(before),
+                    $"Shard {uid} should approach the crystal before the strike.");
+        });
+
         await RunTicks(Pair.SecondsToTicks(0.4f));
         await Server.WaitAssertion(() => Assert.That(RodWasHit(), Is.True, "The original lightning must strike the grounding rod."));
     }

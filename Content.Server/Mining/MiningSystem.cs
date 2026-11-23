@@ -14,7 +14,7 @@ namespace Content.Server.Mining;
 /// </summary>
 public sealed partial class MiningSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private IRobustRandom _random = default!;
 
     /// <inheritdoc/>
@@ -39,7 +39,7 @@ public sealed partial class MiningSystem : EntitySystem
         var toSpawn = _random.Next(proto.MinOreYield, proto.MaxOreYield+1);
         // Fish-start: крошка при выходе руды
         if (toSpawn > 0)
-            _fishParticles.Emit(uid, FishParticleKind.Ore);
+            _fishActionParticle.Emit(uid, FishParticleKind.Ore);
         // Fish-end
         for (var i = 0; i < toSpawn; i++)
         {

@@ -6,7 +6,6 @@ using Content.Server.Radio.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Server._Sunrise.Messenger;
 using Content.Shared._Sunrise.Storyteller;
-using Content.Shared._Fish.Effects; // Fish-edit: частицы суперматерии.
 using Content.Shared.Abilities.Goliath;
 using Content.Shared.Atmos;
 using Content.Shared.Damage;
@@ -109,10 +108,8 @@ public sealed partial class SupermatterSystem : AccUpdateEntitySystem
         HandleDamage(supermatter);
         HandleGas(supermatter);
         HandleRadiation(supermatter);
-        // Fish-start: сначала отлетают осколки, затем начинается зарядка выбранной цели.
-        HandleDestruction(supermatter);
-        BeginDischarge(supermatter);
-        // Fish-end
+        HandleCrystalDamage(supermatter); // Fish-edit: отделяем осколки перед зарядкой
+        HandleLighting(supermatter);
         NotifyCascad(supermatter);
         Cascad(supermatter);
     }
@@ -168,12 +165,12 @@ public sealed partial class SupermatterSystem : AccUpdateEntitySystem
         var damageToApply = MathHelper.Clamp((supermatter.Comp.AccBreak / 10) - Const.RegenerationPerSecond, -Const.RegenerationPerSecond, Const.MaxDamagePerSecond);
         supermatter.Comp.AccBreak = 0;
 
-        var previousDurability = supermatter.Comp.Durability; // Fish-edit: отмечаем фактическую потерю целостности.
         supermatter.Comp.Durability = MathHelper.Clamp(supermatter.Comp.Durability - damageToApply, 0f, 100f);
-        // Fish-start: частицы скола при разрушении кристалла.
-        if (supermatter.Comp.Durability < previousDurability)
-            EmitCrystalParticles(supermatter.Owner, FishSupermatterParticleEffect.Chip);
-        // Fish-end
+    }
+
+    private void HandleLighting(Entity<SupermatterComponent> supermatter)
+    {
+        BeginDischarge(supermatter); // Fish-edit: заменяем мгновенный разряд на зарядку перед ударом по выбранной цели
     }
 
     private void HandleRadiation(Entity<SupermatterComponent> supermatter)

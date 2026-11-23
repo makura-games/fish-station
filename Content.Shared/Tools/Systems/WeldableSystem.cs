@@ -12,7 +12,7 @@ namespace Content.Shared.Tools.Systems;
 
 public sealed partial class WeldableSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _particles = default!; // Fish-edit: частицы действий
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private SharedToolSystem _toolSystem = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
@@ -90,7 +90,7 @@ public sealed partial class WeldableSystem : EntitySystem
 
         SetWeldedState(uid, !component.IsWelded, component);
 
-        _particles.Emit(uid, component.IsWelded ? FishParticleKind.Weld : FishParticleKind.Slag); // Fish-edit: искры шва или окалина
+        _fishActionParticle.Emit(uid, component.IsWelded ? FishParticleKind.Weld : FishParticleKind.Slag); // Fish-edit: искры шва или окалина
 
         // Log success
         _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(args.User):user} {(!component.IsWelded ? "un" : "")}welded {ToPrettyString(uid):target}");

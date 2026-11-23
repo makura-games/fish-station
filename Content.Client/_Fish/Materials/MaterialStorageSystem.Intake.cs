@@ -1,13 +1,10 @@
 using Content.Shared.Materials;
 using Robust.Client.GameObjects;
-using Robust.Shared.Timing;
 
 namespace Content.Client.Materials;
 
 public sealed partial class MaterialStorageSystem
 {
-    [Dependency] private IGameTiming _fishTiming = default!;
-
     private void OnFishIntakeState(Entity<InsertingMaterialStorageComponent> ent, ref AfterAutoHandleStateEvent args)
     {
         if (TryComp<MaterialStorageComponent>(ent, out var storage) &&
@@ -31,7 +28,7 @@ public sealed partial class MaterialStorageSystem
 
         var tint = insertion.MaterialColor ?? Color.White;
         shader.SetParameter("surface", tint.WithAlpha(insertion.FishIntakeOpacity));
-        var remaining = insertion.EndTime - _fishTiming.CurTime;
+        var remaining = insertion.EndTime - _timing.CurTime;
         _sprite.LayerSetVisible(sprite, index, remaining > TimeSpan.Zero);
         var elapsed = Math.Clamp((duration - remaining).TotalSeconds, 0, duration.TotalSeconds);
         _sprite.LayerSetAnimationTime(sprite, index, (float) elapsed);

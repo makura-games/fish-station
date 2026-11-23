@@ -10,7 +10,6 @@ using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Timing;
 using System.Numerics;
 
 namespace Content.Client.Atmos.Overlays;
@@ -31,14 +30,11 @@ public sealed partial class GasTileFireOverlay : Overlay
     private readonly SharedMapSystem _mapSystem = default!;
     private readonly ShaderInstance _shader;
 
-    private readonly float[] _timer;
     private readonly float[][] _frameDelays;
-    private readonly int[] _frameCounter;
 
     // TODO combine textures into a single texture atlas.
     private readonly Texture[][] _frames;
 
-    private const int PhaseCount = 4; // Fish-edit: четыре фазы пламени на соседних тайлах
     private const int FireStates = 3;
     private const string FireRsiPath = "/Textures/Effects/fire.rsi";
 
@@ -52,9 +48,7 @@ public sealed partial class GasTileFireOverlay : Overlay
         _shader = _protoMan.Index(UnshadedShader).Instance();
         ZIndex = GasOverlayZIndex;
 
-        _timer = new float[FireStates * PhaseCount]; // Fish-edit: отдельный таймер для каждой фазы
         _frameDelays = new float[FireStates][];
-        _frameCounter = new int[FireStates * PhaseCount]; // Fish-edit: кадры четырёх фаз
         _frames = new Texture[FireStates][];
 
         var fire = _resourceCache.GetResource<RSIResource>(FireRsiPath).RSI;
@@ -66,32 +60,8 @@ public sealed partial class GasTileFireOverlay : Overlay
 
             _frames[i] = state.GetFrames(RsiDirection.South);
             _frameDelays[i] = state.GetDelays();
-            // Fish-start: у каждой фазы своя точка входа в ту же анимацию
-            for (var phase = 0; phase < PhaseCount; phase++)
-                _frameCounter[i * PhaseCount + phase] = _frames[i].Length * phase / PhaseCount;
-            // Fish-end
+            InitializeFirePhases(i); // Fish-edit: смещаем первый кадр для соседних тайлов
         }
-    }
-
-    protected override void FrameUpdate(FrameEventArgs args)
-    {
-        base.FrameUpdate(args);
-
-        // Fish-start: сохраняем индивидуальные задержки кадров при сдвиге фазы
-        for (var slot = 0; slot < _frameCounter.Length; slot++)
-        {
-            var delays = _frameDelays[slot / PhaseCount];
-            if (delays.Length == 0)
-                continue;
-
-            _timer[slot] += args.DeltaSeconds;
-            while (_timer[slot] >= delays[_frameCounter[slot]])
-            {
-                _timer[slot] -= delays[_frameCounter[slot]];
-                _frameCounter[slot] = (_frameCounter[slot] + 1) % delays.Length;
-            }
-        }
-        // Fish-end
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -162,10 +132,7 @@ public sealed partial class GasTileFireOverlay : Overlay
                             continue;
 
                         var fireState = gas.FireState - 1;
-                        // Fish-start: фаза остаётся на тайле при движении камеры и шаттла
-                        var phase = (index.X + 3 * index.Y) & (PhaseCount - 1);
-                        var texture = state.frames[fireState][state.frameCounter[fireState * PhaseCount + phase]];
-                        // Fish-end
+                        var texture = state.frames[fireState][state.frameCounter[FirePhaseSlot(fireState, index)]]; // Fish-edit: фаза привязана к тайлу
                         state.drawHandle.DrawTexture(texture, index);
                     }
                 }

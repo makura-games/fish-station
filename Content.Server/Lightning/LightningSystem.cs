@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Beam;
 using Content.Shared.Beam.Components;
 using Content.Server.Lightning.Components;
@@ -76,7 +77,8 @@ public sealed partial class LightningSystem : SharedLightningSystem
         //TODO: This is still pretty bad for perf but better than before and at least it doesn't re-allocate
         // several hashsets every time
 
-        var targets = GetPrioritizedTargets(user, range); // Fish-edit: общий порядок выбора целей для мгновенного и заряжаемого разряда.
+        var targets = _lookup.GetEntitiesInRange<LightningTargetComponent>(_transform.GetMapCoordinates(user), range).ToList();
+        PrioritizeTargets(targets); // Fish-edit: единый порядок выбора целей обычного разряда и суперматерии
 
         bool shooted = false;  //starlight
         int shootedCount = 0;

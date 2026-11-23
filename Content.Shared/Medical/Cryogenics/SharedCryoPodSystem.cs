@@ -35,7 +35,7 @@ namespace Content.Shared.Medical.Cryogenics;
 
 public abstract partial class SharedCryoPodSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] protected IGameTiming Timing = default!;
     [Dependency] private ClimbSystem _climb = default!;
@@ -486,7 +486,7 @@ public abstract partial class SharedCryoPodSystem : EntitySystem
     {
         if (args.Container.ID == CryoPodComponent.BodyContainerName)
         {
-            _fishParticles.Emit(cryoPod, FishParticleKind.Frost); // Fish-edit: холодная дымка при выходе пациента
+            _fishActionParticle.Emit(cryoPod, FishParticleKind.Frost); // Fish-edit: холодная дымка при выходе пациента
             ClearInjectionBuffer(cryoPod);
         }
 

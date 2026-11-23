@@ -18,6 +18,14 @@ public sealed partial class SupermatterSystem
         RaiseNetworkEvent(new FishSupermatterParticleEvent(GetNetEntity(crystal), effect), Filter.Pvs(crystal));
     }
 
+    private void HandleCrystalDamage(Entity<SupermatterComponent> crystal)
+    {
+        var previous = crystal.Comp.Durability;
+        HandleDestruction(crystal);
+        if (crystal.Comp.Durability < previous)
+            EmitCrystalParticles(crystal.Owner, FishSupermatterParticleEffect.Chip);
+    }
+
     private void BeginDischarge(Entity<SupermatterComponent> crystal)
     {
         if (crystal.Comp.Durability <= 0.01f || crystal.Comp.AccLighting <= 0 || _charging.ContainsKey(crystal.Owner) ||

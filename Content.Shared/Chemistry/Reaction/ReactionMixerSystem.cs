@@ -13,7 +13,7 @@ namespace Content.Shared.Chemistry.Reaction;
 
 public sealed partial class ReactionMixerSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
@@ -149,7 +149,7 @@ public sealed partial class ReactionMixerSystem : EntitySystem
 
         _solutionContainer.UpdateChemicals(solutionEnt.Value, true, ent.Comp);
 
-        _fishParticles.Emit(target, FishParticleKind.Bubbles, solutionEnt.Value.Comp.Solution); // Fish-edit: пузырьки цвета перемешанной жидкости
+        _fishActionParticle.Emit(target, FishParticleKind.Bubbles, solutionEnt.Value.Comp.Solution); // Fish-edit: пузырьки цвета перемешанной жидкости
         var afterMixingEvent = new AfterMixingEvent(ent, target);
         RaiseLocalEvent(ent, ref afterMixingEvent);
 

@@ -1,5 +1,4 @@
 using System.Linq;
-using Content.Shared._Fish.Effects; // Fish-edit: частицы в точке сварки
 using Content.Shared.Administration.Logs;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DoAfter;
@@ -36,9 +35,6 @@ public abstract partial class SharedToolSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transformSystem = default!;
     [Dependency] private TileSystem _tiles = default!;
     [Dependency] private TurfSystem _turfs = default!;
-
-    [Dependency] private FishActionParticleSystem _particles = default!; // Fish-edit: частицы в точке сварки
-    private static readonly ProtoId<ToolQualityPrototype> Welding = "Welding"; // Fish-edit: отличаем сварку от других работ
 
     public const string CutQuality = "Cutting";
     public const string PulseQuality = "Pulsing";
@@ -189,10 +185,9 @@ public abstract partial class SharedToolSystem : EntitySystem
             ExamineText = examineText,
         };
 
-        // Fish-start: при длительной сварке первая искра появляется уже при касании
-        if (_doAfterSystem.TryStartDoAfter(doAfterArgs, out id) && target is {} workpiece &&
-            doAfterArgs.Delay.TotalSeconds >= 0.5 && toolQualitiesNeeded.Contains(Welding))
-            _particles.Emit(workpiece, FishParticleKind.Weld);
+        // Fish-start: частицы только при успешном начале работы.
+        if (_doAfterSystem.TryStartDoAfter(doAfterArgs, out id))
+            EmitWeldingParticles(target, doAfterArgs.Delay, toolQualitiesNeeded);
         // Fish-end
         return true;
     }

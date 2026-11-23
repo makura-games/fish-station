@@ -7,18 +7,18 @@ namespace Content.Server._Fish.Effects;
 
 public sealed partial class FishFireParticleSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _particles = default!;
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!;
 
     public override void Initialize()
     {
         SubscribeLocalEvent<FlammableComponent, IgnitedEvent>(OnIgnited);
         SubscribeLocalEvent<FlammableComponent, ExtinguishedEvent>(OnExtinguished);
-        SubscribeLocalEvent<ElectrocutedEvent>(ev => _particles.Emit(ev.TargetUid, FishParticleKind.Shock));
+        SubscribeLocalEvent<ElectrocutedEvent>(ev => _fishActionParticle.Emit(ev.TargetUid, FishParticleKind.Shock));
     }
 
     private void OnIgnited(Entity<FlammableComponent> ent, ref IgnitedEvent args)
-        => _particles.Emit(ent, FishParticleKind.Ignition);
+        => _fishActionParticle.Emit(ent, FishParticleKind.Ignition);
 
     private void OnExtinguished(Entity<FlammableComponent> ent, ref ExtinguishedEvent args)
-        => _particles.Emit(ent, FishParticleKind.Smoke);
+        => _fishActionParticle.Emit(ent, FishParticleKind.Smoke);
 }

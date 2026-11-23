@@ -13,7 +13,7 @@ namespace Content.Shared.Repairable;
 
 public sealed partial class RepairableSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _particles = default!; // Fish-edit: частицы действий
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private SharedToolSystem _toolSystem = default!;
     [Dependency] private DamageableSystem _damageableSystem = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
@@ -48,7 +48,7 @@ public sealed partial class RepairableSystem : EntitySystem
         var previousDamage = totalDamage;
         totalDamage = _damageableSystem.GetTotalDamage((ent.Owner, damageable));
         if (totalDamage < previousDamage && ent.Comp.QualityNeeded == "Welding")
-            _particles.Emit(ent, FishParticleKind.Weld);
+            _fishActionParticle.Emit(ent, FishParticleKind.Weld);
         // Fish-end
 
         args.Repeat = ent.Comp.AutoDoAfter && totalDamage > 0;

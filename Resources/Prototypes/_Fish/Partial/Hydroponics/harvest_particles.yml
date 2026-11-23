@@ -1,0 +1,101 @@
+- type: !PartialOnly entity
+  id: TowercapPlants
+  components:
+  - type: PlantData
+    harvestParticle: Spores
+
+- type: !PartialOnly entity
+  id: SteelcapPlants
+  components:
+  - type: PlantData
+    harvestParticle: Spores
+
+- type: !PartialOnly entity
+  id: ChanterellePlants
+  components:
+  - type: PlantData
+    harvestParticle: Spores
+
+- type: !PartialOnly entity
+  id: PoppyPlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: LilyPlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: LingzhiPlants
+  components:
+  - type: PlantData
+    harvestParticle: Spores
+
+- type: !PartialOnly entity
+  id: GalaxythistlePlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: GlasstlePlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: FlyAmanitaPlants
+  components:
+  - type: PlantData
+    harvestParticle: Spores
+
+- type: !PartialOnly entity
+  id: SpacemansTrumpetPlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: GeraniumPlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: PlaststeelcapPlants
+  components:
+  - type: PlantData
+    harvestParticle: Spores
+
+- type: !PartialOnly entity
+  id: GlasscapPlants
+  components:
+  - type: PlantData
+    harvestParticle: Spores
+
+- type: !PartialOnly entity
+  id: RedrosePlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: WhiterosePlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: SunflowerPlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen
+
+- type: !PartialOnly entity
+  id: WhiteLilyPlants
+  components:
+  - type: PlantData
+    harvestParticle: Pollen

@@ -15,7 +15,7 @@ namespace Content.Shared.Botany.Systems;
 /// </summary>
 public sealed partial class PlantHarvestSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private BotanySystem _botany = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private PlantSystem _plant = default!;
@@ -147,7 +147,7 @@ public sealed partial class PlantHarvestSystem : EntitySystem
         _botany.SpawnProduce(ent.Owner, position, totalYield);
         // Fish-start: один всплеск от культуры за весь собранный урожай.
         if (totalYield > 0)
-            _fishParticles.Emit(ent, plantData.HarvestParticle);
+            _fishActionParticle.Emit(ent, plantData.HarvestParticle);
         // Fish-end
 
         ent.Comp.ReadyForHarvest = false;

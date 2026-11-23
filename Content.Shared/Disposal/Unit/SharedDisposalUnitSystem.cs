@@ -38,7 +38,7 @@ namespace Content.Shared.Disposal.Unit;
 /// </summary>
 public abstract partial class SharedDisposalUnitSystem : EntitySystem
 {
-    [Dependency] private FishActionParticleSystem _fishParticles = default!; // Fish-edit: частицы действий
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private EntityWhitelistSystem _whitelist = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
@@ -323,7 +323,7 @@ public abstract partial class SharedDisposalUnitSystem : EntitySystem
         // Try to transfer entities from the unit into disposals.
         // Fish-start: пыль втягивается только при успешной отправке содержимого
         if (TryTransfer(ent, tube.Value, beforeFlushArgs.Tags))
-            _fishParticles.Emit(ent, FishParticleKind.Suction);
+            _fishActionParticle.Emit(ent, FishParticleKind.Suction);
         // Fish-end
 
         ent.Comp.NextPressurized = _timing.CurTime;
