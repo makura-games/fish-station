@@ -14,11 +14,14 @@ using Content.Shared.Temperature.Components;
 using NUnit.Framework;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Fish.Netrunner;
 
 public sealed partial class NetrunnerTest
 {
+    private static readonly ProtoId<NetrunnerAbilityPrototype> BatteryDrainAbility = "FishNetrunnerBatteryDrain";
+    private static readonly ProtoId<NetrunnerAbilityPrototype> OpenAirlockAbility = "FishNetrunnerOpenAirlock";
     [Test]
     public async Task DebugImplantRunsRepeatedClientActionsAndPurchasesForFree()
     {
@@ -34,7 +37,7 @@ public sealed partial class NetrunnerTest
         bool speedPurchased = false;
         bool visorPurchased = false;
         float initialCharge = 0;
-        var ability = SProtoMan.Index<NetrunnerAbilityPrototype>("FishNetrunnerBatteryDrain");
+        var ability = SProtoMan.Index(BatteryDrainAbility);
         await Server.WaitPost(() =>
         {
             user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);
@@ -111,7 +114,7 @@ public sealed partial class NetrunnerTest
         bool equipped = false;
         float heat = 0;
         double cooldown = 0;
-        var ability = SProtoMan.Index<NetrunnerAbilityPrototype>("FishNetrunnerOpenAirlock");
+        var ability = SProtoMan.Index(OpenAirlockAbility);
         await Server.WaitPost(() =>
         {
             user = SEntMan.SpawnEntity("MobHuman", map.GridCoords);

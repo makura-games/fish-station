@@ -6,11 +6,14 @@ using Content.Shared.Power;
 using Content.Shared.SurveillanceCamera.Components;
 using Content.Shared.StationAi;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Fish.Netrunner;
 
 public sealed partial class NetrunnerSystem
 {
+    private static readonly EntProtoId RemoteEyePrototype = "FishNetrunnerRemoteEye";
+    private static readonly EntProtoId JumpToChairActionId = "FishActionNetrunnerJumpToChair";
     private void OnStrapped(Entity<NetrunnerChairComponent> ent, ref StrappedEvent args)
     {
         if (_userQuery.TryComp(args.Buckle, out var user)
@@ -186,7 +189,7 @@ public sealed partial class NetrunnerSystem
             minDistance = distance;
             closest = camera;
         }
-        var remote = Spawn("FishNetrunnerRemoteEye", Transform(closest ?? chair).Coordinates);
+        var remote = Spawn(RemoteEyePrototype, Transform(closest ?? chair).Coordinates);
         var viewer = Comp<NetrunnerRemoteEyeComponent>(remote);
         viewer.User = user;
         viewer.Station = station;
@@ -201,7 +204,7 @@ public sealed partial class NetrunnerSystem
         _eye.SetDrawFov(user, false, bodyEye);
         _eye.RefreshVisibilityMask(remote);
         _eye.RefreshVisibilityMask(user);
-        _actions.AddAction(user, ref ent.Comp.JumpToChairAction, "FishActionNetrunnerJumpToChair", ent);
+        _actions.AddAction(user, ref ent.Comp.JumpToChairAction, JumpToChairActionId, ent);
         _mover.SetRelay(user, remote);
         _mover.ResetCamera(user);
         return true;
