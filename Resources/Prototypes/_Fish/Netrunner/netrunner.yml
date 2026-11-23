@@ -191,6 +191,7 @@
   - type: NetrunnerChair
   - type: StationAiVision
     needsAnchoring: true
+    range: 4.5
   - type: Sprite
     sprite: _Sunrise/Structures/Furniture/abductor_chair.rsi
     state: abductor_chair

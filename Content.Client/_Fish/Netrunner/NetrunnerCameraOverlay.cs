@@ -46,9 +46,8 @@ public sealed partial class NetrunnerCameraOverlay : Overlay
         return args.Viewport.Eye == _eye.CurrentEye
             && _entities.TryGetComponent(_player.LocalEntity, out NetrunnerUserComponent? user)
             && user.RemoteEye is { } remote
-            && _entities.TryGetComponent(_player.LocalEntity, out EyeComponent? bodyEye)
-            && bodyEye.Eye == args.Viewport.Eye
-            && bodyEye.Target == remote;
+            && _entities.TryGetComponent(remote, out EyeComponent? remoteEye)
+            && remoteEye.Eye == args.Viewport.Eye;
     }
 
     protected override void Draw(in OverlayDrawArgs args)

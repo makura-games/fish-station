@@ -232,7 +232,7 @@ fish-netrunner-manual-content =
 
     { "[head=2]" }3. Local operation[/head]
     Select a purchased script and a visible compatible target (6 m range for infrastructure, 5 m for most combat scripts, 6 m center for area blackout). Walls block local connections.
-    Movement does not cancel activation while the target stays in sight; damage, losing the target, or interacting with your surroundings [bold](E)[/bold] cancels execution. An interrupted script's cooldown is capped at [bold]4 seconds[/bold]. Baseline recovery is 1 RAM every 10 seconds after an 8-second delay.
+    Movement does not cancel activation while the target stays in sight; damage, losing the target, or interacting with your surroundings cancels execution. An interrupted script's cooldown is capped at [bold]4 seconds[/bold]. Baseline recovery is 1 RAM every 10 seconds after an 8-second delay.
 
     { "[head=2]" }4. Chair and netrunner eye[/head]
     Assemble a machine frame with the board, [bold]5 steel, 5 cable and 2 manipulators[/bold], anchor and power it, then sit in the chair. Connection takes 5 seconds and 1 RAM, switches view to the [bold]netrunner eye[/bold] at the nearest camera and enables [bold]Jump to chair[/bold].

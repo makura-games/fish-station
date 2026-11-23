@@ -25,7 +25,9 @@ using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Silicons.Laws.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.SurveillanceCamera.Components;
+using Content.Server.Medical.CrewMonitoring;
 using Content.Server.SurveillanceCamera;
+using Content.Shared.DeviceNetwork.Components;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.Power.Components;
 using Content.Shared.PowerCell;
@@ -53,6 +55,7 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
     [Dependency] private SharedTemperatureSystem _temperature = default!;
     [Dependency] private SharedBatterySystem _battery = default!;
     [Dependency] private PowerCellSystem _powerCell = default!;
+    [Dependency] private CrewMonitoringServerSystem _crewMonitoring = default!;
     private TimeSpan _nextUpdate;
 
     public override void Initialize()
@@ -241,6 +244,12 @@ public sealed partial class NetrunnerEffectsSystem : EntitySystem
             case NetrunnerHackKind.DisableHeadset:
             case NetrunnerHackKind.DisableSensors:
                 Suppress(args.Device, args.Ability);
+                if (args.Ability.Kind == NetrunnerHackKind.DisableSensors
+                    && TryComp<DeviceNetworkComponent>(args.Device, out var sensorNet)
+                    && !string.IsNullOrEmpty(sensorNet.Address))
+                {
+                    _crewMonitoring.RemoveSensorStatus(sensorNet.Address);
+                }
                 _popup.PopupEntity(Loc.GetString(args.Ability.Kind == NetrunnerHackKind.DisableHeadset
                     ? "fish-netrunner-headset-warning" : "fish-netrunner-sensors-warning"), ent, ent);
                 args.Applied = true;

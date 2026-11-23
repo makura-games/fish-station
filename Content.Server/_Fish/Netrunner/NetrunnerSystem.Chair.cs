@@ -341,9 +341,12 @@ public sealed partial class NetrunnerSystem
         state.Trace = ent.Comp.Trace;
         state.ReadyAt = ent.Comp.ReadyAt;
         state.Camera = ent.Comp.Camera;
+        var remoteEyeChanged = state.RemoteEye != ent.Comp.RemoteEye;
         state.RemoteEye = ent.Comp.RemoteEye;
         state.Chair = ent.Comp.Chair;
         Dirty(user, state);
+        if (remoteEyeChanged)
+            _eye.RefreshVisibilityMask(user);
         var reserved = ent.Comp.Pending == null ? 0 : ProtoMan.Index(ent.Comp.Pending.Ability).RamCost;
         var snapshot = new NetrunnerUiState
         {
