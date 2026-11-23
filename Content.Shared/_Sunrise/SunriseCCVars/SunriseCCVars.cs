@@ -319,7 +319,7 @@ public sealed partial class SunriseCCVars : CVars
      */
 
     public static readonly CVarDef<bool> MoodEnabled =
-        CVarDef.Create("mood.enabled", true, CVar.SERVER);
+        CVarDef.Create("mood.enabled", false, CVar.SERVER);
 
     public static readonly CVarDef<bool> MoodIncreasesSpeed =
         CVarDef.Create("mood.increases_speed", true, CVar.SERVER);
