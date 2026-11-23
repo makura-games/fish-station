@@ -261,7 +261,7 @@
   - type: SurgeryTarget
   - type: DarkenedVision
   - type: CanEscapeInventory
-  - type: Mood
+#  - type: Mood # Fish-edit
   - type: CritHeartbeat
   - type: PetOnInteract
   # Sunrise-End
