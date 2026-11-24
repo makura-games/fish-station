@@ -1945,3 +1945,10 @@
   media:
   - url: https://github.com/user-attachments/assets/78c6e106-4d6a-481b-ba1f-4e63b53539a9
     description: image
+- author: TiFeRi
+  time: '2026-11-24T23:12:26.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Расширение дворфийского словаря
+  id: 200
+  url: https://github.com/makura-games/fish-station/pull/632
