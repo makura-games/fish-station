@@ -47,7 +47,7 @@
     back: ClothingBackpackERTLeader
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudMedSec
+    eyes: FishClothingEyesHudErtMedic # Fish-edit
     neck: Whistle
     gloves: ClothingHandsGlovesCombat
     outerClothing: ClothingOuterHardsuitERTLeader
@@ -156,7 +156,7 @@
     back: ClothingBackpackERTChaplain
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudMedical
+    eyes: FishClothingEyesHudErtMedic # Fish-edit
     gloves: ClothingHandsGlovesCombat
     outerClothing: ClothingOuterHardsuitERTChaplain
     id: ERTChaplainPDA
@@ -236,7 +236,7 @@
     back: ClothingBackpackERTEngineer
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudDiagnostic
+    eyes: FishClothingEyesHudErtMech # Fish-edit
     gloves: ClothingHandsGlovesCombat
     outerClothing: ClothingOuterHardsuitERTEngineer
     id: ERTEngineerPDA
@@ -334,7 +334,7 @@
     back: ClothingBackpackERTSecurity
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudSecurity
+    eyes: FishClothingEyesHudErt # Fish-edit
     gloves: ClothingHandsGlovesCombat
     neck: SecurityWhistle
     outerClothing: ClothingOuterHardsuitERTSecurity
@@ -369,7 +369,7 @@
     jumpsuit: ClothingUniformJumpsuitERTSecurity
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudSecurity
+    eyes: FishClothingEyesHudErt # Fish-edit
     gloves: ClothingHandsGlovesCombat
     outerClothing: ClothingOuterHardsuitERTSecurity
     id: ERTSecurityPDA
@@ -528,7 +528,7 @@
     back: ClothingBackpackERTMedical
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudMedical
+    eyes: FishClothingEyesHudErtMedic # Fish-edit
     gloves: ClothingHandsGlovesCombat
     outerClothing: ClothingOuterHardsuitERTMedical
     id: ERTMedicPDA

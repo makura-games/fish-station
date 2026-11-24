@@ -1,8 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Created by IProduceWidgets",
-  "copyright": "inhand resprited by inventor05(gh: inventor055, discord: qwerty05555)",
+  "copyright": "Created by IProduceWidgets. Tail & Vox sprites by Tiniest Shark (github). Inhand resprited by inventor05(gh: inventor055, discord: qwerty05555)",
   "size": {
     "x": 32,
     "y": 32
@@ -13,6 +12,14 @@
     },
     {
       "name": "equipped-OUTERCLOTHING",
+      "directions": 4
+    },
+    {
+      "name": "equipped-OUTERCLOTHING-reptilian",
+      "directions": 4
+    },
+    {
+      "name": "equipped-OUTERCLOTHING-vox",
       "directions": 4
     },
     {

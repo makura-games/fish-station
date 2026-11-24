@@ -10,7 +10,6 @@
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_black_glasses.rsi
   - type: Clothing
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_black_glasses.rsi
-  - type: ShowNanotrasenIcons
   - type: Tag
     tags:
     - PetWearable
@@ -27,7 +26,6 @@
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_yellow_glasses.rsi
   - type: Clothing
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_yellow_glasses.rsi
-  - type: ShowNanotrasenIcons
   - type: ShowHealthBars
   - type: FlashImmunity
   - type: Tag
@@ -48,7 +46,6 @@
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_bronze_glasses.rsi
   - type: Clothing
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_bronze_glasses.rsi
-  - type: ShowNanotrasenIcons
   - type: ShowHealthBars
     damageContainers:
     - Inorganic

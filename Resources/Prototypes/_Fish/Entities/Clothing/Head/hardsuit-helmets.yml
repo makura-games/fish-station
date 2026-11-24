@@ -168,6 +168,28 @@
     - HeadTop
     - HeadSide
 
+# Классический формат спрайтов шлемов с фонарём (icon / icon-flash, off/on-equipped-HELMET).
+# Варианты для рас (-vox и др.) подхватываются автоматически через ClientClothingSystem.
+- type: entity
+  id: FishClassicHardsuitHelmetVisuals
+  abstract: true
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+    - state: icon-flash
+      visible: false
+      map: [ light ]
+  - type: Clothing
+    clothingVisuals:
+      head:
+      - state: off-equipped-HELMET
+  - type: ToggleableVisuals
+    spriteLayer: light
+    clothingVisuals:
+      head:
+      - state: on-equipped-HELMET
+
 - type: entity
   parent: [ClothingHeadHelmetCBURN, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionOrange]
   id: FishClothingHeadHelmetCBURN
@@ -175,39 +197,9 @@
   components:
   - type: Sprite
     sprite: _Fish/Clothing/Head/Hardsuits/cburn.rsi
-    clothingVisuals:
-      head:
-      - state: equipped-head
-      - state: equipped-head-unshaded
-        shader: unshaded
-      head-vox:
-      - state: equipped-head-vox
-      - state: equipped-head-unshaded-vox
-        shader: unshaded
-      head-vulpkanin:
-      - state: equipped-head
-      - state: equipped-head-unshaded
-        shader: unshaded
   - type: Clothing
     sprite: _Fish/Clothing/Head/Hardsuits/cburn.rsi
-    clothingVisuals:
-      head:
-      - state: equipped-head
-      - state: equipped-head-unshaded
-        shader: unshaded
-      head-vox:
-      - state: equipped-head-vox
-      - state: equipped-head-unshaded-vox
-        shader: unshaded
-  - type: ToggleableVisuals
-    clothingVisuals:
-      head:
-      - state: equipped-head-light
-        shader: unshaded
-      head-vox:
-      - state: equipped-head-light-vox
-        shader: unshaded
   - type: PointLight
-    color: "#ffc267" # Sunrise-Edit - сохраняем цвет фонаря шлема.
+    color: "#ffc267"
     radius: 6
     energy: 2

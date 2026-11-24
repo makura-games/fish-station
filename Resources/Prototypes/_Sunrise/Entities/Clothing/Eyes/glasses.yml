@@ -192,7 +192,6 @@
       - state: equipped-EYES-unshaded
         shader: unshaded
   - type: ShowMindShieldIcons
-  - type: ShowNanotrasenIcons  # Fish-edit
   - type: ItemSlots
     slots:
       cell_slot:

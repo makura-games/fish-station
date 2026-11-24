@@ -13,3 +13,18 @@
       whitelist:
         tags:
           - CBURN
+
+- type: listing
+  id: FishERTUplinkHardsuitERTSecurity
+  productEntity: ClothingOuterHardsuitERTSecurity
+  icon: { sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity.rsi, state: icon }
+  cost:
+    Crystallite: 10
+  categories:
+    - NTEquipment
+  conditions:
+    - !type:StoreWhitelistCondition
+      whitelist:
+        tags:
+          - ERTRed
+          - ERTGamma

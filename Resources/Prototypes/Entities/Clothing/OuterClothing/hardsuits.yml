@@ -910,10 +910,12 @@
   name: ERT leader's hardsuit
   description: A protective hardsuit worn by the leader of an emergency response team.
   components:
+  # Fish-start - классические текстуры скафандра ОБР
   - type: Sprite
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader.rsi
   - type: Clothing
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader.rsi
+  # Fish-end
   - type: Item
     size: Huge
     shape:
@@ -928,10 +930,12 @@
   name: ERT chaplain's hardsuit
   description: A protective hardsuit worn by the chaplains of an Emergency Response Team.
   components:
+  # Fish-start - классические текстуры скафандра ОБР
   - type: Sprite
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertchaplain.rsi #if you change this, please update the humanoid.yml with a better markers sprite.
   - type: Clothing
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertchaplain.rsi
+  # Fish-end
   - type: Item
     size: Huge
     shape:
@@ -946,10 +950,12 @@
   name: ERT engineer's hardsuit
   description: A protective hardsuit worn by the engineers of an emergency response team.
   components:
+  # Fish-start - классические текстуры скафандра ОБР
   - type: Sprite
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertengineer.rsi
   - type: Clothing
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertengineer.rsi
+  # Fish-end
   - type: Item
     size: Huge
     shape:
@@ -964,10 +970,12 @@
   name: ERT medic's hardsuit
   description: A protective hardsuit worn by the medics of an emergency response team.
   components:
+  # Fish-start - классические текстуры скафандра ОБР
   - type: Sprite
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical.rsi
   - type: Clothing
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical.rsi
+  # Fish-end
   - type: Item
     size: Huge
     shape:
@@ -982,10 +990,12 @@
   name: ERT security's hardsuit
   description: A protective hardsuit worn by the security officers of an emergency response team.
   components:
+  # Fish-start - классические текстуры скафандра ОБР
   - type: Sprite
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity.rsi
   - type: Clothing
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity.rsi
+  # Fish-end
   - type: Item
     size: Huge
     shape:
@@ -1005,10 +1015,12 @@
   name: ERT janitor's hardsuit
   description: A protective hardsuit worn by the janitors of an emergency response team.
   components:
+  # Fish-start - классические текстуры скафандра ОБР
   - type: Sprite
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertjanitor.rsi
   - type: Clothing
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertjanitor.rsi
+  # Fish-end
   - type: Item
     size: Huge
     shape:
@@ -1023,10 +1035,12 @@
   name: death squad hardsuit
   description: An advanced hardsuit favored by commandos for use in special operations.
   components:
+  # Fish-start - классические текстуры скафандра ЭС
   - type: Sprite
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/deathsquad.rsi
   - type: Clothing
     sprite: _Fish/Clothing/OuterClothing/Hardsuits/deathsquad.rsi
+  # Fish-end
   - type: Item
     shape:
     - 0,0,7,7
