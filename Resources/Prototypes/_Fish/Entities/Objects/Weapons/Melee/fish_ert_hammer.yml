@@ -10,6 +10,8 @@
     state: icon
   - type: Item
     size: Ginormous
+  - type: UnshadedInhandVisuals
+    suffix: -light
   - type: MeleeWeapon
     wideAnimationRotation: -120
     attackRate: 0.8
@@ -49,6 +51,15 @@
     slots:
     - back
     - suitStorage
+    clothingVisuals:
+      back:
+      - state: equipped-BACKPACK
+      - state: equipped-BACKPACK-light
+        shader: unshaded
+      suitStorage:
+      - state: equipped-SUITSTORAGE
+      - state: equipped-SUITSTORAGE-light
+        shader: unshaded
   - type: HeldSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
