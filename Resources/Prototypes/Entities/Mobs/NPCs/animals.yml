@@ -3119,6 +3119,13 @@
         reagents:
         - ReagentId: Laughter
           Quantity: 150
+    # Fish-start: откладывание яиц клоун-паука на паутине за счёт голода
+    - type: FishSpiderEggLayer
+      action: FishActionSpiderLayEgg
+      eggPrototype: FishEggClownSpider
+      hungerCost: 35
+      minHungerRatio: 0.2
+    # Fish-end
 
 - type: entity
   name: wizard spider

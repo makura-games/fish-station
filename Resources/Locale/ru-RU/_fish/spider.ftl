@@ -6,6 +6,10 @@ ent-FishEggGiantSpiderAngry = яйцо паука
     .desc = Плотный пульсирующий кокон, прикреплённый к паутине. Внутри что-то шевелится.
     .suffix = Fish
 
+ent-FishEggClownSpider = яйцо клоун-паука
+    .desc = Плотный пульсирующий кокон, прикреплённый к паутине. Изнутри доносится приглушённое хонканье.
+    .suffix = Fish
+
 fish-spider-egg-no-grid = Здесь не к чему прикрепить яйцо!
 fish-spider-egg-need-web = Яйцо можно прикрепить только там, где есть паутина!
 fish-spider-egg-already-exists = На этом месте уже прикреплено яйцо!

@@ -56,3 +56,17 @@
     maximumEntitiesSpawned: 1
   - type: TimedDespawn
     lifetime: 241
+
+- type: entity
+  parent: FishEggGiantSpiderAngry
+  id: FishEggClownSpider
+  name: clown spider egg
+  description: A dense, pulsing egg sac anchored to spider web. Faint honking echoes from inside.
+  suffix: Fish
+  components:
+  - type: TimedSpawner
+    prototypes:
+    - MobClownSpider
+    intervalSeconds: 240
+    minimumEntitiesSpawned: 1
+    maximumEntitiesSpawned: 1
