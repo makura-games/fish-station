@@ -5,3 +5,4 @@ damage-group-toxin = Токсины
 damage-group-genetic = Генетические
 damage-group-mangleness = Истощение
 damage-group-metaphysical = Метафизический
+damage-group-structural = Структурные

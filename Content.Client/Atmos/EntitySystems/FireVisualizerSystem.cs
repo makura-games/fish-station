@@ -21,6 +21,7 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         base.Initialize();
 
         SubscribeLocalEvent<FireVisualsComponent, ComponentInit>(OnComponentInit);
+        SubscribeLocalEvent<FireVisualsComponent, ComponentStartup>(OnComponentStartup); // Fish-edit: перенесено в Content.Client/_Fish/Atmos/FireVisualizerSystem.Fish.cs, чтобы спавн LightEntity происходил после инициализации сущности
         SubscribeLocalEvent<FireVisualsComponent, ComponentShutdown>(OnShutdown);
     }
 
@@ -52,7 +53,8 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         if (component.Sprite != null)
             SpriteSystem.LayerSetRsi((uid, sprite), FireVisualLayers.Fire, new ResPath(component.Sprite));
 
-        UpdateAppearance(uid, component, sprite, appearance);
+        // Fish-edit: не вызываем UpdateAppearance до завершения инициализации всех компонентов сущности (перенесено в FireVisualizerSystem.Fish.cs)
+        // UpdateAppearance(uid, component, sprite, appearance);
     }
 
     protected override void OnAppearanceChange(EntityUid uid, FireVisualsComponent component, ref AppearanceChangeEvent args)
@@ -97,6 +99,10 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
             component.CurrentDisplacement = fireDisplacement;
         }
 
+        // Fish-start: не спавним LightEntity, пока родитель ещё не прошёл стадию Initialized (например, при AppearanceChange во время Init)
+        if (MetaData(uid).EntityLifeStage < EntityLifeStage.Initialized)
+            return;
+        // Fish-end
         component.LightEntity ??= Spawn(null, new EntityCoordinates(uid, default));
         var light = EnsureComp<PointLightComponent>(component.LightEntity.Value);
 

@@ -103,7 +103,7 @@ public sealed partial class DmArenaRuleComponent : Component
     public float SweepDespawnTime = 10f;
 
     [DataField]
-    public TimeSpan RespawnCooldown = TimeSpan.FromSeconds(20);
+    public TimeSpan RespawnCooldown = TimeSpan.FromSeconds(5);
 
     [DataField]
     public TimeSpan CombatLock = TimeSpan.FromSeconds(10);

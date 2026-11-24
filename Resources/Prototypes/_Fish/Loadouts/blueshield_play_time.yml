@@ -1,0 +1,45 @@
+# Время за роли Синего щита суммируется через отдел BlueShield.
+- type: loadoutEffectGroup
+  id: MisterBlueShit20
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: BlueShield
+      time: 20h
+
+- type: loadoutEffectGroup
+  id: MisterBlueShit100
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: BlueShield
+      time: 100h
+
+- type: loadoutEffectGroup
+  id: MisterBlueShit
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: BlueShield
+      time: 10h
+
+- type: loadoutEffectGroup
+  id: MisterBlueShit5
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: BlueShield
+      time: 5h
+
+- type: loadoutEffectGroup
+  id: MisterBlueShit50
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:DepartmentTimeRequirement
+      department: BlueShield
+      time: 50h

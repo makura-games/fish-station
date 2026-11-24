@@ -1,5 +1,6 @@
 using Content.Shared.Alert;
 using Content.Shared.Damage;
+using Content.Shared.DoAfter;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -38,6 +39,20 @@ public sealed partial class CuffableComponent : Component
 
     [DataField]
     public ProtoId<AlertPrototype> CuffedAlert = "Handcuffed";
+
+    // Fish-start - активный DoAfter самоосвобождения (прерывается пушем)
+    /// <summary>
+    /// DoAfter самоосвобождения из наручников; сбрасывается при отмене/завершении.
+    /// </summary>
+    [ViewVariables]
+    public DoAfterId? SelfBreakoutDoAfter;
+
+    /// <summary>
+    /// Пуш прервал самоосвобождение — для отдельного popup вместо общего fail.
+    /// </summary>
+    [ViewVariables]
+    public bool BreakoutInterruptedByPush;
+    // Fish-end
 }
 
 public sealed partial class RemoveCuffsAlertEvent : BaseAlertEvent;

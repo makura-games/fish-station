@@ -50,14 +50,14 @@
     shoes: ClothingShoesBootsBlueShieldFilled
     eyes: ClothingEyesGlassesBlueShield
     id: BlueShieldOfficerPDA
-    # outerClothing: ClothingOuterArmorBlueShield # Fish-edit - commented out, managed via loadout
-    # ears: ClothingHeadsetAltCommand # Fish-edit
-    ears: ClothingHeadsetBlueShield # Fish-edit
+    # outerClothing: ClothingOuterArmorBlueShield  # Fish-edit: commented out, managed via loadout
+    # ears: ClothingHeadsetAltCommand  # Fish-edit
+    ears: ClothingHeadsetBlueShield  # Fish-edit
     gloves: ClothingHandsGlovesCombat
   storage:
     back:
-    - FishUplinkNTERTBlueShield # Fish-edit
-    # - HandheldBSOCrewMonitor
+    - FishUplinkNTERTBlueShield  # Fish-edit
+    - HandheldBSOCrewMonitor  # Fish-edit
 
 - type: chameleonOutfit
   id: BlueShieldOfficerChameleonOutfit

@@ -9,3 +9,11 @@ ent-OversightOfficerIDCard = ID карта офицера надзора
 
 ent-SpecOpsOfficerIDCard = ID карта офицера специальных операций
     .desc = { ent-IDCardStandard.desc }
+
+ent-FishRepresentativeBlueShieldIDCard = ID-карта станционного оперативника «Синий щит»
+    .desc = { ent-IDCardStandard.desc }
+    .suffix = Fish
+
+ent-FishCentcommBlueShieldIDCard = ID-карта оперативника «Синий щит»
+    .desc = { ent-IDCardStandard.desc }
+    .suffix = Fish

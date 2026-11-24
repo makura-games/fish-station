@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Antag.Components;
+using Content.Shared._Fish.Ipc;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Shared._Fish.DmArena; // Fish-edit
 using Content.Shared.Antag;
@@ -181,6 +182,11 @@ public sealed partial class AntagSelectionSystem
     /// <returns>True if there is nothing stopping this entity from being this antag. Or if there is no entity.</returns>
     public bool IsEntityValid([NotNullWhen(true)] EntityUid? uid, AntagSpecifierPrototype def)
     {
+        // Fish-start: КПБ не становятся антагонистами
+        if (uid is { } ipc && HasComp<FishIpcComponent>(ipc))
+            return false;
+        // Fish-end
+
         // If the player has not spawned in as any entity (e.g., in the lobby), they can be given an antag role/entity.
         if (!_whitelist.CheckBoth(uid, def.Blacklist, def.Whitelist))
             return false;
@@ -194,6 +200,12 @@ public sealed partial class AntagSelectionSystem
 
         // Fish-start
         if (HasComp<DmArenaFighterComponent>(uid))
+            return false;
+        // Fish-end
+
+        // Fish-start: Не выбираем антагонистами сущности с активным имплантом защиты разума
+        _mindShield.GetMindshieldStatus(uid.Value, out var isMindshielded, out _);
+        if (isMindshielded)
             return false;
         // Fish-end
 
