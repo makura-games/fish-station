@@ -20,15 +20,43 @@
   productEntity: FishERTHammer
   icon: { sprite: _Fish/Objects/Weapons/Melee/fish_ert_hammer.rsi, state: icon }
   cost:
-    Bluecrystal: 16
+    Bluecrystal: 20
   categories:
     - FishNTMelee
+  conditions:
+    - !type:StoreWhitelistCondition
+      blacklist:
+        tags:
+          - BlueShield
 
 - type: listing
   id: FishERTUplinkSword
   productEntity: FishERTSword
   icon: { sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi, state: icon }
   cost:
-    Bluecrystal: 16
+    Bluecrystal: 20
+  categories:
+    - FishNTMelee
+  conditions:
+    - !type:StoreWhitelistCondition
+      blacklist:
+        tags:
+          - BlueShield
+
+- type: listing
+  id: FishERTUplinkBreachingHammer
+  productEntity: SecBreachingHammer
+  icon: { sprite: _Sunrise/Objects/Weapons/Melee/breaching_hammer.rsi, state: icon }
+  cost:
+    Bluecrystal: 11
+  categories:
+    - FishNTMelee
+
+- type: listing
+  id: FishERTUplinkTruncheon
+  productEntity: Truncheon
+  icon: { sprite: _Sunrise/Interface/Misc/nt_icons.rsi, state: truncheon }
+  cost:
+    Bluecrystal: 2
   categories:
     - FishNTMelee
