@@ -50,8 +50,8 @@ highp vec3 applyNoir(highp vec3 c, highp float desatWeight) {
 }
 
 void fragment() {
-    // Stage 1: 10% -> 25% ramps subtle, fine horizontal micro-glitches.
-    highp float stage1 = clamp((Level - 0.10) / 0.15, 0.0, 1.0);
+    // Overall ramp: 0.0 at 10% -> 1.0 at 90% (drives fine glitch size, count, and shift smoothly from zero).
+    highp float overall = clamp((Level - 0.10) / 0.80, 0.0, 1.0);
     // Stage 2: 25% -> 90% ramps larger vignette horizontal fragments, Noir desaturation, and 3D cyan/red split.
     highp float stage2 = clamp((Level - 0.25) / 0.65, 0.0, 1.0);
 
@@ -63,13 +63,15 @@ void fragment() {
     highp float tStep = floor(TIME * 9.0) * 0.173;
     highp float tFast = floor(TIME * 16.0) * 0.097;
 
-    // Layer 1: very fine, thin horizontal micro-strips (early stage + subtle background).
-    highp vec2 fineCell = vec2(floor(UV.x * 16.0), floor(UV.y * 220.0));
+    // Layer 1: horizontal strips across the whole screen; size, count, and displacement scale from 0 at 10% to full at 90%.
+    highp vec2 fineGrid = mix(vec2(38.0, 320.0), vec2(14.0, 140.0), overall);
+    highp vec2 fineCell = floor(UV * fineGrid);
     highp float fineRand = zRandom(fineCell * 0.037 + vec2(tFast, tStep)).x;
-    highp float fineTrigger = step(0.984 - stage1 * 0.038 - stage2 * vignette * 0.055, fineRand);
+    highp float fineDensity = pow(overall, 1.35) * (0.14 + 0.055 * vignette);
+    highp float fineTrigger = step(1.0 - fineDensity, fineRand);
     highp vec2 fineOffset = vec2(
-        (fract(fineRand * 19.3) - 0.5) * (0.020 * stage1 + 0.032 * stage2),
-        (fract(fineRand * 7.1) - 0.5) * 0.0035
+        (fract(fineRand * 19.3) - 0.5) * (0.080 * overall),
+        (fract(fineRand * 7.1) - 0.5) * (0.018 * overall)
     ) * fineTrigger;
 
     // Layer 2: larger horizontal displaced fragments growing in the vignette during stage 2.
@@ -78,7 +80,7 @@ void fragment() {
     highp float bigTrigger = step(0.968 - stage2 * vignette * 0.20, bigRand) * step(0.15, vignette);
     highp vec2 bigOffset = vec2(
         (fract(bigRand * 13.7) - 0.5) * 0.085 * stage2 * vignette,
-        (fract(bigRand * 5.3) - 0.5) * 0.012 * stage2 * vignette
+        (fract(bigRand * 5.3) - 0.5) * 0.014 * stage2 * vignette
     ) * bigTrigger;
 
     highp vec2 sampleUv = clamp(UV + fineOffset + bigOffset, vec2(0.001), vec2(0.999));
@@ -89,13 +91,22 @@ void fragment() {
     highp vec4 baseSample = zTextureSpec(SCREEN_TEXTURE, sampleUv);
 
     if (stage2 <= 0.0) {
-        COLOR = baseSample;
+        if (fineTrigger <= 0.0) {
+            COLOR = baseSample;
+            return;
+        }
+        // Subtle 3D cyan/red shift on triggered micro-strips scaling cleanly from 0 at 10%.
+        highp float fineSplit = 0.0035 * overall;
+        highp float rFine = zTextureSpec(SCREEN_TEXTURE, clamp(sampleUv + vec2(fineSplit, 0.0), vec2(0.001), vec2(0.999))).r;
+        highp vec2 gbFine = zTextureSpec(SCREEN_TEXTURE, clamp(sampleUv - vec2(fineSplit, 0.0), vec2(0.001), vec2(0.999))).gb;
+        COLOR = vec4(rFine, gbFine.x, gbFine.y, baseSample.a);
         return;
     }
 
     // True 3D-glasses anaglyph lateral split (red right, cyan left) growing along sides and active glitch strips.
     highp float activeGlitch = max(fineTrigger, bigTrigger);
-    highp float anaglyph = stage2 * (0.008 * max(vignette, sideMask * 0.85) + 0.0065 * activeGlitch);
+    highp float anaglyph = stage2 * 0.008 * max(vignette, sideMask * 0.85)
+        + (0.0035 * overall + 0.0065 * stage2) * activeGlitch;
 
     highp vec3 redSide = applyNoir(
         zTextureSpec(SCREEN_TEXTURE, clamp(sampleUv + vec2(anaglyph, 0.0), vec2(0.001), vec2(0.999))).rgb,
