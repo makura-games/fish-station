@@ -1,3 +1,5 @@
+light_mode unshaded;
+
 // Experimental cyberpsychosis fullscreen shader.
 // 10%-25%: subtle, very fine horizontal micro-glitch strips sampling nearby screen fragments.
 // 25%-90%: larger horizontal displaced fragments in the vignette + Noir red-only desaturation + 3D-glasses cyan/red lateral split.
@@ -6,8 +8,8 @@ uniform sampler2D SCREEN_TEXTURE;
 uniform highp float Level;
 uniform highp float PreserveVisor;
 
-const highp float RedHueRange = 8.0;
-const highp float MinSaturation = 0.35;
+const highp float RedHueRange = 5.0;
+const highp float MinSaturation = 0.4;
 
 highp vec3 rgb2hsv(highp vec3 c) {
     highp float xMax = max(c.r, max(c.g, c.b));
@@ -93,7 +95,7 @@ void fragment() {
 
     // True 3D-glasses anaglyph lateral split (red right, cyan left) growing along sides and active glitch strips.
     highp float activeGlitch = max(fineTrigger, bigTrigger);
-    highp float anaglyph = stage2 * (0.0012 + 0.0075 * max(vignette, sideMask * 0.85) + 0.0065 * activeGlitch);
+    highp float anaglyph = stage2 * (0.008 * max(vignette, sideMask * 0.85) + 0.0065 * activeGlitch);
 
     highp vec3 redSide = applyNoir(
         zTextureSpec(SCREEN_TEXTURE, clamp(sampleUv + vec2(anaglyph, 0.0), vec2(0.001), vec2(0.999))).rgb,

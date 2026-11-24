@@ -137,7 +137,7 @@ public sealed partial class NetrunnerSystem
             && TryComp<AccessReaderComponent>(device, out var accessReader))
         {
             var context = Loc.GetString("fish-netrunner-log-entry",
-                ("time", entry.Time.ToString(@"mm\:ss")),
+                ("time", $"{(int) entry.Time.TotalHours:00}:{entry.Time.Minutes:00}:{entry.Time.Seconds:00}"),
                 ("program", Loc.GetString(entry.Kind.GetLocId())),
                 ("target", entry.Target),
                 ("result", Loc.GetString("fish-netrunner-log-success")));

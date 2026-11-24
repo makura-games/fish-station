@@ -341,7 +341,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
         AddTrace(ent, ability.TraceCost * 0.2f, ability.Kind == NetrunnerHackKind.NeuralOverload);
         ApplyActivationHeat(ent, user, ability);
         if (!ent.Comp.DebugMode)
-            _cyberpsychosis.TryModifyCyberpsychosis(user, 5f, out _);
+            _cyberpsychosis.TryModifyCyberpsychosis(user, ability.RamCost * ent.Comp.CyberpsychosisPerRam, out _);
         // Fish-edit: Мгновенное завершение обрабатываем после фиксации перезарядки и следа.
         if (!_doAfter.IsRunning(doAfter))
             OnHackFinished(ent, ref finished);
