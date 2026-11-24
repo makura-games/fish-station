@@ -38,7 +38,7 @@ public sealed partial class BorgSwitchableTypeSystem
         if (prototype.SpriteOffset is { } spriteOffset)
             _sprite.SetOffset((entity.Owner, sprite), spriteOffset);
 
-        // Fish: масштаб корня спрайта (Mk2 — 0.8): применяется ко всему дереву
+        // Fish: опциональный масштаб корня спрайта (Mk2 — 0.8); применяется ко всему дереву
         // слоёв, включая in-hand предметы и одежду. Безусловный сброс в 1 —
         // как у Offset, чтобы возврат к vanilla-типу вернул исходный размер.
         var scale = prototype.SpriteScale is { } spriteScale ? new Vector2(spriteScale, spriteScale) : Vector2.One;

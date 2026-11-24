@@ -239,6 +239,7 @@
       - Inorganic
       - Silicon
       - Mech # Sunrise-edit
+      - Ipc # Fish-edit: отображение шкалы здоровья КПБ на визоре
     - type: InteractionPopup
       interactSuccessString: petting-success-syndicate-cyborg
       interactFailureString: petting-failure-syndicate-cyborg

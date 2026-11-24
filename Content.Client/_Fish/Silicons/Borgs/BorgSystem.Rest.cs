@@ -1,4 +1,6 @@
+using Content.Client.Inventory;
 using Content.Shared._Fish.BorgRest;
+using Content.Shared.Clothing;
 using Content.Shared.Mobs;
 using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.Borgs;
@@ -16,6 +18,14 @@ namespace Content.Client.Silicons.Borgs;
 /// </summary>
 public sealed partial class BorgSystem
 {
+    private readonly Dictionary<EntityUid, HashSet<string>> _hiddenRestEquipmentLayers = new();
+
+    private void InitializeBorgRestVisuals()
+    {
+        SubscribeLocalEvent<EquipmentVisualsUpdatedEvent>(OnBorgRestEquipmentVisualsUpdated);
+        SubscribeLocalEvent<BorgChassisComponent, ComponentShutdown>(OnBorgRestChassisShutdown);
+    }
+
     /// <summary>
     /// Применяет rest-кадр тела и скрывает слои мозга/фонаря поверх него, пока борг
     /// отдыхает; при выходе самостоятельно восстанавливает тело и фонарь. Выход не
@@ -58,6 +68,7 @@ public sealed partial class BorgSystem
             _sprite.LayerSetRsiState((chassis.Owner, args.Sprite), BorgVisualLayers.Body, prototype.SpriteRestingState);
             _sprite.LayerSetVisible((chassis.Owner, args.Sprite), BorgVisualLayers.Light, false);
             _sprite.LayerSetVisible((chassis.Owner, args.Sprite), BorgVisualLayers.LightStatus, false);
+            SetBorgRestEquipmentHidden(chassis.Owner, true);
             return;
         }
 
@@ -82,5 +93,104 @@ public sealed partial class BorgSystem
             out var enabled,
             args.Component) && enabled;
         _sprite.LayerSetVisible((chassis.Owner, args.Sprite), BorgVisualLayers.LightStatus, lightVisible);
+        SetBorgRestEquipmentHidden(chassis.Owner, false);
+    }
+
+    private bool IsBorgResting(EntityUid uid, AppearanceComponent? appearance = null)
+    {
+        return _appearance.TryGetData<bool>(uid, BorgRestVisuals.Resting, out var resting, appearance) && resting;
+    }
+
+    private void OnBorgRestEquipmentVisualsUpdated(EquipmentVisualsUpdatedEvent args)
+    {
+        if (!HasComp<BorgChassisComponent>(args.Equipee)
+            || !IsBorgResting(args.Equipee)
+            || (args.Slot != "head" && args.Slot != "belt"))
+        {
+            return;
+        }
+
+        if (!TryComp<SpriteComponent>(args.Equipee, out var sprite))
+            return;
+
+        if (!_hiddenRestEquipmentLayers.TryGetValue(args.Equipee, out var hiddenLayers))
+        {
+            hiddenLayers = new HashSet<string>();
+            _hiddenRestEquipmentLayers[args.Equipee] = hiddenLayers;
+        }
+
+        foreach (var layerKey in args.RevealedLayers)
+        {
+            if (!_sprite.TryGetLayer((args.Equipee, sprite), layerKey, out var layer, false) || !layer.Visible)
+            {
+                continue;
+            }
+
+            _sprite.LayerSetVisible(layer, false);
+            hiddenLayers.Add(layerKey);
+        }
+
+        _sprite.LayerSetVisible((args.Equipee, sprite), BorgVisualLayers.Light, false);
+        _sprite.LayerSetVisible((args.Equipee, sprite), BorgVisualLayers.LightStatus, false);
+    }
+
+    private void SetBorgRestEquipmentHidden(EntityUid uid, bool hidden)
+    {
+        if (!TryComp<SpriteComponent>(uid, out var sprite))
+            return;
+
+        if (!hidden)
+        {
+            if (!_hiddenRestEquipmentLayers.Remove(uid, out var hiddenLayers))
+                return;
+
+            foreach (var layerKey in hiddenLayers)
+            {
+                if (_sprite.TryGetLayer((uid, sprite), layerKey, out var layer, false))
+                    _sprite.LayerSetVisible(layer, true);
+            }
+
+            return;
+        }
+
+        if (!TryComp<InventorySlotsComponent>(uid, out var slots))
+            return;
+
+        if (!_hiddenRestEquipmentLayers.TryGetValue(uid, out var layers))
+        {
+            layers = new HashSet<string>();
+            _hiddenRestEquipmentLayers[uid] = layers;
+        }
+
+        HideBorgRestSlotLayers(uid, sprite, slots, "head", layers);
+        HideBorgRestSlotLayers(uid, sprite, slots, "belt", layers);
+    }
+
+    private void HideBorgRestSlotLayers(
+        EntityUid uid,
+        SpriteComponent sprite,
+        InventorySlotsComponent slots,
+        string slot,
+        HashSet<string> hiddenLayers)
+    {
+        if (!slots.VisualLayerKeys.TryGetValue(slot, out var layerKeys))
+            return;
+
+        foreach (var layerKey in layerKeys)
+        {
+            if (!_sprite.TryGetLayer((uid, sprite), layerKey, out var layer, false)
+                || !layer.Visible)
+            {
+                continue;
+            }
+
+            _sprite.LayerSetVisible(layer, false);
+            hiddenLayers.Add(layerKey);
+        }
+    }
+
+    private void OnBorgRestChassisShutdown(Entity<BorgChassisComponent> chassis, ref ComponentShutdown args)
+    {
+        _hiddenRestEquipmentLayers.Remove(chassis.Owner);
     }
 }

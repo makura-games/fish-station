@@ -7,4 +7,5 @@ namespace Content.Shared.Movement.Events;
 public record struct CanWeightlessMoveEvent(EntityUid Uid)
 {
     public bool CanMove = false;
+    public bool UseGroundMovement = false; // Fish-edit
 }

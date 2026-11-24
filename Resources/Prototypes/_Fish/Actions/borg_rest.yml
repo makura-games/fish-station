@@ -9,6 +9,7 @@
   components:
   - type: Action
     itemIconStyle: NoItem
+    useDelay: 2
     # Отдых переключается даже с заблокированными руками — сам DoAfter обрывает вход.
     checkCanInteract: false
   - type: Sprite

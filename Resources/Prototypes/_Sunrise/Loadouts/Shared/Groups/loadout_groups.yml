@@ -165,6 +165,8 @@
   - NanoTrasenRepresentativeJumpsuit
   - NanoTrasenRepresentativeJumpskirt
   - NanoTrasenRepresentativeJumpsuitFormal
+  - FishNTRepresentativeJumpsuit # Fish-edit
+  - FishNTRepresentativeJumpskirt # Fish-edit
 
 - type: loadoutGroup
   id: NanoTrasenRepresentativeOuterClothing
@@ -193,7 +195,15 @@
   maxLimit: 1
   loadouts:
   - NTRepresentativeCloak
-  # Fish-end
+
+- type: loadoutGroup
+  id: FishNanoTrasenRepresentativeGloves
+  name: loadout-group-nanotrasenrepresentative-gloves
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - FishNTRepresentativeGloves
+# Fish-end
 
 - type: loadoutGroup
   id: BlueShieldHead
@@ -244,64 +254,24 @@
   - BlueShieldCoat
 
 # Fish-start
-# - type: loadoutGroup
-#   id: BlueShieldBra
-#   name: loadout-group-blueshield-bra
-#   minLimit: 1
-#   maxLimit: 1
-#   loadouts:
-#   - StraplessBra
-#   - WhiteNekoBra
-#   - BlackNekoBra
-#   - AssblastusaBra
-#   - BikiniBra
-#   - BraletteBra
-#   - CommieBra
-#   - KinkyBra
-#   - LaceBra
-#   - SportBra
-#   - ThongBra
-#   - UkBra
-#   - PinkBra
-#   - PurpleBra
-#   - BlackBra
-#   - BlueShieldBra
-# Fish-end
+- type: loadoutGroup
+  id: BlueShieldBra
+  name: loadout-group-blueshield-bra
+  parent: Bra
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - BlueShieldBra
 
-# Fish-start
-# - type: loadoutGroup
-#   id: BlueShieldPants
-#   name: loadout-group-blueshield-pants
-#   minLimit: 1
-#   maxLimit: 1
-#   loadouts:
-#   - StraplessWomanPants
-#   - BoxersManPants
-#   - AssblastusaManPants
-#   - BriefsManPants
-#   - CommieManPants
-#   - HeartsManPants
-#   - KinkyManPants
-#   - LongjohnsManPants
-#   - MankiniManPants
-#   - StripeManPants
-#   - UkManPants
-#   - NekoWhiteWomanPants
-#   - NekoBlackWomanPants
-#   - AssblastusaWomanPants
-#   - BikiniWomanPants
-#   - BraletteWomanPants
-#   - CommieWomanPants
-#   - KinkyWomanPants
-#   - LaceWomanPants
-#   - SportWomanPants
-#   - ThongWomanPants
-#   - UkWomanPants
-#   - PinkWomanPants
-#   - PurpleWomanPants
-#   - BlackWomanPants
-#   - BlueShieldThong
-#   - BlueShieldBoxers
+- type: loadoutGroup
+  id: BlueShieldPants
+  name: loadout-group-blueshield-pants
+  parent: Pants
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - BlueShieldThong
+  - BlueShieldBoxers
 # Fish-end
 
 # Fish-start

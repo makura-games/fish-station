@@ -366,7 +366,14 @@ public sealed partial class SunriseCriminalRecordsCaseEditor : Control
 
     private void AddLawEntry(CorporateLawPrototype law, Control container, List<ProtoId<CorporateLawPrototype>> collection, Color? catColor = null)
     {
-        var text = law.LawIdentifier != null ? $"{law.LawIdentifier}: {Loc.GetString(law.Title)}" : Loc.GetString(law.Title);
+        // Fish-start: базовый срок статьи в редакторе дел (независимо от идентификатора)
+        var title = Loc.GetString(law.Title);
+        var text = law.LawIdentifier != null
+            ? $"{law.LawIdentifier}: {title}"
+            : title;
+        if (law.BaseSentence > 0)
+            text += $" ({law.BaseSentence} {Loc.GetString("corplaw-sentence-minutes-short")})";
+        // Fish-end
         var control = new SunriseCriminalRecordsLawControl();
 
         control.Setup(text, collection.Contains(law.ID), _isReadOnly, catColor);
@@ -418,7 +425,7 @@ public sealed partial class SunriseCriminalRecordsCaseEditor : Control
             SentenceLabel.SetMessage(FormattedMessage.FromMarkupPermissive(
                 Loc.GetString("prisoner-management-warning")));
         }
-        else if (total >= threshold)
+        else if (threshold > 0 && total >= threshold) // Fish-edit: порог -1 не должен давать «ПЕРМА» на любой срок
         {
             SentenceLabel.SetMessage(FormattedMessage.FromMarkupPermissive(
                 Loc.GetString("sunrise-records-sentence-life")));

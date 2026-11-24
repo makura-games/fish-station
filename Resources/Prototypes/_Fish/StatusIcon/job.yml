@@ -95,3 +95,11 @@
     sprite: /Textures/_Fish/Interface/Misc/job_icons.rsi
     state: NTR_operative
   jobName: job-name-blueshield-operative
+
+- type: jobIcon
+  parent: JobIcon
+  id: FishJobIconFishCentcommBlueShield
+  icon:
+    sprite: /Textures/_Fish/Interface/Misc/job_icons.rsi
+    state: CentcommBlueShield
+  jobName: job-name-centcom-blueshield

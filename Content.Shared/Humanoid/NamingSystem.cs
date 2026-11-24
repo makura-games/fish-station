@@ -40,6 +40,10 @@ namespace Content.Shared.Humanoid
                 case SpeciesNaming.OnlyFirst: // Sunrise-edit
                     return Loc.GetString("namepreset-onlyfirst",
                         ("first", GetFirstName(speciesProto, gender)));
+                // Fish-edit: имена КПБ First-Last
+                case SpeciesNaming.FirstDashLast:
+                    return Loc.GetString("namepreset-firstdashlast",
+                        ("first", GetFirstName(speciesProto, gender)), ("last", GetLastName(speciesProto, gender)));
                 case SpeciesNaming.FirstLast:
                 default:
                     return Loc.GetString("namepreset-firstlast",

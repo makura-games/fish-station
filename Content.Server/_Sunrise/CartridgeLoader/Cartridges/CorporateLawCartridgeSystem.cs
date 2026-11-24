@@ -59,7 +59,8 @@ public sealed partial class CorporateLawCartridgeSystem : EntitySystem
                 if (!ProtoMan.TryIndex(entryId, out var entry) || entry.Category == LawCategory.Provision)
                     continue;
 
-                entries.Add(new LawEntry(entry.LawIdentifier, Loc.GetString(entry.Title), Loc.GetString(entry.Description)));
+                // Fish-edit: передаём BaseSentence для отображения срока в КПК
+                entries.Add(new LawEntry(entry.LawIdentifier, Loc.GetString(entry.Title), Loc.GetString(entry.Description), entry.BaseSentence));
             }
 
             sections.Add(new LawSection(Loc.GetString(section.Title), section.Color, entries));

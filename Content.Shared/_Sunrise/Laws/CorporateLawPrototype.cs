@@ -56,4 +56,26 @@ public sealed partial class CorporateLawPrototype : IPrototype
     /// </summary>
     [DataField("sentenceMultiplier")]
     public float SentenceMultiplier = 1.0f;
+
+    // Fish-start: абсолютная надбавка/скидка в минутах (вики: сопротивление при аресте +5/+10)
+    /// <summary>
+    ///     Flat sentence modifier in minutes (used for circumstances).
+    ///     Applied after percent multipliers. Positive adds time, negative reduces it.
+    /// </summary>
+    [DataField("sentenceModifierMinutes")]
+    public int SentenceModifierMinutes = 0;
+
+    /// <summary>
+    ///     Обстоятельства с одной группой взаимоисключающи; побеждает больший <see cref="ExclusivePriority"/>.
+    ///     Проигравший не даёт ни процента <see cref="SentenceMultiplier"/>, ни минут.
+    /// </summary>
+    [DataField]
+    public string? ExclusiveGroup;
+
+    /// <summary>
+    ///     Приоритет внутри <see cref="ExclusiveGroup"/> (больше = сильнее).
+    /// </summary>
+    [DataField]
+    public int ExclusivePriority;
+    // Fish-end
 }
