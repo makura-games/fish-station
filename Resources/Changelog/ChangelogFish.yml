@@ -1935,3 +1935,13 @@
     message: КПБ получили дополнительный слот для модулей. В инструментальном модуле мультитул заменён на омни-инструмент.
   id: 198
   url: https://github.com/makura-games/fish-station/pull/694
+- author: dngcher
+  time: '2026-11-24T23:10:21.0000000+00:00'
+  changes:
+  - type: Add
+    message: 7 новых видов мостиков (которые Catwalk)
+  id: 199
+  url: https://github.com/makura-games/fish-station/pull/483
+  media:
+  - url: https://github.com/user-attachments/assets/78c6e106-4d6a-481b-ba1f-4e63b53539a9
+    description: image
