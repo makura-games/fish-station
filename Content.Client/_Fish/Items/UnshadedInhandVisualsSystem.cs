@@ -31,8 +31,8 @@ public sealed partial class UnshadedInhandVisualsSystem : EntitySystem
             return;
 
         RSI? rsi = null;
-        if (item.RsiPath != null)
-            rsi = _resCache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / item.RsiPath).RSI;
+        if (item.RsiPath != null && _resCache.TryGetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / item.RsiPath, out var rsiRes))
+            rsi = rsiRes.RSI;
         else if (_spriteQuery.TryComp(ent, out var sprite))
             rsi = sprite.BaseRSI;
 

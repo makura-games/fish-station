@@ -1,8 +1,8 @@
 - type: entity
-  name: ert assault hammer
-  parent: BaseItem
+  name: ERT assault hammer
+  parent: [ BaseItem, BaseCommandContraband ]
   id: FishERTHammer
-  suffix: FISH
+  suffix: Fish
   description: An assault hammer utilized by Nanotrasen emergency response teams.
   components:
   - type: Sprite

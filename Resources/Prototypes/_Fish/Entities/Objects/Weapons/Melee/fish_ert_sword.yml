@@ -1,8 +1,8 @@
 - type: entity
-  name: ert assault sword
+  name: VK-3 vibroblade
   parent: [ BaseSword, BaseCommandContraband ]
   id: FishERTSword
-  suffix: FISH
+  suffix: Fish
   description: A Nanotrasen combat vibroblade for special forces. In passive mode it easily slices through enemies of the corporation, while in active mode it becomes a rapier that pierces armor like a knife through butter.
   components:
   - type: Sprite
@@ -13,12 +13,6 @@
       visible: false
       shader: unshaded
       map: [ "blade" ]
-  - type: Clothing
-    sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
-    quickEquip: false
-    slots:
-    - Back
-    - Belt
   - type: Reflect
     reflects:
     - NonEnergy
@@ -27,7 +21,7 @@
   - type: Item
     size: Huge
     shape:
-    - 0,0,3,3
+    - 0,0,3,1
     inhandVisuals:
       left:
       - state: inhand-left-off
@@ -51,6 +45,7 @@
           shader: unshaded
   - type: UseDelay
     delay: 3
+  - type: ItemSwitchUseDelay
   - type: DisarmMalus
   - type: EmitSoundOnLand
     sound:
