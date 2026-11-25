@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishDelta
-  mapName: 'Delta'
+  mapName: 'Дельта'
   mapPath: /Maps/_Fish/Station/delta.yml
   maxRandomOffset: 0
   randomRotation: false

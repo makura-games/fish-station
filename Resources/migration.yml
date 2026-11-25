@@ -1645,8 +1645,4 @@ BigThruster: ThrusterLarge
 HugeRedThruster: ThrusterLarge
 HugeThruster: ThrusterLarge
 RustedThruster: Thruster
-HighSecCommandLocked: AirlockCommandLocked
-HighSecCentralCommandLocked: AirlockCentralCommandLocked
-HighSecArmoryLocked: AirlockArmoryLocked
-HighSecCaptainLocked: AirlockCaptainLocked
 # region Fish-end

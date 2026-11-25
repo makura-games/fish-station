@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishMarathon
-  mapName: 'Marathon'
+  mapName: 'Марафон'
   mapPath: /Maps/_Fish/Station/marathon.yml
   maxRandomOffset: 0
   randomRotation: false
