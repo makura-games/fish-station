@@ -7,6 +7,11 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Fun/red_flowers.rsi
     state: item
+ # Fish-start Для баунти в карго
+  - type: Tag
+    tags:
+    - Flower
+ # Fish-end
 
 - type: entity
   parent: BaseItem
@@ -17,3 +22,8 @@
   - type: Sprite
     sprite: _Sunrise/Objects/Fun/blue_flowers.rsi
     state: item
+ # Fish-start Для баунти в карго
+  - type: Tag
+    tags:
+    - Flower
+ # Fish-end

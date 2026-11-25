@@ -1,3 +1,4 @@
+using Content.Shared._Sunrise.TTS;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -57,6 +58,12 @@ public sealed partial class CentCommSupplyConsoleComponent : Component
     /// </summary>
     [DataField]
     public LocId AnnouncementSender = "centcomm-supply-announcement-sender";
+
+    /// <summary>
+    /// Голос TTS для объявления о заказе снабжения ЦК.
+    /// </summary>
+    [DataField]
+    public ProtoId<TTSVoicePrototype>? AnnounceVoice = "Hanson";
 
     /// <summary>
     /// Sound played globally when the order arrives at the station.

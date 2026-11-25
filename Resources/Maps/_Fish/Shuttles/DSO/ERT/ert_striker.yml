@@ -6668,7 +6668,7 @@ entities:
       parent: 2
       rot: 3.141592653589793 rad
       pos: 1.5,-1.5
-- proto: WallShuttle
+- proto: WallReinforcedShuttle
   entities:
   - uid: 109
     components:
@@ -7306,7 +7306,7 @@ entities:
     - type: Transform
       parent: 2
       pos: -1.5,2.5
-- proto: WallShuttleDiagonal
+- proto: WallReinforcedShuttleDiagonal
   entities:
   - uid: 629
     components:

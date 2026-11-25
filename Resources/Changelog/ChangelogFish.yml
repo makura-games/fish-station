@@ -1903,3 +1903,73 @@
     message: Успешный толчок (disarm) теперь прерывает попытку цели самостоятельно снять с себя наручники и сбрасывает прогресс.
   id: 194
   url: https://github.com/makura-games/fish-station/pull/654
+- author: TiFeRi
+  time: '2026-11-22T19:20:28.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Небольшое обновление рефайнери
+  id: 195
+  url: https://github.com/makura-games/fish-station/pull/691
+- author: Pifagor-Cry
+  time: '2026-11-22T18:32:00.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Добавлен дополнительный слот для модуля КПБ. В инструментальный модуль КПБ вместо мультитула теперь входит омни-инструмент.
+  id: 196
+- author: NekutGit
+  time: '2026-11-22T22:40:46.0000000+00:00'
+  changes:
+  - type: Add
+    message: Для закрытых ящиков СБ и КМД добавлена сигнализация.
+  - type: Tweak
+    message: Закрытым ящикам СБ, КМД и Синдиката увеличена прочность.
+  id: 197
+  url: https://github.com/makura-games/fish-station/pull/692
+  media:
+  - url: https://github.com/user-attachments/assets/56e7eec2-af15-43ec-a616-33020e56645f
+    description: изображение
+- author: Pifagor-Cry
+  time: '2026-11-22T22:41:50.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: КПБ получили дополнительный слот для модулей. В инструментальном модуле мультитул заменён на омни-инструмент.
+  id: 198
+  url: https://github.com/makura-games/fish-station/pull/694
+- author: dngcher
+  time: '2026-11-24T23:10:21.0000000+00:00'
+  changes:
+  - type: Add
+    message: 7 новых видов мостиков (которые Catwalk)
+  id: 199
+  url: https://github.com/makura-games/fish-station/pull/483
+  media:
+  - url: https://github.com/user-attachments/assets/78c6e106-4d6a-481b-ba1f-4e63b53539a9
+    description: image
+- author: TiFeRi
+  time: '2026-11-24T23:12:26.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Расширение дворфийского словаря
+  id: 200
+  url: https://github.com/makura-games/fish-station/pull/632
+- author: TiFeRi
+  time: '2026-11-25T22:06:17.0000000+00:00'
+  changes:
+  - type: Add
+    message: 'Тэги для цветков в баунти в карго: букеты и подсолнух.'
+  id: 201
+  url: https://github.com/makura-games/fish-station/pull/699
+- author: KrytoiChuvaaak
+  time: '2026-11-25T22:42:32.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Перчатки теперь надеваются вместе с комплектом ОБР.
+  id: 202
+  url: https://github.com/makura-games/fish-station/pull/643
+- author: KrytoiChuvaaak
+  time: '2026-11-25T23:04:57.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Добавлено отображение правил антагонистов при получении роли и в меню призрачных ролей.
+  id: 203
+  url: https://github.com/makura-games/fish-station/pull/631

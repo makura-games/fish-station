@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishSuharik
-  mapName: 'Suharik'
+  mapName: 'Сухарик'
   mapPath: /Maps/_Fish/Station/suharik.yml
   maxRandomOffset: 0
   randomRotation: false

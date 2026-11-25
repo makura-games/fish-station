@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishBarratry
-  mapName: 'Barratry'
+  mapName: 'Барратри'
   mapPath: /Maps/_Fish/Station/barratry.yml
   maxRandomOffset: 0
   randomRotation: false

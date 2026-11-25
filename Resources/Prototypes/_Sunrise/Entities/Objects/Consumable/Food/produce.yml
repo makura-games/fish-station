@@ -424,6 +424,7 @@
   - type: Tag
     tags:
     - Fruit
+    - Flower # Fish-edit Для баунти в карго
     - Sunflower # TODO add "RedFlower" or "Poppy" tag, when other color flowers will be
 
 - type: entity

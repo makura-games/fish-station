@@ -25,6 +25,7 @@ namespace Content.Client.UserInterface.Systems.Ghost.Controls.Roles
             foreach (var role in roles)
             {
                 var button = new GhostRoleEntryButtons(role);
+                button.RulesButton.Visible = !string.IsNullOrWhiteSpace(role.Rules); // Fish-edit: скрываем кнопку, если правила не заданы.
                 button.RequestButton.OnPressed += _ => OnRoleSelected?.Invoke(role);
                 button.RulesButton.OnPressed += _ => OnRoleRules?.Invoke(role); // Sunrise-Edit
                 button.FollowButton.OnPressed += _ => OnRoleFollow?.Invoke(role);
