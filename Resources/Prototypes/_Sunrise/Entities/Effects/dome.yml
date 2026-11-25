@@ -31,6 +31,12 @@
     sound:
       path: /Audio/_Sunrise/Machines/energyshield_ambient.ogg
   - type: EnergyDome
+  # Fish-start: урон от ЭМИ по энергетическим куполам
+  - type: EmpVulnerable
+    damage:
+      types:
+        Shock: 25
+  # Fish-end
   - type: Tag
     tags:
       - HideContextMenu

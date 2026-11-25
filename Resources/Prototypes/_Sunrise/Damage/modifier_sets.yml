@@ -131,12 +131,14 @@
 - type: damageModifierSet
   id: HardLightBarrier
   coefficients:
-    Heat: 0.8
-    Blunt: 0.8
-    Slash: 0.8
-    Piercing: 0.8
-    Cold: 0.8
-    Shock: 1.6
+    # Fish-start: все типы урона 1.0, кроме Shock (3.0)
+    Heat: 1.0
+    Blunt: 1.0
+    Slash: 1.0
+    Piercing: 1.0
+    Cold: 1.0
+    Shock: 3.0
+    # Fish-end
 
 - type: damageModifierSet
   id: CyberneticFlesh
