@@ -2113,7 +2113,7 @@ entities:
     - type: Transform
       parent: 1
       pos: -1.5,-0.5
-- proto: WallReinforced
+- proto: WallReinforcedShuttle
   entities:
   - uid: 2
     components:
@@ -2333,7 +2333,7 @@ entities:
     - type: Transform
       parent: 1
       pos: 10.5,-0.5
-- proto: WallReinforcedDiagonal
+- proto: WallReinforcedShuttleDiagonal
   entities:
   - uid: 5
     components:

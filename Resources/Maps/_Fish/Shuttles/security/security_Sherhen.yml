@@ -1694,7 +1694,7 @@ entities:
     - type: Transform
       parent: 1
       pos: 5.5,2.5
-- proto: WallShuttle
+- proto: WallReinforcedShuttle
   entities:
   - uid: 94
     components:
