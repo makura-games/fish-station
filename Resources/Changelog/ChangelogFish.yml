@@ -1788,3 +1788,181 @@
     message: Апстрим Sunrise(18.11.2026)
   id: 182
   url: https://github.com/makura-games/fish-station/pull/674
+- author: TiFeRi
+  time: '2026-11-19T20:14:02.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавление подкрепления ЯО лон оперу.
+  - type: Tweak
+    message: Снижение стоимости подкрепления ЯО (с 30ТК до 18ТК).
+  id: 183
+  url: https://github.com/makura-games/fish-station/pull/675
+- author: NekutGit
+  time: '2026-11-19T20:30:28.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена новая иконка для ОпСЩ Центкома.
+  - type: Tweak
+    message: Все члены «Синий щит» вернулись в один отдел в лобби.
+  - type: Tweak
+    message: Синхронизированы лоадауты отдела «Синий щит».
+  - type: Tweak
+    message: Вайтлист у ОпСЩ для ПНТ был временно отозван.
+  id: 184
+  url: https://github.com/makura-games/fish-station/pull/665
+- author: NekutGit
+  time: '2026-11-19T21:55:24.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлена консоль снабжения Центкома, заказы которой отправляются на выбранную станцию.
+  id: 185
+  url: https://github.com/makura-games/fish-station/pull/630
+  media:
+  - url: https://github.com/user-attachments/assets/e7f1998f-55ef-48e1-bf3a-0ea938af75d8
+    description: изображение
+  - url: https://github.com/user-attachments/assets/0843bae4-eaf1-4195-9859-3a57b951ae2c
+    description: изображение
+  - url: https://github.com/user-attachments/assets/3cd78d7b-e1e8-4f2f-a181-ac10485b6e4c
+    description: изображение
+  - url: https://github.com/user-attachments/assets/9470af52-64a8-49da-a229-d72f677ecd2d
+    description: изображение
+- author: YARP0d
+  time: '2026-11-20T20:44:04.0000000+00:00'
+  changes:
+  - type: Add
+    message: Добавлено 100 новых фамилий и имён КПБ для генерации автоимён.
+  id: 186
+  url: https://github.com/makura-games/fish-station/pull/679
+- author: YARP0d
+  time: '2026-11-20T21:30:44.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Изменена форма заявления на ВрИО.
+  id: 187
+  url: https://github.com/makura-games/fish-station/pull/680
+- author: Kaiten
+  time: '2026-11-21T11:41:01.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: ДМ арена теперь автоматически открывается через 5 минут после начала раунда (ранее — через 20 минут).
+  - type: Tweak
+    message: Кулдаун возрождения на ДМ арене снижен с 20 до 5 секунд.
+  - type: Tweak
+    message: Стоимость оружия ближнего боя (кроме катаны), щитов и поясного генератора щита на ДМ арене увеличена на 10% с округлением вверх.
+  - type: Remove
+    message: С ДМ арены убран ПП «Томпсон», магазины к нему и готовый набор «Гангстер».
+  id: 188
+  url: https://github.com/makura-games/fish-station/pull/684
+- author: Kaiten
+  time: '2026-11-21T20:19:29.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Выровнены шансы выбора крупных антагонистов у рассказчика (Диверсионный отряд, Ксеноборги, Ядерные оперативники, Кровавый культ, Культ плоти, Революция и Зомби-вспышка), они теперь равны, а не с уклоном к реве и ЯО.
+  - type: Fix
+    message: Исправлено чрезмерно частое выпадение ядерных оперативников при завершении пиковой фазы рассказчика — теперь в конце пика выбирается случайная доступная угроза с добором по оставшемуся бюджету, а не только самые дорогие режимы.
+  id: 189
+  url: https://github.com/makura-games/fish-station/pull/688
+- author: YARP0d
+  time: '2026-11-21T22:13:46.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Снижен урон и стан урон молоту синдиката (ушибы с 30 до 25, структурный с 165 до 145). Стан относительно урона снижен до 150% с 200%.
+  id: 190
+  url: https://github.com/makura-games/fish-station/pull/685
+- author: Pifagor
+  time: '2026-11-21T22:32:32.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Исправлена ошибка, из-за которой при передаче предметов из рук в руки (Alt + ЛКМ) можно было отдать виртуальные или неудаляемые предметы, а также содержимое модулей киборгов.
+  id: 191
+  url: https://github.com/makura-games/fish-station/pull/687
+- author: YARP0d
+  time: '2026-11-21T22:34:15.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Уменьшена скорость мехов на 10%
+  - type: Tweak
+    message: Уменьшено время ЭМИ КД-иммунитета у мехов и киборгов с 6 секунд до 1.
+  id: 192
+  url: https://github.com/makura-games/fish-station/pull/689
+- author: Pifagor
+  time: '2026-11-21T22:41:11.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Стреляные гильзы больше нельзя подобрать в руки, и после выброса из оружия они исчезают с пола через минуту (целые патроны не затрагиваются).
+  - type: Fix
+    message: Исправлена ошибка, из-за которой безгильзовые патроны после выстрела из револьвера оставались внутри барабана.
+  id: 193
+  url: https://github.com/makura-games/fish-station/pull/686
+- author: Pifagor
+  time: '2026-11-21T23:18:14.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Время самостоятельного освобождения от стандартных наручников увеличено с 15 до 60 секунд.
+  - type: Tweak
+    message: Успешный толчок (disarm) теперь прерывает попытку цели самостоятельно снять с себя наручники и сбрасывает прогресс.
+  id: 194
+  url: https://github.com/makura-games/fish-station/pull/654
+- author: TiFeRi
+  time: '2026-11-22T19:20:28.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Небольшое обновление рефайнери
+  id: 195
+  url: https://github.com/makura-games/fish-station/pull/691
+- author: Pifagor-Cry
+  time: '2026-11-22T18:32:00.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Добавлен дополнительный слот для модуля КПБ. В инструментальный модуль КПБ вместо мультитула теперь входит омни-инструмент.
+  id: 196
+- author: NekutGit
+  time: '2026-11-22T22:40:46.0000000+00:00'
+  changes:
+  - type: Add
+    message: Для закрытых ящиков СБ и КМД добавлена сигнализация.
+  - type: Tweak
+    message: Закрытым ящикам СБ, КМД и Синдиката увеличена прочность.
+  id: 197
+  url: https://github.com/makura-games/fish-station/pull/692
+  media:
+  - url: https://github.com/user-attachments/assets/56e7eec2-af15-43ec-a616-33020e56645f
+    description: изображение
+- author: Pifagor-Cry
+  time: '2026-11-22T22:41:50.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: КПБ получили дополнительный слот для модулей. В инструментальном модуле мультитул заменён на омни-инструмент.
+  id: 198
+  url: https://github.com/makura-games/fish-station/pull/694
+- author: dngcher
+  time: '2026-11-24T23:10:21.0000000+00:00'
+  changes:
+  - type: Add
+    message: 7 новых видов мостиков (которые Catwalk)
+  id: 199
+  url: https://github.com/makura-games/fish-station/pull/483
+  media:
+  - url: https://github.com/user-attachments/assets/78c6e106-4d6a-481b-ba1f-4e63b53539a9
+    description: image
+- author: TiFeRi
+  time: '2026-11-24T23:12:26.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Расширение дворфийского словаря
+  id: 200
+  url: https://github.com/makura-games/fish-station/pull/632
+- author: TiFeRi
+  time: '2026-11-25T22:06:17.0000000+00:00'
+  changes:
+  - type: Add
+    message: 'Тэги для цветков в баунти в карго: букеты и подсолнух.'
+  id: 201
+  url: https://github.com/makura-games/fish-station/pull/699
+- author: KrytoiChuvaaak
+  time: '2026-11-25T22:42:32.0000000+00:00'
+  changes:
+  - type: Fix
+    message: Перчатки теперь надеваются вместе с комплектом ОБР.
+  id: 202
+  url: https://github.com/makura-games/fish-station/pull/643

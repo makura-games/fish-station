@@ -3574,7 +3574,7 @@ entities:
       parent: 1
       rot: 3.141592653589793 rad
       pos: -0.5,-1.5
-- proto: WallMining
+- proto: WallMiningReinforced
   entities:
   - uid: 41
     components:
@@ -3794,7 +3794,7 @@ entities:
       parent: 1
       rot: -1.5707963267948966 rad
       pos: 1.5,-7.5
-- proto: WallMiningDiagonal
+- proto: WallMiningDiagonalReinforced
   entities:
   - uid: 138
     components:

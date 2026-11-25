@@ -5577,7 +5577,7 @@ entities:
       parent: 1
     - type: Fixtures
       fixtures: {}
-- proto: WallReinforcedDiagonal
+- proto: WallReinforcedShuttleDiagonal
   entities:
   - uid: 635
     components:
@@ -5625,7 +5625,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 6.5,10.5
       parent: 1
-- proto: WallRiveted
+- proto: WallReinforcedShuttle
   entities:
   - uid: 3
     components:

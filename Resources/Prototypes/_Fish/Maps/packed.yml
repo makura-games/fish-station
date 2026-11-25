@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishPacked
-  mapName: 'Packed'
+  mapName: 'Пакед'
   mapPath: /Maps/_Fish/Station/packed.yml
   maxRandomOffset: 0
   randomRotation: false

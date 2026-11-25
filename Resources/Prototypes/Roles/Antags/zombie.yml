@@ -1,5 +1,7 @@
 - type: antag
   id: InitialInfected
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-zombie
   name: roles-antag-initial-infected-name
   antagonist: true
   setPreference: true
@@ -57,6 +59,8 @@
 
 - type: antag
   id: Zombie
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-zombie
   name: roles-antag-zombie-name
   antagonist: true
   setPreference: false

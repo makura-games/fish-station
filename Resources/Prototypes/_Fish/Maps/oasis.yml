@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishOasis
-  mapName: 'Oasis'
+  mapName: 'Оазис'
   mapPath: /Maps/_Fish/Station/oasis.yml
   maxRandomOffset: 0
   randomRotation: false
