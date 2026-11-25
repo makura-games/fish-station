@@ -78949,7 +78949,7 @@ entities:
     - type: Transform
       parent: 2
       pos: 39.47001,12.564869
-- proto: ClothingOuterHardsuitLuxury
+- proto: ClothingOuterHardsuitSalvage
   entities:
   - uid: 9383
     components:
