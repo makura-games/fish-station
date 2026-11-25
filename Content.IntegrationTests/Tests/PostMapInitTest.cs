@@ -88,7 +88,9 @@ namespace Content.IntegrationTests.Tests
             "/Maps/_Fish/Shuttles/DSO/**",
             "/Maps/_Fish/Shuttles/DSO/ERT/**",
             "/Maps/_Fish/Shuttles/DSO/CBURN/**",
+            "/Maps/_Fish/Shuttles/security/**",
             "/Maps/_Fish/Nonstations/**",
+            "/Maps/_Fish/PlanetWar/**",
             // Fish-end
         };
 
