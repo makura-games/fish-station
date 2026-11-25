@@ -1,0 +1,136 @@
+- type: gameMap
+  id: FishIshimura
+  mapName: 'Ишимура'
+  mapPath: /Maps/_Fish/Station/ishimura.yml
+  maxRandomOffset: 0
+  randomRotation: false
+  minPlayers: 35
+  maxPlayers: 70
+  stations:
+    Ishimura:
+      stationProto: StandardNanotrasenStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: '{0} Ишимура {1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: 'FH-USG'
+      - type: StationEmergencyShuttle
+        emergencyShuttlePath: /Maps/_Fish/Shuttles/emergency_delta.yml
+      - type: StationGoal
+        goals:
+        - Shuttle
+        - Singularity
+        - SolarPanels
+        - Artifacts
+        - Bank
+        - Zoo
+        - MiningOutpost
+        - Tesla
+        - XenobiologyRepair
+        - VirusologyAmbusol
+        - Containment
+        - WeaponsSecurity
+        - MaintsRepair
+        - DormsBuild
+        - BattleShuttle
+        - Transit
+        - NukeRoom
+        - Permabrig
+        - Farm
+        - Delegates
+        - Cyborgs
+        - Testing
+        - Anomaly
+        - Replenishment
+        - IntelWeapons
+        - Reports
+        - Reconnaissance
+        - Saboteurs
+        - Crew
+        - HumanitarianAid
+        - PersonnelRecovery
+        - CrewEducation
+        - Virology
+        - SampleCollection
+        - Examination
+        - StationGoalPolymorph
+        - VirusFlesh
+      - type: StationJobs
+        availableJobs:
+          #command
+          Captain: [ 1, 1 ]
+          Adjutant: [ 1, 1 ]
+          NanoTrasenRepresentative: [ 1, 1 ]
+          HeadOfPersonnel: [ 1, 1 ]
+          ComMaid: [ 1, 1 ] # Горничная командования
+          #service
+          Bartender: [ 2, 2 ]
+          Botanist: [ 3, 3 ]
+          Chef: [ 2, 2 ]
+          Janitor: [ 2, 2 ]
+          Chaplain: [ 1, 1 ]
+          Librarian: [ 1, 1 ]
+          ServiceWorker: [ 2, 2 ]
+          Reporter: [ 1, 1 ]
+          Barber: [ 1, 1 ]
+          #engineering
+          ChiefEngineer: [ 1, 1 ]
+          SeniorEngineer: [ 1, 1 ]
+          AtmosphericTechnician: [ 3, 3 ]
+          StationEngineer: [ 4, 4 ]
+          TechnicalAssistant: [ 3, 3 ]
+          #medical
+          ChiefMedicalOfficer: [ 1, 1 ]
+          SeniorPhysician: [ 1, 1 ]
+          Chemist: [ 2, 2 ]
+          MedicalDoctor: [ 4, 4 ]
+          Paramedic: [ 2, 2 ]
+          MedicalIntern: [ 3, 3 ]
+          Psychologist: [ 1, 1 ]
+          MedicalPathologist: [ 1, 1 ]
+          #science
+          ResearchDirector: [ 1, 1 ]
+          SeniorResearcher: [ 1, 1 ]
+          Scientist: [ 4, 4 ]
+          ResearchAssistant: [ 3, 3 ]
+          Roboticist: [ 2, 2 ]
+          #security
+          HeadOfSecurity: [ 1, 1 ]
+          Warden: [ 1, 1 ]
+          SeniorOfficer: [ 1, 1 ]
+          Detective: [ 1, 1 ]
+          Brigmedic: [ 1, 1 ]
+          SecurityPilot: [ 2, 2 ]
+          SecurityOfficer: [ 4, 4 ]
+          SecurityCadet: [ 4, 4 ]
+          #supply
+          Quartermaster: [ 1, 1 ]
+          SalvageSpecialist: [ 3, 3 ]
+          MiningSpecialist: [ 1, 1 ]
+          CargoTechnician: [ 3, 3 ]
+          MailCarrier: [ 1, 2 ]
+          #civilian
+          Passenger: [ -1, -1 ]
+          Clown: [ 1, 1 ]
+          Mime: [ 1, 1 ]
+          Musician: [ 1, 1 ]
+          #blueshield
+          BlueShieldOfficer: [ 1, 1 ]
+          RepresentativeBlueShield: [ 1, 1 ]
+          #law
+          Magistrat: [ 1, 1 ]
+          IAA: [ 1, 1 ]
+          Lawyer: [ 1, 1 ]
+          NtrOfficer: [ 2, 2 ]
+          # silicon
+          StationAi: [ 1, 1 ]
+          Borg: [ 2, 2 ]
+          EngineerBorg: [ 2, 2 ]
+          MiningBorg: [ 2, 2 ]
+          JanitorBorg: [ 2, 2 ]
+          ServiceBorg: [ 2, 2 ]
+          ClownBorg: [ 2, 2 ]
+          PeaceBorg: [ 2, 2 ]
+          MedicalBorg: [ 2, 2 ]
+          SecurityBorg: [ 2, 2 ]
