@@ -100,6 +100,7 @@ public sealed partial class AntagPrototypeRulesTest : GameTest
             Assert.That(received, Has.Count.EqualTo(1));
             Assert.That(received[0].Rules, Is.EqualTo(new[] { "fish-antag-rules-traitor" }));
         });
+        await Client.WaitPost(() => Client.System<AntagRulesListenerSystem>().ReceivedRules.Clear());
 
         var netManager = Client.ResolveDependency<IClientNetManager>();
         await Client.WaitPost(() => netManager.ClientDisconnect("Antagonist rules reconnect test"));
