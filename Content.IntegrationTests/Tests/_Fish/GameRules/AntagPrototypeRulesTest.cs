@@ -10,15 +10,14 @@ using Content.Shared.Roles;
 using NUnit.Framework;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
+using Robust.Shared.IoC;
 using Robust.Shared.Network;
 
 namespace Content.IntegrationTests.Tests._Fish.GameRules;
 
 [TestFixture]
-public sealed class AntagPrototypeRulesTest : GameTest, IEntityEventSubscriber
+public sealed partial class AntagPrototypeRulesTest : GameTest
 {
-    private readonly List<FishAntagRulesEvent> _receivedRules = new();
-
     public override PoolSettings PoolSettings => new()
     {
         Connected = true,
@@ -82,50 +81,64 @@ public sealed class AntagPrototypeRulesTest : GameTest, IEntityEventSubscriber
     [Test]
     public async Task AntagonistRulesAreShownAgainForANewSession()
     {
-        await Client.WaitPost(() => Client.EntMan.EventBus.SubscribeEvent<FishAntagRulesEvent>(
-            EventSource.Network,
-            this,
-            OnRulesReceived));
+        var playerManager = Server.ResolveDependency<IPlayerManager>();
+        var session = playerManager.Sessions.Single();
+        var username = session.Name;
 
-        try
+        await Client.WaitPost(() => Client.System<AntagRulesListenerSystem>().ReceivedRules.Clear());
+
+        await Server.WaitPost(() =>
         {
-            var playerManager = Server.ResolveDependency<IPlayerManager>();
-            var session = playerManager.Sessions.Single();
-            var username = session.Name;
-
-            await Server.WaitAssertion(() =>
-            {
-                var mindId = session.ContentData()!.Mind!.Value;
-                var mind = Server.EntMan.GetComponent<MindComponent>(mindId);
-                Server.System<RoleSystem>().MindAddRole(mindId, "MindRoleTraitor", mind, silent: true);
-            });
-            await RunTicksSync(5);
-            await Client.WaitAssertion(() => Assert.That(_receivedRules, Has.Count.EqualTo(1)));
-
-            var netManager = Client.ResolveDependency<IClientNetManager>();
-            await Client.WaitAssertion(() => netManager.ClientDisconnect("Antagonist rules reconnect test"));
-            await RunTicksSync(5);
-
-            Client.SetConnectTarget(Server);
-            var baseClient = Client.ResolveDependency<Robust.Client.IBaseClient>();
-            await Client.WaitPost(() =>
-            {
-                baseClient.PlayerNameOverride = username;
-                baseClient.ConnectToServer(new System.Net.DnsEndPoint("localhost", 1212));
-            });
-            await RunTicksSync(10);
-
-            await Client.WaitAssertion(() => Assert.That(_receivedRules, Has.Count.EqualTo(2)));
-            Assert.That(_receivedRules[1].Rules, Is.EqualTo(new[] { "fish-antag-rules-traitor" }));
-        }
-        finally
+            var mindId = session.ContentData()!.Mind!.Value;
+            var mind = Server.EntMan.GetComponent<MindComponent>(mindId);
+            Server.System<RoleSystem>().MindAddRole(mindId, "MindRoleTraitor", mind, silent: true);
+        });
+        await RunTicksSync(5);
+        await Client.WaitAssertion(() =>
         {
-            await Client.WaitPost(() => Client.EntMan.EventBus.UnsubscribeEvents(this));
-        }
+            var received = Client.System<AntagRulesListenerSystem>().ReceivedRules;
+            Assert.That(received, Has.Count.EqualTo(1));
+            Assert.That(received[0].Rules, Is.EqualTo(new[] { "fish-antag-rules-traitor" }));
+        });
+
+        var netManager = Client.ResolveDependency<IClientNetManager>();
+        await Client.WaitPost(() => netManager.ClientDisconnect("Antagonist rules reconnect test"));
+        await RunTicksSync(5);
+
+        Client.SetConnectTarget(Server);
+        var baseClient = Client.ResolveDependency<Robust.Client.IBaseClient>();
+        await Client.WaitPost(() =>
+        {
+            baseClient.PlayerNameOverride = username;
+            baseClient.ConnectToServer(new System.Net.DnsEndPoint("localhost", 1212));
+        });
+        await RunTicksSync(10);
+
+        await Client.WaitAssertion(() =>
+        {
+            var received = Client.System<AntagRulesListenerSystem>().ReceivedRules;
+            Assert.That(received, Has.Count.EqualTo(1));
+            Assert.That(received[0].Rules, Is.EqualTo(new[] { "fish-antag-rules-traitor" }));
+        });
     }
 
-    private void OnRulesReceived(FishAntagRulesEvent args)
+    private sealed partial class AntagRulesListenerSystem : EntitySystem
     {
-        _receivedRules.Add(args);
+        [Dependency] private INetManager _net = default!;
+
+        public readonly List<FishAntagRulesEvent> ReceivedRules = new();
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            if (_net.IsClient)
+                SubscribeNetworkEvent<FishAntagRulesEvent>(OnRulesReceived);
+        }
+
+        private void OnRulesReceived(FishAntagRulesEvent args)
+        {
+            ReceivedRules.Add(args);
+        }
     }
 }

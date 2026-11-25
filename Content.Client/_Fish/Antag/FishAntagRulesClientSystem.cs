@@ -15,6 +15,13 @@ public sealed class FishAntagRulesClientSystem : EntitySystem
         SubscribeNetworkEvent<FishAntagRulesEvent>(OnAntagRulesReceived);
     }
 
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        _window?.Close();
+        _window = null;
+    }
+
     private void OnAntagRulesReceived(FishAntagRulesEvent ev)
     {
         var rules = string.Join("\n\n", ev.Rules.Select(Loc.GetString));
