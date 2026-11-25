@@ -637,7 +637,9 @@ public sealed partial class CentCommSupplyConsoleSystem : EntitySystem
         _chat.DispatchGlobalAnnouncement(
             announcement,
             sender: Loc.GetString(ent.Comp.AnnouncementSender),
-            playDefault: false);
+            playDefault: true,
+            playTts: true,
+            announceVoice: ent.Comp.AnnounceVoice);
 
         var summary = string.Join(", ", plan.Items.Select(entry => $"{entry.Id} x{entry.Amount}"));
         _adminLog.Add(

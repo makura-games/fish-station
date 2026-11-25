@@ -17,7 +17,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: CombatKnife
-      cost: 10
+      cost: 11
       inHand: true
     - gear: FishDmArenaCleaver
       name: dm-arena-item-cleaver
@@ -25,7 +25,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: ButchCleaver
-      cost: 11
+      cost: 13
       inHand: true
     - gear: FishDmArenaKatana
       name: dm-arena-item-katana
@@ -41,7 +41,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: SpearUranium
-      cost: 13
+      cost: 15
       inHand: true
     - gear: FishDmArenaFireaxe
       name: dm-arena-item-fireaxe
@@ -49,7 +49,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: FireAxe
-      cost: 14
+      cost: 16
       inHand: true
     - gear: FishDmArenaSledge
       name: dm-arena-item-sledge
@@ -57,7 +57,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: Sledgehammer
-      cost: 14
+      cost: 16
       inHand: true
     - gear: FishDmArenaSabre
       name: dm-arena-item-sabre
@@ -65,7 +65,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: CaptainSabre
-      cost: 16
+      cost: 18
       inHand: true
     - gear: FishDmArenaEsword
       name: dm-arena-item-esword
@@ -73,7 +73,7 @@
       category: dm-arena-category-weapons
       group: dm-arena-group-melee
       sprite: EnergySword
-      cost: 27
+      cost: 30
     - gear: FishDmArenaInspector
       name: dm-arena-item-inspector
       description: dm-arena-desc-inspector
@@ -170,14 +170,6 @@
       sprite: WeaponSubMachineGunDrozd
       cost: 58
       ammoType: drozd
-    - gear: FishDmArenaThompson
-      name: dm-arena-item-thompson
-      description: dm-arena-desc-thompson
-      category: dm-arena-category-weapons
-      group: dm-arena-group-shotguns
-      sprite: FishWeaponSubMachineGunThompson
-      cost: 75
-      ammoType: thompson
     - gear: FishDmArenaP90
       name: dm-arena-item-p90
       description: dm-arena-desc-p90
@@ -317,7 +309,7 @@
       category: dm-arena-category-armor
       group: dm-arena-group-extras
       sprite: RiotShield
-      cost: 12
+      cost: 14
       inHand: true
     - gear: FishDmArenaShieldLaser
       name: dm-arena-item-shield-laser
@@ -325,7 +317,7 @@
       category: dm-arena-category-armor
       group: dm-arena-group-extras
       sprite: RiotLaserShield
-      cost: 12
+      cost: 14
       inHand: true
     - gear: FishDmArenaShieldEnergy
       name: dm-arena-item-shield-energy
@@ -333,7 +325,7 @@
       category: dm-arena-category-armor
       group: dm-arena-group-extras
       sprite: EnergyShield
-      cost: 18
+      cost: 20
       inHand: true
     - gear: FishDmArenaShieldBullet
       name: dm-arena-item-shield-bullet
@@ -341,7 +333,7 @@
       category: dm-arena-category-armor
       group: dm-arena-group-extras
       sprite: RiotBulletShield
-      cost: 20
+      cost: 22
       inHand: true
     - gear: FishDmArenaDomeBelt
       name: dm-arena-item-dome-belt
@@ -349,7 +341,7 @@
       category: dm-arena-category-armor
       group: dm-arena-group-extras
       sprite: FishEnergyDomeGeneratorMicroreactor
-      cost: 35
+      cost: 39
     - gear: FishDmArenaAmPistol
       name: dm-arena-item-am-pistol
       description: dm-arena-desc-am-pistol
@@ -529,15 +521,6 @@
       cost: 4
       maxCount: 3
       ammoFor: vp78
-    - gear: FishDmArenaAmThompson
-      name: dm-arena-item-am-thompson
-      description: dm-arena-desc-ammo-two
-      category: dm-arena-category-gear
-      group: dm-arena-group-ammo
-      sprite: FishMagazinePistolSubMachineGunThompson
-      cost: 10
-      maxCount: 3
-      ammoFor: thompson
     - gear: FishDmArenaAmP90
       name: dm-arena-item-am-p90
       description: dm-arena-desc-ammo-two
@@ -943,13 +926,6 @@
       items:
       - FishDmArenaDomeBelt
       - FishDmArenaCobra
-      - FishDmArenaVestBp
-      - FishDmArenaGauze
-      - FishDmArenaBrutepack
-    - name: dm-arena-set-gangster
-      description: dm-arena-set-desc-gangster
-      items:
-      - FishDmArenaThompson
       - FishDmArenaVestBp
       - FishDmArenaGauze
       - FishDmArenaBrutepack
