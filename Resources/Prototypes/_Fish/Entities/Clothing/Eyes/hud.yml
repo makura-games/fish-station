@@ -6,6 +6,7 @@
   suffix: Fish
   components:
   - type: FlashImmunity
+  - type: AddWantedStatus
   - type: Sprite
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_black_glasses.rsi
   - type: Clothing
@@ -16,7 +17,7 @@
     - WhitelistChameleon
 
 - type: entity
-  parent: [ClothingEyesHudBase, ShowSecurityIcons, BaseCentcommContraband]
+  parent: [ClothingEyesHudBase, ShowSecurityIcons, ShowMedicalIcons, BaseCentcommContraband]
   id: FishClothingEyesHudErtMedic
   name: ert medical visor
   description: An ERT Corpsman's professional heads-up display, designed for quick diagnosis of their team's status.
@@ -26,8 +27,8 @@
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_yellow_glasses.rsi
   - type: Clothing
     sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_yellow_glasses.rsi
-  - type: ShowHealthBars
   - type: FlashImmunity
+  - type: AddWantedStatus
   - type: Tag
     tags:
     - PetWearable
@@ -51,4 +52,7 @@
     - Inorganic
     - Silicon
     - Mech
+    - Ipc
+  - type: ShowAccessReaderSettings
   - type: FlashImmunity
+  - type: AddWantedStatus
