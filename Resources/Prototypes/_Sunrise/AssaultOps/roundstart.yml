@@ -70,6 +70,7 @@
     - Diona
     - HumanoidXeno
     - Predator
+    - Ipc # Fish-edit: КПБ не спавнятся оперативниками
   - type: AntagSelection
     selectionTime: PrePlayerSpawn
     antags:

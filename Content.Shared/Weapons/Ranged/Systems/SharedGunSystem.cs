@@ -34,6 +34,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Shared._Fish.Weapons.Casings; // Fish-edit: события стреляных гильз
 using Content.Shared._Sunrise.Weapons.DualWield;
 using Content.Shared.Mech.Components;
 using Content.Shared.Vehicle.Components;
@@ -524,6 +525,11 @@ public abstract partial class SharedGunSystem : EntitySystem
         cartridge.Spent = spent;
         Appearance.SetData(uid, AmmoVisuals.Spent, spent);
 
+        // Fish-start: стреляная гильза исчезает после выстрела и не подбирается
+        var spentChanged = new SpentAmmoChangedEvent(spent);
+        RaiseLocalEvent(uid, ref spentChanged);
+        // Fish-end
+
         if (!cartridge.MarkSpentAsTrash)
             return;
 
@@ -568,6 +574,11 @@ public abstract partial class SharedGunSystem : EntitySystem
             audioParams = audioParams.AddVolume(-1f).WithVariation(SharedContentAudioSystem.DefaultVariation);
             Audio.PlayPvs(cartridge.EjectSound, entity, audioParams);
         }
+
+        // Fish-start: выброс уже стреляной гильзы тоже запускает таймер
+        var ejected = new SpentCasingEjectedEvent();
+        RaiseLocalEvent(entity, ref ejected);
+        // Fish-end
     }
 
     protected IShootable EnsureShootable(EntityUid uid)

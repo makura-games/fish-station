@@ -31,6 +31,7 @@ public sealed partial class BorgSystem : SharedBorgSystem
         base.Initialize();
 
         InitializeBattery();
+        InitializeBorgRestVisuals(); // Fish-edit
 
         SubscribeLocalEvent<BorgChassisComponent, AppearanceChangeEvent>(OnBorgAppearanceChanged);
         SubscribeLocalEvent<MMIComponent, AppearanceChangeEvent>(OnMMIAppearanceChanged);
@@ -51,8 +52,8 @@ public sealed partial class BorgSystem : SharedBorgSystem
             return;
 
         UpdateBorgAppearance((chassis.Owner, chassis.Comp, args.Component, args.Sprite));
-        UpdateBorgWreckAppearance(chassis, ref args); // Fish-edit
-        UpdateBorgRestAppearance(chassis, ref args); // Fish-edit — отдых Mk2 (после wreck: у wreck приоритет)
+        UpdateBorgWreckAppearance(chassis, ref args); // Fish-edit: отдых Mk2 (после wreck: у wreck приоритет)
+        UpdateBorgRestAppearance(chassis, ref args); // Fish-edit
     }
 
     protected override void OnInserted(Entity<BorgChassisComponent> chassis, ref EntInsertedIntoContainerMessage args)
@@ -94,7 +95,10 @@ public sealed partial class BorgSystem : SharedBorgSystem
         if (!_appearance.TryGetData<bool>(ent.Owner, BorgVisuals.HasPlayer, out var hasPlayer, ent.Comp2))
             hasPlayer = false;
 
-        _sprite.LayerSetVisible((ent.Owner, ent.Comp3), BorgVisualLayers.Light, ent.Comp1.BrainEntity != null || hasPlayer);
+        // Fish-start - контейнерные события экипировки не должны возвращать подсветку в отдыхе.
+        var lightVisible = (ent.Comp1.BrainEntity != null || hasPlayer) && !IsBorgResting(ent.Owner, ent.Comp2);
+        _sprite.LayerSetVisible((ent.Owner, ent.Comp3), BorgVisualLayers.Light, lightVisible);
+        // Fish-end
         _sprite.LayerSetRsiState((ent.Owner, ent.Comp3), BorgVisualLayers.Light, hasPlayer ? ent.Comp1.HasMindState : ent.Comp1.NoMindState);
     }
 

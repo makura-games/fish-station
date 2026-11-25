@@ -1,7 +1,7 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "IAA created by vinogradgarden for Fish Station NanotrasenTrainee, CentcommChef, CentcommMedicalDoctor, CentcommBartender, SectoralJudge created by VladSukr for Fish Station",
+    "copyright": "IAA created by vinogradgarden for Fish Station NanotrasenTrainee, CentcommChef, CentcommMedicalDoctor, CentcommBartender, SectoralJudge created by VladSukr for Fish Station CentcommBlueShield created by NekutGit for Fish Station",
     "size": {
         "x": 8,
         "y": 8
@@ -54,6 +54,9 @@
         },
         {
             "name": "NanotrasenLeader"
+        },
+        {
+            "name": "CentcommBlueShield"
         }
     ]
 }

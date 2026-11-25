@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Client._Fish.Homelander; // Fish-edit
 using Content.Shared.Examine;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
@@ -27,6 +28,7 @@ public sealed class PopupOverlay : Overlay
     private readonly ExamineSystemShared _examine;
     private readonly SharedTransformSystem _transform;
     private readonly ShaderInstance _shader;
+    private readonly HomelanderSystem _homelander; // Fish-edit
 
     public override OverlaySpace Space => OverlaySpace.ScreenSpace;
 
@@ -49,6 +51,7 @@ public sealed class PopupOverlay : Overlay
         _transform = transform;
         _popup = popup;
         _controller = controller;
+        _homelander = entManager.System<HomelanderSystem>(); // Fish-edit
 
         _shader = protoManager.Index(UnshadedShader).Instance();
     }
@@ -85,9 +88,15 @@ public sealed class PopupOverlay : Overlay
             ourPos = viewPos.Position;
         }
 
-        foreach (var popup in _popup.WorldLabels)
+        foreach (var (popup, entity) in _popup.EnumerateWorldLabelsWithAnchors()) // Fish-edit
         {
             var mapPos = _transform.ToMapCoordinates(popup.InitialPos);
+            // Fish-start
+            var anchor = entity ?? popup.InitialPos.EntityId;
+            if (_homelander.TryGetFlightPopupOffset(anchor, args.Viewport.Eye?.Rotation ?? Angle.Zero, out var textOffset) &&
+                entity.HasValue)
+                mapPos = _transform.GetMapCoordinates(anchor);
+            // Fish-end
 
             if (mapPos.MapId != args.MapId)
                 continue;
@@ -109,7 +118,7 @@ public sealed class PopupOverlay : Overlay
             }
             // Sunrise edit end
 
-            var pos = Vector2.Transform(mapPos.Position, matrix);
+            var pos = Vector2.Transform(mapPos.Position + textOffset, matrix); // Fish-edit
             _controller.DrawPopup(popup, worldHandle, pos, scale, horizontalDirection); // Sunrise edit
         }
     }

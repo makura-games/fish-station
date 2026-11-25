@@ -9,7 +9,7 @@ public sealed class DmArenaConfigVars
         CVarDef.Create("dmarena.enabled", true, CVar.SERVERONLY);
 
     public static readonly CVarDef<int> DmArenaOpenDelay =
-        CVarDef.Create("dmarena.open_delay", 20, CVar.SERVERONLY);
+        CVarDef.Create("dmarena.open_delay", 5, CVar.SERVERONLY);
 
     public static readonly CVarDef<float> DmArenaOpenCheckInterval =
         CVarDef.Create("dmarena.open_check_interval", 1f, CVar.SERVERONLY);

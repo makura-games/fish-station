@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Ipc;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Armor;
@@ -215,6 +216,15 @@ public sealed partial class ChangelingDevourSystem : EntitySystem
 
         if (changeling.Owner == victim)
             return false; // Can't devour yourself.
+
+        // Fish-start: КПБ — робот, живого и труп поглощать нельзя
+        if (HasComp<FishIpcComponent>(victim))
+        {
+            if (showPopup)
+                _popupSystem.PopupEntity(Loc.GetString("fish-ipc-devour-robot"), changeling.Owner, changeling.Owner, PopupType.Medium);
+            return false;
+        }
+        // Fish-end
 
         if (!HasComp<HumanoidProfileComponent>(victim))
         {

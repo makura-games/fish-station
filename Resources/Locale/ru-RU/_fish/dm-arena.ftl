@@ -236,7 +236,7 @@ dm-arena-leave-01 = { $user } исчезает, устав убивать.
 
 # Админ-команда
 cmd-dmarena-desc = Включает или выключает ДМ арену.
-cmd-dmarena-help = dmarena [on|off|status]. Без аргументов показывает состояние. Первые 20 минут раунда арена закрыта, on открывает её раньше. При выключении все бойцы возвращаются призраками, а окна выбора закрываются. Отладка: dmarena debug.
+cmd-dmarena-help = dmarena [on|off|status]. Без аргументов показывает состояние. Первые 5 минут раунда арена закрыта, on открывает её раньше. При выключении все бойцы возвращаются призраками, а окна выбора закрываются. Отладка: dmarena debug.
 cmd-dmarena-no-access = Недостаточно прав для этой команды.
 cmd-dmarena-bad-argument = Допустимые значения: on, off, status.
 cmd-dmarena-hint = on, off или status
@@ -310,15 +310,10 @@ dm-arena-set-dome = Купол
 dm-arena-set-desc-dome = Поясной генератор щита, «Кобра» и жилет. Купол гасит урон, пока хватает заряда
 dm-arena-item-vp78 = Пистолет VP78
 dm-arena-desc-vp78 = Компактный пистолет и запасной магазин
-dm-arena-item-thompson = ПП «Томпсон»
-dm-arena-desc-thompson = Тяжёлый ПП под патроны .40 и два запасных магазина
 dm-arena-item-p90 = P-90
 dm-arena-desc-p90 = Скорострельный компактный ПП и два запасных магазина
 dm-arena-item-am-vp78 = Магазины для VP78
-dm-arena-item-am-thompson = Магазины для «Томпсона»
 dm-arena-item-am-p90 = Магазины для P-90
-dm-arena-set-gangster = Гангстер
-dm-arena-set-desc-gangster = «Томпсон», жилет и перевязки. Поливай и уходи
 dm-arena-set-agent = Агент
 dm-arena-set-desc-agent = VP78, нож и лёгкая броня. Тихо и точно
 dm-arena-set-paladin = Паладин

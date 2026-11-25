@@ -195,6 +195,7 @@
       - Piercing
       - Heat
       - Shock
+      - Structural # Fish-edit: отображаем структурный урон при осмотре
       - Mangleness # Sunrise-Edit
     locPrefix: mech
   - type: Appearance
@@ -383,8 +384,10 @@
         Blunt: 20
     bluntStaminaDamageFactor: 1
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2
-    baseSprintSpeed: 3
+  # Fish-Start
+    baseWalkSpeed: 1.8
+    baseSprintSpeed: 2.7
+  # Fish-End
   # Sunrise-Start
   - type: Loadout
     prototypes: [ MechArmorMediumNTLoadout ]
@@ -447,8 +450,10 @@
       types:
         Blunt: 26
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2.5
-    baseSprintSpeed: 4.5
+  # Fish-Start
+    baseWalkSpeed: 2.25
+    baseSprintSpeed: 4
+  # Fish-End
   - type: CanMoveInAir
   - type: MovementAlwaysTouching
   - type: Reflect
@@ -620,8 +625,10 @@
       types:
         Blunt: 10 #thwack
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2.4
-    baseSprintSpeed: 3.7
+  # Fish-Start
+    baseWalkSpeed: 2.16
+    baseSprintSpeed: 3.33
+  # Fish-End
   - type: Reflect
     reflectProb: 0.05
     spread: 180
@@ -702,8 +709,10 @@
       types:
         Blunt: 10 #thwack
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2.25
-    baseSprintSpeed: 3.6
+  # Fish-Start
+    baseWalkSpeed: 2
+    baseSprintSpeed: 3.24
+  # Fish-End
   - type: Access
     tags:
     - Maintenance
@@ -779,8 +788,10 @@
         Structural: 180
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2
-    baseSprintSpeed: 4
+  # Fish-Start
+    baseWalkSpeed: 1.8
+    baseSprintSpeed: 3.6
+  # Fish-End
   - type: Reflect
     reflectProb: 0.05
     spread: 180
@@ -863,8 +874,10 @@
         Structural: 220
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 2
+  # Fish-Start
+    baseWalkSpeed: 1.35
+    baseSprintSpeed: 1.8
+  # Fish-End
   # Sunrise-Start
   - type: Loadout
     prototypes: [ MechArmorMediumNTLoadout ]
@@ -934,8 +947,10 @@
         Structural: 200
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 2
+  # Fish-Start
+    baseWalkSpeed: 1.35
+    baseSprintSpeed: 1.8
+  # Fish-End
   # Sunrise-Start
   - type: Loadout
     prototypes: [ MechArmorHeavyNTLoadout ]
@@ -1020,8 +1035,10 @@
         Structural: 400
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1
-    baseSprintSpeed: 3.7
+  # Fish-Start
+    baseWalkSpeed: 0.9
+    baseSprintSpeed: 3.33
+  # Fish-End
   # Sunrise-Start
   - type: Loadout
     prototypes: [ MechArmorHeavyNTLoadout ]
@@ -1108,8 +1125,10 @@
         Structural: 200
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2.5
-    baseSprintSpeed: 4
+  # Fish-Start
+    baseWalkSpeed: 2.25
+    baseSprintSpeed: 3.6
+  # Fish-End
   # Sunrise-Start
   - type: Loadout
     prototypes: [ MechArmorMediumSyndiLoadout ]
@@ -1199,8 +1218,10 @@
         Structural: 400
     bluntStaminaDamageFactor: 1.5
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 2
+  # Fish-Start
+    baseWalkSpeed: 1.35
+    baseSprintSpeed: 1.8
+  # Fish-End
   # Sunrise-Start
   - type: Loadout
     prototypes: [ MechArmorHeavySyndiLoadout ]

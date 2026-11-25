@@ -47,6 +47,12 @@
   name: damage-group-mangleness
   damageTypes:
     - Mangleness
+
+- type: damageGroup
+  id: Structural
+  name: damage-group-structural
+  damageTypes:
+    - Structural
 # Fish-end
 
 # Metaphysical damage types should be used very sparingly, and likely not affect normal crew entities.
