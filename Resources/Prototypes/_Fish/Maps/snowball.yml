@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishSnowball
-  mapName: 'Snowball Station'
+  mapName: 'Сноуболл'
   mapPath: /Maps/_Fish/Station/snowball.yml
   maxRandomOffset: 0
   randomRotation: false

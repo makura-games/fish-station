@@ -1,13 +1,13 @@
 - type: gameMap
-  id: USG_ishimura
-  mapName: 'Ishimura'
+  id: FishIshimura
+  mapName: 'Ишимура'
   mapPath: /Maps/_Fish/Station/ishimura.yml
   maxRandomOffset: 0
   randomRotation: false
   minPlayers: 35
   maxPlayers: 70
   stations:
-    ishimura:
+    Ishimura:
       stationProto: StandardNanotrasenStation
       components:
       - type: StationNameSetup
