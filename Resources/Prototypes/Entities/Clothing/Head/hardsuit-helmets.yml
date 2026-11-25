@@ -590,17 +590,13 @@
 #CENTCOMM / ERT HARDSUITS
 #ERT Leader Hardsuit
 - type: entity
-  parent: [ FishClassicHardsuitHelmetVisuals, BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieCommander, SunriseHardsuitHelmetNightVisionCyan, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - Fish-ПНВ и классические визуалы шлема.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieCommander, SunriseHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение.
   id: ClothingHeadHelmetHardsuitERTLeader
   name: ERT leader hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
-  # Fish-start - классические текстуры шлема ОБР
   - type: Sprite
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
-  - type: Clothing
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
-  # Fish-end
+    sprite: Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
   - type: PointLight
     color: cyan # Sunrise-Edit - сохраняем цвет фонаря шлема.
   - type: Armor
@@ -614,34 +610,26 @@
 
 #ERT Chaplain Hardsuit
 - type: entity
-  parent: [ FishClassicHardsuitHelmetVisuals, BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionWhite, FishHardsuitHelmetNightVisionWhite ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - Fish-ПНВ и классические визуалы шлема.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionWhite ] # Sunrise-Edit - сохраняем ночное зрение.
   id: ClothingHeadHelmetHardsuitERTChaplain
   name: ERT chaplain hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
-  # Fish-start - классические текстуры шлема ОБР
   - type: Sprite
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
-  - type: Clothing
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
-  # Fish-end
+    sprite: Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
   - type: PointLight
     color: "#ffffff"
   - type: FlashImmunity # Sunrise-Edit - сохраняем защиту от вспышек.
 
 #ERT Engineer Hardsuit
 - type: entity
-  parent: [ FishClassicHardsuitHelmetVisuals, BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - Fish-ПНВ и классические визуалы шлема.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение.
   id: ClothingHeadHelmetHardsuitERTEngineer
   name: ERT engineer hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
-  # Fish-start - классические текстуры шлема ОБР
   - type: Sprite
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
-  - type: Clothing
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
-  # Fish-end
+    sprite: Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
   - type: PointLight
     color: cyan # Sunrise-Edit - сохраняем цвет фонаря шлема.
   - type: FireProtection
@@ -660,34 +648,26 @@
 
 #ERT Medical Hardsuit
 - type: entity
-  parent: [ FishClassicHardsuitHelmetVisuals, BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieElite, SunriseHardsuitHelmetNightVisionMint, FishHardsuitHelmetNightVisionMint ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - Fish-ПНВ и классические визуалы шлема.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndieElite, SunriseHardsuitHelmetNightVisionMint ] # Sunrise-Edit - сохраняем ночное зрение.
   id: ClothingHeadHelmetHardsuitERTMedical
   name: ERT medic hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
-  # Fish-start - классические текстуры шлема ОБР
   - type: Sprite
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
-  - type: Clothing
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
-  # Fish-end
+    sprite: Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
   - type: PointLight
     color: "#adffec"
   - type: FlashImmunity # Sunrise-Edit - сохраняем защиту от вспышек.
 
 #ERT Security Hardsuit
 - type: entity
-  parent: [ FishClassicHardsuitHelmetVisuals, BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - Fish-ПНВ и классические визуалы шлема.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем ночное зрение.
   id: ClothingHeadHelmetHardsuitERTSecurity
   name: ERT security hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
-  # Fish-start - классические текстуры шлема ОБР
   - type: Sprite
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
-  - type: Clothing
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
-  # Fish-end
+    sprite: Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
   - type: PointLight
     color: cyan # Sunrise-Edit - сохраняем цвет фонаря шлема.
   - type: Armor
@@ -703,24 +683,20 @@
 
 #ERT Janitor Hardsuit
 - type: entity
-  parent: [ FishClassicHardsuitHelmetVisuals, BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionPurple, FishHardsuitHelmetNightVisionPurple ] # Sunrise-Edit - сохраняем ночное зрение. Fish-edit - Fish-ПНВ и классические визуалы шлема.
+  parent: [ BaseCentcommContraband, ClothingHeadHelmetHardsuitSyndie, SunriseHardsuitHelmetNightVisionPurple ] # Sunrise-Edit - сохраняем ночное зрение.
   id: ClothingHeadHelmetHardsuitERTJanitor
   name: ERT janitor hardsuit helmet
   description: A special hardsuit helmet worn by members of an emergency response team.
   components:
-  # Fish-start - классические текстуры шлема ОБР
   - type: Sprite
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi
-  - type: Clothing
-    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi
-  # Fish-end
+    sprite: Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi
   - type: PointLight
     color: "#cbadff"
   - type: FlashImmunity # Sunrise-Edit - сохраняем защиту от вспышек.
 
 #CBURN Hardsuit
 - type: entity
-  parent: [ BaseCentcommContraband, ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ] # Fish-edit - ПНВ перенесён в FishClothingHeadHelmetCBURN
+  parent: [ BaseCentcommContraband, ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
   id: ClothingHeadHelmetCBURN
   name: CBURN exosuit helmet
   description: A pressure resistant and fireproof hood worn by special cleanup units.
@@ -744,18 +720,30 @@
 
 #Deathsquad Hardsuit
 - type: entity
-  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase, BaseCentcommContraband, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ] # Sunrise-Edit - сохраняем фонарь шлема. Fish-edit - Fish-ПНВ и классические визуалы шлема.
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase, BaseCentcommContraband ] # Sunrise-Edit - сохраняем фонарь шлема.
   id: ClothingHeadHelmetHardsuitDeathsquad
   name: deathsquad hardsuit helmet
   description: A robust helmet for special operations.
   components:
   - type: BreathMask
-  # Fish-start - классические текстуры шлема ЭС
   - type: Sprite
-    sprite: _Fish/Clothing/Head/Hardsuits/deathsquad.rsi
-  - type: Clothing
-    sprite: _Fish/Clothing/Head/Hardsuits/deathsquad.rsi
-  # Fish-end
+    sprite: Clothing/Head/Hardsuits/deathsquad.rsi
+    # Sunrise edit start - сохраняем фонарь старого спрайта.
+    layers:
+    - state: icon
+    - state: icon-unshaded
+      shader: unshaded
+    - state: icon-flash
+      visible: false
+      shader: unshaded
+      map: [ light ]
+    # Sunrise edit end
+  # Sunrise added start - фонарь не должен подменять новый спрайт надетого шлема старым состоянием.
+  - type: ToggleableVisuals
+    spriteLayer: light
+    clothingVisuals:
+      head: []
+  # Sunrise added end
   - type: PointLight
     color: cyan
   - type: PressureProtection

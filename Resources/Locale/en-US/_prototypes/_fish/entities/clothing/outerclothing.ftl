@@ -25,3 +25,27 @@ ent-FishClothingOuterCoatSpecOps = armored greatcoat
 ent-FishClothingOuterHardsuitCBURN = { ent-ClothingOuterHardsuitCBURN }
     .desc = { ent-ClothingOuterHardsuitCBURN.desc }
     .suffix = Fish
+
+ent-FishClothingOuterHardsuitERTLeader = { ent-ClothingOuterHardsuitERTLeader }
+    .desc = { ent-ClothingOuterHardsuitERTLeader.desc }
+    .suffix = Fish
+
+ent-FishClothingOuterHardsuitERTChaplain = { ent-ClothingOuterHardsuitERTChaplain }
+    .desc = { ent-ClothingOuterHardsuitERTChaplain.desc }
+    .suffix = Fish
+
+ent-FishClothingOuterHardsuitERTEngineer = { ent-ClothingOuterHardsuitERTEngineer }
+    .desc = { ent-ClothingOuterHardsuitERTEngineer.desc }
+    .suffix = Fish
+
+ent-FishClothingOuterHardsuitERTMedical = { ent-ClothingOuterHardsuitERTMedical }
+    .desc = { ent-ClothingOuterHardsuitERTMedical.desc }
+    .suffix = Fish
+
+ent-FishClothingOuterHardsuitERTSecurity = { ent-ClothingOuterHardsuitERTSecurity }
+    .desc = { ent-ClothingOuterHardsuitERTSecurity.desc }
+    .suffix = Fish
+
+ent-FishClothingOuterHardsuitERTJanitor = { ent-ClothingOuterHardsuitERTJanitor }
+    .desc = { ent-ClothingOuterHardsuitERTJanitor.desc }
+    .suffix = Fish

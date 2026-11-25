@@ -62,8 +62,8 @@
     parent: true
     components:
     - type: FishNightVision
-      color: "#be923a"
-      lightingColor: "#ffba3125"
+      color: "#b98a4b"
+      lightingColor: "#b9894b30"
 
 - type: entity
   parent: ClothingHeadHelmetVoidParamed
@@ -93,10 +93,14 @@
       - state: equipped-head-light
 
 - type: entity
-  parent: ClothingHeadHelmetHardsuitDeathsquad
+  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHelmetHardsuitDeathsquad, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ]
   id: ClothingHeadHelmetHardsuitDeathsquadFish
   suffix: Fish
   components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/deathsquad.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/deathsquad.rsi
   - type: PointLight
     radius: 9
     energy: 9
@@ -111,26 +115,6 @@
         Caustic: 0.95
         Poison: 0.80
         Shock: 0.80
-  - type: ItemToggle
-    predictable: false
-    onUse: false
-    canActivateInhand: false
-    soundActivate:
-      path: /Audio/_Sunrise/Items/Goggles/activate.ogg
-    soundDeactivate:
-      path: /Audio/_Sunrise/Items/Goggles/deactivate.ogg
-    soundFailToActivate:
-      path: /Audio/Machines/button.ogg
-  - type: FishVisionDevice
-  - type: ComponentToggler
-    parent: true
-    components:
-    - type: FishNightVision
-  - type: ToggleClothing
-    action: NVDToggleAction
-    mustEquip: true
-    disableOnUnequip: true
-    targetSlot: head
 
 - type: entity
   parent: [ ClothingHeadHelmetHardsuitSecurityRed, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionCyan ]
@@ -191,7 +175,7 @@
       - state: on-equipped-HELMET
 
 - type: entity
-  parent: [ClothingHeadHelmetCBURN, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionOrange]
+  parent: [ ClothingHeadHelmetCBURN, BaseSunriseHardsuitHelmetNVD, FishHardsuitHelmetNightVisionOrange ]
   id: FishClothingHeadHelmetCBURN
   suffix: Fish
   components:
@@ -203,3 +187,63 @@
     color: "#ffc267"
     radius: 6
     energy: 2
+
+- type: entity
+  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHelmetHardsuitERTLeader, FishHardsuitHelmetNightVisionCyan ]
+  id: FishClothingHeadHelmetHardsuitERTLeader
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertleader.rsi
+
+- type: entity
+  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHelmetHardsuitERTChaplain, FishHardsuitHelmetNightVisionWhite ]
+  id: FishClothingHeadHelmetHardsuitERTChaplain
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertchaplain.rsi
+
+- type: entity
+  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHelmetHardsuitERTEngineer, FishHardsuitHelmetNightVisionCyan ]
+  id: FishClothingHeadHelmetHardsuitERTEngineer
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertengineer.rsi
+
+- type: entity
+  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHelmetHardsuitERTMedical, FishHardsuitHelmetNightVisionMint ]
+  id: FishClothingHeadHelmetHardsuitERTMedical
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertmedical.rsi
+
+- type: entity
+  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHelmetHardsuitERTSecurity, FishHardsuitHelmetNightVisionCyan ]
+  id: FishClothingHeadHelmetHardsuitERTSecurity
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertsecurity.rsi
+
+- type: entity
+  parent: [ FishClassicHardsuitHelmetVisuals, ClothingHeadHelmetHardsuitERTJanitor, FishHardsuitHelmetNightVisionPurple ]
+  id: FishClothingHeadHelmetHardsuitERTJanitor
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi
+  - type: Clothing
+    sprite: _Fish/Clothing/Head/Hardsuits/ERThelmets/ertjanitor.rsi

@@ -101,7 +101,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
-    requireActivated: true  # Fish-edit: замедление работает только на включеных ботинках
+    requireActivated: true  # Fish-edit: замедление работает только на включённых ботинках
   - type: GasTank
     releasePressure: 42.6
     air:

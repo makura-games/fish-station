@@ -16,7 +16,7 @@
 
 - type: listing
   id: FishERTUplinkHardsuitERTSecurity
-  productEntity: ClothingOuterHardsuitERTSecurity
+  productEntity: FishClothingOuterHardsuitERTSecurity
   icon: { sprite: _Fish/Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity.rsi, state: icon }
   cost:
     Crystallite: 10

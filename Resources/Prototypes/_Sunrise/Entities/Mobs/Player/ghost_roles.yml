@@ -89,7 +89,7 @@
     head: ClothingHeadHatERTLeaderBeret
     mask: ClothingMaskGasERT
     eyes: FishClothingEyesHudErtMedic  # Fish-edit
-    neck: ClothingNeckMantleERTLeader  # Fish-edit
+    neck: ClothingNeckMantleERTLeader
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMilitaryWebbingERT
