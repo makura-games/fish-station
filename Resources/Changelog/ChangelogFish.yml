@@ -1966,3 +1966,10 @@
     message: Перчатки теперь надеваются вместе с комплектом ОБР.
   id: 202
   url: https://github.com/makura-games/fish-station/pull/643
+- author: KrytoiChuvaaak
+  time: '2026-11-25T23:04:57.0000000+00:00'
+  changes:
+  - type: Tweak
+    message: Добавлено отображение правил антагонистов при получении роли и в меню призрачных ролей.
+  id: 203
+  url: https://github.com/makura-games/fish-station/pull/631
