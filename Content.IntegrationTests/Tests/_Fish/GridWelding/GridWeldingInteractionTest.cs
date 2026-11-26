@@ -119,20 +119,19 @@ public sealed class GridWeldingInteractionTest
 
         await server.WaitAssertion(() =>
         {
+            if (scenario == "ordinary-item-use")
+            {
+                Assert.That(entities.HasComponent<GridWeldingComponent>(welder), Is.False,
+                    "Ordinary item interactions must not create a grid selection.");
+                return;
+            }
+
             var state = entities.GetComponent<GridWeldingComponent>(welder);
             Assert.That(state.DoAfter != null, Is.EqualTo(startsWelding));
             if (scenario == "user-denied")
                 Assert.That(entities.GetComponent<BlindableComponent>(user).EyeDamage, Is.Zero);
-            if (scenario != "ordinary-item-use")
-            {
-                Assert.That(state.Grid, Is.EqualTo(selected), "The second click must not replace the first selected grid.");
-                Assert.That(state.Tile, Is.EqualTo(selectedTile));
-            }
-            else
-            {
-                var selectedGrid = state.Grid;
-                Assert.That(selectedGrid.IsValid(), Is.False, "Ordinary item interactions must not start grid selection.");
-            }
+            Assert.That(state.Grid, Is.EqualTo(selected), "The second click must not replace the first selected grid.");
+            Assert.That(state.Tile, Is.EqualTo(selectedTile));
         });
 
         await server.WaitPost(() =>

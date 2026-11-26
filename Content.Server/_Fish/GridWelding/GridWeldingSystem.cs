@@ -41,18 +41,12 @@ public sealed partial class GridWeldingSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<GridSplitEvent>(OnGridSplit);
-        SubscribeLocalEvent<WelderComponent, ComponentStartup>(OnWelderStartup);
+        SubscribeLocalEvent<WelderComponent, BeforeRangedInteractEvent>(OnBeforeInteract);
         SubscribeLocalEvent<GridWeldingComponent, ComponentShutdown>(OnWeldingShutdown);
-        SubscribeLocalEvent<GridWeldingComponent, BeforeRangedInteractEvent>(OnBeforeInteract);
         SubscribeLocalEvent<GridWeldingComponent, GotUnequippedHandEvent>(OnUnequipped);
         SubscribeLocalEvent<GridWeldingComponent, GridWeldingDoAfterEvent>(OnWeldFinished);
         SubscribeLocalEvent<GridWeldingComponent, DoAfterAttemptEvent<GridWeldingDoAfterEvent>>(OnWeldAttempt);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
-    }
-
-    private void OnWelderStartup(Entity<WelderComponent> ent, ref ComponentStartup args)
-    {
-        EnsureComp<GridWeldingComponent>(ent);
     }
 
     private void OnWeldingShutdown(Entity<GridWeldingComponent> ent, ref ComponentShutdown args)
@@ -62,12 +56,12 @@ public sealed partial class GridWeldingSystem : EntitySystem
         ClearSelection(ent.Comp);
     }
 
-    private void OnBeforeInteract(Entity<GridWeldingComponent> ent, ref BeforeRangedInteractEvent args)
+    private void OnBeforeInteract(Entity<WelderComponent> ent, ref BeforeRangedInteractEvent args)
     {
         if (args.Handled)
             return;
 
-        args.Handled = TrySelectTile((ent.Owner, null), args.User, args.ClickLocation, args.Target);
+        args.Handled = TrySelectTile(ent.AsNullable(), args.User, args.ClickLocation, args.Target);
     }
 
     /// <summary>Revalidates the moving seam every tick so changed geometry or lost tool access cancels the action.</summary>
