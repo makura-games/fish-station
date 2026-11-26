@@ -94,7 +94,7 @@
       path: /Audio/Weapons/Guns/Empty/empty.ogg
   - type: GunneryTrackable
   - type: BatteryAmmoProvider
-    proto: CartridgeAntiMaterielBlast
+    proto: CartridgeAntiMateriel
     fireCost: 10
   - type: Battery
     maxCharge: 50
@@ -166,7 +166,7 @@
       path: /Audio/Weapons/Guns/Empty/empty.ogg
   - type: GunneryTrackable
   - type: BatteryAmmoProvider
-    proto: CartridgeAntiMaterielBlast
+    proto: CartridgeAntiMateriel
     fireCost: 1
   - type: Battery
     maxCharge: 50
@@ -242,7 +242,7 @@
       path: /Audio/Weapons/Guns/Empty/empty.ogg
   - type: GunneryTrackable
   - type: BatteryAmmoProvider
-    proto: CartridgeAntiMaterielBlast
+    proto: CartridgeAntiMateriel
     fireCost: 1
   - type: Battery
     maxCharge: 100
