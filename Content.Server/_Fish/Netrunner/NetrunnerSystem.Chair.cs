@@ -115,22 +115,27 @@ public sealed partial class NetrunnerSystem
             return;
         args.Handled = true;
         ent.Comp.Connection = null;
-        if (args.Cancelled || !CanUseChair(ent) || ent.Comp.Chair is not { } chair)
-        {
+        if (args.Cancelled || !TryCompleteConnection(ent))
             EndRemoteSession(ent);
-            return;
-        }
+    }
+
+    /// <summary>Checks whether a pending chair connection can transition into an active remote session.</summary>
+    public bool CanCompleteConnection(Entity<NetrunnerImplantComponent> ent)
+    {
+        return CanUseChair(ent)
+            && ent.Comp.Chair is { } chair
+            && TryComp<NetrunnerChairComponent>(chair, out var config)
+            && ent.Comp.Ram >= config.ConnectionCost;
+    }
+
+    /// <summary>Starts the remote eye session and applies chair connection cost and trace.</summary>
+    public bool TryCompleteConnection(Entity<NetrunnerImplantComponent> ent)
+    {
+        if (!CanCompleteConnection(ent) || ent.Comp.Chair is not { } chair)
+            return false;
         var config = Comp<NetrunnerChairComponent>(chair);
-        if (ent.Comp.Ram < config.ConnectionCost)
-        {
-            EndRemoteSession(ent);
-            return;
-        }
         if (!StartRemoteView(ent))
-        {
-            EndRemoteSession(ent);
-            return;
-        }
+            return false;
         if (!ent.Comp.DebugMode)
             ent.Comp.Ram = MathF.Max(0f, ent.Comp.Ram - config.ConnectionCost);
         ent.Comp.RecoverAt = _timing.CurTime + ent.Comp.RecoveryDelay;
@@ -138,6 +143,7 @@ public sealed partial class NetrunnerSystem
         ent.Comp.NextConnectionCharge = _timing.CurTime + config.ChargeInterval;
         ent.Comp.NextLinkAt = _timing.CurTime + config.LinkInterval;
         Publish(ent);
+        return true;
     }
 
     private bool CanUseChair(Entity<NetrunnerImplantComponent> ent)
@@ -223,6 +229,7 @@ public sealed partial class NetrunnerSystem
     {
         if (!CanJumpToChair(ent, user) || ent.Comp.Chair is not { } chair || ent.Comp.RemoteEye is not { } remote)
             return false;
+        CancelHack(ent);
         _transform.SetCoordinates(remote, Transform(chair).Coordinates);
         _transform.AttachToGridOrMap(remote);
         _mover.ResetCamera(user);
@@ -269,19 +276,38 @@ public sealed partial class NetrunnerSystem
     }
 
     private void OnDisconnect(Entity<NetrunnerImplantComponent> ent, ref NetrunnerDisconnectMessage args)
+        => TryDisconnect(ent, args.Actor);
+
+    /// <summary>Checks whether the operator can terminate a remote chair session.</summary>
+    public bool CanDisconnect(Entity<NetrunnerImplantComponent> ent, EntityUid user)
+        => IsOperator(ent, user);
+
+    /// <summary>Terminates an active or pending remote chair session for an authorized operator.</summary>
+    public bool TryDisconnect(Entity<NetrunnerImplantComponent> ent, EntityUid user)
     {
-        if (IsOperator(ent, args.Actor))
-            EndRemoteSession(ent);
+        if (!CanDisconnect(ent, user))
+            return false;
+        EndRemoteSession(ent);
+        return true;
     }
 
     private void OnRefresh(Entity<NetrunnerImplantComponent> ent, ref NetrunnerRefreshMessage args)
+        => TryRefresh(ent, args.Actor);
+
+    /// <summary>Checks whether the operator can refresh terminal state or initiate a buckled chair connection.</summary>
+    public bool CanRefresh(Entity<NetrunnerImplantComponent> ent, EntityUid user)
+        => IsOperator(ent, user);
+
+    /// <summary>Refreshes terminal state and initiates chair connection if the operator is buckled to one.</summary>
+    public bool TryRefresh(Entity<NetrunnerImplantComponent> ent, EntityUid user)
     {
-        if (!IsOperator(ent, args.Actor))
-            return;
-        if (ent.Comp.Chair == null && TryComp<BuckleComponent>(args.Actor, out var buckle)
+        if (!CanRefresh(ent, user))
+            return false;
+        if (ent.Comp.Chair == null && TryComp<BuckleComponent>(user, out var buckle)
             && buckle.BuckledTo is { } chair && TryComp<NetrunnerChairComponent>(chair, out var config))
             TryConnect(ent, (chair, config));
         Publish(ent);
+        return true;
     }
 
     private void StopRemoteView(Entity<NetrunnerImplantComponent> ent)
@@ -344,6 +370,7 @@ public sealed partial class NetrunnerSystem
         var remoteEyeChanged = state.RemoteEye != ent.Comp.RemoteEye;
         state.RemoteEye = ent.Comp.RemoteEye;
         state.Chair = ent.Comp.Chair;
+        state.IsCasting = ent.Comp.Pending != null;
         Dirty(user, state);
         if (remoteEyeChanged)
             _eye.RefreshVisibilityMask(user);

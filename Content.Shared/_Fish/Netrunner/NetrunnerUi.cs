@@ -104,3 +104,7 @@ public sealed class NetrunnerBuyUpgradeMessage(NetrunnerUpgrade upgrade) : Bound
 
 [Serializable, NetSerializable]
 public sealed class NetrunnerBuyVisorMessage : BoundUserInterfaceMessage;
+
+/// <summary>Client request to cancel an active hack when predicted ActivateItemInWorld was consumed locally.</summary>
+[Serializable, NetSerializable]
+public sealed class NetrunnerCancelHackEvent : EntityEventArgs;

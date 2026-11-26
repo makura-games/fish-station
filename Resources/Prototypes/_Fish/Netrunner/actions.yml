@@ -177,7 +177,7 @@
   id: FishActionNetrunnerShortCircuit
   parent: FishActionNetrunnerCombatBase
   name: short circuit
-  description: Damages a borg's electronic chassis with an electrical overload. Organic targets are incompatible.
+  description: Damages a borg's or IPC's electronic chassis with an electrical overload and knocks them down for 5 seconds. Organic targets are incompatible.
   suffix: Fish
   components:
   - type: EntityTargetAction
@@ -191,7 +191,7 @@
   id: FishActionNetrunnerMotorInterference
   parent: FishActionNetrunnerCombatBase
   name: motor interference
-  description: Slows a borg or a genuine mindshield implant wearer by 35 percent for 7 seconds. Does not paralyze the target.
+  description: Slows a borg, IPC or a genuine mindshield implant wearer by 35 percent for 7 seconds. Does not paralyze the target.
   suffix: Fish
   components:
   - type: EntityTargetAction
@@ -205,7 +205,7 @@
   id: FishActionNetrunnerOpticalGlitch
   parent: FishActionNetrunnerCombatBase
   name: optical glitch
-  description: Obscures a borg's vision or a worn electronic HUD visor for 3 seconds. Removing the visor restores sight immediately.
+  description: Obscures a borg's, IPC's or worn electronic HUD visor's vision for 3 seconds. Removing the visor restores sight immediately.
   suffix: Fish
   components:
   - type: EntityTargetAction
@@ -234,7 +234,7 @@
   id: FishActionNetrunnerGripShock
   parent: FishActionNetrunnerCombatBase
   name: grip reset
-  description: Makes a borg or a genuine mindshield wearer drop the item in their active hand.
+  description: Makes a borg, IPC or a genuine mindshield wearer drop the item in their active hand.
   suffix: Fish
   components:
   - type: EntityTargetAction
@@ -247,7 +247,7 @@
   id: FishActionNetrunnerNeuralStatic
   parent: FishActionNetrunnerCombatBase
   name: neural static
-  description: Causes 30 stamina damage to a borg or a genuine mindshield wearer, subject to normal resistance.
+  description: Causes 30 stamina damage to a borg, IPC or a genuine mindshield wearer, subject to normal resistance.
   suffix: Fish
   components:
   - type: EntityTargetAction
@@ -260,7 +260,7 @@
   id: FishActionNetrunnerThermalSurge
   parent: FishActionNetrunnerCombatBase
   name: thermal surge
-  description: Heats a borg or a genuine mindshield wearer by up to 6 degrees through their compromised electronics.
+  description: Raises an IPC's or genuine mindshield wearer's temperature by 12 degrees ignoring heat resistance. Deals 20 stamina damage to borgs without thermal regulation.
   suffix: Fish
   components:
   - type: EntityTargetAction
@@ -273,7 +273,7 @@
   id: FishActionNetrunnerBatteryDrain
   parent: FishActionNetrunnerCombatBase
   name: battery discharge
-  description: Drains 10 percent of a borg or energy weapon battery's capacity without destroying the cell.
+  description: Drains 30 percent of a borg, IPC or energy weapon battery's capacity without destroying the cell.
   suffix: Fish
   components:
   - type: EntityTargetAction
@@ -299,7 +299,7 @@
   id: FishActionNetrunnerEraseTrace
   parent: FishActionNetrunnerCovertBase
   name: buffer purge
-  description: Clears a visible device's netrunner diagnostic records. The terminal's private journal remains intact.
+  description: Clears successful netrunner intervention traces detectable by a forensic scanner on a visible object. The terminal's private journal remains intact.
   suffix: Fish
   components:
   - type: EntityTargetAction

@@ -1,10 +1,15 @@
 using Content.Shared._Fish.Netrunner;
 using Content.Shared.Eye;
+using Content.Shared.Input;
+using Content.Shared.Interaction;
 using Content.Client.Eye;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.Graphics;
+using Robust.Shared.Input.Binding;
+using Robust.Shared.Map;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Client._Fish.Netrunner;
@@ -27,6 +32,24 @@ public sealed partial class NetrunnerRemoteViewSystem : EntitySystem
         base.Initialize();
         _overlays.AddOverlay(new NetrunnerCameraOverlay());
         _overlays.AddOverlay(new NetrunnerEyeProgressOverlay());
+        CommandBinds.Builder
+            .BindBefore(ContentKeyFunctions.ActivateItemInWorld,
+                new PointerInputCmdHandler(HandleCancelHackInput),
+                typeof(SharedInteractionSystem))
+            .Register<NetrunnerRemoteViewSystem>();
+    }
+
+    private bool HandleCancelHackInput(ICommonSession? session, EntityCoordinates coords, EntityUid uid)
+    {
+        if (session?.AttachedEntity is not { } user
+            || !TryComp<NetrunnerUserComponent>(user, out var state)
+            || !state.IsCasting)
+            return false;
+
+        state.IsCasting = false;
+        if (_timing.IsFirstTimePredicted)
+            RaiseNetworkEvent(new NetrunnerCancelHackEvent());
+        return true;
     }
 
     public override void FrameUpdate(float frameTime)
@@ -77,6 +100,7 @@ public sealed partial class NetrunnerRemoteViewSystem : EntitySystem
 
     public override void Shutdown()
     {
+        CommandBinds.Unregister<NetrunnerRemoteViewSystem>();
         RestoreEye();
         _overlays.RemoveOverlay<NetrunnerCameraOverlay>();
         _overlays.RemoveOverlay<NetrunnerEyeProgressOverlay>();

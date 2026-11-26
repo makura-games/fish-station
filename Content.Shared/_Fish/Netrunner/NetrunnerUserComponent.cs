@@ -16,4 +16,6 @@ public sealed partial class NetrunnerUserComponent : Component
     [AutoNetworkedField] public float MaxRam;
     [AutoNetworkedField] public float Trace;
     [AutoNetworkedField] public TimeSpan ReadyAt;
+    /// <summary>Whether a netrunner script is currently casting, used to predict cancel input cleanly.</summary>
+    [AutoNetworkedField] public bool IsCasting;
 }

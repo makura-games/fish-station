@@ -123,6 +123,7 @@ public sealed partial class NetrunnerSystem : EntitySystem
             subs.Event<NetrunnerOpenShopMessage>(OnOpenShop);
         });
         // Fish-start: Отмена активного скрипта по нажатию клавиши использования предмета в мире (E/У).
+        SubscribeNetworkEvent<NetrunnerCancelHackEvent>(OnCancelHackRequest);
         CommandBinds.Builder
             .BindBefore(ContentKeyFunctions.ActivateItemInWorld,
                 new PointerInputCmdHandler(HandleCancelHackInput, outsidePrediction: true),
@@ -137,15 +138,38 @@ public sealed partial class NetrunnerSystem : EntitySystem
         CommandBinds.Unregister<NetrunnerSystem>();
     }
 
+    private void OnCancelHackRequest(NetrunnerCancelHackEvent msg, EntitySessionEventArgs args)
+    {
+        if (args.SenderSession.AttachedEntity is { } user)
+            TryCancelHack(user);
+    }
+
     private bool HandleCancelHackInput(ICommonSession? session, EntityCoordinates coords, EntityUid uid)
     {
-        if (session?.AttachedEntity is not { } user
-            || !_userQuery.TryComp(user, out var state)
-            || !_implantQuery.TryComp(state.Implant, out var implant)
-            || implant.Pending == null)
+        return session?.AttachedEntity is { } user && TryCancelHack(user);
+    }
+
+    /// <summary>Checks whether the user currently has an active hack that can be cancelled.</summary>
+    public bool CanCancelHack(EntityUid user, out Entity<NetrunnerImplantComponent> implant)
+    {
+        implant = default;
+        if (!_userQuery.TryComp(user, out var state)
+            || state.Implant is not { } implantUid
+            || !_implantQuery.TryComp(implantUid, out var comp)
+            || comp.Pending == null)
             return false;
 
-        CancelHack((state.Implant.Value, implant));
+        implant = (implantUid, comp);
+        return true;
+    }
+
+    /// <summary>Cancels the user's active hack if one is running.</summary>
+    public bool TryCancelHack(EntityUid user)
+    {
+        if (!CanCancelHack(user, out var implant))
+            return false;
+
+        CancelHack(implant);
         return true;
     }
 
@@ -207,11 +231,24 @@ public sealed partial class NetrunnerSystem : EntitySystem
 
     private void OnTerminal(Entity<NetrunnerImplantComponent> ent, ref NetrunnerTerminalActionEvent args)
     {
-        if (args.Handled || !IsOperator(ent, args.Performer))
+        if (args.Handled)
             return;
+        if (TryToggleTerminal(ent, args.Performer))
+            args.Handled = true;
+    }
+
+    /// <summary>Checks whether the operator can toggle the neural terminal interface.</summary>
+    public bool CanToggleTerminal(Entity<NetrunnerImplantComponent> ent, EntityUid user)
+        => IsOperator(ent, user);
+
+    /// <summary>Publishes current state and toggles the neural terminal UI for an authorized operator.</summary>
+    public bool TryToggleTerminal(Entity<NetrunnerImplantComponent> ent, EntityUid user)
+    {
+        if (!CanToggleTerminal(ent, user))
+            return false;
         Publish(ent);
-        _ui.TryToggleUi(ent.Owner, NetrunnerUiKey.Terminal, args.Performer);
-        args.Handled = true;
+        _ui.TryToggleUi(ent.Owner, NetrunnerUiKey.Terminal, user);
+        return true;
     }
 
     private void OnHackAction(Entity<NetrunnerImplantComponent> ent, ref NetrunnerHackActionEvent args)

@@ -116,7 +116,19 @@ public sealed partial class NetrunnerDisruptionSystem : EntitySystem
         RefreshEffect(ent);
     }
 
-    private void OnUnequipped(Entity<NetrunnerDisruptionComponent> ent, ref GotUnequippedEvent args) => RefreshEffect(ent);
+    private void OnUnequipped(Entity<NetrunnerDisruptionComponent> ent, ref GotUnequippedEvent args)
+    {
+        if (ent.Comp.Kind == NetrunnerHackKind.OpticalGlitch && ent.Comp.AffectedUser is { } prev)
+        {
+            ent.Comp.AffectedUser = null;
+            Dirty(ent);
+            if (!Terminating(prev))
+                _blindable.UpdateIsBlind((prev, null));
+            return;
+        }
+
+        RefreshEffect(ent);
+    }
 
     /// <summary>Recalculates body state without changing persistent movement or vision settings.</summary>
     public void RefreshEffect(Entity<NetrunnerDisruptionComponent> ent)

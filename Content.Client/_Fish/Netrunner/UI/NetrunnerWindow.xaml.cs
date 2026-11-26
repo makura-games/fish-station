@@ -85,7 +85,8 @@ public sealed partial class NetrunnerWindow : FancyWindow
         var entries = new List<string>();
         foreach (var entry in state.Journal)
         {
-            entries.Add(_loc.GetString("fish-netrunner-log-entry", ("time", entry.Time.ToString(@"mm\:ss")),
+            entries.Add(_loc.GetString("fish-netrunner-log-entry",
+                ("time", $"{(int) entry.Time.TotalHours:00}:{entry.Time.Minutes:00}:{entry.Time.Seconds:00}"),
                 ("program", _loc.GetString(entry.Kind.GetLocId())), ("target", FormattedMessage.EscapeText(entry.Target)),
                 ("result", _loc.GetString(entry.Success ? "fish-netrunner-log-success" : "fish-netrunner-log-failure"))));
         }

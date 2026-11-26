@@ -106,7 +106,7 @@ ent-FishNetrunnerImplanterDebug = отладочный имплантер нет
     .suffix = Fish
 
 ent-FishClothingOuterCyberpunkJacket = куртка киберпанка
-    .desc = Курта легендарного киберпсихопата
+    .desc = Куртка легендарного киберпсихопата
     .suffix = Fish
 
 ent-FishClothingEyesNetrunnerVisor = визор нетраннера

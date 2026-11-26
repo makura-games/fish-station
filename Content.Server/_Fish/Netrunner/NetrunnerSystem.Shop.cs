@@ -29,10 +29,14 @@ public sealed partial class NetrunnerSystem
     private void OnBuyVisor(Entity<NetrunnerImplantComponent> ent, ref NetrunnerBuyVisorMessage args)
         => TryBuyVisor(ent, args.Actor);
 
+    /// <summary>Checks whether the operator can open the private script shop.</summary>
+    public bool CanOpenShop(Entity<NetrunnerImplantComponent> ent, EntityUid user)
+        => IsOperator(ent, user);
+
     /// <summary>Opens the private shop for the living, authorized implant holder.</summary>
     public bool TryOpenShop(Entity<NetrunnerImplantComponent> ent, EntityUid user)
     {
-        if (!IsOperator(ent, user) || !_ui.TryOpenUi(ent.Owner, NetrunnerUiKey.Shop, user))
+        if (!CanOpenShop(ent, user) || !_ui.TryOpenUi(ent.Owner, NetrunnerUiKey.Shop, user))
             return false;
         PublishShop(ent);
         return true;
