@@ -31,6 +31,7 @@
       machine_parts: !type:Container
       vaccinatorSample: !type:ContainerSlot
       vaccinatorBlood: !type:ContainerSlot
+      mixer: !type:ContainerSlot # Fish-edit: наследуемый слот из Vaccinator (функционал разумной болезни)
   - type: MaterialStorage
     materialWhiteList:
     - Biomass
