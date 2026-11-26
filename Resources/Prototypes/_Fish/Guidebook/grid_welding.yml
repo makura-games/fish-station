@@ -1,0 +1,4 @@
+- type: guideEntry
+  id: FishGridWelding
+  name: guide-entry-fish-grid-welding
+  text: "/ServerInfo/Guidebook/_Fish/GridWelding.xml"

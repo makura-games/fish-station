@@ -18,10 +18,6 @@ quick_lottery = true
 [movement]
 mob_pushing = true
 
-[physics]
-# Makes mapping annoying
-grid_splitting = false
-
 [procgen]
 preload = false
 
