@@ -359,6 +359,12 @@ public abstract partial class SharedSuitSensorSystem : EntitySystem
         if (!Resolve(ent, ref ent.Comp1, ref ent.Comp2, false))
             return null;
 
+        // Fish-start: Проверка временного подавления датчиков костюма нетраннером.
+        var attempt = new SuitSensorStateAttemptEvent();
+        RaiseLocalEvent(ent, ref attempt);
+        if (attempt.Cancelled)
+            return null;
+        // Fish-end
         var sensor = ent.Comp1;
         var transform = ent.Comp2;
 

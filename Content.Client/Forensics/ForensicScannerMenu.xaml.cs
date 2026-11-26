@@ -71,6 +71,7 @@ public sealed partial class ForensicScannerMenu : DefaultWindow
         {
             text.AppendLine(residue);
         }
+        AppendNetrunnerAnomalies(text, scanner); // Fish-edit: Вывод раздела сетевых аномалий нетраннера.
 
         Diagnostics.Text = text.ToString();
     }

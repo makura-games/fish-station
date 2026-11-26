@@ -1,0 +1,292 @@
+- type: entity
+  id: FishNetrunnerImplant
+  parent: [BaseSubdermalImplant, BaseSyndicateContraband]
+  name: netrunner implant
+  description: A compact neural interface with a miniature cooling assembly.
+  suffix: Fish
+  components:
+  - type: SubdermalImplant
+    implantAction: FishActionNetrunnerTerminal
+    whitelist:
+      components:
+      - MobState
+  - type: NetrunnerImplant
+    abilities:
+    - FishNetrunnerOpenAirlock
+    - FishNetrunnerDisableCamera
+    - FishNetrunnerDisableLight
+    - FishNetrunnerDisableSensors
+    - FishNetrunnerDisableHeadset
+    - FishNetrunnerNeuralOverload
+    - FishNetrunnerShortCircuit
+    - FishNetrunnerMotorInterference
+    - FishNetrunnerOpticalGlitch
+    - FishNetrunnerLockWeapon
+    - FishNetrunnerGripShock
+    - FishNetrunnerNeuralStatic
+    - FishNetrunnerThermalSurge
+    - FishNetrunnerBatteryDrain
+    - FishNetrunnerLockAirlock
+    - FishNetrunnerEraseTrace
+  - type: UserInterface
+    interfaces:
+      enum.NetrunnerUiKey.Terminal:
+        type: NetrunnerBoundUserInterface
+      enum.NetrunnerUiKey.Shop:
+        type: NetrunnerShopBoundUserInterface
+
+- type: entity
+  id: FishNetrunnerImplanter
+  parent: BaseImplantOnlyImplanterSyndi
+  name: netrunner implanter
+  description: A disposable syringe containing a neural interface.
+  suffix: Fish
+  components:
+  - type: Implanter
+    implant: FishNetrunnerImplant
+
+- type: entity
+  id: FishNetrunnerImplantDebug
+  parent: FishNetrunnerImplant
+  name: debug netrunner implant
+  description: A demonstration neural terminal with unrestricted software access.
+  suffix: Fish
+  categories: [DoNotMap]
+  components:
+  - type: NetrunnerImplant
+    debugMode: true
+
+- type: entity
+  id: FishNetrunnerImplanterDebug
+  parent: BaseImplantOnlyImplanterSyndi
+  name: debug netrunner implanter
+  description: An administrative demonstration syringe containing a neural terminal.
+  suffix: Fish
+  categories: [DoNotMap]
+  components:
+  - type: Implanter
+    implant: FishNetrunnerImplantDebug
+
+- type: entity
+  id: FishNetrunnerKit
+  parent: [BoxCardboard, BaseSyndicateContraband]
+  name: netrunner kit
+  description: A neural interface and a circuit board packed in protective foam.
+  suffix: Fish
+  components:
+  - type: StorageFill
+    contents:
+    - id: FishNetrunnerImplanter
+    - id: FishNetrunnerChairCircuitboard
+    - id: FishNetrunnerManual
+    - id: FishCoolantPack1
+
+- type: entity
+  id: FishClothingOuterCyberpunkJacket
+  parent: ClothingOuterJacketBase
+  name: cyberpunk jacket
+  description: The jacket of a legendary cyberpsycho.
+  suffix: Fish
+  components:
+  # Fish-edit: Временная заглушка; готовый спрайт куртки заменяется в Sprite и Clothing.
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Coats/jensencoat.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Coats/jensencoat.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.85
+        Piercing: 0.9
+        Heat: 0.9
+  - type: StaminaResistance
+    damageCoefficient: 0.95
+  - type: CyberpsychosisResistance
+    damageCoefficient: 0.6
+
+- type: entity
+  id: FishClothingEyesNetrunnerVisor
+  parent: [ClothingEyesGlassesJensen, BaseSyndicateContraband]
+  name: netrunner visor
+  description: A neural accelerator behind tinted lenses. Its frame grows warm against the skin.
+  suffix: Fish
+  components:
+  - type: NetrunnerVisor
+  - type: ShowNetrunnerMindShieldIcons
+
+- type: entity
+  id: FishNetrunnerManual
+  parent: HolographicPaper
+  name: neural terminal manual
+  description: A holographic instruction manual bearing the Cybersun Industries LLC logo.
+  suffix: Fish
+  components:
+  - type: Paper
+    content: fish-netrunner-manual-content
+    contentSize: 12000
+
+- type: entity
+  id: FishNetrunnerRemoteEye
+  name: netrunner eye
+  description: A mobile viewer for a neural interface.
+  suffix: Fish
+  categories: [HideSpawnMenu, DoNotMap]
+  save: false
+  components:
+  - type: NetrunnerRemoteEye
+  - type: Eye
+    drawFov: false
+    pvsScale: 1
+  - type: Visibility
+    layer: 16
+  - type: Sprite
+    sprite: _Sunrise/Abductor/Structures/Machines/abductor_camera_console.rsi
+    visible: false
+    noRot: true
+    drawdepth: Ghosts
+    layers:
+    - state: eye
+      color: "#33E6DF"
+      shader: unshaded
+  - type: InputMover
+  - type: MovementSpeedModifier
+    baseSprintSpeed: 12
+    baseWalkSpeed: 8
+  - type: MovementIgnoreGravity
+  - type: CanMoveInAir
+  - type: Physics
+    bodyType: KinematicController
+    bodyStatus: InAir
+  - type: Fixtures
+    fixtures:
+      viewer:
+        shape: !type:PhysShapeCircle
+          radius: 0.35
+        density: 15
+        hard: false
+        layer:
+        - GhostImpassable
+
+- type: entity
+  id: FishNetrunnerChairCircuitboard
+  parent: [BaseMachineCircuitboard, BaseSyndicateContraband]
+  name: netrunner chair board
+  description: A machine circuit board with an unusually large neural interface connector.
+  suffix: Fish
+  components:
+  - type: Sprite
+    state: medical
+  - type: MachineBoard
+    prototype: FishNetrunnerChair
+    stackRequirements:
+      Manipulator: 2
+      Cable: 5
+      Steel: 5
+
+- type: entity
+  id: FishNetrunnerChair
+  parent: [BaseMachinePowered, ConstructibleMachine, BaseConstructibleMachineDestructible, BaseSyndicateContraband]
+  name: netrunner chair
+  description: A reclining terminal with a neural interface and a cooling unit.
+  suffix: Fish
+  components:
+  - type: NetrunnerChair
+  - type: StationAiVision
+    needsAnchoring: true
+    range: 4.5
+  - type: Sprite
+    sprite: _Sunrise/Structures/Furniture/abductor_chair.rsi
+    state: abductor_chair
+    noRot: true
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: ExtensionCableReceiver
+  - type: Strap
+    position: Stand
+    buckleOffsets:
+    - "0,-0.05"
+    size: 100
+  - type: Machine
+    board: FishNetrunnerChairCircuitboard
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.05"
+        density: 190
+        mask:
+        - LowImpassable
+  - type: PowerSwitch
+
+- type: listing
+  id: FishUplinkNetrunnerKit
+  name: fish-netrunner-uplink-name
+  description: fish-netrunner-uplink-description
+  productEntity: FishNetrunnerKit
+  productEvent: !type:NetrunnerGrantBundleItemEvent
+    prototype: FishClothingOuterCyberpunkJacket
+  raiseProductEventOnUser: true
+  cost:
+    Telecrystal: 15
+  categories:
+  - UplinkImplants
+
+- type: stack
+  parent: BaseSmallStack
+  id: FishCoolantPack
+  name: stack-fish-coolant-pack
+  icon: { sprite: "/Textures/Objects/Specific/Medical/medical.rsi", state: bloodpack-blue }
+  spawn: FishCoolantPack
+
+- type: entity
+  parent: BaseHealingItem
+  id: FishCoolantPack
+  name: coolant pack
+  description: A medical pack filled with endothermic gel. When applied, it rapidly draws excess heat from an overheated body down to a safe 20 °C.
+  suffix: Fish
+  components:
+  - type: Item
+    heldPrefix: bloodpack
+  - type: Sprite
+    state: bloodpack-blue
+  - type: NetrunnerCoolantPack
+    targetTemperature: 293.15
+    delay: 3
+    beginSound:
+      path: "/Audio/Items/Medical/brutepack_begin.ogg"
+      params:
+        volume: 1.0
+        variation: 0.125
+    endSound:
+      path: "/Audio/Items/Medical/brutepack_end.ogg"
+      params:
+        volume: 1.0
+        variation: 0.125
+  - type: Stack
+    stackType: FishCoolantPack
+    count: 10
+  - type: StackPrice
+    price: 10
+
+- type: entity
+  parent: FishCoolantPack
+  id: FishCoolantPack1
+  suffix: Fish
+  components:
+  - type: Stack
+    stackType: FishCoolantPack
+    count: 1
+
+- type: shader
+  id: FishNetrunnerMindShieldOutline
+  kind: source
+  path: "/Textures/Shaders/outline.swsl"
+  params:
+    outline_color: "#22CCFFCC"
+    outline_fullbright: false
+    light_boost: 1.5
+    light_gamma: 1.2
+    light_whitepoint: 1

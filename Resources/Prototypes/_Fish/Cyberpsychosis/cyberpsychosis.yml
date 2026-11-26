@@ -1,0 +1,70 @@
+- type: shader
+  id: FishCyberpsychosis
+  kind: source
+  path: "/Textures/_Fish/Shaders/cyberpsychosis.swsl"
+
+- type: entity
+  id: FishDebugWandCyberpsychosisBase
+  parent: BaseItem
+  abstract: true
+  categories: [DoNotMap]
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Basic/wands.rsi
+    state: poly
+  - type: Item
+    heldPrefix: wand
+    size: Small
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 0
+
+- type: entity
+  id: FishDebugWandCyberpsychosisAdd10
+  parent: FishDebugWandCyberpsychosisBase
+  name: cyberpsychosis wand (+10%)
+  description: An experimental debug wand that adds 10% cyberpsychosis.
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: "#E05555"
+  - type: CyberpsychosisWand
+    delta: 10
+
+- type: entity
+  id: FishDebugWandCyberpsychosisAdd30
+  parent: FishDebugWandCyberpsychosisBase
+  name: cyberpsychosis wand (+30%)
+  description: An experimental debug wand that adds 30% cyberpsychosis.
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: "#991111"
+  - type: CyberpsychosisWand
+    delta: 30
+
+- type: entity
+  id: FishDebugWandCyberpsychosisRemove10
+  parent: FishDebugWandCyberpsychosisBase
+  name: anti-cyberpsychosis wand (-10%)
+  description: An experimental debug wand that removes 10% cyberpsychosis.
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: "#55CC99"
+  - type: CyberpsychosisWand
+    delta: -10
+
+- type: entity
+  id: FishDebugWandCyberpsychosisRemove30
+  parent: FishDebugWandCyberpsychosisBase
+  name: anti-cyberpsychosis wand (-30%)
+  description: An experimental debug wand that removes 30% cyberpsychosis.
+  suffix: Fish
+  components:
+  - type: Sprite
+    color: "#2299CC"
+  - type: CyberpsychosisWand
+    delta: -30

@@ -33,6 +33,11 @@ public sealed partial class ForensicScannerComponent : Component
     [DataField, AutoNetworkedField]
     public List<string> Residues = [];
 
+    // Fish-start: Записи об успешных сетевых вмешательствах нетраннера.
+    [DataField, AutoNetworkedField]
+    public List<string> NetrunnerAnomalies = [];
+    // Fish-end
+
     /// <summary>
     /// What is the name of the entity that was scanned last?
     /// </summary>

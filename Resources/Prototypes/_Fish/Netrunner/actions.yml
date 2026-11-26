@@ -1,0 +1,309 @@
+- type: entity
+  id: FishActionNetrunnerTerminal
+  parent: BaseAction
+  name: netrunner terminal
+  description: Check memory, camera connection and recent programs, or open the script shop.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+  - type: Sprite
+    sprite: _Sunrise/Objects/Devices/ai_card.rsi
+    layers:
+    - state: base
+    - state: empty
+      shader: unshaded
+  - type: InstantAction
+    event: !type:NetrunnerTerminalActionEvent
+
+- type: entity
+  id: FishActionNetrunnerJumpToChair
+  parent: BaseAction
+  name: jump to chair
+  description: Returns your netrunner eye back to the chair.
+  suffix: Fish
+  components:
+  - type: Action
+    priority: -9
+    itemIconStyle: BigAction
+  - type: Sprite
+    sprite: Interface/Actions/actions_ai.rsi
+    layers:
+    - state: ai_core
+  - type: InstantAction
+    event: !type:NetrunnerJumpToChairActionEvent
+
+- type: entity
+  id: FishActionNetrunnerBase
+  parent: BaseAction
+  abstract: true
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+  - type: TargetAction
+    range: 0
+    checkCanAccess: false
+  - type: EntityTargetAction
+    canTargetSelf: false
+    rotateOnUse: false
+
+- type: entity
+  id: FishActionNetrunnerInfrastructureBase
+  parent: FishActionNetrunnerBase
+  abstract: true
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/jaws_of_life.rsi
+    layers:
+    - state: syn_jaws_pry
+
+- type: entity
+  id: FishActionNetrunnerCovertBase
+  parent: FishActionNetrunnerBase
+  abstract: true
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Starlight/Objects/Devices/ecronizer.rsi
+    layers:
+    - state: base
+    - state: enabled
+      shader: unshaded
+
+- type: entity
+  id: FishActionNetrunnerCombatBase
+  parent: FishActionNetrunnerBase
+  abstract: true
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Pistols/viper.rsi
+    layers:
+    - state: icon
+
+- type: entity
+  id: FishActionNetrunnerOpenAirlock
+  parent: FishActionNetrunnerInfrastructureBase
+  name: open airlock
+  description: Opens one powered, unbolted airlock. Physical locks are not bypassed.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - Airlock
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerOpenAirlock
+
+- type: entity
+  id: FishActionNetrunnerDisableCamera
+  parent: FishActionNetrunnerInfrastructureBase
+  name: disrupt camera
+  description: Disables one camera for 20 seconds. Its image and neural coverage become unavailable.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - SurveillanceCamera
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerDisableCamera
+
+- type: entity
+  id: FishActionNetrunnerDisableLight
+  parent: BaseAction
+  name: area blackout
+  description: Suppresses powered lights in a 7 meter radius for 5 minutes. Select the center of the area.
+  suffix: Fish
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+  - type: Sprite
+    sprite: Objects/Tools/jaws_of_life.rsi
+    layers:
+    - state: syn_jaws_pry
+  - type: TargetAction
+    range: 0
+    checkCanAccess: false
+  - type: WorldTargetAction
+    event: !type:NetrunnerAreaHackActionEvent
+      ability: FishNetrunnerDisableLight
+
+- type: entity
+  id: FishActionNetrunnerDisableSensors
+  parent: FishActionNetrunnerCovertBase
+  name: disrupt suit sensors
+  description: Suppresses reports from a target's worn suit sensors for 20 seconds.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - MobState
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerDisableSensors
+
+- type: entity
+  id: FishActionNetrunnerDisableHeadset
+  parent: FishActionNetrunnerCovertBase
+  name: disrupt headset
+  description: Blocks a target's equipped headset transmission and reception for 15 seconds.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - MobState
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerDisableHeadset
+
+- type: entity
+  id: FishActionNetrunnerNeuralOverload
+  parent: FishActionNetrunnerCombatBase
+  name: neural overload
+  description: Covertly overloads a genuine mindshield implant and paralyzes its wearer for 6 seconds. No target warning or security notification is transmitted.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - MobState
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerNeuralOverload
+
+- type: entity
+  id: FishActionNetrunnerShortCircuit
+  parent: FishActionNetrunnerCombatBase
+  name: short circuit
+  description: Damages a borg's or IPC's electronic chassis with an electrical overload and knocks them down for 5 seconds. Organic targets are incompatible.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - MobState
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerShortCircuit
+
+- type: entity
+  id: FishActionNetrunnerMotorInterference
+  parent: FishActionNetrunnerCombatBase
+  name: motor interference
+  description: Slows a borg, IPC or a genuine mindshield implant wearer by 35 percent for 7 seconds. Does not paralyze the target.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - MobState
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerMotorInterference
+
+- type: entity
+  id: FishActionNetrunnerOpticalGlitch
+  parent: FishActionNetrunnerCombatBase
+  name: optical glitch
+  description: Obscures a borg's, IPC's or worn electronic HUD visor's vision for 3 seconds. Removing the visor restores sight immediately.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - MobState
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerOpticalGlitch
+
+- type: entity
+  id: FishActionNetrunnerLockWeapon
+  parent: FishActionNetrunnerCombatBase
+  name: lock energy weapon
+  description: Prevents an energy gun from firing for 6 seconds. Target the gun or a person holding it in their active hand; conventional firearms are incompatible.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - MobState
+      - Gun
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerLockWeapon
+
+- type: entity
+  id: FishActionNetrunnerGripShock
+  parent: FishActionNetrunnerCombatBase
+  name: grip reset
+  description: Makes a borg, IPC or a genuine mindshield wearer drop the item in their active hand.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components: [MobState]
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerGripShock
+
+- type: entity
+  id: FishActionNetrunnerNeuralStatic
+  parent: FishActionNetrunnerCombatBase
+  name: neural static
+  description: Causes 30 stamina damage to a borg, IPC or a genuine mindshield wearer, subject to normal resistance.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components: [MobState]
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerNeuralStatic
+
+- type: entity
+  id: FishActionNetrunnerThermalSurge
+  parent: FishActionNetrunnerCombatBase
+  name: thermal surge
+  description: Raises an IPC's or genuine mindshield wearer's temperature by 12 degrees ignoring heat resistance. Deals 20 stamina damage to borgs without thermal regulation.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components: [MobState]
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerThermalSurge
+
+- type: entity
+  id: FishActionNetrunnerBatteryDrain
+  parent: FishActionNetrunnerCombatBase
+  name: battery discharge
+  description: Drains 30 percent of a borg, IPC or energy weapon battery's capacity without destroying the cell.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components: [MobState, Gun]
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerBatteryDrain
+
+- type: entity
+  id: FishActionNetrunnerLockAirlock
+  parent: FishActionNetrunnerInfrastructureBase
+  name: airlock loop
+  description: Prevents a closed, powered airlock from opening for 12 seconds. Its physical bolt settings remain intact.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components: [Airlock]
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerLockAirlock
+
+- type: entity
+  id: FishActionNetrunnerEraseTrace
+  parent: FishActionNetrunnerCovertBase
+  name: buffer purge
+  description: Clears successful netrunner intervention traces detectable by a forensic scanner on a visible object. The terminal's private journal remains intact.
+  suffix: Fish
+  components:
+  - type: EntityTargetAction
+    whitelist:
+      components: [Airlock, PoweredLight, SurveillanceCamera, Gun, MobState]
+    event: !type:NetrunnerHackActionEvent
+      ability: FishNetrunnerEraseTrace
