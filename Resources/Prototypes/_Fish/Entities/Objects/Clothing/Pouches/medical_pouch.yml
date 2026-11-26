@@ -78,6 +78,10 @@
   - type: Storage
     grid:
     - 0,0,6,2
+    whitelist:
+      tags:
+      - Bottle
+      - CentrifugeCompatible
   - type: Tag
     tags:
     - WhitelistChameleon

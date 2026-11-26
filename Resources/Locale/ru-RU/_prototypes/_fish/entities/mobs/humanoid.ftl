@@ -2,19 +2,19 @@ ent-FishRandomHumanoidSpawnerCBURNLeader = лидер РХБЗЗ
     .suffix = Fish, Роль ОБР
     .desc = { ent-SpawnPointJobBase.desc }
 
-ent-FishRandomHumanoidSpawnerERTChaplainRed = священник ОБР
+ent-FishRandomHumanoidSpawnerERTChaplainRed = ОБР священник
     .suffix = Fish, Роль ОБР, Красный
     .desc = { ent-SpawnPointJobBase.desc }
 
-ent-FishRandomHumanoidSpawnerERTEngineerRed = инженер ОБР
+ent-FishRandomHumanoidSpawnerERTEngineerRed = ОБР инженер
     .suffix = Fish, Роль ОБР, Красный
     .desc = { ent-SpawnPointJobBase.desc }
 
-ent-FishRandomHumanoidSpawnerERTMedicalRed = медик ОБР
+ent-FishRandomHumanoidSpawnerERTMedicalRed = ОБР медик
     .suffix = Fish, Роль ОБР, Красный
     .desc = { ent-SpawnPointJobBase.desc }
 
-ent-FishRandomHumanoidSpawnerERTJanitorRed = уборщик ОБР
+ent-FishRandomHumanoidSpawnerERTJanitorRed = ОБР уборщик
     .suffix = Fish, Роль ОБР, Красный
     .desc = { ent-SpawnPointJobBase.desc }
 

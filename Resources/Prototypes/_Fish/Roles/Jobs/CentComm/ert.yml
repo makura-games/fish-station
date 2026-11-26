@@ -332,6 +332,7 @@
     jumpsuit: ClothingUniformJumpsuitERTEngineer
     back: ClothingModsuitERTEngineer
     shoes: ClothingShoesBootsMagERT
+    head: ClothingHeadHatBeretEngineering
     mask: ClothingMaskGasERT
     eyes: FishClothingEyesHudErtMech
     neck: HandheldCamera
@@ -406,6 +407,7 @@
     jumpsuit: ClothingUniformJumpsuitERTMedic
     back: ClothingModsuitERTMedical
     shoes: ClothingShoesBootsMagERT
+    head: ClothingHeadHatCapCMO
     neck: HandheldCamera
     mask: ClothingMaskGasERT
     eyes: FishClothingEyesHudErtMedic
@@ -471,6 +473,7 @@
     jumpsuit: ClothingUniformJumpsuitERTJanitor
     back: ClothingModsuitERTJanitor
     shoes: ClothingShoesBootsMagERT
+    head: ClothingHeadHatBeretRND
     mask: ClothingMaskGasERT
     neck: HandheldCamera
     eyes: FishClothingEyesHudErt
