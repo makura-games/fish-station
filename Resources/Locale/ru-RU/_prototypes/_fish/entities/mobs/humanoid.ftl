@@ -1,5 +1,21 @@
-ent-RandomHumanoidSpawnerCBURNLeader = лидер РХБЗЗ
-    .suffix = Роль ОБР, Лидер
+ent-FishRandomHumanoidSpawnerCBURNLeader = лидер РХБЗЗ
+    .suffix = Fish, Роль ОБР
+    .desc = { ent-SpawnPointJobBase.desc }
+
+ent-FishRandomHumanoidSpawnerERTChaplainRed = ОБР священник
+    .suffix = Fish, Роль ОБР, Красный
+    .desc = { ent-SpawnPointJobBase.desc }
+
+ent-FishRandomHumanoidSpawnerERTEngineerRed = ОБР инженер
+    .suffix = Fish, Роль ОБР, Красный
+    .desc = { ent-SpawnPointJobBase.desc }
+
+ent-FishRandomHumanoidSpawnerERTMedicalRed = ОБР медик
+    .suffix = Fish, Роль ОБР, Красный
+    .desc = { ent-SpawnPointJobBase.desc }
+
+ent-FishRandomHumanoidSpawnerERTJanitorRed = ОБР уборщик
+    .suffix = Fish, Роль ОБР, Красный
     .desc = { ent-SpawnPointJobBase.desc }
 
 ent-RandomHumanoidSpawnerDeathSquadFish = { ent-RandomHumanoidSpawnerDeathSquad }

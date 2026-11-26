@@ -117,7 +117,7 @@ public sealed class FishVisionEyeProtectionTest
             wearerNet = server.EntMan.GetNetEntity(wearer);
             server.PlayerMan.SetAttachedEntity(session, wearer);
             server.EntMan.AddComponent<ThermalVisionComponent>(wearer);
-            var helmet = server.EntMan.SpawnEntity("ClothingHeadHelmetCBURN", map.GridCoords);
+            var helmet = server.EntMan.SpawnEntity("FishClothingHeadHelmetCBURN", map.GridCoords);
             equipped = server.System<InventorySystem>().TryEquip(wearer, helmet, "head", force: true);
             activated = server.System<ItemToggleSystem>().TryActivate(helmet, wearer);
         });

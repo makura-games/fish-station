@@ -163,7 +163,7 @@
       unequipDelay: 10
     - type: ToggleableClothing
       action: ActionToggleSuitPiece
-      clothingPrototype: ClothingOuterHardsuitERTJanitor
+      clothingPrototype: FishClothingOuterHardsuitERTJanitor # Fish-edit
       requiredSlot: back
       slot: outerClothing
     - type: ContainerContainer
@@ -183,7 +183,7 @@
       unequipDelay: 10
     - type: ToggleableClothing
       action: ActionToggleSuitPiece
-      clothingPrototype: ClothingOuterHardsuitERTSecurity
+      clothingPrototype: FishClothingOuterHardsuitERTSecurity # Fish-edit
       requiredSlot: back
       slot: outerClothing
     - type: ContainerContainer
@@ -203,7 +203,7 @@
       unequipDelay: 10
     - type: ToggleableClothing
       action: ActionToggleSuitPiece
-      clothingPrototype: ClothingOuterHardsuitERTMedical
+      clothingPrototype: FishClothingOuterHardsuitERTMedical # Fish-edit
       requiredSlot: back
       slot: outerClothing
     - type: ContainerContainer
@@ -223,7 +223,7 @@
       unequipDelay: 10
     - type: ToggleableClothing
       action: ActionToggleSuitPiece
-      clothingPrototype: ClothingOuterHardsuitERTLeader
+      clothingPrototype: FishClothingOuterHardsuitERTLeader # Fish-edit
       requiredSlot: back
       slot: outerClothing
     - type: ContainerContainer
@@ -243,7 +243,7 @@
       unequipDelay: 10
     - type: ToggleableClothing
       action: ActionToggleSuitPiece
-      clothingPrototype: ClothingOuterHardsuitERTEngineer
+      clothingPrototype: FishClothingOuterHardsuitERTEngineer # Fish-edit
       requiredSlot: back
       slot: outerClothing
     - type: ContainerContainer
@@ -263,7 +263,7 @@
       unequipDelay: 10
     - type: ToggleableClothing
       action: ActionToggleSuitPiece
-      clothingPrototype: ClothingOuterHardsuitERTChaplain
+      clothingPrototype: FishClothingOuterHardsuitERTChaplain # Fish-edit
       requiredSlot: back
       slot: outerClothing
     - type: ContainerContainer

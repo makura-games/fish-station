@@ -146,12 +146,12 @@ public sealed class FishVisionTest
     }
 
     [TestCase("ClothingMaskGasDeathSquadFish", "mask", null, true)]
-    [TestCase("ClothingHeadHelmetHardsuitERTLeader", "head", "#00FFFF", false)]
-    [TestCase("ClothingHeadHelmetHardsuitERTChaplain", "head", "#FFFFFF", false)]
-    [TestCase("ClothingHeadHelmetHardsuitERTMedical", "head", "#ADFFEC", false)]
-    [TestCase("ClothingHeadHelmetHardsuitERTJanitor", "head", "#CBADFF", false)]
-    [TestCase("ClothingHeadHelmetCBURN", "head", "#00FFFF", false)]
-    [TestCase("ClothingHeadHelmetHardsuitDeathsquadFish", "head", null, false)]
+    [TestCase("FishClothingHeadHelmetHardsuitERTLeader", "head", "#00FFFF", false)]
+    [TestCase("FishClothingHeadHelmetHardsuitERTChaplain", "head", "#FFFFFF", false)]
+    [TestCase("FishClothingHeadHelmetHardsuitERTMedical", "head", "#ADFFEC", false)]
+    [TestCase("FishClothingHeadHelmetHardsuitERTJanitor", "head", "#CBADFF", false)]
+    [TestCase("FishClothingHeadHelmetCBURN", "head", "#B98A4B", false)]
+    [TestCase("ClothingHeadHelmetHardsuitDeathsquadFish", "head", "#00FFFF", false)]
     [TestCase("FishClothingHeadHelmetHardsuitCentcomBlack", "head", "#00FFFF", false)]
     public async Task HardsuitAndMaskDevicesResolveFromTheirSlots(string prototype, string slot, string? expectedColor, bool thermal)
     {

@@ -1,0 +1,76 @@
+- type: startingGear
+  id: FishCBURNGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    mask: ClothingMaskGasERT
+    eyes: FishClothingEyesHudErt
+    ears: ClothingHeadsetAltERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTCBURN
+    outerClothing: FishClothingOuterHardsuitCBURN
+    shoes: ClothingShoesBootsCombatFilled
+    id: CBURNPDA
+    pocket1: RadioHandheld
+    pocket2: WeaponLaserGun
+    belt: ClothingBeltBandolier
+  storage:
+    back:
+    - BoxErtBaseKit
+    - BoxFlashbang
+    - PillAmbuzolPlus
+    - PillAmbuzol
+    - TacticalAxe
+
+- type: startingGear
+  id: FishCBURNGearEVA
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    mask: ClothingMaskGasERT
+    eyes: FishClothingEyesHudErt
+    ears: ClothingHeadsetAltERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTCBURN
+    outerClothing: ClothingOuterSoftsuitCBURN
+    shoes: ClothingShoesBootsCombatFilled
+    id: CBURNPDA
+    pocket1: RadioHandheld
+    pocket2: WeaponLaserGun
+    belt: ClothingBeltSalvageWebbing
+    head: ClothingHeadSoftsuitCBURN
+  storage:
+    back:
+    - GrenadeFlashBang
+    - GrenadeFlashBang
+    - GrenadeFlashBang
+    - PillAmbuzolPlus
+    - PillAmbuzol
+    - PillAmbuzol
+    - PillAmbuzol
+    - SyringeAmbuzol
+    - FireExtinguisherMini
+    - MedkitCombatFilled
+    - MedkitBurnFilled
+    - MedkitToxinFilled
+    - TacticalAxe
+
+- type: startingGear
+  id: FishCBURNLeaderGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    mask: ClothingMaskGasERT
+    eyes: FishClothingEyesHudErtMedic
+    ears: ClothingHeadsetAltERT
+    gloves: ClothingHandsPowerGlovesUplinkNTERTCBURN
+    outerClothing: ClothingOuterHardsuitCBURNLeader
+    shoes: ClothingShoesBootsCombatFilled
+    id: CBURNPDA
+    pocket1: RadioHandheld
+    pocket2: WeaponLaserGun
+    belt: ClothingBeltBandolier
+  storage:
+    back:
+    - GrenadeFlashBang
+    - PillAmbuzolPlus
+    - PillAmbuzol
+    - TacticalAxe

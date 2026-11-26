@@ -40,15 +40,15 @@
   account: Cargo
   priorityTag: DockFishERT
   sortOrder: 20
-  # Red-шаттл: Leader/Security Red, Eng/Med/Chaplain как на карте Red.
+  # Red-шаттл: все роли используют Red-варианты с Red-перчатками.
   cryoRoleSpawners:
   - spawner: RandomHumanoidSpawnerERTLeaderRed
     roleKey: Leader
-  - spawner: RandomHumanoidSpawnerERTEngineerGamma
+  - spawner: FishRandomHumanoidSpawnerERTEngineerRed
     roleKey: Engineer
-  - spawner: RandomHumanoidSpawnerERTMedicalGamma
+  - spawner: FishRandomHumanoidSpawnerERTMedicalRed
     roleKey: Medical
-  - spawner: RandomHumanoidSpawnerERTChaplainEVA
+  - spawner: FishRandomHumanoidSpawnerERTChaplainRed
     roleKey: Chaplain
   - spawner: RandomHumanoidSpawnerERTSecurityRed
     roleKey: Security

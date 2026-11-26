@@ -4718,7 +4718,7 @@ entities:
     - type: Transform
       pos: 5.5,-2.5
       parent: 1
-- proto: RandomHumanoidSpawnerCBURNLeader
+- proto: FishRandomHumanoidSpawnerCBURNLeader
   entities:
   - uid: 898
     components:

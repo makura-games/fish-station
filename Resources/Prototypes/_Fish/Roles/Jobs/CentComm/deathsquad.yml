@@ -1,19 +1,35 @@
 - type: startingGear
   id: DeathSquadGearFish
-  parent: DeathSquadGear
   equipment:
+    jumpsuit: ClothingUniformJumpsuitDeathSquad
+    back: ClothingDeathSquadronBackpackFish
     mask: ClothingMaskGasDeathSquadFish
+    eyes: FishClothingEyesHudErtMedic
+    ears: ClothingHeadsetAltDeathSquad
+    gloves: ClothingHandsGlovesDeathSquadFish
     outerClothing: ClothingOuterHardsuitDeathsquadFish
     shoes: ClothingShoesBootsMagDeathSquadFish
-    gloves: ClothingHandsGlovesDeathSquadFish
-    eyes: ClothingEyesHudMedSec
-    back: ClothingDeathSquadronBackpackFish
-  inhand: []
+    id: DeathsquadPDA
+    pocket1: PouchAmmoLarge
+    pocket2: DoubleEmergencyOxygenTankFilled
+    belt: ClothingBeltMedicalElite
+  storage:
+    back:
+    - WeaponPulsePistol
+    - WeaponRevolverMatebaAP
+    - SpeedLoaderMagnumAP
+    - SpeedLoaderMagnumAP
+    - BoxFlashbang
+    - ToolDebug
+    - WelderExperimental
+    - EnergySword
+    - EnergyShield
+    - SpeedLoaderMagnumAP
+    - SpeedLoaderMagnumAP
+    - BoxErtBaseKit
 
 - type: startingGear
   id: DeathSquadGearFishBudget
   parent: DeathSquadGearFish
   equipment:
     gloves: ClothingHandsPowerGlovesUplinkNTERTDeathSquadFish
-
-

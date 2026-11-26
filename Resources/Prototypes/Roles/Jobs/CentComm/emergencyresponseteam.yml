@@ -47,10 +47,10 @@
     back: ClothingBackpackERTLeader
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudMedSec
+    eyes: FishClothingEyesHudErtMedic # Fish-edit
     neck: Whistle
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTLeader
+    outerClothing: FishClothingOuterHardsuitERTLeader # Fish-edit
     id: ERTLeaderPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     belt: ClothingBeltMilitaryWebbingERT
@@ -156,9 +156,9 @@
     back: ClothingBackpackERTChaplain
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudMedical
+    eyes: FishClothingEyesHudErtMedic # Fish-edit
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTChaplain
+    outerClothing: FishClothingOuterHardsuitERTChaplain # Fish-edit
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     belt: ClothingBeltMilitaryWebbingERT
@@ -236,9 +236,9 @@
     back: ClothingBackpackERTEngineer
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudDiagnostic
+    eyes: FishClothingEyesHudErtMech # Fish-edit
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTEngineer
+    outerClothing: FishClothingOuterHardsuitERTEngineer # Fish-edit
     id: ERTEngineerPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     belt: ClothingBeltMilitaryWebbingERT
@@ -334,10 +334,10 @@
     back: ClothingBackpackERTSecurity
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudSecurity
+    eyes: FishClothingEyesHudErt # Fish-edit
     gloves: ClothingHandsGlovesCombat
     neck: SecurityWhistle
-    outerClothing: ClothingOuterHardsuitERTSecurity
+    outerClothing: FishClothingOuterHardsuitERTSecurity # Fish-edit
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     belt: ClothingBeltMilitaryWebbingERT
@@ -369,9 +369,9 @@
     jumpsuit: ClothingUniformJumpsuitERTSecurity
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudSecurity
+    eyes: FishClothingEyesHudErt # Fish-edit
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTSecurity
+    outerClothing: FishClothingOuterHardsuitERTSecurity # Fish-edit
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     belt: ClothingBeltMilitaryWebbingERT
@@ -528,9 +528,9 @@
     back: ClothingBackpackERTMedical
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: ClothingEyesHudMedical
+    eyes: FishClothingEyesHudErtMedic # Fish-edit
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTMedical
+    outerClothing: FishClothingOuterHardsuitERTMedical # Fish-edit
     id: ERTMedicPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     belt: ClothingBeltMilitaryWebbingERT
@@ -630,7 +630,7 @@
     mask: ClothingMaskGasERT
     eyes: ClothingEyesGlassesChemical
     gloves: ClothingHandsGlovesCombat
-    outerClothing: ClothingOuterHardsuitERTJanitor
+    outerClothing: FishClothingOuterHardsuitERTJanitor # Fish-edit
     id: ERTJanitorPDA
     ears: ClothingHeadsetAltERT #Sunrise-Edit
     belt: ClothingBeltMilitaryWebbingERT

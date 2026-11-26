@@ -1,0 +1,58 @@
+- type: entity
+  parent: [ClothingEyesHudBase, ShowSecurityIcons, BaseCentcommContraband]
+  id: FishClothingEyesHudErt
+  name: ert visor
+  description: An ERT security heads-up display, designed for identification of ERT personnel and quick threat assessment.
+  suffix: Fish
+  components:
+  - type: FlashImmunity
+  - type: AddWantedStatus
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_black_glasses.rsi
+  - type: Clothing
+    sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_black_glasses.rsi
+  - type: Tag
+    tags:
+    - PetWearable
+    - WhitelistChameleon
+
+- type: entity
+  parent: [ClothingEyesHudBase, ShowSecurityIcons, ShowMedicalIcons, BaseCentcommContraband]
+  id: FishClothingEyesHudErtMedic
+  name: ert medical visor
+  description: An ERT Corpsman's professional heads-up display, designed for quick diagnosis of their team's status.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_yellow_glasses.rsi
+  - type: Clothing
+    sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_yellow_glasses.rsi
+  - type: FlashImmunity
+  - type: AddWantedStatus
+  - type: Tag
+    tags:
+    - PetWearable
+    - WhitelistChameleon
+    - HudMedical
+  - type: SolutionScanner
+
+- type: entity
+  parent: [ClothingEyesBase, ShowSecurityIcons, BaseCentcommContraband]
+  id: FishClothingEyesHudErtMech
+  name: ert mech pilot visor
+  description: An ERT mech pilot's professional heads-up display, designed for quick diagnosis of their mech's status.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_bronze_glasses.rsi
+  - type: Clothing
+    sprite: _Fish/Objects/Clothing/Eyes/Glasses/trimax_bronze_glasses.rsi
+  - type: ShowHealthBars
+    damageContainers:
+    - Inorganic
+    - Silicon
+    - Mech
+    - Ipc
+  - type: ShowAccessReaderSettings
+  - type: FlashImmunity
+  - type: AddWantedStatus

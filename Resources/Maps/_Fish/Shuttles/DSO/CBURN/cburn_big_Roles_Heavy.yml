@@ -8549,7 +8549,7 @@ entities:
     - type: Transform
       pos: 4.5,9.5
       parent: 1
-- proto: RandomHumanoidSpawnerCBURNLeader
+- proto: FishRandomHumanoidSpawnerCBURNLeader
   entities:
   - uid: 1542
     components:
