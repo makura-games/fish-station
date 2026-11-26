@@ -1,5 +1,7 @@
 ﻿- type: antag
   id: BloodCultist
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-blood-cultist
   name: roles-antag-blood-cultist-name
   antagonist: true
   setPreference: true

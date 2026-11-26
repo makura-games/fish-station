@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishCase
-  mapName: 'Case'
+  mapName: 'Кейс'
   mapPath: /Maps/_Fish/Station/Case.yml
   maxRandomOffset: 0
   randomRotation: false

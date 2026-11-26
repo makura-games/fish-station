@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishPlasma
-  mapName: 'Plasma'
+  mapName: 'Плазма'
   mapPath: /Maps/_Fish/Station/plasma.yml
   maxRandomOffset: 0
   randomRotation: false

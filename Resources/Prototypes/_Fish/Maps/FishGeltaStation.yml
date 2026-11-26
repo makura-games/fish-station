@@ -1,6 +1,6 @@
 - type: gameMap
   id: FishGeltaStation
-  mapName: 'Gelta'
+  mapName: 'Гельта'
   mapPath: /Maps/_Fish/Station/FishGeltaStation.yml
   maxRandomOffset: 0
   randomRotation: false

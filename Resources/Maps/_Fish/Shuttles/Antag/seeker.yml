@@ -3012,7 +3012,7 @@ entities:
     - type: Transform
       parent: 1
       pos: 3.5,0.5
-- proto: WallPlastitanium
+- proto: WallReinforcedPlastitanium
   entities:
   - uid: 41
     components:
@@ -3360,7 +3360,7 @@ entities:
     - type: Transform
       parent: 1
       pos: 1.5,7.5
-- proto: WallPlastitaniumDiagonal
+- proto: WallReinforcedPlastitaniumDiagonal
   entities:
   - uid: 136
     components:

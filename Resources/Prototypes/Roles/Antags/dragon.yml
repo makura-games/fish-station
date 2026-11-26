@@ -1,5 +1,7 @@
 - type: antag
   id: Dragon
+  # Fish-edit: правила роли хранятся в русской локализации.
+  rules: fish-antag-rules-cosmic-dragon
   name: roles-antag-dragon-name
   antagonist: true
   playTimeTracker: AntagDragon # Sunrise-Edit
