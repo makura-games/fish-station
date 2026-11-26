@@ -8,6 +8,7 @@
       state: cburn
     - type: RandomHumanoidSpawner
       settings: FishCBURNLeader
+
 - type: randomHumanoidSettings
   id: FishCBURNLeader
   parent: EventHumanoidERTSunrise
@@ -29,7 +30,7 @@
   - Kitsune
   components:
     - type: Loadout
-      prototypes: [ CBURNLeaderGear ]
+      prototypes: [ FishCBURNLeaderGear ]
       roleLoadout: [ RoleSurvivalExtended ]
     - type: GhostRole
       name: ghost-role-information-cburn-leader-name
@@ -42,3 +43,110 @@
       - NamesMilitaryFirstLeader
       - NamesMilitaryLast
       nameFormat: name-format-ert
+
+# Вспомогательные роли ОБР «Красный» (с перчатками Red вместо Gamma)
+
+- type: entity
+  id: FishRandomHumanoidSpawnerERTChaplainRed
+  parent: RandomHumanoidSpawnerERTChaplainAmber
+  name: ERT chaplain
+  suffix: Fish, ERTRole, Red
+  components:
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast
+    - type: RandomHumanoidSpawner
+      settings: FishERTChaplainRed
+
+- type: randomHumanoidSettings
+  id: FishERTChaplainRed
+  parent: ERTChaplainAmber
+  components:
+    - type: Loadout
+      prototypes: [ FishERTChaplainGearRed ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast
+
+- type: entity
+  id: FishRandomHumanoidSpawnerERTEngineerRed
+  parent: RandomHumanoidSpawnerERTEngineerAmber
+  name: ERT engineer
+  suffix: Fish, ERTRole, Red
+  components:
+    - type: Sprite
+      sprite: Markers/jobs.rsi
+      state: ertengineereva
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast
+    - type: RandomHumanoidSpawner
+      settings: FishERTEngineerRed
+
+- type: randomHumanoidSettings
+  id: FishERTEngineerRed
+  parent: ERTEngineerAmber
+  components:
+    - type: Loadout
+      prototypes: [ FishERTEngineerGearRed ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast
+
+- type: entity
+  id: FishRandomHumanoidSpawnerERTMedicalRed
+  parent: RandomHumanoidSpawnerERTMedicalAmber
+  name: ERT medic
+  suffix: Fish, ERTRole, Red
+  components:
+    - type: Sprite
+      sprite: Markers/jobs.rsi
+      state: ertmedicaleva
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast
+    - type: RandomHumanoidSpawner
+      settings: FishERTMedicalRed
+
+- type: randomHumanoidSettings
+  id: FishERTMedicalRed
+  parent: ERTMedicalAmber
+  components:
+    - type: Loadout
+      prototypes: [ FishERTMedicalGearRed ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast
+
+- type: entity
+  id: FishRandomHumanoidSpawnerERTJanitorRed
+  parent: RandomHumanoidSpawnerERTJanitorAmber
+  name: ERT janitor
+  suffix: Fish, ERTRole, Red
+  components:
+    - type: Sprite
+      sprite: Markers/jobs.rsi
+      state: ertjanitoreva
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast
+    - type: RandomHumanoidSpawner
+      settings: FishERTJanitorRed
+
+- type: randomHumanoidSettings
+  id: FishERTJanitorRed
+  parent: ERTJanitorAmber
+  components:
+    - type: Loadout
+      prototypes: [ FishERTJanitorGearRed ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesMilitaryFirstRed
+      - NamesMilitaryLast

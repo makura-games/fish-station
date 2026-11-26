@@ -9,7 +9,7 @@
     shoes: ClothingShoesBootsMagSec
     head: ClothingHeadEVAHelmetERTNewLeader
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesHudMedSec
     neck: SecurityWhistle
     outerClothing: ClothingOuterArmorAmberNewCom
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmberLeader # Fish-edit: ОБР Рыбки надевает перчатки
@@ -49,7 +49,7 @@
     shoes: ClothingShoesBootsMagERT
     head: ClothingHeadHatERTLeaderBeret
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesHudMedSec
     neck: SecurityWhistle
     gloves: ClothingHandsPowerGlovesUplinkNTERTRedLeader # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTLeaderPDA
@@ -88,7 +88,7 @@
     shoes: ClothingShoesBootsMagERT
     head: ClothingHeadHatERTLeaderBeret
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesHudMedSec
     neck: ClothingNeckMantleERTLeader
     gloves: ClothingHandsPowerGlovesUplinkNTERTGammaLeader # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTLeaderPDA
@@ -130,7 +130,7 @@
     shoes: ClothingShoesBootsMagSec
     head: ClothingHeadEVAHelmetERTNewSecurity
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErt  # Fish-edit
+    eyes: ClothingEyesHudSecurity
     neck: HandheldCamera
     outerClothing: ClothingOuterArmorAmberNewSec
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
@@ -163,7 +163,7 @@
     shoes: ClothingShoesBootsMagERT
     head: ClothingHeadHatBeretSecurity
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErt  # Fish-edit
+    eyes: ClothingEyesHudSecurity
     neck: HandheldCamera
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
@@ -196,7 +196,7 @@
     shoes: ClothingShoesBootsMagERT
     head: ClothingHeadHatBeretSecurity
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErt  # Fish-edit
+    eyes: ClothingEyesHudSecurity
     neck: HandheldCamera
     id: ERTSecurityPDA
     ears: ClothingHeadsetAltERT
@@ -230,7 +230,7 @@
     shoes: ClothingShoesBootsMagSec
     head: ClothingHeadEVAHelmetERTNewChaplain
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesHudMedSec
     outerClothing: ClothingOuterArmorAmberNewChap
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT
@@ -259,7 +259,7 @@
     shoes: ClothingShoesBootsMagSec
     head: ClothingHeadEVAHelmetERTChaplain
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesHudMedSec
     id: ERTChaplainPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltSecurityFilledERT
@@ -288,7 +288,7 @@
     shoes: ClothingShoesBootsMag
     head: ClothingHeadEVAHelmetERTNewEngineer
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMech  # Fish-edit
+    eyes: ClothingEyesHudDiagnosticERT
     neck: HandheldCamera
     outerClothing: ClothingOuterArmorAmberNewEng
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
@@ -322,7 +322,7 @@
     back: ClothingModsuitERTEngineer
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMech  # Fish-edit
+    eyes: ClothingEyesHudDiagnosticERT
     neck: HandheldCamera
     id: ERTEngineerPDA
     ears: ClothingHeadsetAltERT
@@ -357,7 +357,7 @@
     head: ClothingHeadEVAHelmetERTNewMedic
     mask: ClothingMaskGasERT
     neck: HandheldCamera
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesUniversalMedicalHud
     outerClothing: ClothingOuterArmorAmberNewMed
     id: ERTMedicPDA
     ears: ClothingHeadsetAltERT
@@ -391,7 +391,7 @@
     shoes: ClothingShoesBootsMagERT
     neck: HandheldCamera
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesUniversalMedicalHud
     id: ERTMedicPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltMedicalElite
@@ -426,7 +426,7 @@
     head: ClothingHeadEVAHelmetERTNewJanitor
     neck: HandheldCamera
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErt  # Fish-edit
+    eyes: ClothingEyesHudSecurity
     outerClothing: ClothingOuterArmorAmberNewJan
     gloves: ClothingHandsPowerGlovesUplinkNTERTAmber # Fish-edit: ОБР Рыбки надевает перчатки
     id: ERTJanitorPDA
@@ -451,7 +451,7 @@
     shoes: ClothingShoesBootsMagERT
     mask: ClothingMaskGasERT
     neck: HandheldCamera
-    eyes: FishClothingEyesHudErt  # Fish-edit
+    eyes: ClothingEyesHudSecurity
     id: ERTJanitorPDA
     ears: ClothingHeadsetAltERT
     belt: ClothingBeltJanitorFilled
@@ -467,4 +467,3 @@
     - LightReplacer
     - BoxCleanerGrenades
     - CrowbarRed
-    - ClothingHandsPowerGlovesUplinkNTERTRed

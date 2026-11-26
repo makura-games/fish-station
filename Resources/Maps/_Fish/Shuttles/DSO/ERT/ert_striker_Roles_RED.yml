@@ -5904,14 +5904,14 @@ entities:
       parent: 2
       rot: 1.5707963267948966 rad
       pos: 4.5,-2.5
-- proto: RandomHumanoidSpawnerERTChaplainEVA
+- proto: FishRandomHumanoidSpawnerERTChaplainRed
   entities:
   - uid: 844
     components:
     - type: Transform
       parent: 2
       pos: -0.5413728,-0.4981951
-- proto: RandomHumanoidSpawnerERTEngineerGamma
+- proto: FishRandomHumanoidSpawnerERTEngineerRed
   entities:
   - uid: 908
     components:
@@ -5925,7 +5925,7 @@ entities:
     - type: Transform
       parent: 2
       pos: 0.51776934,1.5992804
-- proto: RandomHumanoidSpawnerERTMedicalGamma
+- proto: FishRandomHumanoidSpawnerERTMedicalRed
   entities:
   - uid: 869
     components:

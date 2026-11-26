@@ -46,7 +46,7 @@
         settings: short
       job: ERTLeader
     - type: Loadout
-      prototypes: [ ERTLeaderGearAmber ]
+      prototypes: [ FishERTLeaderGearAmber ] # Fish-edit
     - type: RandomMetadata
       nameSegments:
       - NamesMilitaryFirstLeaderAmber
@@ -82,7 +82,7 @@
         settings: short
       job: ERTLeader
     - type: Loadout
-      prototypes: [ ERTLeaderGearRed ]
+      prototypes: [ FishERTLeaderGearRed ] # Fish-edit
     - type: RandomMetadata
       nameSegments:
       - NamesMilitaryFirstLeaderRed
@@ -114,7 +114,7 @@
         settings: short
       job: ERTLeader
     - type: Loadout
-      prototypes: [ ERTLeaderGearGamma ]
+      prototypes: [ FishERTLeaderGearGamma ] # Fish-edit
     - type: AutoImplant
       implants:
       - MindShieldImplant
@@ -160,7 +160,7 @@
       - NamesMilitaryFirstAmber
       - NamesMilitaryLast
     - type: Loadout
-      prototypes: [ ERTSecurityGearAmber ]
+      prototypes: [ FishERTSecurityGearAmber ] # Fish-edit
 
 - type: entity
   id: RandomHumanoidSpawnerERTSecurityRed
@@ -182,7 +182,7 @@
         settings: short
       job: ERTSecurity
     - type: Loadout
-      prototypes: [ ERTSecurityGearRed ]
+      prototypes: [ FishERTSecurityGearRed ] # Fish-edit
     - type: RandomMetadata
       nameSegments:
       - NamesMilitaryFirstRed
@@ -212,7 +212,7 @@
         settings: short
       job: ERTSecurity
     - type: Loadout
-      prototypes: [ ERTSecurityGearGamma ]
+      prototypes: [ FishERTSecurityGearGamma ] # Fish-edit
     - type: AutoImplant
       implants:
       - MindShieldImplant
@@ -258,7 +258,7 @@
       - NamesMilitaryFirstAmberSpecial
       - NamesMilitaryLast
     - type: Loadout
-      prototypes: [ ERTChaplainGearAmber ]
+      prototypes: [ FishERTChaplainGearAmber ] # Fish-edit
 
 - type: entity
   id: RandomHumanoidSpawnerERTChaplainGamma
@@ -292,7 +292,7 @@
       - NamesMilitaryFirstGammaSpecial
       - NamesMilitaryLast
     - type: Loadout
-      prototypes: [ ERTChaplainGearGamma ]
+      prototypes: [ FishERTChaplainGearGamma ] # Fish-edit
     - type: AutoImplant
       implants:
       - MindShieldImplant
@@ -334,7 +334,7 @@
       - NamesMilitaryFirstAmberSpecial
       - NamesMilitaryLast
     - type: Loadout
-      prototypes: [ ERTJanitorGearAmber ]
+      prototypes: [ FishERTJanitorGearAmber ] # Fish-edit
 
 - type: entity
   id: RandomHumanoidSpawnerERTJanitorGamma
@@ -364,7 +364,7 @@
         settings: short
       job: ERTJanitor
     - type: Loadout
-      prototypes: [ ERTJanitorGearGamma ]
+      prototypes: [ FishERTJanitorGearGamma ] # Fish-edit
     - type: AutoImplant
       implants:
       - MindShieldImplant
@@ -409,7 +409,7 @@
       - NamesMilitaryFirstAmberSpecial
       - NamesMilitaryLast
     - type: Loadout
-      prototypes: [ ERTEngineerGearAmber ]
+      prototypes: [ FishERTEngineerGearAmber ] # Fish-edit
 
 - type: entity
   id: RandomHumanoidSpawnerERTEngineerGamma
@@ -439,7 +439,7 @@
         settings: short
       job: ERTEngineer
     - type: Loadout
-      prototypes: [ ERTEngineerGearGamma ]
+      prototypes: [ FishERTEngineerGearGamma ] # Fish-edit
     - type: AutoImplant
       implants:
       - MindShieldImplant
@@ -484,7 +484,7 @@
       - NamesMilitaryFirstAmberSpecial
       - NamesMilitaryLast
     - type: Loadout
-      prototypes: [ ERTMedicalGearAmber ]
+      prototypes: [ FishERTMedicalGearAmber ] # Fish-edit
 
 - type: entity
   id: RandomHumanoidSpawnerERTMedicalGamma
@@ -514,7 +514,7 @@
         settings: short
       job: ERTMedical
     - type: Loadout
-      prototypes: [ ERTMedicalGearGamma ]
+      prototypes: [ FishERTMedicalGearGamma ] # Fish-edit
     - type: AutoImplant
       implants:
       - MindShieldImplant
@@ -560,7 +560,7 @@
   - Kitsune
   components:
     - type: Loadout
-      prototypes: [CBURNGearEVA]
+      prototypes: [ FishCBURNGearEVA ] # Fish-edit
       roleLoadout: [ RoleSurvivalEVA ]
     - type: GhostRole
       name: ghost-role-information-cburn-agent-name

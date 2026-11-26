@@ -4,7 +4,7 @@
   description: job-description-cburn-eva
   playTimeTracker: JobCBURNAgentEVA
   setPreference: false
-  startingGear: CBURNGearEVA
+  startingGear: FishCBURNGearEVA # Fish-edit
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom
   requirements:
@@ -25,7 +25,7 @@
   description: job-description-cburn-leader
   playTimeTracker: JobCBURNLeader
   setPreference: false
-  startingGear: CBURNLeaderGear
+  startingGear: FishCBURNLeaderGear # Fish-edit
   icon: "JobIconNanotrasen"
   supervisors: job-supervisors-centcom
   requirements:
@@ -46,7 +46,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBrown
     back: ClothingBackpackDuffelCBURN
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErt  # Fish-edit
+    eyes: ClothingEyesGlassesSecurity
     ears: ClothingHeadsetAltERT
     outerClothing: ClothingOuterSoftsuitCBURN
     shoes: ClothingShoesBootsCombatFilled
@@ -78,7 +78,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBrown
     back: ClothingBackpackDuffelCBURN
     mask: ClothingMaskGasERT
-    eyes: FishClothingEyesHudErtMedic  # Fish-edit
+    eyes: ClothingEyesGlassesSecurity
     ears: ClothingHeadsetAltERT
     outerClothing: ClothingOuterHardsuitCBURNLeader
     shoes: ClothingShoesBootsCombatFilled
