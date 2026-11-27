@@ -129,7 +129,9 @@ public sealed partial class SolutionTransferSystem : EntitySystem
                 transferAmount = FixedPoint2.Min(transferAmount, maxRefill);
 
             var transferData = new SolutionTransferData(args.User, ent.Owner, ownerSoln.Value, target, targetSoln.Value, transferAmount);
-            var transferTime = targetRefillable.RefillTime + heldDrainable.DrainTime;
+            // Fish-start: химия влияет на время переливания
+            var transferTime = GetChemistryTransferDelay(args.User, targetRefillable.RefillTime + heldDrainable.DrainTime);
+            // Fish-end
 
             if (transferTime > TimeSpan.Zero)
             {
@@ -169,7 +171,9 @@ public sealed partial class SolutionTransferSystem : EntitySystem
                 transferAmount = FixedPoint2.Min(transferAmount, maxRefill);
 
             var transferData = new SolutionTransferData(args.User, target, targetSoln.Value, ent.Owner, ownerSoln.Value, transferAmount);
-            var transferTime = heldRefillable.RefillTime + targetDrainable.DrainTime;
+            // Fish-start: химия влияет на время переливания
+            var transferTime = GetChemistryTransferDelay(args.User, heldRefillable.RefillTime + targetDrainable.DrainTime);
+            // Fish-end
 
             if (transferTime > TimeSpan.Zero)
             {

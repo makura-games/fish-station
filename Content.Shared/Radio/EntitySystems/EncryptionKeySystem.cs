@@ -152,7 +152,9 @@ public sealed partial class EncryptionKeySystem : EntitySystem
             return;
         }
 
-        _tool.UseTool(args.Used, args.User, uid, 1f, component.KeysExtractionMethod, new EncryptionRemovalFinishedEvent(), toolComponent: tool);
+        // Fish-start: ИТ влияет на извлечение ключей шифрования
+        _tool.UseTool(args.Used, args.User, uid, GetComputerKeyExtractDelay(args.User, 1f), component.KeysExtractionMethod, new EncryptionRemovalFinishedEvent(), toolComponent: tool);
+        // Fish-end
     }
 
     private void OnStartup(EntityUid uid, EncryptionKeyHolderComponent component, ComponentStartup args)

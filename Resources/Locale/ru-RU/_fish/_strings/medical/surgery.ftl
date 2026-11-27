@@ -31,3 +31,4 @@ fish-surgery-action-finished = Действие завершено: { $part }, {
 fish-surgery-action-updated = Действие окончено. Проверьте состояние этапа.
 fish-surgery-unknown-area = Неизвестная область
 fish-surgery-context = { $part } → { $operation }
+fish-surgery-careless-tool = Из-за небрежного обращения с инструментом ваша рука дрогнула. Вам придётся начать этот шаг заново!

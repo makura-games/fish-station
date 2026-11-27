@@ -1,0 +1,287 @@
+# Учебники: повышают навык ровно на один уровень (до опытного). Мастер — только стартовые очки.
+- type: entity
+  parent: BookBase
+  id: FishSkillManualConstructionBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#c45c26"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillConstruction
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 35
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualConstructionTrained
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#a04820"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillConstruction
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 50
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualConstructionExperienced
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#7a3518"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillConstruction
+    targetLevel: 4
+    minSkillToStudy: 3
+    studyTime: 70
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualElectricalBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#e6c200"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillElectrical
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 35
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualElectricalTrained
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillElectrical
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 50
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualAtmosBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#4da6ff"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillAtmos
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 40
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualAtmosTrained
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillAtmos
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 55
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualMedicalBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#e85d75"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillMedical
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 40
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualMedicalTrained
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillMedical
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 55
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualMedicalExperienced
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillMedical
+    targetLevel: 4
+    minSkillToStudy: 3
+    studyTime: 75
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualAnatomyBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#c44d6a"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillAnatomy
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 45
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualAnatomyTrained
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#b33b5a"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillAnatomy
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 60
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualAnatomyExperienced
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillAnatomy
+    targetLevel: 4
+    minSkillToStudy: 3
+    studyTime: 80
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualChemistryBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#66cc99"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillChemistry
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 40
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualChemistryTrained
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillChemistry
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 55
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualWeaponsBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#555555"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillWeapons
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 35
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualWeaponsTrained
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillWeapons
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 50
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualComputerBasic
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    layers:
+    - state: paper
+    - state: cover_base
+      color: "#6a5acd"
+    - state: icon_text
+  - type: SkillTrainingManual
+    skill: FishSkillComputer
+    targetLevel: 2
+    minSkillToStudy: 1
+    studyTime: 30
+
+- type: entity
+  parent: BookBase
+  id: FishSkillManualComputerTrained
+  suffix: Fish
+  components:
+  - type: SkillTrainingManual
+    skill: FishSkillComputer
+    targetLevel: 3
+    minSkillToStudy: 2
+    studyTime: 45
+
