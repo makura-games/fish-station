@@ -101,6 +101,11 @@ public sealed partial class VentHordeRule : StationEventSystem<VentHordeRuleComp
         // Filter to things on the same station
         while (locations.MoveNext(out var uid, out _, out var transform))
         {
+            // Fish-start: не выбираем точки спавна ЦК.
+            if (IsOnCentcomm(uid))
+                continue;
+            // Fish-end
+
             if (!transform.Anchored)
                 continue;
 
