@@ -5,7 +5,7 @@
   id: BaseAlertOrder
   order:
     - category: CultBuffed # Sunrise-Edit
-    - category: Mood #Sunrise Edit
+ #   - category: Mood #Sunrise Edit # Fish-edit
     - category: Health #Sunrise Edit
     - category: Stamina
     - alertType: SuitPower
