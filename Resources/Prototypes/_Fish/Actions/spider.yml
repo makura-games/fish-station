@@ -1,0 +1,14 @@
+- type: entity
+  parent: BaseAction
+  id: FishActionSpiderLayEgg
+  name: Lay Spider Egg
+  description: Lay an egg sac anchored to spider web.
+  suffix: Fish
+  components:
+  - type: Action
+    useDelay: 10
+  - type: Sprite
+    sprite: Objects/Misc/eggspider.rsi
+    state: icon
+  - type: InstantAction
+    event: !type:FishSpiderLayEggActionEvent

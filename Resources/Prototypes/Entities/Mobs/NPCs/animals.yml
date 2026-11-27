@@ -2952,6 +2952,17 @@
   - type: NPCRetaliation
   - type: FactionException
   # Sunrise-end
+  # Fish-start: ПНВ как у карпов дракона, звук укуса как у котов и карпов, и лечение ихором от сырой пищи и органов
+  - type: NightVision
+    enabled: false
+    action: ActionToggleNightVision
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Effects/bite.ogg
+  - type: FishRawFoodHealing
+    healReagent: Ichor
+    healAmount: 3
+  # Fish-end
 
 - type: entity
   parent: [SolutionWeapon, SolutionTiny]
@@ -3037,6 +3048,13 @@
     description: ghost-panel-antagonist-spider-description
     priority: 100
   # Sunrise edit end
+  # Fish-start: откладывание яиц на паутине за счёт голода
+  - type: FishSpiderEggLayer
+    action: FishActionSpiderLayEgg
+    eggPrototype: FishEggGiantSpiderAngry
+    hungerCost: 35
+    minHungerRatio: 0.2
+  # Fish-end
 
 - type: entity
   name: clown spider
@@ -3101,6 +3119,13 @@
         reagents:
         - ReagentId: Laughter
           Quantity: 150
+    # Fish-start: откладывание яиц клоун-паука на паутине за счёт голода
+    - type: FishSpiderEggLayer
+      action: FishActionSpiderLayEgg
+      eggPrototype: FishEggClownSpider
+      hungerCost: 35
+      minHungerRatio: 0.2
+    # Fish-end
 
 - type: entity
   name: wizard spider
