@@ -92,6 +92,15 @@ public abstract partial class SharedStunSystem
             if (!knockedDown.AutoStand || knockedDown.DoAfterId.HasValue || knockedDown.NextUpdate > GameTiming.CurTime)
                 continue;
 
+            // Fish-start: soft-crit — AutoStand даёт бесконечный spam popup/do-after; только ручное вставание
+            if (IsFishSoftCrit(uid))
+            {
+                knockedDown.AutoStand = false;
+                DirtyField(uid, knockedDown, nameof(KnockedDownComponent.AutoStand));
+                continue;
+            }
+            // Fish-end
+
             TryStanding(uid);
         }
     }
@@ -270,8 +279,25 @@ public abstract partial class SharedStunSystem
         var stand = !entity.Comp2.DoAfterId.HasValue;
         SetAutoStand((entity, entity.Comp2), stand);
 
+        // Fish-start: soft-crit — повторное нажатие не сбрасывает do-after; без AutoStand-спама
+        var softCrit = IsFishSoftCrit(entity.Owner);
+
+        if (!stand && softCrit)
+            return;
+
         if (!stand || !TryStanding((entity, entity.Comp2)))
+        {
             CancelKnockdownDoAfter((entity, entity.Comp2));
+            // Soft-crit: не оставляем AutoStand — иначе Update спамит попытки/popup каждый тик.
+            if (softCrit)
+                SetAutoStand((entity, entity.Comp2), false);
+        }
+        else if (softCrit)
+        {
+            // Do-after уже идёт — AutoStand не нужен (при отмене игрок жмёт снова).
+            SetAutoStand((entity, entity.Comp2), false);
+        }
+        // Fish-end
     }
 
     public bool TryStanding(Entity<KnockedDownComponent?> entity)
@@ -279,6 +305,17 @@ public abstract partial class SharedStunSystem
         // If we aren't knocked down or can't be knocked down, then we did technically succeed in standing up
         if (!Resolve(entity, ref entity.Comp, false))
             return true;
+
+        // Fish-start: в soft-crit повтор «встать» не сбрасывает do-after.
+        // Вне soft-crit false, чтобы KnockedDownAlertEvent вызвал ForceStandUp.
+        if (entity.Comp.DoAfterId != null)
+        {
+            if (IsFishSoftCrit(entity.Owner))
+                return true;
+
+            return false;
+        }
+        // Fish-end
 
         if (!KnockdownOver((entity, entity.Comp)))
             return false;
@@ -299,13 +336,18 @@ public abstract partial class SharedStunSystem
         var ev = new GetStandUpTimeEvent(crawler.StandTime);
         RaiseLocalEvent(entity, ref ev);
 
+        // Fish-start: soft-crit — длинное вставание не рвём микро-уроном / дубликатом
+        var softCritStand = IsFishSoftCrit(entity.Owner);
+        // Fish-end
+
         var doAfterArgs = new DoAfterArgs(EntityManager, entity, ev.DoAfterTime, new TryStandDoAfterEvent(), entity, entity)
         {
-            BreakOnDamage = true,
+            // Fish-edit: soft-crit — BreakOnDamage off, иначе oxy/тик сбрасывает прогресс
+            BreakOnDamage = !softCritStand,
             DamageThreshold = 5,
             CancelDuplicate = true,
             RequireCanInteract = false,
-            BreakOnHandChange = true
+            BreakOnHandChange = !softCritStand // Fish-edit: в crit руки дёргаются — не отменять
         };
 
         // If we try standing don't try standing again
@@ -319,6 +361,14 @@ public abstract partial class SharedStunSystem
 
     public bool KnockdownOver(Entity<KnockedDownComponent> entity)
     {
+        // Fish-start: soft-crit — таймер weaken не блокирует «встать» (иначе кнопка мертва),
+        // но Blocker.CanMove сохраняем: иначе встают при других блокерах движения.
+        if (IsFishSoftCrit(entity.Owner))
+        {
+            return Blocker.CanMove(entity);
+        }
+        // Fish-end
+
         if (entity.Comp.NextUpdate > GameTiming.CurTime)
             return false;
 
@@ -417,6 +467,17 @@ public abstract partial class SharedStunSystem
     {
         if (args.Handled)
             return;
+
+        // Fish-start: soft-crit — только обычное вставание; ForceStandUp включает AutoStand и спамит
+        if (IsFishSoftCrit(entity.Owner))
+        {
+            if (!TryStanding(entity.Owner))
+                SetAutoStand((entity.Owner, entity.Comp), false);
+
+            args.Handled = true;
+            return;
+        }
+        // Fish-end
 
         // If we're already trying to stand, or we fail to stand try forcing it
         if (!TryStanding(entity.Owner))

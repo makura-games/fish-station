@@ -39,8 +39,14 @@ namespace Content.Shared.Atmos.Components
         [DataField, AutoNetworkedField]
         public TimeSpan ResistTime = TimeSpan.FromSeconds(2);
 
-        [DataField]
+        // Fish-start: OnFire синхронизируется, чтобы soft-crit на клиенте видел горение
+        /// <summary>
+        /// Networked so shared soft-crit / reaction logic can read fire state on the client.
+        /// FireStacks stay server-only (change every tick while burning).
+        /// </summary>
+        [DataField, AutoNetworkedField]
         public bool OnFire;
+        // Fish-end
 
         [DataField]
         public float FireStacks;

@@ -9,6 +9,7 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.FixedPoint;
 using Content.Shared.Projectiles;
+using Content.Shared._Fish.Reactions; // Fish-edit: сигнал попадания на цель
 using Content.Shared._Sunrise.Weapons.Components;
 using Content.Shared._Sunrise.Weapons.Events;
 using Content.Shared.Mobs.Components;
@@ -111,6 +112,14 @@ public sealed partial class ProjectileSystem : SharedProjectileSystem
             armorPenetration: component.ArmorPenetration,
             canHeal: false);
         // Sunrise edit end
+
+        // Fish-start: цель узнаёт о попадании снаряда (Origin урона = shooter, не пуля)
+        if (!Deleted(target) && !damage.Empty)
+        {
+            var fishHit = new FishGotHitByProjectileEvent(uid, component.Shooter, damage);
+            RaiseLocalEvent(target, ref fishHit);
+        }
+        // Fish-end
 
         if (!damage.Empty)
         {
