@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Original Fish Station stapler sprite created for bureaucracy item (procedural pixel art).",
+  "size": { "x": 32, "y": 32 },
+  "states": [
+    { "name": "icon" },
+    { "name": "inhand-left", "directions": 4 },
+    { "name": "inhand-right", "directions": 4 }
+  ]
+}

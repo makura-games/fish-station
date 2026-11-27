@@ -226,6 +226,10 @@
         - id: BoxEnvelope
         - id: BrbSign
         - id: DeskBell
+        # Fish-start - степлер для бюрократии
+        - id: FishStapler
+          amount: 2
+        # Fish-end
 
 - type: entity
   parent: CrateGenericSteel

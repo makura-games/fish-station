@@ -1,4 +1,5 @@
 using System.Numerics;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
 
@@ -26,6 +27,11 @@ public sealed partial class PaperComponent
         public readonly SpriteSpecifier? ImageContent;
         public readonly Vector2? ImageScale;
         public readonly bool TemplateFieldsEnabled;
+        // Fish-start - навигация по страницам степлерного пакета
+        public readonly int PageIndex;
+        public readonly int PageCount;
+        public readonly NetEntity ContentEntity;
+        // Fish-end
 
         public PaperBoundUserInterfaceState(
             string text,
@@ -34,7 +40,13 @@ public sealed partial class PaperComponent
             PaperAction mode = PaperAction.Read,
             SpriteSpecifier? imageContent = null,
             Vector2? imageScale = null,
-            bool templateFieldsEnabled = false)
+            bool templateFieldsEnabled = false,
+            // Fish-start
+            int pageIndex = 0,
+            int pageCount = 1,
+            NetEntity contentEntity = default
+            // Fish-end
+            )
         {
             Text = text;
             DefaultColor = defaultColor;
@@ -43,6 +55,11 @@ public sealed partial class PaperComponent
             ImageContent = imageContent;
             ImageScale = imageScale;
             TemplateFieldsEnabled = templateFieldsEnabled;
+            // Fish-start
+            PageIndex = pageIndex;
+            PageCount = pageCount;
+            ContentEntity = contentEntity;
+            // Fish-end
         }
     }
 
