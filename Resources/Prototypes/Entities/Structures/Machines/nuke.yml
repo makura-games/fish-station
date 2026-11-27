@@ -80,22 +80,23 @@
   components:
   - type: PointLight
     enabled: false
-    radius: 4
-    energy: 2.0
+    radius: 10 # Fish-edit
+    energy: 10 # Fish-edit
     color: "#FF4020"
     lightMask: ConeDouble
   - type: RotatingLight
-    speed: 120
+    speed: 240 # Fish-edit
   - type: NavMapBeacon
     color: "#ff0000"
     text: nuclear fission explosive
     enabled: false
   - type: NukeLabel
   - type: Nuke
+    requiredFloorRadius: 3 # Fish-edit
     explosionType: DefaultStandardEffect # Sunrise edit
-    maxIntensity: 100
+    maxIntensity: 2000 # Fish-edit
     intensitySlope: 5
-    totalIntensity: 11100000 # Fish-edit
+    totalIntensity: 20000000  # Fish-edit
     diskSlot:
       name: nuke-slot-component-slot-name-disk
       insertSound:
