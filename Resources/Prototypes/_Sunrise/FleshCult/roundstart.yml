@@ -4,7 +4,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: GameRule
-    minPlayers: 35 # Fish-edit
+    minPlayers: 40 # Fish-edit
   - type: FleshCultRule
     faction: Flesh
   - type: AntagObjectives
