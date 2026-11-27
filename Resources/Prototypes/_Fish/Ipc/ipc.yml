@@ -72,6 +72,13 @@
       Alive: BorgHealth
       Critical: BorgCrit
       Dead: BorgDead
+  - type: DamagedSiliconAccent
+    enableChargeCorruption: false
+    overrideChargeLevel: 0.25
+    chargeThresholdForPowerCorruption: 0.25
+    startPowerCorruptionAtCharIdx: 8
+    maxPowerCorruptionAtCharIdx: 20
+    damageAtMaxCorruption: 100
   - type: Blindable
   # Fish-edit: гиба от сильного перегруза урона, не от лёгкого удара; модули и батарея выпадают
   - type: Destructible
