@@ -1,0 +1,92 @@
+- type: entity
+  name: VK-3 vibroblade
+  parent: [ BaseSword, BaseCommandContraband ]
+  id: FishERTSword
+  suffix: Fish
+  description: A Nanotrasen combat vibroblade for special forces. In passive mode it easily slices through enemies of the corporation, while in active mode it becomes a rapier that pierces armor like a knife through butter.
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi
+    layers:
+    - state: e_sword
+    - state: e_sword_blade
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
+  - type: Reflect
+    reflects:
+    - NonEnergy
+    reflectProb: 0.40
+    spread: 90
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,1
+    inhandVisuals:
+      left:
+      - state: inhand-left-off
+      right:
+      - state: inhand-right-off
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.SwitchableVisuals.Switched:
+        blade:
+          cut: { visible: false }
+          ap: { visible: true }
+  - type: ItemSwitchVisuals
+    inhandVisuals:
+      ap:
+        left:
+        - state: inhand-left-on
+          shader: unshaded
+        right:
+        - state: inhand-right-on
+          shader: unshaded
+  - type: UseDelay
+    delay: 3
+  - type: ItemSwitchUseDelay
+  - type: DisarmMalus
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_Sunrise/Items/Handling/sabre_drop.ogg
+  - type: MeleeWeapon
+    wideAnimationRotation: -120
+    attackRate: 1
+    damage:
+      types:
+        Slash: 40
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+  - type: ItemSwitch
+    state: cut
+    states:
+      cut: !type:ItemSwitchState
+        verb: vibroblade-cut
+        soundStateActivate:
+          path: /Audio/Weapons/ebladeoff.ogg
+        components:
+        - type: MeleeWeapon
+          wideAnimationRotation: -120
+          attackRate: 1
+          damage:
+            types:
+              Slash: 40
+          soundHit:
+            path: /Audio/Weapons/bladeslice.ogg
+      ap: !type:ItemSwitchState
+        verb: vibroblade-ap
+        soundStateActivate:
+          path: /Audio/Weapons/ebladeon.ogg
+        components:
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          angle: 0
+          animation: WeaponArcThrust
+          attackRate: 1
+          damage:
+            types:
+              Piercing: 25
+          resistanceBypass: true
+          soundHit:
+            path: /Audio/Weapons/bladeslice.ogg

@@ -1145,3 +1145,32 @@
     whitelist:
       tags:
       - BlueShield
+
+# region Ближний бой
+- type: listing
+  id: FishBlueShieldUplinkHammer
+  productEntity: FishERTHammer
+  icon: { sprite: _Fish/Objects/Weapons/Melee/fish_ert_hammer.rsi, state: icon }
+  cost:
+    Bluecrystal: 18
+  categories:
+    - FishNTMelee
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - BlueShield
+
+- type: listing
+  id: FishBlueShieldUplinkSword
+  productEntity: FishERTSword
+  icon: { sprite: _Fish/Objects/Weapons/Melee/fish_ert_sword.rsi, state: icon }
+  cost:
+    Bluecrystal: 18
+  categories:
+    - FishNTMelee
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - BlueShield

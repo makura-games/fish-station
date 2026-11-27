@@ -135,11 +135,13 @@ public abstract partial class SharedItemSwitchSystem : EntitySystem
         };
         RaiseLocalEvent(uid, ref attempt);
 
-        if (ent.Comp.States.TryGetValue(ent.Comp.State, out var prevState) && prevState.RemoveComponents && prevState.Components is not null)
-            EntityManager.RemoveComponents(ent, prevState.Components);
-
-        if (state.Components is not null)
-            EntityManager.AddComponents(ent, state.Components);
+        // Fish-start: Перенесено после проверки attempt.Cancelled.
+        // if (ent.Comp.States.TryGetValue(ent.Comp.State, out var prevState) && prevState.RemoveComponents && prevState.Components is not null)
+        //     EntityManager.RemoveComponents(ent, prevState.Components);
+        //
+        // if (state.Components is not null)
+        //     EntityManager.AddComponents(ent, state.Components);
+        // Fish-end
 
         if (!comp.Predictable) predicted = false;
 
@@ -155,6 +157,14 @@ public abstract partial class SharedItemSwitchSystem : EntitySystem
 
             return false;
         }
+
+        // Fish-start: Смена компонентов выполняется только если переключение не отменено.
+        if (ent.Comp.States.TryGetValue(ent.Comp.State, out var prevState) && prevState.RemoveComponents && prevState.Components is not null)
+            EntityManager.RemoveComponents(ent, prevState.Components);
+
+        if (state.Components is not null)
+            EntityManager.AddComponents(ent, state.Components);
+        // Fish-end
 
         if (predicted)
             _audio.PlayPredicted(state.SoundStateActivate, uid, user);
