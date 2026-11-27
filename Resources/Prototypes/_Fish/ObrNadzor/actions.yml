@@ -1,0 +1,17 @@
+- type: entity
+  id: FishActionObrNadzorRelease
+  name: End remote control
+  description: Leave the surveillance eye and return to your body view at the console.
+  suffix: Fish
+  components:
+  - type: Action
+    priority: -20
+    itemIconStyle: BigAction
+    checkConsciousness: false
+    checkCanInteract: false
+  - type: Sprite
+    sprite: Interface/Actions/actions_ai.rsi
+    layers:
+    - state: ai_core
+  - type: InstantAction
+    event: !type:ObrNadzorReleaseSessionEvent
