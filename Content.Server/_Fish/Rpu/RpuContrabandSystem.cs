@@ -1,0 +1,142 @@
+using Content.Shared.Contraband;
+using Content.Shared.Storage.Components;
+using Robust.Shared.Timing;
+
+using System.Linq;
+using Content.Shared._Fish.Rpu;
+using Robust.Shared.Enums;
+using Robust.Shared.Audio.Systems;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
+using Content.Shared.FixedPoint;
+using Content.Shared.GameTicking;
+using Content.Shared.Gibbing;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Throwing;
+using Content.Shared.Wires;
+using Content.Shared.Slippery;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
+using Robust.Shared.Random;
+namespace Content.Server._Fish.Rpu;
+
+/// <summary>
+/// Контрабанда: следим, сколько времени запрещённые предметы лежат в инвентаре.
+/// Опрос раз в секунду (движковый <c>ContainerHasContraband</c> сам рекурсивно обходит
+/// контейнеры), пороги задаются конфигами: количество и минуты ношения.
+/// </summary>
+public sealed partial class RpuContrabandSystem : EntitySystem
+{
+    [Dependency] private RpuSystem _rpu = default!;
+    [Dependency] private ContrabandSystem _contraband = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPlayerManager _players = default!;
+
+    private const double CheckInterval = 1.0;
+
+    private TimeSpan _nextCheck;
+
+    /// <summary>Когда в последний раз держим в инвентаре контрабанду.</summary>
+    private readonly Dictionary<NetUserId, TimeSpan> _since = new();
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<RoundStartedEvent>(_ => _since.Clear());
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        _since.Clear();
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_timing.CurTime < _nextCheck)
+            return;
+
+        _nextCheck = _timing.CurTime + TimeSpan.FromSeconds(CheckInterval);
+
+        // Записи за игроками, которых больше нет в списке сессий, иначе время отсутствия
+        // зачтётся как время ношения контрабанды после переподключения.
+        SweepStale();
+
+        if (!_rpu.Active)
+        {
+            // Пока система выключена, период ношения не идёт: иначе после включения
+            // штраф прилетел бы сразу за возвращённую контрабанду.
+            _since.Clear();
+            return;
+        }
+
+        var limit = _rpu.ContrabandLimit;
+        var dwell = TimeSpan.FromMinutes(_rpu.ContrabandDwellMinutes);
+
+        foreach (var session in _players.Sessions)
+        {
+            if (session.Status != SessionStatus.InGame || session.AttachedEntity is not { Valid: true } attached)
+            {
+                _since.Remove(session.UserId);
+                continue;
+            }
+
+            if (!_rpu.PunishmentAllowed(session))
+            {
+                _since.Remove(session.UserId);
+                continue;
+            }
+
+            if (!_contraband.ContainerHasContraband(attached, attached, out var found) || found.Count < limit)
+            {
+                _since.Remove(session.UserId);
+                continue;
+            }
+
+            if (!_since.TryGetValue(session.UserId, out var since))
+            {
+                _since[session.UserId] = _timing.CurTime;
+                continue;
+            }
+
+            if (_timing.CurTime - since < dwell)
+                continue;
+
+            // Считаем один раз за эпизод, затем обнуляем таймер: дальше снова 12 минут ношения.
+            _since[session.UserId] = _timing.CurTime;
+            _rpu.Penalize(session, RpuPrototypeIds.ContrabandItem,
+                details: $"carrying {found.Count} contraband groups");
+        }
+    }
+
+    private void SweepStale()
+    {
+        if (_since.Count == 0)
+            return;
+
+        List<NetUserId>? stale = null;
+
+        foreach (var userId in _since.Keys)
+        {
+            if (_players.SessionsDict.ContainsKey(userId))
+                continue;
+
+            stale ??= new List<NetUserId>();
+            stale.Add(userId);
+        }
+
+        if (stale == null)
+            return;
+
+        foreach (var userId in stale)
+            _since.Remove(userId);
+    }
+}

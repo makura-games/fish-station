@@ -1,0 +1,220 @@
+# Fish-start - служебные таблицы режима персонального угнетения
+- type: rpuTuning
+  id: FishRpuDefault
+  # Крупные антагонисты и угрозы фауны: их смерть никому не стоит кармы.
+  freeKillAntags:
+  - Nukeops
+  - NukeopsCommander
+  - NukeopsMedic
+  - AssaultOperative
+  - AssaultCommander
+  - Wizard
+  - Dragon
+  - Zombie
+  - InitialInfected
+  - Xenoborg
+  - MothershipCore
+  - SpaceNinja
+  - Changeling
+  - FleshCultistLeader
+  - HeadRev
+  - Rev
+  # Мелкие антагонисты: штраф не снимается, если они напали первыми.
+  firstStrikeAntags:
+  - Traitor
+  - TraitorSleeper
+  - Thief
+  - Fugitive
+  - ParadoxClone
+  - LoneAbductorAntag
+  - AbductorVictim
+  - SubvertedSilicon
+  - SELFAgent
+  - GenericAntagonist
+  - GenericFreeAgent
+  - GenericTeamAntagonist
+  - GenericSiliconAntagonist
+  - Survivor
+  - PlanetPrisoner
+  # Система этих игроков не касается вовсе: их роль и есть взрывы, убийства и взломы.
+  immuneAntags:
+  - Nukeops
+  - NukeopsCommander
+  - NukeopsMedic
+  - AssaultOperative
+  - AssaultCommander
+  - Wizard
+  - SpaceNinja
+  - Dragon
+  - Zombie
+  - InitialInfected
+  - Xenoborg
+  - MothershipCore
+  # Гостевые роли животных (Pun Pun здесь нет: он отвечает как обычный игрок).
+  immuneMobs:
+  - MobMonkey
+  - MobCorgi
+  - MobCat
+  - MobPony
+  - MobCarp
+  - MobKobold
+  # Дорогая цель: её гибель стоит как гибель командования.
+  highValueMobs:
+  - MobMonkeyPunpun
+  # Режимы, где система выключена.
+  disabledGamePresets:
+  - Sandbox
+  - Deathmatch
+  - PlanetWar
+  - PlanetWarSecret
+  - PlanetWarVulpkanin
+  - AllerAtOnce
+  # Очки сверху за малое наигранное время: новичок платит больше.
+  veryNewHours: 3
+  veryNewUnits: 3
+  newbieHours: 10
+  newbieUnits: 2
+  # Одинокий антагонист на чистой станции выглядит подозрительнее: плюс очко.
+  lonelyAntagUnits: 1
+  banHistoryDays: 180
+  # Пороги автобана: maxHours - верхняя граница часов на должностях (не включительно).
+  banTiers:
+  - maxHours: 5
+    threshold: -40
+  - maxHours: 25
+    threshold: -55
+  - maxHours: 60
+    threshold: -70
+  - maxHours: 120
+    threshold: -85
+  - maxHours: 200
+    threshold: -95
+  - maxHours: 100000
+    threshold: -100
+    veteransOnly: true
+  # Усиление по количеству банов за banHistoryDays (per-job баны не считаем).
+  # Сколько очков сверху даёт история банов и насколько понижается порог автобана.
+  # Работает только последний подходящий интервал, складывать их нельзя.
+  banHistoryTiers:
+  - minBans: 1
+    units: 1
+    thresholdShift: 5
+  - minBans: 3
+    units: 2
+    thresholdShift: 10
+  - minBans: 6
+    units: 3
+    thresholdShift: 15
+  - minBans: 11
+    units: 4
+    thresholdShift: 20
+  # Доступы шлюзов по уровням важности (id из Resources/Prototypes/Access).
+  highSecurityAccess:
+  - Command
+  - Captain
+  - HeadOfPersonnel
+  - HeadOfSecurity
+  - Security
+  - Armory
+  - Brig
+  - Detective
+  - CentralCommand
+  - Cryogenics
+  - GenpopEnter
+  - GenpopLeave
+  - EmergencyShuttleRepealAll
+  - Magistrat
+  - BlueShield
+  - BlueShieldEnsign
+  - Cadet
+  - ChiefEngineer
+  - ChiefMedicalOfficer
+  - NuclearOperative
+  departmentAccess:
+  - Research
+  - ResearchDirector
+  - Chemistry
+  - Medical
+  - ChiefMedicalOfficer
+  - Paramedic
+  - Engineering
+  - ChiefEngineer
+  - Atmospherics
+  - Cargo
+  - Quartermaster
+  - Salvage
+  - Robotics
+  - Mining
+  - External
+  - ResearchConsoleAccess
+  - Ntrep
+  - IAA
+  serviceAccess:
+  - Service
+  - Bar
+  - Kitchen
+  - Hydroponics
+  - Chapel
+  - Lawyer
+  - Theatre
+  - Janitor
+  - Barber
+  - Mail
+  - Maintenance
+  # Гибель этих должностей стоит дороже (KillSecurityChain).
+  securityChainJobs:
+  - Captain
+  - HeadOfPersonnel
+  - ChiefEngineer
+  - ChiefMedicalOfficer
+  - ResearchDirector
+  - HeadOfSecurity
+  - Warden
+  - SecurityOfficer
+  - SeniorOfficer
+  - SecurityCadet
+  - Detective
+  - DeathSquad
+  - SecurityPilot
+  - ERTLeader
+  - ERTChaplain
+  - ERTEngineer
+  - ERTMedical
+  - CBURN
+  - CBURNLeader
+  - CBURNAgentEVA
+  - SpecOpsOfficer
+  - CentralCommandOfficial
+  - CentCommHead
+  - CentCommOfficer
+  - CentCommOfficial
+  - CentCommOperator
+  - Magistrat
+  - BlueShieldEnsign
+  - BlueShieldOfficer
+  - BlueShieldOperative
+  - PrisonInspector
+  - OversightOfficer
+  - USSPCaptain
+  - USSPOfficer
+  - USSPOfficerAlt
+  - USSPSoldier
+  - NtrLeader
+  - NtrOfficer
+  - NtrGuard
+  - TSFMarine
+  # Отделы того же ряда — на случай кастомных должностей.
+  securityChainDepartments:
+  - Security
+  - Command
+  - CentralCommand
+  - BlueShield
+  - Court
+  - Law
+  - PlanetPrisonSecurity
+  - SpecialOperations
+  - SpecialOperationsAlt
+  - TSF
+  # Полностью освобождённые должности. Админы обрабатываются рангами, поэтому список пуст.
+  immuneJobs: []
+# Fish-end

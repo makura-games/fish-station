@@ -495,4 +495,10 @@ public enum LogType
     /// Silicon law changes.
     /// </summary>
     SiliconLaw = 106, // Sunrise-Edit - сохраняем числовое значение существующего Interactions для совместимости БД
+
+    /// <summary>
+    // Fish-start - учёт кармы режима персонального угнетения
+    /// </summary>
+    Karma = 107,
+    // Fish-end
 }
