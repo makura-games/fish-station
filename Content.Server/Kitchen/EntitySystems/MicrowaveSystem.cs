@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using Content.Server.Administration.Logs;
 using Content.Server.Construction;
 using Content.Server.Construction.Components;
@@ -44,6 +45,7 @@ namespace Content.Server.Kitchen.EntitySystems
 {
     public sealed partial class MicrowaveSystem : EntitySystem
     {
+        [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
         [Dependency] private DeviceLinkSystem _deviceLink = default!;
         [Dependency] private SharedPopupSystem _popupSystem = default!;
         [Dependency] private PowerReceiverSystem _power = default!;
@@ -698,6 +700,10 @@ namespace Content.Server.Kitchen.EntitySystems
                 if (active.PortionedRecipe.Item1 != null)
                 {
                     var coords = Transform(uid).Coordinates;
+                    // Fish-start: пар от готовой порции
+                    if (active.PortionedRecipe.Item2 > 0)
+                        _fishActionParticle.Emit(uid, FishParticleKind.Steam);
+                    // Fish-end
                     for (var i = 0; i < active.PortionedRecipe.Item2; i++)
                     {
                         SubtractContents(microwave, active.PortionedRecipe.Item1);

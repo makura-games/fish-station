@@ -10,7 +10,6 @@ using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Timing;
 using System.Numerics;
 
 namespace Content.Client.Atmos.Overlays;
@@ -31,9 +30,7 @@ public sealed partial class GasTileFireOverlay : Overlay
     private readonly SharedMapSystem _mapSystem = default!;
     private readonly ShaderInstance _shader;
 
-    private readonly float[] _timer;
     private readonly float[][] _frameDelays;
-    private readonly int[] _frameCounter;
 
     // TODO combine textures into a single texture atlas.
     private readonly Texture[][] _frames;
@@ -51,9 +48,7 @@ public sealed partial class GasTileFireOverlay : Overlay
         _shader = _protoMan.Index(UnshadedShader).Instance();
         ZIndex = GasOverlayZIndex;
 
-        _timer = new float[FireStates];
         _frameDelays = new float[FireStates][];
-        _frameCounter = new int[FireStates];
         _frames = new Texture[FireStates][];
 
         var fire = _resourceCache.GetResource<RSIResource>(FireRsiPath).RSI;
@@ -65,27 +60,7 @@ public sealed partial class GasTileFireOverlay : Overlay
 
             _frames[i] = state.GetFrames(RsiDirection.South);
             _frameDelays[i] = state.GetDelays();
-            _frameCounter[i] = 0;
-        }
-    }
-
-    protected override void FrameUpdate(FrameEventArgs args)
-    {
-        base.FrameUpdate(args);
-
-        for (var i = 0; i < FireStates; i++)
-        {
-            var delays = _frameDelays[i];
-            if (delays.Length == 0)
-                continue;
-
-            var frameCount = _frameCounter[i];
-            _timer[i] += args.DeltaSeconds;
-            var time = delays[frameCount];
-
-            if (_timer[i] < time) continue;
-            _timer[i] -= time;
-            _frameCounter[i] = (frameCount + 1) % _frames[i].Length;
+            InitializeFirePhases(i); // Fish-edit: смещаем первый кадр для соседних тайлов
         }
     }
 
@@ -157,7 +132,7 @@ public sealed partial class GasTileFireOverlay : Overlay
                             continue;
 
                         var fireState = gas.FireState - 1;
-                        var texture = state.frames[fireState][state.frameCounter[fireState]];
+                        var texture = state.frames[fireState][state.frameCounter[FirePhaseSlot(fireState, index)]]; // Fish-edit: фаза привязана к тайлу
                         state.drawHandle.DrawTexture(texture, index);
                     }
                 }

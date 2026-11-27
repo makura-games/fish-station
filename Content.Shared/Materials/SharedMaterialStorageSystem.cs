@@ -18,7 +18,7 @@ namespace Content.Shared.Materials;
 public abstract partial class SharedMaterialStorageSystem : EntitySystem
 {
     [Dependency] private SharedAppearanceSystem _appearance = default!;
-    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] protected IGameTiming _timing = default!; // Fish-edit: используем те же часы для клиентской анимации
     [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
 
     /// <summary>
@@ -372,6 +372,7 @@ public abstract partial class SharedMaterialStorageSystem : EntitySystem
         {
             ProtoMan.TryIndex<MaterialPrototype>(composition.MaterialComposition.Keys.First(), out var lastMat);
             insertingComp.MaterialColor = lastMat?.Color;
+            insertingComp.FishIntakeOpacity = lastMat?.FishIntakeOpacity ?? 1f; // Fish-edit: оптика принятого материала
         }
         _appearance.SetData(receiver, MaterialStorageVisuals.Inserting, true);
         Dirty(receiver, insertingComp);

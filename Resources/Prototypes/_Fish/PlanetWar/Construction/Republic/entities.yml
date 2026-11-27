@@ -1971,6 +1971,7 @@
           shader: unshaded
           map: ["enum.PowerDeviceVisualLayers.Powered"]
         - state: magfabinserting
+          shader: FishMaterialIntake
           map: ["enum.MaterialStorageVisualLayers.Inserting"]
     - type: Lathe
       idleState: cargofabCore
@@ -2013,6 +2014,7 @@
           shader: unshaded
           map: ["enum.PowerDeviceVisualLayers.Powered"]
         - state: magfabinserting
+          shader: FishMaterialIntake
           map: ["enum.MaterialStorageVisualLayers.Inserting"]
     - type: Lathe
       idleState: magfabCore

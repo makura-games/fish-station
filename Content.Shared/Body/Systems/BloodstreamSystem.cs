@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using Content.Shared.Alert;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Events;
@@ -31,6 +32,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
 {
     public static readonly EntProtoId Bloodloss = "StatusEffectBloodloss";
 
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -229,7 +231,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
         var prob = Math.Clamp(totalFloat / 25, 0, 1);
         if (totalFloat > 0 && SharedRandomExtensions.PredictedProb(_timing, prob, GetNetEntity(ent), GetNetEntity(args.Origin)))
         {
-            TryBleedOut(ent.AsNullable(), total / 5);
+            TryBleedOut(ent.AsNullable(), total / 5, FishParticleKind.BloodSpray); // Fish-edit: брызги при кровопотере от удара
             _audio.PlayPredicted(ent.Comp.InstantBloodSound, ent, args.Origin);
         }
 
@@ -479,10 +481,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
         TryModifyBleedAmount(entity.AsNullable(), -ev.BleedReductionAmount);
     }
 
-    /// <summary>
-    /// Removes blood by spilling out the bloodstream.
-    /// </summary>
-    public bool TryBleedOut(Entity<BloodstreamComponent?> ent, FixedPoint2 amount)
+    private bool TryBleedOut(Entity<BloodstreamComponent?> ent, FixedPoint2 amount, FishParticleKind particles) // Fish-edit: учитываем причину потери крови
     {
         if (!Resolve(ent, ref ent.Comp, logMissing: false)
             || !_solutionContainer.ResolveSolution(ent.Owner, ent.Comp.BloodSolutionName, ref ent.Comp.BloodSolution)
@@ -492,6 +491,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
         }
 
         var leakedBlood = _solutionContainer.SplitSolution(ent.Comp.BloodSolution.Value, amount);
+        _fishActionParticle.Emit(ent.Owner, particles, leakedBlood); // Fish-edit: цвет и объём реально потерянной крови
 
         if (!_solutionContainer.ResolveSolution(ent.Owner, ent.Comp.BloodTemporarySolutionName, ref ent.Comp.TemporarySolution, out var tempSolution))
             return true;

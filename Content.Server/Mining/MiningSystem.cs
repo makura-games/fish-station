@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using Content.Shared.Destructible;
 using Content.Shared.Mining;
 using Content.Shared.Mining.Components;
@@ -13,6 +14,7 @@ namespace Content.Server.Mining;
 /// </summary>
 public sealed partial class MiningSystem : EntitySystem
 {
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private IRobustRandom _random = default!;
 
     /// <inheritdoc/>
@@ -35,6 +37,10 @@ public sealed partial class MiningSystem : EntitySystem
 
         var coords = Transform(uid).Coordinates;
         var toSpawn = _random.Next(proto.MinOreYield, proto.MaxOreYield+1);
+        // Fish-start: крошка при выходе руды
+        if (toSpawn > 0)
+            _fishActionParticle.Emit(uid, FishParticleKind.Ore);
+        // Fish-end
         for (var i = 0; i < toSpawn; i++)
         {
             Spawn(proto.OreEntity, coords.Offset(_random.NextVector2(0.2f)));

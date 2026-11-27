@@ -2,7 +2,7 @@ using Robust.Shared.GameStates;
 
 namespace Content.Shared.Anomaly.Effects.Components;
 
-[RegisterComponent, NetworkedComponent, Access(typeof(SharedGravityAnomalySystem))]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, Access(typeof(SharedGravityAnomalySystem))] // Fish-edit: синхронизация гравитационного поля
 public sealed partial class GravityAnomalyComponent : Component
 {
     /// <summary>

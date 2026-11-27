@@ -92,6 +92,10 @@
         !type:DamageTrigger
         damage: 80
       behaviors:
+      # Fish-start: частицы материала при разрушении
+      - !type:FishDebrisBehavior
+        kind: Glass
+      # Fish-end
       - !type:PlaySoundBehavior
         sound:
           collection: WindowShatter
@@ -211,6 +215,10 @@
         !type:DamageTrigger
         damage: 30
       behaviors:
+      # Fish-start: частицы материала при разрушении
+      - !type:FishDebrisBehavior
+        kind: Glass
+      # Fish-end
       - !type:PlaySoundBehavior
         sound:
           collection: WindowShatter

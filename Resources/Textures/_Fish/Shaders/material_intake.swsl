@@ -1,0 +1,17 @@
+// Маска кадра задаёт положение листа и закрывает его внутри приёмника.
+uniform highp vec4 surface;
+
+void fragment() {
+    highp float mask = texture2D(TEXTURE, UV).a;
+    highp vec2 dx = vec2(TEXTURE_PIXEL_SIZE.x, 0.0);
+    highp vec2 dy = vec2(0.0, TEXTURE_PIXEL_SIZE.y);
+    highp float left = texture2D(TEXTURE, UV - dx).a;
+    highp float right = texture2D(TEXTURE, UV + dx).a;
+    highp float cap = 1.0 - min(texture2D(TEXTURE, UV - dy).a, texture2D(TEXTURE, UV + dy).a);
+
+    highp vec3 shade = mix(surface.rgb * 0.45, surface.rgb, left);
+    highp float shine = max((1.0 - right) * 0.35, cap * 0.65);
+    shade = mix(shade, vec3(1.0), shine);
+    highp float face = left * right * (1.0 - cap);
+    COLOR = vec4(shade, mask * mix(1.0, surface.a, face));
+}

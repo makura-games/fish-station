@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Examine;
@@ -11,6 +12,7 @@ namespace Content.Shared.Tools.Systems;
 
 public sealed partial class WeldableSystem : EntitySystem
 {
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private SharedToolSystem _toolSystem = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
@@ -87,6 +89,8 @@ public sealed partial class WeldableSystem : EntitySystem
             return;
 
         SetWeldedState(uid, !component.IsWelded, component);
+
+        _fishActionParticle.Emit(uid, component.IsWelded ? FishParticleKind.Weld : FishParticleKind.Slag); // Fish-edit: искры шва или окалина
 
         // Log success
         _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(args.User):user} {(!component.IsWelded ? "un" : "")}welded {ToPrettyString(uid):target}");

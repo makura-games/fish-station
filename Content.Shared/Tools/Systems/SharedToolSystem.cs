@@ -185,7 +185,10 @@ public abstract partial class SharedToolSystem : EntitySystem
             ExamineText = examineText,
         };
 
-        _doAfterSystem.TryStartDoAfter(doAfterArgs, out id);
+        // Fish-start: частицы только при успешном начале работы.
+        if (_doAfterSystem.TryStartDoAfter(doAfterArgs, out id))
+            EmitWeldingParticles(target, doAfterArgs.Delay, toolQualitiesNeeded);
+        // Fish-end
         return true;
     }
 

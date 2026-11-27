@@ -60,26 +60,17 @@ public sealed partial class FtlArrivalOverlay : Overlay
             if (!_entManager.TryGetComponent(grid, out MapGridComponent? mapGrid))
                 continue;
 
-            if (!_entManager.TryGetComponent(grid, out FTLComponent? ftlComponent))
+            if (!_entManager.HasComponent<FTLComponent>(grid)) // Fish-edit: угол назначения уже передан трансформу голограммы
                 continue;
 
             var texture = _sprites.GetFrame(comp.Sprite, TimeSpan.FromSeconds(comp.Elapsed), loop: false);
             comp.Elapsed += (float) _timing.FrameTime.TotalSeconds;
 
-            // Need to manually transform the viewport in terms of the visualizer entity as the grid isn't in position.
-            var (_, _, worldMatrix, invMatrix) = _transforms.GetWorldPositionRotationMatrixWithInv(uid);
-            var currentRotation = _transforms.GetWorldRotation(grid);
-            var rotationDiff = ftlComponent.TargetAngle - currentRotation;
-
-            var center = worldMatrix.Translation;
-            var rotationMatrix = Matrix3x2.CreateRotation(float.DegreesToRadians((float)rotationDiff.Degrees), center);
-
-            args.WorldHandle.SetTransform(worldMatrix * rotationMatrix);
-
-            if (!Matrix3x2.Invert(worldMatrix * rotationMatrix, out var rotatedInvMatrix))
-                continue;
-
-            var localAABB = rotatedInvMatrix.TransformBox(args.WorldBounds);
+            // Fish-start: трансформ визуализатора уже содержит положение и поворот будущего шаттла
+            var (_, _, worldMatrix, inverse) = _transforms.GetWorldPositionRotationMatrixWithInv(uid);
+            args.WorldHandle.SetTransform(worldMatrix);
+            var localAABB = inverse.TransformBox(args.WorldBounds);
+            // Fish-end
 
             var tilesEnumerator = _maps.GetLocalTilesIntersecting(grid, mapGrid, localAABB);
 
@@ -89,6 +80,8 @@ public sealed partial class FtlArrivalOverlay : Overlay
 
                 args.WorldHandle.DrawTextureRect(texture, bounds);
             }
+
+            DrawHullSweep(args.WorldHandle, grid, mapGrid, localAABB, comp.Elapsed); // Fish-edit: контур и волна поверх штатной голограммы
         }
 
         args.WorldHandle.UseShader(null);

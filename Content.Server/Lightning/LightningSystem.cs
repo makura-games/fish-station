@@ -78,8 +78,7 @@ public sealed partial class LightningSystem : SharedLightningSystem
         // several hashsets every time
 
         var targets = _lookup.GetEntitiesInRange<LightningTargetComponent>(_transform.GetMapCoordinates(user), range).ToList();
-        _random.Shuffle(targets);
-        targets.Sort((x, y) => y.Comp.Priority.CompareTo(x.Comp.Priority));
+        PrioritizeTargets(targets); // Fish-edit: единый порядок выбора целей обычного разряда и суперматерии
 
         bool shooted = false;  //starlight
         int shootedCount = 0;

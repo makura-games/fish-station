@@ -14,6 +14,7 @@ public sealed partial class MaterialStorageSystem : SharedMaterialStorageSystem
         base.Initialize();
 
         SubscribeLocalEvent<MaterialStorageComponent, AppearanceChangeEvent>(OnAppearanceChange);
+        SubscribeLocalEvent<InsertingMaterialStorageComponent, AfterAutoHandleStateEvent>(OnFishIntakeState); // Fish-edit: два листа подряд не меняют флаг Inserting
     }
 
     private void OnAppearanceChange(EntityUid uid, MaterialStorageComponent component, ref AppearanceChangeEvent args)
@@ -29,6 +30,10 @@ public sealed partial class MaterialStorageSystem : SharedMaterialStorageSystem
 
         if (inserting && TryComp<InsertingMaterialStorageComponent>(uid, out var insertingComp))
         {
+            // Fish-start: при синхронизации показываем текущий кадр подачи.
+            if (TryShowFishIntake((uid, args.Sprite), layer, component.InsertionTime, insertingComp))
+                return;
+            // Fish-end
             _sprite.LayerSetAnimationTime((uid, args.Sprite), layer, 0f);
 
             _sprite.LayerSetVisible((uid, args.Sprite), layer, true);

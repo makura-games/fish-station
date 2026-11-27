@@ -236,6 +236,10 @@
     thresholds:
     - trigger: *DamageFurnitureWeak
       behaviors:
+      # Fish-start: частицы материала при разрушении
+      - !type:FishDebrisBehavior
+        kind: Glass
+      # Fish-end
       - &SoundGlassBreak !type:PlaySoundBehavior
         sound:
           collection: GlassBreak
@@ -426,6 +430,10 @@
     thresholds:
     - trigger: *DamageFurnitureNormal
       behaviors:
+      # Fish-start: частицы материала при разрушении
+      - !type:FishDebrisBehavior
+        kind: Wood
+      # Fish-end
       - *SoundWoodDestroy
       - *ChangeNodeFrame
       - !type:SpawnEntitiesBehavior

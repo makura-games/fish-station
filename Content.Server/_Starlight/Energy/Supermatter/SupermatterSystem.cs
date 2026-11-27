@@ -108,8 +108,8 @@ public sealed partial class SupermatterSystem : AccUpdateEntitySystem
         HandleDamage(supermatter);
         HandleGas(supermatter);
         HandleRadiation(supermatter);
+        HandleCrystalDamage(supermatter); // Fish-edit: отделяем осколки перед зарядкой
         HandleLighting(supermatter);
-        HandleDestruction(supermatter);
         NotifyCascad(supermatter);
         Cascad(supermatter);
     }
@@ -170,9 +170,7 @@ public sealed partial class SupermatterSystem : AccUpdateEntitySystem
 
     private void HandleLighting(Entity<SupermatterComponent> supermatter)
     {
-        if (supermatter.Comp.AccLighting != 0
-            && _lightning.ShootRandomLightnings(supermatter.Owner, supermatter.Comp.AccLighting.Float(), 1))
-            supermatter.Comp.AccLighting = 0;
+        BeginDischarge(supermatter); // Fish-edit: заменяем мгновенный разряд на зарядку перед ударом по выбранной цели
     }
 
     private void HandleRadiation(Entity<SupermatterComponent> supermatter)

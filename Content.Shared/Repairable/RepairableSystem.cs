@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
@@ -12,6 +13,7 @@ namespace Content.Shared.Repairable;
 
 public sealed partial class RepairableSystem : EntitySystem
 {
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private SharedToolSystem _toolSystem = default!;
     [Dependency] private DamageableSystem _damageableSystem = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
@@ -42,7 +44,12 @@ public sealed partial class RepairableSystem : EntitySystem
         else
             RepairAllDamage((ent, damageable), args.User);
 
+        // Fish-start: искры только при ремонте сваркой с фактическим уменьшением урона
+        var previousDamage = totalDamage;
         totalDamage = _damageableSystem.GetTotalDamage((ent.Owner, damageable));
+        if (totalDamage < previousDamage && ent.Comp.QualityNeeded == "Welding")
+            _fishActionParticle.Emit(ent, FishParticleKind.Weld);
+        // Fish-end
 
         args.Repeat = ent.Comp.AutoDoAfter && totalDamage > 0;
         args.Args.Event.Repeat = args.Repeat;

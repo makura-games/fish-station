@@ -1,3 +1,4 @@
+using Content.Shared._Fish.Effects; // Fish-edit: частицы действий
 using System.Numerics;
 using Content.Shared._Sunrise.Footprints;
 using Content.Shared.Chemistry.Components;
@@ -22,6 +23,7 @@ namespace Content.Shared.Fluids;
 /// </summary>
 public abstract partial class SharedAbsorbentSystem : EntitySystem
 {
+    [Dependency] private FishActionParticleSystem _fishActionParticle = default!; // Fish-edit: частицы действий
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedPopupSystem _popups = default!;
     [Dependency] protected SharedPuddleSystem Puddle = default!;
@@ -465,6 +467,7 @@ public abstract partial class SharedAbsorbentSystem : EntitySystem
             }
         }
 
+        _fishActionParticle.Emit(target, FishParticleKind.Splash, puddleSplit); // Fish-edit: брызги собранной жидкости
         SolutionContainer.AddSolution(absorberSoln, puddleSplit);
 
         _audio.PlayPredicted(absorber.PickupSound, isRemoved ? absorbEnt : target, user);
