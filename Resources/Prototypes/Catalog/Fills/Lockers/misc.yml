@@ -236,6 +236,10 @@
     - !type:NestedSelector
       tableId: MaintenancePlushies
       prob: 0.02
+    # Fish-start
+    - id: FishPlushieToolbox
+      prob: 0.05
+    # Fish-end
 
     # Weapons
     - !type:NestedSelector
@@ -261,6 +265,7 @@
     - id: PlushieLizardJobPassenger
     - id: PlushieLizardJobReporter
     - id: PlushieLizardJobZookeeper
+    - id: FishPlushieToolbox # Fish-edit
 
 - type: entity
   id: ClosetMaintenanceFilledRandom

@@ -254,3 +254,17 @@
         volume: -4
   - type: TTS
     voice: HeartstoneDjaina
+
+- type: entity
+  parent: BasePlushie
+  id: FishPlushieToolbox
+  name: plush toolbox
+  description: A soft, squeezable toolbox that squeaks when hugged.
+  suffix: Fish
+  components:
+  - type: Sprite
+    sprite: _Fish/Objects/Fun/Plushies/toolbox.rsi
+    state: icon
+  - type: Item
+    size: Tiny
+    sprite: _Fish/Objects/Fun/Plushies/toolbox.rsi
