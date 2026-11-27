@@ -72,7 +72,7 @@ public abstract partial class SharedResearchSystem : EntitySystem
         if (!component.SupportedDisciplines.Contains(tech.Discipline))
             return false;
 
-        if (tech.Tier > disciplineTiers[tech.Discipline])
+        if (!disciplineTiers.TryGetValue(tech.Discipline, out var tier) || tech.Tier > tier) // Fish-edit: дисциплина может исчезнуть после перезагрузки
             return false;
 
         if (component.UnlockedTechnologies.Contains(tech.ID))
@@ -92,7 +92,10 @@ public abstract partial class SharedResearchSystem : EntitySystem
         var tiers = new Dictionary<string, int>();
         foreach (var discipline in component.SupportedDisciplines)
         {
-            tiers.Add(discipline, GetHighestDisciplineTier(component, discipline));
+            // Fish-start: пропускаем удалённые дисциплины при обновлении базы
+            if (ProtoMan.TryIndex(discipline, out var prototype))
+                tiers.Add(discipline, GetHighestDisciplineTier(component, prototype));
+            // Fish-end
         }
 
         return tiers;
@@ -110,8 +113,7 @@ public abstract partial class SharedResearchSystem : EntitySystem
         var allUnlocked = new List<TechnologyPrototype>();
         foreach (var recipe in component.UnlockedTechnologies)
         {
-            var proto = ProtoMan.Index<TechnologyPrototype>(recipe);
-            if (proto.Discipline != techDiscipline.ID)
+            if (!ProtoMan.TryIndex(recipe, out var proto) || proto.Discipline != techDiscipline.ID) // Fish-edit: пропускаем устаревшие записи базы
                 continue;
             allUnlocked.Add(proto);
         }

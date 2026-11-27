@@ -1,3 +1,4 @@
+using Content.Client._Fish.Research.UI; // Fish-edit: окно консоли исследований
 using Content.Shared.Research.Components;
 using Content.Shared.Research.Prototypes;
 using JetBrains.Annotations;
@@ -10,7 +11,7 @@ namespace Content.Client.Research.UI;
 public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
 {
     [ViewVariables]
-    private ResearchConsoleMenu? _consoleMenu;
+    private FishResearchWindow? _consoleMenu; // Fish-edit: тип окна консоли РНД
 
     public ResearchConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
@@ -20,10 +21,7 @@ public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
     {
         base.Open();
 
-        var owner = Owner;
-
-        _consoleMenu = this.CreateWindow<ResearchConsoleMenu>();
-        _consoleMenu.SetEntity(owner);
+        _consoleMenu = this.CreateWindow<FishResearchWindow>(); // Fish-edit: открываем окно исследований Fish
 
         _consoleMenu.OnTechnologyCardPressed += id =>
         {
@@ -40,14 +38,16 @@ public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
     {
         base.OnProtoReload(args);
 
-        if (!args.WasModified<TechnologyPrototype>())
+        // Fish-start: окно использует рецепты, дисциплины и названия предметов
+        if (!args.WasModified<TechnologyPrototype>() && !args.WasModified<LatheRecipePrototype>() &&
+            !args.WasModified<TechDisciplinePrototype>() && !args.WasModified<EntityPrototype>())
             return;
+        // Fish-end
 
         if (State is not ResearchConsoleBoundInterfaceState rState)
             return;
 
-        _consoleMenu?.UpdatePanels(rState);
-        _consoleMenu?.UpdateInformationPanel(rState);
+        _consoleMenu?.Refresh(Owner, rState, force: true); // Fish-edit: перестраиваем каталог после перезагрузки
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -56,7 +56,6 @@ public sealed class ResearchConsoleBoundUserInterface : BoundUserInterface
 
         if (state is not ResearchConsoleBoundInterfaceState castState)
             return;
-        _consoleMenu?.UpdatePanels(castState);
-        _consoleMenu?.UpdateInformationPanel(castState);
+        _consoleMenu?.Refresh(Owner, castState); // Fish-edit: обновляем окно по состоянию консоли
     }
 }
