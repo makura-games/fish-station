@@ -272,7 +272,7 @@ namespace Content.Shared.Preferences
         /// Picks a random species from roundstart species.
         /// <param name="ignoredSpecies">Species to exclude from randomizer.</param>
         /// </summary>
-        public static SpeciesPrototype RandomSpecies(HashSet<string>? ignoredSpecies = null)
+        public static SpeciesPrototype RandomSpecies(HashSet<string>? ignoredSpecies = null, bool includeExcludedSpecies = false)
         {
             var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
             var random = IoCManager.Resolve<IRobustRandom>();
@@ -280,7 +280,9 @@ namespace Content.Shared.Preferences
             var pool = prototypeManager.EnumeratePrototypes<SpeciesPrototype>()
                 // Fish-start: исключаем расы с excludeFromRandomSpecies (например, КПБ) из случайных спавнеров
                 // .Where(x => x.RoundStart && !x.SponsorOnly && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID))) // Sunrise-Edit
-                .Where(x => x.RoundStart && !x.SponsorOnly && !x.ExcludeFromRandomSpecies && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID)))
+                .Where(x => x.RoundStart && !x.SponsorOnly
+                    && (includeExcludedSpecies || !x.ExcludeFromRandomSpecies)
+                    && (ignoredSpecies == null || !ignoredSpecies.Contains(x.ID)))
                 // Fish-end
                 .ToArray();
             var species = random.Pick(pool);
@@ -341,13 +343,14 @@ namespace Content.Shared.Preferences
         /// Generates a randomized character profile.
         /// </summary>
         /// <returns>A new character profile with values randomized</returns>
-        public static HumanoidCharacterProfile Random(HashSet<string>? ignoredSpecies = null)
+        public static HumanoidCharacterProfile Random(HashSet<string>? ignoredSpecies = null, bool includeExcludedSpecies = false)
         {
             var config = RandomizeConfigAll;
             var baseProfile = new HumanoidCharacterProfile();
-            if (ignoredSpecies != null)
+            // Fish-edit: includeExcludedSpecies — пул ОБР/DeathSquad может включать КПБ
+            if (ignoredSpecies != null || includeExcludedSpecies)
             {
-                baseProfile.Species = RandomSpecies(ignoredSpecies);
+                baseProfile.Species = RandomSpecies(ignoredSpecies, includeExcludedSpecies);
                 config &= ~RandomizeCfg.Species; // Sunrise-Edit - не выбираем повторно исключённую расу
             }
             var profile = Random(config, baseProfile);

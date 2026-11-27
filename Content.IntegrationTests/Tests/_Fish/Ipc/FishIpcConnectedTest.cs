@@ -110,6 +110,92 @@ public sealed class FishIpcConnectedTest : FishIpcGameTest
     }
 
     [Test]
+    public async Task CombatRole_GrantsEmpAndProfessionModules()
+    {
+        EntityUid ertSec = default;
+        EntityUid ertMed = default;
+        EntityUid nukeOp = default;
+        EntityUid nukeMed = default;
+        var ertEject = true;
+        var nukeEject = true;
+        EntityUid? ertCell = null;
+        EntityUid? nukeCell = null;
+
+        await Server.WaitPost(() =>
+        {
+            var modules = Server.System<Content.Server._Fish.Ipc.FishIpcJobModuleSystem>();
+            ertSec = SSpawn("MobIpc");
+            ertMed = SSpawn("MobIpc");
+            nukeOp = SSpawn("MobIpc");
+            nukeMed = SSpawn("MobIpc");
+            modules.TryGrantForRole(ertSec, "ERTSecurity");
+            modules.TryGrantForRole(ertMed, "ERTMedical");
+            modules.TryGrantForRole(nukeOp, "NukeopsOperative");
+            modules.TryGrantForRole(nukeMed, "NukeopsMedic");
+
+            // Печать проверяем при открытой панели: иначе TryEject=false из-за замка/панели.
+            OpenChassisPanel(ertSec);
+            OpenChassisPanel(nukeOp);
+            ertCell = GetCellUid(ertSec);
+            nukeCell = GetCellUid(nukeOp);
+            var slots = Server.System<ItemSlotsSystem>();
+            ertEject = slots.TryEject(ertSec, SComp<PowerCellSlotComponent>(ertSec).CellSlotId, null, out _);
+            nukeEject = slots.TryEject(nukeOp, SComp<PowerCellSlotComponent>(nukeOp).CellSlotId, null, out _);
+        });
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.Multiple(() =>
+            {
+                AssertHasModules(ertSec, "FishIpcModuleEmpScreen", "FishIpcModuleNightVision", "FishIpcModuleNanoRepair");
+                AssertHasModules(ertMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
+                AssertHasModules(nukeOp, "FishIpcModuleEmpScreen", "FishIpcModuleNightVision", "FishIpcModuleNanoRepair");
+                AssertHasModules(nukeMed, "FishIpcModuleEmpScreen", "FishIpcModuleMedHud", "FishIpcModuleDefib");
+                AssertSealedSyndicateCell(ertSec, ertCell, ertEject);
+                AssertSealedSyndicateCell(nukeOp, nukeCell, nukeEject);
+            });
+        });
+    }
+
+    private void OpenChassisPanel(EntityUid ipc)
+    {
+        Server.System<LockSystem>().Unlock(ipc, ipc);
+        var panel = SComp<WiresPanelComponent>(ipc);
+        Assert.That(Server.System<SharedWiresSystem>().TogglePanel(ipc, panel, true), Is.True);
+    }
+
+    private EntityUid? GetCellUid(EntityUid ipc)
+    {
+        var slots = Server.System<ItemSlotsSystem>();
+        Assert.That(slots.TryGetSlot(ipc, SComp<PowerCellSlotComponent>(ipc).CellSlotId, out var slot), Is.True);
+        return slot!.Item;
+    }
+
+    private void AssertSealedSyndicateCell(EntityUid ipc, EntityUid? expectedCell, bool ejectSucceeded)
+    {
+        Assert.That(SEntMan.HasComponent<FishIpcSealedBatteryComponent>(ipc), Is.True);
+        Assert.That(ejectSucceeded, Is.False);
+        var slots = Server.System<ItemSlotsSystem>();
+        var cellSlot = SComp<PowerCellSlotComponent>(ipc);
+        Assert.That(slots.TryGetSlot(ipc, cellSlot.CellSlotId, out var slot), Is.True);
+        Assert.That(slot!.Item, Is.EqualTo(expectedCell));
+        Assert.That(expectedCell, Is.Not.Null);
+        Assert.That(SEntMan.GetComponent<MetaDataComponent>(expectedCell!.Value).EntityPrototype?.ID,
+            Is.EqualTo("PowerCellSyndicate"));
+    }
+
+    private void AssertHasModules(EntityUid ipc, params string[] expected)
+    {
+        var host = SComp<FishIpcModuleHostComponent>(ipc);
+        Assert.That(host.ModuleCount, Is.EqualTo(expected.Length), ipc.ToString());
+        var ids = host.ModuleContainer.ContainedEntities
+            .Select(uid => SEntMan.GetComponent<MetaDataComponent>(uid).EntityPrototype?.ID)
+            .ToHashSet();
+        foreach (var id in expected)
+            Assert.That(ids, Does.Contain(id), $"{ipc}: missing {id}");
+    }
+
+    [Test]
     public async Task BatteryEjectAndInsert_ClientDoesNotCrash()
     {
         var catcher = new LogCatcher();

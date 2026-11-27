@@ -31,4 +31,5 @@ fish-ipc-emag-access = Замки доступа шасси сброшены. П
 fish-ipc-module-toggled-on = { $module }: включён.
 fish-ipc-module-toggled-off-named = { $module }: выключен.
 fish-ipc-cell-panel-closed = Сначала откройте панель шасси, чтобы менять батарею.
+fish-ipc-cell-sealed = Боевая батарея шасси зафиксирована и не извлекается.
 id-card-access-level-fish-ipc-chassis = Шасси КПБ

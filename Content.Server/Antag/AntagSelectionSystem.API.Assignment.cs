@@ -182,8 +182,8 @@ public sealed partial class AntagSelectionSystem
     /// <returns>True if there is nothing stopping this entity from being this antag. Or if there is no entity.</returns>
     public bool IsEntityValid([NotNullWhen(true)] EntityUid? uid, AntagSpecifierPrototype def)
     {
-        // Fish-start: КПБ не становятся антагонистами
-        if (uid is { } ipc && HasComp<FishIpcComponent>(ipc))
+        // Fish-start: КПБ не становятся антагонистами, кроме ролей с allowFishIpc (NukeOps)
+        if (uid is { } ipc && HasComp<FishIpcComponent>(ipc) && !def.AllowFishIpc)
             return false;
         // Fish-end
 

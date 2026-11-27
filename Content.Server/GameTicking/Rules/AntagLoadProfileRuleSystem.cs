@@ -39,8 +39,8 @@ public sealed partial class AntagLoadProfileRuleSystem : GameRuleSystem<AntagLoa
             species = ProtoMan.Index(HumanoidCharacterProfile.DefaultSpecies);
         }
 
-        // Fish-start: расы с excludeFromRandomSpecies (например, КПБ) не спавнятся в ролях антагонистов/призраков
-        if (species.ExcludeFromRandomSpecies)
+        // Fish-start: расы с excludeFromRandomSpecies (например, КПБ) не спавнятся, кроме allowExcludedSpecies (NukeOps)
+        if (species.ExcludeFromRandomSpecies && !ent.Comp.AllowExcludedSpecies)
         {
             species = ProtoMan.Index(ent.Comp.SpeciesOverride ?? HumanoidCharacterProfile.DefaultSpecies);
         }
