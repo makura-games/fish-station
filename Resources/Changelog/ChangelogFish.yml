@@ -1973,3 +1973,10 @@
     message: Добавлено отображение правил антагонистов при получении роли и в меню призрачных ролей.
   id: 203
   url: https://github.com/makura-games/fish-station/pull/631
+- author: Kaiten
+  time: '2026-11-27T00:11:00.0000000+00:00'
+  changes:
+  - type: Add
+    message: Апстрим Санрайз (26.11.2026)
+  id: 204
+  url: https://github.com/makura-games/fish-station/pull/705
