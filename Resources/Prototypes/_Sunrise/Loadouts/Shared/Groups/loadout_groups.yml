@@ -378,7 +378,7 @@
   - SecurityTourniquet
   - SecurityWeaponMeleeNeedle
   - SecurityHoloprojector
-  - SecurityMasterBodycam
+  # - SecurityMasterBodycam # Fish-edit
 
 - type: loadoutGroup
   id: CorporateLaw
