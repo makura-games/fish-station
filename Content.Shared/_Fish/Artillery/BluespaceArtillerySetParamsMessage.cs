@@ -5,7 +5,7 @@ namespace Content.Shared._Fish.Artillery;
 [Serializable, NetSerializable]
 public sealed partial class BluespaceArtillerySetParamsMessage : BoundUserInterfaceMessage
 {
-    public string ExplosionType { get; set; } = "Default";
+    public string ExplosionType { get; set; } = SharedBluespaceArtillerySystem.DefaultExplosionType;
     public float TotalIntensity { get; set; } = 100f;
     public float Slope { get; set; } = 5f;
     public float MaxIntensity { get; set; } = 50f;

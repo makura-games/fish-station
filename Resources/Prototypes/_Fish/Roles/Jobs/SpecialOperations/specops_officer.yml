@@ -24,6 +24,7 @@
   - AllAccess
   access:
   - CentralCommand
+  - FishSpecOpsOfficer
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm ]

@@ -6,6 +6,8 @@ bluespace-artillery-station-announcement = Attention! Bluespace artillery fire d
 bluespace-artillery-cc-sender = Central Command
 bluespace-artillery-console-title = BSA Console
 bluespace-artillery-target-station = Target Station:
+bluespace-artillery-target-object = Target Object:
+bluespace-artillery-target-object-none = None (by coordinates)
 bluespace-artillery-coordinates = Target Coordinates:
 bluespace-artillery-apply = Apply
 bluespace-artillery-fire = FIRE
@@ -16,10 +18,11 @@ bluespace-artillery-total-intensity = Total Intensity:
 bluespace-artillery-slope = Intensity Slope:
 bluespace-artillery-max-intensity = Max Intensity:
 bluespace-artillery-preview = Preview Explosion
-access-level-bsa-operator = BSA Operator
+bluespace-artillery-no-access = Access denied.
 
 # Fish-edit - statuses
 bluespace-artillery-status-no-link = Status: no link to cannon
+bluespace-artillery-status-no-power = Status: no cannon power
 bluespace-artillery-status-charging = Status: charging...
 bluespace-artillery-status-cooldown = Status: cooling down...
 bluespace-artillery-status-ready = Status: ready to fire

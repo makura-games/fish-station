@@ -24,6 +24,12 @@ public sealed partial class BluespaceArtilleryComponent : Component
 	public float CooldownDuration = 60.0f;
 
 	[DataField]
+	public float IdlePowerDraw = 50000f;
+
+	[DataField]
+	public float ChargePowerDraw = 500000f;
+
+	[DataField]
 	public SoundSpecifier SectorChargeSound = default!;
 
 	[DataField]

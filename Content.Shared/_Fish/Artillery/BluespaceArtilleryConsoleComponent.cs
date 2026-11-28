@@ -24,11 +24,14 @@ public sealed partial class BluespaceArtilleryConsoleComponent : Component
 	[ViewVariables]
 	public EntityUid? TargetStation = null;
 
+	[ViewVariables]
+	public EntityUid? TargetObject = null;
+
     [ViewVariables] 
 	public ArtilleryVector2 TargetCoordinates;
 	
     [ViewVariables] 
-	public string ExplosionType = "Default";
+	public string ExplosionType = SharedBluespaceArtillerySystem.DefaultExplosionType;
 	
     [ViewVariables] 
 	public float TotalIntensity = 100f;

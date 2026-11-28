@@ -13,11 +13,14 @@ public sealed partial class BluespaceArtilleryConsoleBoundUserInterfaceState : B
     public float MaxIntensity;
     public bool PreviewEnabled;
     public bool IsLinked;
+    public bool IsArtilleryPowered;
     public bool IsCharging;
     public bool IsOnCooldown;
     public float CooldownRemaining;
     public Dictionary<NetEntity, string> AvailableStations;
     public NetEntity? SelectedStation;
+    public Dictionary<NetEntity, string> AvailableTargets;
+    public NetEntity? SelectedTarget;
     public NavInterfaceState? NavState;
 
     public BluespaceArtilleryConsoleBoundUserInterfaceState(
@@ -28,11 +31,14 @@ public sealed partial class BluespaceArtilleryConsoleBoundUserInterfaceState : B
         float maxIntensity,
         bool previewEnabled,
         bool isLinked,
+        bool isArtilleryPowered,
         bool isCharging,
         bool isOnCooldown,
         float cooldownRemaining,
         Dictionary<NetEntity, string> availableStations,
         NetEntity? selectedStation,
+        Dictionary<NetEntity, string> availableTargets,
+        NetEntity? selectedTarget,
         NavInterfaceState? navState)
     {
         TargetCoordinates = targetCoordinates;
@@ -42,11 +48,14 @@ public sealed partial class BluespaceArtilleryConsoleBoundUserInterfaceState : B
         MaxIntensity = maxIntensity;
         PreviewEnabled = previewEnabled;
         IsLinked = isLinked;
+        IsArtilleryPowered = isArtilleryPowered;
         IsCharging = isCharging;
         IsOnCooldown = isOnCooldown;
         CooldownRemaining = cooldownRemaining;
         AvailableStations = availableStations;
         SelectedStation = selectedStation;
+        AvailableTargets = availableTargets;
+        SelectedTarget = selectedTarget;
         NavState = navState;
     }
 }
