@@ -1,6 +1,6 @@
 - type: accessLevel
-  id: BluespaceArtilleryOperator
-  name: access-level-bsa-operator
+  id: FishSpecOpsOfficer
+  name: id-card-access-level-fish-specops-officer
 
 - type: accessGroup
   id: FishBorgExtended

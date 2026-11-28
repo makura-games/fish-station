@@ -33,4 +33,4 @@
           type: BluespaceArtilleryConsoleBoundUserInterface
     - type: BluespaceArtilleryConsole
     - type: AccessReader
-      access: [["BluespaceArtilleryOperator"]]
+      access: [["FishSpecOpsOfficer"]]

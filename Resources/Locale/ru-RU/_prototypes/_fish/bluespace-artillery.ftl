@@ -5,6 +5,8 @@ bluespace-artillery-station-announcement = Внимание! Зафиксиро�
 bluespace-artillery-cc-sender = Центральное Командование
 bluespace-artillery-console-title = Консоль БСА
 bluespace-artillery-target-station = Целевая станция:
+bluespace-artillery-target-object = Целевой объект:
+bluespace-artillery-target-object-none = Не выбран (по координатам)
 bluespace-artillery-coordinates = Координаты выстрела:
 bluespace-artillery-apply = Применить
 bluespace-artillery-fire = ВЫСТРЕЛ
@@ -17,15 +19,15 @@ bluespace-artillery-max-intensity = Максимальная интенсивн�
 bluespace-artillery-preview = Предпросмотр взрыва
 bluespace-artillery-linker-set = Теперь используйте мультитул на другой структуре.
 bluespace-artillery-no-power = Недостаточно энергии для выстрела.
+bluespace-artillery-no-access = Доступ запрещён.
 bluespace-artillery-status-no-link = Статус: нет связи с пушкой
+bluespace-artillery-status-no-power = Статус: нет питания пушки
 bluespace-artillery-status-charging = Статус: заряжается
 bluespace-artillery-status-cooldown = Статус: перезарядка
 bluespace-artillery-status-ready = Статус: готов к выстрелу
 
 signal-port-name-artillery = Артиллерия
 signal-port-description-artillery = Канал управления блюспейс артиллерией
-
-access-level-bsa-operator = Оператор БСА
 
 ent-FishBluespaceArtilleryConsole = консоль блюспейс артиллерии
 ent-FishBluespaceArtilleryConsole-desc = Центр управления блюспейс артиллерией. Требует связи с пушкой.

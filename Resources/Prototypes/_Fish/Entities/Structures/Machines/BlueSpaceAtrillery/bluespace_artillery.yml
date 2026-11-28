@@ -31,6 +31,8 @@
       chargeDuration: 8.5
       flightDuration: 12.0
       cooldownDuration: 60.0
+      idlePowerDraw: 50000
+      chargePowerDraw: 500000
       sectorChargeSound:
         path: /Audio/Misc/redalert.ogg
       chargeSound:

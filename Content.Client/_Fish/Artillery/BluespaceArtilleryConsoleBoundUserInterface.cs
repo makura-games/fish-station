@@ -15,22 +15,21 @@ public sealed partial class BluespaceArtilleryConsoleBoundUserInterface : BoundU
     {
         base.Open();
 
-        _window = new BluespaceArtilleryConsoleWindow();
-        _window.OnClose += Close;
+        _window = this.CreateWindow<BluespaceArtilleryConsoleWindow>();
+        _window.SetEntity(Owner);
         _window.OnFire += () => SendMessage(new BluespaceArtilleryFireMessage());
         _window.OnStationSelected += station => SendMessage(new BluespaceArtillerySelectTargetStationMessage(station));
+        _window.OnObjectSelected += target => SendMessage(new BluespaceArtillerySelectTargetObjectMessage(target));
         _window.OnCoordsChanged += coords => SendMessage(new BluespaceArtillerySetCoordsMessage { Coordinates = coords });
-        _window.OnParamsChanged += (type, total, slope, max) =>
+        _window.OnParamsChanged += (total, slope, max) =>
             SendMessage(new BluespaceArtillerySetParamsMessage
             {
-                ExplosionType = type,
+                ExplosionType = SharedBluespaceArtillerySystem.DefaultExplosionType,
                 TotalIntensity = total,
                 Slope = slope,
                 MaxIntensity = max
             });
         _window.OnPreviewToggled += enabled => SendMessage(new BluespaceArtilleryPreviewMessage { Enabled = enabled });
-
-        _window.OpenCentered();
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -38,19 +37,5 @@ public sealed partial class BluespaceArtilleryConsoleBoundUserInterface : BoundU
         base.UpdateState(state);
         if (state is BluespaceArtilleryConsoleBoundUserInterfaceState cast)
             _window?.UpdateState(cast);
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-        if (!disposing)
-            return;
-
-        if (_window != null)
-        {
-            _window.OnClose -= Close;
-            _window.Close();
-            _window = null;
-        }
     }
 }

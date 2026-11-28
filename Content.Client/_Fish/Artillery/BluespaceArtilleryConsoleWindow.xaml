@@ -6,6 +6,8 @@
         <BoxContainer Orientation="Vertical" MinWidth="220" Margin="5">
             <Label Text="{Loc 'bluespace-artillery-target-station'}" />
             <OptionButton Name="StationSelector" Margin="0 0 0 5" />
+            <Label Text="{Loc 'bluespace-artillery-target-object'}" />
+            <OptionButton Name="ObjectSelector" Margin="0 0 0 5" />
             <Label Text="{Loc 'bluespace-artillery-coordinates'}" />
             <BoxContainer Orientation="Horizontal">
                 <Label Text="X:" MinWidth="25" />
@@ -37,14 +39,12 @@
 		</BoxContainer>
         <BoxContainer Orientation="Vertical" MinWidth="240" Margin="5">
             <Label Text="{Loc 'bluespace-artillery-explosion-params'}" />
-            <Label Text="{Loc 'bluespace-artillery-explosion-type'}" />
-            <OptionButton Name="ExplosionType" />
             <Label Text="{Loc 'bluespace-artillery-intensity'}" />
             <LineEdit Name="Intensity" Text="100" />
             <Label Text="{Loc 'bluespace-artillery-slope'}" />
             <LineEdit Name="Slope" Text="5" />
             <Label Text="{Loc 'bluespace-artillery-max-intensity'}" />
-            <LineEdit Name="MaxIntensity" Text="100" />
+            <LineEdit Name="MaxIntensity" Text="50" />
             <CheckBox Name="PreviewToggle" Text="{Loc 'bluespace-artillery-preview'}" />
         </BoxContainer>
     </BoxContainer>

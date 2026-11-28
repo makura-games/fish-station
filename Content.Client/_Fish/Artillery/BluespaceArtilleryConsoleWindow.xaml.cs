@@ -3,26 +3,24 @@ using System.Collections.Generic;
 using System.Numerics;
 using Content.Client.Shuttles.UI;
 using Content.Shared._Fish.Artillery;
-using Content.Shared.Explosion;
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
 using Robust.Client.Graphics;
-using Robust.Client.ResourceManagement;
+using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
-using Robust.Shared.Collections;
 using Robust.Shared.Input;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
-using Robust.Shared.Utility;
 
 namespace Content.Client._Fish.Artillery;
 
@@ -281,7 +279,12 @@ public sealed partial class ArtilleryScannerControl : BaseShuttleControl
 
 public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
 {
+    [Dependency] private IEntityManager _entity = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    private readonly AccessReaderSystem _accessReader;
+
     private readonly OptionButton _stationSelector;
+    private readonly OptionButton _objectSelector;
     private readonly LineEdit _coordinateX;
     private readonly LineEdit _coordinateY;
     private readonly Button _applyCoordinates;
@@ -289,14 +292,16 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
     private readonly Label _statusLabel;
     private readonly BoxContainer _scannerContainer;
     private readonly ArtilleryScannerControl _scannerControl;
-    private readonly OptionButton _explosionType;
     private readonly LineEdit _intensity;
     private readonly LineEdit _slope;
     private readonly LineEdit _maxIntensity;
     private readonly CheckBox _previewToggle;
     private readonly Button _fireButton;
 
+    private EntityUid _entityUid;
+    private bool _hasAccess = true;
     private bool _isLinked;
+    private bool _isArtilleryPowered;
     private bool _isCharging;
     private bool _isOnCooldown;
     private float _cooldownRemaining;
@@ -305,20 +310,27 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
     private ArtilleryVector2 _targetCoords;
     private const float ScannerMaxOffset = 16384f;
 
-    private readonly List<string> _explosionTypes = new();
     private readonly List<NetEntity> _stationEntities = new();
+    private readonly Dictionary<NetEntity, string> _lastStations = new();
+    private readonly List<NetEntity?> _targetObjects = new();
+    private readonly Dictionary<NetEntity, string> _lastTargets = new();
 
     public event Action? OnFire;
     public event Action<NetEntity>? OnStationSelected;
+    public event Action<NetEntity?>? OnObjectSelected;
     public event Action<ArtilleryVector2>? OnCoordsChanged;
-    public event Action<string, float, float, float>? OnParamsChanged;
+    public event Action<float, float, float>? OnParamsChanged;
     public event Action<bool>? OnPreviewToggled;
 
     public BluespaceArtilleryConsoleWindow()
     {
         RobustXamlLoader.Load(this);
+        IoCManager.InjectDependencies(this);
+
+        _accessReader = _entity.System<AccessReaderSystem>();
 
         _stationSelector = this.FindControl<OptionButton>("StationSelector")!;
+        _objectSelector = this.FindControl<OptionButton>("ObjectSelector")!;
         _coordinateX = this.FindControl<LineEdit>("CoordinateX")!;
         _coordinateY = this.FindControl<LineEdit>("CoordinateY")!;
         _applyCoordinates = this.FindControl<Button>("ApplyCoordinates")!;
@@ -326,27 +338,28 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
         _statusLabel = this.FindControl<Label>("StatusLabel")!;
         _scannerContainer = this.FindControl<BoxContainer>("ScannerContainer")!;
         _scannerControl = this.FindControl<ArtilleryScannerControl>("ScannerControl")!;
-        _explosionType = this.FindControl<OptionButton>("ExplosionType")!;
         _intensity = this.FindControl<LineEdit>("Intensity")!;
         _slope = this.FindControl<LineEdit>("Slope")!;
         _maxIntensity = this.FindControl<LineEdit>("MaxIntensity")!;
         _previewToggle = this.FindControl<CheckBox>("PreviewToggle")!;
         _fireButton = this.FindControl<Button>("FireButton")!;
 
-        var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
-        foreach (var proto in prototypeManager.EnumeratePrototypes<ExplosionPrototype>())
-        {
-            _explosionTypes.Add(proto.ID);
-        }
-        _explosionTypes.Sort();
-
-        foreach (var type in _explosionTypes)
-            _explosionType.AddItem(type);
-
         _stationSelector.OnItemSelected += args =>
         {
             if (args.Id >= 0 && args.Id < _stationEntities.Count)
+            {
+                _stationSelector.SelectId(args.Id);
                 OnStationSelected?.Invoke(_stationEntities[args.Id]);
+            }
+        };
+
+        _objectSelector.OnItemSelected += args =>
+        {
+            if (args.Id >= 0 && args.Id < _targetObjects.Count)
+            {
+                _objectSelector.SelectId(args.Id);
+                OnObjectSelected?.Invoke(_targetObjects[args.Id]);
+            }
         };
 
         _applyCoordinates.OnPressed += _ => ApplyManualCoordinates();
@@ -362,13 +375,6 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
             _scannerControl.PreviewEnabled = args.Pressed;
             UpdatePreviewRadius();
             OnPreviewToggled?.Invoke(args.Pressed);
-        };
-
-        _explosionType.OnItemSelected += args =>
-        {
-            _explosionType.SelectId(args.Id);
-            UpdatePreviewRadius();
-            SendParams();
         };
 
         _intensity.OnTextChanged += _ =>
@@ -391,12 +397,58 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
         {
             _targetCoords = new ArtilleryVector2(coords.Position.X, coords.Position.Y);
             ClampCoordinates();
-            UpdateCoordFields();
+            UpdateCoordFields(force: true);
             OnCoordsChanged?.Invoke(_targetCoords);
         };
 
         _targetCoords = ArtilleryVector2.Zero;
-        UpdateCoordFields();
+        UpdateCoordFields(force: true);
+    }
+
+    public void SetEntity(EntityUid entity)
+    {
+        _entityUid = entity;
+        _hasAccess = HasConsoleAccess();
+        UpdateControlLocks();
+    }
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        var hasAccess = HasConsoleAccess();
+        if (hasAccess != _hasAccess)
+        {
+            _hasAccess = hasAccess;
+            UpdateControlLocks();
+        }
+    }
+
+    private bool HasConsoleAccess()
+    {
+        if (!_entityUid.IsValid())
+            return true;
+
+        return _player.LocalEntity is not { } local ||
+               !_entity.TryGetComponent<AccessReaderComponent>(_entityUid, out var access) ||
+               _accessReader.IsAllowed(local, _entityUid, access);
+    }
+
+    private void UpdateControlLocks()
+    {
+        var lockAll = _isCharging || !_hasAccess;
+
+        _coordinateX.Editable = !lockAll;
+        _coordinateY.Editable = !lockAll;
+        _applyCoordinates.Disabled = lockAll;
+        _intensity.Editable = !lockAll;
+        _slope.Editable = !lockAll;
+        _maxIntensity.Editable = !lockAll;
+        _previewToggle.Disabled = lockAll;
+        _stationSelector.Disabled = lockAll;
+        _objectSelector.Disabled = lockAll;
+        _scannerControl.MouseFilter = lockAll ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+        _fireButton.Disabled = !_hasAccess || !_isLinked || !_isArtilleryPowered || _isCharging || _isOnCooldown;
     }
 
     private void UpdatePreviewRadius()
@@ -405,6 +457,8 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
             float.TryParse(_slope.Text, out var slope) &&
             slope > 0)
         {
+            intensity = Math.Clamp(intensity, SharedBluespaceArtillerySystem.MinTotalIntensity, SharedBluespaceArtillerySystem.MaxTotalIntensity);
+            slope = Math.Clamp(slope, SharedBluespaceArtillerySystem.MinSlope, SharedBluespaceArtillerySystem.MaxSlope);
             _scannerControl.PreviewRadius = MathF.Sqrt(intensity / slope);
         }
     }
@@ -416,7 +470,7 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
         {
             _targetCoords = new ArtilleryVector2(x, y);
             ClampCoordinates();
-            UpdateCoordFields();
+            UpdateCoordFields(force: true);
             OnCoordsChanged?.Invoke(_targetCoords);
         }
     }
@@ -427,24 +481,25 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
         _targetCoords.Y = Math.Clamp(_targetCoords.Y, -ScannerMaxOffset, ScannerMaxOffset);
     }
 
-    private void UpdateCoordFields()
+    private void UpdateCoordFields(bool force = false)
     {
-        _coordinateX.Text = _targetCoords.X.ToString("F1");
-        _coordinateY.Text = _targetCoords.Y.ToString("F1");
+        if (force || !_coordinateX.HasKeyboardFocus())
+            _coordinateX.Text = _targetCoords.X.ToString("F1");
+        if (force || !_coordinateY.HasKeyboardFocus())
+            _coordinateY.Text = _targetCoords.Y.ToString("F1");
         _currentCoords.Text = $"X: {_targetCoords.X:F1}, Y: {_targetCoords.Y:F1}";
     }
 
     private void SendParams()
     {
-        if (_explosionType.SelectedId < 0 || _explosionType.SelectedId >= _explosionTypes.Count)
-            return;
-
         if (float.TryParse(_intensity.Text, out var intensity) &&
             float.TryParse(_slope.Text, out var slope) &&
             float.TryParse(_maxIntensity.Text, out var max))
         {
-            var type = _explosionTypes[_explosionType.SelectedId];
-            OnParamsChanged?.Invoke(type, intensity, slope, max);
+            intensity = Math.Clamp(intensity, SharedBluespaceArtillerySystem.MinTotalIntensity, SharedBluespaceArtillerySystem.MaxTotalIntensity);
+            slope = Math.Clamp(slope, SharedBluespaceArtillerySystem.MinSlope, SharedBluespaceArtillerySystem.MaxSlope);
+            max = Math.Clamp(max, SharedBluespaceArtillerySystem.MinMaxIntensity, SharedBluespaceArtillerySystem.MaxMaxIntensity);
+            OnParamsChanged?.Invoke(intensity, slope, max);
         }
     }
 
@@ -475,7 +530,7 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
             _cooldownTickActive = false;
 
             UpdateStatusLabel();
-            _fireButton.Disabled = !_isLinked || _isCharging;
+            UpdateControlLocks();
 
             return;
         }
@@ -490,10 +545,88 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
             _statusLabel.Text = Loc.GetString("bluespace-artillery-status-no-link");
         else if (_isCharging)
             _statusLabel.Text = Loc.GetString("bluespace-artillery-status-charging");
+        else if (!_isArtilleryPowered)
+            _statusLabel.Text = Loc.GetString("bluespace-artillery-status-no-power");
         else if (_isOnCooldown)
             _statusLabel.Text = $"{Loc.GetString("bluespace-artillery-status-cooldown")} {_cooldownRemaining:F1} с";
         else
             _statusLabel.Text = Loc.GetString("bluespace-artillery-status-ready");
+    }
+
+    private static bool DictionaryEquals(Dictionary<NetEntity, string> a, Dictionary<NetEntity, string> b)
+    {
+        if (a.Count != b.Count)
+            return false;
+
+        foreach (var (key, value) in a)
+        {
+            if (!b.TryGetValue(key, out var other) || other != value)
+                return false;
+        }
+
+        return true;
+    }
+
+    private void UpdateStationSelector(Dictionary<NetEntity, string> availableStations, NetEntity? selectedStation)
+    {
+        if (!DictionaryEquals(_lastStations, availableStations))
+        {
+            _lastStations.Clear();
+            _stationSelector.Clear();
+            _stationEntities.Clear();
+
+            foreach (var (stationEnt, name) in availableStations)
+            {
+                _lastStations[stationEnt] = name;
+                _stationEntities.Add(stationEnt);
+                _stationSelector.AddItem(name);
+            }
+        }
+
+        if (_stationEntities.Count > 0)
+        {
+            var selectedIndex = 0;
+            if (selectedStation != null)
+            {
+                var found = _stationEntities.IndexOf(selectedStation.Value);
+                if (found >= 0)
+                    selectedIndex = found;
+            }
+
+            if (_stationSelector.SelectedId != selectedIndex)
+                _stationSelector.SelectId(selectedIndex);
+        }
+    }
+
+    private void UpdateObjectSelector(Dictionary<NetEntity, string> availableTargets, NetEntity? selectedTarget)
+    {
+        if (!DictionaryEquals(_lastTargets, availableTargets) || _targetObjects.Count == 0)
+        {
+            _lastTargets.Clear();
+            _objectSelector.Clear();
+            _targetObjects.Clear();
+
+            _targetObjects.Add(null);
+            _objectSelector.AddItem(Loc.GetString("bluespace-artillery-target-object-none"));
+
+            foreach (var (targetEnt, name) in availableTargets)
+            {
+                _lastTargets[targetEnt] = name;
+                _targetObjects.Add(targetEnt);
+                _objectSelector.AddItem(name);
+            }
+        }
+
+        var selectedIndex = 0;
+        if (selectedTarget != null)
+        {
+            var found = _targetObjects.IndexOf(selectedTarget.Value);
+            if (found >= 0)
+                selectedIndex = found;
+        }
+
+        if (_objectSelector.SelectedId != selectedIndex)
+            _objectSelector.SelectId(selectedIndex);
     }
 
     public void UpdateState(BluespaceArtilleryConsoleBoundUserInterfaceState state)
@@ -501,60 +634,35 @@ public sealed partial class BluespaceArtilleryConsoleWindow : DefaultWindow
         _targetCoords = state.TargetCoordinates;
         UpdateCoordFields();
 
-        _stationSelector.Clear();
-        _stationEntities.Clear();
-        int selectedIndex = 0;
-        int index = 0;
-        foreach (var (stationEnt, name) in state.AvailableStations)
-        {
-            _stationEntities.Add(stationEnt);
-            _stationSelector.AddItem(name);
-            if (state.SelectedStation != null && stationEnt == state.SelectedStation.Value)
-                selectedIndex = index;
-            index++;
-        }
-
-        if (_stationEntities.Count > 0)
-            _stationSelector.SelectId(selectedIndex);
+        UpdateStationSelector(state.AvailableStations, state.SelectedStation);
+        UpdateObjectSelector(state.AvailableTargets, state.SelectedTarget);
 
         _scannerControl.PreviewEnabled = state.PreviewEnabled;
         _scannerControl.UpdateNavState(state.NavState, _targetCoords);
 
-        var typeIndex = _explosionTypes.IndexOf(state.ExplosionType);
-        if (_explosionTypes.Count > 0)
-            _explosionType.SelectId(typeIndex >= 0 ? typeIndex : 0);
+        if (!_intensity.HasKeyboardFocus())
+            _intensity.Text = state.TotalIntensity.ToString();
+        if (!_slope.HasKeyboardFocus())
+            _slope.Text = state.Slope.ToString();
+        if (!_maxIntensity.HasKeyboardFocus())
+            _maxIntensity.Text = state.MaxIntensity.ToString();
 
-        _intensity.Text = state.TotalIntensity.ToString();
-        _slope.Text = state.Slope.ToString();
-        _maxIntensity.Text = state.MaxIntensity.ToString();
         _previewToggle.Pressed = state.PreviewEnabled;
         UpdatePreviewRadius();
 
         _isLinked = state.IsLinked;
+        _isArtilleryPowered = state.IsArtilleryPowered;
         _isCharging = state.IsCharging;
         _isOnCooldown = state.IsOnCooldown;
         _cooldownRemaining = state.CooldownRemaining;
-		
-		bool lockAll = state.IsCharging;
+        _hasAccess = HasConsoleAccess();
 
-		_coordinateX.Editable = !lockAll;
-		_coordinateY.Editable = !lockAll;
-		_applyCoordinates.Disabled = lockAll;
-		_explosionType.Disabled = lockAll;
-		_intensity.Editable = !lockAll;
-		_slope.Editable = !lockAll;
-		_maxIntensity.Editable = !lockAll;
-		_previewToggle.Disabled = lockAll;
-		_stationSelector.Disabled = lockAll;
-		_scannerControl.MouseFilter = lockAll ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
-
+        UpdateControlLocks();
         UpdateStatusLabel();
 
         if (state.IsOnCooldown)
             StartCooldownTick();
         else
             StopCooldownTick();
-
-        _fireButton.Disabled = !state.IsLinked || state.IsCharging || state.IsOnCooldown;
     }
 }
